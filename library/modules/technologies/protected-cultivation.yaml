@@ -1,0 +1,226 @@
+schema_version: 1
+id: "module.technologies.protected-cultivation"
+version: "0.2.0"
+status: "candidate"
+title:
+  en-US: "Protected Cultivation Technology Framework"
+  zh-CN: "设施栽培技术框架"
+description:
+  en-US: "A route-selection framework for a materially distinct protected or controlled-environment implementation of a production activity. It asks the PCR to investigate the current route rather than supplying technology-specific inventories."
+  zh-CN: "适用于与常规生产活动存在实质差异的设施或受控环境路线选择框架。它要求 PCR 调查当前路线，而不提供技术特定清单。"
+depends_on:
+  - module_id: "module.activities.primary-biological-production"
+    version: "0.2.0"
+applicability:
+  domains:
+    - "production activities with a materially distinct protected or controlled-environment route"
+  subjects:
+    - "any current product for which a protected route is evidenced"
+  excluded_activities:
+    - "a technology inferred only from a product name or classification"
+    - "technology-specific quantities, factors, equipment, and flow UUIDs"
+    - "parallel route inventories without an explicit coexistence decision"
+parameters:
+  - parameter_id: "technology_route_decision"
+    label:
+      en-US: "Technology route decision"
+      zh-CN: "技术路线决定"
+    description:
+      en-US: "The current-product evidence-based decision on whether this alternative route is active."
+      zh-CN: "基于当前产品证据判断该替代路线是否激活。"
+    data_type: "boolean"
+    unit: "applicable or not applicable"
+    required: true
+    supplied_by: "pcr"
+    source_ids:
+      - "iso_14044"
+  - parameter_id: "technology_type"
+    label:
+      en-US: "Technology type"
+      zh-CN: "技术类型"
+    description:
+      en-US: "The current-product route name established by evidence when the alternative is active."
+      zh-CN: "替代路线激活时由当前产品证据确定的路线名称。"
+    data_type: "string"
+    unit: "declared technology"
+    required: false
+    supplied_by: "pcr"
+    source_ids:
+      - "iso_14044"
+boundary_rules:
+  - rule_id: "test_for_alternative_route"
+    inclusion: "conditional"
+    activity: "alternative_production_technology"
+    rule:
+      en-US: "Test whether the current-product route is materially different from the parent activity and activate this technology only when evidence supports the distinction."
+      zh-CN: "判断当前产品路线是否与父活动存在实质差异，仅当证据支持该区别时激活该技术。"
+    source_ids:
+      - "iso_14044"
+  - rule_id: "ask_for_changed_requirements"
+    inclusion: "conditional"
+    activity: "technology_specific_requirements"
+    rule:
+      en-US: "When active, investigate which process operations, input categories, output states, data requirements, and validation checks change for the current route."
+      zh-CN: "激活后，调查当前路线改变了哪些过程操作、投入类别、产出状态、数据要求和验证检查。"
+    source_ids:
+      - "iso_14044"
+  - rule_id: "exclude_unselected_route"
+    inclusion: "exclude"
+    activity: "unselected_alternative_route"
+    rule:
+      en-US: "Do not combine alternative-route requirements unless the PCR explicitly models coexistence and states the allocation basis."
+      zh-CN: "除非 PCR 明确建模共存并说明分配基准，否则不得合并替代路线要求。"
+    source_ids:
+      - "iso_14044"
+inventory_patterns:
+  - pattern_id: "technology_changed_inputs"
+    direction: "input"
+    flow_type: "product"
+    flow_role:
+      en-US: "Input categories changed or newly activated by the current technology route"
+      zh-CN: "当前技术路线改变或新增的投入类别"
+    required: true
+    amount_source: "foreground_record"
+    collection_protocol_id: "technology_framework_questions"
+    condition:
+      en-US: "Use only after current-product evidence identifies a changed requirement."
+      zh-CN: "仅当当前产品证据识别出改变的要求后使用。"
+    source_ids:
+      - "iso_14044"
+  - pattern_id: "technology_changed_output"
+    direction: "output"
+    flow_type: "product"
+    flow_role:
+      en-US: "Output state or product interface changed by the current technology route"
+      zh-CN: "当前技术路线改变的产出状态或产品接口"
+    required: true
+    amount_source: "foreground_record"
+    collection_protocol_id: "technology_framework_questions"
+    condition:
+      en-US: "The PCR must establish the current-product output interface and explain the difference from the parent activity."
+      zh-CN: "PCR 必须确定当前产品的产出接口，并说明其与父活动的差异。"
+    source_ids:
+      - "iso_14044"
+  - pattern_id: "technology_secondary_outputs"
+    direction: "output"
+    flow_type: "waste"
+    flow_role:
+      en-US: "Potential technology-specific losses or secondary outputs to investigate"
+      zh-CN: "需要调查的潜在技术特定损失或次级产出"
+    required: false
+    amount_source: "foreground_record"
+    collection_protocol_id: "technology_framework_questions"
+    condition:
+      en-US: "Activate only when current-product evidence identifies a material technology-specific output."
+      zh-CN: "仅当当前产品证据识别出重大技术特定产出时激活。"
+    source_ids:
+      - "iso_14044"
+collection_protocols:
+  - protocol_id: "technology_framework_questions"
+    applies_to:
+      - "technology_changed_inputs"
+      - "technology_changed_output"
+      - "technology_secondary_outputs"
+    record_type:
+      en-US: "Current-product technology route evidence record"
+      zh-CN: "当前产品技术路线证据记录"
+    required_fields:
+      - "parent activity"
+      - "technology route decision"
+      - "changed operation or category"
+      - "property and unit"
+      - "measurement point and period"
+      - "current-product evidence source"
+    collection_method:
+      en-US: "Search current-product technical literature, official guidance, facility records, foreground records, or disclosed estimates."
+      zh-CN: "检索当前产品技术文献、官方指南、设施记录、前景记录或已披露的估算。"
+    unit: "to be determined for the current product"
+    frequency: "each active technology route and reporting period"
+    temporal_coverage:
+      en-US: "The period represented by the current PCR evidence."
+      zh-CN: "当前 PCR 证据所代表的期间。"
+    site_scope:
+      en-US: "The current technology route and materially different implementations."
+      zh-CN: "当前技术路线及存在重大差异的实现方式。"
+    aggregation_rule:
+      en-US: "Aggregate only after parent activity, technology route, period, property, unit, and evidence basis are reconciled."
+      zh-CN: "仅在父活动、技术路线、期间、属性、单位和证据基础核对一致后汇总。"
+    quality_evidence:
+      - "current-product technical source"
+      - "facility or foreground record"
+      - "disclosed estimate"
+    source_ids:
+      - "iso_14044"
+calculation_rules:
+  - rule_id: "apply_pcr_defined_technology_attribution"
+    applies_to:
+      - "technology_changed_inputs"
+    expression: "current_product_technology_amount = current_product_observed_amount * current_product_technology_attribution_factor"
+    inputs:
+      - "current_product_observed_amount"
+      - "current_product_technology_attribution_factor"
+    output: "current_product_technology_amount"
+    output_unit: "defined by the current PCR"
+    source_ids:
+      - "iso_14044"
+allocation_rules:
+  - rule_id: "require_current_product_technology_allocation"
+    priority: 1
+    method: "pcr_declared_allocation_method"
+    rule:
+      en-US: "If the technology route shares equipment, infrastructure, or outputs, investigate and justify the current-product allocation treatment."
+      zh-CN: "如果技术路线共享设备、基础设施或产出，必须调查并说明当前产品的分配处理。"
+    condition:
+      en-US: "Activate only when current-product evidence identifies shared technology resources or outputs."
+      zh-CN: "仅当当前产品证据识别出共享技术资源或产出时激活。"
+    source_ids:
+      - "iso_14044"
+validation_rules:
+  - rule_id: "technology_activation_is_evidenced"
+    severity: "error"
+    check: "The PCR records evidence for activating or excluding this alternative route."
+    message:
+      en-US: "A technology framework cannot be activated from a product name alone; current-route evidence is required."
+      zh-CN: "不能仅凭产品名称激活技术框架，必须有当前路线证据。"
+    source_ids:
+      - "iso_14044"
+  - rule_id: "technology_difference_is_explicit"
+    severity: "error"
+    check: "An active technology states which process, inventory, output, or validation requirements differ from its parent activity."
+    message:
+      en-US: "The active technology must state its difference from the parent activity."
+      zh-CN: "激活的技术必须说明其与父活动的差异。"
+    source_ids:
+      - "iso_14044"
+  - rule_id: "unselected_route_is_not_mixed"
+    severity: "warning"
+    check: "Unselected alternative routes are not mixed into the current-product inventory."
+    message:
+      en-US: "Unselected technology routes must not be mixed into the current PCR without an explicit decision."
+      zh-CN: "未经明确决定，不得将未选择的技术路线混入当前 PCR。"
+    source_ids:
+      - "iso_14044"
+data_quality_rules:
+  - rule_id: "technology_evidence_representativeness"
+    dimension: "representativeness"
+    requirement:
+      en-US: "Use evidence representative of the current technology route, implementation, site, and period."
+      zh-CN: "使用代表当前技术路线、实现方式、场址和期间的证据。"
+    source_ids:
+      - "iso_14044"
+  - rule_id: "technology_evidence_traceability"
+    dimension: "data_quality"
+    requirement:
+      en-US: "Record the current-product source supporting the route decision and each changed requirement."
+      zh-CN: "记录支持路线决定和每项变化要求的当前产品来源。"
+    source_ids:
+      - "iso_14044"
+sources:
+  - source_id: "iso_14044"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    url: "https://www.iso.org/standard/38498.html"
+    supports:
+      - "life-cycle study framework"
+      - "inventory definition"
+      - "data quality and allocation"

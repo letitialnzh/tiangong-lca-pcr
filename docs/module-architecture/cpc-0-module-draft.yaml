@@ -1,0 +1,161 @@
+# Draft only: this is an architecture test, not a canonical module.
+# It is intentionally outside library/modules so the builder cannot load it.
+
+status: draft
+canonical_module: false
+draft_id: draft.cpc-0.biological-resource-products
+classification_scope:
+  system: CPC
+  version: "3.0"
+  section: "0"
+  title: "Agriculture, forestry and fishery products"
+
+purpose: >-
+  Test whether a forward-defined rule package can describe the common modelling questions
+  for CPC section 0 without copying any product-specific PCR content.
+
+classification_commonality:
+  - product originates from a biological resource
+  - product is obtained through managed production, harvesting, capture, or aquaculture
+  - a primary product may receive conditioning or handling before the declared gate
+
+module_kinds_under_test:
+  activity:
+    definition: >-
+      An independent process node with its own input/output roles and collection,
+      calculation, or validation responsibility.
+    candidates:
+      - biological-resource-production
+      - biological-harvest-or-capture
+      - primary-conditioning
+  technology:
+    definition: >-
+      An alternative route for a parent activity that changes process topology,
+      inventory requirements, calculation, or validation.
+    candidates:
+      - open-field
+      - protected-cultivation
+      - pasture-based
+      - indoor-housing
+      - pond-aquaculture
+      - cage-aquaculture
+      - plantation-management
+      - natural-forest-management
+  system_condition:
+    definition: >-
+      A cross-process production condition that activates rules in more than one activity.
+    candidates:
+      - annual-production
+      - perennial-production
+      - long-rotation-production
+      - managed-production
+      - capture-system
+      - multi-output-production
+
+activity_rule_contract:
+  biological-resource-production:
+    activation_question: >-
+      Is the product created through a managed biological production system?
+    must_determine:
+      - biological production object and production mode
+      - production period or cycle
+      - management inputs and outputs
+      - production boundary and declared gate
+      - product and residue outputs
+    must_research_for_current_pcr:
+      - route-specific practices
+      - regional production cycle and yield basis
+      - route-specific input quantities
+      - product-specific losses and residues
+    does_not_define:
+      - product identity
+      - local numeric values
+      - reference-flow UUID
+
+  biological-harvest-or-capture:
+    activation_question: >-
+      Is the product obtained by harvesting a managed biological system or capturing a wild resource?
+    must_determine:
+      - harvest or capture operation
+      - equipment and energy roles
+      - product loss and by-product roles
+      - landing, removal, or field-exit boundary
+    must_research_for_current_pcr:
+      - actual harvest or capture route
+      - route-specific equipment and fuel use
+      - seasonal or cycle-specific practices
+    does_not_define:
+      - a universal harvesting quantity
+      - a universal capture technology
+
+  primary-conditioning:
+    activation_question: >-
+      Does washing, sorting, grading, drying, cooling, or other primary conditioning cross the declared gate?
+    must_determine:
+      - whether conditioning is inside the PCR boundary
+      - conditioning inputs and outputs
+      - product loss and waste roles
+      - measurement and normalization basis
+    must_research_for_current_pcr:
+      - product-specific conditioning route
+      - actual water, energy, packaging, and loss requirements
+
+system_condition_rules:
+  perennial-production:
+    activates:
+      - establishment
+      - productive-lifetime
+      - replacement-events
+      - multi-year-allocation
+    requires_current_pcr_parameters:
+      - productive_lifetime
+      - establishment_inputs
+      - replacement_events
+      - annual_output
+
+  multi-output-production:
+    activates:
+      - co-product-identification
+      - allocation-decision
+      - output-quality-and-quantity-record
+
+  capture-system:
+    activates:
+      - wild-resource-status
+      - capture-effort
+      - landing-or-removal-boundary
+
+selection_rules:
+  - A CPC label alone does not activate an activity; the current production route must be established.
+  - Required activities are selected from the route, not from the CPC section number.
+  - Technology is selected only when it is an alternative implementation of a selected activity.
+  - System conditions are selected when they change rules across more than one activity.
+  - Product facts, local values, UUIDs, and final boundary choices remain in the PCR or foreground dataset.
+  - An unresolved route remains explicit and cannot be filled by copying a neighbouring product.
+
+pcr_generation_output:
+  the_draft_supplies:
+    - activity and technology questions to answer
+    - data-collection prompts
+    - evidence questions
+    - conditional validation checks
+  the_pcr_supplies:
+    - product identity and classification references
+    - selected route and boundary
+    - product-specific parameters and evidence
+    - concrete flow bindings
+    - final allocation and technology choices
+
+architecture_test_cases:
+  - CPC 01 annual crop route
+  - CPC 01 perennial crop route
+  - CPC 02 animal-product route
+  - CPC 03 forestry route
+  - CPC 04 capture-fishery route
+  - CPC 04 aquaculture route
+
+open_questions:
+  - Is biological-resource-production too broad to be useful as one activity family?
+  - Should capture-fishery and aquaculture be sibling activities rather than technologies?
+  - Which conditioning operations need independent activity interfaces?
+  - Which system conditions are method rules rather than PCR parameters?
