@@ -20,6 +20,7 @@ Use this index to choose the smallest relevant builder context.
 - `contracts/published-revision-contract.md`: executable workspace, immutable release, directory-transaction, and recovery contract for published PCRs.
 - `contracts/structured-projection-contract.md`: generated `structured.yaml` projection rules.
 - `contracts/evidence-and-source-contract.md`: source records and source references.
+- `contracts/evidence-pack-contract.md`: research-time claim, source, conflict, and gap ledger.
 - `contracts/tiangong-uuid-reference-contract.md`: Tiangong UUID storage rules.
 - `contracts/controlled-vocabulary-contract.md`: authored token sources and deterministic runtime/Schema generation.
 

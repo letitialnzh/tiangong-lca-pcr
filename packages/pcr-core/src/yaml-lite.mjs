@@ -59,6 +59,12 @@ function parseMap(lines, startIndex, indent) {
     const key = trimmed.slice(0, colonIndex).trim();
     const rest = trimmed.slice(colonIndex + 1).trim();
     if (rest) {
+      if (/^(?:[>|][+-]?)$/u.test(rest)) {
+        const [value, nextIndex] = parseBlockScalar(lines, index + 1, indent, rest);
+        result[key] = value;
+        index = nextIndex;
+        continue;
+      }
       result[key] = parseScalar(rest);
       index += 1;
       continue;
@@ -94,7 +100,9 @@ function parseList(lines, startIndex, indent) {
       continue;
     }
 
-    const inlineEntry = parseInlineListEntry(rest);
+    const inlineEntry = rest.startsWith("{") && rest.endsWith("}")
+      ? parseScalar(rest)
+      : parseInlineListEntry(rest);
     if (inlineEntry && index + 1 < lines.length && lines[index + 1].indent > indent) {
       const [nested, nextIndex] = parseMap(lines, index + 1, indent + 2);
       result.push({ ...inlineEntry, ...(nested ?? {}) });
@@ -129,6 +137,12 @@ function parseScalar(value) {
   if (trimmed === "{}") {
     return {};
   }
+  if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+    return parseInlineArray(trimmed.slice(1, -1));
+  }
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    return parseInlineObject(trimmed.slice(1, -1));
+  }
   if (trimmed === "null" || trimmed === "~") {
     return null;
   }
@@ -151,6 +165,90 @@ function parseScalar(value) {
     }
   }
   return trimmed;
+}
+
+function parseInlineArray(value) {
+  if (value.trim() === "") {
+    return [];
+  }
+  const items = [];
+  let current = "";
+  let quote = null;
+  for (const char of value) {
+    if ((char === '"' || char === "'") && (quote === null || quote === char)) {
+      quote = quote === null ? char : null;
+      current += char;
+      continue;
+    }
+    if (char === "," && quote === null) {
+      items.push(parseScalar(current.trim()));
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  if (quote !== null) {
+    return value;
+  }
+  items.push(parseScalar(current.trim()));
+  return items;
+}
+
+function parseInlineObject(value) {
+  if (value.trim() === "") return {};
+  const result = {};
+  let current = "";
+  let quote = null;
+  let depth = 0;
+  const parts = [];
+  for (const char of value) {
+    if ((char === '"' || char === "'") && (quote === null || quote === char)) {
+      quote = quote === null ? char : null;
+      current += char;
+      continue;
+    }
+    if (quote === null && (char === "[" || char === "{")) depth += 1;
+    if (quote === null && (char === "]" || char === "}")) depth -= 1;
+    if (char === "," && quote === null && depth === 0) {
+      parts.push(current);
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  parts.push(current);
+  for (const part of parts) {
+    const colonIndex = part.indexOf(":");
+    if (colonIndex < 0) continue;
+    const key = part.slice(0, colonIndex).trim();
+    if (!key) continue;
+    result[key.replace(/^['"]|['"]$/gu, "")] = parseScalar(part.slice(colonIndex + 1).trim());
+  }
+  return result;
+}
+
+function parseBlockScalar(lines, startIndex, parentIndent, indicator) {
+  const values = [];
+  let index = startIndex;
+  let contentIndent = null;
+  while (index < lines.length) {
+    const line = lines[index];
+    if (line.trimmed === "") {
+      values.push("");
+      index += 1;
+      continue;
+    }
+    if (line.indent <= parentIndent) {
+      break;
+    }
+    contentIndent ??= line.indent;
+    values.push(line.raw.slice(contentIndent));
+    index += 1;
+  }
+  if (indicator.startsWith(">")) {
+    return [values.join(" ").trim(), index];
+  }
+  return [values.join("\n").trim(), index];
 }
 
 function stripInlineComment(value) {
@@ -198,7 +296,7 @@ function renderObject(object, indent) {
         lines.push(`${prefix} []`);
       } else {
         lines.push(prefix);
-        lines.push(...renderArray(value, indent + 2));
+        for (const line of renderArray(value, indent + 2)) lines.push(line);
       }
       continue;
     }
@@ -207,7 +305,7 @@ function renderObject(object, indent) {
         lines.push(`${prefix} {}`);
       } else {
         lines.push(prefix);
-        lines.push(...renderObject(value, indent + 2));
+        for (const line of renderObject(value, indent + 2)) lines.push(line);
       }
       continue;
     }
@@ -221,7 +319,7 @@ function renderArray(values, indent) {
   for (const value of values) {
     if (Array.isArray(value)) {
       lines.push(`${" ".repeat(indent)}-`);
-      lines.push(...renderArray(value, indent + 2));
+      for (const line of renderArray(value, indent + 2)) lines.push(line);
       continue;
     }
     if (value && typeof value === "object") {
@@ -233,12 +331,12 @@ function renderArray(values, indent) {
       const [[firstKey, firstValue], ...rest] = entries;
       if (firstValue && typeof firstValue === "object") {
         lines.push(`${" ".repeat(indent)}- ${firstKey}:`);
-        lines.push(...renderNode(firstValue, indent + 4));
+        for (const line of renderNode(firstValue, indent + 4)) lines.push(line);
       } else {
         lines.push(`${" ".repeat(indent)}- ${firstKey}: ${renderScalar(firstValue)}`);
       }
       if (rest.length > 0) {
-        lines.push(...renderObject(Object.fromEntries(rest), indent + 2));
+        for (const line of renderObject(Object.fromEntries(rest), indent + 2)) lines.push(line);
       }
       continue;
     }

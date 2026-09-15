@@ -3094,7 +3094,10 @@ test("builder argument parsing rejects ambiguous inputs before command dispatch"
     assert.throws(
       () => runCliFailure(["lint", "--pcr", "library/pcrs/example"]),
       (error) => {
-        assert.match(String(error.stderr), /Unknown option for lint: --pcr/u);
+        assert.match(
+          String(error.stderr),
+          /Requested PCR must be a direct library\/pcrs\/<domain>\/<subdomain>\/<slug> directory/u,
+        );
         return true;
       },
     );

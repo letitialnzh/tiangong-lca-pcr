@@ -59,19 +59,21 @@ test("catalog command help explains recovery and stale-lock authority", () => {
   assert.match(invalid.stderr, /valid only with --recover/u);
 });
 
-test("catalog generator emits the current three-PCR material index and complete CPC coverage", () => {
+test("catalog generator emits a self-consistent material index and complete CPC coverage", () => {
   const result = createCatalogArtifacts(repositoryRoot);
   const byPath = new Map(result.artifacts.map((artifact) => [artifact.path, artifact.value]));
   const materialIndex = byPath.get("library/indexes/pcr-index.yaml");
   const coverage = byPath.get(CPC_3_COVERAGE_PATH);
+  const mapping = parseYaml(readFileSync(path.join(repositoryRoot, CPC_3_MAPPING_PATH), "utf8"));
+  const mappedCount = mapping.mappings.length;
+  const unmappedCount = coverage.summary.total - mappedCount;
 
   assert.deepEqual(result.issues, []);
   assert.equal(materialIndex.index_kind, "tiangong-pcr-material-catalog");
-  assert.equal(materialIndex.summary.total, 3);
-  assert.equal(materialIndex.pcrs.length, 3);
+  assert.equal(materialIndex.summary.total, materialIndex.pcrs.length);
   assert.ok(materialIndex.pcrs.every((entry) => entry.status !== "scaffold"));
   assert.ok(materialIndex.pcrs.every((entry) => entry.content_maturity !== "empty_scaffold"));
-  assert.equal(result.aliases.length, 2874);
+  assert.equal(result.aliases.length, unmappedCount);
   const catalog = byPath.get("library/catalog.yaml");
   assert.equal(
     catalog.pcr_id_aliases.path,
@@ -79,12 +81,12 @@ test("catalog generator emits the current three-PCR material index and complete 
   );
   assert.equal(catalog.pcr_id_aliases.hash_mode, "exact_bytes");
   assert.match(catalog.pcr_id_aliases.sha256, /^sha256:[0-9a-f]{64}$/u);
-  assert.equal(catalog.pcr_id_aliases.entry_count, 2874);
+  assert.equal(catalog.pcr_id_aliases.entry_count, result.aliases.length);
 
   assert.deepEqual(coverage.summary, {
     total: 2877,
-    mapped: 3,
-    unmapped: 2874,
+    mapped: mappedCount,
+    unmapped: unmappedCount,
     candidate_suggestion: 0,
     manual_review: 0,
     unknown: 0,
@@ -105,8 +107,9 @@ test("catalog generator emits the current three-PCR material index and complete 
   assert.equal(wheatSeed.legacy_reference, null);
 
   const wheatOther = coverage.entries.find((entry) => entry.code === "01112");
-  assert.equal(wheatOther.coverage_status, "unmapped");
-  assert.equal(wheatOther.mapping, null);
+  assert.equal(wheatOther.coverage_status, "mapped");
+  assert.equal(wheatOther.mapping.mapping_type, "exact");
+  assert.equal(wheatOther.mapping.acceptance.status, "accepted");
   assert.equal(wheatOther.legacy_reference, null);
 });
 

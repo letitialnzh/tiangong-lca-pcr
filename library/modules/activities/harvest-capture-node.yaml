@@ -1,0 +1,45 @@
+schema_version: 0
+id: module.activity.harvest-capture-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Harvest and capture node
+purpose: Describe an independent responsibility that removes a biological or naturally occurring output from its production or capture context.
+activation:
+  question: Does the route independently remove a biological or naturally occurring output from its production or capture context?
+  signals:
+    - harvest_capture_route
+  evidence:
+    - route description showing production or capture context and collected output
+    - current PCR evidence for the harvest or capture boundary and hand-off
+  outcomes:
+    applicable: declare_a_distinct_harvest_or_capture_node
+    not_applicable: keep_harvest_inside_an_existing_node
+    unresolved: retain_capture_context_or_handoff_ambiguity_and_request_route_evidence
+owns:
+  - source-to-collected-output interface
+  - harvest or capture boundary questions
+  - completeness checks for losses, incidental material, and collected outputs
+excludes:
+  - species, product, or resource identity
+  - harvesting equipment or capture technology
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [production_or_capture_context, harvest_service_roles]
+  process: [harvest_or_capture_responsibility]
+  outputs: [collected_output_state, incidental_or_loss_state, downstream_handoff]
+obligations:
+  - identify the production or capture context
+  - identify the collected output state and hand-off
+  - distinguish intended output from incidental material and loss
+  - explain why harvest or capture is independent of production or conditioning
+validation:
+  - applicable_node_requires_capture_context
+  - applicable_node_requires_collected_output_and_handoff
+  - incidental_and_loss_roles_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [managed-biological-production, resource-removal-node, primary-conditioning-node, technology]
+  conflicts_with: [duplicate_harvest_node, harvest_embedded_without_boundary_resolution]
+tests:
+  - cross-domain-harvest-capture

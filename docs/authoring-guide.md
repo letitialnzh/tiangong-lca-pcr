@@ -34,7 +34,17 @@ Author PCR content in canonical PCR files under `library/pcrs/`.
 
 Agents should start from `builder/AGENTS.md`, then use `builder/docs/index.md` to choose the smallest relevant workflow, tool note, contract, or method note.
 
-PCR production always synthesizes the current best PCR for the target product category from available evidence. Existing PCR content is prior evidence and a canonical write target, not a separate reasoning mode.
+For a new PCR, production must independently synthesize the current best record for the target product category from
+target evidence and existing modules. Do not use another PCR as a content template or copy its flows, ranges, amounts,
+or product facts. Existing PCRs may be inspected to decide whether the target should reuse that canonical PCR; for an
+update workflow, the selected existing PCR remains the canonical write target.
+
+Semantic content and document structure follow different rules. Independent authoring applies to product meaning and
+methodology; it does not allow an Agent to invent the Markdown topology. Start every new English and Chinese rendering
+from the repository-owned scaffolds under `builder/templates/`, or update a retained legacy scaffold to that current
+structure. Keep required frontmatter keys, section hierarchy, machine-recognized headings, table headers, rule-id
+columns, and flow-card field labels exact. Populate those structures with target-specific evidence; never obtain product
+facts, flows, ranges, quantities, or UUIDs from the scaffold or another PCR.
 
 When the trigger is external PCR feedback, start with `builder/docs/workflows/intake-feedback-issue.md`. Treat the issue as candidate evidence until sources, UUIDs, and data production impact are verified. If accepted, continue with `builder/docs/workflows/update-pcr-from-feedback.md`.
 
@@ -93,6 +103,34 @@ System-boundary, allocation, and validation requirements are projected as machin
 
 Each inventory flow card should carry a stable `row_id`, the selected flow UUID when available, the flow property/unit used in that row, `amount`, `value_mode`, `specificity`, `basis`, `basis_kind`, `evidence_kind`, `collection_protocol_id`, and `source_ids`.
 
+Derive Flow Cards from the evidence-supported inventory, measurement, calculation, boundary, condition, and validation
+needs. Flow Set taxonomy is used only after the cards are complete and must never be enumerated to create one card per
+group. Split a card only when those needs are independent. Otherwise retain one conditional umbrella card: it may cite
+the applicable Flow Set id/version without `group`, and foreground data generation selects zero, one, or several groups
+from actual records. A concrete card must cite one exact group; never put an alternative list in `group`.
+
+### Post-Process-Map flow refinement gate
+
+Complete the Process Map and its evidence-derived flow cards before finalizing flow bindings. For every card that has neither a verified
+fixed-flow UUID nor an applicable existing Flow Set, perform a semantic refinement pass before accepting unmapped
+coverage. Refine the flow only to the lowest level supported by the evidence, using the physical material or substance
+identity, flow type, direction, process state or gate, intended use, and destination. The flow-identity search budget is
+one initial lookup and at most one evidence-supported refinement lookup per flow card. Do not enumerate speculative
+synonyms or continue searching after the refinement lookup is inconclusive. Deterministic property or unit-group
+confirmation for a selected UUID is not a new candidate-flow lookup. Then apply the permitted refinement lookup:
+
+- an exact, verified UUID is `fixed`;
+- an applicable existing Flow Set is `parameterized`, with one group for a concrete card or no group for deferred
+  conditional scope;
+- if neither is justified, retain the flow as unmapped coverage.
+
+This refinement must not change the real product boundary, flow type, or direction merely to obtain a match. Do not add a
+third binding mode or a binding-rationale field. Deferred scope remains `parameterized`; it is represented by omitting
+`group`. Do not use a product-output Flow Set as a fallback and do not create a new Flow Set or module during this pass. If a reusable pattern is missing from the module library, record a module gap for separate forward module design. The canonical English
+and Chinese PCR body text and generated `structured.yaml` contain the final method rule only; CLI queries, search results,
+candidate rankings, UUID lookup failures, tool errors, and other lookup traces stay in manifest review metadata or
+dedicated issue/PR/audit artifacts.
+
 The foreground data collection section defines the raw fields, collection method, unit, frequency, temporal coverage, site scope, aggregation rule, calculation rules, and quality evidence that produce the first dataset values.
 
 The published dataset profile defines how the completed dataset can be used downstream as `secondary_dataset` or `background_dataset`, including required metadata, quality disclosure, allowed use, excluded use, and update triggers.
@@ -119,7 +157,7 @@ Every database-backed selection should record in the PCR content:
 
 CLI lookup traces, command history, API keys, access tokens, session paths, and other private runtime details stay outside PCR files. The Tiangong database is the identity source for UUID-bearing rows and is represented by UUIDs in PCR tables.
 
-If the CLI is unavailable during create work, draft semantic candidates without UUIDs and record unresolved identity gaps in `manifest.yaml` review metadata.
+If the CLI is unavailable during create work, draft semantic candidates without UUIDs and record unresolved identity gaps in `manifest.yaml` review metadata. A candidate PCR reference product may likewise retain its semantic name with a blank `product_flow_ref.uuid` and no binding when neither an exact UUID nor an applicable Flow Set exists; mark `reference_identity_status: unresolved` in the reference-flow table and carry the gap for later foreground resolution. Never substitute a nearby product flow merely to populate the field.
 
 ## Data Sources and Ranges
 
@@ -174,6 +212,7 @@ them. When intentionally replacing or promoting one of these records into a mate
 - run `npm run pcr:sync-structured -- --pcr <library/pcrs/...>` after editing canonical Markdown so `structured.yaml` stays aligned
 - move `status`, `content_maturity`, and `translation_status` forward with `npm run pcr:lifecycle` only after the relevant methodology or translation review has happened
 - add a v2 accepted mapping edge only after the classification-to-PCR relation is reviewed and its durable decision evidence exists
+- do not create a new ADR merely because the PCR batch is ready to accept; reuse an applicable decision record or use a non-ADR acceptance record, and reserve ADRs for new architecture or governance decisions
 - run `npm run aliases:build` and `npm run catalog:build` in the same coordinated change so the old id is either removed from alias sources or redirected to the reviewed canonical PCR, and the catalog pins the registry's exact bytes and entry count
 
 Repository lint regenerates and compares the deterministic projection for every material PCR. A stale

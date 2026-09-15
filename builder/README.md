@@ -59,6 +59,7 @@ npm run pcr:publish -- --pcr <library/pcrs/...> --workspace current --version <s
 npm run pcr:revise -- --pcr <library/pcrs/...> --version <target-semver>
 npm run pcr:publish -- --pcr <library/pcrs/...> --workspace revision
 npm run pcr:recover -- --pcr <library/pcrs/...> [--force-stale-lock]
+npm run pcr:module-checklist -- --pcr <library/pcrs/...> [--format json|yaml|markdown]
 npm run validate
 ```
 
@@ -70,7 +71,9 @@ npm run validate
   byte-for-byte in classification-only mode. Register a coverage descriptor before importing a non-3.0 version.
 - Current classification mapping v2 files contain accepted positive edges only. Every edge targets a material PCR,
   excludes `manual_review`, and carries acceptance status, decision-maker, UTC decision time, and durable decision
-  reference. CPC 3.0 currently has exactly three accepted edges; CPC 2.1 is empty v2.
+  reference. A new ADR is not required for each accepted PCR batch: the reference may reuse an applicable existing
+  decision record or point to a non-ADR acceptance record. Create or update an ADR only for a new architecture or
+  governance decision. CPC 3.0 currently has four accepted edges; CPC 2.1 is empty v2.
 - `--legacy-scaffolds` is migration/test-only and may operate only on retained v1/scaffold mapping fixtures. A current
   v2 mapping causes it to fail before mutation, preventing unaccepted-edge injection and retired-directory
   rehydration. For a v1 fixture it may create one complete four-file target when absent; an existing target must be
@@ -88,8 +91,17 @@ npm run validate
   accepted mappings and run `npm run catalog:build` for a registered coordinate. Treat any retained-source,
   legacy-target, or template mismatch error as a compatibility risk that requires manual review; do not force or
   repair around it.
-- `pcr:sync-structured` regenerates `structured.yaml` from canonical PCR Markdown, including boundary, allocation, validation, process-inventory rules, and deterministic projection metadata. `--workspace` defaults to `current`; published and deprecated current files are immutable, so an open revision must be synced with `--workspace revision`.
-- `pcr:lifecycle` validates manifest lifecycle transitions and runs a material preflight before a PCR becomes active. Use `--workspace revision` for revision review state. A published current record permits only the one-way transition to `deprecated/deprecated_methodology`; a deprecated record cannot be reopened.
+- `pcr:sync-structured` regenerates `structured.yaml` from canonical PCR Markdown, including boundary, allocation, validation,
+  process-inventory rules, automatic module selection references, and deterministic projection metadata. Applicable module
+  ids are written to the PCR manifest and selected/unresolved references are written to `structured.yaml`; no manual module
+  confirmation is required. `--workspace` defaults to `current`; published and deprecated current files are immutable, so
+  an open revision must be synced with `--workspace revision`.
+- `pcr:lifecycle` validates manifest lifecycle transitions and runs a material preflight before a PCR becomes active.
+  A retained `scaffold` promoted to `candidate` automatically turns its positive `manifest.classification_refs` into
+  accepted mapping edges, regenerates CPC 3.0 aliases (removing the same-id legacy alias), and rebuilds catalog and
+  coverage artifacts. Conflicting accepted edges fail closed. Use `--workspace revision` for revision review state.
+  A published current record permits only the one-way transition to `deprecated/deprecated_methodology`; a deprecated
+  record cannot be reopened.
 - `pcr:bump` updates a valid semver only for an unpublished current workspace. It rejects malformed, published, deprecated, or open-revision state because a revision target version is fixed when `pcr:revise` opens it.
 - `pcr:revise` opens one explicit `revision/` workspace from a managed published release, records a greater target semver in `revision.yaml`, preserves the consumer-facing top-level release, and marks the Chinese revision out of sync. It rejects deprecated and already-open records.
 - `pcr:publish` first validates the proposed published manifest and freshly generated projection without writing. First publication uses `--workspace current --version <semver>`; later publication uses `--workspace revision` and the version locked by `pcr:revise`. Publication requires the complete identity contract, active reviewed methodology, reviewed non-empty Chinese Markdown with aligned normative rule ids, valid semver, and no unresolved review blocker.
@@ -98,7 +110,7 @@ npm run validate
 - `vocab:generate` validates every vocabulary source and deterministically regenerates the checked-in runtime constants and shared JSON Schema.
 - `aliases:build` deterministically derives `classifications/aliases/pcr-id-aliases.yaml` from the retained CPC leaf
   identity inventory and current accepted mapping. `aliases:check` rejects stale output, duplicate sources,
-  material-id collisions, alias chains/cycles, and invalid terminal targets. Current output has 2,874 terminal
+  material-id collisions, alias chains/cycles, and invalid terminal targets. Current output has 2,873 terminal
   classification-coverage locators and is checked before catalog lookup.
 - `catalog:build` validates sources and publishes `library/catalog.yaml`, the material index, and registered coverage
   indexes as one journaled recoverable artifact set. The catalog pins the alias registry's canonical path,

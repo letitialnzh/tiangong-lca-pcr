@@ -61,6 +61,12 @@ function normalizeProjectionHeader(value) {
     ["规则", "rule"],
     ["要求", "rule"],
     ["来源", "source_ids"],
+    ["参考数量", "reference_amount"],
+    ["参考产品流", "reference_product_flow"],
+    ["参考流属性", "reference_flow_property"],
+    ["参考单位组", "reference_unit_group"],
+    ["参考单位", "reference_unit"],
+    ["必需限定信息", "required_qualifiers"],
     ["必需流属性", "required_property"],
     ["必需单位", "required_unit"],
     ["过程名称", "process_name"],
@@ -68,6 +74,11 @@ function normalizeProjectionHeader(value) {
     ["纳入条件", "inclusion_condition"],
     ["建模角色", "role"],
     ["定量参考", "quantitative_reference"],
+    ["绑定", "binding"],
+    ["绑定模式", "binding"],
+    ["流集", "flow_set"],
+    ["流集版本", "flow_set_version"],
+    ["流集分组", "flow_set_group"],
   ]);
   return localizedHeaders.get(raw) ?? normalizeHeader(raw);
 }
@@ -167,6 +178,12 @@ function normalizeFlowCardKey(value) {
     ["source_ids", "source_ids"],
     ["sources", "source_ids"],
     ["range", "range"],
+    ["binding", "binding"],
+    ["binding_mode", "binding"],
+    ["flow_set", "flow_set"],
+    ["flow_set_id", "flow_set"],
+    ["flow_set_version", "flow_set_version"],
+    ["flow_set_group", "flow_set_group"],
   ]);
   return keyMap.get(normalized) ?? normalized;
 }
@@ -335,6 +352,39 @@ function parseRangeEntries(fields) {
   return ranges;
 }
 
+function normalizeBinding(value) {
+  const normalized = normalizeStructuredId(controlledValue(value ?? ""));
+  if (["fixed", "fixed_uuid", "uuid"].includes(normalized)) return "fixed";
+  if (["parameterized", "flow_set", "set", "deferred"].includes(normalized)) return "parameterized";
+  return "";
+}
+
+function parseFlowBinding(fields, uuid = "") {
+  const explicitBinding = normalizeBinding(fields.binding ?? fields.binding_mode);
+  const flowSetId = stripInlineCode(fields.flow_set ?? fields.flow_set_id ?? "");
+  const flowSetVersion = stripInlineCode(fields.flow_set_version ?? "");
+  const hasBindingFields = explicitBinding
+    || flowSetId
+    || fields.flow_set_version
+    || fields.flow_set_group
+  if (!hasBindingFields && !uuid) return null;
+  const hasVersionedFlowSet = Boolean(flowSetId && flowSetVersion);
+  const binding = hasVersionedFlowSet
+    ? "parameterized"
+    : explicitBinding || (flowSetId ? "parameterized" : uuid ? "fixed" : "");
+  if (!binding) return null;
+  const result = { binding };
+  if (binding === "parameterized") {
+    result.flow_set_ref = {
+      id: flowSetId,
+      version: flowSetVersion,
+    };
+    const group = stripInlineCode(fields.flow_set_group ?? "");
+    if (group) result.flow_set_ref.group = group;
+  }
+  return result;
+}
+
 function parseReferenceFlowTable(table) {
   const headerIndex = new Map(
     table.headers.map((header, index) => [normalizeProjectionHeader(header), index]),
@@ -344,17 +394,24 @@ function parseReferenceFlowTable(table) {
       const uuid = extractFirstUuid(
         tableCell(row, headerIndex, ["uuid", "tiangong_uuid", "tiangong_flow"]),
       );
+      const parsedBinding = parseFlowBinding({
+        binding: tableCell(row, headerIndex, ["binding"]),
+        flow_set: tableCell(row, headerIndex, ["flow_set"]),
+        flow_set_version: tableCell(row, headerIndex, ["flow_set_version"]),
+        flow_set_group: tableCell(row, headerIndex, ["flow_set_group"]),
+      }, uuid);
       return {
         role: stripInlineCode(tableCell(row, headerIndex, ["role"])),
         name: stripInlineCode(tableCell(row, headerIndex, ["tiangong_flow", "selected_flow"])),
         flow_type: stripInlineCode(tableCell(row, headerIndex, ["flow_type"])),
-        uuid,
+        uuid: parsedBinding?.binding === "parameterized" ? "" : uuid,
         flow_property_uuid: extractFirstUuid(tableCell(row, headerIndex, ["flow_property"])),
         unit_group_uuid: extractFirstUuid(tableCell(row, headerIndex, ["unit_group"])),
         preferred_unit: stripInlineCode(tableCell(row, headerIndex, ["preferred_unit"])),
+        ...parsedBinding,
       };
     })
-    .filter((row) => row.uuid);
+    .filter((row) => row.uuid || ["fixed", "parameterized"].includes(row.binding));
 }
 
 function parseReferenceFlowDefinitionTable(table) {
@@ -366,7 +423,7 @@ function parseReferenceFlowDefinitionTable(table) {
   }
   const fields = new Map();
   for (const row of table.rows) {
-    const key = normalizeHeader(tableCell(row, headerIndex, ["field"]));
+    const key = normalizeProjectionHeader(tableCell(row, headerIndex, ["field"]));
     const value = tableCell(row, headerIndex, ["value"]);
     if (key) {
       fields.set(key, value);
@@ -378,9 +435,18 @@ function parseReferenceFlowDefinitionTable(table) {
   const referenceUnit = fields.get("reference_unit") ?? fields.get("preferred_unit") ?? "";
   const referenceAmount = fields.get("reference_amount") ?? fields.get("declared_unit") ?? "";
   const qualifiers = fields.get("required_qualifiers") ?? fields.get("qualifiers") ?? "";
+  const referenceIdentityStatus =
+    fields.get("reference_identity_status") ?? fields.get("flow_identity_status") ?? "";
   const productUuid = extractFirstUuid(productValue);
+  const parsedBinding = parseFlowBinding({
+    binding: fields.get("binding") ?? fields.get("binding_mode") ?? "",
+    flow_set: fields.get("flow_set") ?? fields.get("flow_set_id") ?? "",
+    flow_set_version: fields.get("flow_set_version") ?? "",
+    flow_set_group: fields.get("flow_set_group") ?? "",
+  }, productUuid);
+  const selectedProductUuid = parsedBinding?.binding === "parameterized" ? "" : productUuid;
 
-  if (!referenceAmount && !productUuid && !referenceUnit && !qualifiers) {
+  if (!referenceAmount && !selectedProductUuid && !referenceUnit && !qualifiers && !parsedBinding) {
     return null;
   }
 
@@ -388,12 +454,16 @@ function parseReferenceFlowDefinitionTable(table) {
     reference_amount: stripInlineCode(referenceAmount),
     product_flow: {
       name: labelWithoutUuid(productValue),
-      uuid: productUuid,
+      uuid: selectedProductUuid,
     },
     flow_property_uuid: extractFirstUuid(propertyValue),
     unit_group_uuid: extractFirstUuid(unitGroupValue),
     reference_unit: stripInlineCode(referenceUnit),
     required_qualifiers: splitListValue(qualifiers),
+    ...(referenceIdentityStatus
+      ? { reference_identity_status: stripInlineCode(referenceIdentityStatus) }
+      : {}),
+    ...parsedBinding,
   };
 }
 
@@ -924,12 +994,14 @@ export function parsePcrMarkdownToStructured(markdown) {
       const flowTitle = parseTitledId(flowCard[1]);
       const rowDirection = normalizeDirection(fields.direction ?? "") || direction;
       const rowFlowType = normalizeFlowType(fields.flow_type ?? "") || flowType;
+      const candidateUuid = extractFirstUuid(fields.selected_flow ?? fields.flow ?? fields.uuid ?? "");
+      const parsedBinding = parseFlowBinding(fields, candidateUuid);
       const row = {
         row_id: flowTitle.id,
         role: stripInlineCode(fields.role ?? flowTitle.label),
         name: labelWithoutUuid(fields.selected_flow ?? fields.flow ?? ""),
         flow_type: rowFlowType,
-        uuid: extractFirstUuid(fields.selected_flow ?? fields.flow ?? fields.uuid ?? ""),
+        uuid: parsedBinding?.binding === "parameterized" ? "" : candidateUuid,
         property_unit: stripInlineCode(fields.flow_property_unit ?? fields.property_unit ?? ""),
         description,
         amount: {
@@ -950,6 +1022,7 @@ export function parsePcrMarkdownToStructured(markdown) {
           ranges: parseRangeEntries(fields),
         },
       };
+      Object.assign(row, parsedBinding ?? {});
       if (["inputs", "outputs"].includes(rowDirection) && ["product", "waste", "elementary"].includes(rowFlowType)) {
         currentProcess[rowDirection][rowFlowType].push(row);
       } else {

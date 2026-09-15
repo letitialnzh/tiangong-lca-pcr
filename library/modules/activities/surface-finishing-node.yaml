@@ -1,0 +1,45 @@
+schema_version: 0
+id: module.activity.surface-finishing-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Surface finishing node
+purpose: Describe an independent surface, coating, protection, marking, or property-finishing responsibility after a parent product state is established.
+activation:
+  question: Does the route apply an independent surface or property finishing responsibility after a parent product state is established?
+  signals:
+    - surface_finishing_route
+  evidence:
+    - route description showing the parent and finishing responsibility
+    - current PCR evidence for the finishing boundary and finished hand-off
+  outcomes:
+    applicable: declare_a_distinct_surface_finishing_node
+    not_applicable: keep_finishing_inside_an_existing_node
+    unresolved: retain_parent_or_finished_state_ambiguity_and_request_route_evidence
+owns:
+  - parent-to-finished interface
+  - surface or property finishing boundary questions
+  - checks for finishing inputs, emissions, residues, and rejected outputs
+excludes:
+  - parent product identity
+  - finishing technology or coating formulation
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [parent_product_state, finishing_input_roles]
+  process: [surface_or_property_finishing_responsibility]
+  outputs: [finished_product_state, finishing_residue_state, downstream_handoff]
+obligations:
+  - identify the parent product state before finishing
+  - identify the finished output state and hand-off
+  - identify finishing inputs and service roles
+  - distinguish finishing residues, emissions, and rejected outputs
+validation:
+  - applicable_node_requires_parent_and_finished_states
+  - applicable_node_requires_finishing_handoff
+  - finishing_residues_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [forming-fabrication-node, assembly-integration-node, technology, system_condition]
+  conflicts_with: [duplicate_surface_finishing_node, embedded_finishing_without_boundary_resolution]
+tests:
+  - cross-domain-surface-finishing

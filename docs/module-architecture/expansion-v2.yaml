@@ -1,0 +1,128 @@
+status: draft
+canonical_module: false
+purpose: >-
+  Second forward-designed expansion for non-service goods. These records separate geometry change,
+  component joining, surface/property change, and secondary-material reprocessing. They are not
+  derived from CPC leaves or any single product PCR.
+
+design_basis:
+  - docs/module-architecture.md
+  - docs/module-architecture/abstraction-test-cases.yaml
+  - docs/module-architecture/expansion-v1.yaml
+
+records:
+  - candidate_id: ACT-005
+    working_name: forming-fabrication-node
+    kind: activity
+    activation_question: >-
+      Does the route independently change the geometry, form, or dimensional state of an input
+      material into a declared output without primarily changing its chemical identity?
+    stable_invariants:
+      - pre-form material state
+      - forming or fabrication responsibility
+      - post-form output state
+      - explicit hand-off
+    owns:
+      - forming-node input and output interfaces
+      - geometry and dimensional transformation questions
+      - completeness checks for forming losses and rework
+    does_not_own:
+      - material or product identity
+      - forming technology choice
+      - equipment, quantities, factors, or flow UUIDs
+    test_cases:
+      - cross-domain-forming-fabrication
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Geometry and form change is a distinct modelling responsibility from material treatment,
+        assembly, and surface finishing across multiple manufactured-good routes.
+
+  - candidate_id: ACT-006
+    working_name: assembly-integration-node
+    kind: activity
+    activation_question: >-
+      Does the route join or integrate two or more independently identified components into a
+      declared assembled output with its own boundary and hand-off?
+    stable_invariants:
+      - multiple component inputs
+      - joining or integration responsibility
+      - assembled output state
+      - explicit component and product hand-offs
+    owns:
+      - component-role and assembly interface slots
+      - assembly boundary and completeness questions
+      - checks for component inputs, losses, and rejected assemblies
+    does_not_own:
+      - component or product identity
+      - assembly technology or performance
+      - quantities, factors, and flow UUIDs
+    test_cases:
+      - cross-domain-assembly-integration
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Assembly has a stable multi-input interface and is not equivalent to forming, treatment,
+        or finishing; it recurs across equipment, fabricated goods, and composite products.
+
+  - candidate_id: ACT-007
+    working_name: surface-finishing-node
+    kind: activity
+    activation_question: >-
+      Does the route apply an independent surface, coating, protection, marking, or property-
+      finishing responsibility after a parent product state is established?
+    stable_invariants:
+      - parent product state
+      - finishing responsibility and applied service/input roles
+      - finished output state
+      - explicit hand-off
+    owns:
+      - parent-to-finished interface
+      - surface or property finishing boundary questions
+      - checks for finishing inputs, emissions, residues, and rejected outputs
+    does_not_own:
+      - parent product identity
+      - finishing technology or coating formulation
+      - quantities, factors, and flow UUIDs
+    test_cases:
+      - cross-domain-surface-finishing
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Finishing changes the declared product surface or property state and has distinct input,
+        emission, and validation questions that should not be hidden inside forming or assembly.
+
+  - candidate_id: ACT-008
+    working_name: recovery-reprocessing-node
+    kind: activity
+    activation_question: >-
+      Does the route recover a secondary material or product and independently reprocess it into a
+      declared input or output state for a subsequent goods route?
+    stable_invariants:
+      - recovered source state
+      - recovery and reprocessing responsibility
+      - secondary-material output state
+      - explicit downstream hand-off
+    owns:
+      - recovered-material source and hand-off slots
+      - reprocessing boundary and quality-state questions
+      - checks for rejects, residues, and secondary-output classification
+    does_not_own:
+      - recovered material identity or quality values
+      - recycling technology choice
+      - recycled-content factors, quantities, and flow UUIDs
+    test_cases:
+      - cross-domain-recovery-reprocessing
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Secondary-material reprocessing is a distinct route responsibility across different goods
+        families and cannot be reduced to generic treatment without losing source and quality-state
+        interfaces.
+
+technology_decision:
+  outcome: retain_existing_generic_module
+  reason: >-
+    Forming, assembly, finishing, and reprocessing technologies remain parent-relative deltas.
+    No technology child is created until a stable technology-specific responsibility survives
+    independent cross-domain tests.

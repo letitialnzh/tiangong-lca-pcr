@@ -24,6 +24,10 @@ import {
 } from "./lifecycle-vocab.mjs";
 import { inspectPcrDirectory } from "./lint-rules.mjs";
 import {
+  installCandidatePromotionMappings,
+  planCandidatePromotionMappings,
+} from "./classification-promotion.mjs";
+import {
   compareSemver,
   isValidSemver,
   lifecycleTransitionProblems,
@@ -31,6 +35,7 @@ import {
   manifestReviewBlockers,
 } from "./lifecycle-policy.mjs";
 import { parsePcrMarkdownToStructured, structuredProjectionYaml } from "./markdown-projection.mjs";
+import { selectModules } from "./module-checklist.mjs";
 import {
   recoverPcrDirectoryTransaction,
   runPcrDirectoryTransaction,
@@ -47,6 +52,7 @@ import {
 } from "./published-revision-state.mjs";
 import { PCR_EN_FILE, PCR_ZH_FILE } from "./scaffold-templates.mjs";
 import { validateManifest, validateStructured } from "./schema-contracts.mjs";
+import { buildOrCheckCatalog } from "../scripts/build-catalog.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(__dirname, "../..");
@@ -309,7 +315,7 @@ function transactionMessages(result, relativePcrPath) {
   ];
 }
 
-function publicationPlan({ workspaceDir, manifestFileName, version, now }) {
+function publicationPlan({ root, workspaceDir, manifestFileName, version, now }) {
   const manifestPath = path.join(workspaceDir, manifestFileName);
   const currentManifestText = readRequiredText(manifestPath, "PCR manifest");
   const currentManifest = parseYaml(currentManifestText);
@@ -363,7 +369,12 @@ function publicationPlan({ workspaceDir, manifestFileName, version, now }) {
       translation_status: "reviewed",
     });
     const projection = parsePcrMarkdownToStructured(englishText);
-    structuredText = structuredProjectionYaml(projection, { sourceMarkdown: englishText });
+    const moduleSelection = selectModules({ root, structured: projection });
+    proposedManifest.modules = moduleSelection.manifestModules;
+    structuredText = structuredProjectionYaml(projection, {
+      sourceMarkdown: englishText,
+      moduleReferences: moduleSelection.moduleReferences,
+    });
   } catch (error) {
     problems.push(error.message);
     return { problems };
@@ -489,7 +500,13 @@ export function syncStructured(options) {
       const markdownPath = path.join(workspaceDir, PCR_EN_FILE);
       const markdown = readRequiredText(markdownPath, "canonical Markdown file");
       const projection = parsePcrMarkdownToStructured(markdown);
-      const structuredText = structuredProjectionYaml(projection, { sourceMarkdown: markdown });
+      const moduleSelection = selectModules({ root, structured: projection });
+      manifest.modules = moduleSelection.manifestModules;
+      writeFileSync(path.join(workspaceDir, manifestName), renderYaml(manifest));
+      const structuredText = structuredProjectionYaml(projection, {
+        sourceMarkdown: markdown,
+        moduleReferences: moduleSelection.moduleReferences,
+      });
       const schemaProblems = structuredSchemaProblems(structuredText, "generated structured projection");
       if (schemaProblems.length > 0) {
         throw operationError(
@@ -648,6 +665,12 @@ export function lifecycle(options) {
   }
 
   const currentManifest = parseYaml(readRequiredText(paths.manifestPath, "PCR manifest"));
+  const promotesScaffold =
+    workspace === "current" && currentManifest.status === "scaffold" && status === "candidate";
+  const now = new Date().toISOString();
+  const mappingPlan = promotesScaffold
+    ? planCandidatePromotionMappings({ root, manifest: currentManifest, decidedAtUtc: now })
+    : null;
   const translationProblems = translationTargetProblems(currentManifest, translation);
   if (translationProblems.length > 0) {
     throw operationError("PCR lifecycle translation target rejected", root, paths.pcrDir, translationProblems);
@@ -668,7 +691,6 @@ export function lifecycle(options) {
   }
 
   const changed = [];
-  let now;
   const result = runPcrDirectoryTransaction({
     root,
     pcr: paths.pcrDir,
@@ -750,7 +772,6 @@ export function lifecycle(options) {
         next.translation_status[translation.language] = translation.status;
         changed.push(`translation_status.${translation.language}: ${translation.status}`);
       }
-      now = new Date().toISOString();
       next.updated_at_utc = now;
       const problems = lifecycleTransitionProblems(current, next);
       if (problems.length > 0) {
@@ -790,6 +811,12 @@ export function lifecycle(options) {
     },
   });
 
+  let promotedMappings = [];
+  if (mappingPlan) {
+    promotedMappings = installCandidatePromotionMappings(root, mappingPlan);
+    buildOrCheckCatalog(root);
+  }
+
   const manifestPath = workspace === "current"
     ? paths.currentManifestPath
     : path.join(paths.pcrDir, "revision", "manifest.next.yaml");
@@ -801,6 +828,12 @@ export function lifecycle(options) {
     "",
     "Summary:",
     ...changed.map((entry) => `- ${entry}`),
+    ...promotedMappings.map((coordinate) => `- accepted classification mapping: ${coordinate}`),
+    ...(mappingPlan
+      ? [mappingPlan.aliasUpdated
+        ? "- CPC alias registry rebuilt (same-id retired alias removed) and catalog artifacts rebuilt"
+        : "- catalog and coverage artifacts rebuilt"]
+      : []),
     `- updated_at_utc: ${now}`,
     "",
     "Next:",
@@ -921,12 +954,17 @@ export function revise(options) {
         },
       );
       const projection = parsePcrMarkdownToStructured(englishText);
+      const moduleSelection = selectModules({ root, structured: projection });
+      nextManifest.modules = moduleSelection.manifestModules;
       writeFileSync(path.join(revisionDir, "manifest.next.yaml"), renderYaml(nextManifest));
       writeFileSync(path.join(revisionDir, PCR_EN_FILE), englishText);
       writeFileSync(path.join(revisionDir, PCR_ZH_FILE), chineseText);
       writeFileSync(
         path.join(revisionDir, "structured.yaml"),
-        structuredProjectionYaml(projection, { sourceMarkdown: englishText }),
+        structuredProjectionYaml(projection, {
+          sourceMarkdown: englishText,
+          moduleReferences: moduleSelection.moduleReferences,
+        }),
       );
       writeFileSync(
         path.join(revisionDir, "revision.yaml"),
@@ -1004,6 +1042,7 @@ export function publish(options) {
   }
 
   const initialPlan = publicationPlan({
+    root,
     workspaceDir: sourceWorkspace,
     manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
     version,
@@ -1014,13 +1053,15 @@ export function publish(options) {
     path.join(sourceWorkspace, PCR_EN_FILE),
     "canonical Markdown file",
   );
+  const sourceProjection = parsePcrMarkdownToStructured(sourceMarkdown);
+  const sourceModuleSelection = selectModules({ root, structured: sourceProjection });
   const sourceInspection = inspectPcrDirectory({
     root,
     pcrDir: sourceWorkspace,
     manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
     structuredText: structuredProjectionYaml(
-      parsePcrMarkdownToStructured(sourceMarkdown),
-      { sourceMarkdown },
+      sourceProjection,
+      { sourceMarkdown, moduleReferences: sourceModuleSelection.moduleReferences },
     ),
     checkBilingualRuleAlignment: true,
   });
@@ -1063,6 +1104,7 @@ export function publish(options) {
         ? paths.pcrDir
         : revisionWorkspaceAt(paths.pcrDir);
       const lockedPlan = publicationPlan({
+        root,
         workspaceDir: lockedWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         version,
@@ -1073,13 +1115,15 @@ export function publish(options) {
         path.join(lockedWorkspace, PCR_EN_FILE),
         "canonical Markdown file",
       );
+      const lockedProjection = parsePcrMarkdownToStructured(lockedMarkdown);
+      const lockedModuleSelection = selectModules({ root, structured: lockedProjection });
       const lockedInspection = inspectPcrDirectory({
         root,
         pcrDir: lockedWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         structuredText: structuredProjectionYaml(
-          parsePcrMarkdownToStructured(lockedMarkdown),
-          { sourceMarkdown: lockedMarkdown },
+          lockedProjection,
+          { sourceMarkdown: lockedMarkdown, moduleReferences: lockedModuleSelection.moduleReferences },
         ),
         checkBilingualRuleAlignment: true,
       });
@@ -1109,6 +1153,7 @@ export function publish(options) {
         history = stageState.history;
       }
       publishedPlan = publicationPlan({
+        root,
         workspaceDir: stageWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         version,

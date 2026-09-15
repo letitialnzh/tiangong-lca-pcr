@@ -191,14 +191,23 @@ classifications/indexes/<system>-<version>-coverage.json
 Current mapping 使用 `schema_version: 2` / `status: current`，只保存已接受的 positive edge。每条 edge
 必须指向 material PCR，relation 只能是 `exact`、`broader`、`narrower` 或 `proxy`，并携带
 `acceptance.status`、`decided_by`、`decided_at_utc` 和 durable `decision_ref`。Candidate suggestion 和
-`manual_review` 是 coverage assessment，不进入 positive mapping。CPC 3.0 当前只有 `01111`、`04412`、
-`04911` 三条 accepted edge；CPC 2.1 是零 edge 的 current v2 mapping。
+`manual_review` 是 coverage assessment，不进入 positive mapping。CPC 3.0 当前有 `01111`、`01341`、
+`04412`、`04911` 四条 accepted edge；CPC 2.1 是零 edge 的 current v2 mapping。
+
+Accepted mapping 的决策记录不要求每个 PCR 批次新建 ADR。`decision_ref` 可以复用适用的既有决策记录，或引用
+非 ADR 的批次审核登记、迁移记录等 repository-local acceptance record。只有新增架构或治理规则时，才创建或
+更新 ADR；PCR 内容、翻译、投影、索引或普通批次映射的完成本身不构成新增 ADR 的理由。
+
+保留的 legacy scaffold 从 `scaffold/empty_scaffold` 升为 `candidate` 时，该 lifecycle 操作本身就是对
+manifest 内 positive `classification_refs` 的显式 maintainer acceptance。Builder 会同步新增 accepted
+mapping、重建 alias registry（同 id 的 leaf-derived alias 会删除），并发布新的 catalog/material/coverage
+artifact set；缺失引用、`manual_review`、label 不一致或已被其他 PCR 占用的 code 都在分类写入前失败。
 
 Mapping 文件表达 classification-to-PCR accepted edge 输入；coverage index 则是由 normalized leaf、mapping
 和 PCR lifecycle state 确定性生成的 read model。其 source descriptor 固定生成契约，以及两份输入的
 exact-byte SHA-256；读取时输入路径或字节不一致都会 fail closed。Mapped entry 同时投影 acceptance
 evidence，runtime resolve 会与 canonical mapping 再次比对。Coverage index 不是新的 authoring truth，
-不能手工替代 mapping。CPC 3.0 read model 仍完整覆盖 2,877 leaf：3 mapped、2,874 unmapped、0 unknown。
+不能手工替代 mapping。CPC 3.0 read model 仍完整覆盖 2,877 leaf：4 mapped、2,873 unmapped、0 unknown。
 已知 leaf 可以合法地处于 `unmapped`、`candidate_suggestion` 或 `manual_review`，此时不得为了让覆盖率
 看起来完整而自动创建 PCR id。Coverage index 缺失时 resolve 直接 fail closed，不得退回只读 mapping
 并自动选择 PCR。
@@ -212,7 +221,7 @@ artifact set。目标路径、symlink、baseline、staged bytes 和 transaction 
 不宣称 filesystem-level instantaneous atomic exchange。
 
 `classifications/aliases/pcr-id-aliases.yaml` 是从 retained CPC leaf identity inventory 与 accepted mapping
-确定性生成的 retired-id registry。当前 2,874 条 alias 都是 terminal `classification_coverage` locator；
+确定性生成的 retired-id registry。当前 2,873 条 alias 都是 terminal locator；
 source 唯一，不得与 material id 冲突，不得成链或成环。Alias lookup 优先于 catalog lookup，即使物理
 scaffold 仍存在也返回 redirect；locator 不会被自动 follow 成 PCR。Catalog 以 canonical path、exact-byte
 SHA-256 和 entry count 绑定 registry，缺失、截断或字节漂移必须在运行时 fail closed。
@@ -232,13 +241,32 @@ legacy scaffold；目标已存在时必须与确定性 legacy template 逐字节
 
 Phase 2 的 importer cutover、edge acceptance、positive mapping 收缩、alias registry 和 old-id redirect
 已完成。Phase 3 只完成一个物理 pilot：删除 CPC `99000` 的四文件目录；它现在是 known-unmapped，旧 id
-返回 coverage redirect。仓库现有 2,876 个 PCR 目录，其中 3 个 material、2,873 个 legacy scaffold。
+返回 coverage redirect。仓库现有 2,876 个 PCR 目录，其中 4 个 material、2,872 个 legacy scaffold。
 CPC `98000` 与后续批量物理迁移仍待执行。
 
 ### Module
 
-`library/modules/**` 保存多个 PCR 可复用的方法规则，例如 reference flow、system boundary、
-allocation、data quality 和 validation 规则。模块是方法学资产，不是消费工具。
+`library/modules/**` 保存多个 PCR 可复用的条件性方法规则。模块的首要职责是完整性控制：根据当前产品路线
+激活过程节点、接口、证据问题、采集提示和条件性验证义务。
+
+通用 PCR 结构规则只有一个权威来源。PCR contract、builder workflow、Schema 和 methods 负责所有 PCR 都必须
+遵守的内容，例如必填章节、functional unit/reference flow 结构、inventory 表达、source-record 格式、投影
+完整性和 lifecycle 状态。Conditional module 不得复制这些规范文字；它只能在特定路线或系统条件成立时增加
+额外义务。
+
+模块按当前候选 taxonomy 分为三类：
+
+- `activity`：可能形成独立过程节点并拥有稳定接口的活动；
+- `technology`：相对明确 parent activity 的替代实现；
+- `system_condition`：跨节点、期间、输出或共享资产施加约束的条件。
+
+这三类仍属于待跨行业验证的架构假设。产品名称、CPC leaf 或临时行业文件夹不能单独成为 module 身份。
+
+当前 module candidate 已接入 builder 的自动选择步骤，但尚未接入 `pcr-core` 或 public CLI 的完整
+resolve/composition/conflict runtime。`sync-structured` 根据生成的 PCR projection 自动评估 activation signals：
+applicable module ids 写入 PCR manifest，selected 和 unresolved references 写入 `structured.yaml`。这表示
+builder 已记录选择依据和未决状态，但不代表 module 自动提供产品事实、数量、因子、UUID 或最终方法决定。
+未来 guidance runtime 仍需保留每条条件规则的 module 来源和 activation 状态。
 
 ### Guidance Output
 
@@ -269,6 +297,16 @@ readiness blocker，不能仅靠 `authored_methodology` 标签进入 guidance。
 guidance 会投出 `system_boundary.rules`、`allocation_rules` 和 `validation_rules` 等关键规则。
 validation report 同时声明 `validation_status`、`completeness`、输入接受状态、已执行检查和跳过检查；
 因此“没有 finding”不能在 coverage 不完整时被解释为完整符合。
+
+### Flow identity binding
+
+前景数据中的 flow identity 遵循由窄到宽的固定优先级：
+
+1. 适用的最窄 Flow Set group；
+2. 只有没有 Flow Set group 覆盖时，才使用已核实的精确 UUID；
+3. 仍无法确定时保留 unmapped coverage。
+
+第一级使用 `parameterized`，第二级使用 `fixed`。Flow Set 是延迟选择证据，不是最终 TIDAS flow identity；发布最终 process exchange 前必须解析为具体 UUID。即使某个 UUID 同时属于 Flow Set，只要存在适用 group，也必须使用 Flow Set。材料流优先通过产品身份、property、classification 和场景判断适用的 Flow Set group；只有未覆盖的流才进入 UUID lookup，无法证明具体身份时保留待审核状态，不再使用通用 material-input 兜底集合。
 
 ### Feedback Draft
 
@@ -394,7 +432,8 @@ feedback 可以触发 PCR 内容更新、mapping 修复、UUID 修正、range ev
 | --- | --- | --- |
 | PCR 方法学 truth | `library/pcrs/**` | canonical PCR 内容 |
 | PCR 发布审计链 | `library/pcrs/**/releases/**`、`release-history.yaml` | immutable snapshots 与 append-only release lineage |
-| 可复用方法 truth | `library/modules/**` | 多个 PCR 共享的方法规则 |
+| 通用 PCR contract truth | `builder/docs/contracts/**`、`builder/docs/methods/**`、相关 Schema | 所有 PCR 共同遵守的结构与方法契约 |
+| 条件性 module truth | `library/modules/**` | 多个 PCR 共享、由路线或系统条件激活的框架规则 |
 | 外部分类 truth | `classifications/systems/**` | 分类体系 source 和 normalized 数据 |
 | mapping truth | `classifications/mappings/**` | 外部分类 code 到 material PCR id 的 accepted positive edge 与 decision evidence |
 | retired-id locator contract | `classifications/aliases/pcr-id-aliases.yaml` | 旧 leaf-derived PCR id 到 terminal coverage/canonical locator；不得自动 follow |
@@ -444,6 +483,8 @@ feedback 可以触发 PCR 内容更新、mapping 修复、UUID 修正、range ev
 - 不要让 CLI、viewer 或 skill 直接修改 `library/pcrs/**`。
 - 不要让 viewer 绕过 `packages/pcr-core` 自己解析 PCR truth。
 - 不要在 skill 中复制详细 PCR 方法学规则；skill 应指向 CLI 和 contracts。
+- 不要在 conditional module 中复制 contract 已拥有的规范文字，或把 module 当作当前产品证据缓存。
+- 不要因为 manifest 声明了 module 就把它当作已经激活、已组合或已通过验证。
 - 不要把 feedback 当作已验证 truth；它必须经过 maintainer intake。
 - 不要原地编辑、sync 或 bump published/deprecated current，也不要手工修改 `releases/**` 或 `release-history.yaml`。
 - 不要 reopen deprecated PCR；successor/restoration 需要独立治理流程。
@@ -452,7 +493,7 @@ feedback 可以触发 PCR 内容更新、mapping 修复、UUID 修正、range ev
 
 ## 治理边界
 
-迁移期剩余的 2,873 个 leaf PCR scaffold 仍可保持空状态，但它们不进入默认 material catalog。Governance 和
+迁移期剩余的 2,872 个 leaf PCR scaffold 仍可保持空状态，但它们不进入默认 material catalog。Governance 和
 docpact 检查覆盖 builder assets、mappings、coverage indexes、modules、package surfaces、skills、feedback
 intake 和 project contracts；大型 legacy 目录 `library/pcrs/**` 在 PCR 文件成为 material authored
 records 前仍保持排除。Phase 2 的 importer cutover、edge acceptance、positive mapping 收缩、alias

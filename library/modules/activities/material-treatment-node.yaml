@@ -1,0 +1,46 @@
+schema_version: 0
+id: module.activity.material-treatment-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Material treatment node
+purpose: Describe an independent transformation, separation, conditioning, or treatment responsibility between declared input and output states.
+activation:
+  question: Does the route contain an independent treatment responsibility with its own input state, output state, and hand-off?
+  signals:
+    - material_treatment_route
+  evidence:
+    - route description showing the treatment responsibility
+    - current PCR evidence for the treatment boundary and output hand-off
+  outcomes:
+    applicable: declare_a_distinct_material_treatment_node
+    not_applicable: keep_treatment_inside_an_existing_node
+    unresolved: retain_treatment_boundary_ambiguity_and_request_route_evidence
+owns:
+  - treatment-node interface slots
+  - transformation and separation boundary questions
+  - completeness checks for treatment inputs, outputs, and residuals
+excludes:
+  - material or product identity
+  - treatment technology selection
+  - yields, factors, quantities, and flow UUIDs
+interfaces:
+  inputs: [pre_treatment_state, treatment_service_roles]
+  process: [material_treatment_responsibility]
+  outputs: [post_treatment_state, residual_state, downstream_handoff]
+obligations:
+  - identify the input state before treatment
+  - identify the output state after treatment and the hand-off
+  - identify treatment inputs and service roles
+  - distinguish intended outputs from residuals and waste
+validation:
+  - applicable_node_requires_input_and_output_states
+  - applicable_node_requires_treatment_handoff
+  - residual_roles_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [resource-removal-node, energy-conversion-node, technology, system_condition]
+  conflicts_with: [duplicate_material_treatment_node, embedded_treatment_without_boundary_resolution]
+tests:
+  - mining-extraction-and-treatment
+  - cross-domain-material-treatment

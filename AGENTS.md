@@ -27,7 +27,7 @@ checkPaths:
   - classifications/**
   - library/modules/**
   - docs/**
-lastReviewedAt: 2026-07-14
+lastReviewedAt: 2026-09-10
 lastReviewedCommit: 41e00bafd03530af7871e4620e59862dd779473e
 ---
 
@@ -43,6 +43,16 @@ This repository owns canonical PCR and modelling methodology assets for TianGong
 - A classification leaf is coverage input, not a request to create canonical PCR identity. Create a PCR only when a
   reviewed semantic product boundary and material methodology need a canonical record.
 - Keep reusable method rules in `library/modules/` and category-specific rules in `library/pcrs/`.
+- When authoring a new PCR, do not use any existing PCR as a content template. Existing PCRs may be inspected only to
+  decide whether the target should reuse an existing canonical PCR or to understand prior evidence; when a new PCR is
+  required, independently derive its scope, flows, ranges, and product facts from the target evidence and existing
+  modules.
+- The content-template prohibition does not permit free-form file structure. Every new PCR must use the repository-owned
+  structural scaffolds in `builder/templates/pcr.en-US.md.hbs` and `builder/templates/pcr.zh-CN.md.hbs`, or bring a
+  retained legacy scaffold forward to that same current structure before authoring. Preserve the required frontmatter
+  keys, section hierarchy, machine-recognized headings, table headers, and flow-card field labels exactly; populate or
+  extend their rows without paraphrasing, renaming, or omitting required structural fields. The repository scaffold owns
+  format only and must never supply another product's scope, flows, ranges, quantities, UUIDs, or facts.
 - Builder scripts must not depend on private workspace state.
 - Keep PCR production and PCR consumption separate: `builder/` owns library maintenance, while `packages/` and `skills/` expose reviewed PCR guidance to agents and humans.
 
@@ -78,9 +88,34 @@ After first publication the same leaf also owns its audited release lineage, and
 
 Rules:
 
-- `manifest.yaml` owns language-independent PCR identity, title map, lifecycle status, content maturity, target entities, module references, and available languages.
+- `manifest.yaml` owns language-independent PCR identity, title map, lifecycle status, content maturity, target entities,
+  automatically selected module ids, and available languages.
 - `pcr.en-US.md` and `pcr.zh-CN.md` are two language renderings of the same PCR record, not separate PCR records.
-- `structured.yaml` is the machine-oriented projection of the canonical Markdown PCR. It carries reference flow definitions, measurement rules, process inventories, validation-facing fields, external data sources, and deterministic projection metadata without authoring trace logs.
+- `structured.yaml` is the machine-oriented projection of the canonical Markdown PCR. It carries reference flow definitions,
+  measurement rules, process inventories, validation-facing fields, external data sources, automatic selected/unresolved
+  module references, and deterministic projection metadata without authoring trace logs.
+- Canonical PCR Markdown and its generated `structured.yaml` projection are consumer-facing methodology artifacts, not
+  lookup logs. Do not put CLI query strings, search results, candidate rankings, tool errors, or row-level statements
+  that an identity lookup failed into the body text. Keep lookup traces and review/audit evidence in manifest review metadata,
+  issue/PR records, or other dedicated audit artifacts; the PCR itself may state only the final binding rule and any
+  unmapped coverage requirement.
+- Derive Process Map flow cards from the evidence-supported product boundary, inventory concepts, measurement
+  requirements, calculation methods, and validation needs. Never create or split flow cards merely by enumerating the
+  groups in a Flow Set. Create separate cards only when they require independently collected quantities, properties or
+  units, calculations, boundaries, conditions, or validation rules; otherwise retain one conditional umbrella card.
+- After all Process Map flow cards are complete, bind identity. A card that already specifies one material, substance,
+  carrier, route, use, destination, or receiving medium must cite the narrowest applicable reviewed group in
+  `library/flow-sets/taxonomy-v2.yaml`. A conditional umbrella card whose concrete cases may produce zero, one, or
+  several groups may cite only the Flow Set id and version and omit `group`; this is deferred scope, not a resolved
+  exchange. When present, `group` must be one exact group id and must not contain an alternative list. Use
+  `parameterized` for either Flow Set form and do not search for a UUID first. Only a card not covered by an applicable
+  Flow Set passes the semantic refinement gate and UUID lookup. Refine it to the lowest evidence-supported level using
+  material or substance identity, flow type, direction, process state or gate, use, and destination, then search again.
+  The flow-identity search budget is one initial lookup and at most one evidence-supported refinement lookup per
+  uncovered card. Use `fixed` only for an exact verified UUID; otherwise retain unmapped coverage. Never change the real
+  product boundary, flow type, or direction merely to force a match, and never use a product-output Flow Set as a
+  fallback. Foreground data generation must expand deferred scope cards from actual records and resolve every emitted
+  exchange to one group and then one verified UUID.
 - Material projections must satisfy `packages/pcr-core/schemas/structured-projection.schema.json` and carry a current canonical-Markdown/content SHA-256 fingerprint. Missing, malformed, stale, or unsupported projections are unavailable to guidance and validation.
 - Do not create parallel `pcrs/en/` and `pcrs/zh-CN/` directory trees.
 - Do not use CPC, HS, ISIC, NAICS, or another external classification system as the canonical PCR directory tree.
@@ -123,6 +158,15 @@ material PCR, use `exact`, `broader`, `narrower`, or `proxy`, and carry an `acce
 decision-maker, UTC time, and durable decision reference. Candidate and `manual_review` evidence belongs in coverage
 assessment, not in the positive mapping.
 
+Do not create a new ADR merely because a PCR batch is accepted. Acceptance needs durable, readable decision evidence,
+but `decision_ref` may reuse an applicable existing record or point to a non-ADR acceptance record. Create or update
+an ADR only when the batch introduces a new architecture or governance decision.
+
+Promoting a retained legacy scaffold to `candidate` is an explicit mapping-acceptance operation: `pcr:lifecycle`
+must create accepted edges for its positive `manifest.classification_refs`, regenerate the alias registry so a
+same-id leaf-derived alias is removed, and rebuild catalog and coverage artifacts. It must fail closed rather than
+replace a conflicting edge or infer a mapping from anything other than the manifest references.
+
 `pcr:import:cpc -- --source <csv>` is classification-only by default. Every invocation requires an explicit source;
 the command writes raw source, source metadata, and normalized classification artifacts, creates zero PCR records,
 creates a zero-edge mapping only when the mapping is absent, and validates then preserves the exact bytes of any
@@ -141,21 +185,21 @@ CPC import mutations are protected by one lock per classification coordinate, no
 compare-and-swap check, and staged writes. The mapping is the final committed artifact, so a failed import cannot
 publish an edge whose identity or PCR target was not installed.
 
-Only an explicitly accepted edge to a material PCR is a positive mapping. CPC 3.0 currently has exactly three such
-edges (`01111`, `04412`, and `04911`); CPC 2.1 is a current v2 mapping with zero edges.
+Only an explicitly accepted edge to a material PCR is a positive mapping. CPC 3.0 currently has four such edges
+(`01111`, `01341`, `04412`, and `04911`); CPC 2.1 is a current v2 mapping with zero edges.
 Classification coverage is a derived read model under `classifications/indexes/`; it combines normalized leaves,
 mapping input, target PCR state, and coverage assessment for bounded CLI and viewer reads. Each checked-in index must
 record exact-byte SHA-256 fingerprints for its normalized-leaf and mapping sources, and consumers must reject a stale
 or substituted source. A mapped entry projects its acceptance evidence and runtime resolution rechecks it against the
 canonical mapping. The index is not authoring truth and must be regenerated from those sources. CPC 3.0 coverage
-remains complete at 2,877 leaves: 3 mapped, 2,874 unmapped, and 0 unknown.
+remains complete at 2,877 leaves: 4 mapped, 2,873 unmapped, and 0 unknown.
 
 Retired CPC leaf-derived PCR ids are recorded in the deterministic registry at
-`classifications/aliases/pcr-id-aliases.yaml`. Its 2,874 aliases are terminal locators to classification coverage;
+`classifications/aliases/pcr-id-aliases.yaml`. Its 2,873 aliases are terminal locators to classification coverage;
 they are checked before catalog lookup, cannot chain or cycle, and must not be silently followed into a PCR.
 `resolve --pcr` returns the locator and a copyable next command, while content commands fail with
 `PCR_LEGACY_ID_REDIRECT`. One physical pilot has removed CPC `99000`; it is known-unmapped and its old id redirects.
-The remaining 2,873 legacy directories are still compatibility artifacts. Bulk physical migration is not complete.
+The remaining 2,872 legacy directories are still compatibility artifacts. Bulk physical migration is not complete.
 
 ## Builder CLI and Authoring Docs
 
@@ -226,6 +270,8 @@ Rules:
 - Catalog, resolve, and guidance results must expose PCR readiness. Empty scaffolds are excluded from default material
   browsing, remain available through explicit legacy/all compatibility scope, and must be rejected by guidance and validation.
 - `guidance` and validation must re-check the target projection's Schema and fingerprint at runtime, present Agent-facing boundary, allocation, inventory, production, and validation rules, and never mutate PCR content.
+- Flow identity resolution follows this order: applicable reviewed Flow Set, exact verified UUID for a flow not covered by a set, then unmapped coverage. A concrete PCR flow row must cite the narrowest applicable group; a conditional umbrella row may cite only the set id/version as deferred scope. When present, `group` must be one exact id, never an alternative list. Both Flow Set forms are `parameterized`; the UUID level is `fixed`. Foreground data generation must expand deferred scope from actual records and resolve every emitted exchange to one group and a concrete UUID. Candidate count does not limit coverage except that taxonomy-v2 omits low-count groups unless they are marked high importance.
+- Flow refinement happens after the complete Process Map is written only for a flow that no reviewed Flow Set group covers. Split that flow only along evidence-supported physical identity, type, direction, state or gate, use, and destination, then search again. If no exact UUID results, leave it as unmapped coverage. Do not force a match by changing the real boundary or flow semantics, and do not place the lookup log in canonical Markdown or `structured.yaml`.
 - Validation output must distinguish status from coverage by reporting accepted input, checks performed, checks skipped, findings, and completeness. Error findings and inconclusive validation fail the CLI by default; report-only exit behavior must be explicitly requested.
 - `feedback draft` creates issue-ready candidate evidence; it does not update PCR truth.
 - `--help` must work globally and for each public command. Command help should include purpose, options, output shape where relevant, and Agent next-step guidance.

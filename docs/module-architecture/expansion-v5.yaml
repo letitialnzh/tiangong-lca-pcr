@@ -1,0 +1,126 @@
+status: draft
+canonical_module: false
+purpose: >-
+  Fifth forward-designed expansion for the hand-off from primary production to a declared goods
+  output, discrete filling or dosing, and multi-site aggregation. These candidates are route
+  responsibilities, not product or CPC categories.
+
+design_basis:
+  - docs/module-architecture.md
+  - docs/module-architecture/abstraction-test-cases.yaml
+  - docs/module-architecture/expansion-v4.yaml
+
+records:
+  - candidate_id: ACT-014
+    working_name: harvest-capture-node
+    kind: activity
+    activation_question: >-
+      Does the route independently remove a biological or naturally occurring output from its
+      production or capture context and hand it to a downstream goods process?
+    stable_invariants:
+      - production or capture context
+      - harvest or capture responsibility
+      - collected output state
+      - explicit hand-off
+    owns:
+      - source-to-collected-output interface
+      - harvest or capture boundary questions
+      - completeness checks for losses, incidental material, and collected outputs
+    does_not_own:
+      - species, product, or resource identity
+      - harvesting equipment or capture technology
+      - quantities, factors, and flow UUIDs
+    test_cases:
+      - cross-domain-harvest-capture
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Harvest and capture are distinct from managed production and generic resource removal when
+        the route has a biological or capture context and a collected-output hand-off.
+
+  - candidate_id: ACT-015
+    working_name: primary-conditioning-node
+    kind: activity
+    activation_question: >-
+      Does the route perform an initial cleaning, drying, stabilizing, or preparation responsibility
+      that changes a raw collected output into a declared input state for the next goods process?
+    stable_invariants:
+      - raw or collected input state
+      - primary-conditioning responsibility
+      - prepared output state
+      - explicit downstream hand-off
+    owns:
+      - raw-to-prepared interface slots
+      - primary-conditioning boundary questions
+      - checks for conditioning inputs, rejects, and losses
+    does_not_own:
+      - product identity or downstream processing identity
+      - conditioning technology or default parameters
+      - quantities, factors, and flow UUIDs
+    test_cases:
+      - cross-domain-primary-conditioning
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Primary conditioning is a bounded first hand-off after collection or removal and is not
+        automatically equivalent to later treatment, preservation, grading, or packaging.
+
+  - candidate_id: ACT-016
+    working_name: filling-dosing-node
+    kind: activity
+    activation_question: >-
+      Does the route transfer a material into discrete portions, containers, or delivery units under
+      an explicit filling or dosing responsibility?
+    stable_invariants:
+      - bulk or formulated input state
+      - filling or dosing responsibility
+      - discrete output unit state
+      - explicit hand-off
+    owns:
+      - bulk-to-discrete interface slots
+      - filling and dosing boundary questions
+      - checks for dose losses, rejects, and reconciliation
+    does_not_own:
+      - material, product, or package identity
+      - filling equipment or dosing accuracy value
+      - quantities, factors, and flow UUIDs
+    test_cases:
+      - cross-domain-filling-dosing
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Filling or dosing creates a discrete-unit interface that is distinct from formulation and
+        packaging presentation and recurs across food, chemical, and manufactured goods routes.
+
+  - candidate_id: COND-006
+    working_name: multi-site-aggregation
+    kind: system_condition
+    activation_question: >-
+      Does one declared goods route aggregate inputs, outputs, or observations from multiple sites,
+      facilities, blocks, or production units?
+    stable_invariants:
+      - more than one contributing site or unit
+      - common product or process boundary
+      - site-level evidence linkage
+      - aggregation and representativeness decision
+    owns:
+      - site and contributing-unit indexing
+      - aggregation completeness and representativeness checks
+      - prompts for site weighting, mixing, and exclusion decisions
+    does_not_own:
+      - site identity, geography, or production quantities
+      - product identity or sampling factor
+      - default averaging method and flow UUIDs
+    test_cases:
+      - cross-domain-multi-site-aggregation
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Multi-site aggregation changes evidence linkage and representativeness across many goods
+        routes without becoming an activity or a product-specific geographic rule.
+
+technology_decision:
+  outcome: retain_existing_generic_module
+  reason: >-
+    Harvest, conditioning, filling, and aggregation route differences remain parent-relative or
+    system-level decisions; no product-specific technology child is introduced.

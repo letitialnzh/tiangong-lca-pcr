@@ -2,6 +2,7 @@
 import { init } from "../lib/builder-operations.mjs";
 import { importCpc } from "../lib/cpc-scaffold.mjs";
 import { lint } from "../lib/lint-rules.mjs";
+import { moduleChecklistCommand } from "../lib/module-checklist.mjs";
 import {
   bump,
   lifecycle,
@@ -16,7 +17,11 @@ const COMMAND_OPTIONS = Object.freeze({
     values: ["root", "sample-pcr", "pcr-id", "title-en", "title-zh-CN"],
     booleans: ["help"],
   }),
-  lint: Object.freeze({ values: ["root"], booleans: ["help"] }),
+  lint: Object.freeze({ values: ["root", "pcr"], booleans: ["help"] }),
+  "module-checklist": Object.freeze({
+    values: ["root", "pcr", "format"],
+    booleans: ["help"],
+  }),
   "import-cpc": Object.freeze({
     values: ["root", "source", "classification-version", "source-url"],
     booleans: ["help", "legacy-scaffolds"],
@@ -86,7 +91,8 @@ function parseArgs(argv) {
         `Unknown option for ${command}: --${key || "(empty)"}. Allowed options: ${allowed}`,
       );
     }
-    if (seenOptions.has(key)) {
+    const repeatable = command === "lint" && key === "pcr";
+    if (seenOptions.has(key) && !repeatable) {
       throw new Error(`Duplicate option for ${command}: --${key}`);
     }
     seenOptions.add(key);
@@ -104,7 +110,7 @@ function parseArgs(argv) {
       if (inlineValue.length === 0) {
         throw new Error(`--${key} requires a non-empty value`);
       }
-      options[key] = inlineValue;
+      options[key] = repeatable ? [...(options[key] ?? []), inlineValue] : inlineValue;
       continue;
     }
 
@@ -112,7 +118,7 @@ function parseArgs(argv) {
     if (next === undefined || next.startsWith("--")) {
       throw new Error(`--${key} requires a value`);
     }
-    options[key] = next;
+    options[key] = repeatable ? [...(options[key] ?? []), next] : next;
     index += 1;
   }
 
@@ -124,7 +130,8 @@ function printHelp() {
 
 Usage:
   node builder/cli/index.mjs init [--root <path>] [--sample-pcr <domain/path/slug>]
-  node builder/cli/index.mjs lint [--root <path>]
+  node builder/cli/index.mjs lint [--root <path>] [--pcr <library/pcrs/domain/subdomain/slug>]...
+  node builder/cli/index.mjs module-checklist --pcr <library/pcrs/...> [--format json|yaml|markdown] [--root <path>]
   node builder/cli/index.mjs import-cpc --source <csv> [--classification-version 3.0] [--legacy-scaffolds]
   node builder/cli/index.mjs scaffold-cpc --legacy-scaffolds --source <csv>  # compatibility alias
   node builder/cli/index.mjs sync-structured --pcr <library/pcrs/...> [--workspace current|revision] [--root <path>]
@@ -187,6 +194,9 @@ function runCommand(command, options) {
   }
   if (command === "lint") {
     return { messages: lint(options), exitCode: 0 };
+  }
+  if (command === "module-checklist") {
+    return { messages: moduleChecklistCommand(options), exitCode: 0 };
   }
   if (command === "import-cpc" || command === "scaffold-cpc") {
     if (options.help === true) {

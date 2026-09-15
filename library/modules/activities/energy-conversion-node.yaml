@@ -1,0 +1,46 @@
+schema_version: 0
+id: module.activity.energy-conversion-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Energy conversion node
+purpose: Describe an independent conversion responsibility that transforms an energy carrier or resource into a declared useful output.
+activation:
+  question: Does the route contain an independent energy conversion responsibility with a declared input carrier, useful output, and hand-off?
+  signals:
+    - energy_conversion_route
+  evidence:
+    - route description showing the conversion responsibility
+    - current PCR evidence for the conversion boundary and output interface
+  outcomes:
+    applicable: declare_a_distinct_energy_conversion_node
+    not_applicable: keep_conversion_inside_an_existing_node
+    unresolved: retain_conversion_boundary_ambiguity_and_request_route_evidence
+owns:
+  - conversion-node interface slots
+  - conversion boundary and service-role questions
+  - completeness checks for inputs, outputs, and losses
+excludes:
+  - generation technology identity
+  - capacity, efficiency, lifetime, and emission factors
+  - concrete energy-flow UUIDs
+interfaces:
+  inputs: [energy_carrier_or_resource, conversion_service_roles]
+  process: [energy_conversion_responsibility]
+  outputs: [useful_energy_state, loss_state, downstream_handoff]
+obligations:
+  - identify the input carrier or resource state
+  - identify the useful output state and hand-off
+  - identify conversion service roles without inventing performance values
+  - distinguish useful outputs from losses and waste
+validation:
+  - applicable_node_requires_input_carrier_and_useful_output
+  - applicable_node_requires_conversion_handoff
+  - losses_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [material-treatment-node, technology, system_condition]
+  conflicts_with: [duplicate_energy_conversion_node, embedded_energy_service_without_boundary_resolution]
+tests:
+  - electricity-generation-route
+  - cross-domain-energy-conversion

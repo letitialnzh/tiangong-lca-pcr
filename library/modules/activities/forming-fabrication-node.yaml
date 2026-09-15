@@ -1,0 +1,45 @@
+schema_version: 0
+id: module.activity.forming-fabrication-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Forming and fabrication node
+purpose: Describe an independent geometry or form transformation between declared input and output states.
+activation:
+  question: Does the route independently change the geometry, form, or dimensional state of an input material?
+  signals:
+    - forming_fabrication_route
+  evidence:
+    - route description showing the forming responsibility
+    - current PCR evidence for the pre-form boundary and post-form hand-off
+  outcomes:
+    applicable: declare_a_distinct_forming_or_fabrication_node
+    not_applicable: keep_forming_inside_an_existing_node
+    unresolved: retain_geometry_boundary_ambiguity_and_request_route_evidence
+owns:
+  - forming-node input and output interfaces
+  - geometry and dimensional transformation questions
+  - completeness checks for forming losses and rework
+excludes:
+  - material or product identity
+  - forming technology choice
+  - equipment, quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [pre_form_material_state, forming_service_roles]
+  process: [forming_or_fabrication_responsibility]
+  outputs: [post_form_output_state, forming_loss_state, downstream_handoff]
+obligations:
+  - identify the input state before forming
+  - identify the post-form output state and hand-off
+  - identify forming service roles without inventing performance values
+  - distinguish forming losses, rework, and intended output
+validation:
+  - applicable_node_requires_pre_form_and_post_form_states
+  - applicable_node_requires_forming_handoff
+  - forming_losses_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [assembly-integration-node, surface-finishing-node, technology, system_condition]
+  conflicts_with: [duplicate_forming_node, embedded_forming_without_boundary_resolution]
+tests:
+  - cross-domain-forming-fabrication

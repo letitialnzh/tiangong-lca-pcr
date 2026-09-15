@@ -117,8 +117,16 @@ npm run pcr:publish -- --pcr <library/pcrs/...> --workspace current --version <s
 npm run pcr:revise -- --pcr <library/pcrs/...> --version <target-semver>
 npm run pcr:publish -- --pcr <library/pcrs/...> --workspace revision
 npm run pcr:recover -- --pcr <library/pcrs/...> [--force-stale-lock]
+npm run validate:fast
 npm run validate
 ```
+
+Use `validate:fast` during a PCR authoring batch. It runs PCR metadata, structured projection, mapping, alias,
+catalog, and readiness contracts without the full test suite. Run `npm run validate` before handoff, commit, or
+publication; it includes the complete viewer regression.
+For an exact check of only newly completed PCRs, run `npm run validate:pcr -- --pcr <library/pcrs/domain/subdomain/slug>`.
+Repeat `--pcr` for each completed PCR. This mode checks only the named PCR directories and their projections; it does
+not validate other PCRs or the repository-wide mapping, catalog, and alias artifacts.
 
 `pcr:import:cpc` is the canonical CPC import entry point, and every invocation must pass `--source` explicitly. It
 stores the raw source and metadata and regenerates the normalized hierarchy, leaves, and paths. The default mode
@@ -164,9 +172,13 @@ the material index, and coverage indexes as one journaled recoverable artifact s
 when that binding or registry drifts. If a catalog publication is interrupted, run `catalog:recover`, then
 `catalog:check`; use `catalog:recover -- --force-stale-lock` only after confirming no writer is active.
 
-PCR production agents may use `tiangong-lca-cli` to search Tiangong database flow, process, and dataset identity records and copy selected UUID references into PCR content. The CLI is an evidence tool for identity selection.
+Acceptance does not require a new ADR for each PCR batch. The durable decision reference may reuse an applicable
+existing record or point to a non-ADR acceptance record; create or update an ADR only for a new architecture or
+governance decision.
 
-Builder docs live under `builder/docs/`. Start with `builder/AGENTS.md` for task routing and `builder/docs/index.md` for the compact documentation map. AI PCR production always synthesizes the current best PCR for the target product category; existing PCR content is prior evidence and a canonical write target.
+PCR production agents use the reviewed Flow Set taxonomy before UUID lookup. A covered flow card cites its narrowest applicable group; only an uncovered card is searched for a verified UUID. Each uncovered card gets one initial flow-identity lookup and at most one evidence-supported refinement lookup. Candidate UUIDs support taxonomy maintenance but do not decide PCR coverage.
+
+Builder docs live under `builder/docs/`. Start with `builder/AGENTS.md` for task routing and `builder/docs/index.md` for the compact documentation map. For a new PCR, AI production must independently synthesize the current best record from target evidence and existing modules; an existing PCR must not be used as a content template. Existing PCRs may be inspected to decide whether the target should reuse that canonical PCR or, for an update workflow, to identify the canonical write target.
 
 ## Public PCR CLI
 
@@ -254,12 +266,12 @@ The viewer is a consumption surface only. It does not edit PCR Markdown, manifes
 
 The consumption surfaces are now material-first: default catalog, tree, list, and viewer output represent methodology
 records, while complete classification coverage remains queryable separately. Phase 2 steps 1-5 are complete:
-ordinary CPC imports create zero PCR records; CPC 3.0 mapping v2 retains exactly 3 accepted material edges, CPC 2.1
-is empty v2, and the deterministic registry preserves all 2,874 retired leaf-derived ids as coverage locators.
-CPC 3.0 coverage remains 2,877 total, 3 mapped, 2,874 unmapped, and 0 unknown.
+ordinary CPC imports create zero PCR records; CPC 3.0 mapping v2 retains 4 accepted material edges, CPC 2.1
+is empty v2, and the deterministic registry preserves 2,873 retired leaf-derived ids as coverage locators.
+CPC 3.0 coverage remains 2,877 total, 4 mapped, 2,873 unmapped, and 0 unknown.
 
 The first Phase 3 physical pilot removed only CPC `99000`. The repository therefore has 2,876 PCR directories:
-3 material records and 2,873 surviving legacy scaffolds. Code `99000` now resolves as known-unmapped and its old PCR
+4 material records and 2,872 surviving legacy scaffolds. Code `99000` now resolves as known-unmapped and its old PCR
 id redirects through the alias registry. CPC `98000` and the broader physical migration remain pending; do not treat
 the pilot as completion of bulk migration. Only authored or reviewed material records can enter guidance and
 validation.

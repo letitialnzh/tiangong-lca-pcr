@@ -208,6 +208,54 @@ test("flow row shape keeps the seven stable projection columns required", () => 
   ]);
 });
 
+test("flow binding contract rejects simultaneous fixed and parameterized bindings", () => {
+  const base = minimalStructuredProjection();
+  const row = {
+    row_id: "energy",
+    role: "energy input",
+    name: "Generic electricity",
+    flow_type: "product",
+    property_unit: "Energy / kWh",
+    description: "Generic energy exchange.",
+    binding: "parameterized",
+    flow_set_ref: { id: "flow-set.energy-supply", version: "0.1.0", group: "electricity-supply" },
+    amount: {
+      value_mode: "foreground_record",
+      specificity: "site_specific",
+      basis: { kind: "process_output" },
+      evidence: { kind: "collected_record" },
+      ranges: [],
+    },
+  };
+  base.process_inventory[0].inputs.product.push(row);
+  assert.equal(validateStructured(base).valid, true);
+
+  const conflict = structuredClone(base);
+  conflict.process_inventory[0].inputs.product[0].binding = "parameterized";
+  conflict.process_inventory[0].inputs.product[0].flow_ref = { uuid: "11111111-1111-4111-8111-111111111111" };
+  assert.equal(validateStructured(conflict).valid, false);
+
+  const coordinateReference = structuredClone(base);
+  coordinateReference.process_inventory[0].inputs.product.push({
+    ...row,
+    binding: "parameterized",
+    flow_set_ref: { id: "product-input", version: "0.1.0" },
+  });
+  assert.equal(validateStructured(coordinateReference).valid, false);
+
+  const unresolvedOutput = structuredClone(base);
+  unresolvedOutput.process_inventory[0].inputs.product = [];
+  unresolvedOutput.process_inventory[0].outputs.product.push({
+    ...row,
+  });
+  assert.equal(validateStructured(unresolvedOutput).valid, true);
+
+  const removedBindingState = structuredClone(unresolvedOutput);
+  removedBindingState.process_inventory[0].outputs.product[0].binding = "needs_review";
+  assert.equal(validateStructured(removedBindingState).valid, false);
+
+});
+
 test("feedback intake binds type and confidence to shared vocabularies", () => {
   const feedback = {
     feedback_type: "validation_rule_issue",
@@ -409,6 +457,11 @@ function minimalStructuredProjection() {
     validation_rules: [rule],
     published_dataset_profile: { dataset_role: "unit_process" },
     data_sources: [],
+    module_references: {
+      selection_mode: "automatic",
+      selected: [],
+      unresolved: [],
+    },
     projection_metadata: {
       contract_version: "1",
       generator: "tiangong-pcr-builder/markdown-projection",

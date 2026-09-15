@@ -91,6 +91,29 @@ Material English and Chinese PCR renderings must project the same ordered rule i
 and validation. Repository tests enforce this structural bilingual alignment even though `structured.yaml` is generated
 from canonical English Markdown only.
 
+## Flow Binding Shape
+
+Generated `process_inventory` flow rows may include a simple `binding` value. It is either `fixed` or `parameterized`:
+
+```yaml
+# Concrete functional binding
+binding: parameterized
+flow_set_ref:
+  id: flow-set.energy-supply
+  version: 0.2.0
+  group: purchased-process-heat
+
+# Conditional umbrella scope; group selection is deferred
+binding: parameterized
+flow_set_ref:
+  id: flow-set.agricultural-nutrient-supply
+  version: 0.2.0
+```
+
+Derive flow rows before identity binding and never enumerate Flow Set groups to create rows. Use the following identity priority: applicable reviewed Flow Set, then an exact verified UUID only when no set covers the exchange, then unmapped coverage. A semantically concrete row carries the narrowest applicable group. A conditional umbrella row may omit `group` when foreground records determine whether zero, one, or several concrete exchanges exist. When present, `group` must contain exactly one taxonomy group id, not an alternative expression. Both Flow Set forms use `parameterized`; omission of `group` means deferred scope and not completed identity resolution. Use `fixed` only for an uncovered exchange that directly connects to one verified platform UUID; the UUID remains in the row's `flow_ref` (or the reference flow's `product_flow_ref`). A final TIDAS process exchange still resolves every parameterized row to one concrete group and UUID. A product-output Flow Set is not a fallback.
+
+Use only a taxonomy-v2 group marked as eligible for PCR reference. Groups below five candidates are omitted unless their taxonomy definition marks them high importance; candidate count is not otherwise a PCR binding rule.
+
 ## Process Inventory Amount Shape
 
 Generated `process_inventory` rows use stable `row_id` plus a nested `amount` object:

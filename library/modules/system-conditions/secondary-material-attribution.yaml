@@ -1,0 +1,43 @@
+schema_version: 0
+id: module.system-condition.secondary-material-attribution
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Secondary material attribution
+purpose: Add origin, burden inheritance, cut-off, and double-counting obligations when a route uses secondary material.
+activation:
+  question: Does the selected route contain secondary material whose prior-system burden or cut-off treatment must be declared?
+  signals:
+    - secondary_material_route
+  evidence:
+    - current PCR definition of secondary material and the declared system boundary
+    - route evidence for origin, recovery hand-off, and burden treatment
+  outcomes:
+    applicable: activate_secondary_material_checks
+    not_applicable: model_the_route_without_secondary_material
+    unresolved: retain_secondary_origin_or_burden_ambiguity_and_request_current_evidence
+owns:
+  - secondary-material origin and boundary linkage
+  - burden inheritance, cut-off, or allocation decision slot
+  - duplicate-burden checks across prior and current systems
+excludes:
+  - secondary material identity, share, and quantity
+  - recovery technology and prior-system factor
+  - universal recycled-content method
+interfaces:
+  overlays: [secondary_material_origin, recovery_handoff, current_process_input, burden_treatment_slot]
+obligations:
+  - declare why the input is secondary material
+  - link its origin and recovery hand-off without importing prior product facts
+  - record the PCR-specific burden inheritance or cut-off decision
+  - prevent prior-system burdens from being counted twice
+validation:
+  - secondary_material_requires_origin_or_recovery_evidence
+  - burden_treatment_requires_explicit_decision
+  - prior_and_current_system_burdens_must_not_double_count
+composition:
+  depends_on: []
+  coexists_with: [activity, technology, recovery-reprocessing-node, rework-reject-routing]
+  conflicts_with: [duplicate_secondary_burden_ownership]
+tests:
+  - cross-domain-secondary-material-attribution

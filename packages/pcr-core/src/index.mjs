@@ -630,6 +630,7 @@ function buildGuidanceForOperation({ root, pcrId, operation }) {
     validation_notes: [
       "Use this guidance as the source of Tiangong foreground data collection package requirements.",
       "Preserve Tiangong UUIDs exactly and keep PCR-derived UUID references version-free.",
+      "Derive Flow Cards before identity binding and never enumerate Flow Set groups to create cards. A concrete card uses the narrowest applicable reviewed group; a conditional umbrella may carry set-level deferred scope. Both are parameterized. Foreground data generation must expand deferred scope from actual records, and every final TIDAS process exchange must resolve to one group and a concrete flow UUID.",
       "Run tiangong-pcr validate-dataset after constructing a foreground data package and draft feedback if PCR guidance is missing or ambiguous.",
     ],
   };

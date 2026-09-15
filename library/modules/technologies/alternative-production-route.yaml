@@ -1,0 +1,46 @@
+schema_version: 0
+id: module.technology.alternative-production-route
+version: 0.1.0
+status: candidate
+kind: technology
+title: Alternative biological production route
+purpose: Describe an evidenced alternative implementation of managed biological production.
+activation:
+  question: Does the managed biological production route change topology, inventory categories, calculation, data requirements, or validation relative to its parent?
+  signals:
+    - biological_route_delta
+  evidence:
+    - declared managed-biological-production parent
+    - current route evidence showing changed requirement categories
+  outcomes:
+    applicable: attach_the_production_route_delta_to_the_parent
+    not_applicable: retain_the_difference_as_a_pcr_parameter_or_choice
+    unresolved: do_not_promote_the_route_until_parent_and_delta_are_evidenced
+owns:
+  - parent activity reference
+  - production route delta
+  - route coexistence and mutual-exclusion rules
+excludes:
+  - production object identity
+  - local performance values and quantities
+  - default inputs, factors, and concrete flows
+interfaces:
+  inherited: [biological_production_object, management_input_roles, production_handoff]
+  delta: [changed_topology, changed_inventory_categories, changed_calculation_or_validation]
+obligations:
+  - declare the managed production parent
+  - describe the delta by requirement category
+  - state route coexistence or mutual exclusion
+  - collect current evidence for each claimed delta
+validation:
+  - parent_activity_is_required
+  - production_delta_cannot_be_only_a_label
+  - mutually_exclusive_routes_require_resolution
+composition:
+  depends_on: [activity.managed-biological-production]
+  coexists_with: [multi-output-attribution, multi-period-attribution]
+  conflicts_with: [alternative_route_without_parent, route_label_without_delta]
+tests:
+  - agriculture-managed-production-node
+  - forestry-managed-production-node
+  - aquaculture-managed-production-node

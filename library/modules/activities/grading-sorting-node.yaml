@@ -1,0 +1,45 @@
+schema_version: 0
+id: module.activity.grading-sorting-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Grading and sorting node
+purpose: Describe an independent classification or sorting responsibility that creates declared quality or destination states.
+activation:
+  question: Does the route classify, sort, or grade incoming material into two or more declared quality or destination states?
+  signals:
+    - grading_sorting_route
+  evidence:
+    - route description showing the classification or sorting responsibility
+    - current PCR evidence for grade states, destinations, and hand-offs
+  outcomes:
+    applicable: declare_a_distinct_grading_or_sorting_node
+    not_applicable: keep_classification_inside_an_existing_node
+    unresolved: retain_grade_state_ambiguity_and_request_route_evidence
+owns:
+  - grade and destination role slots
+  - classification boundary and completeness questions
+  - reconciliation of accepted, downgraded, and rejected states
+excludes:
+  - material or product identity
+  - grade thresholds and market values
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [incoming_material_state, classification_service_roles]
+  process: [grading_or_sorting_responsibility]
+  outputs: [accepted_grade_states, downgraded_state, rejected_state, downstream_handoffs]
+obligations:
+  - identify the incoming material state
+  - enumerate every declared grade or destination output
+  - record the hand-off for each output state
+  - distinguish downgraded, rejected, and waste states
+validation:
+  - applicable_node_requires_two_or_more_declared_output_states
+  - every_grade_state_requires_a_handoff
+  - rejected_or_waste_states_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [material-treatment-node, multi-output-attribution, technology, system_condition]
+  conflicts_with: [duplicate_grading_node, grade_label_without_output_state]
+tests:
+  - cross-domain-grading-sorting

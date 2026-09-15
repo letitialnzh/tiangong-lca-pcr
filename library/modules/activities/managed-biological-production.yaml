@@ -1,0 +1,49 @@
+schema_version: 0
+id: module.activity.managed-biological-production
+version: 0.1.0
+status: candidate
+kind: activity
+title: Managed biological production
+purpose: >-
+  Describe a managed biological production responsibility without supplying product-specific
+  production facts or quantities.
+activation:
+  question: Does the route contain a managed biological production responsibility with its own output state and hand-off?
+  signals:
+    - biological_route
+  evidence:
+    - route description establishing managed production
+    - current PCR evidence for the production boundary and management regime
+  outcomes:
+    applicable: declare_a_managed_biological_production_node
+    not_applicable: keep_the_route_in_another_activity_or_pcr_specific_process
+    unresolved: retain_route_ambiguity_and_request_production_evidence
+owns:
+  - managed-production responsibility
+  - production input and output role slots
+  - production boundary and hand-off questions
+excludes:
+  - product or species identity
+  - harvesting, capture, and primary conditioning rules
+  - timing, allocation, quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [biological_production_object, management_input_roles, supporting_service_roles]
+  process: [managed_production_responsibility]
+  outputs: [intended_output_state, residue_or_loss_state, production_handoff]
+obligations:
+  - identify the managed production object and mode
+  - classify management input roles
+  - distinguish intended outputs from residues and losses
+  - record the production boundary and hand-off
+validation:
+  - managed_production_requires_declared_output_state
+  - management_inputs_require_role_classification
+  - embedded_harvest_or_conditioning_requires_boundary_decision
+composition:
+  depends_on: []
+  coexists_with: [alternative-production-route, multi-output-attribution, multi-period-attribution]
+  conflicts_with: [duplicate_managed_production_node]
+tests:
+  - agriculture-managed-production-node
+  - forestry-managed-production-node
+  - aquaculture-managed-production-node

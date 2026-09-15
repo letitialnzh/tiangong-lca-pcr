@@ -1,0 +1,93 @@
+schema_version: 0
+test_id: module-test.wheat-seed.v0
+status: completed
+mode: advisory_only
+purpose: >-
+  Demonstrate how the lightweight YAML modules assist PCR generation without changing the
+  source PCR or supplying product-specific values.
+pcr:
+  id: pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.wheat-seed
+  source: library/pcrs/agriculture-forestry-and-fishery-products/products-of-agriculture-horticulture-and-market-gardening/wheat-seed
+  product: cleaned wheat seed for sowing
+  route: seed multiplication field plus post-harvest seed conditioning
+module_results:
+  - module: module.activity.independent-process-node
+    decision: applicable
+    matched_pcr_evidence:
+      - field_seed_multiplication
+      - seed_conditioning_and_treatment
+      - storage_and_delivery
+    generated_checks:
+      - declare each process input role
+      - declare each process output state and hand-off
+      - resolve whether storage_and_delivery is inside the declared gate
+    pcr_work_needed:
+      - confirm the boundary and hand-off for each process
+      - keep process-specific quantities and flow identities in the PCR
+
+  - module: module.activity.managed-biological-production
+    decision: applicable
+    matched_pcr_evidence:
+      - field_seed_multiplication
+      - source_seed_lot_used_for_multiplication
+      - harvested_wheat_seed_crop
+    generated_checks:
+      - identify the managed biological production object
+      - classify seed, fertilizer, irrigation, fuel, and crop-protection input roles
+      - distinguish harvested seed crop from straw, residue, and losses
+      - record the hand-off to seed conditioning
+    pcr_work_needed:
+      - collect current production-boundary evidence
+      - provide site-specific input and output records
+
+  - module: module.technology.alternative-production-route
+    decision: not_applicable
+    reason: >-
+      The PCR describes a field seed multiplication route but does not evidence a changed
+      topology, inventory category, calculation treatment, or validation requirement relative
+      to a declared parent activity.
+    generated_checks:
+      - do not invent a technology module from the phrase field production
+      - activate only if a documented alternative route and delta are supplied
+
+  - module: module.system-condition.multi-output-attribution
+    decision: applicable
+    matched_pcr_evidence:
+      - harvested_wheat_seed_crop
+      - straw_or_field_residue
+      - marketable_straw_or_residue_owned_by_seed_plant
+      - screenings_rejected_seed_dust_and_off_grade_material
+    generated_checks:
+      - enumerate intended outputs separately from residues and waste
+      - declare the fate and hand-off of each non-reference output
+      - require an explicit PCR-specific allocation or substitution decision
+      - prevent an output from being counted at two hand-offs
+    pcr_work_needed:
+      - confirm which residue streams are intended co-products
+      - support the selected allocation or substitution method with current evidence
+
+  - module: module.system-condition.multi-period-attribution
+    decision: applicable
+    matched_pcr_evidence:
+      - one seed production crop cycle
+      - optional storage duration
+      - storage_and_delivery
+    generated_checks:
+      - identify the crop cycle and any storage/reporting period
+      - link storage energy, losses, and delivery to the declared period
+      - prevent double attribution when storage is included in the gate
+    pcr_work_needed:
+      - declare storage duration when storage is included
+      - resolve the boundary between production, storage, and delivery
+
+summary:
+  modules_applicable: 4
+  modules_not_applicable: 1
+  direct_benefit: >-
+    The modules turn the existing PCR route into a short evidence and completeness agenda:
+    process nodes, biological-production inputs and hand-off, multi-output treatment, and
+    period/boundary linkage are made explicit before final values and flow choices are checked.
+  limitation: >-
+    This test does not generate a PCR file, choose UUIDs, calculate amounts, or replace
+    product-specific evidence. The modules are advisory YAML candidates and are not yet loaded
+    by the public CLI.

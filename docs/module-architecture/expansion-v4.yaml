@@ -1,0 +1,126 @@
+status: draft
+canonical_module: false
+purpose: >-
+  Fourth forward-designed expansion for composition-changing reactions and cross-process production
+  conditions. These candidates do not infer chemistry, product identity, or numeric parameters from
+  classifications.
+
+design_basis:
+  - docs/module-architecture.md
+  - docs/module-architecture/abstraction-test-cases.yaml
+  - docs/module-architecture/expansion-v3.yaml
+
+records:
+  - candidate_id: ACT-013
+    working_name: chemical-reaction-node
+    kind: activity
+    activation_question: >-
+      Does the route independently transform input substances through a declared chemical or
+      biochemical reaction into a different output composition state?
+    stable_invariants:
+      - reaction input roles
+      - reaction responsibility
+      - changed composition state
+      - explicit hand-off and residual state
+    owns:
+      - reactant and reaction-service role slots
+      - reaction boundary and conversion completeness questions
+      - checks for products, by-products, unreacted inputs, and losses
+    does_not_own:
+      - substance or product identity
+      - reaction pathway, yield, or factor
+      - quantities, factors, and flow UUIDs
+    test_cases:
+      - cross-domain-chemical-reaction
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Composition-changing reaction is distinct from blending, separation, and conditioning and
+        recurs across chemical, biological, food, and mineral transformation routes.
+
+  - candidate_id: COND-003
+    working_name: batch-continuous-production
+    kind: system_condition
+    activation_question: >-
+      Does the selected route operate as batches, campaigns, or a continuous run such that inventory,
+      cleaning, changeover, yield, or attribution must be indexed by production mode?
+    stable_invariants:
+      - declared production mode
+      - mode-specific input and output boundary
+      - changeover, campaign, or run linkage
+      - mode-specific attribution or validation decision
+    owns:
+      - batch, campaign, and continuous-run indexing
+      - changeover and shared-run completeness checks
+      - prompts for mode-specific attribution and yield treatment
+    does_not_own:
+      - production technology identity
+      - run length, yield, or quantity values
+      - default allocation method or flow UUIDs
+    test_cases:
+      - cross-domain-batch-continuous
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Production mode changes the observation and attribution structure across goods routes while
+        remaining a cross-process condition rather than an activity or technology identity.
+
+  - candidate_id: COND-004
+    working_name: rework-reject-routing
+    kind: system_condition
+    activation_question: >-
+      Does the route generate off-spec, rejected, or rework material whose path loops back, is
+      downgraded, is recovered, or exits the boundary?
+    stable_invariants:
+      - rejected or rework state is explicitly declared
+      - route after rejection is identified
+      - loop, downgrade, recovery, or exit is distinguished
+      - burden and double-counting treatment is required
+    owns:
+      - reject and rework state linkage
+      - loop and exit path completeness
+      - prompts for burden retention, recovery, or attribution decisions
+    does_not_own:
+      - defect identity, rate, or quantity
+      - recovery technology or product destination
+      - default cut-off or allocation method
+    test_cases:
+      - cross-domain-rework-reject
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Rework and rejection alter inventory graph topology across many non-service goods routes and
+        cannot be represented safely as an untracked waste row.
+
+  - candidate_id: COND-005
+    working_name: secondary-material-attribution
+    kind: system_condition
+    activation_question: >-
+      Does a selected route contain secondary material whose prior-system burden, cut-off, or
+      allocation treatment must be explicitly declared?
+    stable_invariants:
+      - secondary-material status is declared
+      - origin and hand-off are recorded
+      - burden inheritance or cut-off decision is explicit
+      - double counting with recovery or primary production is prevented
+    owns:
+      - secondary-material origin and boundary linkage
+      - burden inheritance, cut-off, or allocation decision slot
+      - duplicate-burden checks across prior and current systems
+    does_not_own:
+      - secondary material identity, share, or quantity
+      - recovery technology or prior-system factor
+      - universal recycled-content method
+    test_cases:
+      - cross-domain-secondary-material-attribution
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Secondary-material treatment is a system condition that overlays many activities and keeps
+        prior-system evidence separate from current product facts.
+
+technology_decision:
+  outcome: retain_existing_generic_module
+  reason: >-
+    Chemical, batch, rework, and secondary-material differences do not justify technology aliases;
+    they are represented by a parent route plus explicit evidence or system overlays.

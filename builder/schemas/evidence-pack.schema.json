@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong-lca.org/schemas/pcr/v1/evidence-pack.schema.json",
+  "title": "TianGong PCR research evidence pack",
+  "type": "object",
+  "required": ["schema_version", "target", "sources", "claims", "identity_bindings", "conflicts", "gaps"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "target": { "$ref": "#/$defs/target" },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "identity_bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/identityBinding" }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/gap" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[-.][a-z0-9]+)*$"
+    },
+    "target": {
+      "type": "object",
+      "required": ["pcr_id", "scope_digest"],
+      "properties": {
+        "pcr_id": {
+          "type": "string",
+          "pattern": "^pcr\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+        },
+        "scope_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "scope": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["source_id", "title", "source_type", "reference"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "source_type": { "type": "string", "minLength": 1 },
+        "reference": { "type": "string", "minLength": 1 },
+        "retrieved_date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$"
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "claimSource": {
+      "type": "object",
+      "required": ["source_id", "locator", "relation"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/id" },
+        "locator": { "type": "string", "minLength": 1 },
+        "relation": {
+          "type": "string",
+          "enum": ["supports", "partially_supports", "contradicts"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "required": ["claim_id", "statement", "status", "affects", "sources"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/id" },
+        "statement": { "type": "string", "minLength": 1 },
+        "status": {
+          "type": "string",
+          "enum": [
+            "supported",
+            "partially_supported",
+            "provisional",
+            "inconclusive",
+            "contradicted",
+            "out_of_scope"
+          ]
+        },
+        "affects": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claimSource" }
+        },
+        "applicability": { "type": "string", "minLength": 1 },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "identityBinding": {
+      "type": "object",
+      "required": ["binding_id", "role", "entity_type", "verification_status"],
+      "properties": {
+        "binding_id": { "$ref": "#/$defs/id" },
+        "role": { "type": "string", "minLength": 1 },
+        "entity_type": {
+          "type": "string",
+          "enum": ["flow", "flow_property", "unit_group", "process", "dataset", "lifecyclemodel"]
+        },
+        "selected_uuid": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "display_name": { "type": "string", "minLength": 1 },
+        "derived_from_binding": { "$ref": "#/$defs/id" },
+        "verification_status": {
+          "type": "string",
+          "enum": ["verified", "candidate", "unresolved", "rejected"]
+        },
+        "verified_at_utc": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?Z$"
+        },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "verification_status": { "const": "verified" } },
+            "required": ["verification_status"]
+          },
+          "then": {
+            "required": ["selected_uuid", "verified_at_utc"],
+            "properties": {
+              "selected_uuid": { "type": "string" },
+              "verified_at_utc": { "type": "string" }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "conflict": {
+      "type": "object",
+      "required": ["conflict_id", "description", "source_ids", "status"],
+      "properties": {
+        "conflict_id": { "$ref": "#/$defs/id" },
+        "description": { "type": "string", "minLength": 1 },
+        "source_ids": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "status": { "type": "string", "enum": ["unresolved", "resolved"] },
+        "resolution": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "const": "resolved" } },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["resolution"],
+            "properties": { "resolution": { "type": "string", "minLength": 1 } }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "gap": {
+      "type": "object",
+      "required": ["gap_id", "description", "status"],
+      "properties": {
+        "gap_id": { "$ref": "#/$defs/id" },
+        "description": { "type": "string", "minLength": 1 },
+        "status": {
+          "type": "string",
+          "enum": ["evidence_missing", "identity_unresolved", "scope_ambiguous", "closed"]
+        },
+        "blocks_promotion": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

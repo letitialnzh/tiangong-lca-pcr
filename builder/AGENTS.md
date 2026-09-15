@@ -21,6 +21,9 @@ This directory defines how agents construct, update, validate, and publish PCR r
   descriptor before importing a non-3.0 version.
 - Treat current mapping v2 as an accepted-positive-edge contract. Every edge must target a material PCR and carry
   explicit acceptance decision metadata; candidate or manual-review evidence belongs in coverage assessment.
+- Do not create a new ADR solely to accept a completed PCR batch. Keep durable, readable decision evidence for the
+  accepted mapping, but reuse an applicable existing decision record or use a non-ADR acceptance record. Create or
+  update an ADR only for a new architecture or governance decision.
 - Treat `scaffold-cpc` as a fail-fast compatibility alias. It requires explicit `--legacy-scaffolds` and may operate
   only on a retained v1/scaffold mapping fixture. It must fail before mutation on a current v2 mapping, so it cannot
   inject an unaccepted edge or rehydrate a retired leaf-derived PCR directory. It must not repair a partial target,
@@ -31,8 +34,29 @@ This directory defines how agents construct, update, validate, and publish PCR r
 - Publish catalog, material index, and coverage indexes only through the journaled catalog artifact transaction.
   Recover interrupted state with `npm run catalog:recover`; use `--force-stale-lock` only after confirming no writer
   is active.
-- PCR production always synthesizes the current best PCR for the target product category from available evidence. Existing PCR content is prior evidence and a canonical write target, not a separate reasoning mode.
+- For a new PCR, synthesize the current best record independently from target evidence and existing modules. Do not use
+  another PCR as a content template or copy its flows, ranges, amounts, or product facts. Existing PCRs may be inspected
+  to decide whether the target should reuse that canonical PCR; for an update workflow, the selected existing PCR is the
+  canonical write target.
+- Always separate semantic independence from structural conformance. A new PCR must use the repository-owned English
+  and Chinese Markdown scaffolds under `builder/templates/` as its format contract, including frontmatter keys, section
+  hierarchy, exact machine-recognized headings, table headers, and flow-card field labels. A retained legacy scaffold
+  must be brought to this current structural contract before content is written. Do not invent equivalent headings or
+  list shapes. The scaffold supplies no product facts and does not authorize copying content from another PCR.
 - Use public evidence and domain common sense to initialize candidate processes, qualifiers, and likely flows; UUIDs and quantitative ranges must be evidence-backed before they are treated as final PCR content.
+- For a new PCR, complete the English semantic draft, including every Process Map flow card, before beginning candidate
+  UUID lookup. Leave identity fields blank while drafting. For each completed flow card, allow one initial
+  flow-identity lookup and at most one evidence-supported refinement lookup. Do not enumerate speculative synonyms or
+  continue candidate searching after the refinement lookup is inconclusive; finalize the row as unmapped coverage.
+  Deterministic property or unit-group confirmation for a selected UUID is not a new candidate-flow lookup. This budget
+  does not authorize changing the real product boundary, flow type, or direction to obtain a match.
+- Derive flow-card count from evidence-supported inventory, measurement, calculation, boundary, and validation needs.
+  Never enumerate Flow Set groups to create cards. Split cards only when those needs are independently specified;
+  otherwise use one conditional umbrella card and defer case-specific expansion to foreground data generation.
+- After cards are complete, bind a semantically concrete card to one exact reviewed Flow Set group. A conditional
+  umbrella card may cite the set id/version without `group` as deferred scope. Do not put alternatives in `group`, and
+  never treat deferred scope as a final exchange identity; each emitted foreground exchange must resolve to one group
+  and one verified UUID.
 
 ## Context Routing
 

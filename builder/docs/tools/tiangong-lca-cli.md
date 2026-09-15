@@ -38,7 +38,7 @@ tiangong-lca flow get --id <flow-id> --json
 tiangong-lca search process --input ./search-process.request.json --json
 ```
 
-Use `search flow` to find candidates, then use `flow get` or the most specific available command to confirm the selected row before copying UUIDs into PCR content.
+For a new PCR, complete the English semantic draft and every Process Map flow card before beginning candidate UUID lookup. Use `search flow` to find candidates, then use `flow get` or the most specific available command to confirm the selected row before copying UUIDs into PCR content. For each completed flow card, perform one initial flow-identity lookup and, only when the completed card shows that it is too conceptual, one evidence-supported refinement lookup. Do not enumerate speculative synonyms or continue searching after that refinement is inconclusive; leave the flow identity unresolved and record unmapped coverage. Deterministic property or unit-group confirmation for a selected UUID is not a new candidate-flow lookup.
 
 ## Storage Rules
 
@@ -66,4 +66,4 @@ When the CLI cannot resolve a UUID:
 1. Keep the human-readable flow candidate if it is useful for PCR drafting.
 2. Leave the UUID or unit support cell empty.
 3. Record the unresolved identity issue in `manifest.yaml` review metadata.
-4. Re-run lookup before publish.
+4. During a new-PCR creation pass, if the flow was refined after the Process Map was completed, use the single permitted refinement lookup before publish; otherwise do not repeat candidate searches in that creation pass. Leave the identity unresolved when that lookup is inconclusive. Later update or revision workflows follow their own explicit workflow contract.

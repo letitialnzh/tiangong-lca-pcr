@@ -1,0 +1,45 @@
+schema_version: 0
+id: module.activity.recovery-reprocessing-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Recovery and reprocessing node
+purpose: Describe an independent responsibility that recovers a secondary material or product and reprocesses it into a declared downstream state.
+activation:
+  question: Does the route recover a secondary material or product and independently reprocess it for a subsequent goods route?
+  signals:
+    - recovery_reprocessing_route
+  evidence:
+    - route description showing the recovered source and reprocessing responsibility
+    - current PCR evidence for the secondary-material boundary and hand-off
+  outcomes:
+    applicable: declare_a_distinct_recovery_or_reprocessing_node
+    not_applicable: keep_recovery_inside_an_existing_node
+    unresolved: retain_recovered_source_or_handoff_ambiguity_and_request_route_evidence
+owns:
+  - recovered-material source and hand-off slots
+  - reprocessing boundary and quality-state questions
+  - checks for rejects, residues, and secondary-output classification
+excludes:
+  - recovered material identity or quality values
+  - recycling technology choice
+  - recycled-content factors, quantities, and flow UUIDs
+interfaces:
+  inputs: [recovered_source_state, recovery_service_roles]
+  process: [recovery_and_reprocessing_responsibility]
+  outputs: [secondary_material_state, reject_or_residue_state, downstream_handoff]
+obligations:
+  - identify the recovered source state and acceptance criterion
+  - identify the secondary output state and downstream hand-off
+  - distinguish rejects, residues, and intended secondary output
+  - record the boundary between recovery and subsequent goods production
+validation:
+  - applicable_node_requires_recovered_source_state
+  - applicable_node_requires_secondary_output_and_handoff
+  - reject_and_residue_roles_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [material-treatment-node, forming-fabrication-node, technology, system_condition]
+  conflicts_with: [duplicate_recovery_node, recycled_content_without_recovery_boundary]
+tests:
+  - cross-domain-recovery-reprocessing

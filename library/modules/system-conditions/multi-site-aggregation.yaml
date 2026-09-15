@@ -1,0 +1,43 @@
+schema_version: 0
+id: module.system-condition.multi-site-aggregation
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Multi-site aggregation
+purpose: Add site-level indexing, aggregation, and representativeness obligations when one goods route combines multiple contributing sites or units.
+activation:
+  question: Does one declared goods route aggregate inputs, outputs, or observations from multiple sites, facilities, blocks, or production units?
+  signals:
+    - multi_site_aggregation
+  evidence:
+    - current PCR definition of the common goods boundary and contributing units
+    - route evidence for site weighting, mixing, exclusion, and representativeness
+  outcomes:
+    applicable: activate_multi_site_aggregation_checks
+    not_applicable: model_the_route_as_single_site_or_unit
+    unresolved: retain_site_contribution_ambiguity_and_request_current_evidence
+owns:
+  - site and contributing-unit indexing
+  - aggregation completeness and representativeness checks
+  - prompts for site weighting, mixing, and exclusion decisions
+excludes:
+  - site identity, geography, and production quantities
+  - product identity and sampling factor
+  - default averaging method and flow UUIDs
+interfaces:
+  overlays: [contributing_sites, contributing_units, aggregation_method_slot, representativeness_evidence]
+obligations:
+  - enumerate every contributing site or production unit
+  - link site-level inputs, outputs, and evidence to the common boundary
+  - record the PCR-specific aggregation and representativeness decision
+  - prevent omitted or double-counted site contributions
+validation:
+  - multi_site_requires_two_or_more_contributors
+  - every_contributor_requires_boundary_and_evidence_link
+  - aggregation_must_not_double_count_site_records
+composition:
+  depends_on: []
+  coexists_with: [activity, technology, multi-period-attribution, shared-infrastructure-attribution]
+  conflicts_with: [duplicate_site_aggregation, site_mix_without_representativeness_decision]
+tests:
+  - cross-domain-multi-site-aggregation

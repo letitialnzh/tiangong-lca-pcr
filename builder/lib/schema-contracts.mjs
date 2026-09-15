@@ -14,6 +14,7 @@ const BUILDER_SCHEMA_FILES = [
   "pcr-release-history.schema.json",
   "pcr-release.schema.json",
   "pcr-revision.schema.json",
+  "evidence-pack.schema.json",
 ];
 
 const schemaDependencies = [
@@ -126,6 +127,10 @@ export const validateReleaseHistory = (value) =>
   validateBuilderContract("pcr-release-history.schema.json", value);
 export const assertReleaseHistory = (value, options = {}) =>
   assertBuilderContract("pcr-release-history.schema.json", value, options);
+export const validateEvidencePack = (value) =>
+  validateBuilderContract("evidence-pack.schema.json", value);
+export const assertEvidencePack = (value, options = {}) =>
+  assertBuilderContract("evidence-pack.schema.json", value, options);
 
 function resolveContractId(contract) {
   return contractIds.get(contract) ?? contract;

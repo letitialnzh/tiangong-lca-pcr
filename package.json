@@ -6,8 +6,14 @@
   "scripts": {
     "init": "node builder/cli/index.mjs init",
     "lint": "npm run vocab:check && npm run aliases:check && npm run catalog:check && node builder/cli/index.mjs lint",
-    "test": "node --test builder/cli/*.test.mjs builder/lib/*.test.mjs builder/scripts/*.test.mjs packages/pcr-core/*.test.mjs packages/tiangong-pcr-cli/*.test.mjs packages/pcr-viewer/*.test.mjs",
-    "validate": "npm run lint && npm test",
+    "test:library": "node --test --test-concurrency=4 builder/cli/*.test.mjs builder/lib/*.test.mjs builder/scripts/*.test.mjs packages/pcr-core/*.test.mjs packages/tiangong-pcr-cli/*.test.mjs skills/flow-set-builder/*.test.mjs",
+    "test:viewer:unit": "node --test packages/pcr-viewer/viewer-core.test.mjs",
+    "test:viewer:integration": "node --test --test-concurrency=4 --test-skip-pattern='viewer[- ]core|viewer labels' packages/pcr-viewer/viewer-build.test.mjs",
+    "test:viewer": "npm run test:viewer:unit && npm run test:viewer:integration",
+    "test": "npm run test:library && npm run test:viewer",
+    "validate:fast": "npm run lint",
+    "validate:pcr": "node builder/cli/index.mjs lint",
+    "validate": "npm run lint && npm test && npm run flow-set:binding-test",
     "vocab:generate": "node builder/scripts/generate-controlled-vocabulary.mjs",
     "vocab:check": "node builder/scripts/generate-controlled-vocabulary.mjs --check",
     "aliases:build": "node builder/scripts/build-pcr-id-aliases.mjs",
@@ -23,9 +29,13 @@
     "pcr:revise": "node builder/cli/index.mjs revise",
     "pcr:publish": "node builder/cli/index.mjs publish",
     "pcr:recover": "node builder/cli/index.mjs recover",
+    "pcr:module-checklist": "node builder/cli/index.mjs module-checklist",
     "tiangong-pcr": "node packages/tiangong-pcr-cli/bin/tiangong-pcr.mjs",
     "viewer:build": "node packages/pcr-viewer/scripts/build-viewer-data.mjs",
-    "viewer:serve": "node packages/pcr-viewer/scripts/serve-viewer.mjs"
+    "viewer:serve": "node packages/pcr-viewer/scripts/serve-viewer.mjs",
+    "flow-set:semantic-test": "node skills/flow-set-builder/semantic-test-v2.mjs",
+    "flow-set:binding-test": "node skills/flow-set-builder/flow-set-binding-audit.mjs",
+    "flow-set:refresh-v2": "node skills/flow-set-builder/refresh-taxonomy-v2.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0"

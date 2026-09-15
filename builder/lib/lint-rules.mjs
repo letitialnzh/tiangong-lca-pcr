@@ -28,6 +28,7 @@ import {
   parsePcrMarkdownToStructured,
   structuredProjectionYaml,
 } from "./markdown-projection.mjs";
+import { selectModules } from "./module-checklist.mjs";
 import { inspectPublishedRevisionState } from "./published-revision-state.mjs";
 import { PCR_EN_FILE, PCR_ZH_FILE } from "./scaffold-templates.mjs";
 import { REQUIRED_DIRS } from "./builder-constants.mjs";
@@ -789,8 +790,10 @@ export function inspectPcrDirectory({
     }
   }
 
+  const moduleSelection = selectModules({ root: resolvedRoot, structured: projection });
   const expectedStructuredText = structuredProjectionYaml(projection, {
     sourceMarkdown: markdownText,
+    moduleReferences: moduleSelection.moduleReferences,
   });
   if (material) {
     for (const issue of materialProjectionCompletenessIssues(
@@ -836,10 +839,40 @@ export function inspectPcrDirectory({
   };
 }
 
+function normalizeRequestedPcrs(value) {
+  if (value === undefined) {
+    return [];
+  }
+  if (!Array.isArray(value) || value.length === 0 || value.some((entry) => typeof entry !== "string" || !entry.trim())) {
+    throw new Error("--pcr must be supplied one or more times with non-empty PCR directory paths");
+  }
+  return value;
+}
+
+function selectedPcrDirectories({ root, pcrRoot, requestedPcrs, problems }) {
+  const selected = new Set();
+  for (const requestedPath of requestedPcrs) {
+    const candidate = path.resolve(root, requestedPath);
+    const relative = path.relative(pcrRoot, candidate);
+    const segments = relative.split(path.sep);
+    if (path.isAbsolute(relative) || segments.length !== 3 || segments.some((segment) => !segment || segment === "." || segment === "..")) {
+      problems.push(`Requested PCR must be a direct library/pcrs/<domain>/<subdomain>/<slug> directory: ${requestedPath}`);
+      continue;
+    }
+    if (!existsSync(candidate) || !lstatSync(candidate).isDirectory() || lstatSync(candidate).isSymbolicLink()) {
+      problems.push(`Requested PCR directory is missing or not canonical: ${requestedPath}`);
+      continue;
+    }
+    selected.add(candidate);
+  }
+  return [...selected].sort();
+}
+
 export function lint(options) {
   const root = rootFromOptions(options);
   const problems = [];
   const warnings = [];
+  const requestedPcrs = normalizeRequestedPcrs(options.pcr);
 
   for (const dir of REQUIRED_DIRS) {
     const directory = path.join(root, dir);
@@ -853,16 +886,17 @@ export function lint(options) {
     }
   }
 
-  validateYamlContractFile({
+  if (requestedPcrs.length === 0) {
+    validateYamlContractFile({
     contract: "catalog.schema.json",
     sourcePath: path.join(root, "library/catalog.yaml"),
     root,
     problems,
     entityKind: "PCR catalog",
-  });
+    });
 
-  const mappingRoot = path.join(root, "classifications/mappings");
-  if (existsSync(mappingRoot)) {
+    const mappingRoot = path.join(root, "classifications/mappings");
+    if (existsSync(mappingRoot)) {
     const mappingRootStats = lstatSync(mappingRoot);
     if (mappingRootStats.isSymbolicLink() || !mappingRootStats.isDirectory()) {
       problems.push("classifications/mappings: mapping root must be a canonical directory");
@@ -877,10 +911,14 @@ export function lint(options) {
         });
       }
     }
+    }
   }
 
   const pcrRoot = path.join(root, "library/pcrs");
-  for (const directory of discoverCanonicalPcrDirectories(pcrRoot, problems, root)) {
+  const directories = requestedPcrs.length === 0
+    ? discoverCanonicalPcrDirectories(pcrRoot, problems, root)
+    : selectedPcrDirectories({ root, pcrRoot, requestedPcrs, problems });
+  for (const directory of directories) {
     const result = inspectPcrDirectory({ root, pcrDir: directory });
     problems.push(...result.problems);
     warnings.push(...result.warnings);

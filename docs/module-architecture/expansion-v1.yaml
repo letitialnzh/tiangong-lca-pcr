@@ -1,0 +1,144 @@
+status: draft
+canonical_module: false
+purpose: >-
+  Forward-designed expansion records for reusable activity and system-condition responsibilities.
+  These records are based on cross-domain modelling interfaces and deliberately do not copy product
+  PCR facts, classification leaves, quantities, factors, or flow identities.
+
+design_basis:
+  - docs/module-architecture.md
+  - docs/module-architecture/abstraction-test-cases.yaml
+  - docs/module-architecture/abstraction-review.yaml
+
+records:
+  - candidate_id: ACT-002
+    working_name: resource-removal-node
+    kind: activity
+    activation_question: >-
+      Does the route contain a distinct responsibility that removes or captures a material or
+      resource from a source and hands it to a downstream node?
+    stable_invariants:
+      - declared source or capture context
+      - removal responsibility with its own boundary
+      - removed-material output state
+      - explicit downstream hand-off
+    owns:
+      - source or capture interface questions
+      - removal-node boundary and hand-off slots
+      - completeness checks for residuals and removed-material roles
+    does_not_own:
+      - resource, ore, species, or product identity
+      - extraction or capture technology choice
+      - quantities, factors, or flow UUIDs
+    test_cases:
+      - mining-extraction-and-treatment
+      - cross-domain-resource-removal
+    negative_cases:
+      - embedded-removal-step
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        The responsibility is distinct from downstream treatment and can be expressed through a
+        stable source, output, and hand-off interface across materially different removal routes.
+
+  - candidate_id: ACT-003
+    working_name: material-treatment-node
+    kind: activity
+    activation_question: >-
+      Does the route contain an independent transformation, separation, conditioning, or treatment
+      responsibility with its own input and output states?
+    stable_invariants:
+      - declared treatment responsibility
+      - input state before treatment
+      - output state after treatment
+      - explicit treatment hand-off
+    owns:
+      - treatment-node interface slots
+      - transformation and separation boundary questions
+      - completeness checks for treatment inputs, outputs, and residuals
+    does_not_own:
+      - material or product identity
+      - treatment technology selection
+      - yields, factors, quantities, or flow UUIDs
+    test_cases:
+      - mining-extraction-and-treatment
+      - cross-domain-material-treatment
+    negative_cases:
+      - embedded-conditioning-step
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Treatment is a reusable process responsibility when it exposes its own input state, output
+        state, and hand-off; it is not inferred from a product or classification label.
+
+  - candidate_id: ACT-004
+    working_name: energy-conversion-node
+    kind: activity
+    activation_question: >-
+      Does the route contain an independent conversion responsibility that transforms an energy
+      carrier or resource into a declared useful output?
+    stable_invariants:
+      - declared conversion responsibility
+      - input carrier or resource state
+      - useful output state
+      - conversion hand-off
+    owns:
+      - conversion-node interface slots
+      - conversion boundary and service-role questions
+      - completeness checks for inputs, outputs, and losses
+    does_not_own:
+      - generation technology identity
+      - capacity, efficiency, lifetime, or emission factors
+      - concrete energy-flow UUIDs
+    test_cases:
+      - electricity-generation-route
+      - cross-domain-energy-conversion
+    negative_cases:
+      - embedded-energy-service
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        Energy conversion is a stable process responsibility across conversion routes while the
+        selected technology and performance parameters remain PCR-specific.
+
+  - candidate_id: COND-002
+    working_name: shared-infrastructure-attribution
+    kind: system_condition
+    activation_question: >-
+      Do two or more selected process nodes use the same infrastructure, service, or asset whose
+      burden must be assigned across those nodes or periods?
+    stable_invariants:
+      - shared asset or service is explicitly declared
+      - more than one consuming node or period
+      - allocation or attribution decision is required
+      - double-counting prevention is required
+    owns:
+      - shared-asset and consuming-node linkage
+      - service-period indexing
+      - prompts for the PCR-specific attribution decision
+      - duplicate burden checks
+    does_not_own:
+      - infrastructure identity, lifetime, quantity, or factor
+      - default allocation method
+      - product-specific flow identity
+    test_cases:
+      - agriculture-shared-infrastructure
+      - mining-shared-infrastructure
+      - electricity-shared-infrastructure
+    negative_cases:
+      - single-consumer-infrastructure
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        The condition overlays otherwise independent nodes and changes attribution completeness
+        without becoming an activity or technology module.
+
+technology_decision:
+  outcome: retain_existing_generic_module
+  modules:
+    - module.technology.alternative-technology-route
+    - module.technology.alternative-production-route
+  reason: >-
+    Extraction-specific, treatment-specific, and generation-specific technology files would only
+    duplicate the existing parent-and-delta pattern. No separate technology module is added until
+    a distinct cross-domain responsibility survives independent tests.

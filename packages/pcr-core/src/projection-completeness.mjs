@@ -63,12 +63,67 @@ function inventoryFlowRowCount(processInventory) {
   return count;
 }
 
+function inspectBinding(binding, path, legacyUuid = "", flowSetRef = null) {
+  if (!binding) return flowSetRef ? [{
+    code: `${path}.flow_set_ref`,
+    message: `${path} has a Flow Set reference but no parameterized binding.`,
+  }] : [];
+  const issues = [];
+  if (!["fixed", "parameterized"].includes(binding)) {
+    issues.push({ code: path, message: `${path} must be fixed or parameterized.` });
+    return issues;
+  }
+  if (binding === "fixed") {
+    const uuid = legacyUuid;
+    if (!meaningfulScalar(uuid)) {
+      issues.push({ code: `${path}.uuid`, message: `${path} fixed binding requires a UUID.` });
+    }
+    if (flowSetRef) {
+      issues.push({ code: `${path}.flow_set_ref`, message: `${path} fixed binding cannot carry a Flow Set reference.` });
+    }
+  } else if (binding === "parameterized") {
+    if (!meaningfulScalar(flowSetRef?.id) || !meaningfulScalar(flowSetRef?.version)) {
+      issues.push({ code: `${path}.flow_set_ref`, message: `${path} parameterized binding requires Flow Set id and version.` });
+    }
+    if (legacyUuid) {
+      issues.push({ code: `${path}.priority_conflict`, message: `${path} has both a concrete UUID and a parameterized Flow Set binding; PCRs must use the applicable Flow Set group without a UUID.` });
+    }
+  }
+  return issues;
+}
+
+export function flowBindingIssues(projection) {
+  const issues = [];
+  const referenceDefinition = projection?.reference_flow_definition;
+  const referenceBinding = referenceDefinition?.binding;
+  issues.push(...inspectBinding(referenceBinding, "reference_flow_definition.binding", referenceDefinition?.product_flow_ref?.uuid, referenceDefinition?.flow_set_ref));
+  for (const [index, flow] of (Array.isArray(projection?.reference_flows) ? projection.reference_flows : []).entries()) {
+    issues.push(...inspectBinding(flow?.binding, `reference_flows[${index}].binding`, flow?.uuid, flow?.flow_set_ref));
+  }
+  for (const [processIndex, processEntry] of (Array.isArray(projection?.process_inventory) ? projection.process_inventory : []).entries()) {
+    for (const direction of ["inputs", "outputs"]) {
+      for (const flowType of ["product", "waste", "elementary"]) {
+        for (const [rowIndex, row] of (Array.isArray(processEntry?.[direction]?.[flowType]) ? processEntry[direction][flowType] : []).entries()) {
+          issues.push(...inspectBinding(
+            row?.binding,
+            `process_inventory[${processIndex}].${direction}.${flowType}[${rowIndex}].binding`,
+            row?.flow_ref?.uuid ?? row?.uuid,
+            row?.flow_set_ref,
+          ));
+        }
+      }
+    }
+  }
+  return issues;
+}
+
 /**
  * Checks content that must be present before a material projection can guide data production.
  * JSON Schema owns stable shape; this function owns state-sensitive methodology completeness.
  */
 export function materialProjectionCompletenessIssues(projection, { expectedPcrId } = {}) {
   const issues = [];
+  issues.push(...flowBindingIssues(projection));
   const canonicalPcrId = projection?.product_category_identity?.canonical_pcr_id;
   if (!meaningfulScalar(canonicalPcrId)) {
     issues.push(
@@ -99,6 +154,21 @@ export function materialProjectionCompletenessIssues(projection, { expectedPcrId
 
   for (const segments of REFERENCE_FLOW_FIELDS) {
     if (!meaningfulScalar(valueAtPath(projection?.reference_flow_definition, segments))) {
+      if (
+        segments.join(".") === "product_flow_ref.uuid"
+        && projection?.reference_flow_definition?.binding === "parameterized"
+        && projection?.reference_flow_definition?.flow_set_ref?.id
+        && projection?.reference_flow_definition?.flow_set_ref?.version
+      ) {
+        continue;
+      }
+      if (
+        segments.join(".") === "product_flow_ref.uuid"
+        && projection?.reference_flow_definition?.reference_identity_status === "unresolved"
+        && !projection?.reference_flow_definition?.binding
+      ) {
+        continue;
+      }
       const field = segments.join(".");
       issues.push(
         missingFieldIssue(

@@ -56,6 +56,11 @@ test("structured Schema permits empty sections whose material completeness is ch
     validation_rules: [],
     published_dataset_profile: {},
     data_sources: [],
+    module_references: {
+      selection_mode: "automatic",
+      selected: [],
+      unresolved: [],
+    },
     projection_metadata: {
       contract_version: "1",
       generator: "tiangong-pcr-builder/markdown-projection",

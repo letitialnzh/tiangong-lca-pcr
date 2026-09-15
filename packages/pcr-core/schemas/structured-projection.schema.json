@@ -21,6 +21,7 @@
     "validation_rules",
     "published_dataset_profile",
     "data_sources",
+    "module_references",
     "projection_metadata"
   ],
   "$defs": {
@@ -159,6 +160,20 @@
       },
       "additionalProperties": false
     },
+    "flowBinding": {
+      "type": "string",
+      "enum": ["fixed", "parameterized"]
+    },
+    "flowSetRef": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^flow-set\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "group": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
     "flowRow": {
       "type": "object",
       "required": [
@@ -178,11 +193,30 @@
           "$ref": "https://tiangong-lca.org/schemas/pcr/v1/controlled-vocabulary.schema.json#/$defs/flow_type"
         },
         "flow_ref": { "type": "object" },
+        "binding": { "$ref": "#/$defs/flowBinding" },
+        "flow_set_ref": { "$ref": "#/$defs/flowSetRef" },
         "property_unit": { "type": "string" },
         "description": { "type": "string" },
         "amount": { "$ref": "#/$defs/flowAmount" }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "required": ["binding"], "properties": { "binding": { "const": "fixed" } } },
+          "then": {
+            "required": ["flow_ref"],
+            "properties": { "flow_ref": {} }
+          }
+        },
+        {
+          "if": { "required": ["binding"], "properties": { "binding": { "const": "parameterized" } } },
+          "then": {
+            "required": ["flow_set_ref"],
+            "properties": { "flow_set_ref": {} },
+            "not": { "required": ["flow_ref"] }
+          }
+        }
+      ]
     },
     "flowGroups": {
       "type": "object",
@@ -217,6 +251,22 @@
         "used_for": { "type": "string" }
       },
       "additionalProperties": false
+    },
+    "moduleReference": {
+      "type": "object",
+      "required": ["id", "kind", "path", "decision"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^module\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$" },
+        "kind": { "enum": ["activity", "technology", "system_condition"] },
+        "path": { "type": "string", "minLength": 1 },
+        "decision": { "enum": ["applicable", "unresolved"] }
+      },
+      "additionalProperties": false
+    },
+    "moduleReferenceArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/moduleReference" },
+      "uniqueItems": true
     }
   },
   "properties": {
@@ -263,6 +313,16 @@
     "validation_rules": { "$ref": "#/$defs/normativeRuleArray" },
     "published_dataset_profile": { "type": "object" },
     "data_sources": { "type": "array", "items": { "$ref": "#/$defs/dataSource" } },
+    "module_references": {
+      "type": "object",
+      "required": ["selection_mode", "selected", "unresolved"],
+      "properties": {
+        "selection_mode": { "const": "automatic" },
+        "selected": { "$ref": "#/$defs/moduleReferenceArray" },
+        "unresolved": { "$ref": "#/$defs/moduleReferenceArray" }
+      },
+      "additionalProperties": false
+    },
     "projection_metadata": { "$ref": "#/$defs/projectionMetadata" }
   },
   "additionalProperties": false

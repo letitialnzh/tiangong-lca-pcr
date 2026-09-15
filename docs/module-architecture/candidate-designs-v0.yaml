@@ -1,0 +1,241 @@
+status: draft
+canonical_module: false
+purpose: >-
+  First forward-design vertical slice for the three candidate module kinds. These records are
+  written from reusable modelling responsibilities and are tested against route fixtures; they
+  do not copy product PCR content and are not loadable library modules.
+
+design_basis:
+  - docs/module-architecture.md
+  - docs/module-architecture/design-record-template.yaml
+  - docs/module-architecture/abstraction-test-cases.yaml
+
+records:
+  - candidate_id: ACT-001
+    working_name: independent-process-node
+    kind: activity
+    parent_activity: null
+    activation:
+      questions:
+        - Does the route contain a responsibility with distinct input roles, output state, and hand-off point?
+        - Does that responsibility require its own collection or validation checks?
+      evidence_needed:
+        - route description showing the responsibility and its hand-off
+        - current PCR evidence for the selected boundary and process roles
+      outcomes:
+        applicable: create_or_select_a_distinct_process_node
+        not_applicable: keep_the_responsibility_inside_an_existing_node
+        unresolved: retain_the_ambiguity_and_request_route_evidence
+    purpose: >-
+      Test whether an independent process responsibility can be represented with a stable
+      interface without turning a generic PCR contract into a module.
+    owns:
+      - process-node input and output role slots
+      - hand-off and boundary questions for the node
+      - conditional completeness checks for node-specific collection
+    does_not_own:
+      - product identity or classification mapping
+      - universal functional-unit, reference-flow, or inventory rules
+      - concrete quantities, factors, or flow UUIDs
+    stable_invariants:
+      - distinct process responsibility
+      - declared input roles
+      - declared output state
+      - explicit hand-off point
+    variable_parameters:
+      - product
+      - site
+      - route
+      - period
+      - selected technology
+    process_slots:
+      - input_roles
+      - transformation_or_management_responsibility
+      - output_state
+      - handoff_point
+    interface_slots:
+      - upstream_inputs
+      - downstream_output
+    cross_system_effects: []
+    evidence_questions:
+      - What evidence establishes that this responsibility is independent rather than part of an adjacent node?
+      - Which boundary and hand-off does the current PCR select?
+    collection_prompts:
+      - document the roles and measurements needed for this node
+      - document omitted, shared, or ambiguous inputs and outputs
+    dependencies: []
+    conflicts:
+      - duplicate_activity_for_same_process_responsibility
+    coexistence_rules:
+      - may coexist with a technology that declares this node as its parent
+      - may coexist with system conditions that overlay its outputs or periods
+    test_cases:
+      - agriculture-managed-production-node
+      - mining-extraction-and-treatment
+      - electricity-generation-route
+    negative_test_cases:
+      - non-independent-process
+    composition_tests:
+      - activity-with-technology
+      - activity-with-multi-output
+    evidence_basis:
+      - durable LCA process-node and interface methodology
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        The responsibility is visible across three materially different route classes, but the
+        candidate must still prove that it adds conditional obligations rather than duplicating
+        the always-on PCR contract.
+
+  - candidate_id: TECH-001
+    working_name: alternative-technology-route
+    kind: technology
+    parent_activity: independent-process-node
+    activation:
+      questions:
+        - Is an existing activity implemented through an alternative route?
+        - Does the alternative produce an evidenced delta in topology, inventory, calculation, data requirements, or validation?
+      evidence_needed:
+        - parent activity and alternative route description
+        - current PCR evidence for the changed requirements
+      outcomes:
+        applicable: attach_the_technology_delta_to_the_declared_parent
+        not_applicable: keep_the_route_as_a_parameter_or_pcr_choice
+        unresolved: do_not_promote_the_route_until_the_parent_or_delta_is_evidenced
+    purpose: >-
+      Test a reusable way to describe alternative implementations without creating technology
+      modules from labels or classification leaves.
+    owns:
+      - parent-activity reference
+      - changed requirement categories
+      - coexistence and mutual-exclusion checks
+      - route-specific evidence questions
+    does_not_own:
+      - an independent product interface
+      - the parent activity's generic rules
+      - technology performance values or concrete flows
+    stable_invariants:
+      - one parent activity
+      - explicit alternative route
+      - explicit and evidenced delta
+    variable_parameters:
+      - selected route
+      - site
+      - operating period
+      - product-specific implementation
+    process_slots:
+      - parent_activity
+      - changed_topology
+      - changed_inventory_categories
+      - changed_calculation_or_validation
+    interface_slots:
+      - inherited_parent_inputs
+      - inherited_parent_outputs
+    cross_system_effects: []
+    evidence_questions:
+      - What is the parent activity?
+      - Which requirements change relative to that parent?
+      - Is the route alternative, mutually exclusive, or coexisting with another route?
+    collection_prompts:
+      - record the delta by requirement category
+      - collect current route evidence rather than relying on the module as a source cache
+    dependencies:
+      - independent-process-node
+    conflicts:
+      - technology_without_parent_activity
+      - technology_label_without_evidenced_delta
+    coexistence_rules:
+      - inherits the parent activity interface
+      - may coexist with system conditions unless an explicit conflict is declared
+    test_cases:
+      - agriculture-managed-production-node
+      - mining-extraction-and-treatment
+      - electricity-generation-route
+    negative_test_cases:
+      - technology-without-parent-or-delta
+    composition_tests:
+      - activity-with-technology
+      - technology-with-multi-output
+    evidence_basis:
+      - durable alternative-route and comparative-modelling methodology
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        The parent-and-delta pattern survives the current route fixtures; the executable
+        composition and exclusion checks still need review.
+
+  - candidate_id: COND-001
+    working_name: multi-output-attribution
+    kind: system_condition
+    parent_activity: null
+    activation:
+      questions:
+        - Does a selected process node or linked set of nodes intentionally report more than one output?
+        - Are the output interfaces jointly subject to attribution, substitution, or allocation obligations?
+      evidence_needed:
+        - current PCR definition of intended outputs and hand-off points
+        - current route evidence for the chosen attribution or substitution treatment
+      outcomes:
+        applicable: activate_output_interface_and_attribution_checks
+        not_applicable: treat_the_route_as_single_output_for_this_condition
+        unresolved: retain_output_ambiguity_and_request_current_product_evidence
+    purpose: >-
+      Add cross-output completeness and attribution obligations without owning a product interface
+      or selecting the final allocation method.
+    owns:
+      - multi-output activation question
+      - output interface completeness checks
+      - attribution, substitution, or allocation decision prompts
+      - cross-output conflict and double-counting checks
+    does_not_own:
+      - default allocation or substitution method
+      - output identities, qualities, or quantities
+      - product-specific evidence or flow UUIDs
+    stable_invariants:
+      - more_than_one_intended_output
+      - linked output interfaces
+      - cross-output attribution responsibility
+    variable_parameters:
+      - output set
+      - route
+      - product
+      - selected attribution method
+    process_slots: []
+    interface_slots:
+      - output_set
+      - output_handoff_points
+      - attribution_decision
+    cross_system_effects:
+      - output_linkage
+      - attribution_consistency
+      - double_counting_check
+    evidence_questions:
+      - Which outputs are intended and within the declared boundary?
+      - What current evidence supports the selected attribution or substitution treatment?
+    collection_prompts:
+      - record every intended output and its hand-off
+      - record the PCR-specific attribution decision and evidence
+    dependencies: []
+    conflicts:
+      - treating_an_intended_output_as_untracked_residue
+      - applying_multiple_attribution_methods_without_precedence
+    coexistence_rules:
+      - may overlay any activity or technology that exposes more than one intended output
+      - does not replace generic allocation rules or PCR-specific decisions
+    test_cases:
+      - agriculture-multi-output-production
+      - mining-multi-output-treatment
+      - electricity-multi-output-generation
+    negative_test_cases:
+      - single-output-route
+    composition_tests:
+      - activity-with-multi-output
+      - technology-with-multi-output
+      - duplicate-attribution-rules
+    evidence_basis:
+      - durable multi-output attribution and co-production methodology
+    decision:
+      outcome: canonical_candidate
+      reason: >-
+        The responsibility is stable across agriculture, mining, and electricity route classes;
+        formal promotion still requires review of composition precedence and implementation.

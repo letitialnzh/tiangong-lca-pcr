@@ -1,0 +1,639 @@
+status: draft
+canonical_module: false
+purpose: >-
+  Forward tests for the proposed module abstraction rules. These cases describe modelling
+  responsibilities and route structures, not product PCR content, values, UUIDs, or copied
+  source conclusions.
+
+abstraction_ruleset: docs/module-architecture.md#abstraction-tests
+
+cases:
+  - case_id: agriculture-managed-production-node
+    domain: agriculture
+    route_class: managed-biological-production
+    modelling_observation:
+      - a managed biological system creates or maintains a declared output
+      - the production responsibility has input roles, an output state, and a hand-off point
+    candidate_tests:
+      - kind: activity
+        responsibility: independent-production-node
+        expected_result: candidate_if_interface_is_stable
+      - kind: technology
+        responsibility: alternative-production-implementation
+        expected_result: candidate_only_if_parent_delta_is_explicit
+      - kind: system_condition
+        responsibility: multi-period-attribution
+        expected_result: candidate_only_if_more_than_one_period_or_phase_is_modelled
+    must_not_infer:
+      - product identity
+      - route-specific practice
+      - quantity, factor, or flow UUID
+
+  - case_id: mining-extraction-and-treatment
+    domain: mining
+    route_class: resource-extraction-with-optional-treatment
+    modelling_observation:
+      - extraction and downstream treatment may be separate process nodes
+      - alternative extraction implementations may change topology, inventory, calculation, or validation
+    candidate_tests:
+      - kind: activity
+        responsibility: resource-removal-node
+        expected_result: candidate_if_removal_has_own_boundary_and_output_interface
+      - kind: activity
+        responsibility: material-treatment-node
+        expected_result: candidate_if_treatment_is_an_independent_declared_stage
+      - kind: technology
+        responsibility: alternative-extraction-implementation
+        expected_result: candidate_only_if_parent_and_changed_requirements_are_explicit
+    must_not_infer:
+      - ore identity
+      - extraction equipment or energy quantity
+      - product-specific treatment factor
+
+  - case_id: electricity-generation-route
+    domain: electricity
+    route_class: energy-conversion-route
+    modelling_observation:
+      - generation is a conversion responsibility with an output interface
+      - alternative generation routes may change process topology, infrastructure attribution, inventory, and validation
+    candidate_tests:
+      - kind: activity
+        responsibility: energy-conversion-node
+        expected_result: candidate_if_output_state_and_boundary_are_stable
+      - kind: technology
+        responsibility: alternative-generation-implementation
+        expected_result: candidate_only_if_parent_delta_is_explicit
+      - kind: system_condition
+        responsibility: shared-infrastructure-or-multi-output-attribution
+        expected_result: candidate_only_if_cross-node_effect_is_evidenced
+    must_not_infer:
+      - generation technology from a classification label alone
+      - capacity, efficiency, lifetime, or emission factor
+      - concrete electricity flow UUID
+
+  - case_id: cross-domain-multi-output
+    domain: cross-domain
+    route_class: multiple-intended-outputs
+    modelling_observation:
+      - one or more selected process nodes produce multiple intended outputs
+      - the condition changes output recording and allocation or substitution obligations
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-output-attribution
+        expected_result: candidate_if_it_adds_cross-output_constraints_without_owning_a_product_interface
+    must_not_infer:
+      - default allocation method
+      - output quantities or qualities
+      - product-specific substitution decision
+
+  - case_id: agriculture-multi-output-production
+    domain: agriculture
+    route_class: managed-biological-production-with-co-outputs
+    modelling_observation:
+      - a single managed production node may intentionally report more than one output role
+      - the additional output role changes measurement, allocation, and evidence questions without changing the module's parent activity
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-output-attribution
+        expected_result: candidate_if_the_same_overlay_applies_to_the_production_node_and_its_declared_output_interfaces
+    current_product_evidence:
+      - identify which outputs are intended, referenceable, and within the declared system boundary
+      - verify the attribution or substitution rule from current product or sector evidence
+    pcr_owned_content:
+      - output identities and quantities
+      - the selected allocation or substitution decision and its supporting evidence
+    must_not_infer:
+      - a universal allocation method for biological production
+      - a specific co-output pair
+      - yield, composition, or factor values
+
+  - case_id: mining-multi-output-treatment
+    domain: mining
+    route_class: extraction-and-treatment-with-co-recovered-outputs
+    modelling_observation:
+      - one treatment node may intentionally deliver multiple material output roles
+      - the overlay affects output interface completeness and attribution checks, not the identity of the extraction or treatment activity
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-output-attribution
+        expected_result: candidate_if_the_overlay_survives_a_change_in_extraction_or_treatment_route
+    current_product_evidence:
+      - identify intended recovered outputs and the point at which each becomes a declared output
+      - verify the route-specific allocation, substitution, or cut-off decision
+    pcr_owned_content:
+      - recovered-material identities and quantities
+      - route-specific allocation or substitution evidence
+    must_not_infer:
+      - a universal co-recovery rule
+      - ore, mineral, or equipment identities
+      - treatment yields or emission factors
+
+  - case_id: electricity-multi-output-generation
+    domain: electricity
+    route_class: energy-conversion-with-multiple-useful-outputs
+    modelling_observation:
+      - a conversion route may intentionally report more than one useful output interface
+      - the overlay changes attribution and validation obligations while leaving generation-route ownership with the parent activity or technology
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-output-attribution
+        expected_result: candidate_if_the_same_overlay_handles_an_alternative_conversion_route
+    current_product_evidence:
+      - identify each intended output and its hand-off point
+      - verify the route-specific attribution, substitution, or joint-production treatment
+    pcr_owned_content:
+      - output flow identities and quantities
+      - route-specific attribution decision and evidence
+    must_not_infer:
+      - a universal joint-production rule
+      - capacity, efficiency, lifetime, or emission-factor values
+      - concrete flow UUIDs
+
+  - case_id: cross-domain-multi-period
+    domain: cross-domain
+    route_class: activities-spanning-periods
+    modelling_observation:
+      - one or more activity instances, assets, or outputs span reporting periods
+      - the condition changes phase indexing, replacement, termination, or attribution obligations
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-period-attribution
+        expected_result: candidate_if_it_adds_period_overlay_without_owning_its_own_product_interface
+    must_not_infer:
+      - cycle length
+      - annualization value
+      - replacement amount
+
+  - case_id: agriculture-multi-period-production
+    domain: agriculture
+    route_class: managed-production-with-phases-or-cycles
+    modelling_observation:
+      - the same managed production responsibility can have distinct phases or reporting periods
+      - phase indexing and termination rules may change attribution without changing the parent production activity
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-period-attribution
+        expected_result: candidate_if_period_boundaries_and_phase_interfaces_are_explicit
+    current_product_evidence:
+      - identify the reporting periods, phase boundaries, and termination or replacement events
+      - verify the current product-specific attribution rule for those periods
+    pcr_owned_content:
+      - period-specific observations and quantities
+      - the current phase or cycle attribution decision
+    must_not_infer:
+      - a universal cycle length or annualization value
+      - a crop, cultivar, or yield identity
+
+  - case_id: mining-multi-period-asset
+    domain: mining
+    route_class: extraction-site-or-treatment-asset-spanning-periods
+    modelling_observation:
+      - an extraction site or treatment asset may be modelled across commissioning, operation, replacement, and closure periods
+      - the temporal overlay affects infrastructure attribution and phase completeness, not the identity of the route
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-period-attribution
+        expected_result: candidate_if_the_overlay_handles_asset_phases_without_owning_asset_inventory
+    current_product_evidence:
+      - identify applicable commissioning, operation, replacement, and closure periods
+      - verify period-specific infrastructure and attribution treatment
+    pcr_owned_content:
+      - asset lifetime, replacement, and closure evidence
+      - period-specific inventory and attribution values
+    must_not_infer:
+      - a universal asset lifetime or replacement interval
+      - ore identity, equipment type, or energy quantity
+
+  - case_id: electricity-multi-period-asset
+    domain: electricity
+    route_class: generation-asset-with-lifecycle-phases
+    modelling_observation:
+      - a generation asset may have distinct construction, operation, refurbishment, and end-of-life periods
+      - the temporal overlay changes attribution and validation obligations while generation-route ownership remains separate
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-period-attribution
+        expected_result: candidate_if_phase_boundaries_are_stable_across_generation_routes
+    current_product_evidence:
+      - identify lifecycle phases and the reporting period used by the current PCR
+      - verify phase-specific infrastructure, replacement, and end-of-life treatment
+    pcr_owned_content:
+      - phase-specific quantities and lifetime assumptions
+      - current route evidence for attribution and validation
+    must_not_infer:
+      - a universal lifetime, capacity factor, or replacement interval
+      - generation technology or flow identities
+
+  - case_id: forestry-managed-production-node
+    domain: forestry
+    route_class: managed-biological-production-with-long-lived-output
+    modelling_observation:
+      - a managed biological system maintains a production responsibility over a declared route
+      - the responsibility has management inputs, an output state, and a hand-off independent of product naming
+    candidate_tests:
+      - kind: activity
+        responsibility: managed-biological-production
+        expected_result: candidate_if_the_production_interface_is_stable
+      - kind: technology
+        responsibility: alternative-production-route
+        expected_result: candidate_only_if_parent_and_delta_are_explicit
+    must_not_infer:
+      - species or product identity
+      - site, rotation, lifetime, or yield values
+      - concrete flow UUID
+
+  - case_id: aquaculture-managed-production-node
+    domain: aquaculture
+    route_class: managed-aquatic-biological-production
+    modelling_observation:
+      - a managed aquatic biological system has declared management inputs and an output hand-off
+      - route variants may change topology, inventory categories, or validation without changing the production responsibility
+    candidate_tests:
+      - kind: activity
+        responsibility: managed-biological-production
+        expected_result: candidate_if_the_production_interface_is_stable
+      - kind: technology
+        responsibility: alternative-production-route
+        expected_result: candidate_only_if_parent_and_delta_are_explicit
+    must_not_infer:
+      - species, product, or facility identity
+      - feed, water, energy, or yield quantities
+      - concrete flow UUID
+
+  - case_id: cross-domain-resource-removal
+    domain: cross-domain
+    route_class: resource-removal-or-capture
+    modelling_observation:
+      - a route may remove or capture a material from a declared source before downstream treatment
+      - the removal responsibility has its own source, output, residual, and hand-off interfaces
+    candidate_tests:
+      - kind: activity
+        responsibility: resource-removal-node
+        expected_result: candidate_if_source_boundary_and_output_interface_are_stable
+    must_not_infer:
+      - resource or product identity
+      - extraction or capture technology
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-material-treatment
+    domain: cross-domain
+    route_class: transformation-separation-or-conditioning
+    modelling_observation:
+      - a route may contain an independent treatment responsibility between input and output states
+      - treatment can be composed with removal, production, or conversion without owning their identities
+    candidate_tests:
+      - kind: activity
+        responsibility: material-treatment-node
+        expected_result: candidate_if_treatment_boundary_and_handoff_are_stable
+    must_not_infer:
+      - material or product identity
+      - treatment technology
+      - yield, factor, quantity, or flow UUID
+
+  - case_id: cross-domain-energy-conversion
+    domain: cross-domain
+    route_class: energy-carrier-conversion
+    modelling_observation:
+      - a route may transform an energy carrier or resource into a declared useful output
+      - the conversion responsibility is separate from the selected technology and performance values
+    candidate_tests:
+      - kind: activity
+        responsibility: energy-conversion-node
+        expected_result: candidate_if_conversion_boundary_and_output_interface_are_stable
+    must_not_infer:
+      - generation technology
+      - capacity, efficiency, lifetime, or emission factor
+      - concrete energy-flow UUID
+
+  - case_id: agriculture-shared-infrastructure
+    domain: agriculture
+    route_class: multiple-nodes-sharing-an-asset-or-service
+    modelling_observation:
+      - two or more selected production or handling nodes may consume one shared asset or service
+      - the condition changes attribution and completeness obligations without becoming a process node
+    candidate_tests:
+      - kind: system_condition
+        responsibility: shared-infrastructure-attribution
+        expected_result: candidate_if_shared_asset_consumers_and_periods_are_explicit
+    must_not_infer:
+      - infrastructure identity or lifetime
+      - default allocation method
+      - product quantities or flow UUIDs
+
+  - case_id: mining-shared-infrastructure
+    domain: mining
+    route_class: extraction-and-treatment-sharing-an-asset-or-service
+    modelling_observation:
+      - extraction and treatment nodes may use shared roads, utilities, or site assets
+      - the condition overlays the consuming nodes and requires one attribution decision
+    candidate_tests:
+      - kind: system_condition
+        responsibility: shared-infrastructure-attribution
+        expected_result: candidate_if_shared_asset_linkage_and_attribution_are_explicit
+    must_not_infer:
+      - ore identity
+      - asset quantity, lifetime, or energy use
+      - allocation or substitution factor
+
+  - case_id: electricity-shared-infrastructure
+    domain: electricity
+    route_class: generation-and-delivery-sharing-an-asset-or-service
+    modelling_observation:
+      - conversion and delivery nodes may share infrastructure or site services
+      - the condition changes burden linkage and double-counting checks, not generation technology ownership
+    candidate_tests:
+      - kind: system_condition
+        responsibility: shared-infrastructure-attribution
+        expected_result: candidate_if_shared_asset_linkage_and_periods_are_explicit
+    must_not_infer:
+      - generation technology
+      - capacity, lifetime, or emission factor
+      - concrete energy-flow UUID
+
+  - case_id: cross-domain-forming-fabrication
+    domain: cross-domain
+    route_class: geometry-or-form-transformation
+    modelling_observation:
+      - a route may change the geometry or dimensional state of an input material
+      - the forming responsibility has its own input, loss, output, and hand-off interfaces
+    candidate_tests:
+      - kind: activity
+        responsibility: forming-fabrication-node
+        expected_result: candidate_if_forming_boundary_and_output_state_are_stable
+    must_not_infer:
+      - material or product identity
+      - forming technology
+      - equipment, quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-assembly-integration
+    domain: cross-domain
+    route_class: component-joining-or-integration
+    modelling_observation:
+      - a route may join two or more independently identified components
+      - assembly has a multi-input interface distinct from forming, treatment, and finishing
+    candidate_tests:
+      - kind: activity
+        responsibility: assembly-integration-node
+        expected_result: candidate_if_component_roles_and_assembled_handoff_are_explicit
+    must_not_infer:
+      - component or product identity
+      - assembly technology or performance
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-surface-finishing
+    domain: cross-domain
+    route_class: surface-coating-protection-or-marking
+    modelling_observation:
+      - a route may apply a finishing responsibility after a parent product state is established
+      - finishing adds its own inputs, residues, emissions, and validation questions
+    candidate_tests:
+      - kind: activity
+        responsibility: surface-finishing-node
+        expected_result: candidate_if_parent_and_finished_states_are_explicit
+    must_not_infer:
+      - parent product identity
+      - coating or finishing formulation
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-recovery-reprocessing
+    domain: cross-domain
+    route_class: secondary-material-recovery-and-reprocessing
+    modelling_observation:
+      - a route may recover a secondary material or product and reprocess it into a subsequent goods route
+      - the responsibility adds source-state, quality-state, reject, and hand-off questions
+    candidate_tests:
+      - kind: activity
+        responsibility: recovery-reprocessing-node
+        expected_result: candidate_if_recovered_source_and_secondary_handoff_are_explicit
+    must_not_infer:
+      - recovered material identity or quality value
+      - recycling technology
+      - recycled-content factor, quantity, or flow UUID
+
+  - case_id: cross-domain-grading-sorting
+    domain: cross-domain
+    route_class: quality-classification-or-sorting
+    modelling_observation:
+      - a route may classify incoming material into multiple quality or destination states
+      - the responsibility changes declared output states without necessarily transforming identity
+    candidate_tests:
+      - kind: activity
+        responsibility: grading-sorting-node
+        expected_result: candidate_if_grade_states_and_handoffs_are_explicit
+    must_not_infer:
+      - material or product identity
+      - grade threshold or market value
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-formulation-blending
+    domain: cross-domain
+    route_class: composition-and-formulation
+    modelling_observation:
+      - a route may combine multiple inputs under a declared composition responsibility
+      - formulation has distinct input-role, composition, off-spec, and output interfaces
+    candidate_tests:
+      - kind: activity
+        responsibility: formulation-blending-node
+        expected_result: candidate_if_composition_inputs_and_output_state_are_explicit
+    must_not_infer:
+      - substance or product identity
+      - recipe, concentration, or performance value
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-preservation-stabilization
+    domain: cross-domain
+    route_class: preservation-or-stability-intervention
+    modelling_observation:
+      - a route may preserve or stabilize a declared usable state through a bounded intervention
+      - preservation adds condition, intervention, loss, and hand-off questions
+    candidate_tests:
+      - kind: activity
+        responsibility: preservation-stabilization-node
+        expected_result: candidate_if_before_and_after_states_are_explicit
+    must_not_infer:
+      - product identity or shelf-life value
+      - preservation technology or factor
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-packaging-presentation
+    domain: cross-domain
+    route_class: product-enclosure-protection-or-presentation
+    modelling_observation:
+      - a product route may enclose, protect, label, or present a product before its declared hand-off
+      - packaging remains distinct from distribution and logistics services
+    candidate_tests:
+      - kind: activity
+        responsibility: packaging-presentation-node
+        expected_result: candidate_if_product_and_package_boundaries_are_explicit
+    must_not_infer:
+      - product identity or market channel
+      - packaging material choice or distribution service
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-chemical-reaction
+    domain: cross-domain
+    route_class: composition-changing-reaction
+    modelling_observation:
+      - a route may transform input substances through a declared chemical or biochemical reaction
+      - reaction has distinct reactant, product, by-product, and residual interfaces
+    candidate_tests:
+      - kind: activity
+        responsibility: chemical-reaction-node
+        expected_result: candidate_if_reaction_boundary_and_changed_composition_are_explicit
+    must_not_infer:
+      - substance or product identity
+      - reaction pathway, yield, or factor
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-batch-continuous
+    domain: cross-domain
+    route_class: batch-campaign-or-continuous-production
+    modelling_observation:
+      - production mode may change run, campaign, changeover, cleaning, yield, and attribution records
+      - the condition overlays an existing activity without becoming a technology identity
+    candidate_tests:
+      - kind: system_condition
+        responsibility: batch-continuous-production
+        expected_result: candidate_if_mode_specific_boundaries_and_records_are_explicit
+    must_not_infer:
+      - production technology
+      - run length, yield, or quantity values
+      - default allocation method
+
+  - case_id: cross-domain-rework-reject
+    domain: cross-domain
+    route_class: off-spec-rework-rejection-and-loop
+    modelling_observation:
+      - a route may generate rejected or off-spec material that is reworked, downgraded, recovered, or discarded
+      - the condition changes graph topology and burden treatment across process nodes
+    candidate_tests:
+      - kind: system_condition
+        responsibility: rework-reject-routing
+        expected_result: candidate_if_reject_state_and_downstream_path_are_explicit
+    must_not_infer:
+      - defect identity, rate, or quantity
+      - recovery technology or product destination
+      - default cut-off or allocation method
+
+  - case_id: cross-domain-secondary-material-attribution
+    domain: cross-domain
+    route_class: secondary-material-with-prior-system-burden
+    modelling_observation:
+      - a route may use secondary material whose prior-system burden or cut-off treatment changes current attribution
+      - the condition overlays the current activity while preserving prior-system evidence boundaries
+    candidate_tests:
+      - kind: system_condition
+        responsibility: secondary-material-attribution
+        expected_result: candidate_if_origin_and_burden_treatment_are_explicit
+    must_not_infer:
+      - secondary material identity, share, or quantity
+      - recovery technology or prior-system factor
+      - universal recycled-content method
+
+  - case_id: cross-domain-harvest-capture
+    domain: cross-domain
+    route_class: biological-harvest-or-natural-capture
+    modelling_observation:
+      - a route may remove a biological or naturally occurring output from a production or capture context
+      - harvest or capture has a collected-output state and downstream hand-off distinct from production
+    candidate_tests:
+      - kind: activity
+        responsibility: harvest-capture-node
+        expected_result: candidate_if_capture_context_and_collected_output_are_explicit
+    must_not_infer:
+      - species, product, or resource identity
+      - harvest equipment or capture technology
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-primary-conditioning
+    domain: cross-domain
+    route_class: collected-output-first-conditioning
+    modelling_observation:
+      - a route may clean, dry, stabilize, or prepare a collected output before a later goods process
+      - the first hand-off has distinct raw, prepared, reject, and loss states
+    candidate_tests:
+      - kind: activity
+        responsibility: primary-conditioning-node
+        expected_result: candidate_if_raw_and_prepared_states_and_handoff_are_explicit
+    must_not_infer:
+      - product or downstream process identity
+      - conditioning technology or default parameters
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-filling-dosing
+    domain: cross-domain
+    route_class: bulk-to-discrete-unit-transfer
+    modelling_observation:
+      - a route may transfer a material into discrete portions, containers, or delivery units
+      - filling or dosing has a distinct quantity reconciliation and reject interface
+    candidate_tests:
+      - kind: activity
+        responsibility: filling-dosing-node
+        expected_result: candidate_if_bulk_and_discrete_states_are_explicit
+    must_not_infer:
+      - material, product, or package identity
+      - filling equipment or dosing accuracy
+      - quantities, factors, or flow UUIDs
+
+  - case_id: cross-domain-multi-site-aggregation
+    domain: cross-domain
+    route_class: multiple-sites-or-units-to-one-goods-route
+    modelling_observation:
+      - a goods route may aggregate observations from multiple sites, facilities, blocks, or units
+      - aggregation changes representativeness and evidence linkage without changing the activity interface
+    candidate_tests:
+      - kind: system_condition
+        responsibility: multi-site-aggregation
+        expected_result: candidate_if_contributing_units_and_aggregation_decision_are_explicit
+    must_not_infer:
+      - site identity, geography, or production quantities
+      - product identity or sampling factor
+      - default averaging method
+
+negative_cases:
+  - case_id: single-output-route
+    observation: a selected process has exactly one intended output and no linked co-output
+    target_candidate: multi-output-attribution
+    expected_activation: not_applicable
+    reason: the cross-output condition is absent
+
+  - case_id: non-independent-process
+    observation: an operation is only a step inside an existing process node and has no independent hand-off
+    target_candidate: independent-process-node
+    expected_activation: not_applicable
+    reason: the responsibility does not expose an independent process interface
+
+  - case_id: technology-without-parent-or-delta
+    observation: a route label is supplied without a declared parent activity or evidenced changed requirement
+    target_candidate: alternative-technology-route
+    expected_activation: unresolved
+    reason: the route cannot be promoted from a label alone
+
+composition_cases:
+  - case_id: activity-with-technology
+    candidates:
+      - independent-process-node
+      - alternative-technology-route
+    expected_result: coexist
+    rule: technology inherits the parent activity interface and adds an explicit delta
+
+  - case_id: activity-with-multi-output
+    candidates:
+      - independent-process-node
+      - multi-output-attribution
+    expected_result: coexist
+    rule: the condition overlays the activity outputs without replacing the activity interface
+
+  - case_id: technology-with-multi-output
+    candidates:
+      - alternative-technology-route
+      - multi-output-attribution
+    expected_result: coexist
+    rule: the condition overlays the technology route unless an explicit conflict is declared
+
+  - case_id: duplicate-attribution-rules
+    candidates:
+      - multi-output-attribution
+      - multi-output-attribution
+    expected_result: conflict
+    rule: duplicate attribution ownership must not be silently composed

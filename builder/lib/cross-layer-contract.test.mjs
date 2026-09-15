@@ -18,6 +18,7 @@ import {
   assertStructured as assertBuilderStructured,
 } from "./schema-contracts.mjs";
 import { parsePcrMarkdownToStructured } from "./markdown-projection.mjs";
+import { selectModules } from "./module-checklist.mjs";
 import { structuredProjectionYaml } from "./structured-yaml-projection.mjs";
 import { inspectPcrDirectory } from "./lint-rules.mjs";
 import {
@@ -59,8 +60,10 @@ test("one material PCR remains consistent from builder source contracts through 
   assert.doesNotThrow(() => assertCoreStructured(structured));
 
   const markdownProjection = parsePcrMarkdownToStructured(markdown);
+  const moduleSelection = selectModules({ root: repoRoot, structured: markdownProjection });
   const renderedStructured = structuredProjectionYaml(markdownProjection, {
     sourceMarkdown: markdown,
+    moduleReferences: moduleSelection.moduleReferences,
   });
   assert.equal(renderedStructured, structuredText);
 

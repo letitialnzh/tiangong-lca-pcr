@@ -1,0 +1,43 @@
+schema_version: 0
+id: module.system-condition.batch-continuous-production
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Batch or continuous production
+purpose: Add production-mode indexing and changeover obligations when a route operates in batches, campaigns, or continuous runs.
+activation:
+  question: Does production mode change inventory, cleaning, changeover, yield, or attribution records?
+  signals:
+    - batch_continuous_mode
+  evidence:
+    - current PCR definition of the production mode and reporting boundary
+    - route evidence for runs, campaigns, changeovers, or continuous periods
+  outcomes:
+    applicable: activate_production_mode_checks
+    not_applicable: model_the_route_without_mode_indexing
+    unresolved: retain_mode_ambiguity_and_request_current_route_evidence
+owns:
+  - batch, campaign, and continuous-run indexing
+  - changeover and shared-run completeness checks
+  - prompts for mode-specific attribution and yield treatment
+excludes:
+  - production technology identity
+  - run length, yield, and quantity values
+  - default allocation method and flow UUIDs
+interfaces:
+  overlays: [production_mode, run_or_campaign, changeover_events, mode_attribution_slot]
+obligations:
+  - declare the production mode
+  - link inputs, outputs, cleaning, and changeover events to runs or periods
+  - record the mode-specific attribution or yield treatment
+  - prevent shared-run burdens from being counted twice
+validation:
+  - production_mode_requires_run_or_period_boundary
+  - changeover_events_require_explicit_linkage
+  - mode_specific_attribution_must_not_double_count
+composition:
+  depends_on: []
+  coexists_with: [activity, technology, multi-output-attribution, multi-period-attribution]
+  conflicts_with: [duplicate_production_mode_indexing]
+tests:
+  - cross-domain-batch-continuous

@@ -1,0 +1,382 @@
+status: draft_noncanonical
+canonical_module: false
+loadable: false
+purpose: >-
+  Concrete forward-designed module drafts for review. These drafts expose usable conditional
+  rule surfaces while remaining outside library/modules until the module Schema, resolver, and
+  composition contract are ready.
+
+design_basis:
+  - docs/module-architecture/candidate-designs-v0.yaml
+  - docs/module-architecture/abstraction-test-cases.yaml
+  - docs/module-architecture/abstraction-review.yaml
+
+modules:
+  - module_id: activity.independent-process-node.v0
+    working_name: independent-process-node
+    kind: activity
+    status: draft_noncanonical
+    activation:
+      question: >-
+        Does the selected route contain a modelling responsibility with distinct input roles,
+        output state, and hand-off point that needs its own collection or validation?
+      evidence_required:
+        - route description and selected boundary
+        - current PCR evidence for the independent responsibility and hand-off
+      outcomes:
+        applicable: declare_a_distinct_process_node
+        not_applicable: keep_the_responsibility_in_an_existing_node
+        unresolved: retain_the_ambiguity_and_request_route_evidence
+    owns:
+      - conditional process-node role slots
+      - node-specific boundary and hand-off questions
+      - completeness checks for declared node roles
+    does_not_own:
+      - universal PCR document or measurement rules
+      - product identity or classification mapping
+      - product-specific values, factors, flow UUIDs, or final boundary choices
+    stable_interfaces:
+      inputs:
+        - upstream_input_roles
+      process:
+        - independent_responsibility
+      outputs:
+        - output_state
+        - downstream_handoff
+    conditional_obligations:
+      - identify every input role required by the independent responsibility
+      - identify the output state before and after the hand-off
+      - record why the responsibility is independent of adjacent nodes
+      - expose unresolved or shared roles instead of silently filling them
+    conditional_validation:
+      - fail_if_an_applicable_node_has_no_input_or_service_roles
+      - fail_if_an_applicable_node_has_no_output_state_or_handoff
+      - warn_if_the_same_responsibility_is_declared_as_two_nodes
+    evidence_prompts:
+      - what establishes the independent responsibility?
+      - which hand-off does the current PCR select?
+      - which roles are measured locally and which are linked from another node?
+    composition:
+      dependencies: []
+      may_coexist_with:
+        - technology_modules_with_this_parent
+        - system_conditions_overlapping_its_outputs_or_periods
+      conflicts:
+        - duplicate_activity_for_same_responsibility
+    test_cases:
+      - agriculture-managed-production-node
+      - mining-extraction-and-treatment
+      - electricity-generation-route
+    promotion_blockers:
+      - confirm_no_duplication_of_always_on_pcr_contract
+      - define_executable_node-identity_and_duplicate_checks
+
+  - module_id: technology.alternative-technology-route.v0
+    working_name: alternative-technology-route
+    kind: technology
+    status: draft_noncanonical
+    parent_activity: activity.independent-process-node.v0
+    activation:
+      question: >-
+        Is the selected activity implemented through an alternative route that changes topology,
+        inventory categories, calculation treatment, data requirements, or validation?
+      evidence_required:
+        - declared parent activity
+        - current route evidence showing the changed requirement
+      outcomes:
+        applicable: attach_an_explicit_route_delta_to_the_parent
+        not_applicable: keep_the_difference_as_a_pcr_parameter_or_choice
+        unresolved: do_not_promote_the_route_until_parent_and_delta_are_evidenced
+    owns:
+      - parent-activity reference
+      - route-delta declaration
+      - coexistence and mutual-exclusion rules
+      - route-specific evidence questions
+    does_not_own:
+      - an independent product interface
+      - parent activity rules
+      - technology performance values, factors, or concrete flows
+    stable_interfaces:
+      inherited_from_parent:
+        - upstream_input_roles
+        - output_state
+        - downstream_handoff
+      technology_delta:
+        - changed_topology
+        - changed_inventory_categories
+        - changed_calculation_or_validation
+    conditional_obligations:
+      - name_the_parent_activity_before_selecting_the_technology
+      - describe_the_delta_by_requirement_category
+      - state_whether_the_route_is_alternative_mutually_exclusive_or_coexisting
+      - collect current route evidence for every claimed delta
+    conditional_validation:
+      - fail_if_parent_activity_is_missing
+      - fail_if_no_evidenced_delta_is_declared
+      - fail_if_two_mutually_exclusive_routes_are_selected_without_resolution
+    evidence_prompts:
+      - what is the parent activity?
+      - which requirement changes relative to that parent?
+      - what evidence supports the claimed difference for this PCR?
+    composition:
+      dependencies:
+        - activity.independent-process-node.v0
+      may_coexist_with:
+        - system_conditions_overlapping_the_parent_outputs_or_periods
+      conflicts:
+        - technology_without_parent_activity
+        - technology_label_without_evidenced_delta
+    test_cases:
+      - agriculture-managed-production-node
+      - mining-extraction-and-treatment
+      - electricity-generation-route
+    promotion_blockers:
+      - define_executable_parent_reference_resolution
+      - define_route_precedence_when_multiple_technologies_are_selected
+
+  - module_id: system_condition.multi-output-attribution.v0
+    working_name: multi-output-attribution
+    kind: system_condition
+    status: draft_noncanonical
+    activation:
+      question: >-
+        Does a selected process node or linked set of nodes intentionally report more than one
+        output that must be jointly attributed, substituted, or allocated?
+      evidence_required:
+        - current PCR definition of intended outputs and hand-off points
+        - current route evidence for the selected attribution or substitution treatment
+      outcomes:
+        applicable: activate_cross_output_checks
+        not_applicable: treat_the_route_as_single_output_for_this_condition
+        unresolved: retain_output_ambiguity_and_request_current_product_evidence
+    owns:
+      - multi-output activation and output-set completeness
+      - cross-output linkage and double-counting checks
+      - prompts for the PCR-specific attribution decision
+    does_not_own:
+      - default allocation or substitution method
+      - output identity, quality, quantity, or concrete flow UUID
+      - final product-specific attribution decision
+    stable_interfaces:
+      overlays:
+        - output_set
+        - output_handoff_points
+        - attribution_decision_slot
+    conditional_obligations:
+      - enumerate every intended output within the selected boundary
+      - record each output hand-off and relationship to the producing node
+      - require an explicit PCR-specific attribution or substitution decision
+      - keep untracked residue, waste, and intended output classifications distinct
+    conditional_validation:
+      - fail_if_an_intended_output_is_missing_from_the_output_set
+      - fail_if_two_attribution_methods_are_applied_without_precedence
+      - fail_if_the_same_output_is_counted_at_two_handoffs
+    evidence_prompts:
+      - which outputs are intended and within the declared boundary?
+      - what current evidence supports the selected attribution treatment?
+      - is any apparent co-output actually residue or waste under the current PCR?
+    composition:
+      dependencies: []
+      may_coexist_with:
+        - activity_modules_exposing_multiple_outputs
+        - technology_modules_inheriting_multiple_outputs
+      conflicts:
+        - duplicate_attribution_ownership
+        - intended_output_silently_reclassified_as_untracked_residue
+    test_cases:
+      - agriculture-multi-output-production
+      - mining-multi-output-treatment
+      - electricity-multi-output-generation
+    promotion_blockers:
+      - define_executable_output_interface_resolution
+      - define_precedence_with_generic_allocation_and_pcr_specific_decisions
+
+  - module_id: activity.managed-biological-production.v0
+    working_name: managed-biological-production
+    kind: activity
+    status: draft_noncanonical
+    activation:
+      question: >-
+        Does the selected route contain a managed biological production responsibility with its
+        own management inputs, output state, and hand-off point?
+      evidence_required:
+        - route description establishing managed production
+        - current PCR evidence for the selected production boundary and management regime
+      outcomes:
+        applicable: declare_a_managed_biological_production_node
+        not_applicable: keep_the_route_in_another_activity_or_pcr_specific_process
+        unresolved: retain_route_ambiguity_and_request_production_evidence
+    owns:
+      - managed-production responsibility and role slots
+      - production-node input and output questions
+      - conditional checks for production boundary and hand-off completeness
+    does_not_own:
+      - product or species identity
+      - harvesting, capture, or primary conditioning rules
+      - perennial timing, allocation, quantities, factors, or flow UUIDs
+    stable_interfaces:
+      inputs:
+        - biological_production_object
+        - management_input_roles
+        - supporting_service_roles
+      process:
+        - managed_production_responsibility
+      outputs:
+        - intended_output_state
+        - residue_or_loss_state
+        - production_handoff
+    conditional_obligations:
+      - identify the managed production object and production mode
+      - identify management input roles without assuming quantities
+      - distinguish intended outputs from residues, losses, and waste
+      - record the production boundary and hand-off selected by the PCR
+    conditional_validation:
+      - fail_if_managed_production_has_no_declared_output_state
+      - fail_if_management_inputs_are_not_role_classified
+      - warn_if_harvest_or_conditioning_is_silently_embedded_without_boundary_decision
+    evidence_prompts:
+      - what establishes that the production is managed rather than incidental or captured?
+      - which management inputs and services are in the current PCR boundary?
+      - where does production hand off to harvest, conditioning, or the next node?
+    composition:
+      dependencies: []
+      may_coexist_with:
+        - technology_modules_with_this_parent
+        - multi-output-attribution
+        - multi-period-attribution
+      conflicts:
+        - duplicate_managed_production_node
+        - harvest_or_conditioning_embedded_without_boundary_resolution
+    test_cases:
+      - agriculture-managed-production-node
+      - forestry-managed-production-node
+      - aquaculture-managed-production-node
+    promotion_blockers:
+      - define_boundary_with_harvest_and_primary_conditioning
+      - confirm_conditional_rules_do_not_duplicate_the_always_on_contract
+
+  - module_id: technology.alternative-production-route.v0
+    working_name: alternative-production-route
+    kind: technology
+    status: draft_noncanonical
+    parent_activity: activity.managed-biological-production.v0
+    activation:
+      question: >-
+        Is the managed biological production activity implemented through an alternative route
+        that changes topology, inventory categories, calculation treatment, data requirements,
+        or validation?
+      evidence_required:
+        - declared managed-biological-production parent
+        - current route evidence showing the changed requirement categories
+      outcomes:
+        applicable: attach_the_production_route_delta_to_the_parent
+        not_applicable: retain_the_difference_as_a_pcr_parameter_or_choice
+        unresolved: do_not_promote_the_route_until_parent_and_delta_are_evidenced
+    owns:
+      - parent activity reference
+      - production route delta
+      - route coexistence and mutual-exclusion rules
+      - current route evidence prompts
+    does_not_own:
+      - production object identity or local performance values
+      - a second production activity interface
+      - default input quantities, factors, or concrete flows
+    stable_interfaces:
+      inherited_from_parent:
+        - biological_production_object
+        - management_input_roles
+        - production_handoff
+      technology_delta:
+        - changed_topology
+        - changed_inventory_categories
+        - changed_calculation_or_validation
+    conditional_obligations:
+      - declare the managed production parent before selecting the route
+      - describe the delta by requirement category
+      - state whether the route is alternative, mutually exclusive, or coexisting
+      - collect current PCR evidence for every claimed delta
+    conditional_validation:
+      - fail_if_parent_activity_is_missing
+      - fail_if_the_production_delta_is_only_a_route_label
+      - fail_if_mutually_exclusive_routes_are_selected_without_resolution
+    evidence_prompts:
+      - which parent production activity is being implemented?
+      - what changes relative to that parent?
+      - what current evidence supports each changed requirement?
+    composition:
+      dependencies:
+        - activity.managed-biological-production.v0
+      may_coexist_with:
+        - multi-output-attribution
+        - multi-period-attribution
+      conflicts:
+        - alternative_route_without_parent
+        - route_label_without_evidenced_delta
+    test_cases:
+      - agriculture-managed-production-node
+      - forestry-managed-production-node
+      - aquaculture-managed-production-node
+    promotion_blockers:
+      - define_executable_parent_resolution
+      - test_mutual_exclusion_and_route_precedence
+
+  - module_id: system_condition.multi-period-attribution.v0
+    working_name: multi-period-attribution
+    kind: system_condition
+    status: draft_noncanonical
+    activation:
+      question: >-
+        Do selected process instances, assets, or outputs span more than one reporting period or
+        lifecycle phase such that phase linkage, replacement, termination, or attribution changes?
+      evidence_required:
+        - current PCR reporting period and phase definition
+        - route evidence for phase, replacement, termination, and attribution treatment
+      outcomes:
+        applicable: activate_period_and_phase_overlay_checks
+        not_applicable: model_the_route_as_single_period_for_this_condition
+        unresolved: retain_period_ambiguity_and_request_current_route_evidence
+    owns:
+      - period and phase indexing
+      - linkage of events and outputs to periods
+      - prompts for period-specific attribution decisions
+      - replacement, termination, and double-attribution checks
+    does_not_own:
+      - universal lifetime, cycle length, or annualization values
+      - product identity, quantities, factors, or flow UUIDs
+      - final product-specific attribution decision
+    stable_interfaces:
+      overlays:
+        - reporting_periods
+        - lifecycle_phases
+        - replacement_events
+        - termination_events
+        - period_attribution_decision
+    conditional_obligations:
+      - enumerate the periods and phases relevant to the selected route
+      - link inputs, assets, outputs, and events to their applicable periods
+      - record period-specific attribution and replacement decisions
+      - prevent the same input, asset, or output from being attributed twice
+    conditional_validation:
+      - fail_if_phase_or_period_boundaries_are_missing
+      - fail_if_replacement_or_termination_events_are_unresolved
+      - fail_if_period_attribution_double_counts_an_input_or_output
+    evidence_prompts:
+      - which reporting periods and lifecycle phases apply to this PCR?
+      - what evidence supports replacement, termination, and attribution treatment?
+      - are any assumptions being incorrectly treated as universal values?
+    composition:
+      dependencies: []
+      may_coexist_with:
+        - activity_modules_with_periodic_outputs
+        - technology_modules_with_period_specific_deltas
+        - multi-output-attribution
+      conflicts:
+        - duplicate_period_indexing
+        - unresolved_period_boundary_used_as_a_final_value
+    test_cases:
+      - agriculture-multi-period-production
+      - mining-multi-period-asset
+      - electricity-multi-period-asset
+    promotion_blockers:
+      - define_executable_phase_and_period_resolution
+      - review_precedence_with_generic_measurement_and_attribution_methods
