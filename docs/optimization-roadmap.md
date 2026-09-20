@@ -63,7 +63,6 @@ surviving scaffold 多 1。这个分布说明当前最重要的问题不是继�
 - material PCR 的中英文关键规则保持相同的有序 rule id。
 - material PCR lint 检查 structured freshness。
 - lifecycle 使用合法状态矩阵；active 和 publish 具有实质 preflight。
-- viewer 输出替换受 marker、protected path、symlink 与临时构建保护。
 - pull request 和 main push 运行统一 `npm run validate`。
 
 退出条件：不存在 scaffold guidance、stale material projection、无门禁发布或“零 finding 等于完整验证”的路径。
@@ -88,10 +87,10 @@ surviving scaffold 多 1。这个分布说明当前最重要的问题不是继�
 CPC `98000` 与 bulk physical migration 待推进。
 
 1. 已实现：ADR、迁移计划、确定性 material index 和完整 classification coverage read model；CPC 3.0 基线为 2,877 leaf、3 mapped、2,874 unmapped、0 unknown。
-2. 已实现：catalog CLI 与 viewer 默认 material-first，legacy/all 只能显式请求；coverage summary/list 独立、受控并分页，known-unmapped resolve 不再伪装成方法学成功。
+2. 已实现：catalog CLI 默认 material-first，legacy/all 只能显式请求；coverage summary/list 独立、受控并分页，known-unmapped resolve 不再伪装成方法学成功。
 3. 已实现：2,874 条 deterministic alias 以 terminal classification coverage locator 保留旧 id；alias-first
    `resolve --pcr` 返回 `legacy_id_redirect` 和 copyable next command，不自动 follow。内容命令以
-   `PCR_LEGACY_ID_REDIRECT` fail closed；viewer 不再内联空 Markdown 或 scaffold guidance error。
+   `PCR_LEGACY_ID_REDIRECT` fail closed。
 4. 已实现：canonical `import-cpc` 每次要求显式 source，默认 classification-only，缺失时创建 zero-edge
    v2 mapping，校验并逐字节保留既有 mapping，创建 0 个 PCR；coordinate lock、no-follow read、baseline
    CAS、staged writes 和 mapping-last commit 防止并发覆盖及 dangling edge。`scaffold-cpc` 只有显式
@@ -128,7 +127,7 @@ CPC `98000` 与 bulk physical migration 待推进。
 
 1. 按产品重要度、数据生产需求和证据可得性管理 PCR authoring queue，不按 classification 顺序机械填充。
 2. 标准化 evidence pack、UUID resolution、双语 diff、review finding 和 release evidence。
-3. 生成轻量 catalog index 和按 PCR 拆分的 viewer artifacts，避免每次加载全部 Markdown/guidance。
+3. 生成轻量 catalog index 和按 PCR 拆分的消费 artifacts，避免每次加载全部 Markdown/guidance。
 4. 发布 bundle 记录 PCR version、projection fingerprint、source evidence snapshot 和 validation summary。
 5. 建立 deprecated、superseded、mapping redirect 和 consumer compatibility 流程。
 
@@ -144,7 +143,7 @@ CPC `98000` 与 bulk physical migration 待推进。
 | Validation | 未声明的 skipped requirement family | 0 |
 | Identity | 仅因 classification leaf 新增的 PCR record | P2 后为 0 |
 | Composition | 声明 module 但 compiled guidance 未解析 | P3 后为 0 |
-| Scale | viewer 默认加载的 empty scaffold 正文 | 0 |
+| Scale | 默认 catalog 返回的 empty scaffold 正文 | 0 |
 | Quality | published PCR 的 review、translation、source 与 fingerprint 证据 | 100% |
 
 ## 实施原则

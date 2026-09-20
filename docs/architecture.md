@@ -74,7 +74,7 @@ lastReviewedCommit: 41e00bafd03530af7871e4620e59862dd779473e
        |                            |                                |
        v                            v                                v
 +------+-------+        +-----------+----------+          +----------+-----------+
-| builder/docs |        | library/modules/     |          | CLI / viewer / skill |
+| builder/docs |        | library/modules/     |          | CLI / skill          |
 | workflow     |        | shared method rules  |          | 面向用户和 agent       |
 +--------------+        +----------------------+          +----------------------+
 
@@ -85,18 +85,17 @@ feedback -> issue template / feedback draft -> maintainer intake -> builder work
 
 - `builder/` 是写入侧，负责把维护者或 AI production agent 的工作落到 `library/`。
 - `packages/pcr-core/` 是读取侧核心，负责把 `library/` 和 `classifications/` 变成稳定消费 API。
-- CLI、viewer、skill 都是消费界面；它们不能绕过 `pcr-core` 自己发明一套 PCR 读取和投影规则。
+- CLI 和 skill 都是消费界面；它们不能绕过 `pcr-core` 自己发明一套 PCR 读取和投影规则。
 
 ## 组件职责
 
 | 组件 | 职责 | 可以写什么 | 不能做什么 |
 | --- | --- | --- | --- |
 | `builder/` | PCR 构建、投影、lint、lifecycle、publish 工具层 | 通过 workflow 写入 `library/pcrs/**`、生成 `structured.yaml`、维护 builder schema/template/vocab | 不存储独立 PCR truth |
-| `library/` | canonical PCR 内容和可复用方法规则 | `library/pcrs/**`、`library/modules/**`、必要索引 | 不放 CLI runtime、viewer UI 或 agent skill 行为 |
+| `library/` | canonical PCR 内容和可复用方法规则 | `library/pcrs/**`、`library/modules/**`、必要索引 | 不放 CLI runtime 或 agent skill 行为 |
 | `classifications/` | 外部分类体系 source、accepted mapping、retired-id alias 和派生 coverage | `classifications/systems/**`、`classifications/mappings/**`、`classifications/aliases/**`、`classifications/indexes/**` | 不定义 PCR 目录结构，不用外部 code 充当 PCR identity |
 | `packages/pcr-core/` | 共享只读消费核心 | catalog read、classification resolve、Markdown read、guidance projection、validation、feedback draft | 不直接修改 PCR 文件 |
 | `packages/tiangong-pcr-cli/` | 外部用户和 AI agent 的命令行入口 | CLI command、help、output formatting、exit behavior | 不复制 `pcr-core` 的 library traversal 规则，不修改 PCR truth |
-| `packages/pcr-viewer/` | 本地静态预览界面 | viewer build、static UI、local server | 不成为 PCR editor，不成为另一套 PCR database |
 | `skills/tiangong-pcr/` | 指导外部 AI agent 使用 PCR CLI 和反馈流程 | 使用流程、CLI 指南、agent checklist | 不复制 PCR 方法学细节 |
 | `.github/ISSUE_TEMPLATE/` | 结构化反馈入口 | missing PCR、mapping gap、UUID issue、range evidence、translation 等反馈模板 | 不直接改变 canonical PCR |
 | `docs/` | repo 级架构、政策、authoring、release、coding 指南 | 稳定说明和跨层规则 | 不承载 builder 细节 workflow；细节放 `builder/docs/` |
@@ -243,7 +242,7 @@ allocation、data quality 和 validation 规则。模块是方法学资产，不
 ### Guidance Output
 
 `packages/pcr-core` 从 `structured.yaml` 构造 Agent-facing guidance。这个 guidance 是消费视图，
-不是新的 authoring truth。CLI、viewer 和 skill 都应把它当作读取结果，而不是修改源。
+不是新的 authoring truth。CLI 和 skill 都应把它当作读取结果，而不是修改源。
 
 每个 material catalog record、mapped resolve 和 guidance 结果都携带 `readiness`：
 
@@ -319,7 +318,7 @@ classification code
   -> accepted classifications/mappings edge or known-unmapped result
   -> canonical PCR id only for an accepted material mapping
   -> packages/pcr-core
-  -> tiangong-pcr resolve / viewer search / agent guidance
+  -> tiangong-pcr resolve / agent guidance
 ```
 
 外部分类 code 是入口，不是 PCR identity。如果两个分类 leaf 指向相同方法学品类，应映射到
@@ -357,24 +356,6 @@ accepted mapping 返回 material PCR，对已知 unmapped leaf 成功返回空 m
 当请求 JSON 时，usage/input/runtime error 保持 stdout 为空，在 stderr 返回稳定 error code、
 message、details 和 exit_code；validation gate 的 exit 2 仍把完整 validation report 放在 stdout。
 
-### 本地 viewer 预览 PCR
-
-```text
-npm run viewer:build
-  -> packages/pcr-core reads library + classifications
-  -> packages/pcr-viewer/dist/data/pcr-viewer-data.json
-  -> npm run viewer:serve
-  -> local static browser viewer
-```
-
-viewer 是只读预览界面。它可以帮助浏览、搜索和检查 Markdown/guidance/source，但不能编辑 PCR。
-viewer build 默认 scope 是 `material`；只有显式传入 `--scope legacy` 或 `--scope all` 才包含迁移期
-兼容记录。Classification coverage 作为独立 read model 展示，不把 legacy scaffold 重新包装成方法学。
-构建器先在同级临时目录准备完整输出，再替换目标。自定义非空目录只有带有 viewer build marker
-时才允许替换；仓库根、package source 和其他受保护路径会在 realpath 解析后被拒绝。local server
-同样会解析请求文件的真实路径，并拒绝通过 symlink 跳出 build root 的访问。
-缺失或空的 PCR catalog 会在替换开始前失败，不能用空站点覆盖上一次可用 build。
-
 ### feedback 回流
 
 ```text
@@ -410,7 +391,6 @@ feedback 可以触发 PCR 内容更新、mapping 修复、UUID 修正、range ev
 - `library/indexes/**`：用于浏览和检索的索引。
 - `classifications/indexes/**`：由 normalized classification leaf、accepted mapping 与 material target state 生成的完整 coverage read model。
 - `classifications/aliases/pcr-id-aliases.yaml`：由 CPC leaf identity inventory 与 accepted mapping 确定性生成；`npm run aliases:check` 拒绝 stale artifact。
-- `packages/pcr-viewer/dist/**`：由 `npm run viewer:build` 生成的静态 viewer artifact。
 - `classifications/systems/<system>/<version>/normalized/**`：由 retained source artifact 和 import logic 派生的 normalized 分类数据。
 
 派生物必须能从其 source input 和工具重新生成。派生物不能成为独立方法学 truth。
@@ -432,7 +412,6 @@ feedback 可以触发 PCR 内容更新、mapping 修复、UUID 修正、range ev
 | 修改 PCR 构建、lint 或 projection 规则 | `builder/lib/**`、`builder/schemas/**`、`builder/vocab/**` |
 | 修改公开消费核心 API | `packages/pcr-core/**` |
 | 修改 CLI 命令或输出 | `packages/tiangong-pcr-cli/**` |
-| 修改 viewer UI 或本地预览能力 | `packages/pcr-viewer/**` |
 | 修改 agent 使用说明 | `skills/tiangong-pcr/**` |
 | 修改反馈入口 | `.github/ISSUE_TEMPLATE/**` 或 `packages/pcr-core` feedback draft |
 | 修改 repo 级规则或说明 | `AGENTS.md`、`README.md`、`docs/**`、`.docpact/config.yaml` |
@@ -441,14 +420,12 @@ feedback 可以触发 PCR 内容更新、mapping 修复、UUID 修正、range ev
 
 - 不要让 classification code 成为 PCR directory slug。
 - 不要因为新增分类体系而复制 PCR 记录。
-- 不要让 CLI、viewer 或 skill 直接修改 `library/pcrs/**`。
-- 不要让 viewer 绕过 `packages/pcr-core` 自己解析 PCR truth。
+- 不要让 CLI 或 skill 直接修改 `library/pcrs/**`。
 - 不要在 skill 中复制详细 PCR 方法学规则；skill 应指向 CLI 和 contracts。
 - 不要把 feedback 当作已验证 truth；它必须经过 maintainer intake。
 - 不要原地编辑、sync 或 bump published/deprecated current，也不要手工修改 `releases/**` 或 `release-history.yaml`。
 - 不要 reopen deprecated PCR；successor/restoration 需要独立治理流程。
 - 不要把 lookup trace、命令历史、session path、API key、access token 写入 PCR 文件。
-- 不要把 `packages/pcr-viewer/dist/**` 当作源文件维护；它是 build artifact。
 
 ## 治理边界
 

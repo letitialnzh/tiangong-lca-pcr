@@ -66,8 +66,8 @@ Alias 数量比 surviving scaffold 多 1，是因为 alias 在物理删除前已
 
 - 实现确定性的 material PCR index；
 - 生成完整 CPC 3.0 coverage index，目标计数为 `mapped: 3`、`unmapped: 2874`、`unknown: 0`；
-- catalog、CLI 和 viewer 显式区分 material、legacy 与 all scope；
-- 默认 list/tree/viewer 只加载 material；
+- catalog 和 CLI 显式区分 material、legacy 与 all scope；
+- 默认 list/tree 只加载 material；
 - coverage summary/list 保留全部 2,877 个 leaf 的可查询性；
 - resolve 对当时的 material mapping 保持兼容，对 legacy scaffold 明确标记 compatibility 与 unmapped coverage；
 - 不删除目录，不修改旧 PCR id，不收缩现有 mapping。
@@ -81,19 +81,16 @@ Phase 1 已交付：
   和 coverage/material 交叉引用漂移；
 - public CLI 的 `tree`/`list` 默认 material，`coverage summary|list` 独立且分页，exact resolve 显式区分
   `mapped`、`legacy_scaffold_compatibility` 和 known-unmapped；
-- viewer data contract 升级为 v3，默认只包含 3 条 material methodology，并按 system/version 输出轻量
-  `classification_coverage_summaries`，不再内联 coverage entries、2,874 条 empty scaffold 的 Markdown
-  或 guidance error；
 - coverage source descriptor 固定 generator/contract 版本及 normalized leaves、mapping 两份输入的
   exact-byte SHA-256；catalog check 与 runtime read 都会拒绝 stale 或被替换的输入；
-- core API 默认 scope 仍为 `all` 以保留库级兼容，CLI/viewer 在边界处显式选择 `material`。
+- core API 默认 scope 仍为 `all` 以保留库级兼容，CLI 在边界处显式选择 `material`。
 
 Phase 1 验收：
 
 - material index 与实际 material manifest 集合一致；
 - coverage entries 为 2,877，code 唯一，summary 精确；
 - 默认 material catalog 为 3，显式 all scope 仍为 2,877；
-- viewer 默认不含 `empty_scaffold` 或 scaffold `guidance_error`；
+- 默认 material catalog 不含 `empty_scaffold`；
 - 当时的旧 classification resolve 与旧 scaffold id 仍有确定性结果；
 - `npm run validate` 通过。
 
@@ -176,7 +173,7 @@ known-unmapped，旧 id 返回 coverage redirect。
 - canonical catalog 数量只反映真实方法学实体；
 - classification coverage 仍达到 normalized leaves 的 100%；
 - legacy alias 保留到完成外部 consumer 审计，不设置未经证据支持的自动到期日；
-- viewer coverage 数据按需加载，不再内联分类树和空 Markdown。
+- coverage 数据通过分页命令按需加载，不内联完整分类树和空 Markdown。
 
 ## 回滚条件
 

@@ -83,7 +83,7 @@ Classification coverage and the PCR catalog answer different questions:
 
 Coverage indexes under `classifications/indexes/` are deterministic derived read models. They combine normalized
 classification leaves, mapping input, PCR lifecycle state, and explicit migration/assessment state for consumption by
-`pcr-core`, the public CLI, and the viewer. Their source descriptors bind the generator contract and the exact bytes of
+`pcr-core` and the public CLI. Their source descriptors bind the generator contract and the exact bytes of
 both inputs. They do not replace the normalized source or mapping files as authoring truth and must be regenerated when
 those inputs change.
 
@@ -123,7 +123,7 @@ when it is absent instead of selecting directly from mapping.
 
 ## Material-First Migration
 
-Catalog `list` and `tree`, and the local viewer, default to material PCRs. Their explicit compatibility scopes are
+Catalog `list` and `tree` default to material PCRs. Their explicit compatibility scopes are
 `--scope material|legacy|all`. Surviving legacy empty scaffolds are not methodology and have no positive mapping.
 Explicit legacy/all catalog browsing can still inventory them, but an exact old id is alias-first and returns a
 redirect locator; guidance and validation reject it.

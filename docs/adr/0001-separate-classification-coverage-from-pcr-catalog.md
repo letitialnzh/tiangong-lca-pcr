@@ -9,7 +9,7 @@ language: zh-CN
 whenToUse:
   - when importing or updating a classification system
   - when deciding whether a classification leaf should create a PCR record
-  - when changing catalog, coverage, mapping, alias, resolve, or viewer behavior
+  - when changing catalog, coverage, mapping, alias, or resolve behavior
 whenToUpdate:
   - when the coverage state model changes
   - when the legacy scaffold compatibility period changes
@@ -51,7 +51,6 @@ Classification leaf 的存在不再自动产生 canonical PCR identity。只有�
 
 - 11,496 个重复模板文件，仓库目录约占 45 MB；
 - 完整 depth-3 tree JSON 约 4.41 MB；
-- viewer JSON 约 8.71 MB，其中绝大部分是不可用 scaffold 及其 `guidance_error`；
 - 旧 importer 行为会按 leaf 数量复制 PCR identity 和目录，而不是复用方法学实体。
 
 ## Representation Decision
@@ -62,7 +61,7 @@ Classification leaf 的存在不再自动产生 canonical PCR identity。只有�
 | Canonical PCR | 可审核的方法学实体 | `library/pcrs/**` 四文件契约继续作为 F3 authoring/compiled truth |
 | Positive mapping | classification code 到 canonical PCR 的边 | `classifications/mappings/**` 是受约束 F3 truth；target 必须存在 |
 | Coverage assessment | 某个 leaf 当前是否有可接受 mapping | 状态与 evidence refs 半结构化；candidate suggestion 不得获得 canonical `pcr_id` |
-| Coverage index | 面向 core、CLI、viewer 的完整读模型 | normalized leaf + positive mapping + assessment 的确定性 F3 投影，不成为新的 authoring truth |
+| Coverage index | 面向 core 和 CLI 的完整读模型 | normalized leaf + positive mapping + assessment 的确定性 F3 投影，不成为新的 authoring truth |
 | Legacy alias | 旧 scaffold ID 的兼容路由 | F3 registry；只指向 PCR 或 classification coverage locator，不允许隐式近似匹配 |
 
 机器稳定字段使用严格契约；候选范围说明、证据和 reviewer reasoning 保持可演进，不把尚未成熟的判断过早压成 rigid schema。
@@ -85,7 +84,7 @@ Material 只表示“存在方法学内容”，不等于可直接用于 guidanc
 - `manual_review`：存在冲突或关系不确定，必须人工判断；
 - `unknown`：source 缺失、记录冲突或迁移不完整，稳定构建中必须为零。
 
-`mapped` 只说明 mapping 边存在，不说明 target readiness 为 ready。`candidate_suggestion` 和 `manual_review` 不能被 resolve、guidance 或 viewer 自动选择为 PCR。
+`mapped` 只说明 mapping 边存在，不说明 target readiness 为 ready。`candidate_suggestion` 和 `manual_review` 不能被 resolve 或 guidance 自动选择为 PCR。
 
 ### Mapping
 
@@ -104,14 +103,13 @@ Target 必须满足：
 
 ## 公共消费契约
 
-- `list`、`tree` 和 viewer 默认 material-first，并显式报告 scope、完整性和进入 coverage/legacy 视图的下一命令。
+- `list` 和 `tree` 默认 material-first，并显式报告 scope、完整性和进入 coverage/legacy 视图的下一命令。
 - Classification coverage 使用独立、确定性的 summary/list 输出，长集合必须分页。
 - `resolve --classification` 保持 exact lookup，不使用 fuzzy 或最近邻回退。
 - 已知 leaf 但无 mapping 是正常的 `unmapped` 成功结果：`mapping: null`、`pcr: null`。
 - 不存在的 system/version/code、损坏的 coverage index 或冲突才是命令错误。
 - 显式 legacy/all catalog scope 可继续展示尚存空目录；classification resolve 不再从 mapping v2 返回
   legacy target。旧 scaffold id 通过 alias 返回 terminal locator，目录删除前后行为相同。
-- Viewer 的文本搜索可以保留为 literal filter，但不能作为 resolver，也不能自动宣称第一个结果是 canonical mapping。
 
 ## 一致性门禁
 
@@ -140,7 +138,7 @@ redirect。Fail-fast `scaffold-cpc --legacy-scaffolds` 只兼容 v1/scaffold map
 
 ## 结果与代价
 
-正面结果：PCR 数量重新反映方法学实体数量；分类覆盖仍可完整查询；默认 CLI/viewer 上下文显著缩小；新增分类体系不再复制 PCR 树。
+正面结果：PCR 数量重新反映方法学实体数量；分类覆盖仍可完整查询；默认 CLI 上下文显著缩小；新增分类体系不再复制 PCR 树。
 
 代价：迁移期需要双轨读取、legacy scope 和 alias；coverage/index 生成与交叉引用校验成为新的构建职责；外部消费者必须区分 methodology catalog 与 classification coverage。
 
