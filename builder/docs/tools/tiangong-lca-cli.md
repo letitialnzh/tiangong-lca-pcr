@@ -38,7 +38,10 @@ tiangong-lca flow get --id <flow-id> --json
 tiangong-lca search process --input ./search-process.request.json --json
 ```
 
-Use `search flow` to find candidates, then use `flow get` or the most specific available command to confirm the selected row before copying UUIDs into PCR content.
+Before calling these commands, follow the [Flow Identity Binding Contract](../contracts/flow-binding-contract.md).
+It owns semantic-card completion, Flow Set priority, candidate lookup/refinement limits, selected-row confirmation,
+and support-reference verification for create and update work. This tool note specifies command use, not a separate
+lookup sequence.
 
 ## Storage Rules
 
@@ -61,9 +64,6 @@ Tiangong is the identity source for UUID-bearing references. `Data Sources` reco
 
 ## Fallback Behavior
 
-When the CLI cannot resolve a UUID:
-
-1. Keep the human-readable flow candidate if it is useful for PCR drafting.
-2. Leave the UUID or unit support cell empty.
-3. Record the unresolved identity issue in `manifest.yaml` review metadata.
-4. Re-run lookup before publish.
+When the CLI is unavailable or cannot verify an identity, apply the binding contract's unresolved-coverage rules.
+Keep useful semantic names, leave unresolved UUIDs blank, and record the gap in the selected workspace manifest's
+review metadata. Do not expand the candidate-search allowance or claim verification because a command failed.

@@ -11,6 +11,9 @@ This directory defines how agents construct, update, validate, and publish PCR r
 - Do not edit, sync, or bump a published/deprecated current workspace in place. Open a published revision with `pcr:revise`; its target version is locked until publication.
 - Do not edit `releases/**` or `release-history.yaml` manually. They are immutable/append-only publication artifacts maintained by the builder transaction.
 - Do not reopen a deprecated PCR. Reintroduction requires a separately governed successor or restoration workflow.
+- Before binding or reviewing flow identities, read `builder/docs/contracts/flow-binding-contract.md`. It owns the
+  shared create/update/review sequence and lookup policy; complete semantic cards before Flow Set assessment and
+  uncovered-flow UUID lookup, confirm selected identities, then project and review.
 - Store Tiangong UUID references without dataset versions.
 - Do not put CLI lookup traces, search logs, review notes, API keys, session paths, or private runtime details in PCR Markdown or `structured.yaml`.
 - Do not list Tiangong database rows in `Data Sources` when they only support UUID identity. Tiangong is the default source for UUID-bearing rows.
@@ -55,7 +58,7 @@ For update PCR work:
 For translation, review, or publish work:
 
 - read the matching file under `builder/docs/workflows/`
-- read only the contracts named by that workflow
+- read only the contracts named by that workflow, including the flow binding contract for identity review
 - for an already published PCR, read `builder/docs/contracts/published-revision-contract.md` and operate on
   `--workspace revision`
 

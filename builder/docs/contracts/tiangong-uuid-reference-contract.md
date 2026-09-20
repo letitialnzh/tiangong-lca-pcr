@@ -14,7 +14,9 @@ Tiangong database rows are the identity source for UUID-bearing references. `Dat
 
 ## Lookup Guidance
 
-Agents may use `tiangong-lca-cli` to search and inspect rows. Command traces stay outside PCR content.
+Follow the [Flow Identity Binding Contract](flow-binding-contract.md) before selecting a flow UUID. It owns the
+lookup sequence and verification requirements; the [CLI tool note](../tools/tiangong-lca-cli.md) documents commands.
+This contract owns UUID storage. Command traces stay outside PCR content.
 
 PCR content:
 

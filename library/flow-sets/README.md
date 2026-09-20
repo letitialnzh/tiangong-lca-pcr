@@ -81,9 +81,12 @@ library/flow-sets/<set-id>/
 
 PCR binding semantic aliases are maintained in `binding-rules.yaml`. A PCR may
 cite a whole set for a conditional card and defer the concrete group until
-foreground data are available. The generic audit reads existing Flow Card
-identity labels, checks resolved group bindings, and reports deferred or
-ambiguous conditional groups without changing the cards:
+foreground data are available when the set contract permits that form. The
+generic audit verifies registry id/version, `parameterized` binding, structural
+coordinate, permitted set/group level, exact group membership and semantics,
+and per-process cardinality. A permitted missing group remains deferred;
+unknown or multiple group expressions are errors. The audit does not change
+the cards:
 
 ```bash
 npm run flow-set:binding-test

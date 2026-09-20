@@ -99,6 +99,10 @@ The published dataset profile defines how the completed dataset can be used down
 
 ## Tiangong CLI Evidence
 
+Before flow identity selection, follow the [Flow Identity Binding Contract](../builder/docs/contracts/flow-binding-contract.md).
+Create, update, and review workflows share its sequence: complete semantic flow cards, assess Flow Sets, look up
+uncovered identities, confirm selected rows, generate the projection, and review bindings.
+
 Use `tiangong-lca-cli` as the preferred identity evidence tool when PCR content refers to Tiangong database rows. See `builder/docs/tools/tiangong-lca-cli.md` for the compact operational contract. From the workspace, either use an installed `tiangong-lca` binary or the sibling CLI repo:
 
 ```bash
