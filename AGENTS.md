@@ -147,7 +147,7 @@ publish an edge whose identity or PCR target was not installed.
 Only an explicitly accepted edge to a material PCR is a positive mapping. CPC 3.0 currently has exactly three such
 edges (`01111`, `04412`, and `04911`); CPC 2.1 is a current v2 mapping with zero edges.
 Classification coverage is a derived read model under `classifications/indexes/`; it combines normalized leaves,
-mapping input, target PCR state, and coverage assessment for bounded CLI and viewer reads. Each checked-in index must
+mapping input, target PCR state, and coverage assessment for bounded CLI reads. Each checked-in index must
 record exact-byte SHA-256 fingerprints for its normalized-leaf and mapping sources, and consumers must reject a stale
 or substituted source. A mapped entry projects its acceptance evidence and runtime resolution rechecks it against the
 canonical mapping. The index is not authoring truth and must be regenerated from those sources. CPC 3.0 coverage

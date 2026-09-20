@@ -137,7 +137,7 @@ Flow identity sources and range sources can differ. A flow UUID may come from a 
 
 AI PCR production uses public evidence and domain common sense to initialize candidate processes, likely input/output flows, and search terms. Existing PCR records are read as prior evidence, then the current best PCR is written to the appropriate canonical record.
 
-Public `tiangong-pcr` guidance is a consumption view over PCR content. `tree`, `list`, and the viewer default to material
+Public `tiangong-pcr` guidance is a consumption view over PCR content. `tree` and `list` default to material
 records; explicit catalog compatibility scopes are `--scope material|legacy|all`. Classification coverage is queried
 separately with `coverage summary|list --classification <system>:<version>`, and coverage list output is paginated.
 An accepted mapping and a PCR's readiness are separate claims: an authored candidate is review-required guidance,
