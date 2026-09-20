@@ -11,7 +11,9 @@ Use this workflow after a PCR feedback issue has passed intake.
    npm --silent run tiangong-pcr -- guidance --pcr <pcr-id> --format json
    ```
 
-3. Apply the smallest PCR change that addresses the accepted feedback.
+3. Apply the smallest PCR change that addresses the accepted feedback through [update-pcr.md](update-pcr.md).
+   For flow identity changes, follow the shared [binding contract](../contracts/flow-binding-contract.md), including
+   its review gate; feedback is not a separate binding workflow.
 4. If methodology content changes, edit `pcr.en-US.md`, align `pcr.zh-CN.md`, and run:
 
    ```bash

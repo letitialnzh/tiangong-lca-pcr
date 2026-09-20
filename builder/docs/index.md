@@ -20,6 +20,8 @@ Use this index to choose the smallest relevant builder context.
 - `contracts/published-revision-contract.md`: executable workspace, immutable release, directory-transaction, and recovery contract for published PCRs.
 - `contracts/structured-projection-contract.md`: generated `structured.yaml` projection rules.
 - `contracts/evidence-and-source-contract.md`: source records and source references.
+- `contracts/flow-binding-contract.md`: authoritative create/update/review sequence for semantic flow cards, Flow Set
+  references, fixed UUID lookup and verification, and unresolved coverage.
 - `contracts/tiangong-uuid-reference-contract.md`: Tiangong UUID storage rules.
 - `contracts/controlled-vocabulary-contract.md`: authored token sources and deterministic runtime/Schema generation.
 

@@ -7,6 +7,7 @@ Before editing, read:
 1. `builder/AGENTS.md`
 2. `builder/docs/index.md`
 3. `builder/docs/workflows/create-pcr.md` or `builder/docs/workflows/update-pcr.md`
+4. `builder/docs/contracts/flow-binding-contract.md`
 
 Then read only the tool notes, contracts, methods, and vocab files required by the selected workflow and changed PCR surface.
 

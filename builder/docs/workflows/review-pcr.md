@@ -7,6 +7,9 @@ PCR, open or reuse its explicit revision and review `revision/manifest.next.yaml
 projection. Never record review changes in the published top-level current release. A deprecated PCR cannot be
 reopened through this workflow.
 
+Read the [Flow Identity Binding Contract](../contracts/flow-binding-contract.md) before reviewing flow identities.
+Its Review Gate is required here and in the create and update workflows; it owns the binding and lookup checks.
+
 ## Review Checks
 
 1. Reference flow is one declared object, not competing free-text alternatives.
@@ -14,7 +17,8 @@ reopened through this workflow.
 3. Measurement rules are constraints, not a duplicate unit catalog.
 4. Process decomposition matches common lifecycle modelling practice for the category.
 5. Inventory rows are grouped by process, direction, and flow type.
-6. UUIDs are present where Tiangong rows have been selected and never include versions.
+6. Complete the [binding review gate](../contracts/flow-binding-contract.md#6-review-gate) for Flow Set references,
+   fixed UUID verification evidence, lookup limits, unresolved coverage, and bilingual/projection alignment.
 7. Important flows have range blocks; source-backed ranges use defensible source ids, while provisional ranges are clearly marked as `reasoned_estimate`.
 8. Data Sources exclude default Tiangong UUID rows and include external evidence.
 9. Chinese Markdown is aligned with canonical English Markdown.

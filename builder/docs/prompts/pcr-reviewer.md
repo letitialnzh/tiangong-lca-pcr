@@ -7,6 +7,7 @@ Read:
 - `builder/AGENTS.md`
 - `builder/docs/index.md`
 - `builder/docs/workflows/review-pcr.md`
+- `builder/docs/contracts/flow-binding-contract.md`
 
 Then read only the contracts, methods, and vocab files needed to review the affected PCR surface.
 

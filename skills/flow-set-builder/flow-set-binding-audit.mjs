@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseYaml } from "../../packages/pcr-core/src/yaml-lite.mjs";
@@ -26,14 +26,6 @@ function walk(value, visitor, location = "") {
   if (!value || typeof value !== "object") return;
   visitor(value, location);
   for (const [key, child] of Object.entries(value)) walk(child, visitor, location ? `${location}.${key}` : key);
-}
-
-function readTaxonomy() {
-  return parseYaml(readFileSync(path.join(FLOW_SET_ROOT, "taxonomy-v2.yaml"), "utf8"));
-}
-
-function readRules() {
-  return parseYaml(readFileSync(path.join(FLOW_SET_ROOT, "binding-rules.yaml"), "utf8"));
 }
 
 function groupIdsInExpression(expression, knownIds) {
@@ -64,21 +56,57 @@ function matchesRule(evidence, rule) {
   return requiredAll.every((term) => evidence.includes(term));
 }
 
-function loadGroups(taxonomy, rules) {
+function loadGroups(root, taxonomy, rules) {
   const groupsBySet = new Map();
   const ruleErrors = [];
   const defaultCoordinate = taxonomy.scope?.coordinate;
   for (const set of taxonomy.sets ?? []) {
-    const groups = (set.groups ?? []).map((group) => ({
-      id: group.id,
+    const registryPath = path.join(root, "library/flow-sets", set.id, "flow-set.yaml");
+    if (!existsSync(registryPath)) {
+      ruleErrors.push(`${set.id}: missing versioned Flow Set registry ${registryPath}`);
+      continue;
+    }
+    const registry = parseYaml(readFileSync(registryPath, "utf8"));
+    const expectedId = `flow-set.${set.id}`;
+    if (registry.identity?.id !== expectedId) {
+      ruleErrors.push(`${set.id}: registry identity must be ${expectedId}`);
+    }
+    if (!registry.identity?.version) {
+      ruleErrors.push(`${set.id}: registry identity version is required`);
+    }
+    if (set.version != null && String(set.version) !== String(registry.identity?.version ?? "")) {
+      ruleErrors.push(`${set.id}: taxonomy version ${set.version} does not match registry version ${registry.identity?.version ?? "missing"}`);
+    }
+    const coordinate = registry.scope?.coordinate ?? set.coordinate ?? defaultCoordinate;
+    const taxonomyCoordinate = set.coordinate ?? defaultCoordinate;
+    if (coordinate !== taxonomyCoordinate) {
+      ruleErrors.push(`${set.id}: registry coordinate ${coordinate ?? "missing"} does not match taxonomy coordinate ${taxonomyCoordinate ?? "missing"}`);
+    }
+    const taxonomyGroupIds = (set.groups ?? []).map((group) => group.id);
+    const registryGroupIds = (registry.groups ?? []).map((group) => group.id);
+    if (JSON.stringify([...registryGroupIds].sort()) !== JSON.stringify([...taxonomyGroupIds].sort())) {
+      ruleErrors.push(`${set.id}: registry groups do not match taxonomy groups`);
+    }
+    const groups = registryGroupIds.map((groupId) => ({
+      id: groupId,
       setId: set.id,
-      coordinate: set.coordinate ?? defaultCoordinate,
-      rule: ruleFor(group.id, rules),
+      coordinate,
+      rule: ruleFor(groupId, rules),
     }));
-    const groupRequired = set.group_required ?? taxonomy.binding_policy?.group_required ?? true;
-    const bindingLevel = set.binding_level ?? (groupRequired ? "group" : "set");
-    const allowedBindingLevels = set.allowed_binding_levels ?? [bindingLevel];
-    groupsBySet.set(set.id, { groups, groupRequired, bindingLevel, allowedBindingLevels });
+    const policy = registry.selection_policy ?? {};
+    const groupRequired = policy.group_required ?? set.group_required ?? taxonomy.binding_policy?.group_required ?? true;
+    const bindingLevel = policy.binding_level ?? set.binding_level ?? (groupRequired ? "group" : "set");
+    const allowedBindingLevels = policy.allowed_binding_levels ?? set.allowed_binding_levels ?? [bindingLevel];
+    const pcrCardinality = policy.pcr_cardinality ?? set.pcr_cardinality ?? "multiple_per_process";
+    groupsBySet.set(set.id, {
+      groups,
+      version: String(registry.identity?.version ?? ""),
+      coordinate,
+      groupRequired,
+      bindingLevel,
+      allowedBindingLevels,
+      pcrCardinality,
+    });
     for (const group of groups) {
       const rule = group.rule;
       if (!asArray(rule.required_any).length && !asArray(rule.required_all).length) {
@@ -87,6 +115,39 @@ function loadGroups(taxonomy, rules) {
     }
   }
   return { groupsBySet, ruleErrors };
+}
+
+function coordinateFromLocation(location) {
+  const match = location.match(/\.((?:inputs)|(?:outputs))\.((?:product)|(?:waste)|(?:elementary))\[\d+\]$/u);
+  if (!match) return null;
+  const [, direction, flowType] = match;
+  return `${flowType}-${direction === "inputs" ? "input" : "output"}`;
+}
+
+function addCardinalityFindings(projection, file, groupsBySet, findings) {
+  for (const [processIndex, process] of asArray(projection?.process_inventory).entries()) {
+    const counts = new Map();
+    walk(process, (row) => {
+      if (!row?.row_id || !row?.flow_set_ref?.id) return;
+      const setId = String(row.flow_set_ref.id).replace(/^flow-set\./u, "");
+      counts.set(setId, (counts.get(setId) ?? 0) + 1);
+    });
+    for (const [setId, count] of counts) {
+      const contract = groupsBySet.get(setId);
+      if (contract?.pcrCardinality === "one_per_process" && count > 1) {
+        findings.push({
+          severity: "error",
+          code: "FLOW_SET_CARDINALITY_EXCEEDED",
+          file,
+          location: `process_inventory[${processIndex}]`,
+          process_id: process?.id ?? null,
+          selected: `flow-set.${setId}`,
+          expected: 1,
+          actual: count,
+        });
+      }
+    }
+  }
 }
 
 function auditPcrFile(file, groupsBySet) {
@@ -104,6 +165,16 @@ function auditPcrFile(file, groupsBySet) {
       return;
     }
     const { groups, allowedBindingLevels } = setContract;
+    if (row.binding !== "parameterized") {
+      findings.push({ severity: "error", code: "FLOW_SET_BINDING_NOT_PARAMETERIZED", file, location, row_id: row.row_id, selected: row.binding ?? null, expected: "parameterized" });
+    }
+    if (String(ref.version ?? "") !== setContract.version) {
+      findings.push({ severity: "error", code: "FLOW_SET_VERSION_MISMATCH", file, location, row_id: row.row_id, selected: ref.version ?? null, expected: setContract.version });
+    }
+    const actualCoordinate = coordinateFromLocation(location);
+    if (actualCoordinate !== setContract.coordinate) {
+      findings.push({ severity: "error", code: "FLOW_SET_COORDINATE_MISMATCH", file, location, row_id: row.row_id, selected: actualCoordinate, expected: setContract.coordinate });
+    }
     const hasGroup = ref.group != null && String(ref.group).trim();
     if (!hasGroup) {
       if (!allowedBindingLevels.includes("set")) {
@@ -118,16 +189,13 @@ function auditPcrFile(file, groupsBySet) {
     const knownIds = groups.map((group) => group.id);
     const selected = groupIdsInExpression(ref.group, knownIds);
     const evidence = rowEvidence(row);
-    // A conditional PCR card may cite a whole set and defer the specific
-    // nutrient/material/emission group until foreground data are available.
-    // This is a valid scope reference, not a resolved exchange binding.
     if (selected.length > 1) {
-      findings.push({ severity: "deferred", code: "FLOW_SET_GROUP_DEFERRED", file, location, row_id: row.row_id, selected: ref.group ?? null, expected: [], evidence });
+      findings.push({ severity: "error", code: "FLOW_SET_MULTIPLE_GROUPS", file, location, row_id: row.row_id, selected: ref.group, expected: knownIds, evidence });
       return;
     }
     const expected = groups.filter((group) => matchesRule(evidence, group.rule)).map((group) => group.id);
-    if (selected.length !== 1) {
-      findings.push({ severity: "review", code: "FLOW_SET_GROUP_AMBIGUOUS", file, location, row_id: row.row_id, selected: ref.group, expected, evidence });
+    if (selected.length !== 1 || selected[0] !== ref.group) {
+      findings.push({ severity: "error", code: "FLOW_SET_GROUP_NOT_FOUND", file, location, row_id: row.row_id, selected: ref.group, expected: knownIds, evidence });
       return;
     }
     if (expected.length !== 1) {
@@ -138,6 +206,7 @@ function auditPcrFile(file, groupsBySet) {
       findings.push({ severity: "error", code: "FLOW_SET_SEMANTIC_MISMATCH", file, location, row_id: row.row_id, selected: selected[0], expected: expected[0], evidence });
     }
   });
+  addCardinalityFindings(projection, file, groupsBySet, findings);
   return { findings, checkedRows };
 }
 
@@ -154,7 +223,7 @@ function findStructuredFiles(directory) {
 export function auditPcrFlowSetBindings({ root = ROOT } = {}) {
   const taxonomy = parseYaml(readFileSync(path.join(root, "library/flow-sets/taxonomy-v2.yaml"), "utf8"));
   const rules = parseYaml(readFileSync(path.join(root, "library/flow-sets/binding-rules.yaml"), "utf8"));
-  const { groupsBySet, ruleErrors } = loadGroups(taxonomy, rules);
+  const { groupsBySet, ruleErrors } = loadGroups(root, taxonomy, rules);
   const files = findStructuredFiles(path.join(root, "library/pcrs"));
   const audits = files.map((file) => auditPcrFile(file, groupsBySet));
   const findings = audits.flatMap((audit) => audit.findings);

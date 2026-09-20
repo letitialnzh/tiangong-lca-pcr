@@ -294,6 +294,11 @@ builder/AGENTS.md + builder/docs/index.md
   -> lifecycle / bump(unpublished current only) / publish when applicable
 ```
 
+创建、更新与审查中的流身份绑定统一遵循
+[Flow Identity Binding Contract](../builder/docs/contracts/flow-binding-contract.md)：先完成语义流卡，再判断
+Flow Set 覆盖，对未覆盖流查询并确认 UUID，最后生成投影和审查。各 workflow 引用该合同，版本化
+Flow Set registry 继续拥有各 set 的绑定层级、分组和选择约束。
+
 PCR production 可以使用公共证据和领域常识初始化候选过程结构，但最终 UUID 和关键定量规则
 必须来自 Tiangong lookup 或可引用 evidence。lookup trace、session path、API key 和 access
 token 不进入 PCR 内容。

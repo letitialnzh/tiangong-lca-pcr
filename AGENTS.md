@@ -166,6 +166,10 @@ The builder CLI lives under `builder/cli/`.
 
 Agent-facing PCR production guidance lives under `builder/`. Use `builder/AGENTS.md` for task routing and hard rules, then use `builder/docs/index.md` to choose the smallest relevant workflow, contract, tool note, method note, or prompt.
 
+Flow identity authoring and review use `builder/docs/contracts/flow-binding-contract.md` as the shared procedure
+for semantic flow cards, Flow Set references, and fixed UUID lookup/confirmation. Read it before selecting or
+reviewing flow bindings.
+
 CLI commands and command meanings are documented in `builder/README.md`. Keep detailed CLI usage there instead of duplicating it in this repo-level contract.
 
 Material PCRs must have a deterministic, schema-valid `structured.yaml` projection whose source and generated-content

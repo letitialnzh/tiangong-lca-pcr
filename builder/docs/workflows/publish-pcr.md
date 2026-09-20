@@ -14,6 +14,7 @@ Use this workflow when preparing a PCR for published consumption by agents, CLI,
 - `review_metadata` contains no non-empty unresolved or blocking fields.
 - `structured.yaml` has been regenerated from canonical Markdown and matches the deterministic projection.
 - UUID references do not include dataset versions.
+- The [binding review gate](../contracts/flow-binding-contract.md#6-review-gate) has been completed in the selected workspace.
 - Data Sources only include external or non-default evidence.
 - Validation passes.
 - Important flows have range blocks; reviewed or published PCRs must not rely on missing important-flow ranges.

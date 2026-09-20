@@ -19,7 +19,7 @@ The AI produces the current best PCR from available evidence. This workflow writ
 
 ## Steps
 
-1. Read `builder/AGENTS.md`, `builder/docs/tools/tiangong-lca-cli.md`, `builder/docs/tools/data-sources-and-tools.md`, `builder/docs/contracts/pcr-markdown-contract.md`, `builder/docs/contracts/evidence-and-source-contract.md`, and `builder/vocab/*.yaml`.
+1. Read the [Flow Identity Binding Contract](../contracts/flow-binding-contract.md), `builder/AGENTS.md`, `builder/docs/tools/tiangong-lca-cli.md`, `builder/docs/tools/data-sources-and-tools.md`, `builder/docs/contracts/pcr-markdown-contract.md`, `builder/docs/contracts/evidence-and-source-contract.md`, and `builder/vocab/*.yaml`.
 2. Inspect the classification coordinate, coverage state, accepted mapping entries, and any retained legacy scaffold.
    A newly imported unmapped leaf normally has no `manifest.yaml`.
 3. Confirm that no existing canonical PCR record covers the same semantic product category.
@@ -28,7 +28,8 @@ The AI produces the current best PCR from available evidence. This workflow writ
 5. Write scope, exclusions, product category identity, typical market state, candidate processes, and likely flows from the current PCR synthesis.
 6. Define product category identity with canonical PCR id, classification refs, covered products, excluded products, representative product, production route, and market state.
 7. Define functional unit and reference flow objects using `Field | Value` tables.
-8. Use Tiangong CLI or database search to select UUID-bearing flow, flow property, and unit group references. Unresolved UUIDs stay blank and are tracked in `manifest.yaml` review metadata.
+8. Keep flow identity fields unresolved while completing the semantic draft. Candidate UUID lookup begins only after
+   every Process Map flow card and the English semantic draft are complete.
 9. Define measurement and unit rules where they affect consistency, conversion, or validation.
 10. Populate `Boundary Abstraction` with the resulting declared starting condition, role, classification scope, recursive input rule, upstream dataset requirement, and disclosure.
 11. Define common data production processes before writing detailed inventory rows.
@@ -41,10 +42,14 @@ The AI produces the current best PCR from available evidence. This workflow writ
 18. Define the published dataset profile with dataset role, downstream use, allowed use, excluded use, metadata, quality disclosure, and update trigger.
 19. Add external data sources and reference their source ids from inventory or rule rows.
 20. Keep authoring traces, unresolved review notes, and lifecycle state in `manifest.yaml`, issue records, or PR records.
-21. Write `pcr.en-US.md` first.
+21. Complete the English semantic draft in `pcr.en-US.md`. Then execute the
+    [binding contract](../contracts/flow-binding-contract.md): assess applicable Flow Sets, look up only uncovered
+    identities needing verification, confirm selected rows and support references, and finalize the English
+    bindings. Record unresolved identities in manifest review metadata.
 22. Write `pcr.zh-CN.md` as an aligned rendering of the same rule.
 23. Run `npm run pcr:sync-structured -- --pcr <library/pcrs/...>`.
-24. Run `npm run validate`.
+24. Run the binding review gate in [review-pcr.md](review-pcr.md), resolve findings, resync the projection if content
+    changed, and run `npm run validate`.
 25. Update `manifest.yaml` lifecycle fields with `npm run pcr:lifecycle -- --pcr <library/pcrs/...> ...` when content maturity or translation state changes.
 26. Only after semantic scope and methodology review, add or accept the classification mapping edge and run
     `npm run catalog:build`. Never use an empty PCR merely to make classification coverage appear mapped.

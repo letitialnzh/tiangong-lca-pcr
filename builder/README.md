@@ -33,6 +33,8 @@ builder/docs/
 - `builder/docs/index.md` is the human-readable builder documentation map.
 - `builder/docs/workflows/` contains task runbooks for creating, updating, translating, reviewing, and publishing PCRs.
 - `builder/docs/contracts/` defines durable authoring contracts for Markdown, manifest, structured projection, evidence, and UUID references.
+  [Flow Identity Binding Contract](docs/contracts/flow-binding-contract.md) is the shared create/update/review entry
+  for Flow Set selection and fixed UUID lookup; other documents link to its procedure.
 - `builder/docs/methods/` contains reusable modelling method notes that support the contracts.
 - `builder/docs/tools/` explains authoring-time tools, Tiangong CLI lookup, and usable evidence sources.
 - `builder/docs/prompts/` contains thin entry prompts for Codex, Claude Code, and PCR reviewers.
