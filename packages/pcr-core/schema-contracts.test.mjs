@@ -9,6 +9,7 @@ import {
   getPcrReadiness,
   validateDatasetAgainstGuidance,
 } from "./src/index.mjs";
+import { materialProjectionCompletenessIssues } from "./src/projection-completeness.mjs";
 import {
   assertReadiness,
   assertStructured,
@@ -206,6 +207,112 @@ test("flow row shape keeps the seven stable projection columns required", () => 
     "description",
     "amount",
   ]);
+});
+
+test("flow binding contract rejects simultaneous fixed and parameterized bindings", () => {
+  const base = minimalStructuredProjection();
+  const row = {
+    row_id: "energy",
+    role: "energy input",
+    name: "Generic electricity",
+    flow_type: "product",
+    property_unit: "Energy / kWh",
+    description: "Generic energy exchange.",
+    binding: "parameterized",
+    flow_set_ref: { id: "flow-set.energy-supply", version: "0.1.0", group: "electricity-supply" },
+    amount: {
+      value_mode: "foreground_record",
+      specificity: "site_specific",
+      basis: { kind: "process_output" },
+      evidence: { kind: "collected_record" },
+      ranges: [],
+    },
+  };
+  base.process_inventory[0].inputs.product.push(row);
+  assert.equal(validateStructured(base).valid, true);
+
+  const conflict = structuredClone(base);
+  conflict.process_inventory[0].inputs.product[0].binding = "parameterized";
+  conflict.process_inventory[0].inputs.product[0].flow_ref = { uuid: "11111111-1111-4111-8111-111111111111" };
+  assert.equal(validateStructured(conflict).valid, false);
+
+  const coordinateReference = structuredClone(base);
+  coordinateReference.process_inventory[0].inputs.product.push({
+    ...row,
+    binding: "parameterized",
+    flow_set_ref: { id: "product-input", version: "0.1.0" },
+  });
+  assert.equal(validateStructured(coordinateReference).valid, false);
+
+  const unresolvedOutput = structuredClone(base);
+  unresolvedOutput.process_inventory[0].inputs.product = [];
+  unresolvedOutput.process_inventory[0].outputs.product.push({
+    ...row,
+  });
+  assert.equal(validateStructured(unresolvedOutput).valid, true);
+
+  const removedBindingState = structuredClone(unresolvedOutput);
+  removedBindingState.process_inventory[0].outputs.product[0].binding = "needs_review";
+  assert.equal(validateStructured(removedBindingState).valid, false);
+
+});
+
+test("elementary flow cards cannot use Flow Sets", () => {
+  const projection = minimalStructuredProjection();
+  const row = {
+    row_id: "direct_emission",
+    role: "direct emission",
+    name: "Nitrous oxide to air",
+    flow_type: "elementary",
+    property_unit: "Mass / kg",
+    description: "Direct field emission.",
+    amount: {
+      value_mode: "foreground_record",
+      specificity: "site_specific",
+      basis: { kind: "process_output" },
+      evidence: { kind: "collected_record" },
+      ranges: [],
+    },
+  };
+  projection.process_inventory[0].outputs.elementary.push(row);
+  assert.equal(validateStructured(projection).valid, true);
+
+  row.binding = "parameterized";
+  row.flow_set_ref = { id: "flow-set.energy-supply", version: "0.2.0" };
+  assert.equal(validateStructured(projection).valid, false);
+
+  delete row.flow_set_ref;
+  row.binding = "fixed";
+  row.flow_ref = { uuid: "11111111-1111-4111-8111-111111111111" };
+  assert.equal(validateStructured(projection).valid, true);
+});
+
+test("unbound flow cards remain valid unmapped coverage when they retain a selected name", () => {
+  const projection = minimalStructuredProjection();
+  projection.process_inventory[0].inputs.product.push({
+    row_id: "unmapped_heat",
+    role: "Unmapped heat input",
+    name: "Heat supply, selected flow name only",
+    flow_type: "product",
+    property_unit: "Energy / MJ",
+    description: "Retain the selected semantic flow name until identity is resolved.",
+    amount: {
+      value_mode: "foreground_record",
+      specificity: "site_specific",
+      basis: { kind: "process_output" },
+      evidence: { kind: "collected_record" },
+      ranges: [],
+    },
+  });
+
+  const issues = materialProjectionCompletenessIssues(projection, {
+    expectedPcrId: "pcr.example",
+    lifecycleStatus: "active",
+  });
+  assert.equal(
+    issues.some((issue) => issue.code.includes("process_inventory") && issue.code.endsWith(".binding")),
+    false,
+  );
 });
 
 test("feedback intake binds type and confidence to shared vocabularies", () => {

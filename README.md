@@ -26,16 +26,13 @@ checkPaths:
   - classifications/**
   - library/modules/**
   - docs/**
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: b4d45d1d7f379c5ce12cc4844c28d99921f5ba17
-lastReviewedNote: "Reviewed for PCR #6: the current sibling CLI command in .env.example, the builder tool contract, and the authoring guide now use the canonical ../cli directory. Package, runtime, business and environment credential content are unchanged."
+lastReviewedAt: 2026-07-14
+lastReviewedCommit: 41e00bafd03530af7871e4620e59862dd779473e
 ---
 
 # TianGong LCA PCR Library
 
 This repository stores TianGong LCA product category rules and data production methodology assets.
-
-Canonical source: [tiangong-lca/pcr](https://github.com/tiangong-lca/pcr). The workspace's retained local directory is `tiangong-lca-pcr`; repository renaming does not change PCR identifiers, package names, or release history.
 
 PCR records are canonical methodology documents. Classification systems such as CPC, HS, ISIC, and NAICS are entry points that map to canonical PCR records; they do not own the PCR directory structure.
 
@@ -47,7 +44,7 @@ PCR records are canonical methodology documents. Classification systems such as 
 - `classifications/systems/`: source and normalized classification-system data.
 - `classifications/mappings/`: accepted mappings from external classification codes to canonical material PCR ids.
 - `classifications/aliases/`: deterministic terminal locators for retired leaf-derived PCR ids.
-- `classifications/indexes/`: derived classification coverage read models for the CLI.
+- `classifications/indexes/`: derived classification coverage read models for the CLI and viewer.
 - `builder/`: CLI, implementation modules, scripts, schemas, templates, controlled vocabularies, and builder documentation for constructing and validating the PCR library.
 - `packages/pcr-core/`: shared library for reading PCR catalog, mapping, guidance, validation, and feedback draft data.
 - `packages/tiangong-pcr-cli/`: public Agent-facing CLI for consuming PCR guidance during foreground data package construction.
@@ -167,7 +164,7 @@ the material index, and coverage indexes as one journaled recoverable artifact s
 when that binding or registry drifts. If a catalog publication is interrupted, run `catalog:recover`, then
 `catalog:check`; use `catalog:recover -- --force-stale-lock` only after confirming no writer is active.
 
-PCR production agents may use `tiangong-lca-cli` to search Tiangong database flow, process, and dataset identity records and copy selected UUID references into PCR content. The CLI is an evidence tool for identity selection.
+PCR production agents use the current draft Flow Set taxonomy to express provisional, parameterized Product-flow input scope and apply the binding policy declared by each set. A group-level binding cites one narrowest applicable group; a set-level binding cites only the set id and version. `energy-supply` defaults to set-level when the actual carrier is determined from foreground records but also permits one exact group when the PCR method requires a specific energy function. Uncovered Product and Elementary-flow cards are searched for a verified UUID. Elementary-flow cards use a verified UUID as `fixed` or remain unmapped. Each card needing identity lookup gets one initial lookup and at most one evidence-supported refinement lookup. Candidate UUIDs are registry-maintenance and review evidence only; they do not authorize automatic UUID selection or publication, and every final TIDAS process exchange must resolve to a verified concrete flow UUID.
 
 Builder docs live under `builder/docs/`. Start with `builder/AGENTS.md` for task routing and `builder/docs/index.md` for the compact documentation map. AI PCR production always synthesizes the current best PCR for the target product category; existing PCR content is prior evidence and a canonical write target.
 
@@ -194,7 +191,7 @@ npm --silent run tiangong-pcr -- feedback draft --pcr <pcr-id> --type range_evid
 The public CLI provides deterministic classification `resolve`, explicit `tree` and `list` methodology-catalog
 browsing, classification `coverage summary|list`, structured `guidance`, foreground data package checks through
 `validate-dataset`, process/lifecyclemodel draft checks through `validate-model`, and issue-ready feedback drafting.
-`tree` and `list` default to material records. Use `--scope material|legacy|all` on catalog commands
+`tree`, `list`, and the viewer default to material records. Use `--scope material|legacy|all` on catalog commands
 when the scope must be explicit. `tree` defaults to a bounded depth-2 category view; use paginated
 `list --path-prefix` to drill into a category. `list` defaults to 10 records per page and reports its filters,
 effective scope, `has_more`, and copyable next/previous commands.
@@ -233,9 +230,29 @@ Use `npm --silent run tiangong-pcr -- --help` for the global Agent workflow and 
 
 Formats are enforced per command: `resolve`, `guidance`, and validation are JSON; `show` is Markdown; `tree` supports JSON or Markdown; `list` supports JSON, Markdown, or table output; feedback drafts support JSON or Markdown. With `--format json`, usage or runtime failures leave stdout empty and return a stable `{ "error": { "code", "message", "details", "exit_code" } }` envelope on stderr.
 
+## Local PCR Viewer
+
+Use the static PCR viewer when you want to browse PCR records in a browser:
+
+```bash
+npm run viewer:build
+npm run viewer:build -- --scope legacy
+npm run viewer:serve
+```
+
+The build step defaults to material PCRs; use `--scope material|legacy|all` to choose another explicit record scope.
+It reads records through `packages/pcr-core`, writes generated data under `packages/pcr-viewer/dist/data/`, and copies
+the read-only browser assets into `packages/pcr-viewer/dist/`. Missing or empty selected-scope catalogs fail before
+replacement. Custom output directories are replaced only when empty or marked as a previous viewer build; protected
+repository and source paths are rejected after canonical path resolution. The replacement is prepared in a sibling
+temporary directory so a failed build does not erase the last usable output. The local server also rejects requested
+files whose resolved symlink target escapes the build root.
+
+The viewer is a consumption surface only. It does not edit PCR Markdown, manifests, mappings, or `structured.yaml`.
+
 ## Migration Status
 
-The consumption surfaces are now material-first: default catalog, tree, and list output represent methodology
+The consumption surfaces are now material-first: default catalog, tree, list, and viewer output represent methodology
 records, while complete classification coverage remains queryable separately. Phase 2 steps 1-5 are complete:
 ordinary CPC imports create zero PCR records; CPC 3.0 mapping v2 retains exactly 3 accepted material edges, CPC 2.1
 is empty v2, and the deterministic registry preserves all 2,874 retired leaf-derived ids as coverage locators.

@@ -73,6 +73,18 @@ function yamlNormativeRules(lines, indent, rules) {
   }
 }
 
+function yamlFlowBinding(lines, indent, binding) {
+  if (!binding) return;
+  const value = typeof binding === "string" ? { binding } : binding;
+  yamlKeyValue(lines, indent, "binding", value.binding ?? "");
+  if (value.binding === "parameterized" && value.flow_set_ref) {
+    lines.push(`${" ".repeat(indent)}flow_set_ref:`);
+    yamlKeyValue(lines, indent + 2, "id", value.flow_set_ref.id);
+    yamlKeyValue(lines, indent + 2, "version", value.flow_set_ref.version);
+    if (value.flow_set_ref.group) yamlKeyValue(lines, indent + 2, "group", value.flow_set_ref.group);
+  }
+}
+
 export function structuredProjectionYaml(projection, { sourceMarkdown } = {}) {
   if (typeof sourceMarkdown !== "string") {
     throw new TypeError("structuredProjectionYaml requires canonical sourceMarkdown.");
@@ -102,13 +114,18 @@ export function structuredProjectionYaml(projection, { sourceMarkdown } = {}) {
     yamlKeyValue(lines, 2, "reference_amount", definition.reference_amount);
     lines.push("  product_flow_ref:");
     yamlKeyValue(lines, 4, "name", definition.product_flow.name);
-    yamlKeyValue(lines, 4, "uuid", definition.product_flow.uuid);
+    if (definition.product_flow.uuid) {
+      yamlKeyValue(lines, 4, "uuid", definition.product_flow.uuid);
+    }
     lines.push("  flow_property_ref:");
     yamlKeyValue(lines, 4, "uuid", definition.flow_property_uuid);
     lines.push("  unit_group_ref:");
     yamlKeyValue(lines, 4, "uuid", definition.unit_group_uuid);
     yamlKeyValue(lines, 2, "reference_unit", definition.reference_unit);
     yamlStringArray(lines, 2, "required_qualifiers", definition.required_qualifiers);
+    yamlFlowBinding(lines, 2, definition.binding
+      ? { binding: definition.binding, flow_set_ref: definition.flow_set_ref }
+      : undefined);
   } else {
     lines.push("  {}");
   }
@@ -121,13 +138,18 @@ export function structuredProjectionYaml(projection, { sourceMarkdown } = {}) {
       lines.push("  - role: " + yamlScalar(flow.role));
       yamlKeyValue(lines, 4, "name", flow.name);
       yamlKeyValue(lines, 4, "flow_type", flow.flow_type);
-      lines.push("    flow_ref:");
-      yamlKeyValue(lines, 6, "uuid", flow.uuid);
+      if (flow.uuid) {
+        lines.push("    flow_ref:");
+        yamlKeyValue(lines, 6, "uuid", flow.uuid);
+      }
       lines.push("    flow_property_ref:");
       yamlKeyValue(lines, 6, "uuid", flow.flow_property_uuid);
       lines.push("    unit_group_ref:");
       yamlKeyValue(lines, 6, "uuid", flow.unit_group_uuid);
       yamlKeyValue(lines, 4, "preferred_unit", flow.preferred_unit);
+      yamlFlowBinding(lines, 4, flow.binding
+        ? { binding: flow.binding, flow_set_ref: flow.flow_set_ref }
+        : undefined);
     }
   }
 
@@ -185,6 +207,9 @@ export function structuredProjectionYaml(projection, { sourceMarkdown } = {}) {
               lines.push("          flow_ref:");
               yamlKeyValue(lines, 12, "uuid", row.uuid);
             }
+            yamlFlowBinding(lines, 10, row.binding
+              ? { binding: row.binding, flow_set_ref: row.flow_set_ref }
+              : undefined);
             yamlKeyValue(lines, 10, "property_unit", row.property_unit);
             if (row.description) {
               yamlKeyValue(lines, 10, "description", row.description);

@@ -129,6 +129,9 @@ function parseScalar(value) {
   if (trimmed === "{}") {
     return {};
   }
+  if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+    return parseInlineArray(trimmed.slice(1, -1));
+  }
   if (trimmed === "null" || trimmed === "~") {
     return null;
   }
@@ -151,6 +154,29 @@ function parseScalar(value) {
     }
   }
   return trimmed;
+}
+
+function parseInlineArray(value) {
+  if (value.trim() === "") return [];
+  const items = [];
+  let current = "";
+  let quote = null;
+  for (const char of value) {
+    if ((char === '"' || char === "'") && (quote === null || quote === char)) {
+      quote = quote === null ? char : null;
+      current += char;
+      continue;
+    }
+    if (char === "," && quote === null) {
+      items.push(parseScalar(current.trim()));
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  if (quote !== null) return value;
+  items.push(parseScalar(current.trim()));
+  return items;
 }
 
 function stripInlineComment(value) {

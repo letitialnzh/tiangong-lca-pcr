@@ -91,6 +91,29 @@ Material English and Chinese PCR renderings must project the same ordered rule i
 and validation. Repository tests enforce this structural bilingual alignment even though `structured.yaml` is generated
 from canonical English Markdown only.
 
+## Flow Binding Shape
+
+Generated `process_inventory` flow rows may include a simple `binding` value. It is either `fixed` or `parameterized`:
+
+```yaml
+# Concrete functional binding
+binding: parameterized
+flow_set_ref:
+  id: flow-set.energy-supply
+  version: 0.2.0
+  group: purchased-process-heat
+
+# Set-level binding; internal registry groups are not PCR references
+binding: parameterized
+flow_set_ref:
+  id: flow-set.agricultural-nutrient-supply
+  version: 0.3.0
+```
+
+Derive flow rows before identity binding and never enumerate Flow Set groups to create rows. For Product-flow inputs, use an applicable current draft Flow Set as provisional parameterized scope, then an exact verified UUID for uncovered exchanges, then unmapped coverage. A draft Flow Set reference does not authorize automatic UUID selection or publication. Elementary flows have no Flow Set; use `fixed` only when the exact platform UUID has been verified. Apply the binding policy declared by the selected Flow Set: a group-level binding carries one exact group, while a set-level binding omits `group`. `energy-supply` defaults to set-level when foreground records determine the actual carrier and permits one exact group when the PCR method requires a specific energy function. A conditional umbrella row for a group-only set may also omit `group` when foreground records determine whether zero, one, or several concrete exchanges exist; in that case omission means deferred scope rather than completed identity resolution. When present, `group` must contain exactly one taxonomy group id, not an alternative expression. All Flow Set forms use `parameterized`. A fixed UUID remains in the row's `flow_ref` (or the reference flow's `product_flow_ref`). A Flow Card without a usable Flow Set or verified UUID may retain its selected flow name with no binding as unmapped coverage. Candidate PCRs may also retain an unresolved reference product identity; active and later PCR lifecycle states require a concrete reference product UUID. A final TIDAS process exchange still resolves every parameterized row to a concrete UUID, expanding any set-level or deferred group-level scope from actual foreground records. A product-output Flow Set is not a fallback.
+
+Use only a taxonomy-v2 group marked as eligible for PCR reference. Groups below five candidates are omitted unless their taxonomy definition marks them high importance; candidate count is not otherwise a PCR binding rule.
+
 ## Process Inventory Amount Shape
 
 Generated `process_inventory` rows use stable `row_id` plus a nested `amount` object:

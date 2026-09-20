@@ -1,0 +1,101 @@
+schema_version: 1
+status: current-draft
+title: PCR-first Flow Set taxonomy
+
+scope:
+  flow_type: product
+  direction: input
+  coordinate: product-input
+
+binding_policy:
+  priority:
+    - applicable_product_flow_set_binding
+    - exact_verified_uuid
+    - unmapped_coverage
+  rule: "Product-flow inputs apply the selected Flow Set's declared binding level; elementary flows use an exact verified UUID as fixed or remain unmapped."
+  group_required: true
+  candidate_count_policy:
+    default_minimum: 5
+    exception: "A group below the minimum is retained only when it is a high-importance, recurring PCR concept."
+  candidate_role: "Candidate UUIDs are supporting registry evidence; they do not define PCR category coverage."
+
+sets:
+  - id: energy-supply
+    binding_level: set
+    allowed_binding_levels:
+      - set
+      - group
+    group_required: false
+    pcr_cardinality: multiple_per_process
+    groups:
+      - id: electricity-supply
+      - id: purchased-process-heat
+      - id: steam-supply
+      - id: stationary-combustion-fuel
+      - id: mobile-machinery-fuel
+
+  - id: agricultural-nutrient-supply
+    version: 0.3.0
+    binding_level: set
+    allowed_binding_levels:
+      - set
+    group_required: false
+    pcr_cardinality: one_per_process
+    groups:
+      - id: nitrogen-supply
+      - id: phosphorus-supply
+      - id: potassium-supply
+      - id: organic-nutrient-supply
+
+  - id: water-use
+    binding_level: group
+    allowed_binding_levels:
+      - group
+    groups:
+      - id: process-water
+      - id: irrigation-water
+
+  - id: transport-service
+    binding_level: group
+    allowed_binding_levels:
+      - group
+    groups:
+      - id: road-freight-transport
+      - id: water-freight-transport
+
+  - id: packaging-function
+    binding_level: group
+    allowed_binding_levels:
+      - group
+    groups:
+      - id: flexible-packaging
+      - id: rigid-container-packaging
+      - id: carton-and-box-packaging
+      - id: pallet-and-crate-packaging
+
+  - id: recovered-material-input
+    binding_level: group
+    allowed_binding_levels:
+      - group
+    groups:
+      - id: recycled-metal-material
+      - id: recycled-paper-fibre
+
+  - id: construction-service
+    binding_level: group
+    allowed_binding_levels:
+      - group
+    groups:
+      - id: site-clearing-and-preparation
+      - id: earthwork-and-excavation
+      - id: backfill-and-compaction
+      - id: demolition-service
+
+  - id: waste-treatment-service
+    binding_level: group
+    allowed_binding_levels:
+      - group
+    groups:
+      - id: non-hazardous-waste-incineration
+      - id: wastewater-treatment-service
+        importance: high

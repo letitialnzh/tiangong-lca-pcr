@@ -630,6 +630,7 @@ function buildGuidanceForOperation({ root, pcrId, operation }) {
     validation_notes: [
       "Use this guidance as the source of Tiangong foreground data collection package requirements.",
       "Preserve Tiangong UUIDs exactly and keep PCR-derived UUID references version-free.",
+      "Derive Flow Cards before identity binding and never enumerate Flow Set groups to create cards. Product-flow inputs apply the selected Flow Set's declared binding policy: group-level cites one exact group, while set-level cites only the set id and version. Energy supply defaults to set-level when foreground records determine the carrier and may use one exact group when the PCR method requires a specific energy function. Elementary flows use an exact verified UUID as fixed or remain unmapped. Foreground data generation expands deferred Product-flow scope from actual records, and every final TIDAS process exchange must resolve to a concrete flow UUID.",
       "Run tiangong-pcr validate-dataset after constructing a foreground data package and draft feedback if PCR guidance is missing or ambiguous.",
     ],
   };

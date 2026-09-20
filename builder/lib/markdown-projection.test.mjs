@@ -65,6 +65,105 @@ test("parsePcrMarkdownToStructured reads localized Chinese flow cards", () => {
   assert.deepEqual(row.amount.evidence.source_ids, ["source-id"]);
 });
 
+test("flow binding supports fixed and parameterized selection", () => {
+  const projection = parsePcrMarkdownToStructured(`
+## 6. Process Inventory Structure
+### Process: Energy (\`energy\`)
+#### Inputs
+##### Product flows
+###### Generic energy (\`generic_energy\`)
+- Selected flow: electricity supply
+- Flow property / unit: Energy / kWh
+- Binding: parameterized
+- Flow Set: flow-set.energy-supply
+- Flow Set version: 0.1.0
+- Flow Set group: electricity-supply
+###### Specific electricity (\`specific_electricity\`)
+- Selected flow: Electricity, medium voltage \`11111111-1111-4111-8111-111111111111\`
+- Flow property / unit: Energy / kWh
+- Binding: fixed
+`);
+
+  const generic = projection.processInventory[0].inputs.product[0];
+  assert.equal(generic.binding, "parameterized");
+  assert.deepEqual(generic.flow_set_ref, {
+    id: "flow-set.energy-supply",
+    version: "0.1.0",
+    group: "electricity-supply",
+  });
+  const specific = projection.processInventory[0].inputs.product[1];
+  assert.equal(specific.binding, "fixed");
+  const rendered = structuredProjectionYaml(projection, {
+    sourceMarkdown: "flow-binding-fixture",
+  });
+  assert.match(rendered, /id: "flow-set\.energy-supply"/);
+  assert.match(rendered, /group: "electricity-supply"/);
+  assert.match(rendered, /binding: "fixed"/);
+  assert.equal(rendered.match(/flow_set_ref:/gu)?.length, 1);
+});
+
+test("Flow Set binding takes priority over a fixed UUID", () => {
+  const projection = parsePcrMarkdownToStructured(`
+## 6. Process Inventory Structure
+### Process: Energy (\`energy\`)
+#### Inputs
+##### Product flows
+###### Covered electricity (\`covered_electricity\`)
+- Selected flow: Electricity, medium voltage \`11111111-1111-4111-8111-111111111111\`
+- Flow property / unit: Energy / kWh
+- Binding: fixed
+- Flow Set: flow-set.energy-supply
+- Flow Set version: 0.1.0
+- Flow Set group: electricity-supply
+`);
+
+  const row = projection.processInventory[0].inputs.product[0];
+  assert.equal(row.binding, "parameterized");
+  assert.equal(row.uuid, "");
+  assert.deepEqual(row.flow_set_ref, {
+    id: "flow-set.energy-supply",
+    version: "0.1.0",
+    group: "electricity-supply",
+  });
+
+  const rendered = structuredProjectionYaml(projection, {
+    sourceMarkdown: "flow-set-priority-fixture",
+  });
+  assert.doesNotMatch(rendered, /11111111-1111-4111-8111-111111111111/);
+  assert.match(rendered, /binding: "parameterized"/);
+  assert.match(rendered, /id: "flow-set\.energy-supply"/);
+});
+
+test("fixed and unmapped flows do not render Flow Set information", () => {
+  const projection = parsePcrMarkdownToStructured(`
+## 6. Process Inventory Structure
+### Process: Energy (\`energy\`)
+#### Inputs
+##### Product flows
+###### Fixed electricity (\`fixed_electricity\`)
+- Selected flow: Electricity, medium voltage \`11111111-1111-4111-8111-111111111111\`
+- Flow property / unit: Energy / kWh
+- Binding: fixed
+###### Unmapped heat (\`unmapped_heat\`)
+- Selected flow: heat supply
+- Flow property / unit: Energy / kWh
+`);
+
+  const rows = projection.processInventory[0].inputs.product;
+  assert.equal(rows[0].binding, "fixed");
+  assert.equal(rows[1].binding, undefined);
+  assert.equal(rows[1].name, "heat supply");
+  assert.equal(rows[0].flow_set_ref, undefined);
+  assert.equal(rows[1].flow_set_ref, undefined);
+  rows[0].flow_set_ref = { id: "flow-set.energy-supply", version: "0.1.0" };
+  rows[1].flow_set_ref = { id: "flow-set.energy-supply", version: "0.1.0" };
+
+  const rendered = structuredProjectionYaml(projection, {
+    sourceMarkdown: "flow-set-display-fixture",
+  });
+  assert.doesNotMatch(rendered, /flow_set_ref|flow-set\./);
+});
+
 test("parsePcrMarkdownToStructured reads nested localized range fields", () => {
   const projection = parsePcrMarkdownToStructured(`
 ## 6. 过程清单结构

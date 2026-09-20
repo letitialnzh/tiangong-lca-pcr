@@ -69,7 +69,7 @@ npm --silent run tiangong-pcr -- guidance --help
    npm --silent run tiangong-pcr -- guidance --pcr <pcr-id> --format json
    ```
 
-5. Build the foreground data package from `reference_flow`, `boundary_abstraction`, `measurement_rules`, `process_map`, `process_inventory`, `production_guidance`, and `published_dataset_profile`.
+5. Build the foreground data package from `reference_flow`, `boundary_abstraction`, `measurement_rules`, `process_map`, `process_inventory`, `production_guidance`, and `published_dataset_profile`. Resolve every flow using this priority: the selected Flow Set's declared binding policy, an exact verified UUID only for an uncovered flow, then unmapped coverage. A group-level binding cites one narrowest applicable group; a set-level binding cites only the set id and version. `energy-supply` defaults to set-level when foreground records determine the actual carrier and permits one exact group when the PCR method requires a specific energy function. Flow Set bindings emit `parameterized`; UUID bindings emit `fixed`. A Flow Set reference is never the final TIDAS flow identity, and it must be resolved to a concrete UUID before publishing a process dataset.
 
 6. Validate the foreground data package:
 
