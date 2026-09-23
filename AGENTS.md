@@ -46,6 +46,9 @@ The canonical GitHub repository is `tiangong-lca/pcr`. When the consuming worksp
 - A classification leaf is coverage input, not a request to create canonical PCR identity. Create a PCR only when a
   reviewed semantic product boundary and material methodology need a canonical record.
 - Keep reusable method rules in `library/modules/` and category-specific rules in `library/pcrs/`.
+- Select candidate modules from current-product route evidence before writing English PCR text. Use their obligations
+  as mandatory writing questions, then manually compare the completed PCR with the advisory module checklist. Never
+  derive module truth from classification leaves or use modules as product-fact caches.
 - Builder scripts must not depend on private workspace state.
 - Keep PCR production and PCR consumption separate: `builder/` owns library maintenance, while `packages/` and `skills/` expose reviewed PCR guidance to agents and humans.
 
@@ -97,17 +100,14 @@ Rules:
 - A published current record may move only to `deprecated/deprecated_methodology`. A deprecated PCR cannot be
   reopened by lifecycle or revision commands.
 
-Reusable modules may use the same localized directory pattern:
+Reusable candidate modules are YAML-only records:
 
 ```text
-library/modules/<group>/<module-slug>/
-  manifest.yaml
-  module.en-US.md
-  module.zh-CN.md
-  structured.yaml
+library/modules/<group>/<module-slug>.yaml
 ```
 
-Legacy single-file module stubs under `library/modules/core/*.md` are scaffold placeholders and should be migrated to the directory pattern when their content becomes material.
+They store activation questions, owned responsibilities, exclusions, interfaces, authoring targets, obligations,
+validation prompts, and composition hints. Product-specific answers remain in PCR Markdown.
 
 ## Classification Mapping Contract
 

@@ -31,6 +31,7 @@ import {
   manifestReviewBlockers,
 } from "./lifecycle-policy.mjs";
 import { parsePcrMarkdownToStructured, structuredProjectionYaml } from "./markdown-projection.mjs";
+import { moduleReferencesFromManifest } from "./module-checklist.mjs";
 import {
   recoverPcrDirectoryTransaction,
   runPcrDirectoryTransaction,
@@ -309,7 +310,7 @@ function transactionMessages(result, relativePcrPath) {
   ];
 }
 
-function publicationPlan({ workspaceDir, manifestFileName, version, now }) {
+function publicationPlan({ root, workspaceDir, manifestFileName, version, now }) {
   const manifestPath = path.join(workspaceDir, manifestFileName);
   const currentManifestText = readRequiredText(manifestPath, "PCR manifest");
   const currentManifest = parseYaml(currentManifestText);
@@ -363,7 +364,12 @@ function publicationPlan({ workspaceDir, manifestFileName, version, now }) {
       translation_status: "reviewed",
     });
     const projection = parsePcrMarkdownToStructured(englishText);
-    structuredText = structuredProjectionYaml(projection, { sourceMarkdown: englishText });
+    const moduleSelection = moduleReferencesFromManifest({ root, manifest: proposedManifest });
+    proposedManifest.modules = moduleSelection.manifestModules;
+    structuredText = structuredProjectionYaml(projection, {
+      sourceMarkdown: englishText,
+      moduleReferences: moduleSelection.moduleReferences,
+    });
   } catch (error) {
     problems.push(error.message);
     return { problems };
@@ -489,7 +495,13 @@ export function syncStructured(options) {
       const markdownPath = path.join(workspaceDir, PCR_EN_FILE);
       const markdown = readRequiredText(markdownPath, "canonical Markdown file");
       const projection = parsePcrMarkdownToStructured(markdown);
-      const structuredText = structuredProjectionYaml(projection, { sourceMarkdown: markdown });
+      const moduleSelection = moduleReferencesFromManifest({ root, manifest });
+      manifest.modules = moduleSelection.manifestModules;
+      writeFileSync(path.join(workspaceDir, manifestName), renderYaml(manifest));
+      const structuredText = structuredProjectionYaml(projection, {
+        sourceMarkdown: markdown,
+        moduleReferences: moduleSelection.moduleReferences,
+      });
       const schemaProblems = structuredSchemaProblems(structuredText, "generated structured projection");
       if (schemaProblems.length > 0) {
         throw operationError(
@@ -921,12 +933,17 @@ export function revise(options) {
         },
       );
       const projection = parsePcrMarkdownToStructured(englishText);
+      const moduleSelection = moduleReferencesFromManifest({ root, manifest: nextManifest });
+      nextManifest.modules = moduleSelection.manifestModules;
       writeFileSync(path.join(revisionDir, "manifest.next.yaml"), renderYaml(nextManifest));
       writeFileSync(path.join(revisionDir, PCR_EN_FILE), englishText);
       writeFileSync(path.join(revisionDir, PCR_ZH_FILE), chineseText);
       writeFileSync(
         path.join(revisionDir, "structured.yaml"),
-        structuredProjectionYaml(projection, { sourceMarkdown: englishText }),
+        structuredProjectionYaml(projection, {
+          sourceMarkdown: englishText,
+          moduleReferences: moduleSelection.moduleReferences,
+        }),
       );
       writeFileSync(
         path.join(revisionDir, "revision.yaml"),
@@ -1004,6 +1021,7 @@ export function publish(options) {
   }
 
   const initialPlan = publicationPlan({
+    root,
     workspaceDir: sourceWorkspace,
     manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
     version,
@@ -1014,13 +1032,20 @@ export function publish(options) {
     path.join(sourceWorkspace, PCR_EN_FILE),
     "canonical Markdown file",
   );
+  const sourceManifest = parseYaml(
+    readRequiredText(
+      path.join(sourceWorkspace, workspace === "current" ? "manifest.yaml" : "manifest.next.yaml"),
+      "PCR manifest",
+    ),
+  );
+  const sourceModuleSelection = moduleReferencesFromManifest({ root, manifest: sourceManifest });
   const sourceInspection = inspectPcrDirectory({
     root,
     pcrDir: sourceWorkspace,
     manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
     structuredText: structuredProjectionYaml(
       parsePcrMarkdownToStructured(sourceMarkdown),
-      { sourceMarkdown },
+      { sourceMarkdown, moduleReferences: sourceModuleSelection.moduleReferences },
     ),
     checkBilingualRuleAlignment: true,
   });
@@ -1063,6 +1088,7 @@ export function publish(options) {
         ? paths.pcrDir
         : revisionWorkspaceAt(paths.pcrDir);
       const lockedPlan = publicationPlan({
+        root,
         workspaceDir: lockedWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         version,
@@ -1073,13 +1099,20 @@ export function publish(options) {
         path.join(lockedWorkspace, PCR_EN_FILE),
         "canonical Markdown file",
       );
+      const lockedManifest = parseYaml(
+        readRequiredText(
+          path.join(lockedWorkspace, workspace === "current" ? "manifest.yaml" : "manifest.next.yaml"),
+          "PCR manifest",
+        ),
+      );
+      const lockedModuleSelection = moduleReferencesFromManifest({ root, manifest: lockedManifest });
       const lockedInspection = inspectPcrDirectory({
         root,
         pcrDir: lockedWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         structuredText: structuredProjectionYaml(
           parsePcrMarkdownToStructured(lockedMarkdown),
-          { sourceMarkdown: lockedMarkdown },
+          { sourceMarkdown: lockedMarkdown, moduleReferences: lockedModuleSelection.moduleReferences },
         ),
         checkBilingualRuleAlignment: true,
       });
@@ -1109,6 +1142,7 @@ export function publish(options) {
         history = stageState.history;
       }
       publishedPlan = publicationPlan({
+        root,
         workspaceDir: stageWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         version,

@@ -59,6 +59,12 @@ function parseMap(lines, startIndex, indent) {
     const key = trimmed.slice(0, colonIndex).trim();
     const rest = trimmed.slice(colonIndex + 1).trim();
     if (rest) {
+      if (/^(?:[>|][+-]?)$/u.test(rest)) {
+        const [value, nextIndex] = parseBlockScalar(lines, index + 1, indent, rest);
+        result[key] = value;
+        index = nextIndex;
+        continue;
+      }
       result[key] = parseScalar(rest);
       index += 1;
       continue;
@@ -177,6 +183,25 @@ function parseInlineArray(value) {
   if (quote !== null) return value;
   items.push(parseScalar(current.trim()));
   return items;
+}
+
+function parseBlockScalar(lines, startIndex, parentIndent, indicator) {
+  const values = [];
+  let index = startIndex;
+  let contentIndent = null;
+  while (index < lines.length) {
+    const line = lines[index];
+    if (line.trimmed === "") {
+      values.push("");
+      index += 1;
+      continue;
+    }
+    if (line.indent <= parentIndent) break;
+    contentIndent ??= line.indent;
+    values.push(line.raw.slice(contentIndent));
+    index += 1;
+  }
+  return [indicator.startsWith(">") ? values.join(" ").trim() : values.join("\n").trim(), index];
 }
 
 function stripInlineComment(value) {

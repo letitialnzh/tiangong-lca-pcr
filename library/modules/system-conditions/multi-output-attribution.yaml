@@ -1,0 +1,50 @@
+schema_version: 0
+id: module.system-condition.multi-output-attribution
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Multi-output attribution
+purpose: Add cross-output completeness and attribution obligations without selecting the final method.
+activation:
+  question: Does one process boundary intentionally report two or more independent intended products that require attribution?
+  signals:
+    - co_product_attribution_required
+  evidence:
+    - current product and route definition of intended outputs and hand-off points
+    - current product and route evidence for attribution or substitution treatment
+  outcomes:
+    applicable: activate_cross_output_checks
+    not_applicable: treat_the_route_as_single_output
+    unresolved: retain_output_ambiguity_and_request_current_evidence
+owns:
+  - output-set completeness
+  - cross-output linkage and double-counting checks
+  - prompts for the PCR-specific attribution decision
+excludes:
+  - default allocation or substitution method
+  - output identity, quality, quantity, and flow UUID
+  - final product-specific attribution decision
+interfaces:
+  overlays: [output_set, output_handoff_points, attribution_decision_slot]
+authoring:
+  target_sections: [process_inventory, allocation_rules, validation_rules]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations to make every intended output and the PCR-specific attribution decision explicit in the English PCR.
+obligations:
+  - enumerate every intended output
+  - record each output hand-off
+  - require an explicit PCR-specific attribution decision
+  - distinguish intended output, residue, and waste
+validation:
+  - intended_outputs_must_be_complete
+  - competing_attribution_methods_require_precedence
+  - one_output_cannot_be_counted_at_two_handoffs
+composition:
+  depends_on: []
+  coexists_with: [activity, technology]
+  conflicts_with: [duplicate_attribution_ownership]
+tests:
+  - agriculture-multi-output-production
+  - mining-multi-output-treatment
+  - electricity-multi-output-generation

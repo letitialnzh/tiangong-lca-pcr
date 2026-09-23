@@ -2,6 +2,7 @@
 import { init } from "../lib/builder-operations.mjs";
 import { importCpc } from "../lib/cpc-scaffold.mjs";
 import { lint } from "../lib/lint-rules.mjs";
+import { moduleChecklistCommand, modulePlanCommand } from "../lib/module-checklist.mjs";
 import {
   bump,
   lifecycle,
@@ -17,6 +18,14 @@ const COMMAND_OPTIONS = Object.freeze({
     booleans: ["help"],
   }),
   lint: Object.freeze({ values: ["root"], booleans: ["help"] }),
+  "module-checklist": Object.freeze({
+    values: ["root", "pcr", "format"],
+    booleans: ["help"],
+  }),
+  "module-plan": Object.freeze({
+    values: ["root", "context", "format"],
+    booleans: ["help"],
+  }),
   "import-cpc": Object.freeze({
     values: ["root", "source", "classification-version", "source-url"],
     booleans: ["help", "legacy-scaffolds"],
@@ -125,6 +134,8 @@ function printHelp() {
 Usage:
   node builder/cli/index.mjs init [--root <path>] [--sample-pcr <domain/path/slug>]
   node builder/cli/index.mjs lint [--root <path>]
+  node builder/cli/index.mjs module-plan --context <route-context.yaml> [--format json|yaml|markdown] [--root <path>]
+  node builder/cli/index.mjs module-checklist --pcr <library/pcrs/...> [--format json|yaml|markdown] [--root <path>]
   node builder/cli/index.mjs import-cpc --source <csv> [--classification-version 3.0] [--legacy-scaffolds]
   node builder/cli/index.mjs scaffold-cpc --legacy-scaffolds --source <csv>  # compatibility alias
   node builder/cli/index.mjs sync-structured --pcr <library/pcrs/...> [--workspace current|revision] [--root <path>]
@@ -187,6 +198,12 @@ function runCommand(command, options) {
   }
   if (command === "lint") {
     return { messages: lint(options), exitCode: 0 };
+  }
+  if (command === "module-checklist") {
+    return { messages: moduleChecklistCommand(options), exitCode: 0 };
+  }
+  if (command === "module-plan") {
+    return { messages: modulePlanCommand(options), exitCode: 0 };
   }
   if (command === "import-cpc" || command === "scaffold-cpc") {
     if (options.help === true) {

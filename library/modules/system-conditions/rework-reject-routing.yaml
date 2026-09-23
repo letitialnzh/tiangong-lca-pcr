@@ -1,0 +1,48 @@
+schema_version: 0
+id: module.system-condition.rework-reject-routing
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Rework and reject routing
+purpose: Add graph-linkage and burden-treatment obligations for off-spec, rejected, reworked, downgraded, recovered, or discarded material.
+activation:
+  question: Does off-spec material require a rework loop, return to an upstream node, or a declared reprocessing route?
+  signals:
+    - rework_or_return_routing_required
+  evidence:
+    - current product and route definition of accepted and rejected states
+    - route evidence for rework, downgrade, recovery, or boundary exit
+  outcomes:
+    applicable: activate_rework_and_reject_checks
+    not_applicable: treat_the_route_as_having_no_rework_or_reject_path
+    unresolved: retain_reject_path_ambiguity_and_request_current_evidence
+owns:
+  - reject and rework state linkage
+  - loop and exit path completeness
+  - prompts for burden retention, recovery, and attribution decisions
+excludes:
+  - defect identity, rate, and quantity
+  - recovery technology and product destination
+  - default cut-off or allocation method
+interfaces:
+  overlays: [accepted_state, rejected_state, rework_loop, downgrade_path, boundary_exit, burden_decision_slot]
+authoring:
+  target_sections: [process_map, process_inventory, allocation_rules, validation_rules]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations to make every rejected state, rework loop, and boundary exit explicit in the English PCR.
+obligations:
+  - identify the rejected or off-spec state
+  - declare whether material is reworked, downgraded, recovered, or discarded
+  - link rework loops and boundary exits to the producing node
+  - prevent rejected material from being counted as an accepted output
+validation:
+  - rejected_state_requires_downstream_path
+  - rework_loop_requires_explicit_linkage
+  - accepted_output_must_exclude_unresolved_rejects
+composition:
+  depends_on: []
+  coexists_with: [activity, technology, multi-output-attribution, secondary-material-attribution]
+  conflicts_with: [duplicate_reject_path_ownership, rejected_output_without_path]
+tests:
+  - cross-domain-rework-reject

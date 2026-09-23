@@ -1,0 +1,51 @@
+schema_version: 0
+id: module.activity.resource-removal-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Resource removal node
+purpose: Describe a distinct removal or capture responsibility with a source interface, an output state, and a downstream hand-off.
+activation:
+  question: Does the route remove or capture a material or resource from a declared source through an independent responsibility?
+  signals:
+    - resource_removal_route
+  evidence:
+    - route description showing the source or capture context
+    - current product and route evidence for the removal boundary and hand-off
+  outcomes:
+    applicable: declare_a_distinct_resource_removal_node
+    not_applicable: keep_removal_inside_an_existing_node
+    unresolved: retain_source_or_handoff_ambiguity_and_request_route_evidence
+owns:
+  - source and capture interface slots
+  - removal-node boundary and hand-off questions
+  - completeness checks for removed material and residual roles
+excludes:
+  - resource, ore, species, or product identity
+  - extraction or capture technology choice
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [source_or_capture_context, service_roles]
+  process: [resource_removal_responsibility]
+  outputs: [removed_material_state, residual_state, downstream_handoff]
+authoring:
+  target_sections: [system_boundary, process_map, process_inventory]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations as mandatory English PCR writing questions and answer them with current-product evidence.
+obligations:
+  - identify the source or capture context
+  - identify the removed-material output state and hand-off
+  - distinguish residuals and losses from intended outputs
+  - explain why removal is independent of adjacent treatment or production
+validation:
+  - applicable_node_requires_source_or_capture_context
+  - applicable_node_requires_output_state_and_handoff
+  - residual_roles_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [material-treatment-node, technology, system_condition]
+  conflicts_with: [duplicate_resource_removal_node, embedded_removal_without_boundary_resolution]
+tests:
+  - mining-extraction-and-treatment
+  - cross-domain-resource-removal

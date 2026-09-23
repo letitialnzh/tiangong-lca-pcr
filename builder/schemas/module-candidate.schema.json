@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong-lca.org/schemas/pcr/v0/module-candidate.schema.json",
+  "title": "TianGong PCR candidate methodology module",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "status",
+    "kind",
+    "title",
+    "purpose",
+    "activation",
+    "owns",
+    "excludes",
+    "interfaces",
+    "authoring",
+    "obligations",
+    "validation",
+    "composition",
+    "tests"
+  ],
+  "properties": {
+    "schema_version": { "const": 0 },
+    "id": {
+      "type": "string",
+      "pattern": "^module\\.(activity|technology|system-condition)\\.[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "status": { "const": "candidate" },
+    "kind": { "enum": ["activity", "technology", "system_condition"] },
+    "title": { "$ref": "#/$defs/nonEmptyString" },
+    "purpose": { "$ref": "#/$defs/nonEmptyString" },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "signals", "evidence", "outcomes"],
+      "properties": {
+        "question": { "$ref": "#/$defs/nonEmptyString" },
+        "signals": { "$ref": "#/$defs/nonEmptyStrings" },
+        "evidence": { "$ref": "#/$defs/nonEmptyStrings" },
+        "outcomes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["applicable", "not_applicable", "unresolved"],
+          "properties": {
+            "applicable": { "$ref": "#/$defs/token" },
+            "not_applicable": { "$ref": "#/$defs/token" },
+            "unresolved": { "$ref": "#/$defs/token" }
+          }
+        }
+      }
+    },
+    "owns": { "$ref": "#/$defs/nonEmptyStrings" },
+    "excludes": { "$ref": "#/$defs/nonEmptyStrings" },
+    "interfaces": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/nonEmptyStrings" }
+    },
+    "authoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_sections", "evidence_policy", "generation_rule"],
+      "properties": {
+        "target_sections": { "$ref": "#/$defs/nonEmptyStrings" },
+        "evidence_policy": { "const": "current_product_and_route" },
+        "generation_rule": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "obligations": { "$ref": "#/$defs/nonEmptyStrings" },
+    "validation": { "$ref": "#/$defs/nonEmptyStrings" },
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["depends_on", "coexists_with", "conflicts_with"],
+      "properties": {
+        "depends_on": { "$ref": "#/$defs/strings" },
+        "coexists_with": { "$ref": "#/$defs/strings" },
+        "conflicts_with": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "tests": { "$ref": "#/$defs/nonEmptyStrings" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "activity" } }, "required": ["kind"] },
+      "then": { "properties": { "id": { "type": "string", "pattern": "^module\\.activity\\." } } }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "technology" } }, "required": ["kind"] },
+      "then": { "properties": { "id": { "type": "string", "pattern": "^module\\.technology\\." } } }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "system_condition" } }, "required": ["kind"] },
+      "then": { "properties": { "id": { "type": "string", "pattern": "^module\\.system-condition\\." } } }
+    }
+  ],
+  "$defs": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "token": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$" },
+    "strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

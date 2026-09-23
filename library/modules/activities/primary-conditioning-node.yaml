@@ -1,0 +1,50 @@
+schema_version: 0
+id: module.activity.primary-conditioning-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Primary conditioning node
+purpose: Describe the first bounded cleaning, drying, stabilizing, or preparation responsibility after collection or removal and before a later goods process.
+activation:
+  question: Does the route perform an initial conditioning responsibility that changes a raw collected output into a declared prepared input state?
+  signals:
+    - primary_conditioning_route
+  evidence:
+    - route description showing raw and prepared states
+    - current product and route evidence for the first-conditioning boundary and hand-off
+  outcomes:
+    applicable: declare_a_distinct_primary_conditioning_node
+    not_applicable: keep_conditioning_inside_an_existing_node
+    unresolved: retain_raw_or_prepared_state_ambiguity_and_request_route_evidence
+owns:
+  - raw-to-prepared interface slots
+  - primary-conditioning boundary questions
+  - checks for conditioning inputs, rejects, and losses
+excludes:
+  - product or downstream process identity
+  - conditioning technology and default parameters
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [raw_or_collected_state, conditioning_input_roles]
+  process: [primary_conditioning_responsibility]
+  outputs: [prepared_input_state, conditioning_reject_state, downstream_handoff]
+authoring:
+  target_sections: [system_boundary, process_map, process_inventory]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations as mandatory English PCR writing questions and answer them with current-product evidence.
+obligations:
+  - identify the raw or collected input state
+  - identify the prepared output state and hand-off
+  - identify conditioning input roles
+  - distinguish rejects, losses, and prepared output
+validation:
+  - applicable_node_requires_raw_and_prepared_states
+  - applicable_node_requires_conditioning_handoff
+  - conditioning_rejects_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [harvest-capture-node, material-treatment-node, preservation-stabilization-node, technology]
+  conflicts_with: [duplicate_primary_conditioning_node, conditioning_label_without_first_handoff]
+tests:
+  - cross-domain-primary-conditioning

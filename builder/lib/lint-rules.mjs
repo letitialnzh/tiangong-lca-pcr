@@ -28,6 +28,7 @@ import {
   parsePcrMarkdownToStructured,
   structuredProjectionYaml,
 } from "./markdown-projection.mjs";
+import { moduleReferencesFromManifest } from "./module-checklist.mjs";
 import { inspectPublishedRevisionState } from "./published-revision-state.mjs";
 import { PCR_EN_FILE, PCR_ZH_FILE } from "./scaffold-templates.mjs";
 import { REQUIRED_DIRS } from "./builder-constants.mjs";
@@ -789,8 +790,10 @@ export function inspectPcrDirectory({
     }
   }
 
+  const moduleSelection = moduleReferencesFromManifest({ root: resolvedRoot, manifest });
   const expectedStructuredText = structuredProjectionYaml(projection, {
     sourceMarkdown: markdownText,
+    moduleReferences: moduleSelection.moduleReferences,
   });
   if (material) {
     for (const issue of materialProjectionCompletenessIssues(
@@ -850,6 +853,39 @@ export function lint(options) {
     const stats = lstatSync(directory);
     if (stats.isSymbolicLink() || !stats.isDirectory()) {
       problems.push(`${dir}: required path must be a canonical directory`);
+    }
+  }
+
+  const moduleGroups = ["activities", "technologies", "system-conditions"];
+  for (const group of moduleGroups) {
+    const moduleDirectory = path.join(root, "library/modules", group);
+    if (!existsSync(moduleDirectory)) continue;
+    for (const entry of readdirSync(moduleDirectory).sort()) {
+      if (!entry.endsWith(".yaml")) continue;
+      const sourcePath = path.join(moduleDirectory, entry);
+      validateYamlContractFile({
+        contract: "module-candidate.schema.json",
+        sourcePath,
+        root,
+        problems,
+        entityKind: "PCR candidate methodology module",
+      });
+      try {
+        const moduleText = readCanonicalRegularFile(sourcePath, root, problems);
+        if (moduleText === null) continue;
+        const module = parseYaml(moduleText);
+        const expectedPrefix = {
+          activities: "module.activity.",
+          technologies: "module.technology.",
+          "system-conditions": "module.system-condition.",
+        }[group];
+        const expectedId = `${expectedPrefix}${entry.slice(0, -5)}`;
+        if (module.id !== expectedId) {
+          problems.push(`${toRepoRelative(root, sourcePath)}: module id must match path (${expectedId})`);
+        }
+      } catch {
+        // The contract validator above reports unreadable or malformed YAML.
+      }
     }
   }
 

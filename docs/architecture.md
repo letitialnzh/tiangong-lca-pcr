@@ -237,8 +237,21 @@ CPC `98000` 与后续批量物理迁移仍待执行。
 
 ### Module
 
-`library/modules/**` 保存多个 PCR 可复用的方法规则，例如 reference flow、system boundary、
-allocation、data quality 和 validation 规则。模块是方法学资产，不是消费工具。
+`library/modules/**` 保存多个 PCR 可复用的条件性完整性规则。模块根据当前产品路线激活过程节点、接口、
+证据问题、采集提示和条件性验证义务；通用 PCR 结构仍由 contracts、builder workflow、methods 和 Schema
+负责，不能复制进 conditional module。
+
+当前候选 taxonomy 分为三类：`activity` 表示可能形成独立过程节点的责任，`technology` 表示相对 parent
+activity 的替代实现，`system_condition` 表示跨节点、期间、输出或共享资产的条件。产品名称、classification
+leaf 或临时行业目录不能单独成为 module 身份。
+
+生成前，authoring agent 从当前产品路线证据声明 route signals；`module-plan` 选择 module，并将 obligations
+转换为英文 PCR 章节的写作问题。作者把选中的 ids 写入 `manifest.modules`。`sync-structured` 保留这些选择，
+并在存在候选 module 引用时写入 `module_references`。生成后的 `module-checklist` 根据 projection 可推断的
+信号列出 advisory obligations，供作者手动对照；它不判断义务是否已满足，也不修改 PCR。
+
+当前 module 尚未接入 public CLI 的完整 dependency、composition 或 conflict runtime，也不提供产品事实、
+数量、因子、UUID 或最终方法决定。
 
 ### Guidance Output
 

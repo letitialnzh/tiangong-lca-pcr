@@ -1,0 +1,50 @@
+schema_version: 0
+id: module.activity.formulation-blending-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Formulation and blending node
+purpose: Describe an independent multi-input composition responsibility that produces a declared formulated output state.
+activation:
+  question: Does the route combine two or more inputs under a declared formulation or blending responsibility?
+  signals:
+    - formulation_blending_route
+  evidence:
+    - route description showing composition inputs and formulation responsibility
+    - current product and route evidence for the formulation boundary and output state
+  outcomes:
+    applicable: declare_a_distinct_formulation_or_blending_node
+    not_applicable: keep_composition_inside_an_existing_node
+    unresolved: retain_composition_boundary_ambiguity_and_request_route_evidence
+owns:
+  - ingredient and component role slots
+  - composition boundary and reconciliation questions
+  - checks for formulation losses and off-spec outputs
+excludes:
+  - substance or product identity
+  - recipe, concentration, and performance values
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [composition_inputs, blending_service_roles]
+  process: [formulation_or_blending_responsibility]
+  outputs: [formulated_output_state, off_spec_state, downstream_handoff]
+authoring:
+  target_sections: [system_boundary, process_map, process_inventory]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations as mandatory English PCR writing questions and answer them with current-product evidence.
+obligations:
+  - enumerate every composition input role
+  - identify the formulated output state and hand-off
+  - record composition reconciliation and off-spec treatment
+  - distinguish intended output from process losses and waste
+validation:
+  - applicable_node_requires_two_or_more_composition_inputs
+  - applicable_node_requires_formulated_output_and_handoff
+  - off_spec_and_loss_roles_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [material-treatment-node, grading-sorting-node, multi-output-attribution, technology]
+  conflicts_with: [duplicate_formulation_node, recipe_label_without_composition_boundary]
+tests:
+  - cross-domain-formulation-blending

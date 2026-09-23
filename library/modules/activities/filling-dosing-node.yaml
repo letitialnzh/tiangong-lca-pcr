@@ -1,0 +1,50 @@
+schema_version: 0
+id: module.activity.filling-dosing-node
+version: 0.1.0
+status: candidate
+kind: activity
+title: Filling and dosing node
+purpose: Describe an independent transfer of bulk or formulated material into discrete portions, containers, or delivery units.
+activation:
+  question: Does the route transfer a material into discrete portions, containers, or delivery units under an explicit filling or dosing responsibility?
+  signals:
+    - filling_dosing_route
+  evidence:
+    - route description showing bulk or formulated input and discrete output units
+    - current product and route evidence for the filling boundary and hand-off
+  outcomes:
+    applicable: declare_a_distinct_filling_or_dosing_node
+    not_applicable: keep_filling_inside_an_existing_node
+    unresolved: retain_bulk_or_discrete_state_ambiguity_and_request_route_evidence
+owns:
+  - bulk-to-discrete interface slots
+  - filling and dosing boundary questions
+  - checks for dose losses, rejects, and reconciliation
+excludes:
+  - material, product, or package identity
+  - filling equipment and dosing accuracy values
+  - quantities, factors, and flow UUIDs
+interfaces:
+  inputs: [bulk_or_formulated_state, filling_input_roles]
+  process: [filling_or_dosing_responsibility]
+  outputs: [discrete_unit_state, filling_reject_state, downstream_handoff]
+authoring:
+  target_sections: [system_boundary, process_map, process_inventory]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations as mandatory English PCR writing questions and answer them with current-product evidence.
+obligations:
+  - identify the bulk or formulated input state
+  - identify the discrete output unit state and hand-off
+  - identify filling or dosing input roles
+  - reconcile intended units, rejects, and losses
+validation:
+  - applicable_node_requires_bulk_and_discrete_states
+  - applicable_node_requires_filling_handoff
+  - filling_rejects_and_losses_require_explicit_classification
+composition:
+  depends_on: []
+  coexists_with: [formulation-blending-node, packaging-presentation-node, technology, system_condition]
+  conflicts_with: [duplicate_filling_node, filling_label_without_discrete_boundary]
+tests:
+  - cross-domain-filling-dosing

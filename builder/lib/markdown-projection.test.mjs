@@ -399,6 +399,29 @@ The reference mass shall reconcile.
   assert.match(yaml, /source_ids: \[\]/u);
 });
 
+test("structuredProjectionYaml renders selected module provenance", () => {
+  const markdown = "# Candidate PCR\n";
+  const projection = parsePcrMarkdownToStructured(markdown);
+  const yaml = structuredProjectionYaml(projection, {
+    sourceMarkdown: markdown,
+    moduleReferences: {
+      selection_mode: "automatic",
+      selected: [{
+        id: "module.activity.harvest-capture-node",
+        kind: "activity",
+        path: "library/modules/activities/harvest-capture-node.yaml",
+        decision: "applicable",
+      }],
+      unresolved: [],
+    },
+  });
+
+  const document = parseYaml(yaml);
+  assert.equal(document.module_references.selection_mode, "automatic");
+  assert.equal(document.module_references.selected[0].id, "module.activity.harvest-capture-node");
+  assert.deepEqual(document.module_references.unresolved, []);
+});
+
 test("material PCR translations preserve machine-addressable normative rule ids", () => {
   const materialManifests = manifestFiles(path.join(repoRoot, "library/pcrs"))
     .map((manifestPath) => ({

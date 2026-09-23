@@ -36,6 +36,8 @@ This directory defines how agents construct, update, validate, and publish PCR r
   is active.
 - PCR production always synthesizes the current best PCR for the target product category from available evidence. Existing PCR content is prior evidence and a canonical write target, not a separate reasoning mode.
 - Use public evidence and domain common sense to initialize candidate processes, qualifiers, and likely flows; UUIDs and quantitative ranges must be evidence-backed before they are treated as final PCR content.
+- Before writing `pcr.en-US.md`, use current-product route research to run the module authoring plan. Treat selected
+  module obligations as mandatory section-level questions and run the advisory checklist after projection generation.
 
 ## Context Routing
 
