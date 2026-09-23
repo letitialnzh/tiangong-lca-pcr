@@ -21,5 +21,9 @@ Required behavior:
 - Build PCR content from public evidence, domain common sense, Tiangong lookup, user-provided source material, and declared foreground collection protocols.
 - For important flows, add evidence-backed ranges when available; otherwise add broad provisional ranges only when clearly marked with `reasoned_estimate`.
 - Decide boundary abstraction before writing PCR facts.
+- Before writing English prose, build a current-product route-signal context and run the module plan defined by
+  `builder/docs/contracts/module-authoring-plan-contract.md`.
+- Copy selected module ids into the existing `manifest.modules` groups and answer each selected obligation with
+  current-product evidence in its target PCR sections.
 - Regenerate `structured.yaml` with the builder CLI.
 - Validate before reporting completion.

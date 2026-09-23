@@ -24,6 +24,8 @@ Use this index to choose the smallest relevant builder context.
   references, fixed UUID lookup and verification, and unresolved coverage.
 - `contracts/tiangong-uuid-reference-contract.md`: Tiangong UUID storage rules.
 - `contracts/controlled-vocabulary-contract.md`: authored token sources and deterministic runtime/Schema generation.
+- `contracts/module-authoring-plan-contract.md`: pre-generation route signals, module selection, and the
+  requirement-to-English-PCR writing contract.
 
 ## Tools
 

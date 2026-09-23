@@ -61,6 +61,8 @@ npm run pcr:publish -- --pcr <library/pcrs/...> --workspace current --version <s
 npm run pcr:revise -- --pcr <library/pcrs/...> --version <target-semver>
 npm run pcr:publish -- --pcr <library/pcrs/...> --workspace revision
 npm run pcr:recover -- --pcr <library/pcrs/...> [--force-stale-lock]
+npm run pcr:module-plan -- --context <route-context.yaml> [--format json|yaml|markdown]
+npm run pcr:module-checklist -- --pcr <library/pcrs/...> [--format json|yaml|markdown]
 npm run validate
 ```
 
@@ -90,6 +92,12 @@ npm run validate
   accepted mappings and run `npm run catalog:build` for a registered coordinate. Treat any retained-source,
   legacy-target, or template mismatch error as a compatibility risk that requires manual review; do not force or
   repair around it.
+- `pcr:module-plan` runs before English PCR generation. It reads current-product route signals, selects candidate
+  modules, and emits their obligations as section-targeted writing requirements and research tasks. Modules do not
+  supply product facts, quantities, factors, UUIDs, or final decisions.
+- `pcr:module-checklist` is a read-only advisory report based on signals inferred from the completed projection. It
+  lists applicable and unresolved obligations for manual comparison with the PCR; it does not determine whether those
+  obligations are satisfied and does not modify the PCR.
 - `pcr:sync-structured` regenerates `structured.yaml` from canonical PCR Markdown, including boundary, allocation, validation, process-inventory rules, and deterministic projection metadata. `--workspace` defaults to `current`; published and deprecated current files are immutable, so an open revision must be synced with `--workspace revision`.
 - `pcr:lifecycle` validates manifest lifecycle transitions and runs a material preflight before a PCR becomes active. Use `--workspace revision` for revision review state. A published current record permits only the one-way transition to `deprecated/deprecated_methodology`; a deprecated record cannot be reopened.
 - `pcr:bump` updates a valid semver only for an unpublished current workspace. It rejects malformed, published, deprecated, or open-revision state because a revision target version is fixed when `pcr:revise` opens it.

@@ -36,6 +36,11 @@ Agents should start from `builder/AGENTS.md`, then use `builder/docs/index.md` t
 
 PCR production always synthesizes the current best PCR for the target product category from available evidence. Existing PCR content is prior evidence and a canonical write target, not a separate reasoning mode.
 
+Before drafting English PCR text, research the current product route and run the pre-generation module plan defined in
+`builder/docs/contracts/module-authoring-plan-contract.md`. Answer selected module obligations with current-product
+evidence. After projection generation, use the advisory checklist to compare inferred obligations with the PCR; the
+checklist does not determine whether an obligation has been satisfied.
+
 When the trigger is external PCR feedback, start with `builder/docs/workflows/intake-feedback-issue.md`. Treat the issue as candidate evidence until sources, UUIDs, and data production impact are verified. If accepted, continue with `builder/docs/workflows/update-pcr-from-feedback.md`.
 
 Use mapping files under `classifications/mappings/` to connect external classification codes to canonical PCR ids.

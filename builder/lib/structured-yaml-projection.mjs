@@ -85,7 +85,31 @@ function yamlFlowBinding(lines, indent, binding) {
   }
 }
 
-export function structuredProjectionYaml(projection, { sourceMarkdown } = {}) {
+function yamlModuleReferences(lines, moduleReferences) {
+  if (
+    !moduleReferences ||
+    ((moduleReferences.selected?.length ?? 0) === 0 &&
+      (moduleReferences.unresolved?.length ?? 0) === 0)
+  ) return;
+  lines.push("module_references:");
+  yamlKeyValue(lines, 2, "selection_mode", moduleReferences.selection_mode);
+  for (const key of ["selected", "unresolved"]) {
+    const entries = moduleReferences[key] ?? [];
+    lines.push(`  ${key}:`);
+    if (entries.length === 0) {
+      lines.push("    []");
+      continue;
+    }
+    for (const entry of entries) {
+      lines.push(`    - id: ${yamlPlainOrQuoted(entry.id)}`);
+      yamlKeyValue(lines, 6, "kind", entry.kind);
+      yamlKeyValue(lines, 6, "path", entry.path);
+      yamlKeyValue(lines, 6, "decision", entry.decision);
+    }
+  }
+}
+
+export function structuredProjectionYaml(projection, { sourceMarkdown, moduleReferences } = {}) {
   if (typeof sourceMarkdown !== "string") {
     throw new TypeError("structuredProjectionYaml requires canonical sourceMarkdown.");
   }
@@ -290,6 +314,8 @@ export function structuredProjectionYaml(projection, { sourceMarkdown } = {}) {
 
   lines.push("published_dataset_profile:");
   yamlFlatObject(lines, 2, projection.publishedDatasetProfile);
+
+  yamlModuleReferences(lines, moduleReferences);
 
   lines.push("data_sources:");
   if (projection.dataSources.length === 0) {

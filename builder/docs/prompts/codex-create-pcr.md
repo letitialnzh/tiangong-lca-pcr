@@ -21,4 +21,9 @@ Work rules:
 - Build PCR content from public evidence, domain common sense, Tiangong lookup, user-provided source material, and declared foreground collection protocols.
 - For important flows, add evidence-backed ranges when available; otherwise add broad provisional ranges only when clearly marked with `reasoned_estimate`.
 - Decide boundary abstraction before writing PCR facts.
+- Before writing English prose, create the route-signal context described in
+  `builder/docs/contracts/module-authoring-plan-contract.md` and run
+  `npm run pcr:module-plan -- --context <route-context.yaml> --format markdown`.
+- Copy selected module ids into the existing `manifest.modules` groups and answer every returned requirement with
+  current-product evidence. Modules provide questions and checks, not reusable product answers.
 - Run `npm run pcr:sync-structured -- --pcr <library/pcrs/...>` and `npm run validate`.

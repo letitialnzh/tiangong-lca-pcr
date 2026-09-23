@@ -9,6 +9,7 @@ import { isValidUtcTimestamp } from "./lifecycle-policy.mjs";
 const BUILDER_SCHEMA_FILES = [
   "catalog.schema.json",
   "classification-mapping.schema.json",
+  "module-candidate.schema.json",
   "pcr-manifest.schema.json",
   "pcr-markdown-frontmatter.schema.json",
   "pcr-release-history.schema.json",

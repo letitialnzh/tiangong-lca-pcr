@@ -88,6 +88,33 @@ function sha256(value) {
   return `sha256:${createHash("sha256").update(value).digest("hex")}`;
 }
 
+test("module-plan CLI emits pre-generation English PCR requirements", () => {
+  const root = makeTempRoot();
+  const contextPath = path.join(root, "route-context.yaml");
+  writeFileSync(
+    contextPath,
+    `schema_version: 1
+type: module-authoring-context
+target:
+  product_category: apples
+route_evidence:
+  signals:
+    biological_route: true
+    multiple_outputs: false
+`,
+  );
+
+  const plan = JSON.parse(runCli(["module-plan", "--context", contextPath, "--format", "json"]));
+  assert.equal(plan.phase, "pre_generation");
+  assert.ok(
+    plan.selected_modules.some(
+      (module) => module.id === "module.activity.managed-biological-production",
+    ),
+  );
+  assert.ok(plan.selected_modules[0].requirements.length > 0);
+  rmSync(root, { recursive: true, force: true });
+});
+
 function directoryByteSnapshot(root, current = root) {
   const snapshot = [];
   for (const entry of readdirSync(current, { withFileTypes: true })) {

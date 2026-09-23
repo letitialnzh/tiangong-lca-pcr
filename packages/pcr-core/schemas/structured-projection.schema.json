@@ -261,6 +261,23 @@
         "used_for": { "type": "string" }
       },
       "additionalProperties": false
+    },
+    "moduleReference": {
+      "type": "object",
+      "required": ["id", "kind", "path", "decision"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^module\\.(activity|technology|system-condition)\\.[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "kind": { "enum": ["activity", "technology", "system_condition"] },
+        "path": {
+          "type": "string",
+          "pattern": "^library/modules/(activities|technologies|system-conditions)/[a-z0-9]+(?:-[a-z0-9]+)*\\.yaml$"
+        },
+        "decision": { "enum": ["applicable", "unresolved"] }
+      },
+      "additionalProperties": false
     }
   },
   "properties": {
@@ -306,6 +323,22 @@
     },
     "validation_rules": { "$ref": "#/$defs/normativeRuleArray" },
     "published_dataset_profile": { "type": "object" },
+    "module_references": {
+      "type": "object",
+      "required": ["selection_mode", "selected", "unresolved"],
+      "properties": {
+        "selection_mode": { "const": "automatic" },
+        "selected": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/moduleReference" }
+        },
+        "unresolved": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/moduleReference" }
+        }
+      },
+      "additionalProperties": false
+    },
     "data_sources": { "type": "array", "items": { "$ref": "#/$defs/dataSource" } },
     "projection_metadata": { "$ref": "#/$defs/projectionMetadata" }
   },

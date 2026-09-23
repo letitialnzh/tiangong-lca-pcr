@@ -1,0 +1,51 @@
+schema_version: 0
+id: module.system-condition.shared-infrastructure-attribution
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Shared infrastructure attribution
+purpose: Add shared-asset, shared-service, and double-counting obligations when multiple nodes or periods consume one infrastructure resource.
+activation:
+  question: Do two or more selected process nodes or reporting periods use the same asset or service whose burden must be attributed?
+  signals:
+    - shared_infrastructure
+  evidence:
+    - current product and route definition of the shared asset or service and consuming nodes
+    - route evidence for the selected attribution period and treatment
+  outcomes:
+    applicable: activate_shared_infrastructure_checks
+    not_applicable: treat_the_asset_as_single_consumer
+    unresolved: retain_shared_asset_ambiguity_and_request_current_evidence
+owns:
+  - shared-asset and consuming-node linkage
+  - service-period indexing
+  - prompts for the PCR-specific attribution decision
+  - duplicate burden checks
+excludes:
+  - infrastructure identity, lifetime, quantity, and factor
+  - default allocation method
+  - product-specific flow identity
+interfaces:
+  overlays: [shared_asset, consuming_nodes, service_periods, attribution_decision_slot]
+authoring:
+  target_sections: [system_boundary, process_inventory, allocation_rules, validation_rules]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations to make shared consumers, service periods, and burden attribution explicit in the English PCR.
+obligations:
+  - identify the shared asset or service
+  - enumerate every consuming node and relevant period
+  - record the PCR-specific attribution decision and evidence
+  - prevent the same shared burden from being counted twice
+validation:
+  - shared_asset_requires_two_or_more_consumers_or_periods
+  - shared_asset_requires_period_or_service_boundary
+  - shared_burden_must_not_be_double_counted
+composition:
+  depends_on: []
+  coexists_with: [activity, technology, multi-output-attribution, multi-period-attribution]
+  conflicts_with: [duplicate_shared_asset_ownership, single_consumer_as_shared_asset]
+tests:
+  - agriculture-shared-infrastructure
+  - mining-shared-infrastructure
+  - electricity-shared-infrastructure

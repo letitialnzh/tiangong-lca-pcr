@@ -1,0 +1,50 @@
+schema_version: 0
+id: module.system-condition.multi-period-attribution
+version: 0.1.0
+status: candidate
+kind: system_condition
+title: Multi-period attribution
+purpose: Add period and phase linkage obligations without supplying universal lifetime or annualization values.
+activation:
+  question: Do selected process instances, assets, or outputs span more than one reporting period or lifecycle phase?
+  signals:
+    - cross_period_attribution_required
+  evidence:
+    - current product and route reporting period and phase definition
+    - route evidence for replacement, termination, and attribution treatment
+  outcomes:
+    applicable: activate_period_and_phase_checks
+    not_applicable: model_the_route_as_single_period
+    unresolved: retain_period_ambiguity_and_request_current_evidence
+owns:
+  - period and phase indexing
+  - linkage of events and outputs to periods
+  - replacement, termination, and double-attribution checks
+excludes:
+  - universal lifetime, cycle length, and annualization values
+  - product quantities, factors, and flow UUIDs
+  - final product-specific attribution decision
+interfaces:
+  overlays: [reporting_periods, lifecycle_phases, replacement_events, termination_events, period_attribution_slot]
+authoring:
+  target_sections: [functional_unit, system_boundary, allocation_rules, validation_rules]
+  evidence_policy: current_product_and_route
+  generation_rule: >-
+    Use the obligations to make reporting periods, lifecycle phases, and attribution treatment explicit in the English PCR.
+obligations:
+  - enumerate relevant periods and phases
+  - link inputs, assets, outputs, and events to periods
+  - record period-specific attribution decisions
+  - prevent double attribution
+validation:
+  - phase_or_period_boundaries_are_required
+  - unresolved_replacement_or_termination_blocks_finalization
+  - period_attribution_must_not_double_count
+composition:
+  depends_on: []
+  coexists_with: [activity, technology, multi-output-attribution]
+  conflicts_with: [duplicate_period_indexing]
+tests:
+  - agriculture-multi-period-production
+  - mining-multi-period-asset
+  - electricity-multi-period-asset
