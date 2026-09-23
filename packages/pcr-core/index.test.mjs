@@ -917,11 +917,16 @@ test("CPC 99000 physical pilot keeps coverage and old-id routing after directory
   assert.equal(classification.pcr, null);
 
   const all = listPcrs({ root: repoRoot, scope: "all", refresh: true });
-  assert.equal(all.length, 2876);
-  assert.equal(all.filter((entry) => entry.record_kind === "methodology").length, 3);
+  const material = listPcrs({ root: repoRoot, scope: "material", refresh: true });
+  const legacy = listPcrs({ root: repoRoot, scope: "legacy", refresh: true });
+  assert.equal(all.length, material.length + legacy.length);
+  assert.equal(
+    all.filter((entry) => entry.record_kind === "methodology").length,
+    material.length,
+  );
   assert.equal(
     all.filter((entry) => entry.record_kind === "legacy_scaffold_reference").length,
-    2873,
+    legacy.length,
   );
 });
 

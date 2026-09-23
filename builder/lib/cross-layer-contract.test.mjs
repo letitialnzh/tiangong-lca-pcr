@@ -18,6 +18,7 @@ import {
   assertStructured as assertBuilderStructured,
 } from "./schema-contracts.mjs";
 import { parsePcrMarkdownToStructured } from "./markdown-projection.mjs";
+import { moduleReferencesFromManifest } from "./module-checklist.mjs";
 import { structuredProjectionYaml } from "./structured-yaml-projection.mjs";
 import { inspectPcrDirectory } from "./lint-rules.mjs";
 import {
@@ -59,8 +60,10 @@ test("one material PCR remains consistent from builder source contracts through 
   assert.doesNotThrow(() => assertCoreStructured(structured));
 
   const markdownProjection = parsePcrMarkdownToStructured(markdown);
+  const moduleSelection = moduleReferencesFromManifest({ root: repoRoot, manifest });
   const renderedStructured = structuredProjectionYaml(markdownProjection, {
     sourceMarkdown: markdown,
+    moduleReferences: moduleSelection.moduleReferences,
   });
   assert.equal(renderedStructured, structuredText);
 
@@ -144,7 +147,13 @@ test("builder semantic preflight rejects a schema-valid incomplete material proj
     writeFileSync(markdownPath, markdown);
     writeFileSync(
       path.join(copiedPcrDirectory, "structured.yaml"),
-      structuredProjectionYaml(projection, { sourceMarkdown: markdown }),
+      structuredProjectionYaml(projection, {
+        sourceMarkdown: markdown,
+        moduleReferences: moduleReferencesFromManifest({
+          root,
+          manifest: parseYaml(readFileSync(path.join(copiedPcrDirectory, "manifest.yaml"), "utf8")),
+        }).moduleReferences,
+      }),
     );
 
     const result = inspectPcrDirectory({ root, pcrDir: copiedPcrDirectory });

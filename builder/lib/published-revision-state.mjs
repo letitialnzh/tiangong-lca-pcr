@@ -466,7 +466,10 @@ function inspectReleaseDirectory({ root, releaseDir, historyEntry, pcrId, proble
       problems.push(`${relative(root, paths["structured.yaml"])}: ${issue.message}`);
     }
   }
-  for (const issue of materialProjectionCompletenessIssues(structured, { expectedPcrId: pcrId })) {
+  for (const issue of materialProjectionCompletenessIssues(structured, {
+    expectedPcrId: pcrId,
+    lifecycleStatus: snapshotManifest.status,
+  })) {
     problems.push(`${relative(root, paths["structured.yaml"])}: ${issue.message}`);
   }
 

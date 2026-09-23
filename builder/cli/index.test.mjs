@@ -435,6 +435,56 @@ test("lint passes for initialized scaffold", () => {
   }
 });
 
+test("lint can target one PCR without inspecting unrelated PCR directories", () => {
+  const root = makeTempRoot();
+  const selectedPcr = "library/pcrs/agriculture/crops/wheat-seed";
+  const unrelatedPcr = "library/pcrs/agriculture/crops/barley-seed";
+  try {
+    runCli(["init", "--root", root]);
+    runCli([
+      "init",
+      "--root",
+      root,
+      "--sample-pcr",
+      "agriculture/crops/wheat-seed",
+      "--pcr-id",
+      "pcr.agriculture.crops.wheat-seed",
+      "--title-en",
+      "Wheat seed production",
+      "--title-zh-CN",
+      "小麦种子生产",
+    ]);
+    writePublicationReadyPcr(root, path.join(root, selectedPcr));
+
+    runCli([
+      "init",
+      "--root",
+      root,
+      "--sample-pcr",
+      "agriculture/crops/barley-seed",
+      "--pcr-id",
+      "pcr.agriculture.crops.barley-seed",
+      "--title-en",
+      "Barley seed production",
+      "--title-zh-CN",
+      "大麦种子生产",
+    ]);
+    unlinkSync(path.join(root, unrelatedPcr, "pcr.en-US.md"));
+
+    const selectedOutput = runCli(["lint", "--root", root, "--pcr", selectedPcr]);
+    assert.match(selectedOutput, /PCR library lint passed/i);
+    assert.throws(
+      () => runCliFailure(["lint", "--root", root]),
+      (error) => {
+        assert.match(String(error.stderr), /barley-seed\/pcr\.en-US\.md/u);
+        return true;
+      },
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("lint rejects PCR directories missing the Chinese markdown file", () => {
   const root = makeTempRoot();
   try {
@@ -3121,7 +3171,10 @@ test("builder argument parsing rejects ambiguous inputs before command dispatch"
     assert.throws(
       () => runCliFailure(["lint", "--pcr", "library/pcrs/example"]),
       (error) => {
-        assert.match(String(error.stderr), /Unknown option for lint: --pcr/u);
+        assert.match(
+          String(error.stderr),
+          /Requested PCR must be a direct library\/pcrs\/<domain>\/<subdomain>\/<slug> directory/u,
+        );
         return true;
       },
     );
