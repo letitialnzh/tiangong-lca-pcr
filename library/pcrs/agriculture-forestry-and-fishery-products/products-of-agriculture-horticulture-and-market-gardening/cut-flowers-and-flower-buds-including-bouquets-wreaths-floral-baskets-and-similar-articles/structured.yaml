@@ -1,10 +1,1265 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01962"
-  title: "Cut flowers and flower buds including bouquets, wreaths, floral baskets and similar articles"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cut-flowers-and-flower-buds-including-bouquets-wreaths-floral-baskets-and-similar-articles"
+  classification_refs: "CPC 3.0: 01962"
+  covered_products: "Fresh cut flowers/buds as loose stems or one declared bouquet, wreath, floral basket or similar article"
+  excluded_products: "Rooted live plants; planting material; artificial flowers; undeclared mixed presentations; retail display; consumer use"
+  representative_product: "One fresh floral product of declared composition, grade and presentation at producer or assembly hand-off"
+  production_route: "Field or protected cultivation, cutting, conditioning, grading, cooling and presentation; assembly is conditional"
+  market_state: "Fresh and marketable; loose or assembled form, hydration, temperature, treatment, accessories and packaging declared"
+functional_unit:
+  what: "One declared fresh cut-flower or bud product in one loose or assembled presentation"
+  how_much: "1 kg net fresh floral product; count may be additional with measured lot-mass conversion"
+  how_well: "Meets declared composition, grade, maturity, freshness, damage, stem-length and presentation criteria"
+  how_long_or_cycle: "One declared crop cycle and harvest/assembly lot through hand-off"
+  reference_flow_link: "Unresolved; the sole exact-class result is a narrow dyed-flower factory route"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The boundary starts with burden-carrying propagation material and cultivation inputs. It includes managed cultivation, harvest, hydration/conditioning, grading, cooling, optional assembly, packaging and hand-off. Shared infrastructure is attributed over service life and use. Distribution after hand-off, retail display and consumer care are excluded."
+      source_ids: []
+    - rule_id: boundary_single_presentation
+      applies_to: "all datasets"
+      rule: "Model one loose or assembled presentation and prohibit incompatible mixed physical references."
+      source_ids:
+        - fao-postharvest-cut-flowers
+    - rule_id: boundary_cultivation
+      applies_to: "managed_cultivation"
+      rule: "Include propagation, water, nutrients, crop protection, energy and attributable shared infrastructure."
+      source_ids:
+        - fao-postharvest-cut-flowers
+    - rule_id: boundary_conditioning
+      applies_to: "harvest_conditioning"
+      rule: "Include cutting, rapid hydration, preservative treatment and conditioning actually performed."
+      source_ids:
+        - ncsu-cut-flower-postharvest
+    - rule_id: boundary_cold_chain
+      applies_to: "grading_cooling"
+      rule: "Include grading, cooling and controlled holding through hand-off; disclose time and temperature."
+      source_ids:
+        - fao-postharvest-cut-flowers
+    - rule_id: boundary_assembly
+      applies_to: "article_assembly"
+      rule: "Include every floral component, accessory, joining input and assembly loss for article routes."
+      source_ids:
+        - mass-balance-identity
+    - rule_id: boundary_packaging
+      applies_to: "presentation_handoff"
+      rule: "Include packaging crossing hand-off and exclude later distribution."
+      source_ids:
+        - ncsu-cut-flower-postharvest
+    - rule_id: boundary_route_separation
+      applies_to: "alternative routes"
+      rule: "Keep cultivation, preservation and presentation routes separate until weighting is reproducible."
+      source_ids:
+        - fao-postharvest-cut-flowers
+boundary_abstraction:
+  declared_starting_condition: "Species/cultivar-specific propagation material entering a declared field or protected system"
+  starting_condition_role: "Burden-carrying biological input; retained mother stock receives period attribution"
+  product_classification_scope: "One CPC 01962 presentation and declared species/cultivar composition per dataset"
+  recursive_input_rule: "Purchased same-category cut material used in an article requires a compatible upstream dataset"
+  upstream_dataset_requirement: "Compatible composition, presentation, route, geography, quality, gate and verified final identity"
+  disclosure: "System, crop cycle, lot, composition, presentation, hydration, temperature, treatment, grade, accessories, packaging, rejects, rework and hand-off"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Fresh cut flowers/buds or declared floral article (UUID unresolved)"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species/cultivar composition"
+    - presentation
+    - "field/protected route"
+    - maturity
+    - grade
+    - "stem length"
+    - "net floral mass"
+    - hydration
+    - temperature
+    - treatment
+    - accessories
+    - packaging
+    - gate
+    - geography
+    - lot
+    - period
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh net fresh floral material at the declared hand-off and time."
+  - id: count_conversion
+    applies_to: "count records"
+    required_property_ref:
+      name: "Mass and count"
+      uuid: ""
+    required_unit: "kg and count"
+    rule: "Convert with representative measured lot mass and retain sampling evidence."
+  - id: article_reconciliation
+    applies_to: "assembled articles"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile floral material, accessories, water/media and packaging separately."
+  - id: hydration_temperature_basis
+    applies_to: "all presentations"
+    required_property_ref:
+      name: "Mass and temperature"
+      uuid: ""
+    required_unit: "kg and deg C"
+    rule: "Declare hydration, drainage and temperature at weighing."
+  - id: accepted_yield
+    applies_to: "process nodes"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile accepted, downgrade, rework, returns, residues and measured mass change."
+process_map:
+  - id: managed_cultivation
+    name: "Managed flower cultivation"
+    inclusion: "required"
+    inclusion_condition: "Always; field or protected route declared"
+    role: "Managed biological production"
+    quantitative_reference: "kg harvested floral material"
+  - id: harvest_conditioning
+    name: "Cutting, hydration and conditioning"
+    inclusion: "required"
+    inclusion_condition: "Always; preservative may be zero"
+    role: "Harvest and conditioning"
+    quantitative_reference: "kg conditioned material"
+  - id: grading_cooling
+    name: "Grading, sorting and cooling"
+    inclusion: "required"
+    inclusion_condition: "Always; active cooling may be zero with evidence"
+    role: "Grading and preservation"
+    quantitative_reference: "kg accepted material"
+  - id: article_assembly
+    name: "Floral-article assembly"
+    inclusion: "conditional"
+    inclusion_condition: "Only for assembled presentation"
+    role: "Assembly and formulation"
+    quantitative_reference: "kg assembled article"
+  - id: presentation_handoff
+    name: "Packaging and hand-off"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Presentation and reference output"
+    quantitative_reference: "1 kg reference product"
+process_inventory:
+  - id: managed_cultivation
+    label: "Managed flower cultivation"
+    inputs:
+      product:
+        - row_id: propagation_material
+          role: "Propagation material"
+          name: "Declared species/form propagation stock; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure purchased and burden-attributed retained stock by crop cycle."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg harvested material"
+                basis: "stock attributed per kg harvested output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_water
+          role: "Irrigation water"
+          name: "Irrigation water selected from foreground source"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Meter delivery or calculate from verified delivery rate and time; disclose rainfall separately."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "m3/kg harvested material"
+                basis: "delivered water per kg harvested output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_nutrients
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Actual mineral, organic and other nutrient products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg or compatible nutrient property/unit"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Record every nutrient product in this single process card and retain composition; no group is permitted."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg harvested material"
+                basis: "nutrient products per kg harvested output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection products"
+          name: "Actual formulations; UUIDs unresolved until identities are known"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure formulation, concentration, application and treated area; zero when absent."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg harvested material"
+                basis: "formulated product per kg harvested output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_energy
+          role: "Cultivation energy"
+          name: "Carrier-specific fuel, electricity or heat from records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Attribute pumping, machinery, lighting, heating, ventilation and cooling by cycle and area-time."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/kg harvested material"
+                basis: "energy per kg harvested output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_output
+          role: "Harvested flowers and buds"
+          name: "Internal species/cultivar-specific harvested floral material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Weigh salable and later-rejected harvested material at cutting."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "10"
+                unit: "kg/kg reference product"
+                basis: "harvested mass before later rejects per kg accepted product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cultivation_residues
+          role: "Crop residues and rejects"
+          name: "Material- and destination-specific residue; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure prunings, spent plants and rejects by destination; exclude retained/reworked material."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "20"
+                unit: "kg/kg harvested material"
+                basis: "residue leaving cultivation per kg output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: cultivation_emissions
+          role: "Direct emissions"
+          name: "Substance- and compartment-specific elementary flows; UUIDs unresolved"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Calculate from collected activity and a declared factor method; do not aggregate identities."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested material"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "20"
+                unit: "kg/kg harvested material"
+                basis: "screening sum only; final exchanges remain specific"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_conditioning
+    label: "Cutting, hydration and conditioning"
+    inputs:
+      product:
+        - row_id: harvested_input
+          role: "Harvested floral input"
+          name: "Internal harvested floral material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure lot transfer."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg conditioned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg/kg conditioned output"
+                basis: "input per kg conditioned output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Conditioning water"
+          name: "Process water selected from foreground source"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Meter hydration, washing and solution make-up water; record recirculation and discharge."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg conditioned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "m3/kg conditioned output"
+                basis: "supplied water per kg output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_ingredients
+          role: "Preservative ingredients"
+          name: "Actual sugar, acidifier, biocide or preservative ingredients; UUIDs unresolved until formulation is known"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure each ingredient and concentration; zero when only water is used."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg conditioned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.2"
+                unit: "kg/kg conditioned output"
+                basis: "ingredients per kg output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_output
+          role: "Conditioned floral material"
+          name: "Internal conditioned floral material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure after declared drainage and hydration stabilization."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg conditioned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg conditioned output"
+                basis: "quantitative reference output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: conditioning_waste
+          role: "Conditioning wastewater and trim"
+          name: "Wastewater and biological trim by destination; UUIDs unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure discharge and trim separately; exclude recirculation and rework."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg conditioned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg conditioned output"
+                basis: "discharged solution and trim per kg output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading_cooling
+    label: "Grading, sorting and cooling"
+    inputs:
+      product:
+        - row_id: conditioned_input
+          role: "Conditioned input"
+          name: "Internal conditioned floral material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure lot input and retain grade and temperature state."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg accepted output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "3"
+                unit: "kg/kg accepted output"
+                basis: "input per kg accepted output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cooling_energy
+          role: "Cooling energy"
+          name: "Electricity or other energy from records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Attribute precooling, cold-room and grading energy by meter, run or justified area-time share."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "500"
+                unit: "MJ/kg accepted output"
+                basis: "energy per kg accepted output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: graded_output
+          role: "Accepted graded floral material"
+          name: "Internal accepted grade"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure each accepted grade and destination; keep downgrade streams distinct."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg accepted output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg accepted output"
+                basis: "quantitative reference output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: grading_rejects
+          role: "Downgrades and rejects"
+          name: "Destination-specific downgrade or biological waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure downgrade, rework, return and discard separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg accepted output"
+                basis: "downgrade and discard per kg accepted output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: article_assembly
+    label: "Floral-article assembly"
+    inputs:
+      product:
+        - row_id: floral_components
+          role: "Floral components"
+          name: "Internal or purchased species-specific floral components; purchased components require upstream datasets"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure each component by species/cultivar, source lot and accepted mass."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg assembled floral output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assembly
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "3"
+                unit: "kg/kg net floral output"
+                basis: "incoming floral mass per kg accepted net floral output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: assembly_accessories
+          role: "Accessories and joining inputs"
+          name: "Actual ribbon, wire, frame, basket, foam or holder; UUIDs unresolved until materials are known"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure each material, reuse status and hand-off inclusion."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg assembled floral output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assembly
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg net floral output"
+                basis: "accessories per kg net floral output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: assembled_output
+          role: "Accepted assembled article"
+          name: "Internal declared bouquet, wreath, basket or similar article"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure net floral mass and separately reconcile non-floral components."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per kg net floral output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_assembly
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net floral output"
+                basis: "quantitative reference output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: assembly_rejects
+          role: "Assembly trim and rejects"
+          name: "Material- and destination-specific waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Record trim, rejected assemblies, rework and recovered accessories separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted assembled output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg accepted assembled output"
+                basis: "boundary-exiting trim and rejects per kg output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: presentation_handoff
+    label: "Packaging and hand-off"
+    inputs:
+      product:
+        - row_id: presentation_input
+          role: "Accepted floral product"
+          name: "Internal accepted loose or assembled floral product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure net floral input and reconcile handling loss and hydration change."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg/kg reference product"
+                basis: "input per kg handed-off product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: packaging_materials
+          role: "Packaging and presentation materials"
+          name: "Actual sleeve, wrap, carton, crate, pallet or rigid container"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure materials crossing hand-off; record returnable assets with reuse attribution."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handoff
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg reference product"
+                basis: "packaging per kg handed-off product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: waste_treatment_service
+          role: "Purchased waste treatment"
+          name: "Treatment service selected for actual waste route"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.waste-treatment-service"
+            version: "0.2.0"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Record purchased treatment only for boundary exits and prevent duplicate waste-output burdens."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg treated/kg reference product"
+                basis: "purchased treatment per kg product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product
+          role: "Reference floral product"
+          name: "Fresh cut flowers/buds or declared article; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Exactly 1 kg net floral product on declared hydration, temperature and component basis."
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "declared reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: handoff_rejects
+          role: "Handoff rejects and packaging losses"
+          name: "Material- and destination-specific waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This card records the declared flow role and quantity at this process node."
+          amount:
+            expression: "Measure rejected flowers, damaged articles and packaging loss; separate return/rework."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg reference product"
+                basis: "rejects and loss per kg product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid
+    applies_to: "all processes"
+    rule: "Prefer direct metering and subdivision by crop, lot, grade and presentation."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_multi_period
+    applies_to: "perennial stock and protected systems"
+    rule: "Attribute establishment, mother-stock and infrastructure over documented productive periods and usable outputs."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_shared_assets
+    applies_to: "shared irrigation, greenhouse, cooling and assembly assets"
+    rule: "Allocate by causal driver such as area-time, meter share, runtime or throughput."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_grades
+    applies_to: "saleable grades"
+    rule: "Treat separately marketed grades as co-products; allocate only after subdivision is exhausted."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rework
+    applies_to: "reject and rework loops"
+    rule: "Return rework burdens to the accepting node and prevent double counting."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation
+      process_id: "managed_cultivation"
+      flow_role: "stock, inputs and output"
+      record_type: "farm logs, meters, invoices, scales"
+      raw_fields: "composition; route; area; dates; product; amount; output"
+      collection_method: "reconcile cycle and harvest records"
+      unit: "kg, m3, m2, date"
+      frequency: "each event/cycle"
+      temporal_coverage: "complete cycle"
+      site_scope: "all plots/structures"
+      aggregation_rule: "sum compatible crop-route strata"
+      quality_evidence: "invoices, calibrated meters/scales, lot links"
+    - protocol_id: cp_energy
+      process_id: "all_energy_nodes"
+      flow_role: "energy and shared assets"
+      record_type: "meters, invoices, equipment logs"
+      raw_fields: "carrier; quantity; meter; runtime; power; area-time; life/utilization"
+      collection_method: "meter, fuel balance or verified calculation"
+      unit: "MJ, kWh, h"
+      frequency: "batch/month"
+      temporal_coverage: "full period"
+      site_scope: "all included assets"
+      aggregation_rule: "direct meter then causal allocation"
+      quality_evidence: "calibration, invoice and asset register"
+    - protocol_id: cp_emissions
+      process_id: "managed_cultivation"
+      flow_role: "direct emissions"
+      record_type: "calculation record"
+      raw_fields: "activity; substance; factor; method; compartment"
+      collection_method: "apply declared method to collected activity"
+      unit: "kg"
+      frequency: "each cycle"
+      temporal_coverage: "complete cycle"
+      site_scope: "all included sites"
+      aggregation_rule: "calculate by substance/compartment"
+      quality_evidence: "factor source and worksheet"
+    - protocol_id: cp_conditioning
+      process_id: "harvest_conditioning"
+      flow_role: "input/output, water, ingredients"
+      record_type: "scales, meters, batch sheet"
+      raw_fields: "lot; masses; water; ingredients; concentration; time; temperature; drainage"
+      collection_method: "measure each lot"
+      unit: "kg, m3, h, deg C"
+      frequency: "each lot"
+      temporal_coverage: "all lots"
+      site_scope: "all conditioning sites"
+      aggregation_rule: "sum compatible lots"
+      quality_evidence: "checks and signed batch sheet"
+    - protocol_id: cp_grading
+      process_id: "grading_cooling"
+      flow_role: "grades, rejects, holding"
+      record_type: "scales and temperature logs"
+      raw_fields: "input; grade output; reject; time; temperature"
+      collection_method: "weigh states and log temperature"
+      unit: "kg, h, deg C"
+      frequency: "each lot"
+      temporal_coverage: "all lots"
+      site_scope: "all grading and cooling sites"
+      aggregation_rule: "sum by grade/route"
+      quality_evidence: "scale check and temperature record"
+    - protocol_id: cp_assembly
+      process_id: "article_assembly"
+      flow_role: "components, accessories, rework, output"
+      record_type: "bill and scales"
+      raw_fields: "identities; masses; output; trim; reject; rework"
+      collection_method: "reconcile each batch"
+      unit: "kg, count"
+      frequency: "each batch"
+      temporal_coverage: "all article batches"
+      site_scope: "all assembly sites"
+      aggregation_rule: "identical specifications only"
+      quality_evidence: "controlled bill, scale checks, lot links"
+    - protocol_id: cp_handoff
+      process_id: "presentation_handoff"
+      flow_role: "product and packaging"
+      record_type: "scales, packing list, release"
+      raw_fields: "mass; count; packaging; water/media; temperature; grade; time"
+      collection_method: "reconcile packing and release"
+      unit: "kg, count, deg C"
+      frequency: "each lot"
+      temporal_coverage: "all hand-offs"
+      site_scope: "all presentation hand-off sites"
+      aggregation_rule: "mass-weight within compatible strata"
+      quality_evidence: "scale check and release approval"
+    - protocol_id: cp_waste
+      process_id: "all_nodes"
+      flow_role: "rejects, wastewater, treatment"
+      record_type: "scales, meters, manifests, rework logs"
+      raw_fields: "material; amount; origin; destination; treatment; rework"
+      collection_method: "reconcile node balance and destination"
+      unit: "kg, m3"
+      frequency: "event/month"
+      temporal_coverage: "full period"
+      site_scope: "all exits and loops"
+      aggregation_rule: "sum by material/destination"
+      quality_evidence: "manifests and trace records"
+  calculation_rules:
+    - id: calc_normalization
+      applies_to: "all rows"
+      rule: "compatible stratum total divided by accepted net floral mass"
+      inputs:
+        - "attributed quantity"
+        - "reference mass"
+      output: "amount per kg reference product"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_count_mass
+      applies_to: "count records"
+      rule: "measured representative lot mass divided by count"
+      inputs:
+        - "lot mass"
+        - count
+        - sampling
+      output: "kg per stem/item"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_net_floral_mass
+      applies_to: "articles"
+      rule: "gross mass minus measured non-floral components and excluded free water"
+      inputs:
+        - gross
+        - accessories
+        - packaging
+        - water
+      output: "net floral mass"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_yield
+      applies_to: "each node"
+      rule: "input plus gain equals accepted, downgrade, rework, waste and measured change"
+      inputs:
+        - "state masses"
+      output: "yield and residual"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_shared_service
+      applies_to: "shared assets"
+      rule: "measured service times causal share; shares sum to one"
+      inputs:
+        - "service total"
+        - driver
+      output: "attributed service"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference and purchased floral components"
+      requirement: "Retain composition, presentation, lot, grade, maturity, hydration, temperature, treatment and gate."
+      evidence: "lot labels and release records"
+    - id: dq_temporal
+      applies_to: "all processes"
+      requirement: "Cover one complete crop cycle and every included harvest/assembly lot; disclose extrapolation."
+      evidence: "dated logs and coverage reconciliation"
+    - id: dq_measurement
+      applies_to: "mass, water, energy, temperature"
+      requirement: "Use checked instruments and state timing, net/gross and wet/drained basis."
+      evidence: "calibration/check records and logs"
+    - id: dq_completeness
+      applies_to: "all inventory"
+      requirement: "Reconcile nodes, rejects/rework and quantitatively justify exclusions."
+      evidence: "process balance and checklist"
+    - id: dq_route
+      applies_to: "alternative routes"
+      requirement: "Keep routes separate and document weighting before aggregation."
+      evidence: "route inventory and production weights"
+    - id: dq_uuid
+      applies_to: "final exchanges"
+      requirement: "Resolve every exchange to one compatible confirmed UUID; retain Flow Set selection evidence."
+      evidence: "identity evidence package"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Fail if composition, presentation, grade, hydration/temperature, gate or UUID-resolution state is absent."
+    source_ids:
+      - fao-postharvest-cut-flowers
+  - rule_id: validate_presentation_separation
+    applies_to: "all datasets"
+    rule: "Fail if loose and assembled forms are combined without separate inventories and reproducible weighting."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_process_topology
+    applies_to: "process map"
+    rule: "Require cultivation, conditioning, grading/cooling and hand-off; assembly only for article routes."
+    source_ids:
+      - ncsu-cut-flower-postharvest
+  - rule_id: validate_nutrient_binding
+    applies_to: "cultivation_nutrients"
+    rule: "Require exactly one set-level nutrient card in cultivation, no group and no fixed UUID."
+    source_ids: []
+  - rule_id: validate_flow_sets
+    applies_to: "parameterized cards"
+    rule: "Require current set/version, permitted group where required and concrete selection evidence at generation."
+    source_ids: []
+  - rule_id: validate_mass_balance
+    applies_to: "every node"
+    rule: "Investigate residual after hydration/moisture, rework and storage changes; do not hide it in output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_ranges
+    applies_to: "every flow card"
+    rule: "Require complete range fields, lower not above upper, compatible basis and conditional application."
+    source_ids: []
+  - rule_id: validate_no_double_count
+    applies_to: "all nodes"
+    rule: "Prevent rework, return, cooling, energy and infrastructure from being counted twice."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_bilingual_projection
+    applies_to: "PCR package"
+    rule: "Require matching process, row, rule and range semantics in both languages and projection."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground package for one declared fresh floral product"
+  downstream_use: "secondary_dataset; background_dataset after identity and quality review"
+  allowed_use: "LCA when composition, presentation, route, geography, technology, quality, hydration/temperature and gate are compatible"
+  excluded_use: "Generic substitution across loose/assembled forms, climates, systems, preservation routes or quality states without evidence"
+  required_metadata: "composition; presentation; route; geography; period; maturity/grade; hydration; temperature; treatment; accessories; packaging; gate; allocation; Flow Set selections; UUID evidence"
+  required_quality_disclosure: "coverage; measurement basis; range exceptions; residuals; rejects/rework; shared attribution; unresolved identities; route weighting"
+  update_trigger: "Changed composition, presentation, system, technology, gate, yield/input pattern, Flow Set version, reference UUID or material evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.formulation-blending-node
+      kind: "activity"
+      path: "library/modules/activities/formulation-blending-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.packaging-presentation-node
+      kind: "activity"
+      path: "library/modules/activities/packaging-presentation-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-postharvest-cut-flowers"
+    type: "official_guidance"
+    reference: "FAO, Small-Scale Postharvest Handling Practices, https://www.fao.org/4/ae075e/ae075e13.htm"
+    used_for: "living-product boundary, water-loss and temperature control, route separation"
+  - id: "ncsu-cut-flower-postharvest"
+    type: "extension_guidance"
+    reference: "NC State Extension, Postharvest Information – Cut Flowers, https://cutflowers.ces.ncsu.edu/cutflowers-postharvest/"
+    used_for: "cutting, hydration, preservatives, grading, packaging and cold storage"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass identity for foreground reconciliation"
+    used_for: "normalization, components, yield, rework and shared-service calculations"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:b4e7c6fe57d4acd96f3a7c0e61c978f81135d12f73eb8d44e68f21eecf8a5125"
+  generated_content_sha256: "sha256:4547c8fe7fbf1bda9001ca01afce7ba513268e7253d0b04cecace41aced62880"

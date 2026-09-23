@@ -1,10 +1,1095 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01659"
-  title: "Hop cones"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.hop-cones"
+  classification_refs: "CPC 3.0:01659 Hop cones"
+  covered_products: "Accepted whole hop cones at farm gate, in wet/fresh state or route-declared dried whole-cone state"
+  excluded_products: "Pellets, powders, extracts, oils, brewed products, plants for propagation, shoots, leaves, bines and roots"
+  representative_product: "Marketable whole hop cones from a managed perennial hop yard"
+  production_route: "Perennial production, harvest, cone separation and grading; manual and mechanical harvest coexist as declared alternatives; drying is conditional"
+  market_state: "Accepted wet cones for immediate use, or dried whole cones only when drying is explicitly included"
+functional_unit:
+  what: "Accepted route-declared farm-gate hop cones"
+  how_much: "1 kg net mass"
+  how_well: "Whole cones meeting the reported acceptance specification, excluding leaves, stems, chaff and rejected cones"
+  how_long_or_cycle: "One declared harvest within a model that attributes establishment and shared assets over the evidenced productive life"
+  reference_flow_link: "Net accepted output from grading_handoff for wet cones or conditional_drying for dried whole cones"
+system_boundary:
+  rules:
+    - rule_id: boundary_perennial_yard
+      applies_to: "Yard production"
+      rule: "Include establishment, planting, trellis/support and irrigation infrastructure, crop management and field emissions; link each item to establishment, productive, replacement or termination periods."
+      source_ids:
+        - cornell-hop-yard-2017
+        - cordella-hop-lca-2026
+    - rule_id: boundary_harvest_separate
+      applies_to: "Harvest"
+      rule: "Model harvest independently because it removes the output from perennial production and manual and mechanical routes create different collected states and burdens."
+      source_ids:
+        - uf-ifas-hop-harvest-2019
+    - rule_id: boundary_conditioning
+      applies_to: "Separation and grading"
+      rule: "Include cone separation, leaf and chaff removal, grading and immediate breathable handling."
+      source_ids:
+        - uf-ifas-hop-harvest-2019
+        - penn-state-hop-production
+    - rule_id: boundary_wet_route
+      applies_to: "Wet route"
+      rule: "End at accepted graded wet cones; exclude drying, kiln assets and subsequent storage."
+      source_ids:
+        - penn-state-hop-production
+    - rule_id: boundary_dried_route
+      applies_to: "Dried route"
+      rule: "Include drying only for an explicitly declared dried whole-cone hand-off controlled by the foreground; record pre-state, moisture, energy, loss and post-state."
+      source_ids:
+        - cornell-hop-yard-2017
+    - rule_id: boundary_rejects
+      applies_to: "Grading and drying"
+      rule: "Separate accepted, downgraded, single-pass rework, rejected and chaff states and document every destination."
+      source_ids:
+        - penn-state-hop-production
+    - rule_id: boundary_downstream
+      applies_to: "All routes"
+      rule: "Exclude pelletizing, extraction, brewing, merchant storage, downstream packaging and post-gate transport."
+      source_ids:
+        - penn-state-hop-production
+boundary_abstraction:
+  declared_starting_condition: "Prepared agricultural land at hop-yard establishment, with planting material, infrastructure, nutrients, water, crop-protection products and energy crossing as inputs"
+  starting_condition_role: "Start of the foreground perennial hop-yard system"
+  product_classification_scope: "CPC 3.0:01659 whole hop cones"
+  recursive_input_rule: "Purchased hop cones are separate upstream Product inputs and never relabelled own-farm production; planting rhizomes or plants are planting material, not cone reference flow"
+  upstream_dataset_requirement: "Traceable upstream datasets for planting material, infrastructure materials, energy, water, nutrient and crop-protection products, resolved to concrete UUIDs during dataset construction"
+  disclosure: "Yard location and area, establishment year, phases represented, cultivar, trellis and irrigation configuration, harvest route, wet/dried hand-off, drying ownership, reporting period and excluded capital items"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Hop cones"
+    uuid: "17e491b0-4419-4898-8a8b-c67b0e035470"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "wet or dried whole-cone state"
+    - "moisture or dry-matter basis and test method"
+    - cultivar
+    - "harvest route"
+    - "harvest date or campaign"
+    - geography
+    - "acceptance grade"
+    - "farm-gate hand-off"
+    - "drying inclusion"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference output"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure net accepted cone mass after grading; tare containers and exclude leaves, stems, chaff and rejects."
+  - id: moisture_state
+    applies_to: "Wet and dried routes"
+    required_property_ref:
+      name: "Mass fraction or dry-matter fraction"
+      uuid: ""
+    required_unit: "kg/kg or %"
+    rule: "Record sampling and test method and time; do not convert states without lot-specific moisture fractions."
+  - id: area_period_conversion
+    applies_to: "Yard inventory"
+    required_property_ref:
+      name: "Mass or service per occupied area and period"
+      uuid: ""
+    required_unit: "stated unit/ha/year"
+    rule: "Link every record to yard area, crop year and lifecycle phase before normalization to accepted output."
+  - id: drying_reconciliation
+    applies_to: "Conditional drying"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile wet input, dried accepted output, rejects and water removed on one batch basis."
+process_map:
+  - id: yard_production
+    name: "Hop-yard establishment and perennial production"
+    inclusion: "required"
+    inclusion_condition: "All routes"
+    role: "Establish and manage female hop plants and deliver mature cone-bearing crop to harvest"
+    quantitative_reference: "Occupied hectare and crop year reconciled to accepted output over the attribution window"
+  - id: harvest_capture
+    name: "Harvest and capture"
+    inclusion: "required"
+    inclusion_condition: "All routes"
+    role: "Remove cones or cone-bearing bines and create a lot-indexed collected state"
+    quantitative_reference: "Harvest input and collected mixture by lot or campaign"
+  - id: grading_handoff
+    name: "Cone separation, cleaning, grading and wet hand-off"
+    inclusion: "required"
+    inclusion_condition: "All routes"
+    role: "Separate cones and classify accepted, downgraded, rework, reject and chaff states"
+    quantitative_reference: "Lot mass balance"
+  - id: conditional_drying
+    name: "Whole-cone drying and stabilization"
+    inclusion: "conditional"
+    inclusion_condition: "Dried whole-cone hand-off only"
+    role: "Stabilize accepted wet cones and hand off dried whole cones"
+    quantitative_reference: "Batch wet input, energy, water removed and dry outputs"
+process_inventory:
+  - id: yard_production
+    label: "Hop-yard establishment and perennial production"
+    inputs:
+      product:
+        - row_id: establishment_infrastructure
+          role: "Planting and shared yard infrastructure"
+          name: "Female hop planting material, trellis poles, wire, anchors, strings and irrigation assets"
+          flow_type: "product"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record each concrete material, installation or replacement year, service area, consuming nodes and evidenced service life; attribute each burden once across accepted output from its service periods."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg accepted route-declared farm-gate hop cones over the declared productive-life scenario"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_yard_assets
+              source_ids:
+                - cornell-hop-yard-2017
+                - cordella-hop-lca-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg material/kg accepted hop cones"
+                basis: "planting and infrastructure material attributed once to 1 kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: agricultural_nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply products used in the hop yard"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: ""
+          description: "This single card covers all mineral fertilizers, organic fertilizers and nutrient-bearing amendments in this process. Actual products and nutrient analyses are collected separately."
+          amount:
+            expression: "Record every actual product mass, nutrient analysis, date, method and treated area, then sum product mass only for this umbrella; resolve each actual product to a concrete UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per occupied hectare and crop year, then normalized to accepted output for the same attributed periods"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_inputs
+              source_ids:
+                - penn-state-hop-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg product/ha/year"
+                basis: "as-applied mass of all nutrient products per occupied hectare and crop year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Meter or calculate delivered water by block and date; rainfall is not a supplied Product flow."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per occupied hectare and irrigation week, then normalized to crop-year accepted output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_yard_operations
+              source_ids:
+                - penn-state-hop-production
+            ranges:
+              - role: typical_range
+                lower: "254"
+                upper: "508"
+                unit: "m3/ha/week"
+                basis: "1 to 2 inches delivered over one hectare during an irrigation week"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - penn-state-hop-production
+        - row_id: field_operations_inputs
+          role: "Crop-protection and canopy-management inputs"
+          name: "Site-reported crop-protection and canopy-management products"
+          flow_type: "product"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record every concrete material, active ingredient where applicable, concentration, quantity, operation, block and date; resolve Product inputs individually before final exchange generation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per occupied hectare and crop year, then normalized to accepted output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_yard_operations
+              source_ids:
+                - cornell-hop-yard-2017
+                - cordella-hop-lca-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg product/ha/year"
+                basis: "separately identified crop-protection and canopy-management product mass per occupied hectare and crop year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy supply"
+          name: "Energy carriers and purchased electricity used for establishment, training, pruning, spraying, irrigation and other field operations"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record actual carrier, quantity, equipment or meter, operation, block and crop year; resolve every carrier to a concrete Product-flow UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per occupied hectare and crop year, then normalized to accepted output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_yard_operations
+              source_ids:
+                - cordella-hop-lca-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/ha/year"
+                basis: "carrier lower-heating-value energy and purchased electricity converted to MJ per occupied hectare and crop year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_field_emissions
+          role: "Direct field emissions"
+          name: "Substance-specific emissions to air, water and soil from recorded field inputs"
+          flow_type: "elementary"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Calculate each substance and compartment using a declared method and collected application, soil, weather and management fields; never bind a broad pollutant label."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per occupied hectare and crop year, then normalized to accepted output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg substance/ha/year"
+                basis: "each separately identified substance and compartment per occupied hectare and crop year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: mature_crop_handoff
+          role: "Mature cone-bearing crop delivered to harvest"
+          name: "Mature cone-bearing bines or selectively picked cones at the harvest interface"
+          flow_type: "product"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Measure harvested wet material consistently with the route and link it to yard, cultivar and lot."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per 1 kg accepted route-declared farm-gate hop cones"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_balance
+              source_ids:
+                - uf-ifas-hop-harvest-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "50"
+                unit: "kg wet harvested material/kg accepted hop cones"
+                basis: "material crossing the harvest interface per 1 kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residues_losses
+          role: "Field residues and uncollected loss"
+          name: "Prunings, leaves, spent bines and cones left in field or otherwise not collected"
+          flow_type: "waste"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record each state and destination separately and exclude it from accepted product."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg accepted route-declared farm-gate hop cones"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg wet residue/kg accepted hop cones"
+                basis: "reported residues and losses per 1 kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: harvest_capture
+    label: "Harvest and capture"
+    inputs:
+      product:
+        - row_id: harvest_energy
+          role: "Harvest energy and services"
+          name: "Fuels, electricity and contracted equipment service used to cut, lower, move, pick or strip the lot"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record actual carrier or service, quantity, machine, route, lot and shared run event; resolve each concrete input UUID."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per kg material delivered to separation"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_operations
+              source_ids:
+                - uf-ifas-hop-harvest-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg collected material"
+                basis: "energy supplied to the selected harvest instance per kg material delivered to separation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_harvest_mixture
+          role: "Collected harvest mixture"
+          name: "Selectively picked wet cones or mechanically collected mixture of cones, leaves and stems"
+          flow_type: "product"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh before separation and declare the physical state and harvest route."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per 1 kg accepted route-declared farm-gate hop cones"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_balance
+              source_ids:
+                - uf-ifas-hop-harvest-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "30"
+                unit: "kg wet mixture/kg accepted hop cones"
+                basis: "collected material delivered to separation per 1 kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_losses
+          role: "Harvest losses and incidental material"
+          name: "Material lost or removed during cutting, lowering, movement or picking before the separation hand-off"
+          flow_type: "waste"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Reconcile harvest input and collected output and record destination or on-field retention."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "Per kg harvest input"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg harvest input"
+                basis: "loss and incidental material divided by harvest input mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading_handoff
+    label: "Cone separation, cleaning, grading and wet hand-off"
+    inputs:
+      product:
+        - row_id: separation_energy
+          role: "Separation and grading energy"
+          name: "Fuels and electricity for picking, screening, air separation, conveyors, cleaning and grading"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record actual carrier and quantity by lot; allocate start-up, cleaning and changeover once to the run."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per kg separation input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_batch
+              source_ids:
+                - uf-ifas-hop-harvest-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "MJ/kg separation input"
+                basis: "energy used by the separation and grading run per kg incoming material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_wet_cones
+          role: "Accepted wet hop cones"
+          name: "Hop cones"
+          flow_type: "product"
+          flow_ref:
+            uuid: "17e491b0-4419-4898-8a8b-c67b0e035470"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh net accepted wet cones after grading; this is the reference output for the wet route and input to drying for the dried route."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg accepted wet hop cones"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_batch
+              source_ids:
+                - penn-state-hop-production
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg accepted wet hop cones"
+                basis: "wet reference route only"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_cones
+          role: "Downgraded or reworkable cones"
+          name: "Off-spec whole cones with a documented downgrade, recovery or single-pass rework destination"
+          flow_type: "product"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh by disposition; link rework to the producing lot and do not count it accepted before successful regrading."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per kg separation input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg separation input"
+                basis: "downgraded or reworkable cone mass divided by separation input mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: chaff_rejects
+          role: "Chaff and rejected cones"
+          name: "Leaves, stems, chaff and cones rejected after grading"
+          flow_type: "waste"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh chaff and rejected cones separately and record field return, recovery, treatment or disposal destination; exclude all from accepted output."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per kg separation input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_batch
+              source_ids:
+                - penn-state-hop-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.95"
+                unit: "kg/kg separation input"
+                basis: "combined chaff and rejected cone mass divided by separation input mass, with components still recorded separately"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: conditional_drying
+    label: "Whole-cone drying and stabilization"
+    inputs:
+      product:
+        - row_id: wet_cones_for_drying
+          role: "Accepted wet cones for drying"
+          name: "Hop cones"
+          flow_type: "product"
+          flow_ref:
+            uuid: "17e491b0-4419-4898-8a8b-c67b0e035470"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh the input and test lot moisture or dry matter immediately before drying."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg initial cone dry matter"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_batch
+              source_ids:
+                - cornell-hop-yard-2017
+            ranges:
+              - role: typical_range
+                lower: "3.85"
+                upper: "5"
+                unit: "kg wet cones/kg initial cone dry matter"
+                basis: "harvested cones at 20 to 26 percent dry matter before drying"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - cornell-hop-yard-2017
+        - row_id: drying_energy
+          role: "Drying energy supply"
+          name: "Actual fuel and electricity used by heat source, fans, loading, unloading and batch cleaning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Record each carrier and quantity by batch; attribute shared dryer service once using metering or documented capacity-time."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per kg accepted dried whole hop cones"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_batch
+              source_ids:
+                - cornell-hop-yard-2017
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "50"
+                unit: "MJ/kg accepted dried whole cones"
+                basis: "all batch drying energy per kg accepted dried output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_dried_cones
+          role: "Accepted dried whole hop cones"
+          name: "Hop cones"
+          flow_type: "product"
+          flow_ref:
+            uuid: "17e491b0-4419-4898-8a8b-c67b0e035470"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh accepted whole cones after drying and final grading at declared moisture; this is the reference output only for the dried route."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg accepted dried whole hop cones"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_batch
+              source_ids:
+                - cornell-hop-yard-2017
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg accepted dried whole cones"
+                basis: "dried reference route only"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: drying_rejects
+          role: "Drying rejects"
+          name: "Cones or fragments rejected after drying with declared destination"
+          flow_type: "waste"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Weigh by batch and exclude from accepted output."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per kg wet cones entering drying"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "kg/kg wet cones entering drying"
+                basis: "dry reject mass divided by wet input mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: drying_water_to_air
+          role: "Water removed during drying"
+          name: "Water emitted to air from cone moisture during drying"
+          flow_type: "elementary"
+          property_unit: ""
+          description: "This card records the named flow where it crosses the stated process boundary and keeps its quantity linked to the declared lot, period or route."
+          amount:
+            expression: "Calculate wet input water minus water retained in accepted dried cones and rejects."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per kg wet cones entering drying"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_batch
+              source_ids:
+                - mass-balance-identity
+                - cornell-hop-yard-2017
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg water/kg wet cones entering drying"
+                basis: "water removed divided by wet input mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+allocation_rules:
+  - rule_id: allocation_no_co_product_default
+    applies_to: "Production"
+    rule: "Accepted cones are the only reference product. Residues, chaff, rejects and field losses receive no avoided burden unless a documented valuable output requires justified allocation."
+    source_ids: []
+  - rule_id: allocation_productive_life
+    applies_to: "Perennial phases"
+    rule: "Aggregate establishment, immature, productive, replacement and termination records over the declared scenario and divide by accepted output from the same periods; do not assign establishment twice."
+    source_ids:
+      - cordella-hop-lca-2026
+  - rule_id: allocation_shared_infrastructure
+    applies_to: "Shared assets"
+    rule: "Link trellis, irrigation, harvest and dryer assets to every consuming node and service period; attribute once by serviced area-time, measured use or documented capacity-time."
+    source_ids:
+      - cordella-hop-lca-2026
+  - rule_id: allocation_batches
+    applies_to: "Harvest, grading and drying"
+    rule: "Assign direct records to actual lots; allocate start-up, cleaning and changeover once by measured use, processed mass or capacity-time."
+    source_ids: []
+  - rule_id: allocation_rework_rejects
+    applies_to: "Off-spec states"
+    rule: "Retain burdens through the producing node. A single rework loop receives incremental burdens and is not a second accepted output; every boundary exit and credit needs a destination and method."
+    source_ids: []
+  - rule_id: allocation_route_exclusivity
+    applies_to: "Wet and dried routes"
+    rule: "Select one reference route. The wet route excludes drying; the dried route includes the wet-cone chain once and drying once."
+    source_ids:
+      - penn-state-hop-production
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_yard_assets
+      process_id: "yard_production"
+      flow_role: "establishment, planting and shared assets"
+      record_type: "invoices, maps, bills and replacement logs"
+      raw_fields: "yard_id; area; phase; cultivar; material_uuid; count; mass; installation_year; replacement_year; service_area; consuming_nodes; service_life"
+      collection_method: "Physical inventory linked to mapped blocks"
+      unit: "count; kg; ha; year"
+      frequency: "Each installation or replacement"
+      temporal_coverage: "Full declared scenario"
+      site_scope: "Asset and serviced blocks"
+      aggregation_rule: "Attribute once across service area and periods"
+      quality_evidence: "Dated invoices, drawings, logs and photos"
+    - protocol_id: cp_nutrient_inputs
+      process_id: "yard_production"
+      flow_role: "all nutrient products"
+      record_type: "purchase and application records"
+      raw_fields: "product_uuid; name; product_mass; nutrient_analysis; dry_matter; date; block; method; treated_area"
+      collection_method: "Collect each product separately before umbrella aggregation"
+      unit: "kg product; kg nutrient; ha"
+      frequency: "Every application"
+      temporal_coverage: "Every represented year"
+      site_scope: "Treated block"
+      aggregation_rule: "Sum by product and year; retain analysis"
+      quality_evidence: "Invoice, label and calibrated application log"
+    - protocol_id: cp_yard_operations
+      process_id: "yard_production"
+      flow_role: "water, crop protection, canopy inputs and field energy"
+      record_type: "meter, application, fuel and operation logs"
+      raw_fields: "date; block; input_uuid; active_ingredient; quantity; unit; water_volume; equipment; operation; runtime"
+      collection_method: "Meter or calibrated application record"
+      unit: "m3; kg; L; kWh; MJ; h"
+      frequency: "Every operation"
+      temporal_coverage: "Every represented year"
+      site_scope: "Block and equipment"
+      aggregation_rule: "Sum by concrete input and year, never unlike units"
+      quality_evidence: "Meter calibration, invoices and logs"
+    - protocol_id: cp_field_emissions
+      process_id: "yard_production"
+      flow_role: "direct emissions"
+      record_type: "calculation inputs"
+      raw_fields: "input identity; nutrient or active amount; soil; weather; irrigation; incorporation; method; compartment"
+      collection_method: "Apply declared substance-specific method"
+      unit: "kg substance/ha/year"
+      frequency: "Each application and annual calculation"
+      temporal_coverage: "Every represented year"
+      site_scope: "Treated block"
+      aggregation_rule: "Calculate by substance and compartment"
+      quality_evidence: "Complete calculation sheet and method/version"
+    - protocol_id: cp_harvest_balance
+      process_id: "yard_production_harvest_capture"
+      flow_role: "hand-off, collected mixture, residues and losses"
+      record_type: "lot tickets and scale logs"
+      raw_fields: "lot_id; yard_id; cultivar; route; input_mass; collected_mass; residue_mass; loss; destination; timestamps"
+      collection_method: "Calibrated weighing or documented reconciliation"
+      unit: "kg wet mass"
+      frequency: "Every lot"
+      temporal_coverage: "Every harvest"
+      site_scope: "Yard and lot"
+      aggregation_rule: "Reconcile input with unique outputs, residues and losses"
+      quality_evidence: "Calibration and chain of custody"
+    - protocol_id: cp_harvest_operations
+      process_id: "harvest_capture"
+      flow_role: "energy, cleaning and changeover"
+      record_type: "fuel, meter and machine logs"
+      raw_fields: "lot_id; route; machine; carrier_uuid; quantity; runtime; event"
+      collection_method: "Meter or carrier issue linked to run"
+      unit: "L; kWh; MJ; h"
+      frequency: "Every run and event"
+      temporal_coverage: "Every harvest"
+      site_scope: "Machine and lot"
+      aggregation_rule: "Assign shared event once"
+      quality_evidence: "Meter and run logs"
+    - protocol_id: cp_grading_batch
+      process_id: "grading_handoff"
+      flow_role: "all grade states and energy"
+      record_type: "lot, scale, grade and meter records"
+      raw_fields: "lot_id; input_mass; accepted_mass; downgraded_mass; rework_mass; reject_mass; chaff_mass; destination; moisture; carrier_uuid; energy"
+      collection_method: "Calibrated weighing, destination coding and meter record"
+      unit: "kg; %; MJ"
+      frequency: "Every lot and rework pass"
+      temporal_coverage: "Every harvest"
+      site_scope: "Lot and equipment"
+      aggregation_rule: "Reconcile all unique states; do not double-count returns"
+      quality_evidence: "Calibration, grade sheet and receipts"
+    - protocol_id: cp_drying_batch
+      process_id: "conditional_drying"
+      flow_role: "wet input, moisture, energy, dried outputs and water"
+      record_type: "batch sheet, scales, moisture tests and meters"
+      raw_fields: "batch_id; lot_id; wet_mass; initial_moisture; test_method; carrier_uuid; energy; temperature; duration; dried_mass; final_moisture; reject_mass"
+      collection_method: "Weigh, sample moisture and meter energy by batch"
+      unit: "kg; %; MJ; °C; h"
+      frequency: "Every batch"
+      temporal_coverage: "Every dried-route harvest"
+      site_scope: "Batch and dryer"
+      aggregation_rule: "Close dry-matter and total-mass balance; assign shared energy once"
+      quality_evidence: "Calibrations and validated moisture records"
+  calculation_rules:
+    - id: calc_productive_life
+      applies_to: "Establishment and assets"
+      rule: "Sum attributed phase burdens across the scenario and divide by cumulative accepted mass from the same area and periods."
+      inputs:
+        - phase
+        - asset
+        - area
+        - "period and accepted-output records"
+      output: "burden/kg accepted cones"
+      source_ids:
+        - cordella-hop-lca-2026
+    - id: calc_route_yield
+      applies_to: "Crop year and route"
+      rule: "Accepted farm-gate mass divided by occupied area; report state and moisture."
+      inputs:
+        - "accepted mass"
+        - area
+        - state
+        - moisture
+      output: "kg/ha/year"
+      source_ids:
+        - penn-state-hop-production
+    - id: calc_grading_balance
+      applies_to: "Harvest and grading"
+      rule: "input minus unique accepted, downgraded, rejected, chaff and loss states; rework returns are transfers."
+      inputs:
+        - "all lot masses and state codes"
+      output: "closure mass and ratio"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_drying_water
+      applies_to: "Drying"
+      rule: "wet input × initial moisture − accepted dry output × final moisture − reject mass × reject moisture."
+      inputs:
+        - "batch masses and moisture fractions"
+      output: "kg water to air"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Reference product"
+      requirement: "Preserve cultivar, state, grade, moisture, harvest date and hand-off with the fixed UUID."
+      evidence: "Lot specification"
+    - id: dq_temporal
+      applies_to: "Perennial system"
+      requirement: "Cover the declared establishment and productive-life scenario or identify extrapolated years and replacement assumptions."
+      evidence: "Multi-year records"
+    - id: dq_completeness
+      applies_to: "Inventory"
+      requirement: "Include establishment, nutrients, water, crop protection, field energy, infrastructure, emissions, harvest, rejects and route-conditional drying."
+      evidence: "Process/protocol matrix"
+    - id: dq_measurement
+      applies_to: "Mass, water and energy"
+      requirement: "Use calibrated instruments where available and disclose estimation, sampling and uncertainty."
+      evidence: "Calibration and calculations"
+    - id: dq_route
+      applies_to: "Alternatives"
+      requirement: "Keep manual/mechanical harvest and wet/dried hand-offs separate unless evidence-based weights are supplied."
+      evidence: "Route records"
+    - id: dq_flow_resolution
+      applies_to: "Inputs and emissions"
+      requirement: "Resolve actual Product inputs to verified UUIDs and retain substance and compartment specificity for elementary flows."
+      evidence: "Resolution record"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "Reference flow"
+    rule: "Require fixed Hop cones, Mass and unit-group UUIDs, 1 kg accepted output and every qualifier."
+    source_ids: []
+  - rule_id: validate_route_exclusivity
+    applies_to: "Route"
+    rule: "Require exactly one wet or dried hand-off; wet has no drying inventory, dried has one linked drying node and declared parent activity and delta."
+    source_ids:
+      - penn-state-hop-production
+  - rule_id: validate_periods
+    applies_to: "Perennial attribution"
+    rule: "Require phase treatment, cumulative output, attribution period and evidence and reject double attribution."
+    source_ids:
+      - cordella-hop-lca-2026
+  - rule_id: validate_shared_assets
+    applies_to: "Shared infrastructure"
+    rule: "Require asset identity, consuming nodes and periods, service boundary, attribution driver and duplicate-burden check."
+    source_ids: []
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "Every process"
+    rule: "Permit at most one Product-input nutrient card; it binds only flow-set.agricultural-nutrient-supply version 0.3.0 without group while actual products are separately collected."
+    source_ids: []
+  - rule_id: validate_batch_linkage
+    applies_to: "Harvest, grading and drying"
+    rule: "Require lot/batch IDs for inputs, outputs, energy, cleaning and changeover and reject shared burdens counted twice."
+    source_ids: []
+  - rule_id: validate_mass_balance
+    applies_to: "Harvest, grading and drying"
+    rule: "Reconcile accepted, downgraded, rework, rejected, chaff, loss and moisture states within disclosed uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_reject_routing
+    applies_to: "Off-spec material"
+    rule: "Give every downgrade, rework, recovery or discard state one producing node and documented next state; exclude unresolved rejects from accepted output."
+    source_ids: []
+  - rule_id: validate_drying
+    applies_to: "Dried route"
+    rule: "Require initial/final moisture, test method, batch mass, energy and acceptance state. The 20–26% initial dry matter and 8–10% target moisture are QA context, not universal limits."
+    source_ids:
+      - cornell-hop-yard-2017
+  - rule_id: validate_ranges
+    applies_to: "All flow cards"
+    rule: "Require exactly one complete Range per card and identical English, Chinese and structured values."
+    source_ids: []
+  - rule_id: validate_exclusions
+    applies_to: "Boundary"
+    rule: "Reject pelletizing, extraction, brewing, merchant storage, downstream packaging and post-gate transport."
+    source_ids:
+      - penn-state-hop-production
+published_dataset_profile:
+  dataset_role: "Foreground production dataset for route-declared farm-gate hop cones"
+  downstream_use: "Secondary or background use after matching state, geography, cultivar, time and boundary"
+  allowed_use: "Attributional modelling of wet or dried whole cones at farm gate; comparison only with compatible state and perennial attribution"
+  excluded_use: "Pellets, extracts, brewed products, planting material or systems requiring excluded downstream processing"
+  required_metadata: "PCR id/version; fixed flow UUID; geography; yard area and establishment year; attribution period; cultivar; harvest route; state; moisture method/result; grade; infrastructure treatment; years and sources"
+  required_quality_disclosure: "Foreground coverage, estimation share, missing years, productive-life assumptions, UUID resolution, mass-balance closure, calibration, route weights and reasoned estimates"
+  update_trigger: "Material change in yard configuration, cultivar, yield, nutrient or irrigation regime, harvest technology, infrastructure life, drying, hand-off state, specification or evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "uf-ifas-hop-harvest-2019"
+    type: "extension_guidance"
+    reference: "University of Florida IFAS Extension, Campbell and Pearson, *Harvest Techniques for Hops (Humulus lupulus)*, ENH1314/EP578, https://doi.org/10.32473/edis-ep578-219"
+    used_for: "Perennial/trellis context, harvest routes, separation, incidental material and immediate handling"
+  - id: "penn-state-hop-production"
+    type: "extension_guidance"
+    reference: "Penn State Extension, *Hop Production*, https://extension.psu.edu/hop-production"
+    used_for: "Wet/dried routes, irrigation, nutrient management, maturity and leaf/chaff removal"
+  - id: "cornell-hop-yard-2017"
+    type: "extension_guidance"
+    reference: "Cornell Hops, Weldon, Gent and Gadoury, *Five considerations before ever planting your first hop*, November 2017, https://hops.cals.cornell.edu/grower-resources/five-considerations-before-ever-planting-your-first-hop/"
+    used_for: "Permanent yard, establishment, shared equipment, initial dry matter and drying endpoint context"
+  - id: "cordella-hop-lca-2026"
+    type: "literature"
+    reference: "Cordella et al., *Uncovering the environmental burden of hops: a spatially resolved agricultural LCA for modern beer supply chains*, International Journal of Life Cycle Assessment (2026), https://doi.org/10.1007/s11367-026-02651-y"
+    used_for: "Farm-gate process coverage, establishment, trellis, field operations, drying and multi-year attribution"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass identity applied to lot and batch records"
+    used_for: "Harvest, grading and drying reconciliation and water calculation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:17902ed30e7dd2c6993a6fcca4f220fe5b8cb4da2c9dc1a05eae8962df2734ff"
+  generated_content_sha256: "sha256:868a3ebf3ff11a794363f16085b7689e72f97c3925a83ca81ad617f2ea56d20a"

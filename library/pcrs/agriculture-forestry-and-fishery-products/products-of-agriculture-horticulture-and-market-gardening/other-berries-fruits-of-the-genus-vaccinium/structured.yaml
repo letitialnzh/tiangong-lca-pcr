@@ -1,10 +1,649 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01355"
-  title: "Other berries; fruits of the genus Vaccinium"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.other-berries-fruits-of-the-genus-vaccinium"
+  classification_refs: "CPC 3.0 / 01355 / exact"
+  covered_products: "Cultivated fresh or chilled Vaccinium fruit"
+  excluded_products: "Processed, frozen, nursery and wild-harvested products"
+  representative_product: "Saleable cultivated blueberry or cranberry"
+  production_route: "Managed production; cultivation; harvest; sorting; primary conditioning; outlet"
+  market_state: "Saleable fruit at declared outlet"
+functional_unit:
+  what: "Saleable cultivated Vaccinium fruit"
+  how_much: "1 kg"
+  how_well: "Declared species/cultivar, grade, maturity, state and outlet"
+  how_long_or_cycle: "One production year or crop cycle; perennial establishment allocation when applicable"
+  reference_flow_link: "rf_vaccinium_saleable_fruit"
+system_boundary:
+  rules:
+    - rule_id: boundary_declared_outlet
+      applies_to: "all datasets"
+      rule: "Start at managed plot and end at declared farm-gate/first conditioning outlet; disclose post-harvest steps."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_recursive_same_category
+      applies_to: "recursive product inputs"
+      rule: "Stop tracing at same-category declared input and reference its upstream dataset."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_establishment_disclosure
+      applies_to: "perennial systems"
+      rule: "Include establishment only through documented allocation to reporting crop period."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "Managed plot and declared establishment status at period start"
+  starting_condition_role: "Foreground agricultural production starting condition"
+  product_classification_scope: "Cultivated CPC 01355 Vaccinium fruit; classification is mapping context"
+  recursive_input_rule: "Stop same-category recursion at a declared product input and require its upstream dataset."
+  upstream_dataset_requirement: "Provide upstream datasets for plants, fertilizers, amendments, energy, water, packaging and services crossing the boundary."
+  disclosure: "Disclose species/cultivar, system, area, establishment, period, outlet, grade, irrigation, inputs, yield, rejects and allocation."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Other berries, fruits of the genus Vaccinium"
+    uuid: "b9b4cf8e-fbb5-46a3-a4ba-0c9c98d46745"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species/cultivar"
+    - "fresh or chilled state"
+    - grade
+    - maturity
+    - "production year"
+    - outlet
+    - "fruit mass basis"
+    - "irrigation status"
+reference_flows:
+  []
+measurement_rules:
+  - id: measure_reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Normalize to saleable fruit mass at outlet; exclude packaging."
+  - id: measure_fertilizer_n_basis
+    applies_to: "fertilizer inputs"
+    required_property_ref:
+      name: "Product and nutrient mass"
+      uuid: ""
+    required_unit: "kg product; kg N/P2O5/K2O"
+    rule: "Record actual product and supplier-declared nutrient basis; do not infer."
+  - id: measure_irrigation_water
+    applies_to: "irrigation input"
+    required_property_ref:
+      name: "Volume or mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Use meter/delivery records; convert only with documented density."
+  - id: measure_perennial_allocation
+    applies_to: "perennial establishment"
+    required_property_ref:
+      name: "Area, years, yield"
+      uuid: ""
+    required_unit: "ha, year, kg"
+    rule: "Allocate establishment over documented productive years and output."
+process_map:
+  - id: p_establishment
+    name: "Plot establishment"
+    inclusion: "conditional"
+    inclusion_condition: "Perennial plot"
+    role: "managed biological production"
+    quantitative_reference: "site-specific records"
+  - id: p_cultivation
+    name: "Cultivation and crop protection"
+    inclusion: "required"
+    inclusion_condition: "All crop-cycle operations"
+    role: "managed biological production"
+    quantitative_reference: "site-specific records"
+  - id: p_harvest
+    name: "Harvest and capture"
+    inclusion: "required"
+    inclusion_condition: "Manual or mechanical harvest"
+    role: "harvest capture"
+    quantitative_reference: "site-specific records"
+  - id: p_conditioning
+    name: "Sorting and primary conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "Before outlet"
+    role: "grading and conditioning"
+    quantitative_reference: "site-specific records"
+  - id: p_rejects
+    name: "Reject routing"
+    inclusion: "conditional"
+    inclusion_condition: "Non-saleable fruit leaves system"
+    role: "reject routing"
+    quantitative_reference: "mass balance"
+process_inventory:
+  - id: p_cultivation
+    label: "Cultivation and crop protection"
+    inputs:
+      product:
+        - row_id: p_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg saleable fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record metered or delivery-based irrigation water by plot and season."
+          amount:
+            expression: "meter or delivery record"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg saleable fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cultivation_crop_output
+          role: "Crop output"
+          name: "Vaccinium fruit (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record harvested Vaccinium fruit before sorting from the crop-cycle mass balance."
+          amount:
+            expression: "harvested mass before sorting"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg saleable fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: p_harvest
+    label: "Harvest and capture"
+    inputs:
+      product:
+        - row_id: harvest_consumables
+          role: "Harvest consumables"
+          name: "Harvest consumable or field packaging (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass or item / kg or item"
+          description: "Record actual harvest aids, consumables and field packaging by operation."
+          amount:
+            expression: "equipment log or invoice"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest energy"
+          name: "Harvest energy supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or mass / kWh, MJ or kg"
+          description: "Record electricity, fuel and other energy carriers used by harvest equipment or purchased harvest services."
+          amount:
+            expression: "equipment log, meter, contractor record or invoice"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_fruit
+          role: "Harvested fruit"
+          name: "Vaccinium fruit (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use scale or crate records for harvested fruit before sorting."
+          amount:
+            expression: "scale or crate records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: p_conditioning
+    label: "Sorting and primary conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_input_fruit
+          role: "Harvested fruit"
+          name: "Harvested Vaccinium fruit (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Link receiving weight to the harvest lot entering conditioning."
+          amount:
+            expression: "receiving weight"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg saleable fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Sorting rejects"
+          name: "Fruit rejects (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected fruit by destination and treatment route."
+          amount:
+            expression: "reject weight or mass balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg saleable fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: saleable_fruit
+          role: "Saleable fruit"
+          name: "Saleable Vaccinium fruit (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use the final weighed saleable fruit at the declared outlet."
+          amount:
+            expression: "graded output at declared outlet"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg saleable fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - fao-crop-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg saleable fruit"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_saleable_reject
+    applies_to: "saleable fruit and rejects"
+    rule: "Prefer subdivision; otherwise allocate shared burdens by mass and add destination treatment after split."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_perennial_establishment
+    applies_to: "perennial establishment"
+    rule: "Allocate over documented productive years and annual saleable output; disclose sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_intercrop_shared_area
+    applies_to: "shared plots"
+    rule: "Use measured area/time shares or documented physical/economic basis consistently."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation_inputs
+      process_id: "p_cultivation"
+      flow_role: "inputs"
+      record_type: "invoices, logs, meters"
+      raw_fields: "product; nutrient; amount; water; date; area"
+      collection_method: "record reconciliation"
+      unit: "kg; kg nutrient; m3"
+      frequency: "per operation"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each plot"
+      aggregation_rule: "sum by plot/product"
+      quality_evidence: "supplier declaration; meter check"
+    - protocol_id: cp_harvest_records
+      process_id: "p_harvest"
+      flow_role: "harvest energy"
+      record_type: "logs and invoices"
+      raw_fields: "equipment; energy; hours; crates"
+      collection_method: "log/invoice reconciliation"
+      unit: "kWh; L; h; kg"
+      frequency: "per event"
+      temporal_coverage: "harvest season"
+      site_scope: "each line"
+      aggregation_rule: "sum by operation"
+      quality_evidence: "scale ticket; invoice"
+    - protocol_id: cp_harvest_mass_balance
+      process_id: "p_harvest_p_conditioning_p_rejects"
+      flow_role: "outputs"
+      record_type: "scale and destination records"
+      raw_fields: "input; saleable; reject; loss; destination"
+      collection_method: "lot weighing"
+      unit: "kg"
+      frequency: "per lot"
+      temporal_coverage: "harvest and conditioning"
+      site_scope: "each lot"
+      aggregation_rule: "input = outputs + loss"
+      quality_evidence: "calibrated scale; reconciliation"
+    - protocol_id: cp_establishment_records
+      process_id: "p_establishment"
+      flow_role: "establishment"
+      record_type: "land and planting register"
+      raw_fields: "area; year; plants; productive years"
+      collection_method: "register and supplier records"
+      unit: "ha; year; kg/item"
+      frequency: "annual"
+      temporal_coverage: "establishment onward"
+      site_scope: "each plot"
+      aggregation_rule: "allocate by output"
+      quality_evidence: "invoice; register"
+    - protocol_id: cp_conditioning_records
+      process_id: "p_conditioning"
+      flow_role: "utilities"
+      record_type: "meter and production log"
+      raw_fields: "utility; lot; time"
+      collection_method: "meter or documented allocation"
+      unit: "kWh; m3; h"
+      frequency: "lot/month"
+      temporal_coverage: "conditioning period"
+      site_scope: "site"
+      aggregation_rule: "allocate by output"
+      quality_evidence: "meter; log"
+  calculation_rules:
+    - id: calc_normalize_saleable_mass
+      applies_to: "all flow rows"
+      rule: "Period quantity / saleable fruit mass at outlet."
+      inputs:
+        - quantity
+        - "saleable mass"
+      output: "per kg saleable fruit"
+      source_ids:
+        - iso-14040-2006
+    - id: calc_establishment_allocation
+      applies_to: "p_establishment"
+      rule: "Establishment burden × reporting share / annual saleable output."
+      inputs:
+        - burden
+        - years
+        - output
+      output: "allocated burden"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_mass_balance
+      applies_to: "harvest and conditioning"
+      rule: "Reconcile input, saleable output, rejects and loss within scale uncertainty."
+      inputs:
+        - "lot records"
+      output: "reconciled totals"
+      source_ids:
+        - fao-crop-production-guidance
+    - id: calc_nutrient_basis
+      applies_to: "fertilizer and amendments"
+      rule: "Product mass × supplier-declared nutrient fraction; retain both values."
+      inputs:
+        - product
+        - declaration
+      output: "product and nutrient mass"
+      source_ids:
+        - fao-crop-production-guidance
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "all rows"
+      requirement: "Declare species/cultivar, state, grade, outlet and route; unresolved identities block review."
+      evidence: "lot and supplier records"
+    - id: dq_completeness
+      applies_to: "all processes"
+      requirement: "Cover cycle and reconcile inputs, saleable output, rejects and losses."
+      evidence: "protocol records"
+    - id: dq_temporal
+      applies_to: "all rows"
+      requirement: "State reporting period, crop cycle and perennial allocation."
+      evidence: "farm register"
+    - id: dq_measurement
+      applies_to: "quantitative rows"
+      requirement: "Prefer calibrated scales/meters and retain assumptions and uncertainty."
+      evidence: "calibration records"
+    - id: dq_disclosure
+      applies_to: "published datasets"
+      requirement: "Disclose missing data, estimates, irrigation, amendments, rejects and allocation."
+      evidence: "quality statement"
+validation_rules:
+  - rule_id: validation_reference_mass
+    applies_to: "reference flow"
+    rule: "Reference amount is 1 kg saleable fruit and matches outlet and mass basis."
+    source_ids:
+      - iso-14040-2006
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and conditioning"
+    rule: "Inputs, saleable output, rejects and losses reconcile; unexplained differences are findings."
+    source_ids:
+      - fao-crop-production-guidance
+  - rule_id: validation_nutrient_declaration
+    applies_to: "fertilizer and amendments"
+    rule: "Product and nutrient basis trace to supplier or primary records."
+    source_ids:
+      - fao-crop-production-guidance
+  - rule_id: validation_boundary_disclosure
+    applies_to: "all datasets"
+    rule: "Check starting condition, outlet, inclusions, recursion, establishment and exclusions."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_quality_disclosure
+    applies_to: "all datasets"
+    rule: "Report temporal, geographic, completeness, measurement, estimate and allocation limitations."
+    source_ids:
+      - iso-14040-2006
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset when upstream links are complete"
+  downstream_use: "Foreground agricultural process and lifecycle-model construction"
+  allowed_use: "Modelling within declared species/system, outlet, period and allocation scope"
+  excluded_use: "Processed, frozen, wild, nursery or materially different systems"
+  required_metadata: "species/cultivar; geography; system; period; outlet; grade; irrigation; inputs; yield; rejects; allocation; upstream links"
+  required_quality_disclosure: "completeness; representativeness; measurement; estimates; uncertainty; allocation; missing UUID identities"
+  update_trigger: "Material change in system, irrigation, inputs, outlet, grade, allocation or primary data"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "iso-14040-2006"
+    type: "standard"
+    reference: "ISO 14040:2006"
+    used_for: "functional-unit and quality framing"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006"
+    used_for: "boundary, allocation, recursion and validation"
+  - id: "fao-crop-production-guidance"
+    type: "official_guidance"
+    reference: "FAO crop production and farm-record guidance"
+    used_for: "route, records, mass balance and nutrient declarations"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:82bb6a0a4a7c1377d01d3448713c6f08add4e86ff29b466acbbcc37a70db69e2"
+  generated_content_sha256: "sha256:3e15582e5906cf4c039121c5e95d9779acddb8f1f52d7a5bf76c41772ef54920"

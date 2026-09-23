@@ -1,10 +1,864 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01550"
-  title: "Taro"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.taro"
+  classification_refs: "CPC 3.0: 01550 Taro"
+  covered_products: "Fresh edible *Colocasia esculenta* main corms and lateral cormels, including declared dasheen and eddoe market types"
+  excluded_products: "*Xanthosoma* yautia/tannia; giant taro; taro leaves as reference product; cooked, dried, milled, peeled or otherwise processed taro"
+  representative_product: "Sound whole fresh taro corms or cormels meeting the declared grade"
+  production_route: "Managed upland or wetland cultivation, lifting, field conditioning and grading; each dataset declares its water-management route"
+  market_state: "Fresh, unprocessed produce in bulk at farm gate, with washing state and soil tolerance declared"
+functional_unit:
+  what: "Accepted whole fresh taro corms or cormels at farm gate"
+  how_much: "1,000 kg net fresh mass"
+  how_well: "Declared cultivar/type, corm/cormel class, grade, damage tolerance, soil tolerance and washing state"
+  how_long_or_cycle: "One identified crop cycle and its linked harvest and gate lots"
+  reference_flow_link: "taro_gate_output"
+system_boundary:
+  rules:
+    - rule_id: fresh_farm_gate
+      applies_to: "output boundary"
+      rule: "Stop at accepted whole fresh corms/cormels ready for farm-gate dispatch; exclude curing, extended storage, processing, retail packing and downstream transport."
+      source_ids:
+        - fao-edible-aroids
+        - uf-ifas-root-crops
+    - rule_id: route_separation
+      applies_to: "cultivation"
+      rule: "Model upland and wetland cultivation as alternative routes under one managed-production parent; do not average water or field emissions without documented representative shares."
+      source_ids:
+        - fao-qdp-taro
+        - icar-water-2022
+    - rule_id: harvest_handoff
+      applies_to: "lifting"
+      rule: "Separate standing crop from lifted corms so damage, unlifted material and residues are captured before conditioning."
+      source_ids:
+        - fao-edible-aroids
+    - rule_id: conditioning_handoff
+      applies_to: "trimming and washing"
+      rule: "Create a conditioning node and record water, debris, wastewater, rejects and prepared output; washing is conditional."
+      source_ids:
+        - uf-ifas-root-crops
+    - rule_id: grade_destinations
+      applies_to: "grading"
+      rule: "Declare accepted, downgraded-edible and rejected states and hand-offs; rejected material cannot enter reference output."
+      source_ids:
+        - fao-edible-aroids
+    - rule_id: single_cycle_attribution
+      applies_to: "time"
+      rule: "Attribute records to one crop cycle; no storage carry-over is inside the declared farm-gate boundary."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Prepared land plus declared healthy corms, cormels, suckers, headsetts or acclimatized plants ready for establishment."
+  starting_condition_role: "The crop cycle begins when planting material and managed inputs enter the field; purchased inputs link to upstream datasets."
+  product_classification_scope: "Whole fresh *Colocasia esculenta* corms and cormels independent of classification code."
+  recursive_input_rule: "Retained taro propagules transfer from an identified prior lot or nursery once; do not create a self-referential reference-product loop."
+  upstream_dataset_requirement: "Link planting material, amendments, fertilizers, crop protection, fuel, energy and supplied water to compatible upstream datasets; disclose unresolved identities."
+  disclosure: "Declare cultivar/type, propagule form and origin, upland/wetland route, crop cycle, harvest method, conditioning steps, grade states, co-products and rejected destinations."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Taro"
+    uuid: "e510909a-6352-44e7-b616-336d7fd10549"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "*Colocasia esculenta* identity"
+    - "cultivar/type"
+    - "corm/cormel class"
+    - "upland/wetland route"
+    - "fresh-mass basis"
+    - grade
+    - "washing state"
+    - "farm-gate location"
+    - "crop-cycle and lot identifiers"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_fresh_mass
+    applies_to: "taro streams"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net fresh mass at the stated node; exclude containers and loose soil and report washing state."
+  - id: field_area
+    applies_to: "production and harvest"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "ha"
+    rule: "Record cultivated and harvested hectares separately and link field, harvest and gate lots before normalization."
+  - id: nutrient_basis
+    applies_to: "nutrients"
+    required_property_ref:
+      name: "Mass of nutrient"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, kg K2O"
+    rule: "Record product mass and nutrient content; do not mix elemental and oxide conventions."
+  - id: water_route
+    applies_to: "water"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Separate managed water from effective rainfall and disclose wetland flooding duration."
+  - id: gate_balance
+    applies_to: "conditioning"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile received = accepted + downgraded + rejected + debris + explained discrepancy."
+process_map:
+  - id: field
+    name: "Taro establishment and managed production"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production with an upland/wetland route delta and standing-crop hand-off"
+    quantitative_reference: "per ha crop cycle"
+  - id: harvest
+    name: "Corm and cormel lifting"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "remove edible underground organs and identify residues and losses"
+    quantitative_reference: "per ha harvested field"
+  - id: condition
+    name: "Primary conditioning and grading"
+    inclusion: "required"
+    inclusion_condition: "always; washing input conditional"
+    role: "trim, optionally wash, grade and transfer accepted fresh taro"
+    quantitative_reference: "per 1,000 kg accepted output"
+process_inventory:
+  - id: field
+    label: "Taro establishment and managed production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Vegetative planting material"
+          name: "Taro planting material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Healthy vegetative propagules cross into the managed field at establishment."
+          amount:
+            expression: "Measured planted fresh mass; record propagule form and count separately"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha established taro crop in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - tnau-taro-guide
+                - fao-qdp-taro
+            ranges:
+              - role: typical_range
+                lower: "700"
+                upper: "1200"
+                unit: "kg/ha"
+                basis: "planting-material fresh mass per ha established crop in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - tnau-taro-guide
+                  - tnau-colocasia-lecture
+        - row_id: field_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha managed field in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - tnau-taro-guide
+                - icar-taro-bulletin
+                - fao-qdp-taro
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg product/ha"
+                basis: "aggregate as-applied product mass per ha managed field in one crop cycle; retain nutrient analyses separately"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - tnau-taro-guide
+                  - icar-taro-bulletin
+                  - fao-qdp-taro
+        - row_id: irrigation_water
+          role: "Managed irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Managed irrigation crosses the field boundary only when supplied by the operator."
+          amount:
+            expression: "Metered or calculated managed water delivered; rainfall is excluded"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per ha managed field in one crop cycle; zero allowed for rainfed production"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - icar-water-2022
+                - fao-qdp-taro
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "6280"
+                unit: "m3/ha"
+                basis: "managed irrigation per ha crop cycle; the cited upper comparison is total water requirement including effective rainfall"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - icar-water-2022
+        - row_id: field_fuel
+          role: "Field fuel"
+          name: "Field machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Fuel used by cultivation and water-management equipment crosses the field boundary."
+          amount:
+            expression: "Fuel tickets or equipment hours multiplied by measured consumption"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per ha managed field in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "300"
+                unit: "L/ha"
+                basis: "broad replaceable estimate per ha managed field in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_crop
+          role: "Mature standing taro crop"
+          name: "Mature standing taro crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The managed-production node hands the harvestable standing crop to the lifting node."
+          amount:
+            expression: "Harvested mass plus sampled unlifted and damaged mass attributed to the field"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested field in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - fao-edible-aroids
+                - icar-water-2022
+            ranges:
+              - role: typical_range
+                lower: "4000"
+                upper: "21080"
+                unit: "kg/ha"
+                basis: "harvestable fresh corm/cormel mass per ha crop cycle in cited contexts"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-edible-aroids
+                  - icar-water-2022
+      waste:
+        []
+      elementary:
+        - row_id: direct_soil_n2o
+          role: "Direct soil nitrous oxide"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O-N"
+          description: "Direct managed-soil N2O is calculated from recorded nitrogen inputs and the declared method."
+          amount:
+            expression: "Applicable nitrogen input multiplied by selected direct-emission factor"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg applicable nitrogen input in the field cycle"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - ipcc-2019-soils
+            ranges:
+              - role: allowed_range
+                lower: "0.002"
+                upper: "0.018"
+                unit: "kg N2O-N/kg N input"
+                basis: "direct N2O-N per kg applicable nitrogen input under aggregated Tier 1"
+                basis_kind: "n_input"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2019-soils
+  - id: harvest
+    label: "Corm and cormel lifting"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Mature standing crop received"
+          name: "Mature standing taro crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The lifting node receives the field-specific standing crop without changing its measurement basis."
+          amount:
+            expression: "Equal to linked standing_crop output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested field in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "4000"
+                upper: "21080"
+                unit: "kg/ha"
+                basis: "linked fresh corm/cormel mass per ha crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-edible-aroids
+                  - icar-water-2022
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_corms
+          role: "Lifted fresh corms and cormels"
+          name: "Lifted fresh taro corms and cormels"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Lifted fresh corms and cormels leave harvest for farm-gate conditioning."
+          amount:
+            expression: "Calibrated mass before trimming or washing"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested field"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - fao-edible-aroids
+            ranges:
+              - role: typical_range
+                lower: "4000"
+                upper: "21080"
+                unit: "kg/ha"
+                basis: "lifted fresh corm/cormel mass per ha harvested field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-edible-aroids
+                  - icar-water-2022
+      waste:
+        - row_id: harvest_loss
+          role: "Field residues and harvest loss"
+          name: "Taro residues and harvest loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Incidental plant material and unlifted or damaged corm tissue are recorded separately from intended output."
+          amount:
+            expression: "Measured or sampled leaves, petioles, roots and unmarketable/unlifted corm tissue by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg mature standing corm/cormel mass"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - fao-edible-aroids
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg/t"
+                basis: "wet residues and harvest loss per 1,000 kg mature standing corm/cormel mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: condition
+    label: "Primary conditioning and grading"
+    inputs:
+      product:
+        - row_id: harvested_corms_input
+          role: "Lifted taro received"
+          name: "Lifted fresh taro corms and cormels"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The conditioning node receives and weighs every linked harvest lot before trimming or grading."
+          amount:
+            expression: "Calibrated received mass linked to harvest lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted farm-gate taro"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1400"
+                unit: "kg/t"
+                basis: "lifted fresh taro received per 1,000 kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_water
+          role: "Washing water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Mass / kg"
+          description: "Washing water enters only when the declared conditioning route includes washing."
+          amount:
+            expression: "Metered washing water; zero for dry-brushed or unwashed routes"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted farm-gate taro"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "3000"
+                unit: "kg/t"
+                basis: "washing water per 1,000 kg accepted output; inactive washing route equals zero"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: taro_gate_output
+          role: "Accepted farm-gate taro"
+          name: "Taro"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e510909a-6352-44e7-b616-336d7fd10549"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Accepted whole fresh taro is the intended output and reference product after grade separation."
+          amount:
+            expression: "Fixed reference amount of accepted net fresh taro"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted farm-gate taro"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg/t"
+                basis: "accepted fresh taro per 1,000 kg reference output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_taro
+          role: "Downgraded edible taro"
+          name: "Downgraded fresh taro"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Edible lower-grade taro is a separate intended output with a declared non-reference market hand-off."
+          amount:
+            expression: "Measured downgraded fresh mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg received lifted taro"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg/t"
+                basis: "downgraded edible taro per 1,000 kg received lifted taro"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Conditioning rejects and debris"
+          name: "Rejected taro, removed soil and trimming debris"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Rejected corms, removed soil and trimming debris leave through declared return, recovery or disposal paths."
+          amount:
+            expression: "Measured separated mass by reason and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg received lifted taro"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - fao-edible-aroids
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/t"
+                basis: "rejected taro, soil and trimming debris per 1,000 kg received lifted taro"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_wastewater
+          role: "Washing wastewater"
+          name: "Taro washing wastewater"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Wastewater leaves only when washing occurs and is reconciled to supplied water."
+          amount:
+            expression: "Metered discharge or water balance; zero when washing is absent"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted farm-gate taro"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg/t"
+                basis: "wastewater per 1,000 kg accepted output; inactive washing route equals zero"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: subdivide_routes
+    applies_to: "upland and wetland production"
+    rule: "Subdivide water-management routes before allocation; do not hide different flooding, irrigation or emission profiles."
+    source_ids:
+      - iso-14044
+  - rule_id: intended_outputs
+    applies_to: "marketed leaves, planting material or other intentional outputs"
+    rule: "Record every intended output and hand-off. Prefer subdivision; otherwise use a documented causal physical relation or contemporaneous farm-gate economic shares with sensitivity analysis."
+    source_ids:
+      - iso-14044
+  - rule_id: grade_outputs
+    applies_to: "accepted and downgraded edible taro"
+    rule: "Retain separate masses, grades, destinations and revenues; allocate shared burdens only after feasible subdivision."
+    source_ids:
+      - iso-14044
+  - rule_id: reject_routing
+    applies_to: "rejected or returned material"
+    rule: "Keep prior burdens with rejects until declared boundary exit; if material is returned upstream to the managed field, link that loop explicitly, otherwise record recovery or disposal without unverified avoided-product credit."
+    source_ids:
+      - iso-14044
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_cycle
+      process_id: "field"
+      flow_role: "establishment, nutrients, water, fuel and emissions"
+      record_type: "field register, invoices, meter, method worksheet"
+      raw_fields: "field_id, cycle_id, route, area_ha, propagule_type, propagule_kg, input_kg, nutrient_fraction, water_m3, rainfall_mm, flooding_days, fuel_L, N_input_kg, emission_factor"
+      collection_method: "reconcile dated applications, invoices and meters; retain route and nutrient basis"
+      unit: "mixed"
+      frequency: "each operation"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field/route"
+      aggregation_rule: "sum by field-cycle and route; calculate nutrients and emissions once"
+      quality_evidence: "invoices, meters, logs, factor citation"
+    - protocol_id: cp_harvest_lot
+      process_id: "harvest"
+      flow_role: "standing crop, lifted product, residues and loss"
+      record_type: "harvest ticket and sample plots"
+      raw_fields: "field_id, cycle_id, lot_id, area_ha, lifted_kg, unlifted_kg, damaged_kg, residue_kg"
+      collection_method: "calibrated scales and representative plots"
+      unit: "kg, ha"
+      frequency: "each harvest"
+      temporal_coverage: "all harvests"
+      site_scope: "each field/lot"
+      aggregation_rule: "reconcile standing, lifted and loss states before gate linkage"
+      quality_evidence: "calibration and plot design"
+    - protocol_id: cp_conditioning_lot
+      process_id: "condition"
+      flow_role: "received, water, grades and rejects"
+      record_type: "receiving, water, grade and dispatch ticket"
+      raw_fields: "lot_id, harvest_lot, received_kg, water_kg, accepted_kg, downgraded_kg, rejected_kg, wastewater_kg, debris_kg, destination"
+      collection_method: "calibrated scales and water meter; timestamped grade records"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "receipt to dispatch"
+      site_scope: "each gate lot"
+      aggregation_rule: "reconcile all input/output states; aggregate only like grades/routes"
+      quality_evidence: "calibration, tickets, reject reason, destination"
+  calculation_rules:
+    - id: reference_normalization
+      applies_to: "all exchanges"
+      rule: "Allocated exchange per 1,000 kg reference = allocated cycle or lot exchange / accepted fresh mass × 1,000."
+      inputs:
+        - "linked cycle"
+        - lot
+        - "accepted mass and allocation share"
+      output: "reference-normalized exchange"
+      source_ids:
+        - mass-balance-identity
+    - id: nutrient_conversion
+      applies_to: "fertilizer nutrients"
+      rule: "Nutrient kg = product kg × declared nutrient fraction, preserving N, P2O5 and K2O conventions."
+      inputs:
+        - invoice
+        - "analysis and application records"
+      output: "kg nutrient by cycle"
+      source_ids: []
+    - id: direct_n2o
+      applies_to: "managed soil"
+      rule: "N2O-N = applicable N × selected EF1; N2O = N2O-N × 44/28 when an N2O-mass flow is used."
+      inputs:
+        - nitrogen
+        - "route and factor"
+      output: "kg N2O-N and N2O"
+      source_ids:
+        - ipcc-2019-soils
+    - id: harvest_balance
+      applies_to: "harvest"
+      rule: "Standing corm mass = lifted + sampled unlifted and damaged mass; disclose sampling uncertainty."
+      inputs:
+        - "field and harvest records"
+      output: "standing crop and loss"
+      source_ids:
+        - mass-balance-identity
+    - id: gate_reconciliation
+      applies_to: "conditioning"
+      rule: "discrepancy = received − accepted − downgraded − rejects/debris; reconcile wastewater separately to supplied water."
+      inputs:
+        - "conditioning records"
+      output: "lot discrepancy"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: botanical_identity
+      applies_to: "reference product"
+      requirement: "Confirm *Colocasia esculenta* and distinguish it from *Xanthosoma* and other aroids."
+      evidence: "cultivar/supplier record or inspection"
+    - id: route_identity
+      applies_to: "field"
+      requirement: "State upland or wetland route, flooding days, irrigation and rainfall separately."
+      evidence: "field and water records"
+    - id: lot_traceability
+      applies_to: "product streams"
+      requirement: "Link field, cycle, harvest lot and conditioning lot through every grade and reject."
+      evidence: "linked tickets"
+    - id: mass_completeness
+      applies_to: "harvest/conditioning"
+      requirement: "Explain discrepancies and quantify losses, debris and rejects with destinations."
+      evidence: "scales and sampling evidence"
+    - id: range_context
+      applies_to: "ranges"
+      requirement: "Preserve source geography/technology; use ranges for QA and replace provisional estimates with reviewed evidence."
+      evidence: "QA worksheet and source review"
+validation_rules:
+  - rule_id: reference_identity
+    applies_to: "reference flow"
+    rule: "Require the verified generic Taro Product flow, Mass and kg at fresh farm gate; reject regional branded or processed substitutes."
+    source_ids: []
+  - rule_id: route_validation
+    applies_to: "field"
+    rule: "Require upland or wetland route per field-cycle, or documented shares; validate water and emission treatment against it."
+    source_ids:
+      - fao-qdp-taro
+      - icar-water-2022
+  - rule_id: range_validation
+    applies_to: "all flow cards"
+    rule: "Check role, bounds, unit, denominator, basis kind, evidence and sources; provisional ranges are replaceable screens."
+    source_ids: []
+  - rule_id: harvest_validation
+    applies_to: "lifting"
+    rule: "Reconcile standing crop, lifted corms, loss and residues and require every state hand-off."
+    source_ids:
+      - fao-edible-aroids
+  - rule_id: grade_validation
+    applies_to: "conditioning"
+    rule: "Reconcile received, accepted, downgraded, rejects/debris and discrepancy; rejected material cannot be accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: coproduct_validation
+    applies_to: "non-reference intended outputs"
+    rule: "Require identity, amount, destination and allocation method for marketed leaves, planting material or other outputs."
+    source_ids:
+      - iso-14044
+  - rule_id: reject_path_validation
+    applies_to: "off-grade/rejected material"
+    rule: "Link downgrade, return, recovery or disposal to its producing node without double credit."
+    source_ids:
+      - iso-14044
+published_dataset_profile:
+  dataset_role: "Foreground production dataset for whole fresh taro corms/cormels at farm gate"
+  downstream_use: "secondary_dataset, background_dataset in process or lifecyclemodel assembly after review"
+  allowed_use: "Declared *Colocasia esculenta* identity, geography, crop cycle, upland/wetland route, grade and conditioning state"
+  excluded_use: "Other aroids; leaves as reference product; processed taro; curing, extended storage, retail packing or unspecified route"
+  required_metadata: "botanical identity, cultivar/type, corm/cormel class, cycle ids, propagule origin, route, dates, washing state, grade, accepted mass, co-products and allocation"
+  required_quality_disclosure: "measurement coverage, water balance, nutrient convention, emission method, mass balances, reject paths, provisional ranges, sampling and allocation uncertainty"
+  update_trigger: "change in cultivar/type, water route, propagule system, harvest/conditioning technology, grade, co-product treatment, emission method or evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-edible-aroids"
+    type: "official_guidance"
+    reference: "https://www.fao.org/fileadmin/user_upload/inpho/docs/Post_Harvest_Compendium_-_Edible_aroids.pdf"
+    used_for: "Identity, duration, regional yield, lifting and handling"
+  - id: "fao-qdp-taro"
+    type: "official_guidance"
+    reference: "https://www.fao.org/4/i1195e/i1195e00.pdf"
+    used_for: "Planting material, field management, nutrients and irrigation"
+  - id: "tnau-taro-guide"
+    type: "extension_guidance"
+    reference: "https://www.agritech.tnau.ac.in/pdf/HORTICULTURE.pdf"
+    used_for: "Regional planting, amendment and fertilizer examples"
+  - id: "tnau-colocasia-lecture"
+    type: "extension_guidance"
+    reference: "https://eagri.org/eagri50/HORT281/lec25.html"
+    used_for: "Regional planting-material quantity"
+  - id: "icar-taro-bulletin"
+    type: "handbook"
+    reference: "https://www.ctcri.org/public/publications/2025-01/3.taro_.pdf"
+    used_for: "Regional nutrient and amendment examples"
+  - id: "icar-water-2022"
+    type: "literature"
+    reference: "https://agris.fao.org/search/en/records/67598e52c7a957febdfc0df2"
+    used_for: "Upland water requirement and cormel yield"
+  - id: "uf-ifas-root-crops"
+    type: "extension_guidance"
+    reference: "https://ask.ifas.ufl.edu/publication/CV300"
+    used_for: "Route identity, lifting, washing and sorting"
+  - id: "ipcc-2019-soils"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil N2O method and EF1 range"
+  - id: "iso-14044"
+    type: "standard"
+    reference: "ISO 14044:2006, https://www.iso.org/standard/38498.html"
+    used_for: "Allocation hierarchy"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass for linked foreground nodes"
+    used_for: "Normalization and reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7840bafbe3f43e39644833acc352dcba5a16726e11e84f116d5fc3f1713c6aa4"
+  generated_content_sha256: "sha256:e4d9e48baf0b8d66a53e9c7a999b36c0facf403fb408acab30eb05c983a96468"

@@ -1,10 +1,1114 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01530"
-  title: "Sweet potatoes"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.sweet-potatoes"
+  classification_refs: "CPC 3.0: 01530 Sweet potatoes"
+  covered_products: "Fresh harvested *Ipomoea batatas* storage roots, uncured or cured, at farm or primary-conditioning hand-off"
+  excluded_products: "Planting material as reference product; starch, chips, flour, puree, noodles, and other processed products"
+  representative_product: "Marketable fresh storage roots on an as-received mass basis"
+  production_route: "Managed field production is the parent; harvest independently removes roots; primary conditioning removes soil and grades; curing/storage is optional preservation. Each technology route delta is separately declared."
+  market_state: "Fresh unprocessed storage roots with curing, damage, soil-removal, moisture-basis, and hand-off state declared"
+functional_unit:
+  what: "Fresh harvested *Ipomoea batatas* storage roots"
+  how_much: "1,000 kg as received"
+  how_well: "Accepted grade with uncured/cured, damage, and soil-removal state declared"
+  how_long_or_cycle: "One crop cycle and primary conditioning; add curing/storage duration when applicable"
+  reference_flow_link: "primary_conditioning output for uncured route or curing_storage output for cured route"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The boundary begins with the prepared managed field for the declared crop cycle and includes planting, crop management, harvest, on-farm movement, soil removal, grading, and hand-off. Include curing/storage only for a cured or stored delivery."
+      source_ids: []
+    - rule_id: boundary_crop_cycle
+      applies_to: "Field production"
+      rule: "Include crop-cycle management inputs, field operations, intended roots, residues, and losses."
+      source_ids:
+        - fao-sweet-potato-postharvest
+    - rule_id: boundary_harvest
+      applies_to: "Harvest"
+      rule: "Independently record removal from managed crop to fresh-root hand-off and distinguish soil, vines, damage, and uncollected losses."
+      source_ids:
+        - fao-sweet-potato-postharvest
+    - rule_id: boundary_conditioning
+      applies_to: "Primary conditioning"
+      rule: "Include careful handling, soil removal, washing when used, grading, and every grade and residual destination."
+      source_ids:
+        - fao-sweet-potato-postharvest
+    - rule_id: boundary_curing
+      applies_to: "Curing/storage"
+      rule: "Include preservation inputs, conditions, duration, and losses only for cured or stored delivery."
+      source_ids:
+        - fao-sweet-potato-postharvest
+    - rule_id: boundary_processed_exclusion
+      applies_to: "Product scope"
+      rule: "Exclude processed foods and planting material as reference product."
+      source_ids:
+        - fao-sweet-potato-postharvest
+boundary_abstraction:
+  declared_starting_condition: "Managed field with prior crop, land preparation, soil, planting-material source, and rainfed/irrigated state declared"
+  starting_condition_role: "Starting condition for managed biological production"
+  product_classification_scope: "Fresh *Ipomoea batatas* storage roots under CPC 3.0 01530"
+  recursive_input_rule: "Same-category roots entering from outside require an upstream product dataset with state and gate qualifiers; do not recreate them recursively."
+  upstream_dataset_requirement: "Planting material, energy, water, nutrients, transport, and treatment services require compatible upstream datasets selected from concrete foreground records."
+  disclosure: "Declare cultivar, location, cycle, route, harvest mode, curing/storage, damage, soil removal, moisture basis, and hand-off."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Sweet potatoes"
+    uuid: "03d4145f-cc49-4e7b-8c45-d6ce90a90057"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species = *Ipomoea batatas*"
+    - "storage root"
+    - "uncured or cured"
+    - "damage grade"
+    - "soil-removal state"
+    - "moisture or as-received basis"
+    - "farm or primary-conditioning hand-off"
+    - "crop cycle"
+    - "storage duration when applicable"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference and internal root states"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Record gross as-received mass and separately record soil, rejects, and moisture basis."
+  - id: water_volume
+    applies_to: "Irrigation, washing, wastewater"
+    required_property_ref:
+      name: "Volume or Mass with declared density"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Separate supplied, recirculated, and discharged water and report measurement points."
+  - id: energy_carrier
+    applies_to: "Machinery, electricity, heat, storage utilities"
+    required_property_ref:
+      name: "Carrier-appropriate property"
+      uuid: ""
+    required_unit: "MJ, kWh, kg, or L"
+    rule: "Preserve actual carriers and conversion basis; do not merge mobile fuel, stationary heat, and electricity."
+  - id: condition_mass_balance
+    applies_to: "Harvest, grading, curing, storage"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile roots in, accepted roots, downgraded roots, rejects, soil/solids, and measured loss per event or lot."
+process_map:
+  - id: field_production
+    name: "Managed sweet-potato field production"
+    inclusion: "required"
+    inclusion_condition: "Every package / 每个数据包"
+    role: "Produces managed crop and standing roots / 生产管理作物和田间储藏根"
+    quantitative_reference: "kg accepted roots / kg 合格根"
+  - id: harvest_capture
+    name: "Harvest and collection"
+    inclusion: "required"
+    inclusion_condition: "Every package / 每个数据包"
+    role: "Removes roots and hands them to conditioning / 移出储藏根并交接初级整理"
+    quantitative_reference: "kg accepted roots / kg 合格根"
+  - id: primary_conditioning
+    name: "Soil removal, grading, and primary hand-off"
+    inclusion: "required"
+    inclusion_condition: "Every package / 每个数据包"
+    role: "Creates accepted, downgraded, rejected, soil, solid, and wastewater states / 形成合格、降级、剔除、土壤、固体和废水状态"
+    quantitative_reference: "kg accepted roots / kg 合格根"
+  - id: curing_storage
+    name: "Curing and storage"
+    inclusion: "conditional"
+    inclusion_condition: "Only cured or stored hand-off / 仅熟化或储藏后交接"
+    role: "Preserves roots and creates cured hand-off / 保存储藏根并形成熟化交接"
+    quantitative_reference: "kg accepted roots / kg 合格根"
+process_inventory:
+  - id: field_production
+    label: "Managed sweet-potato field production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Cultivar-specific planting material"
+          name: "Sweet-potato slips, vine cuttings, or planting roots"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Sweet-potato slips, vine cuttings, or planting roots crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Mineral, organic, and amendment products used in the crop cycle"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Declared compatible property / kg supplied products"
+          description: "Mineral, organic, and amendment products used in the crop cycle crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg supplied products"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supply"
+          name: "Water delivered for irrigation; rainfall remains site context"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Declared compatible property / m3"
+          description: "Water delivered for irrigation; rainfall remains site context crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "m3"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field machinery energy supply"
+          name: "Fuel or energy for land preparation and crop management"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Declared compatible property / MJ"
+          description: "Fuel or energy for land preparation and crop management crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_roots_internal
+          role: "Standing storage roots transferred to harvest"
+          name: "Internal harvest-ready root state"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Internal harvest-ready root state crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residue_loss
+          role: "Field residues and uncollected root losses"
+          name: "Vines, leaves, damaged or uncollected roots by destination"
+          flow_type: "waste"
+          property_unit: "Declared compatible property / kg"
+          description: "Vines, leaves, damaged or uncollected roots by destination crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: field_emissions
+          role: "Reported nutrient-related field emissions"
+          name: "Substance- and receiving-medium-specific emissions"
+          flow_type: "elementary"
+          property_unit: "Declared compatible property / kg reported substance"
+          description: "Substance- and receiving-medium-specific emissions crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg reported substance"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_capture
+    label: "Harvest and collection"
+    inputs:
+      product:
+        - row_id: standing_roots_harvest_input
+          role: "Standing roots from field production"
+          name: "Internal root state linked to the crop cycle"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Internal root state linked to the crop cycle crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_event_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest machinery energy supply"
+          name: "Fuel or energy for lifting, collection, and loading"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Declared compatible property / MJ"
+          description: "Fuel or energy for lifting, collection, and loading crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_event_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "MJ"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_transport
+          role: "On-farm road movement service"
+          name: "Separately modelled movement to conditioning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Declared compatible property / tkm"
+          description: "Separately modelled movement to conditioning crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "transport_service"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_event_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "tkm"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_roots_internal
+          role: "Freshly harvested roots transferred to conditioning"
+          name: "Fresh lifted roots before soil removal and grading"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Fresh lifted roots before soil removal and grading crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_event_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_rejects
+          role: "Harvest damage and uncollected losses"
+          name: "Cut, bruised, broken, or uncollected roots by destination"
+          flow_type: "waste"
+          property_unit: "Declared compatible property / kg"
+          description: "Cut, bruised, broken, or uncollected roots by destination crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_event_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Soil removal, grading, and primary hand-off"
+    inputs:
+      product:
+        - row_id: harvested_roots_conditioning_input
+          role: "Freshly harvested roots from harvest"
+          name: "Internal harvested roots with damage and soil state"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Internal harvested roots with damage and soil state crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_run_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Washing water supply"
+          name: "Process water when wet cleaning is used"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Declared compatible property / m3"
+          description: "Process water when wet cleaning is used crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_run_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_electricity
+          role: "Conditioning electricity supply"
+          name: "Electricity for washing, conveying, sorting, grading, or drainage"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Declared compatible property / kWh"
+          description: "Electricity for washing, conveying, sorting, grading, or drainage crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_run_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kWh"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wastewater_treatment
+          role: "Wastewater treatment service"
+          name: "External treatment service for discharged wash water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.waste-treatment-service"
+            version: "0.2.0"
+            group: "wastewater-treatment-service"
+          property_unit: "Declared compatible property / m3"
+          description: "External treatment service for discharged wash water crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_run_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fresh_reference_product
+          role: "Accepted uncured fresh sweet-potato roots"
+          name: "Sweet potatoes"
+          flow_type: "product"
+          flow_ref:
+            uuid: "03d4145f-cc49-4e7b-8c45-d6ce90a90057"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Sweet potatoes 03d4145f-cc49-4e7b-8c45-d6ce90a90057 crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_roots
+          role: "Downgraded roots by declared destination"
+          name: "Edible immediate-use, feed, rework, or recovery grades"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Edible immediate-use, feed, rework, or recovery grades crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_run_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_residuals
+          role: "Conditioning rejects, soil, wash solids, and wastewater"
+          name: "Separated residual states and destinations"
+          flow_type: "waste"
+          property_unit: "Declared compatible property / kg mass-equivalent"
+          description: "Separated residual states and destinations crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_run_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg mass-equivalent"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: curing_storage
+    label: "Curing and storage"
+    inputs:
+      product:
+        - row_id: uncured_roots_curing_input
+          role: "Accepted uncured roots entering curing or storage"
+          name: "Internal accepted state from conditioning"
+          flow_type: "product"
+          property_unit: "Declared compatible property / kg"
+          description: "Internal accepted state from conditioning crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "storage_duration"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_curing_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "storage_duration"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: curing_electricity
+          role: "Curing and storage electricity supply"
+          name: "Electricity for ventilation, refrigeration, controls, and handling"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Declared compatible property / kWh"
+          description: "Electricity for ventilation, refrigeration, controls, and handling crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_curing_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kWh"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "storage_duration"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: curing_heat
+          role: "Purchased curing heat supply"
+          name: "Purchased process heat for active curing; passive curing may be zero"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "purchased-process-heat"
+          property_unit: "Declared compatible property / MJ"
+          description: "Purchased process heat for active curing; passive curing may be zero crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_curing_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cured_reference_product
+          role: "Accepted cured fresh sweet-potato roots"
+          name: "Sweet potatoes"
+          flow_type: "product"
+          flow_ref:
+            uuid: "03d4145f-cc49-4e7b-8c45-d6ce90a90057"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Sweet potatoes 03d4145f-cc49-4e7b-8c45-d6ce90a90057 crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: curing_storage_rejects
+          role: "Curing and storage rejects"
+          name: "Decayed, sprouted, chilled, or severely damaged roots"
+          flow_type: "waste"
+          property_unit: "Declared compatible property / kg"
+          description: "Decayed, sprouted, chilled, or severely damaged roots crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "storage_duration"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_curing_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "storage_duration"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: curing_moisture_loss
+          role: "Measured evaporative moisture loss to air"
+          name: "Water loss isolated by inlet/outlet and moisture measurements"
+          flow_type: "elementary"
+          property_unit: "Declared compatible property / kg water"
+          description: "Water loss isolated by inlet/outlet and moisture measurements crosses the declared process boundary only under the stated condition."
+          amount:
+            expression: "measured or calculated amount linked to the declared process event and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference roots or the stated linked event"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_curing_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg water"
+                basis: "per 1,000 kg accepted reference roots or the stated linked event; replace provisional bounds with reviewed evidence"
+                basis_kind: "storage_duration"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_subdivide
+    applies_to: "All nodes"
+    rule: "Prefer subdivision by crop cycle, harvest event, conditioning run, and storage lot."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rejects
+    applies_to: "Rejects, rework, and downgraded roots"
+    rule: "Retain original production burdens, add rework burdens once, and exclude rejects from accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_shared_runs
+    applies_to: "Shared runs"
+    rule: "Allocate only indivisible records by a disclosed physical driver and prove conservation without double counting."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_cycle_records
+      process_id: "field_production"
+      flow_role: "all field cards"
+      record_type: "logs, invoices, meters, field measurements"
+      raw_fields: "field, cultivar, cycle, planting material, nutrients, water, energy, roots, residues, losses, emission inputs"
+      collection_method: "reconcile by field and cycle"
+      unit: "declared units"
+      frequency: "each activity"
+      temporal_coverage: "complete cycle"
+      site_scope: "farm and field"
+      aggregation_rule: "normalize after linking harvests"
+      quality_evidence: "invoices, checks, field sheets, analyses"
+    - protocol_id: cp_harvest_event_records
+      process_id: "harvest_capture"
+      flow_role: "all harvest cards"
+      record_type: "scales, equipment, route, loss survey"
+      raw_fields: "cycle, event, mode, mass, damage, energy, distance, load, destination"
+      collection_method: "record each event"
+      unit: "declared units"
+      frequency: "each harvest"
+      temporal_coverage: "all linked harvests"
+      site_scope: "field and event"
+      aggregation_rule: "sum without transport/machinery duplication"
+      quality_evidence: "scale, equipment, hand-off"
+    - protocol_id: cp_conditioning_run_records
+      process_id: "primary_conditioning"
+      flow_role: "all conditioning cards"
+      record_type: "run, scale, meters, grade, destination tickets"
+      raw_fields: "inlet, soil removal, water, electricity, grades, residuals, wastewater, treatment"
+      collection_method: "mass-balance each run"
+      unit: "declared units"
+      frequency: "each run"
+      temporal_coverage: "all reference runs"
+      site_scope: "site and line"
+      aggregation_rule: "reconcile states and destinations"
+      quality_evidence: "calibration, grade protocol, tickets"
+    - protocol_id: cp_curing_storage_records
+      process_id: "curing_storage"
+      flow_role: "all curing/storage cards"
+      record_type: "lot, temperature/RH, meters, inspection"
+      raw_fields: "inlet, conditions, duration, energy, outlet, rejects, moisture"
+      collection_method: "trace loading to hand-off"
+      unit: "declared units"
+      frequency: "each lot and periodic readings"
+      temporal_coverage: "full duration"
+      site_scope: "store and lot"
+      aggregation_rule: "reconcile inlet, accepted, rejects, water loss"
+      quality_evidence: "sensors, meters, traceability"
+  calculation_rules:
+    - id: calc_normalize_reference
+      applies_to: "all inventory"
+      rule: "recorded amount × 1,000 kg / accepted reference-root mass on same basis"
+      inputs:
+        - amount
+        - "reference mass"
+      output: "normalized amount"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_transport_work
+      applies_to: "transport"
+      rule: "tkm = transported tonnes × loaded kilometres"
+      inputs:
+        - load
+        - distance
+      output: "tkm"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_root_mass_balance
+      applies_to: "nodes"
+      rule: "inlet minus accepted, downgraded, rejected, solids, samples, and separately measured water loss"
+      inputs:
+        - "linked mass records"
+      output: "unexplained difference"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_dry_mass_conversion
+      applies_to: "dry-matter comparison"
+      rule: "dry mass = as-received mass × (1 − moisture fraction)"
+      inputs:
+        - mass
+        - moisture
+      output: "dry mass"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Confirm species, storage-root use, cultivar, curing, damage, soil removal, moisture basis, and hand-off."
+      evidence: "lot, inspection, hand-off"
+    - id: dq_traceability
+      applies_to: "process graph"
+      requirement: "Link crop cycles, harvest events, conditioning runs, and storage lots."
+      evidence: "stable identifiers"
+    - id: dq_completeness
+      applies_to: "inventory"
+      requirement: "Cover material inputs, water, energy, root states, residues, losses, transport, treatment, and conditional utilities."
+      evidence: "completeness reconciliation"
+    - id: dq_route_delta
+      applies_to: "alternative routes"
+      requirement: "Every topology, inventory, calculation, or validation delta needs current records."
+      evidence: "route evidence matrix"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Fail when species, storage-root, curing, damage, soil removal, moisture basis, hand-off, or cycle qualifier is missing."
+    source_ids:
+      - fao-sweet-potato-postharvest
+  - rule_id: validate_reference_uuid
+    applies_to: "reference identity"
+    rule: "Require fixed flow 03d4145f-cc49-4e7b-8c45-d6ce90a90057, Mass 93a60a56-a3c8-11da-a746-0800200b9a66, unit group 93a60a57-a4c8-11da-a746-0800200c9a66, and kg."
+    source_ids: []
+  - rule_id: validate_exclusions
+    applies_to: "scope"
+    rule: "Fail when planting material or any processed product is the reference product."
+    source_ids:
+      - fao-sweet-potato-postharvest
+  - rule_id: validate_graph_links
+    applies_to: "process graph"
+    rule: "Require complete cycle, harvest, conditioning, and storage-lot links."
+    source_ids: []
+  - rule_id: validate_rejects
+    applies_to: "reject states"
+    rule: "Require explicit downgrade, rework, recovery, or discard destinations and exclude rejects from accepted output."
+    source_ids:
+      - fao-sweet-potato-postharvest
+  - rule_id: validate_mass_balance
+    applies_to: "nodes"
+    rule: "Report residuals; never label total loss as water-to-air without separate moisture measurement."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_flow_resolution
+    applies_to: "all cards"
+    rule: "Expand Flow Sets to concrete UUIDs from foreground records; resolve external deferred cards before exchange emission; keep internal cards as graph links only."
+    source_ids: []
+  - rule_id: validate_curing
+    applies_to: "cured route"
+    rule: "Require method, temperature, relative humidity, duration, and inlet/outlet state; omit the node for uncured route."
+    source_ids:
+      - fao-sweet-potato-postharvest
+published_dataset_profile:
+  dataset_role: "Foreground production package for fresh sweet-potato storage roots"
+  downstream_use: "Generate processes and lifecycle models; secondary or background use when geography, route, state, and quality match"
+  allowed_use: "Fresh-root routes with compatible identity, cycle, curing, damage, soil removal, moisture basis, and hand-off"
+  excluded_use: "Planting-material production, processed products, undisclosed curing mixtures, or substitution for another root crop"
+  required_metadata: "Cultivar, geography, cycle/event/run/lot, route, irrigation, curing conditions, storage duration, damage, soil removal, moisture, hand-off, UUIDs, Flow Set versions, and resolution evidence"
+  required_quality_disclosure: "Period, coverage, measured/calculated shares, instruments, mass balances, route evidence, allocation, representativeness, and gaps"
+  update_trigger: "Material change to boundary, identity, Flow Set contract, route, qualifiers, evidence, or unresolved identity"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-sweet-potato-postharvest"
+    type: "official_guidance"
+    reference: "FAO, *Prevention of post-harvest food losses: Sweet potato crop profile*, https://www.fao.org/4/t0073e/T0073E08.htm"
+    used_for: "Careful harvest, soil removal, damage grading, curing/storage, and boundary"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass identity applied to linked inlet, output, residual, sample, and measured-moisture records"
+    used_for: "Normalization, reconciliation, dry-mass conversion, fixed reference amount"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:c5fe402a73d435ad1f2e9bbf9e277c7ceafdfaec65dcc1ebf42a9ecda11810ba"
+  generated_content_sha256: "sha256:3d56a15b589713cf7a9eb2614d3abcaa9a3950bfb69a3c87cbf1e1a8a005b581"

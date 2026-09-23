@@ -1,10 +1,947 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01809"
-  title: "Other sugar crops n.e.c."
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.other-sugar-crops-n-e-c"
+  classification_refs: "CPC 3.0: 01809 (unmapped; classification is a discovery reference, not permission to mix products)"
+  covered_products: "Raw sugar maple sap; stalks from sweet-purpose sorghum; fresh or dried stevia leaves, each in a separate dataset"
+  excluded_products: "Ordinary sorghum grain or seed; sugar, syrup, extracted juice, fermented products, refined steviol glycosides, and mixed-crop inventories"
+  representative_product: "One declared crop branch and one declared market state per dataset"
+  production_route: "Managed perennial sugarbush with tapping and sap collection; annual sweet sorghum cultivation and stalk harvest; or managed stevia leaf cultivation, harvest, and declared fresh/dried conditioning"
+  market_state: "Unprocessed sap, harvested stalk, or harvested/primary-conditioned leaf, at a declared hand-off and moisture state"
+functional_unit:
+  what: "One crop-specific raw output: sugar maple sap, sweet-purpose sorghum stalk, or stevia leaf; select one only"
+  how_much: "1 kg of the selected output at its declared hand-off; retain the crop, plant part, moisture, and market-state qualifiers"
+  how_well: "Identify species/cultivar where known, crop purpose, harvest or tapping method, moisture/state, grade, and destination"
+  how_long_or_cycle: "One declared tap season for maple; one crop cycle for sorghum; one harvest cycle or declared multi-cut season for stevia"
+  reference_flow_link: "Product identity is unresolved; no verified UUID. Do not substitute sorghum grain, syrup, sugar, or sweetener flows."
+system_boundary:
+  rules:
+    - rule_id: boundary_single_branch
+      applies_to: "dataset"
+      rule: "Select exactly one of maple sap, sweet-purpose sorghum stalk, or stevia leaves and one product state; a combined inventory is nonconforming."
+      source_ids:
+        - src_unsd_cpc01809
+        - src_fao_sugar_crops
+    - rule_id: boundary_maple
+      applies_to: "maple"
+      rule: "Include stand management, tapping, collection, and farm-side handling through raw sap hand-off; exclude sap concentration and syrup making."
+      source_ids:
+        - src_unsd_cpc01809
+        - src_umaine_maple_2025
+    - rule_id: boundary_sorghum
+      applies_to: "sweet sorghum"
+      rule: "Include crop management and stalk harvest for sugar purpose; keep grain harvest and stalk juice extraction outside this product inventory unless a separately measured co-product leaves the same process."
+      source_ids:
+        - src_fao_sweet_sorghum_cultivation
+        - src_fao_sweet_sorghum_harvest
+        - src_fao_sugar_crops
+    - rule_id: boundary_stevia
+      applies_to: "stevia"
+      rule: "Include managed leaf production, harvest, and declared leaf stabilization/primary conditioning; exclude steviol-glycoside extraction, purification, and formulation."
+      source_ids:
+        - src_ukys_stevia
+        - src_jecfa_stevia
+    - rule_id: boundary_period
+      applies_to: "perennial or multi-cut production"
+      rule: "Attribute establishment, maintenance, replacement, productive harvests, and termination to declared periods; preserve the chosen method and prevent double attribution."
+      source_ids:
+        - src_umaine_maple_2025
+        - src_sweet_project_stevia_lca
+    - rule_id: boundary_shared_assets
+      applies_to: "shared farm assets"
+      rule: "Allocate shared machinery, roads, drying structures, and labor by a measured use driver; disclose the driver and avoid duplicate assignment."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Crop-specific planted or established productive stand, with establishment burdens included or explicitly linked and amortized over represented production periods"
+  starting_condition_role: "Managed biological production before harvest or tapping"
+  product_classification_scope: "Raw sugar-crop output at the declared farm or primary-conditioning hand-off; no downstream sweetener manufacture"
+  recursive_input_rule: "Purchased seed, nursery trees, cuttings, and other propagation stock are distinct upstream product inputs; never treat the harvested reference output as its own planting input."
+  upstream_dataset_requirement: "Match crop identity, planting-stock type, location, period, and gate; if stand establishment predates the dataset, report whether its burden is included, excluded, or represented by an audited linked dataset."
+  disclosure: "Report branch, stand/crop phase, hand-off, moisture, included operations, optional operations, shared assets, and unresolved flow identities."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Route-specific harvested product listed above; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Exactly one crop branch"
+    - "species/cultivar"
+    - "plant part"
+    - "intended sugar-crop purpose"
+    - "fresh/dried state and moisture"
+    - geography
+    - "production period"
+    - "crop-specific hand-off"
+    - grade
+    - "allocation and multi-period treatment"
+reference_flows:
+  []
+measurement_rules:
+  - id: measure_reference_mass
+    applies_to: "all branches"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh net selected product at the declared hand-off; record moisture and any conversion from volume. Do not sum unlike crop products."
+  - id: measure_maple_season
+    applies_to: "maple"
+    required_property_ref:
+      name: "Mass; area; time"
+      uuid: ""
+    required_unit: "kg; ha; tap-season"
+    rule: "Record taps, collection dates, gross sap volume or mass, losses, density basis if converted, and productive stand area."
+  - id: measure_sorghum_stalk
+    applies_to: "sweet sorghum"
+    required_property_ref:
+      name: "Mass; area"
+      uuid: ""
+    required_unit: "kg; ha"
+    rule: "Weigh stalks at harvest before juice extraction; report cultivar, harvest stage, moisture, stalk area, and any separately marketed grain."
+  - id: measure_stevia_leaf
+    applies_to: "stevia"
+    required_property_ref:
+      name: "Mass; area; moisture"
+      uuid: ""
+    required_unit: "kg; ha; mass fraction"
+    rule: "Weigh fresh leaf and dried leaf separately when drying occurs; disclose moisture and dry-matter conversion."
+  - id: measure_inputs
+    applies_to: "all branches"
+    required_property_ref:
+      name: "flow-specific"
+      uuid: ""
+    required_unit: "kg, m3, kWh, plant, or recorded unit"
+    rule: "Retain purchased/applied quantity and functional identity; preserve seed mass, live-plant count, water volume, and energy carrier as distinct measurements."
+process_map:
+  - id: maple_sap_route
+    name: "Sugar maple stand management, tapping, and raw sap collection"
+    inclusion: "conditional"
+    inclusion_condition: "Use only when the selected product is sugar maple sap from *Acer saccharum*."
+    role: "Managed perennial production and resource removal"
+    quantitative_reference: "kg raw sap per declared tap-season and 1 kg reference flow"
+  - id: sweet_sorghum_stalk_route
+    name: "Sweet-purpose sorghum cultivation and stalk harvest"
+    inclusion: "conditional"
+    inclusion_condition: "Use only when the selected product is stalks from sorghum grown for sugar or syrup feedstock."
+    role: "Annual crop production and harvest capture"
+    quantitative_reference: "kg harvested stalk per crop cycle and 1 kg reference flow"
+  - id: stevia_dried_leaf_route
+    name: "Stevia cultivation, leaf harvest, and farm drying"
+    inclusion: "conditional"
+    inclusion_condition: "Use only for *Stevia rebaudiana* leaves declared as dried at the hand-off. Fresh-leaf datasets must declare a distinct state and omit drying."
+    role: "Managed leaf production, harvest, and primary stabilization"
+    quantitative_reference: "kg dried leaves per harvest cycle and 1 kg reference flow"
+process_inventory:
+  - id: maple_sap_route
+    label: "Sugar maple stand management, tapping, and raw sap collection"
+    inputs:
+      product:
+        - row_id: maple_planting_stock
+          role: "Maple establishment and replacement stock"
+          name: "Sugar maple nursery tree / planting stock (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Number of items / plant"
+          description: "Record nursery trees used to establish or replace the represented sugarbush. Retain tree counts and productive stand period; UUID unresolved."
+          amount:
+            expression: "Record planted and replacement trees by stand and period; allocate establishment stock across the declared productive tap-seasons."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per tap-season and per kg raw sap"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_maple_field_records
+              source_ids:
+                - src_umaine_maple_2025
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "plant-equivalent/tap-season"
+                basis: "provisional replacement-stock allocation per productive tap-season; replace with stand census and lifespan records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: maple_nutrient_supply
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Agricultural fertilizer and nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "This conditional umbrella card covers all mineral fertilizer, organic fertilizer, and nutrient amendments actually used in the sugarbush; foreground records determine the concrete exchanges."
+          amount:
+            expression: "Sum actual fertilizer and nutrient-amendment product masses for this process; preserve product and nutrient composition in the generated dataset."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg raw sap and per tap-season"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_maple_field_records
+              source_ids:
+                - src_umaine_maple_2025
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg fertilizer product/kg raw sap"
+                basis: "broad conditional screen; not a default application rate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: maple_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass or volume / m3"
+          description: "Include only when irrigation is applied to the represented stand; do not count collected sap as irrigation or process water."
+          amount:
+            expression: "Record metered or otherwise measured irrigation volume; report zero when none is applied."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg raw sap"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_maple_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "m3/kg raw sap"
+                basis: "conditional stand-irrigation volume; zero is valid for rain-fed sugarbushes"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: maple_energy_supply
+          role: "Field and tapping energy"
+          name: "Energy carrier supply for field and collection operations"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh"
+          description: "Capture purchased or on-site fuel and electricity used for stand care, tapping equipment, and sap collection; do not include syrup concentration."
+          amount:
+            expression: "Record carrier-specific fuel and electricity consumption for this route and period."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg raw sap"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_maple_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kWh/kg raw sap"
+                basis: "broad screening interval for tapping and collection only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: maple_sap_output
+          role: "Raw sugar maple sap"
+          name: "Sugar maple sap at raw collection hand-off (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh or measure raw sap as collected before concentration or syrup production; UUID unresolved."
+          amount:
+            expression: "Record accepted raw sap output by tap-season; normalize inventory exchanges to 1 kg."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg raw sap"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_maple_field_records
+              source_ids:
+                - src_umaine_maple_2025
+            ranges:
+              - role: typical_range
+                lower: "18.9"
+                upper: "56.8"
+                unit: "kg sap/tap-season"
+                basis: "UMaine reports 5–15 US gallons per tap for a full season; approximate 1 kg/L conversion for screening only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - src_umaine_maple_2025
+      waste:
+        []
+      elementary:
+        []
+  - id: sweet_sorghum_stalk_route
+    label: "Sweet-purpose sorghum cultivation and stalk harvest"
+    inputs:
+      product:
+        - row_id: sorghum_seed_input
+          role: "Sweet sorghum seed"
+          name: "Sweet-purpose sorghum seed for planting (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained seed sown for the declared sugar-purpose crop. Do not substitute harvested grain as the reference output; UUID unresolved."
+          amount:
+            expression: "Record seed mass sown and viable stand established; retain cultivar and planting rate."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg harvested sweet sorghum stalk"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sorghum_field_records
+              source_ids:
+                - src_fao_sweet_sorghum_cultivation
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "kg seed/kg harvested stalk"
+                basis: "broad first-pass screen; replace with seed invoices and sowing records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sorghum_nutrient_supply
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Agricultural fertilizer and nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "This conditional umbrella card covers all mineral fertilizer, organic fertilizer, and nutrient amendments actually used in this crop process."
+          amount:
+            expression: "Sum actual fertilizer and nutrient-amendment product masses; preserve product identity and nutrient composition in the generated dataset."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested stalk"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sorghum_field_records
+              source_ids:
+                - src_fao_sweet_sorghum_cultivation
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg fertilizer product/kg harvested stalk"
+                basis: "broad conditional screen, not a default application rate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sorghum_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass or volume / m3"
+          description: "Record irrigation only; rainfed water is not an inventory input."
+          amount:
+            expression: "Record metered or measured irrigation volume for the crop area and cycle; report zero for rainfed fields."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested stalk"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sorghum_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "m3/kg harvested stalk"
+                basis: "broad conditional estimate; replace with field meter or irrigation schedule"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sorghum_energy_supply
+          role: "Field and harvest energy"
+          name: "Energy carrier supply for field and harvest operations"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh"
+          description: "Record fuel and electricity for field operations and stalk harvest; exclude downstream juice extraction."
+          amount:
+            expression: "Record carrier-specific consumption for the route and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg harvested stalk"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sorghum_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kWh/kg harvested stalk"
+                basis: "broad screening interval for cultivation and harvest"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sorghum_crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection product applied to sweet sorghum (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "If applied, record each actual formulation and application separately in the data package; this umbrella card does not authorize UUID selection. Identity UUID unresolved."
+          amount:
+            expression: "Record product mass applied by active ingredient, formulation, target, and date; record zero when none is used."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested stalk"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sorghum_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.01"
+                unit: "kg formulated product/kg harvested stalk"
+                basis: "broad conditional screen, not a recommended application rate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: sorghum_stalk_output
+          role: "Sweet-purpose sorghum stalks"
+          name: "Sweet-purpose sorghum stalk at harvest (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh harvested stalks at the crop hand-off before pressing or juice extraction. The range is a published trial interval and does not represent all cultivars or regions; UUID unresolved."
+          amount:
+            expression: "Record accepted stalk mass and moisture by crop cycle; normalize exchanges to 1 kg."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg harvested stalk"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sorghum_field_records
+              source_ids:
+                - src_fao_sweet_sorghum_cultivation
+                - src_fao_sweet_sorghum_harvest
+            ranges:
+              - role: typical_range
+                lower: "33750"
+                upper: "52103"
+                unit: "kg fresh stalk/ha"
+                basis: "cultivar and planting-date trial yields; retain local site yield as foreground data"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - src_fao_sweet_sorghum_cultivation
+      waste:
+        []
+      elementary:
+        []
+  - id: stevia_dried_leaf_route
+    label: "Stevia cultivation, leaf harvest, and farm drying"
+    inputs:
+      product:
+        - row_id: stevia_planting_material
+          role: "Stevia planting material"
+          name: "Stevia nursery plant or rooted cutting (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Number of items / plant"
+          description: "Record the actual seedling or vegetative planting stock form used and its replacement rate. UUID unresolved."
+          amount:
+            expression: "Record plants established and replacements by field and harvest cycle; allocate establishment stock over the represented productive period."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dried leaves and per establishment/harvest cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stevia_field_records
+              source_ids:
+                - src_sweet_project_stevia_lca
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "35"
+                unit: "plant-equivalent/kg dried leaves"
+                basis: "approximately 60,000–70,000 plants/ha and 2,000 kg dried leaves/ha in one Greek production case; not a universal planting rate"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - src_sweet_project_stevia_lca
+        - row_id: stevia_nutrient_supply
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Agricultural fertilizer and nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "This conditional umbrella card covers all mineral fertilizer, organic fertilizer, and nutrient amendments used in the stevia field; foreground records determine concrete exchanges."
+          amount:
+            expression: "Sum actual fertilizer and nutrient-amendment product masses; retain nutrient analysis in the generated dataset."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dried leaves"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stevia_field_records
+              source_ids:
+                - src_ukys_stevia
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg fertilizer product/kg dried leaves"
+                basis: "broad conditional screen; replace with application records and nutrient analysis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stevia_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass or volume / m3"
+          description: "Record irrigation only; report rainfall separately as a site condition, not as a purchased product input."
+          amount:
+            expression: "Record metered or measured irrigation volume by field and cycle; report zero when no irrigation is applied."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dried leaves"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stevia_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.3"
+                unit: "m3/kg dried leaves"
+                basis: "broad conditional estimate; replace with field water records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stevia_energy_supply
+          role: "Field and drying energy"
+          name: "Energy carrier supply for field and leaf drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh"
+          description: "Include field machinery and farm drying energy only when used; report drying technology and inlet/outlet moisture."
+          amount:
+            expression: "Record carrier-specific field and drying energy by harvest batch."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg dried leaves"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stevia_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kWh/kg dried leaves"
+                basis: "broad screening estimate spanning low-energy sun drying and mechanical drying; replace with metered carrier data"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stevia_crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection product applied to stevia (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "If used, record the actual crop-protection formulation and application; no generic UUID is assigned."
+          amount:
+            expression: "Record product mass, formulation, active ingredient, target, date, and treated area; report zero when unused."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dried leaves"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stevia_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.01"
+                unit: "kg formulated product/kg dried leaves"
+                basis: "broad conditional screen, not a recommended application rate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stevia_leaf_output
+          role: "Dried stevia leaves"
+          name: "Dried Stevia rebaudiana leaves at farm hand-off (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record leaf mass at the declared dried-leaf hand-off and retain moisture and drying loss records. This regional case range is not transferable as a universal yield; UUID unresolved."
+          amount:
+            expression: "Record accepted dry-leaf mass, residual moisture, and grade by harvest cycle; normalize exchanges to 1 kg."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg dried leaves"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stevia_field_records
+              source_ids:
+                - src_sweet_project_stevia_lca
+                - src_ukys_stevia
+            ranges:
+              - role: typical_range
+                lower: "2000"
+                upper: "4000"
+                unit: "kg dried leaves/ha"
+                basis: "one first-year and multi-year cooperative field case; retain local cultivar, year, and harvest count"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - src_sweet_project_stevia_lca
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "Inventory one crop branch only. If one stand or field produces multiple intended products in the declared period, first test subdivision by field, operation, harvest, or lot. If subdivision is not feasible, choose and justify a physical or economic allocation driver consistent with the question, document all products and hand-offs, and test a material alternative. Maple timber, sorghum grain, and stevia stems are co-products only when they are intentionally harvested and leave the process as useful products. Leaves, tops, roots, weeds, rejected material, sap leakage, and field losses are residues or waste unless a real use and hand-off are documented. Record multi-year assets and shared equipment once, allocate them by measured productive area, use, tap-season, or machine time, and prevent duplicate attribution across periods or outputs."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_maple_field_records
+      process_id: "maple_sap_route"
+      flow_role: "stand stock; nutrient products; irrigation; energy; raw sap"
+      record_type: "stand, purchase, application, meter, and production records"
+      raw_fields: "species; stand_id; trees_planted; replacements; taps; tap_dates; sap_mass_or_volume; density_basis; nutrients; irrigation; fuel; electricity; area; losses; co_products; gate"
+      collection_method: "reconcile invoices, stand maps, meters, tapping log, and calibrated scale"
+      unit: "plant; kg; m3; kWh; ha"
+      frequency: "each operation and each tap season"
+      temporal_coverage: "complete represented tap season"
+      site_scope: "each represented sugarbush"
+      aggregation_rule: "aggregate by stand and tap-season; annualize establishment over declared productive periods"
+      quality_evidence: "supplier records; field maps; calibrated scale and meter checks"
+    - protocol_id: cp_sorghum_field_records
+      process_id: "sweet_sorghum_stalk_route"
+      flow_role: "seed; nutrient products; irrigation; energy; crop protection; stalk output"
+      record_type: "seed, field-operation, application, meter, and harvest records"
+      raw_fields: "cultivar; crop_purpose; seed_mass; area; sowing_date; fertilizer_product; nutrient_analysis; irrigation; fuel; electricity; pesticide; harvest_date; stalk_mass; moisture; grain; residues; rejects; gate"
+      collection_method: "reconcile invoices, field log, meters, application records, and calibrated harvest scale"
+      unit: "kg; m3; kWh; ha; mass fraction"
+      frequency: "each operation and crop cycle"
+      temporal_coverage: "complete represented crop cycle"
+      site_scope: "each represented field"
+      aggregation_rule: "aggregate by field and crop cycle; retain grain and stalk quantities separately"
+      quality_evidence: "seed labels; invoices; application log; calibrated scale; meter records"
+    - protocol_id: cp_stevia_field_records
+      process_id: "stevia_dried_leaf_route"
+      flow_role: "planting stock; nutrient products; irrigation; energy; crop protection; dry leaves"
+      record_type: "planting, field-operation, application, meter, drying-batch, and production records"
+      raw_fields: "cultivar; planting_stock_type; plants; replacements; area; harvest_dates; fertilizer_product; nutrient_analysis; irrigation; fuel; electricity; pesticide; fresh_leaf_mass; dried_leaf_mass; moisture; drying_loss; residues; gate"
+      collection_method: "reconcile field book, invoices, meters, dryer log, and calibrated scales"
+      unit: "plant; kg; m3; kWh; ha; mass fraction"
+      frequency: "each operation and each harvest/drying batch"
+      temporal_coverage: "complete represented harvest and drying cycle"
+      site_scope: "each represented field and dryer"
+      aggregation_rule: "sum accepted dry leaves by harvest cycle; reconcile fresh input, dry output, moisture, rejects, and residues"
+      quality_evidence: "planting invoice; application log; calibrated scales; moisture test; dryer meter"
+  calculation_rules:
+    - id: calc_maple_sap_mass
+      applies_to: "maple"
+      rule: "Convert sap volume to mass only with measured density or a disclosed screening conversion; retain raw volume."
+      inputs:
+        - volume
+        - density
+        - tap-season
+      output: "kg raw sap"
+      source_ids:
+        - src_umaine_maple_2025
+    - id: calc_sorghum_yield
+      applies_to: "sweet sorghum"
+      rule: "Divide accepted stalk mass by measured crop area only for area-yield comparison; do not infer stalk mass from grain yield."
+      inputs:
+        - "stalk mass"
+        - area
+        - moisture
+      output: "kg/ha and kg reference flow"
+      source_ids:
+        - src_fao_sweet_sorghum_cultivation
+        - src_fao_sweet_sorghum_harvest
+    - id: calc_stevia_dry_matter
+      applies_to: "stevia"
+      rule: "Report fresh and dried leaf masses separately; calculate dry matter only from measured moisture and preserve drying losses."
+      inputs:
+        - "fresh mass"
+        - "dried mass"
+        - moisture
+      output: "kg dried leaf and dry-matter fraction"
+      source_ids:
+        - src_ukys_stevia
+    - id: calc_period_share
+      applies_to: "perennial and multi-cut routes"
+      rule: "Allocate stand establishment and shared assets across recorded productive periods using a declared lifetime/output or measured-use driver; do not count the same asset in multiple periods."
+      inputs:
+        - establishment
+        - "productive years"
+        - "period output"
+        - "asset use"
+      output: "period-specific attributed inventory"
+      source_ids:
+        - src_umaine_maple_2025
+        - src_sweet_project_stevia_lca
+    - id: calc_soil_emissions
+      applies_to: "managed fields"
+      rule: "If direct soil emissions are modelled, calculate them from reported nitrogen inputs, climate/soil conditions, and a declared inventory method; disclose factor and uncertainty. This PCR does not assign an unverified emission UUID or universal factor."
+      inputs:
+        - "nitrogen application"
+        - "soil and climate data"
+        - "selected method"
+      output: "method-specific direct soil emissions"
+      source_ids:
+        - src_ipcc_managed_soils
+  data_quality_requirements:
+    - id: quality_route_identity
+      applies_to: "all datasets"
+      requirement: "Name one crop, species, plant part, purpose, market state, and hand-off; no unlike route mixing."
+      evidence: "field map, crop records, product description, and scale records"
+    - id: quality_product_state
+      applies_to: "all datasets"
+      requirement: "Report moisture, grade, rejected material, and mass basis; distinguish fresh, dried, and processed states."
+      evidence: "calibrated scale, moisture test, sorting and batch records"
+    - id: quality_inputs
+      applies_to: "all datasets"
+      requirement: "Reconcile seeds/stock, nutrient products, water, energy, and crop-protection applications to invoices, meters, and field logs; zero use must be explicit."
+      evidence: "purchase records, application logs, field book, meters"
+    - id: quality_range
+      applies_to: "all datasets"
+      requirement: "Compare each foreground amount with its card range; explain outliers and replace provisional estimates with local primary data. Ranges are screens, not allowed values."
+      evidence: "range-check table, source or reasoned-estimate trace, corrective note"
+    - id: quality_attribution
+      applies_to: "shared and perennial systems"
+      requirement: "Disclose period and co-product allocation, asset-use driver, and sensitivity for material choices."
+      evidence: "allocation worksheet and output hand-offs"
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_single_branch: Exactly one route, species, plant part, intended purpose, product state, and hand-off are present for each dataset."
+    source_ids: []
+  - rule_id: validation_rule_2
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_reference_identity: Keep the reference product UUID blank until an exact raw product identity and mass property/unit group are confirmed; never use grain, syrup, sugar, or extracted sweetener as a proxy."
+    source_ids: []
+  - rule_id: validation_rule_3
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_process_chain: Match the selected route to its establishment/management, harvest or tapping, and declared primary-conditioning records; omit downstream extraction and manufacture."
+    source_ids: []
+  - rule_id: validation_rule_4
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_mass_and_moisture: Reconcile harvested or collected mass, fresh/dry mass, moisture, losses, rejects, and coproducts; no double counting."
+    source_ids: []
+  - rule_id: validation_rule_5
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_flow_set_binding: In every process, permit at most one consolidated flow-set.agricultural-nutrient-supply@0.3.0 input card with no group; use flow-set.energy-supply@0.2.0 at set level; bind irrigation only to flow-set.water-use@0.2.0 group irrigation-water."
+    source_ids: []
+  - rule_id: validation_rule_6
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_uuid_resolution: Before a final generated exchange, expand each parameterized card from actual records and verify a concrete compatible UUID, property, and unit. Resolve uncovered inputs and outputs independently; retain unresolved identities in this candidate."
+    source_ids: []
+  - rule_id: validation_rule_7
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_period_allocation: Reconcile establishment, production, replacements, repeated cuts/tapping, and termination; prevent an asset or field burden from being attributed twice."
+    source_ids: []
+  - rule_id: validation_rule_8
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_coproduct_and_reject: Trace each intended coproduct, downgraded product, rework, residue, and waste to one destination; rejected material is not accepted reference output."
+    source_ids: []
+  - rule_id: validation_rule_9
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_extraction_exclusion: Reject syrup concentration, sorghum juice/sweetener extraction or fermentation, and steviol-glycoside extraction/refinement from the declared boundary."
+    source_ids: []
+  - rule_id: validation_rule_10
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_range_and_quality: Check every card range, unit, basis, source scope, and foreground value; investigate exceedances without treating provisional ranges as conformance limits."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground dataset for one raw sugar-crop product at its declared farm or primary-conditioning hand-off"
+  downstream_use: "secondary_dataset; background_dataset after representativeness and identity review"
+  allowed_use: "Crop-specific supply modelling with aligned species, part, purpose, market state, moisture, route, period, gate, and attribution"
+  excluded_use: "Product comparisons that mix routes or states; syrup, sugar, extracted juice, fermented products, purified sweetener, or downstream manufacture"
+  required_metadata: "crop branch; species/cultivar; plant part; purpose; geography; period; route; establishment/stand phase; area; harvest/tapping pattern; product mass; moisture; grade; hand-off; inputs; shared assets; allocation; unresolved identities"
+  required_quality_disclosure: "primary-data share; UUID gaps; moisture and mass balance; range exceedances; provisional ranges; period and co-product attribution; field emissions method; source geography and technology limits"
+  update_trigger: "verified reference UUID; new source-backed route/range evidence; changed product state, crop, gate, technology, Flow Set version, or attribution method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "src_unsd_cpc01809"
+    type: "official_guidance"
+    reference: "UNSD CPC 2.1, 01809, https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/01809"
+    used_for: "Listed crop examples and category boundary evidence"
+  - id: "src_fao_sweet_sorghum_cultivation"
+    type: "official_guidance"
+    reference: "FAO, Sweet sorghum cultivation, https://www.fao.org/4/t4470e/t4470e05.htm"
+    used_for: "Sorghum crop route and reported stalk trial yields"
+  - id: "src_fao_sweet_sorghum_harvest"
+    type: "official_guidance"
+    reference: "FAO, Sweet sorghum harvest stage, https://www.fao.org/4/t4470e/t4470e07.htm"
+    used_for: "Harvest timing and stalk sugar-content variability"
+  - id: "src_fao_sugar_crops"
+    type: "official_guidance"
+    reference: "FAO, sugar-crop purpose distinctions, https://www.fao.org/4/x9892e/X9892e06.htm"
+    used_for: "Distinguishing sugar-purpose sorghum from grain purpose"
+  - id: "src_umaine_maple_2025"
+    type: "official_guidance"
+    reference: "University of Maine Cooperative Extension, Maple syrup production for the beginner, updated 2025, https://extension.umaine.edu/publications/7036e/"
+    used_for: "Tapping, collection, seasonal yield and sugarbush records"
+  - id: "src_ukys_stevia"
+    type: "official_guidance"
+    reference: "University of Kentucky Center for Crop Diversification, Stevia, https://ccd.uky.edu/sites/default/files/2024-11/ccd-cp-055_stevia.pdf"
+    used_for: "Stevia harvest, leaf handling, drying, and moisture records"
+  - id: "src_jecfa_stevia"
+    type: "standard"
+    reference: "FAO/JECFA, Steviol glycosides monograph, https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf"
+    used_for: "Boundary distinction between harvested leaves and extracted sweetener"
+  - id: "src_sweet_project_stevia_lca"
+    type: "literature"
+    reference: "SWEET project stevia cultivation and LCA case, https://pmc.ncbi.nlm.nih.gov/articles/PMC9839952/"
+    used_for: "Region-specific planting density and dried-leaf yield case; not universal"
+  - id: "src_ipcc_managed_soils"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil nitrogen-emission method inputs and uncertainty disclosure"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:6f7f8eac3952fd45080bbb0359b66df44d2cd57701484f477f3cce573991784c"
+  generated_content_sha256: "sha256:a14f98c7100d973b261c4a5b3407c3bbfe061513ae07db2fc0c0b6a585559f40"

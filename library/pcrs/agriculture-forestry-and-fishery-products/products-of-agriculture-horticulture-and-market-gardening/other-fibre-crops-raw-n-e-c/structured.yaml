@@ -1,10 +1,1152 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01929"
-  title: "Other fibre crops, raw, n.e.c."
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.other-fibre-crops-raw-n-e-c"
+  classification_refs: "CPC 3.0:01929"
+  covered_products: "One named-species raw or retted fibre-crop product at a declared harvest, extraction or first-preparation state"
+  excluded_products: "Cotton; jute/kenaf class; yarn, fabric, finished goods, blended fibres and downstream manufacture"
+  representative_product: "1 kg of single-species raw fibre at declared moisture, retting/preparation state and grade"
+  production_route: "Managed cultivation → harvest/first extraction → optional retting, decortication, washing, drying, scutching, cleaning and grading → raw-fibre handoff"
+  market_state: "Bulk raw fibre material, not spun or made into fabric"
+functional_unit:
+  what: "One raw fibre product of a declared species, plant part and preparation state"
+  how_much: "1 kg net product"
+  how_well: "Declare species, variety when known, fibre-bearing part, raw/retted state, preparation route, grade, impurities and moisture"
+  how_long_or_cycle: "One identified lot and its crop cycle; perennial routes include or attribute establishment"
+  reference_flow_link: "Verified product-flow object below"
+system_boundary:
+  rules:
+    - rule_id: route_boundary
+      applies_to: "complete route"
+      rule: "Cultivation, harvest/extraction and first preparation are separate responsibility nodes; include only selected preparation operations"
+      source_ids:
+        - unsd-cpc-v3-2025
+    - rule_id: gate_exclusivity
+      applies_to: "reference product"
+      rule: "Choose farm handoff or first-preparation handoff once; do not count intermediate material again as reference output"
+      source_ids: []
+    - rule_id: route_alternatives
+      applies_to: "production and preparation"
+      rule: "Rainfed/irrigated, manual/mechanical harvest, dew/water/enzyme retting and ambient/mechanical drying are explicit route choices, not unevidenced averages"
+      source_ids:
+        - fao-natural-fibres-2009
+    - rule_id: period_boundary
+      applies_to: "perennial crops and shared assets"
+      rule: "Apply explicit multi-period attribution: link establishment, production, renewal and termination to reporting periods; attribute shared equipment once by recorded service and period"
+      source_ids: []
+    - rule_id: material_state_handoff
+      applies_to: "all nodes"
+      rule: "At every handoff record input/output state, moisture, mass, destination and responsible party, linked by lot balance"
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Declare field state before establishment or at the selected productive-period start, including perennial stand age"
+  starting_condition_role: "Raw fibre-crop producer"
+  product_classification_scope: "One named raw fibre product within CPC 01929; no aggregation across species, cotton or the jute/kenaf class"
+  recursive_input_rule: "Record retained propagation material once as an internal transfer; do not recursively count it as both upstream product and the same foreground output"
+  upstream_dataset_requirement: "Purchased propagation, nutrients, protection products, water, energy, transport and treatment require verified datasets for actual products or services"
+  disclosure: "Declare species, plant part, route, site, period, moisture, retting and preparation state, grade, handoff, residue destinations and attribution choices"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Other fibre crops, raw, n.e.c."
+    uuid: "99b99c66-1c44-40db-bb8e-2d5ec022aa28"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Botanical species"
+    - "fibre-bearing part"
+    - "raw or retted state"
+    - "preparation route"
+    - moisture
+    - grade
+    - impurities
+    - geography
+    - "crop cycle"
+    - "farm or first-preparation gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product and all mass-balance products"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net mass; compare lots on one moisture basis and use measured lot moisture for conversions"
+  - id: moisture_state
+    applies_to: "raw, retted and dried fibre states"
+    required_property_ref:
+      name: "water mass fraction"
+      uuid: ""
+    required_unit: "% wet basis"
+    rule: "Sample at each handoff and declare method; do not replace measurement with a category default"
+  - id: transport_service
+    applies_to: "off-site transfer"
+    required_property_ref:
+      name: "mass-distance"
+      uuid: ""
+    required_unit: "t·km"
+    rule: "Multiply net load by loaded distance; disclose empty return and own-account fuel without duplication"
+  - id: land_time
+    applies_to: "annual and perennial crop periods"
+    required_property_ref:
+      name: "area-time"
+      uuid: ""
+    required_unit: "ha·year"
+    rule: "Record area and time separately for establishment and productive periods"
+process_map:
+  - id: crop_production
+    name: "Managed fibre-crop production"
+    inclusion: "required"
+    inclusion_condition: "Declare annual or perennial route and production periods"
+    role: "managed biological production"
+    quantitative_reference: "crop area, period and harvest-ready biomass"
+  - id: harvest_extraction
+    name: "Harvest and primary extraction"
+    inclusion: "required"
+    inclusion_condition: "Declare cutting, pulling, stripping or recovery route by plant part"
+    role: "harvest/capture"
+    quantitative_reference: "collected raw-material lot"
+  - id: primary_fibre_preparation
+    name: "First fibre preparation and grading"
+    inclusion: "conditional"
+    inclusion_condition: "Include when first retting, decortication, washing, drying, scutching, cleaning or grading precedes the selected gate"
+    role: "treatment, stabilization and grading"
+    quantitative_reference: "accepted prepared raw fibre"
+process_inventory:
+  - id: crop_production
+    label: "Managed fibre-crop production"
+    inputs:
+      product:
+        - row_id: propagation_material
+          role: "Seed, planting stock or vegetative propagation material"
+          name: "Crop-specific propagation material; UUID unresolved until species and form are known"
+          flow_type: "product"
+          property_unit: "Mass / kg, or count when the verified flow supports count"
+          description: "Record the identified seed, seedling, sucker, rhizome, cutting or planting stock entering the crop system. Retained material is recorded only when transferred across the declared foreground boundary."
+          amount:
+            expression: "Measured purchase or transfer quantity by species, lot and planting area"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference product, retaining crop-cycle linkage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_propagation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg reference product"
+                basis: "Per 1 kg reference product, retaining crop-cycle linkage; conditional routes impose zero only when inactive"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fertilizer_nutrient_inputs
+          role: "Consolidated fertilizer and nutrient amendments"
+          name: "Fertilizer and nutrient-supply products actually applied"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product-specific property and native unit"
+          description: "Use this single card for every mineral fertilizer, organic fertilizer and nutrient amendment applied in crop production. Foreground records retain each product, nutrient composition, field, date and dose."
+          amount:
+            expression: "Measured product mass and nutrient composition by application"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference product with field and crop period retained"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrients
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kg products/kg reference product"
+                basis: "Per 1 kg reference product with field and crop period retained; conditional routes impose zero only when inactive"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop-protection products"
+          name: "Crop-protection products identified from application records; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg or product-native unit"
+          description: "Record only formulated products or active ingredients actually applied, preserving representation, treated area, date and target."
+          amount:
+            expression: "Measured or invoiced quantity by application"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg reference product"
+                basis: "Per 1 kg reference product; conditional routes impose zero only when inactive"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water actually supplied"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water supplied for irrigation by source. Rainfall is site context and is not a supplied product exchange."
+          amount:
+            expression: "Metered or otherwise documented withdrawal by field and period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per hectare crop cycle, subsequently normalized to reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha crop cycle"
+                basis: "Per hectare crop cycle, subsequently normalized to reference product; conditional routes impose zero only when inactive"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_energy
+          role: "Crop-production energy carriers and utilities"
+          name: "Energy carriers and utilities used in crop production"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific property and unit"
+          description: "Record electricity and fuels used for land preparation, planting, management and pumping. Preserve each carrier and native unit."
+          amount:
+            expression: "Metered electricity and fuel purchase or equipment-use records"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference product with operation retained"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kWh-equivalent/kg reference product"
+                basis: "Per 1 kg reference product with operation retained; conditional routes impose zero only when inactive"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: crop_land_occupation
+          role: "Agricultural land occupation"
+          name: "Occupation, agricultural land; elementary identity unresolved"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha·year"
+          description: "Record occupied area and time for the declared annual or perennial production period."
+          amount:
+            expression: "Measured cultivated area multiplied by occupied time"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per crop cycle before yield normalization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_area_period
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.00001"
+                upper: "1"
+                unit: "ha·year/kg harvest-ready biomass"
+                basis: "Per crop cycle before yield normalization; conditional routes impose zero only when inactive"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: harvest_ready_biomass
+          role: "Harvest-ready fibre-crop biomass"
+          name: "Species-specific harvest-ready fibre-crop biomass; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This intermediate is the identified plant or plant part released by managed production to harvest; it is not yet the raw-fibre reference product."
+          amount:
+            expression: "Measured or reconciled field output at declared moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per crop-production process output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg raw fibre product"
+                basis: "Per crop-production process output; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_losses
+          role: "Crop-production losses removed from the field"
+          name: "Species-specific field biomass waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record failed or removed biomass as waste only when it crosses the field boundary to a declared waste destination."
+          amount:
+            expression: "Measured removed mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg harvest-ready biomass"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg harvest-ready biomass"
+                basis: "Per 1 kg harvest-ready biomass; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: soil_nitrous_oxide
+          role: "Direct soil nitrous oxide"
+          name: "Nitrous oxide to air; UUID unresolved pending compartment confirmation"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct soil N2O from recorded nitrogen inputs with the declared IPCC tier or a justified local method."
+          amount:
+            expression: "Apply declared emission factor and convert N2O-N to N2O where required"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per nitrogen input, normalized to reference product"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrients
+              source_ids:
+                - ipcc-2019-refinement-v4-ch11
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg N2O/kg N applied"
+                basis: "Per nitrogen input, normalized to reference product; conditional routes impose zero only when inactive"
+                basis_kind: "n_input"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_extraction
+    label: "Harvest and primary extraction"
+    inputs:
+      product:
+        - row_id: harvest_ready_input
+          role: "Harvest-ready fibre-crop biomass input"
+          name: "Species-specific harvest-ready fibre-crop biomass; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the production-node output entering cutting, pulling, leaf stripping, fruit-husk recovery or the applicable extraction route."
+          amount:
+            expression: "Transferred lot mass at the measured moisture state"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per harvest process input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg raw fibre product"
+                basis: "Per harvest process input; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest and extraction energy"
+          name: "Energy carriers used by harvest and extraction equipment"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific property and unit"
+          description: "Record energy for cutting, pulling, stripping, field decortication or other selected harvest equipment."
+          amount:
+            expression: "Fuel and electricity records by operation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg raw collected material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh-equivalent/kg collected material"
+                basis: "Per 1 kg raw collected material; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_collected_fibre_material
+          role: "Raw collected fibre material"
+          name: "Species- and state-specific raw fibre material; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the species-specific stem, leaf, bast, husk or separated fibre state handed to primary preparation."
+          amount:
+            expression: "Measured accepted lot mass and moisture at handoff"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per harvest process output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.01"
+                upper: "1"
+                unit: "kg/kg harvest input"
+                basis: "Per harvest process output; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_coproducts
+          role: "Other intended harvest products"
+          name: "Product-specific intended co-product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record seed, woody core, leaves or other material as a product only when it has an intended use and documented handoff."
+          amount:
+            expression: "Measured mass by product state and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg raw collected fibre material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_output_destinations
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg/kg raw collected fibre material"
+                basis: "Per 1 kg raw collected fibre material; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_residues
+          role: "Harvest residues sent to waste management"
+          name: "Fibre-crop harvest residue waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record incidental biomass as waste when its destination is disposal or treatment; material returned to soil is disclosed separately and not duplicated."
+          amount:
+            expression: "Measured residue mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg raw collected fibre material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg/kg raw collected fibre material"
+                basis: "Per 1 kg raw collected fibre material; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_fibre_preparation
+    label: "First fibre preparation and grading"
+    inputs:
+      product:
+        - row_id: raw_material_input
+          role: "Raw collected fibre material input"
+          name: "Species- and state-specific raw fibre material; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the exact raw or retted state entering the declared first preparation route."
+          amount:
+            expression: "Measured received mass and moisture by lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per primary-preparation input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg prepared raw fibre"
+                basis: "Per primary-preparation input; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: process_water
+          role: "Retting and washing process water"
+          name: "Process water supplied for retting or washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record supplied water only when water retting, washing or rinsing is performed; keep source and operation identifiable."
+          amount:
+            expression: "Metered or documented supplied volume"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg prepared raw fibre"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_water
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "m3/kg prepared raw fibre"
+                basis: "Per 1 kg prepared raw fibre; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Primary fibre-preparation energy"
+          name: "Energy carriers and utilities used in primary fibre preparation"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific property and unit"
+          description: "Record energy for retting control, decortication, drying, scutching, cleaning and grading as actually performed."
+          amount:
+            expression: "Metered electricity, fuel and purchased heat by operation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg prepared raw fibre"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kWh-equivalent/kg prepared raw fibre"
+                basis: "Per 1 kg prepared raw fibre; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: raw_material_transport
+          role: "Transport from harvest site to first preparation"
+          name: "Freight transport service for raw fibre-crop material"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Mass-distance / t·km"
+          description: "Record third-party freight when raw material moves between sites; own-account fuel is recorded once under the operating node."
+          amount:
+            expression: "Net transported mass multiplied by loaded route distance"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "Per transported raw-material lot"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_transport
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "t·km/t raw material"
+                basis: "Per transported raw-material lot; conditional routes impose zero only when inactive"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wastewater_treatment
+          role: "Wastewater treatment service"
+          name: "Wastewater treatment service selected for the actual route"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.waste-treatment-service"
+            version: "0.2.0"
+            group: "wastewater-treatment-service"
+          property_unit: "Volume / m3"
+          description: "Record treatment service only for wastewater transferred to an external treatment provider."
+          amount:
+            expression: "Measured discharged volume accepted by treatment provider"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per 1 kg prepared raw fibre"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wastewater
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "m3/kg prepared raw fibre"
+                basis: "Per 1 kg prepared raw fibre; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_raw_fibre
+          role: "Prepared raw fibre reference product"
+          name: "Other fibre crops, raw, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "99b99c66-1c44-40db-bb8e-2d5ec022aa28"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This intended output is the selected single-species raw or retted fibre at the first preparation handoff. It excludes yarn, fabric and finished fibre goods."
+          amount:
+            expression: "Exactly 1 kg net accepted product at declared moisture, preparation state and grade"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "PCR reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              collection_protocol_id: cp_conditioning_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/reference flow"
+                basis: "PCR reference flow; conditional routes impose zero only when inactive"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fibre_coproducts
+          role: "Other intended preparation co-products"
+          name: "Product-specific co-product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record shives, woody core, tow, seed or other outputs as co-products only when intended use and handoff are documented."
+          amount:
+            expression: "Measured output by state, grade and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg prepared raw fibre"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_output_destinations
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg/kg prepared raw fibre"
+                basis: "Per 1 kg prepared raw fibre; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Rejected fibre and preparation residues"
+          name: "Preparation residue waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected fibre, dirt and unusable residues by measured mass and destination; downgraded saleable material remains a product."
+          amount:
+            expression: "Measured reject and residue mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg prepared raw fibre"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg/kg prepared raw fibre"
+                basis: "Per 1 kg prepared raw fibre; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wastewater
+          role: "Retting or washing wastewater"
+          name: "Process wastewater; UUID unresolved until composition and destination are known"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Record wastewater volume and receiving route when wet processing occurs. Do not infer discharge where no wet route is selected."
+          amount:
+            expression: "Metered or water-balance discharge by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg prepared raw fibre when wet route applies"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_wastewater
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "m3/kg prepared raw fibre"
+                basis: "Per 1 kg prepared raw fibre when wet route applies; conditional routes impose zero only when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: mass_balance_first
+    applies_to: "all processes"
+    rule: "First reconcile inputs, accepted product, co-products, residues, waste and measured moisture change by lot"
+    source_ids: []
+  - rule_id: coproduct_attribution
+    applies_to: "intended co-products"
+    rule: "Prefer subdivision. If allocation remains necessary, declare physical or economic method, data period and sensitivity for the study goal"
+    source_ids:
+      - iso-14044-2006
+  - rule_id: residue_classification
+    applies_to: "residues and rejects"
+    rule: "Only material with intended use and documented handoff is a co-product; waste, soil return and unowned loss receive no product output quantity"
+    source_ids: []
+  - rule_id: multi_period_attribution
+    applies_to: "perennial establishment and shared assets"
+    rule: "Attribute using evidenced productive years, service or lifetime output, recording replacement and termination; no burden may be counted in multiple periods"
+    source_ids: []
+  - rule_id: shared_asset_attribution
+    applies_to: "assets serving multiple nodes"
+    rule: "List consuming nodes and periods and attribute once using recorded machine hours, mass processed or other causal service"
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_propagation
+      process_id: "crop_production"
+      flow_role: "propagation material"
+      record_type: "records"
+      raw_fields: "supplier invoices; lot and planting logs"
+      collection_method: "direct record with traceable source"
+      unit: "kg or count"
+      frequency: "each planting event"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_nutrients
+      process_id: "crop_production"
+      flow_role: "fertilizer and nutrients"
+      record_type: "records"
+      raw_fields: "product invoices; nutrient analysis; field application log"
+      collection_method: "direct record with traceable source"
+      unit: "kg product and kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_crop_protection
+      process_id: "crop_production"
+      flow_role: "crop protection"
+      record_type: "records"
+      raw_fields: "application log; formulation and active ingredient"
+      collection_method: "direct record with traceable source"
+      unit: "kg or L"
+      frequency: "each application"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_irrigation
+      process_id: "crop_production"
+      flow_role: "irrigation water"
+      record_type: "records"
+      raw_fields: "meter reading or documented withdrawal"
+      collection_method: "direct record with traceable source"
+      unit: "m3"
+      frequency: "each irrigation period"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_energy
+      process_id: "all_processes"
+      flow_role: "energy carriers"
+      record_type: "records"
+      raw_fields: "meters; invoices; equipment and fuel logs"
+      collection_method: "direct record with traceable source"
+      unit: "native carrier unit"
+      frequency: "monthly and by operation"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_area_period
+      process_id: "crop_production"
+      flow_role: "area and period"
+      record_type: "records"
+      raw_fields: "georeferenced field register; establishment and productive dates"
+      collection_method: "direct record with traceable source"
+      unit: "ha and days"
+      frequency: "each crop period"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_harvest_mass
+      process_id: "harvest_extraction"
+      flow_role: "harvest mass"
+      record_type: "records"
+      raw_fields: "calibrated scale; lot moisture sample"
+      collection_method: "direct record with traceable source"
+      unit: "kg and % wet basis"
+      frequency: "each harvest lot"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_output_destinations
+      process_id: "harvest_and_preparation"
+      flow_role: "intended outputs"
+      record_type: "records"
+      raw_fields: "dispatch note; buyer or internal transfer record"
+      collection_method: "direct record with traceable source"
+      unit: "kg"
+      frequency: "each output lot"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_residues
+      process_id: "all_processes"
+      flow_role: "residues and waste"
+      record_type: "records"
+      raw_fields: "scale ticket; destination and fate record"
+      collection_method: "direct record with traceable source"
+      unit: "kg"
+      frequency: "each transfer"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_conditioning_mass
+      process_id: "primary_fibre_preparation"
+      flow_role: "received and prepared fibre"
+      record_type: "records"
+      raw_fields: "calibrated scales; moisture and grade sample"
+      collection_method: "direct record with traceable source"
+      unit: "kg and % wet basis"
+      frequency: "each lot"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_conditioning_water
+      process_id: "primary_fibre_preparation"
+      flow_role: "process water"
+      record_type: "records"
+      raw_fields: "meter reading and source record"
+      collection_method: "direct record with traceable source"
+      unit: "m3"
+      frequency: "each batch or day"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_transport
+      process_id: "primary_fibre_preparation"
+      flow_role: "transport service"
+      record_type: "records"
+      raw_fields: "dispatch mass; loaded route distance; vehicle record"
+      collection_method: "direct record with traceable source"
+      unit: "t and km"
+      frequency: "each trip"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+    - protocol_id: cp_wastewater
+      process_id: "primary_fibre_preparation"
+      flow_role: "wastewater"
+      record_type: "records"
+      raw_fields: "discharge meter or water balance; destination receipt"
+      collection_method: "direct record with traceable source"
+      unit: "m3"
+      frequency: "each batch or day"
+      temporal_coverage: "representative declared period"
+      site_scope: "all included sites and lots"
+      aggregation_rule: "sum by process and normalize through accepted output"
+      quality_evidence: "calibration, invoice, log or receipt retained"
+  calculation_rules:
+    - id: normalize_mass
+      applies_to: "all inventory rows"
+      rule: "process exchange ÷ accepted net reference-product mass from the same lot"
+      inputs:
+        - "exchange amount"
+        - "lot links"
+        - "accepted reference mass"
+      output: "amount per kg reference product"
+      source_ids: []
+    - id: moisture_conversion
+      applies_to: "fibre states"
+      rule: "dry matter = wet mass × (1 − wet-basis moisture); paired lot measurements only"
+      inputs:
+        - "wet mass"
+        - "moisture fraction"
+      output: "comparable mass state"
+      source_ids: []
+    - id: transport_work
+      applies_to: "freight"
+      rule: "t·km = net tonnes loaded × loaded route kilometres"
+      inputs:
+        - "dispatch mass"
+        - "route distance"
+      output: "transport service"
+      source_ids: []
+    - id: soil_n2o
+      applies_to: "managed soil"
+      rule: "calculate N2O-N from N inputs with declared IPCC tier and convert to N2O by 44/28"
+      inputs:
+        - "N inputs"
+        - "emission factors"
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-refinement-v4-ch11
+    - id: lot_mass_balance
+      applies_to: "harvest and preparation"
+      rule: "input = accepted product + co-products + residues/waste + stock change + measured moisture change"
+      inputs:
+        - "lot masses"
+        - moisture
+        - stock
+      output: "reconciliation result"
+      source_ids: []
+  data_quality_requirements:
+    - id: identity_quality
+      applies_to: "reference product"
+      requirement: "Species, plant part, state, grade and gate are compatible with the fixed product UUID"
+      evidence: "lot specification and flow detail verification"
+    - id: coverage_quality
+      applies_to: "foreground inventory"
+      requirement: "Cover all sites, fields, lots and actual operations in the declared period; quantify missing records"
+      evidence: "completeness ledger"
+    - id: measurement_quality
+      applies_to: "mass, moisture, water and energy"
+      requirement: "Record meter, calibration, sampling method, unit conversion and outlier treatment"
+      evidence: "calibration and sampling records"
+    - id: temporal_quality
+      applies_to: "annual/perennial route"
+      requirement: "Data period matches crop cycle and identifies establishment, production, renewal and termination"
+      evidence: "dated crop and asset records"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Fixed UUID, Mass property and kg unit must match the named raw fibre product and declared gate"
+    source_ids: []
+  - rule_id: validate_gate_once
+    applies_to: "route"
+    rule: "Farm and first-preparation handoffs cannot both be reference outputs"
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "every flow card"
+    rule: "Check nonnegative bounds, lower ≤ upper and process-consistent denominator; inactive conditional routes impose no positive amount"
+    source_ids: []
+  - rule_id: validate_flow_sets
+    applies_to: "parameterized inputs"
+    rule: "At most one set-only nutrient card per process; water, energy, transport and treatment must match cited versions and groups"
+    source_ids: []
+  - rule_id: validate_balance
+    applies_to: "harvest and preparation"
+    rule: "Balance input, products, co-products, residues, waste and stock change on declared moisture basis"
+    source_ids: []
+  - rule_id: validate_outputs
+    applies_to: "intended outputs and rejects"
+    rule: "Every intended output has a handoff; downgraded, rejected, recovered or waste states have explicit non-duplicated destinations"
+    source_ids: []
+  - rule_id: validate_period_assets
+    applies_to: "perennial and shared infrastructure"
+    rule: "Periods and consuming nodes are complete; establishment and shared-asset burdens are attributed once"
+    source_ids: []
+  - rule_id: validate_route_delta
+    applies_to: "alternative routes"
+    rule: "Each alternative declares parent activity and real topology, inventory, calculation or validation delta; mutually exclusive routes are not averaged"
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground production dataset for one named raw fibre product"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Product systems compatible in species, plant part, state, route, geography and gate"
+  excluded_use: "Unqualified proxy for other species, cotton, jute/kenaf, blended fibre, yarn, fabric or finished goods"
+  required_metadata: "Species; plant part; raw/retted state; preparation technology; moisture; grade; impurities; site; period; gate; allocation"
+  required_quality_disclosure: "Coverage, measurement and calibration, out-of-range values, missing records, route proxies, co-product and multi-period attribution"
+  update_trigger: "Material change in product state, route, gate, technology, species scope, fixed UUID compatibility or key evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-v3-2025"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 structure and explanatory notes, 2025"
+    used_for: "CPC 01929 product scope and examples"
+  - id: "fao-natural-fibres-2009"
+    type: "official_guidance"
+    reference: "FAO and Common Fund for Commodities, Proceedings of the Symposium on Natural Fibres, 2009"
+    used_for: "natural-fibre crop routes, primary preparation and market states"
+  - id: "ipcc-2019-refinement-v4-ch11"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils"
+    used_for: "managed-soil N2O calculation"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy and transparency"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:c3221468576f3abf47ac815463a54474ba62f4a1541ff94094567dd34ab30356"
+  generated_content_sha256: "sha256:7ee849aafec3b0f62b5d3a73595bdf913750cf91143ea2d0c5a598b3addc56a7"

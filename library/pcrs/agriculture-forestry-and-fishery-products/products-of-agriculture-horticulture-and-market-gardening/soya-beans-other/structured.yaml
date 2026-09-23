@@ -1,10 +1,1104 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01412"
-  title: "Soya beans, other"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.soya-beans-other"
+  classification_refs: "CPC 3.0: 01412 Soya beans, other"
+  covered_products: "Whole harvested non-planting soya beans for food, feed or processing"
+  excluded_products: "Planting seed; flour; meal; oil; isolated protein; beverages; tofu; fermented and other manufactured products"
+  representative_product: "Cleaned and stabilized whole non-planting soya beans"
+  production_route: "Managed rainfed or irrigated production, harvest and threshing, cleaning, optional drying, grading, storage and optional packaging"
+  market_state: "Whole beans at a declared farm, collection or conditioning gate; grade, use, moisture, quality fractions and packaging state declared"
+functional_unit:
+  what: "Whole non-planting soya beans at the declared gate"
+  how_much: "1,000 kg as received"
+  how_well: "Declared food, feed or processing grade; moisture; foreign matter; broken, damaged and pest-affected fractions"
+  how_long_or_cycle: "One crop cycle and linked postharvest campaign"
+  reference_flow_link: "reference_soya_beans from storage_handoff"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop
+      applies_to: "Managed production"
+      rule: "Include establishment, field operations, irrigation when active, nutrients, direct field emissions, residues and loss through harvest readiness."
+      source_ids:
+        - fao-soybean-production
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_harvest
+      applies_to: "Harvest"
+      rule: "Independently record collected beans, removed or retained residues, foreign matter and loss."
+      source_ids:
+        - fao-soybean-production
+    - rule_id: boundary_conditioning
+      applies_to: "Conditioning"
+      rule: "Include cleaning, grading and drying required for the declared state and reconcile dry solids."
+      source_ids:
+        - fao-soybean-postharvest
+    - rule_id: boundary_storage
+      applies_to: "Storage and presentation"
+      rule: "Include aeration, pest control, loss and packaging before the gate; exclude later distribution."
+      source_ids:
+        - fao-soybean-postharvest
+    - rule_id: boundary_exclusion
+      applies_to: "Downstream"
+      rule: "Exclude seed certification, crushing, oil extraction, milling and manufacture."
+      source_ids:
+        - fao-soybean-postharvest
+boundary_abstraction:
+  declared_starting_condition: "Prepared field with prior crop, soil condition, retained residues and carry-over amendments disclosed"
+  starting_condition_role: "Start before sowing"
+  product_classification_scope: "Whole harvested non-planting soya beans in CPC 01412"
+  recursive_input_rule: "Purchased whole beans entering conditioning are upstream inputs, not recursively produced foreground outputs"
+  upstream_dataset_requirement: "Link concrete product inputs upstream and expand every parameterized Flow Set selection to verified UUIDs"
+  disclosure: "Geography, crop year, area, prior crop, rainfed/irrigated route, fixation context, inputs, harvest, drying, grade, storage, packaging, gate, residues, rejects and allocation"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Soya beans, other"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - "non-planting use"
+    - "food/feed/processing grade"
+    - "moisture and basis"
+    - "quality fractions"
+    - geography
+    - "crop year"
+    - production
+    - "drying and storage route"
+    - "loose or packaged state"
+    - gate
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference and material balances"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report 1,000 kg as received with measured moisture and basis."
+  - id: area_normalization
+    applies_to: "Crop records"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg/ha and kg/1,000 kg"
+    rule: "Retain area, gross yield and accepted mass before normalization."
+  - id: moisture_balance
+    applies_to: "Drying and storage"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Conserve dry solids using paired mass and moisture measurements."
+  - id: quality_fraction
+    applies_to: "Grade and loss"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg/kg"
+    rule: "Use one stated mass and moisture basis for foreign matter, broken, damaged and rejected fractions."
+process_map:
+  - id: crop_production
+    name: "Managed crop production"
+    inclusion: "required"
+    inclusion_condition: "One crop cycle"
+    role: "Biological parent; route-specific records and shared field assets attributed once"
+    quantitative_reference: "per area and gross beans"
+  - id: harvest_thresh
+    name: "Harvest and thresh"
+    inclusion: "required"
+    inclusion_condition: "Mature crop is collected"
+    role: "Independent bean, residue and loss hand-off"
+    quantitative_reference: "per harvested lot"
+  - id: condition_grade_dry
+    name: "Clean, grade and optionally dry"
+    inclusion: "required"
+    inclusion_condition: "Harvested beans enter conditioning"
+    role: "Batch/continuous treatment with accepted, downgraded and reject states"
+    quantitative_reference: "per accepted conditioned kg"
+  - id: storage_handoff
+    name: "Store, present and hand off"
+    inclusion: "required"
+    inclusion_condition: "Conditioned beans await gate"
+    role: "Preservation, optional packaging and shared-store attribution"
+    quantitative_reference: "per 1,000 kg reference product"
+process_inventory:
+  - id: crop_production
+    label: "Managed crop production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Planting material"
+          name: "Soya bean planting material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Measured mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "5"
+                upper: "200"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Sum all nutrient-product masses while retaining composition"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1500"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Metered gross delivery; zero for rainfed route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy supply"
+          name: "Field-operation energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Convert measured carriers by operation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15000"
+                unit: "MJ/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_crop
+          role: "Mature crop ready for harvest"
+          name: "Mature soya bean crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Measured gross bean-equivalent crop output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "5000"
+                unit: "kg bean-equivalent/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_loss
+          role: "Unrecovered field loss"
+          name: "Unrecovered crop material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Observed or mass-balance field loss"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: soil_n2o
+          role: "Managed-soil nitrous oxide to air"
+          name: "Nitrous oxide to air from managed soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Declared method applied to collected nutrient and residue data"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg N2O/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_thresh
+    label: "Harvest and thresh"
+    inputs:
+      product:
+        - row_id: mature_crop_input
+          role: "Mature crop input"
+          name: "Mature soya bean crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Equal linked mature-crop output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg input/kg linked output"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: harvest_energy
+          role: "Harvest energy supply"
+          name: "Harvest machinery energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Convert measured carriers by operation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_beans
+          role: "Harvested unconditioned beans"
+          name: "Harvested unconditioned soya beans"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Weighed lot with moisture and foreign matter"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1800"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: removed_residue
+          role: "Removed crop residues"
+          name: "Removed soya crop residues"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Measured or calculated dry matter removed"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4000"
+                unit: "kg dry matter/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_rejects
+          role: "Harvest rejects and loss"
+          name: "Harvest rejects and loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Measured rejects or reconciled difference by route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: condition_grade_dry
+    label: "Clean, grade and optionally dry"
+    inputs:
+      product:
+        - row_id: harvested_beans_input
+          role: "Harvested beans input"
+          name: "Harvested unconditioned soya beans"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Equal linked harvested-bean output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg input/kg linked output"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: conditioning_energy
+          role: "Conditioning energy supply"
+          name: "Conditioning energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Meter cleaning, grading and active drying energy"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12000"
+                unit: "MJ/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Conditional process water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Meter water when wet conditioning is active; otherwise zero"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_beans
+          role: "Conditioned accepted beans"
+          name: "Conditioned non-planting soya beans"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this intended output with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Weighed accepted output by grade"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1300"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_beans
+          role: "Downgraded beans"
+          name: "Downgraded non-planting soya beans"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this intended output with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Weighed separately saleable lower-grade output"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Screenings and rejects"
+          name: "Soya bean screenings and rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Weighed separated mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: drying_water_removed
+          role: "Water removed in drying"
+          name: "Water vapour from bean drying"
+          flow_type: "elementary"
+          property_unit: "Mass / kg water"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Dry-solids-conserving moisture balance when drying is active"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg water/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: storage_handoff
+    label: "Store, present and hand off"
+    inputs:
+      product:
+        - row_id: conditioned_beans_input
+          role: "Conditioned beans input"
+          name: "Conditioned non-planting soya beans"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Equal linked conditioned-bean output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg input/kg linked output"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: storage_energy
+          role: "Storage energy supply"
+          name: "Storage energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Meter energy by lot and occupied duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: presentation_packaging
+          role: "Presentation packaging"
+          name: "Packaging serving the declared hand-off"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Net packaging adjusted for verified reuse; zero for bulk"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_soya_beans
+          role: "Reference soya beans"
+          name: "Soya beans, other"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Exactly 1,000 kg accepted as-received product"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: storage_loss
+          role: "Storage loss and rejected beans"
+          name: "Soya bean storage loss and rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow with field or lot identity, route and destination evidence."
+          amount:
+            expression: "Measured loss by lot and route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product or declared internal hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product or declared internal hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivide
+    applies_to: "All nodes"
+    rule: "Subdivide and meter fields, lots, runs and storage periods before allocation."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_outputs
+    applies_to: "Beans, downgraded outputs and residues"
+    rule: "Use a documented physical causal relation; if none is defensible, use economic allocation and sensitivity."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_shared
+    applies_to: "Shared machinery, dryers and stores"
+    rule: "Attribute once by measured time, throughput or occupied mass-time."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_rework
+    applies_to: "Rework"
+    rule: "Return mass and burdens once to the producing node; never count rework as accepted and rejected output."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_crop_cycle
+      process_id: "crop_production"
+      flow_role: "Inputs, crop output and loss"
+      record_type: "Field log, invoice, meter, yield record"
+      raw_fields: "field_id; area; dates; prior_crop; seed; nutrients; irrigation; energy; yield; loss; residue_route"
+      collection_method: "Reconcile records and calibrated measurements"
+      unit: "ha; kg; m3; MJ"
+      frequency: "Each event/cycle"
+      temporal_coverage: "Representative crop year"
+      site_scope: "Every included field"
+      aggregation_rule: "Sum by field, then normalize by accepted output"
+      quality_evidence: "Documents, calibration and balance"
+    - protocol_id: cp_field_emissions
+      process_id: "crop_production"
+      flow_role: "Managed-soil emissions"
+      record_type: "Workbook and activity record"
+      raw_fields: "N_inputs; residue_N; fixation_context; factors; method_version"
+      collection_method: "Apply one declared method"
+      unit: "kg substance"
+      frequency: "Each crop cycle"
+      temporal_coverage: "Same cycles as crop data"
+      site_scope: "Every included field"
+      aggregation_rule: "Calculate by substance and compartment"
+      quality_evidence: "Reproducible formula and independent check"
+    - protocol_id: cp_harvest_lot
+      process_id: "harvest_thresh"
+      flow_role: "Energy, beans, residues, rejects"
+      record_type: "Machine log and weigh ticket"
+      raw_fields: "lot_id; field_id; energy; crop_mass; bean_mass; moisture; residues; rejects; destinations"
+      collection_method: "Meter and weigh each hand-off"
+      unit: "kg; MJ; %"
+      frequency: "Each lot"
+      temporal_coverage: "Complete campaign"
+      site_scope: "Every harvest operation"
+      aggregation_rule: "Reconcile by field and route"
+      quality_evidence: "Tickets, calibration and lot link"
+    - protocol_id: cp_conditioning_lot
+      process_id: "condition_grade_dry"
+      flow_role: "Utilities and material balance"
+      record_type: "Run sheet, meter, lab result"
+      raw_fields: "lot_id; input_mass; moisture; energy; water; outputs; grade; rejects; route"
+      collection_method: "Weigh, meter and sample"
+      unit: "kg; MJ; m3; %"
+      frequency: "Each batch/run"
+      temporal_coverage: "Complete campaign"
+      site_scope: "Every line"
+      aggregation_rule: "Conserve dry solids and aggregate by grade/technology"
+      quality_evidence: "Calibration, sampling and closure"
+    - protocol_id: cp_storage_handoff
+      process_id: "storage_handoff"
+      flow_role: "Storage, packaging, loss, dispatch"
+      record_type: "Ledger, meter and dispatch record"
+      raw_fields: "lot_id; grade; masses; moisture; dates; energy; packaging; reuse; loss; gate"
+      collection_method: "Link occupancy, utility, packaging and dispatch"
+      unit: "kg; MJ; day; %"
+      frequency: "Each lot/dispatch"
+      temporal_coverage: "Entire declared period"
+      site_scope: "Every store/site"
+      aggregation_rule: "Attribute shared storage by occupied mass-time"
+      quality_evidence: "Ledger, meter, inspection and dispatch evidence"
+  calculation_rules:
+    - id: calc_normalize
+      applies_to: "All rows"
+      rule: "quantity / accepted kg × 1,000"
+      inputs:
+        - quantity
+        - "accepted mass"
+      output: "quantity per 1,000 kg"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_dry_solids
+      applies_to: "Drying"
+      rule: "input dry solids = output dry solids + measured dry-solids loss"
+      inputs:
+        - "paired mass and moisture"
+      output: "water removed and closure"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_field_emissions
+      applies_to: "Managed soil"
+      rule: "Apply declared current method by substance and compartment"
+      inputs:
+        - "field activity"
+        - factors
+      output: "kg emitted"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_storage_share
+      applies_to: "Shared storage"
+      rule: "burden × lot occupied mass-time / total occupied mass-time"
+      inputs:
+        - burden
+        - kg
+        - days
+      output: "attributed burden"
+      source_ids:
+        - iso-14044
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Reference product"
+      requirement: "Declare non-planting use, grade, moisture, condition, crop year, route and gate."
+      evidence: "Specification, inspection and lot records"
+    - id: dq_completeness
+      applies_to: "All nodes"
+      requirement: "Cover at least 95% of measured mass and all material energy, water, nutrients, residues, loss and packaging; explain remainder."
+      evidence: "Reconciliation"
+    - id: dq_temporal
+      applies_to: "System"
+      requirement: "Link one representative crop year to its postharvest lots and disclose averaging or exceptional events."
+      evidence: "Dated records"
+    - id: dq_route
+      applies_to: "Alternatives"
+      requirement: "Separate irrigation, drying, grade and packaging routes before transparent weighting."
+      evidence: "Route ledgers and weighting"
+    - id: dq_traceability
+      applies_to: "Hand-offs"
+      requirement: "Preserve field, lot, run and storage identity."
+      evidence: "Linked identifiers"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "Reference"
+    rule: "Reject planting seed and manufactured products; require one whole-bean grade and gate."
+    source_ids: []
+  - rule_id: validate_reference_uuid
+    applies_to: "Binding"
+    rule: "Fix a route-specific UUID only when grade, use, state and gate all match; otherwise leave blank."
+    source_ids: []
+  - rule_id: validate_balance
+    applies_to: "Harvest onward"
+    rule: "Reconcile dry solids among accepted, downgraded, rejected and lost outputs within uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_flow_sets
+    applies_to: "Product inputs"
+    rule: "Expand Flow Sets to verified exchanges; nutrient supply is set-only, no group/fixed UUID and at most one card per process."
+    source_ids: []
+  - rule_id: validate_routes
+    applies_to: "Alternatives"
+    rule: "Do not merge mutually exclusive routes without weights and complete route records."
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "All cards"
+    rule: "Use ranges as QA screens, investigate exceptions and retain evidenced foreground values."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground whole non-planting soya bean dataset at a declared gate"
+  downstream_use: "Secondary/background use in matching food, feed or processing systems"
+  allowed_use: "Matching geography, year, route, grade, moisture, conditioning, storage, packaging and gate"
+  excluded_use: "Planting seed, manufactured products, or unmatched grade/gate"
+  required_metadata: "Species; use; grade; geography; year; area; prior crop; irrigation; fixation context; inputs; harvest; moisture; conditioning; storage; packaging; allocation; gate; UUID state"
+  required_quality_disclosure: "Coverage, exclusions, uncertainty, record age, range exceptions, balance closure, allocation and weighting"
+  update_trigger: "Material change in route, input regime, yield, technology, grade, packaging, allocation or reference UUID availability"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.packaging-presentation-node
+      kind: "activity"
+      path: "library/modules/activities/packaging-presentation-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-soybean-production"
+    type: "official_guidance"
+    reference: "https://www.fao.org/4/t0532e/t0532e02.htm"
+    used_for: "Crop and harvest route"
+  - id: "fao-soybean-postharvest"
+    type: "official_guidance"
+    reference: "https://www.fao.org/fileadmin/user_upload/inpho/docs/Post_Harvest_Compendium_-_SOYBEAN.pdf"
+    used_for: "Cleaning, drying, grading and storage"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "Managed-soil emissions"
+  - id: "iso-14044"
+    type: "standard"
+    reference: "ISO 14044:2006"
+    used_for: "Allocation"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Mass-balance identity"
+    used_for: "Handoffs and closure"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:a15582f5ed78e79f8b9db41b0777549a0c3d53c41fa21872f853ee61976d5b37"
+  generated_content_sha256: "sha256:488f6529d839b6ce29e84c548ec0fb4587a4b41e0c317e682734b06dadc0f3e2"

@@ -1,10 +1,585 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01182"
-  title: "Millet, other"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.millet-other"
+  classification_refs: "CPC 3.0: 01182, Millet, other"
+  covered_products: "Harvested non-seed barnyard, finger, proso, kodo, pearl, foxtail, and other in-scope millet grain"
+  excluded_products: "Millet grown for seed; teff; flour, groats, malt, fermented, or prepared millet products"
+  representative_product: "Harvested millet grain, unprocessed, at farm gate"
+  production_route: "Field cultivation followed by harvest, threshing, and declared farm-gate preparation"
+  market_state: "Unprocessed grain with species, moisture, grade, and cleaning state declared"
+functional_unit:
+  what: "Harvested non-seed millet grain, unprocessed, at farm gate"
+  how_much: "1 kg"
+  how_well: "Species or mix, moisture, grade, cleaning state, and damaged-grain fraction declared"
+  how_long_or_cycle: "One completed crop cycle"
+  reference_flow_link: "reference_millet_grain"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "Millet foreground"
+      rule: "Include establishment, cultivation, applications, irrigation when used, direct field emissions, harvest, threshing, and farm-gate preparation performed."
+      source_ids:
+        - fao-millet-systems
+        - fao-millet-postharvest
+    - rule_id: boundary_upstream_inputs
+      applies_to: "Inputs"
+      rule: "Model each crossing input separately with compatible upstream data; do not use an undifferentiated agricultural-input bundle."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_residue_fate
+      applies_to: "Residues"
+      rule: "Distinguish straw or stover, chaff, and broken panicles and disclose each destination."
+      source_ids:
+        - fao-millet-systems
+boundary_abstraction:
+  declared_starting_condition: "Seed and purchased inputs delivered to the farm; land condition at crop-cycle start"
+  starting_condition_role: "Foreground crop-establishment starting condition"
+  product_classification_scope: "Non-seed millet grain in CPC 3.0 subclass 01182"
+  recursive_input_rule: "Grain used for sowing is recorded as seed-grade millet input, not as the reference product."
+  upstream_dataset_requirement: "Use compatible upstream datasets for seed, nutrients, water, fuels, crop-protection products, and other inputs."
+  disclosure: "Declare species, geography, rotation, irrigation, harvest and preparation operations, moisture, exclusions, and residue destinations."
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Millet, other"
+    uuid: "f3fc75e0-f49a-48fd-a12f-88246beb1d0a"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species or mix"
+    - "non-seed use"
+    - geography
+    - "crop year"
+    - "production system"
+    - irrigation
+    - moisture
+    - grade
+    - "cleaning state"
+    - "residue fate"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: millet_reference_mass
+    applies_to: "Reference grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report as-received mass and moisture; retain measured moisture for dry-matter conversion."
+  - id: crop_cycle_normalization
+    applies_to: "Area-based inputs and emissions"
+    required_property_ref:
+      name: "Compatible mass, volume, or energy property"
+      uuid: ""
+    required_unit: "kg, L, m3, MJ, or kWh"
+    rule: "Normalize records using accepted grain yield from the same crop cycle."
+  - id: nutrient_basis
+    applies_to: "Nutrient inputs"
+    required_property_ref:
+      name: "Product mass and nutrient mass"
+      uuid: ""
+    required_unit: "kg product and kg nutrient"
+    rule: "Preserve product identity and N, P/P2O5, and K/K2O bases and conversions."
+process_map:
+  - id: millet_cultivation
+    name: "Millet establishment and cultivation"
+    inclusion: "required"
+    inclusion_condition: "Always included"
+    role: "Managed biological production"
+    quantitative_reference: "One crop cycle and cultivated area"
+  - id: millet_harvest_preparation
+    name: "Harvest and farm-gate preparation"
+    inclusion: "required"
+    inclusion_condition: "Always included; drying or cleaning only when performed"
+    role: "Harvest, threshing, separation, and preparation"
+    quantitative_reference: "1 kg accepted millet grain"
+process_inventory:
+  - id: millet_cultivation
+    label: "Millet establishment and cultivation"
+    inputs:
+      product:
+        - row_id: millet_seed_input
+          role: "Millet seed for sowing"
+          name: "Millet, seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8a2d72cb-ab4f-4c21-a783-c62f81599895"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Seed-grade millet used to establish the crop."
+          amount:
+            expression: "Measure seed used for the declared area and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "crop-cycle seed divided by accepted grain mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_millet_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "30"
+                unit: "kg/ha"
+                basis: "broad establishment screen"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-systems
+        - row_id: millet_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "crop-cycle nutrient inputs divided by accepted grain mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_millet_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "600"
+                unit: "kg declared nutrients/ha"
+                basis: "broad combined nutrient screen; preserve each nutrient basis"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-systems
+        - row_id: irrigation_water
+          role: "Irrigation water delivered to field"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered irrigation water when used; rainfall is not a technosphere input."
+          amount:
+            expression: "Measure delivered water and retain source and irrigated area."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "crop-cycle irrigation divided by accepted grain mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_millet_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3/ha"
+                basis: "broad rainfed-to-irrigated screen"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-systems
+        - row_id: crop_protection_product
+          role: "Formulated crop-protection product"
+          name: "Formulated crop-protection product applied to millet"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L"
+          description: "Record each applied formulation as a separate physical identity with active ingredient and concentration."
+          amount:
+            expression: "Measure each formulation separately; do not combine unlike products into one exchange."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "crop-cycle application divided by accepted grain mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_millet_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg or L/ha"
+                basis: "broad first-pass formulation application screen; preserve the selected physical unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-systems
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: direct_n2o
+          role: "Direct nitrous oxide to ambient air"
+          name: "Nitrous oxide to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate managed-soil N2O from collected nitrogen inputs and the selected IPCC tier."
+          amount:
+            expression: "Apply calc_direct_n2o and retain N2O-N to N2O conversion."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "crop-cycle emission divided by accepted grain mass"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_millet_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg N2O-N/kg N input"
+                basis: "broad initial screen; selected method governs the value"
+                basis_kind: "n_input"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - ipcc-2019-managed-soils
+  - id: millet_harvest_preparation
+    label: "Harvest and farm-gate preparation"
+    inputs:
+      product:
+        - row_id: harvest_diesel
+          role: "Diesel for harvest and loading"
+          name: "Diesel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "1bfff35f-7618-4c07-8bd3-d477eea72b73"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Diesel combusted in agricultural machinery for harvesting and loading."
+          amount:
+            expression: "Measure diesel issued to harvest and loading machinery."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "harvest fuel divided by accepted grain mass"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_millet_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "L/ha"
+                basis: "broad harvest-operation screen"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-postharvest
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_millet_grain
+          role: "Harvested millet grain at farm gate"
+          name: "Millet, other"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f3fc75e0-f49a-48fd-a12f-88246beb1d0a"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Accepted grain at declared moisture, grade, and cleaning state is the quantitative reference."
+          amount:
+            expression: "Sum accepted grain and normalize to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "1 kg accepted grain at declared moisture"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_millet_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "8"
+                unit: "t/ha"
+                basis: "broad crop-cycle yield screen"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-systems
+        - row_id: millet_straw_product
+          role: "Millet straw or stover removed for use"
+          name: "Millet straw or stover removed after grain harvest"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record removed stalks, stems, and leaves only when they leave for a documented product use."
+          amount:
+            expression: "Measure mass, moisture, destination, and market status separately from chaff and grain."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "removed mass divided by accepted grain mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_millet_harvest
+              source_ids:
+                - fao-millet-systems
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "t/ha"
+                basis: "broad screen with moisture declared"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-systems
+      waste:
+        - row_id: millet_chaff_waste
+          role: "Chaff and broken panicles sent to treatment"
+          name: "Millet chaff and broken panicles sent to treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record chaff and broken panicles only when they cross to a documented treatment destination."
+          amount:
+            expression: "Measure mass, moisture, and destination separately from straw and accepted grain."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "waste mass divided by accepted grain mass"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_millet_harvest
+              source_ids:
+                - fao-millet-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg reference grain"
+                basis: "broad threshing and cleaning loss screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-millet-postharvest
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivision
+    applies_to: "Millet production"
+    rule: "First avoid allocation by separately recording cultivation, harvest, residue handling, and treatment."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_straw_product
+    applies_to: "Grain and removed straw or stover"
+    rule: "If straw or stover has a documented economic product function, allocate inseparable burdens using representative economic values and report a mass sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residue_waste
+    applies_to: "Chaff and broken panicles"
+    rule: "Do not allocate product burdens to material without a documented product function; classify its physical identity and destination."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_millet_field
+      process_id: "millet_cultivation"
+      flow_role: "Seed, nutrients, irrigation, and crop-protection products"
+      record_type: "Invoices, application logs, meters, and field records"
+      raw_fields: "field_id; cycle; species; area; product_identity; quantity; unit; composition; water"
+      collection_method: "Reconcile purchases and stock to field applications and retain labels."
+      unit: "kg, L, m3, ha"
+      frequency: "Each application and cycle"
+      temporal_coverage: "Complete crop cycle"
+      site_scope: "Each farm and field"
+      aggregation_rule: "Sum by physical identity and normalize by accepted grain."
+      quality_evidence: "Invoices, labels, meters, logs, and stock reconciliation"
+    - protocol_id: cp_millet_emissions
+      process_id: "millet_cultivation"
+      flow_role: "Managed-soil N2O"
+      record_type: "Field inputs and calculation record"
+      raw_fields: "nitrogen_sources; nitrogen_mass; residue_N; soil; climate; water_regime; factor_identity"
+      collection_method: "Apply the accepted IPCC tier to each field or stratum."
+      unit: "kg N, kg N2O-N, kg N2O"
+      frequency: "Each crop cycle"
+      temporal_coverage: "Complete crop cycle"
+      site_scope: "Each field or stratum"
+      aggregation_rule: "Calculate by stratum and aggregate by accepted grain."
+      quality_evidence: "Calculation workbook, factor identity, conversions, and review"
+    - protocol_id: cp_millet_harvest
+      process_id: "millet_harvest_preparation"
+      flow_role: "Harvest fuel, grain, straw or stover, and chaff"
+      record_type: "Machinery logs, scale tickets, moisture tests, and destination records"
+      raw_fields: "field_id; batch_id; area; fuel; grain_mass; moisture; straw_mass; chaff_mass; destinations"
+      collection_method: "Reconcile outputs and fuel by field and batch."
+      unit: "kg, t, L, percent, ha"
+      frequency: "Each harvest and batch"
+      temporal_coverage: "Complete harvest period"
+      site_scope: "Each farm and field"
+      aggregation_rule: "Aggregate by batch and normalize to accepted grain."
+      quality_evidence: "Scale checks, tickets, moisture tests, fuel logs, and receipts"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "Crop-cycle rows"
+      rule: "normalized flow = crop-cycle quantity / accepted grain mass"
+      inputs:
+        - quantity
+        - "accepted grain mass"
+      output: "Quantity per kg reference grain"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_nutrient_mass
+      applies_to: "Nutrients"
+      rule: "nutrient mass = product mass × documented nutrient fraction"
+      inputs:
+        - "product mass"
+        - composition
+      output: "kg nutrient"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_direct_n2o
+      applies_to: "Managed-soil N2O"
+      rule: "Apply the selected IPCC tier and convert N2O-N to N2O by 44/28."
+      inputs:
+        - "nitrogen inputs"
+        - factors
+        - conditions
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_moisture_mass
+      applies_to: "Grain and residues"
+      rule: "dry mass = as-received mass × (1 − moisture fraction)"
+      inputs:
+        - mass
+        - "measured moisture"
+      output: "dry and as-received mass"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Reference grain"
+      requirement: "Declare species or mix, non-seed purpose, state, grade, moisture, and fixed UUID."
+      evidence: "Product, field, batch, and identity records"
+    - id: dq_coverage
+      applies_to: "Foreground"
+      requirement: "Cover a complete crop cycle and harvest and disclose missing data and averaging."
+      evidence: "Dated field, input, and harvest records"
+    - id: dq_completeness
+      applies_to: "Inventory"
+      requirement: "Reconcile inputs, products, residues, and emissions and preserve identity evidence gaps as coverage gaps."
+      evidence: "Protocol, mass-balance, and gap checks"
+validation_rules:
+  - rule_id: validation_reference_identity
+    applies_to: "Reference flow"
+    rule: "Confirm the fixed UUID represents non-seed millet, amount is 1 kg mass, and required qualifiers are declared."
+    source_ids:
+      - unsd-cpc-3-millet
+  - rule_id: validation_binding
+    applies_to: "Inventory flows"
+    rule: "Accept only verified UUIDs as fixed and applicable existing Flow Sets as parameterized; all others remain unmapped."
+    source_ids: []
+  - rule_id: validation_protocols
+    applies_to: "Collected and calculated rows"
+    rule: "Confirm every collected or calculated-from-collection row references an existing protocol."
+    source_ids: []
+  - rule_id: validation_mass_balance
+    applies_to: "Harvest"
+    rule: "Reconcile grain, removed straw or stover, chaff and broken panicles, moisture changes, and losses."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_nitrogen
+    applies_to: "Nutrients and N2O"
+    rule: "Reconcile product records to nitrogen mass and verify factor tier, compartment, and conversion."
+    source_ids:
+      - ipcc-2019-managed-soils
+published_dataset_profile:
+  dataset_role: "Crop-production dataset for non-seed millet grain at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "Footprints and models requiring compatible millet grain at the declared farm-gate state"
+  excluded_use: "Seed millet, teff, processed millet, or substitution without compatible species, geography, moisture, and route"
+  required_metadata: "PCR and reference identity; species; geography; crop year; system; irrigation; area; yield; moisture; grade; preparation; residue fate; allocation; protocol coverage"
+  required_quality_disclosure: "Coverage, missing data, range exceedances, evidence gap bindings, factor tier, measurement quality, aggregation, and allocation sensitivity"
+  update_trigger: "Revised identity or classification, reviewed evidence, material route change, improved regional factors, or persistent range failure"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-3-millet"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 structure, subclass 01182, https://unstats.un.org/unsd/classifications/econ"
+    used_for: "Product scope and identity validation"
+  - id: "fao-millet-postharvest"
+    type: "official_guidance"
+    reference: "FAO, Post-harvest Operations Compendium: Millet, https://www.fao.org/fileadmin/user_upload/inpho/docs/Post_Harvest_Compendium_-_MILLET.pdf"
+    used_for: "Harvest, threshing, preparation, and residue decomposition"
+  - id: "fao-millet-systems"
+    type: "official_guidance"
+    reference: "FAO, The World Sorghum and Millet Economies, https://www.fao.org/4/w1808e/w1808e00.htm"
+    used_for: "Production diversity and residue uses"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil N2O method"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "Boundary and allocation hierarchy"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Physical mass-conservation identity with explicit moisture conversion"
+    used_for: "Mass, nutrient, and moisture reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f6e167dcaf7a4fbc2637c85854c1820a5543ebbbbfb09bd7b38778fdd4deaf6f"
+  generated_content_sha256: "sha256:fe96871f112b63f70c50fa2d44671152b29a9c4ade7ac8e757bb078b5d093738"

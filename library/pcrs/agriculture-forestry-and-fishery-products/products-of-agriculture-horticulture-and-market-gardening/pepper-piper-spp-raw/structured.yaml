@@ -1,10 +1,560 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01651"
-  title: "Pepper (Piper spp.), raw"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.pepper-piper-spp-raw"
+  classification_refs: "CPC 3.0 01651, Pepper (Piper spp.), raw"
+  covered_products: "Whole unground *Piper* berries, fresh or primary dried, with declared species, form and moisture"
+  excluded_products: "Processed, crushed, ground or extracted *Piper* pepper; *Capsicum* and *Pimenta* peppers"
+  representative_product: "Primary dried whole black *Piper nigrum* berries"
+  production_route: "Managed perennial vines → harvest → conditional primary cleaning/drying → grading → dispatch"
+  market_state: "Whole berries at producer gate, with colour/form, fresh/dried state, grade and moisture"
+functional_unit:
+  what: "Whole raw *Piper* pepper berries at producer dispatch"
+  how_much: "1 kg net accepted berries"
+  how_well: "Species, whole form, colour/conditioning branch, moisture and grade stated"
+  how_long_or_cycle: "Output from a stated harvest season, with establishment attributed over recorded productive years"
+  reference_flow_link: "Accepted output of pepper_grading"
+system_boundary:
+  rules:
+    - rule_id: boundary_dispatch
+      applies_to: "All routes"
+      rule: "Include attributable vine establishment, cultivation, harvest, performed primary conditioning and grading to producer dispatch; exclude grinding, extraction, retail and later transport."
+      source_ids:
+        - un-cpc3
+        - fao-ecocrop-pepper
+    - rule_id: boundary_branch
+      applies_to: "Fresh/black/white/green"
+      rule: "Record only actual drying, soaking and pericarp removal with their inputs, effluent and residues; never assign zero drying to a dried lot."
+      source_ids:
+        - fao-ecocrop-pepper
+        - kau-pepper-harvest
+    - rule_id: boundary_soil
+      applies_to: "Fertilized plots"
+      rule: "Calculate direct and indirect soil N₂O and applicable lime/urea CO₂ from recorded inputs and documented factors."
+      source_ids:
+        - ipcc-2019-afolu11
+    - rule_id: boundary_shared
+      applies_to: "Supports, pumps and dryers"
+      rule: "Name consuming processes and years; attribute shared asset burden once."
+      source_ids:
+        - fao-ecocrop-pepper
+boundary_abstraction:
+  declared_starting_condition: "Managed *Piper* vines, plot, support structures and upstream inputs at reporting-period start"
+  starting_condition_role: "Foreground starting stock and upstream supply interface, including attributable establishment"
+  product_classification_scope: "CPC 01651 whole unground *Piper* berries; keep each moisture and conditioning branch distinct"
+  recursive_input_rule: "Purchased same-category pepper is a separate input with upstream dataset and origin; do not recreate its cultivation within this foreground system."
+  upstream_dataset_requirement: "Supply-specific planting, fertilizer, water, fuel, electricity and purchased-pepper datasets"
+  disclosure: "Species, plot, vine age, harvest, fresh/dried state, moisture, conditioning, grades, losses, rejects and destinations"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Whole primary dried black Piper pepper; UUID unresolved"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - "whole unground form"
+    - "black/white/green branch"
+    - "fresh/dried state"
+    - moisture
+    - grade
+    - "producer gate"
+    - "harvest period"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_mass
+    applies_to: "Accepted pepper"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh net whole berries after removing packaging, rejects and foreign matter."
+  - id: moisture
+    applies_to: "State conversion"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use paired measured wet-basis fractions: dry-state kg = fresh kg × (1 − fresh moisture) / (1 − dry moisture); preserve both observed masses."
+  - id: period
+    applies_to: "Perennial input"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Attribute establishment and replacement burdens to evidenced productive periods before dividing by accepted kg."
+process_map:
+  - id: pepper_cultivation
+    name: "Perennial vine cultivation"
+    inclusion: "required"
+    inclusion_condition: "Include establishment and replacements over served harvests"
+    role: "Standing berry crop"
+    quantitative_reference: "Plot-year and harvest kg"
+  - id: pepper_harvest
+    name: "Berry harvest"
+    inclusion: "required"
+    inclusion_condition: "Distinct removal of berries from managed vines"
+    role: "Fresh collected berries"
+    quantitative_reference: "Harvest-lot kg"
+  - id: pepper_conditioning
+    name: "Primary conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "Include actual cleaning, drying, soaking or pericarp removal; omit for fresh direct dispatch"
+    role: "Prepared whole berries"
+    quantitative_reference: "Paired lot kg and moisture"
+  - id: pepper_grading
+    name: "Grading and dispatch"
+    inclusion: "required"
+    inclusion_condition: "Distinguish accepted, downgraded and rejected states"
+    role: "Reference flow"
+    quantitative_reference: "Accepted net kg"
+process_inventory:
+  - id: pepper_cultivation
+    label: "Perennial vine cultivation"
+    inputs:
+      product:
+        - row_id: cultivation_inputs
+          role: "Cultivation inputs"
+          name: "Actual cultivation supplies; UUID unresolved per material"
+          flow_type: "product"
+          property_unit: "Mass / kg; water / m3; fuel / L"
+          description: "Record planting material, supports, fertilizer, amendments, irrigation and fuel as separate actual exchanges by material and year."
+          amount:
+            expression: "Sum field and supplier records by material and plot-year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Plot-year and accepted pepper output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: soil_nitrous_oxide_emission
+          role: "Managed-soil nitrous oxide to air"
+          name: "Nitrous oxide to air; receiving air subcompartment to be verified"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and indirect N₂O from recorded nitrogen inputs and site-year activity. Keep its quantity separate from carbon dioxide and verify the receiving air subcompartment before binding a UUID."
+          amount:
+            expression: "apply calc_soil_gases to nitrogen inputs and the declared N₂O factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Plot-year then accepted pepper output"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - ipcc-2019-afolu11
+            ranges: []
+        - row_id: soil_amendment_carbon_dioxide_emission
+          role: "Carbon dioxide from lime or urea"
+          name: "Carbon dioxide to air from lime or urea; receiving air subcompartment to be verified"
+          flow_type: "elementary"
+          property_unit: "Mass / kg CO2"
+          description: "Include this exchange only when lime or urea use and the selected method support a direct CO₂ calculation. Keep its quantity separate from N₂O and verify the receiving air subcompartment before binding a UUID."
+          amount:
+            expression: "apply calc_soil_gases to recorded lime or urea inputs and the declared CO₂ factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Plot-year then accepted pepper output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - ipcc-2019-afolu11
+            ranges: []
+  - id: pepper_harvest
+    label: "Berry harvest"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fresh_berries
+          role: "Fresh collected berries"
+          name: "Fresh whole *Piper* berries; intermediate UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh each whole-berry lot before conditioning and record harvest maturity."
+          amount:
+            expression: "Sum receiving scale tickets by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: pepper_conditioning
+    label: "Primary conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_inputs
+          role: "Berry feed and conditioning supplies"
+          name: "Whole berry feed and actual route-specific supplies; UUID unresolved per exchange"
+          flow_type: "product"
+          property_unit: "Mass / kg; energy / kWh; water / m3"
+          description: "Record fresh berry feed, drying energy and any soaking or washing water as separate actual exchanges. Sun drying does not imply purchased heat."
+          amount:
+            expression: "Paired lot weights and meters"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Conditioned lot output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - kau-pepper-harvest
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_berries
+          role: "Prepared whole berries"
+          name: "Whole prepared Piper pepper; UUID unresolved for dried state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer cleaned or dried whole berries to grading with measured moisture and branch."
+          amount:
+            expression: "Net output scale weight"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Conditioned lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: pepper_grading
+    label: "Grading and dispatch"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_pepper
+          role: "Accepted whole raw pepper"
+          name: "Whole raw Piper pepper; UUID unresolved for dried state"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only saleable whole berries meeting declared grade and moisture enter the reference output. This is an intended output, separately from the downgraded saleable grade."
+          amount:
+            expression: "Calibrated net dispatch mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "1 kg accepted raw pepper"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges: []
+        - row_id: downgraded_pepper
+          role: "Downgraded saleable whole pepper"
+          name: "Whole raw Piper pepper; UUID unresolved for dried state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh each separately sold whole grade and record destination. This is a second intended output; dried-state UUID remains unresolved."
+          amount:
+            expression: "Net weighed downgraded lot mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Grading input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: grading_rejects
+          role: "Grading rejects"
+          name: "Actual reject material; UUID unresolved by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Weigh off-spec berries and foreign matter by lot; record rework, recovery or disposal destination, excluding them from accepted kg."
+          amount:
+            expression: "Lot-specific weighed rejects"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Grading input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocate_periods
+    applies_to: "Establishment and replacements"
+    rule: "Assign recorded vine and support burdens to evidenced productive years and outputs; retain nonproductive establishment and termination events and count each burden once."
+    source_ids:
+      - fao-ecocrop-pepper
+  - rule_id: allocate_shared
+    applies_to: "Supports, pumps and dryers"
+    rule: "List consumers and service years, allocate by measured use or documented physical proxy, and reconcile assigned burden to recorded total."
+    source_ids:
+      - fao-ecocrop-pepper
+  - rule_id: allocate_grades
+    applies_to: "Saleable whole grades"
+    rule: "Partition common burdens by measured mass when grades have the same physical function; justify another rule if materially different. Rejects receive no co-product credit."
+    source_ids:
+      - un-cpc3
+  - rule_id: allocate_rework
+    applies_to: "Reworked or recovered berries"
+    rule: "Keep prior lot burden and add incremental rework once; credit recovery only with evidenced destination and method."
+    source_ids:
+      - kau-pepper-harvest
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation
+      process_id: "pepper_cultivation"
+      flow_role: "vine, supports, inputs and soil gases"
+      record_type: "Plot-year ledger"
+      raw_fields: "plot; year; planting/replacement; material; nutrient content; quantity; supplier; meter"
+      collection_method: "Invoice, field log and meter"
+      unit: "kg, plant, m3, kWh, L"
+      frequency: "Each event"
+      temporal_coverage: "Establishment through harvest"
+      site_scope: "Each plot"
+      aggregation_rule: "Sum by material and year, then assign service periods"
+      quality_evidence: "Invoice, nutrient certificate and meter"
+    - protocol_id: cp_harvest
+      process_id: "pepper_harvest"
+      flow_role: "standing and fresh berries"
+      record_type: "Harvest lot"
+      raw_fields: "plot; date; species; maturity; fresh kg; field loss; energy"
+      collection_method: "Scale and field log"
+      unit: "kg, kWh, L"
+      frequency: "Each lot"
+      temporal_coverage: "Every reported harvest"
+      site_scope: "Each plot"
+      aggregation_rule: "Sum non-overlapping lots"
+      quality_evidence: "Scale ticket and trace"
+    - protocol_id: cp_conditioning
+      process_id: "pepper_conditioning"
+      flow_role: "state conversion, energy, water, losses"
+      record_type: "Batch ledger"
+      raw_fields: "lot; incoming/outgoing kg; moisture before/after; energy; water; effluent; branch"
+      collection_method: "Scale, test and meter"
+      unit: "kg, %, kWh, m3"
+      frequency: "Each batch"
+      temporal_coverage: "Every conditioned lot"
+      site_scope: "Each facility"
+      aggregation_rule: "Paired mass/moisture balance"
+      quality_evidence: "Batch sheet and test"
+    - protocol_id: cp_grading
+      process_id: "pepper_grading"
+      flow_role: "accepted and downgraded output"
+      record_type: "Grade ledger"
+      raw_fields: "lot; species; state; moisture; grade; accepted/downgraded kg; buyer"
+      collection_method: "Scale and dispatch ticket"
+      unit: "kg, %"
+      frequency: "Each lot"
+      temporal_coverage: "All dispatches"
+      site_scope: "Each facility"
+      aggregation_rule: "Sum accepted after rejects"
+      quality_evidence: "Scale ticket and sale"
+    - protocol_id: cp_residues
+      process_id: "all_nodes"
+      flow_role: "rejects, rework and residues"
+      record_type: "Destination ledger"
+      raw_fields: "origin lot; material; kg; return node; destination"
+      collection_method: "Scale and destination receipt"
+      unit: "kg"
+      frequency: "Each event"
+      temporal_coverage: "Same harvest period"
+      site_scope: "Each site"
+      aggregation_rule: "Count each route once"
+      quality_evidence: "Weigh ticket and receipt"
+  calculation_rules:
+    - id: calc_conditioning_balance
+      applies_to: "Drying and cleaning"
+      rule: "Incoming kg = prepared whole kg + separated solids + water loss + other recorded loss; investigate residual."
+      inputs:
+        - "Paired weights"
+        - "moisture and residues"
+      output: "Reconciled lot outputs"
+      source_ids:
+        - kau-pepper-harvest
+    - id: calc_soil_gases
+      applies_to: "Managed soil"
+      rule: "Apply IPCC direct/indirect N₂O and applicable lime/urea CO₂ equations with site-year activity and documented factors."
+      inputs:
+        - "Nitrogen/amendment inputs and factors"
+      output: "Gas-specific kg"
+      source_ids:
+        - ipcc-2019-afolu11
+    - id: calc_intensity
+      applies_to: "All nodes"
+      rule: "Sum attributed site-period inputs after shared-asset and rework reconciliation, divide by accepted kg in the same physical-state stratum."
+      inputs:
+        - "Ledgers and accepted kg"
+      output: "Exchange per reference kg"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Reference output"
+      requirement: "Verify *Piper* species, whole form, state and producer gate."
+      evidence: "Classification and flow review"
+    - id: dq_mass
+      applies_to: "Harvest to dispatch"
+      requirement: "Link lots, weights, moisture, grades and reject routes; disclose balance discrepancy."
+      evidence: "Scale tickets and tests"
+    - id: dq_period
+      applies_to: "Perennial assets"
+      requirement: "Identify establishment, productive, replacement and termination years and consumers."
+      evidence: "Plot and asset ledger"
+    - id: dq_coverage
+      applies_to: "Inputs and emissions"
+      requirement: "Disclose missing meters, estimated amounts, factor choices and unresolved UUIDs."
+      evidence: "Completeness register"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "Reference product"
+    rule: "Reject processed, crushed, ground, non-*Piper* or unidentified state; require a reviewed dried-state flow UUID before publication."
+    source_ids:
+      - un-cpc3
+  - rule_id: validate_balance
+    applies_to: "Harvest, conditioning and grading"
+    rule: "Require moisture and reconcile input, accepted, downgraded, rejected and moisture-loss masses within documented tolerance."
+    source_ids:
+      - kau-pepper-harvest
+  - rule_id: validate_route
+    applies_to: "Process graph"
+    rule: "Check cultivation → harvest → optional conditioning → grading hand-offs and every grade, reject and rework path."
+    source_ids:
+      - fao-ecocrop-pepper
+  - rule_id: validate_shared
+    applies_to: "Perennial/shared assets"
+    rule: "Each attributed asset has service years and consumers; assigned totals equal recorded totals once."
+    source_ids:
+      - fao-ecocrop-pepper
+  - rule_id: validate_soil
+    applies_to: "Fertilized plots"
+    rule: "Report N activity and direct/indirect factors; flag relevant uncalculated soil emissions."
+    source_ids:
+      - ipcc-2019-afolu11
+published_dataset_profile:
+  dataset_role: "Foreground production dataset for whole raw *Piper* pepper at producer dispatch"
+  downstream_use: "secondary_dataset or background_dataset for matching species, state, geography, time and gate"
+  allowed_use: "Per-kg whole raw pepper supply with compatible moisture and form"
+  excluded_use: "Ground/processed or non-*Piper* products; unqualified fresh/dried substitution; post-dispatch stages"
+  required_metadata: "Species, colour/form, moisture, grade, location, period, gate, route, asset attribution and flow identity review"
+  required_quality_disclosure: "Primary-data share, mass balance, missing inputs, factors, reject destinations and UUID gaps"
+  update_trigger: "New state/route, revised flow identity, changed CPC scope, moisture basis or material site-period data"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "un-cpc3"
+    type: "official_guidance"
+    reference: "UN Statistics Division, CPC 3.0 explanatory notes, 01651 and 23921, https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Product boundary"
+  - id: "fao-ecocrop-pepper"
+    type: "official_guidance"
+    reference: "FAO Ecocrop, *Piper nigrum*, https://ecocrop.apps.fao.org/ecocrop/srv/en/cropView?id=1714"
+    used_for: "Cultivated route and states"
+  - id: "kau-pepper-harvest"
+    type: "extension_guidance"
+    reference: "Kerala Agricultural University, Pepper harvesting and processing, https://www.celkau.in/Crops/spices/pepper/harvesting.php"
+    used_for: "Harvest and conditioning"
+  - id: "ipcc-2019-afolu11"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement, Vol. 4 Ch. 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil gases"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:0884086a18c3dd2d786d790b088c682acdc00644331cdb13e9ef3b8c209af50a"
+  generated_content_sha256: "sha256:576da6e675c0c0596d6e7550810f1cda87122dfe6f55d7561c54b0766773b026"

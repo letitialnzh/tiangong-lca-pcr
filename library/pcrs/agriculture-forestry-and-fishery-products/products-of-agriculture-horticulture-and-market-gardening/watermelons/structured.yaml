@@ -1,10 +1,822 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01221"
-  title: "Watermelons"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.watermelons"
+  classification_refs: "CPC 3.0:01221 Watermelons"
+  covered_products: "Fresh, whole, unprocessed watermelons produced for sale at the farm gate"
+  excluded_products: "Watermelon seed or transplants sold for planting, processed, cut, juiced, frozen, dried, or otherwise transformed watermelon, and post-farm-gate logistics"
+  representative_product: "Marketable whole watermelons, graded for declared size and quality and handed over at the farm gate"
+  production_route: "Annual seeded or transplanted watermelon cultivation, managed field production, harvest, grading, and farm-gate preparation"
+  market_state: "Fresh whole produce at farm gate, loose or in declared primary packaging"
+functional_unit:
+  what: "Marketable fresh whole watermelon at farm gate"
+  how_much: "1,000 kg"
+  how_well: "Whole, fresh, unprocessed fruit meeting the declared cultivar, maturity, size, appearance, defect, and marketable-grade criteria"
+  how_long_or_cycle: "One declared production cycle from planting through the final harvest of the crop, with the production year and harvest window reported"
+  reference_flow_link: "watermelon_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_annual_crop_cycle
+      applies_to: "field preparation through final harvest"
+      rule: "Include field preparation, planting, crop management, and all harvests of the declared annual crop cycle; allocate shared field operations to the reported crop using documented field records."
+      source_ids:
+        - fao-crop-production-framework
+        - usda-watermelon-production-guidance
+    - rule_id: boundary_farm_gate
+      applies_to: "harvest and preparation"
+      rule: "End the foreground boundary when marketable whole watermelon is transferred at the farm gate; include on-farm grading, trimming of damaged fruit, washing, cooling, and primary packaging only when they occur before transfer."
+      source_ids:
+        - usda-watermelon-production-guidance
+        - fao-postharvest-handling
+    - rule_id: boundary_managed_soils
+      applies_to: "fertilizer, amendment, and residue flows"
+      rule: "Include direct and indirect managed-soil emissions attributable to applied nutrients and returned residues under one declared calculation method, without double counting emissions represented by an upstream dataset."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_residue_fate
+      applies_to: "rejected fruit and crop residues"
+      rule: "Record field return, composting, feed, treatment, disposal, or another declared destination for each residue stream; an unreported destination remains a data-quality gap and is not an automatic co-product."
+      source_ids:
+        - fao-crop-residue-management
+        - fao-postharvest-handling
+boundary_abstraction:
+  declared_starting_condition: "Prepared agricultural field receiving watermelon seed or transplants, with prior land use, field preparation, and excluded pre-plant operations disclosed"
+  starting_condition_role: "Beginning of the declared annual watermelon crop cycle"
+  product_classification_scope: "Fresh whole watermelons under CPC 3.0:01221 through farm-gate hand-off"
+  recursive_input_rule: "Purchased watermelon seed or transplants are distinct upstream product inputs and are linked once rather than recreated as an internal watermelon production process."
+  upstream_dataset_requirement: "Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, field machinery services, and packaging when used."
+  disclosure: "Declare production geography, prior land use, crop cycle dates, cultivar or seed type, irrigation regime, nutrient basis, crop-protection program, field emissions method, residue fate, harvest and grading method, washing, and packaging."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Watermelons; production mix, at farm gate; fresh, unprocessed whole fruit"
+    uuid: "8979956d-8091-4c35-af7a-1ec80529bad3"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "farm-gate hand-off"
+    - "production geography"
+    - "production year and crop cycle"
+    - "cultivar or seed type"
+    - "irrigated or rainfed route"
+    - "fruit maturity and harvest window"
+    - "size and grade criteria"
+    - "whole or damaged state"
+    - "washed or unwashed"
+    - "packaging state"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_product_mass
+    applies_to: "harvested and farm-gate watermelon"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Keep gross harvested fruit, marketable fruit, rejected fruit, and field residue masses distinct before normalizing to the reference flow."
+  - id: area_and_cycle_normalization
+    applies_to: "field production records"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Record each field and crop cycle separately, then normalize all inputs and outputs to marketable farm-gate watermelon."
+  - id: nutrient_basis
+    applies_to: "fertilizer inputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Convert product quantities only from documented nutrient concentrations and retain the reported nutrient basis."
+  - id: irrigation_volume
+    applies_to: "irrigation water"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record metered or otherwise documented delivered irrigation by field and crop cycle; keep rainfall separate from irrigation withdrawals."
+  - id: seed_count_or_mass
+    applies_to: "seed or transplant inputs"
+    required_property_ref:
+      name: "Number or mass"
+      uuid: ""
+    required_unit: "seed units or kg"
+    rule: "Record the supplier-declared seed or transplant quantity and type; do not infer seed mass from count without a documented conversion."
+process_map:
+  - id: field_preparation_and_planting
+    name: "Field preparation and planting"
+    inclusion: "required"
+    inclusion_condition: "once for each declared crop cycle"
+    role: "foreground field establishment"
+    quantitative_reference: "planted area and seed or transplant quantity"
+  - id: watermelon_field_management
+    name: "Watermelon field management"
+    inclusion: "required"
+    inclusion_condition: "throughout the declared crop cycle"
+    role: "foreground managed biological production"
+    quantitative_reference: "managed hectare-cycle and crop input records"
+  - id: harvest_and_farm_gate_preparation
+    name: "Harvest and farm-gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each harvest and final farm-gate hand-off"
+    role: "foreground harvest, grading, and hand-off"
+    quantitative_reference: "1,000 kg marketable whole watermelon"
+process_inventory:
+  - id: field_preparation_and_planting
+    label: "Field preparation and planting"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Watermelon seed or transplants"
+          name: "Watermelon seed or transplants"
+          flow_type: "product"
+          property_unit: "Number of items or mass / seed units or kg"
+          description: "Watermelon seed or transplants enter the field as the planting material for the declared annual crop cycle. Record purchased planting material once and keep it separate from the resulting crop output."
+          amount:
+            expression: "Record supplier quantity and planting material type by field and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare and per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_planting_records
+              source_ids:
+                - usda-watermelon-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "8"
+                unit: "kg seed or 1000 transplants/ha"
+                basis: "broad first-pass annual watermelon planting rate pending supplier and field records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_preparation_energy
+          role: "Field preparation fuel or machinery service"
+          name: "Field preparation fuel or machinery service"
+          flow_type: "product"
+          property_unit: "Mass, energy, or service / kg, kWh, or hectare-service"
+          description: "Record diesel, electricity, or contracted machinery service used for bed preparation, tillage, laying mulch, and planting when these activities cross the foreground boundary. Report the selected energy carrier or service separately."
+          amount:
+            expression: "Use fuel receipts, machinery logs, meter records, or supplier service records by field and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare and per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_operation_records
+              source_ids:
+                - usda-watermelon-production-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: field_occupation
+          role: "Occupied agricultural soil"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record the field area and occupation duration for the declared crop cycle when land occupation is represented as an elementary input. Do not treat ordinary field occupation as a product input."
+          amount:
+            expression: "Field area multiplied by the declared crop-cycle occupation period."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_operation_records
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        - row_id: planted_field_output
+          role: "Prepared planted field"
+          name: "Prepared planted watermelon field"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "This internal hand-off records the accepted planted area entering managed watermelon production and is not the reference product."
+          amount:
+            expression: "Accepted planted area after planting completion and recorded failures."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per planting campaign"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_planting_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: watermelon_field_management
+    label: "Watermelon field management"
+    inputs:
+      product:
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - usda-watermelon-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg N/ha"
+                basis: "broad first-pass annual watermelon crop-cycle range pending soil tests and fertilizer records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "kg P2O5/ha"
+                basis: "broad first-pass crop-cycle range pending soil tests and fertilizer records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "350"
+                unit: "kg K2O/ha"
+                basis: "broad first-pass crop-cycle range pending soil tests and fertilizer records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation water delivered to the watermelon field separately from rainfall and from water used in any post-harvest washing."
+          amount:
+            expression: "Meter delivered irrigation by field, source, and crop cycle; document estimation where meters are unavailable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "9000"
+                unit: "m3/ha"
+                basis: "broad first-pass irrigated or rainfed crop-cycle range pending field water records and climate assessment"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products"
+          name: "Crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg product or kg active ingredient"
+          description: "Record herbicides, insecticides, fungicides, and other crop-protection products used in the declared cycle as separate product inputs with active ingredient or formulation information."
+          amount:
+            expression: "Product quantity from application records, with formulation and active ingredient retained."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - usda-watermelon-production-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "40"
+                unit: "kg product/ha"
+                basis: "broad first-pass crop-cycle range pending product labels and application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_operation_energy
+          role: "Field-operation fuel or electricity"
+          name: "Field-operation fuel or electricity"
+          flow_type: "product"
+          property_unit: "Mass or energy / kg fuel or kWh"
+          description: "Record fuel and electricity consumed by irrigation pumps, field machinery, and other crop-management operations. Keep each carrier and operation identifiable."
+          amount:
+            expression: "Use fuel receipts, machinery logs, pump meters, or service records by field and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_operation_records
+              source_ids:
+                - usda-watermelon-production-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvest_ready_crop_output
+          role: "Harvest-ready watermelon crop"
+          name: "Harvest-ready watermelon crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the crop output entering harvest operations before grading. This intermediate output must remain distinct from marketable farm-gate watermelon and rejected fruit."
+          amount:
+            expression: "Weigh or estimate total harvested crop entering harvest and grading, by field and harvest date."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: field_residue_output
+          role: "Field crop residues"
+          name: "Watermelon crop residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet residue"
+          description: "Record vines, leaves, roots, and other crop residues remaining after harvest and declare whether they are returned to soil, removed, composted, treated, or disposed."
+          amount:
+            expression: "Measure or document the residue amount and destination by field; use a documented dry-matter conversion when applicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_records
+              source_ids:
+                - fao-crop-residue-management
+            ranges: []
+      elementary:
+        - row_id: managed_soil_nitrogen_emissions
+          role: "Managed-soil nitrogen emissions"
+          name: "Managed-soil nitrogen emissions"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N compound"
+          description: "Calculate direct and indirect nitrogen emissions from fertilizer and relevant returned residues using the declared soil-emission method. Do not enter the same emissions both as a calculated foreground result and as an additional generic estimate."
+          amount:
+            expression: "Apply the declared nitrogen-emission method to documented nutrient inputs and returned residues, with emission factors and climate or soil parameters retained."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+  - id: harvest_and_farm_gate_preparation
+    label: "Harvest and farm-gate preparation"
+    inputs:
+      product:
+        - row_id: harvest_handling_energy
+          role: "Harvest and handling energy"
+          name: "Harvest and handling fuel or electricity"
+          flow_type: "product"
+          property_unit: "Mass or energy / kg fuel or kWh"
+          description: "Record energy used for harvesting, field collection, grading, washing, cooling, and primary packing when those operations occur before farm-gate transfer."
+          amount:
+            expression: "Use equipment logs, meter readings, or supplier records for operations assigned to the crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_handling_records
+              source_ids:
+                - fao-postharvest-handling
+            ranges: []
+        - row_id: primary_packaging_input
+          role: "Primary packaging"
+          name: "Primary packaging material"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "pallet-and-crate-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Record primary packaging that crosses the foreground boundary before farm-gate hand-off. Loose produce should be recorded as zero packaging only when this state is explicitly declared."
+          amount:
+            expression: "Weigh or obtain supplier mass for crates, pallets, cartons, or other packaging assigned to marketable output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-postharvest-handling
+            ranges: []
+      waste:
+        - row_id: rejected_fruit_output
+          role: "Rejected or damaged watermelon"
+          name: "Rejected or damaged watermelon"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record fruit rejected during harvest or grading and identify its destination. Rejected fruit is a waste flow unless a documented productive use meets the co-product rule."
+          amount:
+            expression: "Weigh or estimate rejected fruit separately from marketable output and retain the destination record."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate watermelon"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - fao-postharvest-handling
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: watermelon_farm_gate_output
+          role: "Marketable whole watermelon at farm gate"
+          name: "Watermelons; production mix, at farm gate; fresh, unprocessed whole fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8979956d-8091-4c35-af7a-1ec80529bad3"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This is the PCR reference product flow. Record the marketable mass after grading and any included on-farm washing, cooling, and primary packing."
+          amount:
+            expression: "Weigh marketable whole watermelon at farm-gate transfer after the declared quality and grading checks."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "1,000 kg marketable farm-gate watermelon"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_single_crop_fields
+    applies_to: "field operations assigned to one crop"
+    rule: "Assign field operations directly to watermelon when the operation serves only the declared crop cycle; document any shared operation before applying an allocation method."
+    source_ids:
+      - fao-crop-production-framework
+  - rule_id: allocation_multiple_outputs
+    applies_to: "marketable fruit and any documented productive residue use"
+    rule: "Report marketable watermelon as the reference output. If a residue or other output has a documented productive use and leaves the boundary as a product, apply a declared physical or economic allocation method consistently across the shared process and disclose the allocation basis."
+    source_ids:
+      - fao-crop-residue-management
+  - rule_id: allocation_rejects_and_losses
+    applies_to: "damaged fruit and crop residues without productive use"
+    rule: "Treat rejected fruit and residues as waste or loss according to their declared destination. Do not allocate burdens to a waste stream as a co-product without evidence of productive use and a defined hand-off."
+    source_ids:
+      - fao-postharvest-handling
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_planting_records
+      process_id: "field_preparation_and_planting"
+      flow_role: "planting_material_input, planted_field_output"
+      record_type: "planting and field register"
+      raw_fields: "field_id; area; planting date; seed_or_transplant_type; supplier quantity; failures; replants"
+      collection_method: "supplier records and field log reconciliation"
+      unit: "seed units, kg, ha"
+      frequency: "each crop cycle"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each field or homogeneous block"
+      aggregation_rule: "aggregate by field, then normalize to marketable output"
+      quality_evidence: "supplier invoice plus signed field register or equivalent"
+    - protocol_id: cp_field_operation_records
+      process_id: "field_preparation_and_planting_watermelon_field_management"
+      flow_role: "field_preparation_energy, field_occupation, field_operation_energy"
+      record_type: "machinery, pump, and field register"
+      raw_fields: "field_id; operation; date; equipment; fuel or electricity; hours; area"
+      collection_method: "meter, fuel receipt, machinery log, or service record"
+      unit: "kg, kWh, h, ha"
+      frequency: "each operation"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each field or equipment group"
+      aggregation_rule: "assign shared operations by documented area or time basis"
+      quality_evidence: "meter calibration, receipt, or service record"
+    - protocol_id: cp_fertilizer_records
+      process_id: "watermelon_field_management"
+      flow_role: "fertilizer and managed-soil emissions"
+      record_type: "nutrient application register"
+      raw_fields: "field_id; product; formulation; nutrient concentration; amount; date; application method; soil or climate inputs"
+      collection_method: "fertilizer invoice and application log"
+      unit: "kg product, kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum by nutrient basis and field before normalization"
+      quality_evidence: "invoice, label, soil test, and application record"
+    - protocol_id: cp_irrigation_records
+      process_id: "watermelon_field_management"
+      flow_role: "irrigation_water_input"
+      record_type: "irrigation register"
+      raw_fields: "field_id; source; date; meter start and end; estimated volume; rainfall context"
+      collection_method: "meter or documented water-balance estimate"
+      unit: "m3"
+      frequency: "each irrigation event or weekly"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each field and source"
+      aggregation_rule: "sum delivered volume by field and source"
+      quality_evidence: "meter record, pump log, or water allocation record"
+    - protocol_id: cp_crop_protection_records
+      process_id: "watermelon_field_management"
+      flow_role: "crop_protection_input"
+      record_type: "crop-protection application register"
+      raw_fields: "field_id; product; formulation; active ingredient; dose; area; date; target"
+      collection_method: "product label, invoice, and application log"
+      unit: "kg product, kg active ingredient, ha"
+      frequency: "each application"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum by product and active ingredient"
+      quality_evidence: "label, invoice, and application record"
+    - protocol_id: cp_harvest_records
+      process_id: "watermelon_field_management_harvest_and_farm_gate_preparation"
+      flow_role: "harvest_ready_crop_output, field_residue_output, rejected_fruit_output, watermelon_farm_gate_output"
+      record_type: "harvest and grading register"
+      raw_fields: "field_id; harvest date; gross harvested; marketable; rejected; residue; destination; grade; transfer weight"
+      collection_method: "scale tickets and harvest or grading log"
+      unit: "kg"
+      frequency: "each harvest"
+      temporal_coverage: "final harvest window and full crop cycle"
+      site_scope: "each field, lot, or harvest block"
+      aggregation_rule: "reconcile gross mass to marketable, rejected, and declared residue destinations"
+      quality_evidence: "calibrated scale, ticket, and destination record"
+    - protocol_id: cp_residue_records
+      process_id: "watermelon_field_management"
+      flow_role: "field_residue_output"
+      record_type: "residue destination record"
+      raw_fields: "field_id; residue type; wet or dry basis; amount; destination; date"
+      collection_method: "field measurement and destination confirmation"
+      unit: "kg"
+      frequency: "each residue event"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "aggregate by destination and dry-matter basis where used"
+      quality_evidence: "weigh record, compost or feed receipt, or field-return log"
+    - protocol_id: cp_harvest_handling_records
+      process_id: "harvest_and_farm_gate_preparation"
+      flow_role: "harvest_handling_energy"
+      record_type: "handling and packing register"
+      raw_fields: "lot_id; operation; date; energy carrier; quantity; marketable mass"
+      collection_method: "meter, equipment log, or service record"
+      unit: "kg, kWh, h"
+      frequency: "each lot or operation"
+      temporal_coverage: "final harvest window"
+      site_scope: "packing or handling site"
+      aggregation_rule: "assign energy to marketable mass and declare shared-service allocation"
+      quality_evidence: "meter or service record"
+    - protocol_id: cp_packaging_records
+      process_id: "harvest_and_farm_gate_preparation"
+      flow_role: "primary_packaging_input"
+      record_type: "packaging register"
+      raw_fields: "lot_id; material; reusable or single-use; unit count; unit mass; losses; reuse cycles"
+      collection_method: "supplier specification and count or weight record"
+      unit: "kg, item"
+      frequency: "each lot"
+      temporal_coverage: "final harvest window"
+      site_scope: "packing site"
+      aggregation_rule: "sum packaging mass and document reuse allocation"
+      quality_evidence: "supplier specification and packing record"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all inventory rows"
+      rule: "normalized amount = field or lot amount × 1,000 kg / marketable farm-gate watermelon mass"
+      inputs:
+        - "field or lot record"
+        - "marketable mass"
+      output: "amount per 1,000 kg reference flow"
+      source_ids: []
+    - id: calc_nutrient_mass
+      applies_to: "fertilizer inputs"
+      rule: "nutrient mass = product mass × declared nutrient concentration"
+      inputs:
+        - "product mass"
+        - "label or supplier concentration"
+      output: "kg N, kg P2O5, or kg K2O"
+      source_ids:
+        - usda-watermelon-production-guidance
+    - id: calc_land_occupation
+      applies_to: "field occupation"
+      rule: "occupation = field area × declared crop-cycle occupation duration"
+      inputs:
+        - "field area"
+        - "planting and final harvest dates"
+      output: "m2*a or declared area-time unit"
+      source_ids: []
+    - id: calc_managed_soil_emissions
+      applies_to: "managed-soil nitrogen emissions"
+      rule: "Apply one declared IPCC-compatible method to documented nutrient inputs and returned residues; retain factors and assumptions with the dataset."
+      inputs:
+        - "nutrient inputs"
+        - "residue return"
+        - "soil and climate parameters"
+      output: "elementary nitrogen emissions per reference flow"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_mass_balance
+      applies_to: "harvest and grading"
+      rule: "gross harvested = marketable + rejected + documented other destinations, subject to scale precision and declared estimation uncertainty"
+      inputs:
+        - harvest
+        - grading
+        - "and destination records"
+      output: "reconciled crop output and loss record"
+      source_ids:
+        - fao-postharvest-handling
+    - id: calc_reusable_packaging
+      applies_to: "reusable primary packaging"
+      rule: "Allocate packaging manufacture and loss to the declared number of use cycles using supplier or operator records; do not apply reuse credit without a documented cycle count."
+      inputs:
+        - "packaging mass"
+        - "use cycles"
+        - "loss rate"
+      output: "packaging mass per reference flow"
+      source_ids:
+        - fao-postharvest-handling
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference and output flows"
+      requirement: "Declare cultivar or seed type, production geography, crop-cycle dates, harvest window, whole-fruit state, grade, and farm-gate hand-off."
+      evidence: "product and field register"
+    - id: dq_mass_reconciliation
+      applies_to: "harvest, rejects, residues, and reference output"
+      requirement: "Reconcile gross harvested mass to marketable output, rejected fruit, residues, and other declared destinations within the stated scale or estimation uncertainty."
+      evidence: "scale tickets and destination records"
+    - id: dq_input_completeness
+      applies_to: "all product and elementary inputs"
+      requirement: "Account for seed or transplants, fertilizer nutrients, irrigation, crop-protection products, field energy, land occupation, soil emissions, and included handling inputs; disclose unavailable records."
+      evidence: "input registers and completeness checklist"
+    - id: dq_temporal_geographic_scope
+      applies_to: "all foreground records"
+      requirement: "Cover the complete declared crop cycle and identify field, production geography, production year, irrigation regime, and any protected-cultivation route."
+      evidence: "field register and production metadata"
+    - id: dq_residue_destination
+      applies_to: "crop residues and rejected fruit"
+      requirement: "Retain a destination and quantity for each residue stream; identify field return, feed, composting, treatment, disposal, or other documented use."
+      evidence: "residue and destination records"
+    - id: dq_uncertainty_disclosure
+      applies_to: "estimated or calculated values"
+      requirement: "Mark estimates, conversion factors, and missing measurements, and state the effect on the normalized reference flow."
+      evidence: "calculation sheet and quality review"
+validation_rules:
+  - rule_id: validate_reference_flow
+    applies_to: "reference product"
+    rule: "Reference amount is 1,000 kg mass of whole, marketable watermelon at farm gate and carries all required qualifiers."
+    source_ids: []
+  - rule_id: validate_cycle_completeness
+    applies_to: "process map and records"
+    rule: "Field preparation, planting, managed production, harvest, and farm-gate hand-off are present for the declared annual crop cycle, with conditional operations explicitly marked."
+    source_ids:
+      - fao-crop-production-framework
+  - rule_id: validate_mass_balance
+    applies_to: "harvest and grading"
+    rule: "Gross harvested, marketable, rejected, residue, and other destination masses are reconciled and do not double count the reference output."
+    source_ids:
+      - fao-postharvest-handling
+  - rule_id: validate_nutrient_and_water_basis
+    applies_to: "fertilizer and irrigation"
+    rule: "Fertilizer inputs retain nutrient basis and concentration evidence; irrigation volume identifies source and field and is not conflated with rainfall."
+    source_ids:
+      - fao-crop-evapotranspiration-56
+  - rule_id: validate_residue_and_loss_fate
+    applies_to: "rejected fruit and residues"
+    rule: "Every non-marketable stream has a declared destination or an explicit data-quality finding; waste is not treated as a co-product without documented productive use."
+    source_ids:
+      - fao-crop-residue-management
+  - rule_id: validate_boundary_disclosure
+    applies_to: "dataset metadata"
+    rule: "Prior land use, crop cycle, production geography, irrigation regime, soil-emission method, residue fate, and all included farm-gate operations are disclosed."
+    source_ids:
+      - fao-crop-production-framework
+      - ipcc-2019-managed-soils
+  - rule_id: validate_normalization
+    applies_to: "all inventory rows"
+    rule: "All amounts can be traced to field, crop-cycle, harvest, or lot records and normalize to 1,000 kg marketable farm-gate output."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Primary foreground agricultural production dataset for fresh whole watermelon at farm gate"
+  downstream_use: "secondary_dataset; may supply a background_dataset when the documented farm-gate product and quality qualifiers match"
+  allowed_use: "LCA modelling of fresh whole watermelon production through the declared farm-gate hand-off and included on-farm preparation"
+  excluded_use: "Processed or cut watermelon, seed or transplant production, post-farm-gate storage and distribution, retail, consumption, or unreported crop routes"
+  required_metadata: "production geography; production year; crop-cycle dates; cultivar or seed type; field area; irrigated or rainfed route; farm-gate state; grade; washing and packaging state; residue destinations"
+  required_quality_disclosure: "mass reconciliation; input completeness; nutrient and irrigation basis; soil-emission method; residue and reject fate; estimated values; temporal and geographic coverage"
+  update_trigger: "material change in cultivation route, irrigation or nutrient practice, crop-protection regime, farm-gate preparation, packaging, classification scope, or evidence supporting quantitative rules"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-crop-production-framework"
+    type: "official_guidance"
+    reference: "FAO crop production and resource-management guidance. https://www.fao.org/land-water/databases-and-software/crop-information/en/"
+    used_for: "annual crop-cycle boundary, field records, and allocation requirements"
+  - id: "usda-watermelon-production-guidance"
+    type: "extension_guidance"
+    reference: "USDA and extension production guidance for watermelon planting, nutrient management, field operations, and harvest records. https://extension.uga.edu/publications/detail.html?number=C1101"
+    used_for: "planting, nutrient management, field operations, and harvest records"
+  - id: "fao-crop-evapotranspiration-56"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, *Crop evapotranspiration*. https://www.fao.org/4/X0490E/X0490E00.htm"
+    used_for: "crop water-balance and irrigation-record methods"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "2019 IPCC Refinement, Agriculture, Forestry and Other Land Use, managed-soils methodology. https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "managed-soil nitrogen-emission method"
+  - id: "fao-crop-residue-management"
+    type: "official_guidance"
+    reference: "FAO crop-residue and soil-management guidance. https://www.fao.org/3/y2779e/y2779e00.htm"
+    used_for: "residue return and destination disclosure"
+  - id: "fao-postharvest-handling"
+    type: "official_guidance"
+    reference: "FAO post-harvest handling guidance. https://www.fao.org/4/ac301e/ac301e00.htm"
+    used_for: "grading, loss recording, packaging, and farm-gate preparation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:55ef9ddeb4fd0b7f2f9170cb30a9d000b0a5e920cf030adc95ececd4174517a1"
+  generated_content_sha256: "sha256:5cbffe6654518c41e2433e1d73e361bc798aae130c7a6f27e172b400f0116fe4"

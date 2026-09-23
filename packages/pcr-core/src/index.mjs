@@ -1492,7 +1492,10 @@ function inspectPcrProjection({ root, pcr, artifacts }) {
     structuredPath,
     structuredAvailable: true,
     completenessIssues: schemaResult.valid
-      ? materialProjectionCompletenessIssues(structured, { expectedPcrId: pcr.id })
+      ? materialProjectionCompletenessIssues(structured, {
+        expectedPcrId: pcr.id,
+        lifecycleStatus: pcr.status,
+      })
       : [],
   };
 }

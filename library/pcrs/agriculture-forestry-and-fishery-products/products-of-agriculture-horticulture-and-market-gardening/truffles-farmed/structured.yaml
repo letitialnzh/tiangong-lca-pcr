@@ -1,10 +1,811 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01272"
-  title: "Truffles, farmed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.truffles-farmed"
+  classification_refs: "CPC 3.0: 01272 Truffles, farmed"
+  covered_products: "fresh truffles cultivated through a managed host-plant symbiosis and handed over at the farm gate"
+  excluded_products: "wild-collected truffles; inoculated host plants sold as nursery stock; host timber, fruit, or other co-products; processed, dried, frozen, preserved, packaged, transported, stored, distributed, or prepared truffle products"
+  representative_product: "fresh farmed truffle, as received at the farm gate"
+  production_route: "inoculated host establishment, managed perennial or woodland-or-orchard stand, harvest, and conditional farm-gate fresh-product conditioning"
+  market_state: "fresh whole truffle at farm-gate hand-off, with species or cultivar, maturity, soil adherence, moisture, damage, grading, and conditioning state declared"
+functional_unit:
+  what: "fresh farmed truffle at the farm gate"
+  how_much: "1 kg as-received fresh truffle"
+  how_well: "whole fresh truffle meeting the declared species or cultivar, maturity, soil-adherence, damage, grading, and conditioning state"
+  how_long_or_cycle: "one declared production period, including the stand establishment period when the dataset uses a cradle-to-farm-gate perennial basis"
+  reference_flow_link: "terminal accepted fresh truffle output from truffle_harvest when no conditioning is included, otherwise from truffle_farm_gate_conditioning"
+system_boundary:
+  rules:
+    - rule_id: boundary_establishment_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include inoculated host establishment, managed stand care, harvest, and conditional on-farm preparation performed before the declared farm-gate hand-off."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_perennial_time_basis
+      applies_to: "multi-year or multi-period stands"
+      rule: "Link establishment, replacement, mortality, management, and harvest records to a declared period and prevent the same stand input or output from being attributed twice."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_managed_soil_emissions
+      applies_to: "nutrient, amendment, residue, and soil-management records"
+      rule: "Include direct and indirect managed-soil emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting."
+      source_ids:
+        - ipcc-2019-afolu
+    - rule_id: boundary_post_farm_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, storage, preservation, processing, packaging supplied after hand-off, distribution, retail, and use unless a study explicitly extends the system boundary."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "prepared planting or woodland-orchard site before inoculated host establishment, with planting stock and purchased management inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed farmed-truffle production"
+  product_classification_scope: "farmed fresh truffles corresponding to CPC 3.0 code 01272"
+  recursive_input_rule: "purchased or retained truffles used as biological inoculum, planting stock, or host-establishment material are upstream inputs and must not loop back to the farmed fresh-truffle reference output; declare the actual inoculation or planting material and its source dataset"
+  upstream_dataset_requirement: "compatible upstream datasets for inoculated host stock, nursery or propagation inputs, nutrient or soil-amendment products, irrigation supply, fuels, electricity, contracted services, and waste or residue treatment"
+  disclosure: "species or cultivar; host species and inoculation status; site geography and area; stand age; establishment and productive periods; replacement or mortality events; management regime; irrigation; nutrient or amendment product and nutrient basis; harvest method; yield; grading; soil adherence; reject and residue fate; conditioning boundary; co-product allocation"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Truffles, farmed"
+    uuid: "862ab1a6-8876-46bf-8b73-d3f22280449c"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "truffle species or cultivar"
+    - "host-plant species"
+    - "production geography"
+    - "stand age and establishment period"
+    - "reporting period"
+    - "harvested and accepted mass"
+    - "maturity and grading"
+    - "soil adherence or cleaning state"
+    - "rejected and co-product destinations"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_fresh_mass
+    applies_to: "reference product and accepted fresh truffle outputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report the as-received mass at the farm-gate hand-off. Record soil adherence, visible moisture, and grading state separately; do not silently convert fresh mass to dry mass."
+  - id: perennial_stand_annualization
+    applies_to: "establishment and managed-stand inputs"
+    required_property_ref:
+      name: "Mass, volume, energy, or activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Allocate stand-establishment and shared perennial inputs to the declared reporting period using documented stand age, productive period, replacement events, and output records. Do not apply a universal lifetime or yield."
+  - id: nutrient_product_and_basis
+    applies_to: "fertilizer or soil-amendment input"
+    required_property_ref:
+      name: "Product mass and nutrient content"
+      uuid: ""
+    required_unit: "kg product and kg N, kg P2O5, or kg K2O as applicable"
+    rule: "Preserve the actual supplied product identity and the declared nutrient basis as separate fields. The single input card may contain more than one nutrient or amendment product without enumerating a universal fertilizer list."
+  - id: area_to_reference_conversion
+    applies_to: "area-based establishment, management, and harvest records"
+    required_property_ref:
+      name: "Activity-specific property"
+      uuid: ""
+    required_unit: "ha and kg fresh truffle"
+    rule: "Convert same-site, same-period totals by dividing by accepted fresh-truffle output before scaling to the 1 kg reference flow."
+process_map:
+  - id: truffle_host_establishment
+    name: "Inoculated host establishment"
+    inclusion: "required"
+    inclusion_condition: "always for a new or replanted stand; retain the establishment period even when its records are annualized"
+    role: "establish host plants and the truffle symbiosis"
+    quantitative_reference: "planted area, host stock, inoculation or propagation records, establishment years, and replacement records"
+  - id: truffle_stand_management
+    name: "Managed perennial or woodland-or-orchard stand management"
+    inclusion: "required"
+    inclusion_condition: "always during the declared production period"
+    role: "maintain the host-symbiosis stand and its soil, water, vegetation, and service inputs"
+    quantitative_reference: "managed area, reporting period, stand age, annual inputs, and productive fresh-truffle output"
+  - id: truffle_harvest
+    name: "Fresh truffle harvest"
+    inclusion: "required"
+    inclusion_condition: "whenever truffles are removed from the managed stand"
+    role: "locate, remove, collect, and reconcile fresh truffles and harvest losses"
+    quantitative_reference: "harvested mass, accepted mass, rejected mass, harvest labor or machinery, and soil disturbance records"
+  - id: truffle_farm_gate_conditioning
+    name: "Farm-gate fresh-truffle conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "brushing, washing, sorting, grading, cooling, or other preparation occurs before hand-off and is not already included in harvest records"
+    role: "prepare harvested truffles to the declared fresh market state"
+    quantitative_reference: "incoming mass, accepted mass, rejects, water, energy, and conditioning records"
+process_inventory:
+  - id: truffle_host_establishment
+    label: "Inoculated host establishment"
+    inputs:
+      product:
+        - row_id: inoculated_host_stock_input
+          role: "Inoculated host planting stock"
+          name: "Inoculated host planting stock (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Mass or item count / kg or item"
+          description: "Record the actual host species, inoculation status, nursery or propagation route, quantity planted, and replacement quantity when planting stock crosses the foreground boundary. Keep nursery-stock identity separate from the harvested truffle identity."
+          amount:
+            expression: "measured planting stock supplied and planted by host species and stand block"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare and converted to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges: []
+        - row_id: truffle_host_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare and converted to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: establishment_land_occupation
+          role: "Land occupation by establishing stand"
+          name: "Land occupation, managed perennial or woodland-or-orchard stand"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record the occupied area and duration for the new or replanted managed stand. The land-use identity remains parameterized until the post-authoring identity pass."
+          amount:
+            expression: "planted area multiplied by the declared occupation duration and allocated to the reporting period"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+    outputs:
+      product:
+        - row_id: established_host_stand_output
+          role: "Established inoculated host stand"
+          name: "Established inoculated host stand (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Area or item count / ha or item"
+          description: "Record the established host stand as an internal hand-off to managed stand management. It is not the reference product and must not be counted as a saleable truffle output."
+          amount:
+            expression: "planted and surviving host stock at the declared establishment hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: establishment_mortality_waste
+          role: "Establishment mortality or rejected planting stock"
+          name: "Establishment mortality or rejected planting stock (identity evidence gap)"
+          flow_type: "waste"
+          property_unit: "Mass or item count / kg or item"
+          description: "Record dead, failed, or rejected planting stock and its destination. Do not transfer failed stock into the established stand output."
+          amount:
+            expression: "measured mortality and rejection by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: truffle_stand_management
+    label: "Managed perennial or woodland-or-orchard stand management"
+    inputs:
+      product:
+        - row_id: truffle_stand_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare and converted to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management_records
+              source_ids: []
+            ranges: []
+        - row_id: stand_irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record applied irrigation by block and reporting period. Rainfed production records zero applied irrigation only with a documented water-management basis."
+          amount:
+            expression: "metered or calculated applied irrigation volume by stand block and reporting period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare and converted to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management_records
+              source_ids: []
+            ranges: []
+        - row_id: stand_machinery_fuel_input
+          role: "Fuel for stand machinery"
+          name: "Mobile agricultural machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Mass or energy carrier / kg or MJ"
+          description: "Record fuel for mowing, vegetation management, pruning, access, irrigation equipment, and other machinery that crosses the foreground boundary."
+          amount:
+            expression: "tank records, invoices, contractor records, or equipment activity converted with carrier identity retained"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare and converted to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stand_management_records
+              source_ids: []
+            ranges: []
+        - row_id: stand_electricity_input
+          role: "Purchased electricity for stand services"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by pumps, monitoring, frost protection, lighting, or other stand services when it crosses the foreground boundary."
+          amount:
+            expression: "meter, invoice, or equipment record by reporting period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare and converted to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: stand_land_transformation
+          role: "Land transformation for new stand"
+          name: "Land transformation for managed perennial or woodland-or-orchard stand"
+          flow_type: "elementary"
+          property_unit: "Area / m2"
+          description: "Record transformation only when the managed stand is established on land whose prior land state changes as part of the declared system boundary. Retain zero with evidence when no transformation occurs."
+          amount:
+            expression: "measured transformed area by prior and subsequent land state"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+    outputs:
+      product:
+        - row_id: managed_stand_to_harvest
+          role: "Managed stand hand-off to harvest"
+          name: "Managed inoculated host stand (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "Record the managed stand state and the area or block transferred to harvest operations. This is an internal product-flow hand-off, not the reference product."
+          amount:
+            expression: "managed area and stand block transferred to the harvest period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: stand_pruning_residue_waste
+          role: "Pruning and stand residue leaving the boundary"
+          name: "Stand pruning or residue leaving the foreground boundary (identity evidence gap)"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet or dry mass as recorded"
+          description: "Record pruning, mortality, and other stand residues by destination. A material intentionally sold or used as a co-product is not a waste and must be recorded under the allocation rule."
+          amount:
+            expression: "measured residue mass by destination and moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management_records
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: managed_soil_nitrogen_emission
+          role: "Managed-soil nitrogen emission"
+          name: "Managed-soil nitrogen emission (identity evidence gap)"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N or kg substance"
+          description: "Calculate direct or indirect nitrogen-related emissions only from collected nutrient, amendment, residue, and relevant soil-management records. Keep the emission until the method and identity pass are complete."
+          amount:
+            expression: "method-calculated from declared nutrient, amendment, residue, and soil activity inputs"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stand_management_records
+              source_ids:
+                - ipcc-2019-afolu
+            ranges: []
+  - id: truffle_harvest
+    label: "Fresh truffle harvest"
+    inputs:
+      product:
+        - row_id: truffle_harvest_service_input
+          role: "Harvest service and equipment"
+          name: "Fresh truffle harvest service (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Mass, time, or service unit / kg, h, or service unit"
+          description: "Record contracted harvest service, rented equipment, or directly operated harvest activity as a foreground service or activity record. Separate fuel and electricity already recorded in stand management to prevent double counting."
+          amount:
+            expression: "measured harvest activity by block and reporting period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: harvest_soil_disturbance
+          role: "Harvest soil disturbance"
+          name: "Soil disturbed or removed during truffle harvest (identity evidence gap)"
+          flow_type: "elementary"
+          property_unit: "Mass / kg soil"
+          description: "Record soil displaced or disturbed by harvest only when it crosses the declared environmental boundary or is required by the selected impact method. Do not convert ordinary tool contact into a soil-emission flow without evidence."
+          amount:
+            expression: "measured or method-supported disturbed soil associated with the harvest operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        - row_id: harvested_fresh_truffle_output
+          role: "Harvested fresh truffle"
+          name: "Farmed truffle, fresh, harvested (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record all truffles removed from the stand before sorting, including accepted, downgraded, and rejected mass. The accepted portion is the reference flow when no conditioning process is included."
+          amount:
+            expression: "measured harvested mass by harvest event, maturity, and grading state"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal harvest output scaled to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: harvest_reject_waste
+          role: "Harvest rejects and losses"
+          name: "Harvested truffle rejects and losses (identity evidence gap)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged, immature, contaminated, or otherwise rejected truffles and their destinations. Rejected mass must not be included in accepted reference output."
+          amount:
+            expression: "measured harvested mass not transferred to accepted product, by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: truffle_farm_gate_conditioning
+    label: "Farm-gate fresh-truffle conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_truffle_input
+          role: "Harvested fresh truffle for conditioning"
+          name: "Farmed truffle, fresh, harvested (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the harvested truffle mass entering brushing, washing, sorting, grading, cooling, or other declared farm-gate preparation. This process is omitted when the harvest record already represents the farm-gate market state."
+          amount:
+            expression: "measured incoming mass to the conditioning operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_water_input
+          role: "Conditioning water or cleaning medium"
+          name: "Process water for fresh-truffle conditioning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record process water or cleaning medium only when it crosses the farm-gate conditioning boundary. Identify whether water is applied, recirculated, discharged, or embedded in an upstream service."
+          amount:
+            expression: "meter or batch record for water used in conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: farm_gate_fresh_truffle_output
+          role: "Accepted fresh truffle at farm gate"
+          name: "Farmed truffle, fresh, at farm gate (identity evidence gap)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted fresh truffle after any included conditioning. Declare the final mass, grading, maturity, soil-adherence, and conditioning state; this is the reference output when this conditional process is used."
+          amount:
+            expression: "measured accepted output after conditioning and grading"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: conditioning_reject_waste
+          role: "Conditioning rejects and removed soil"
+          name: "Conditioning rejects and removed soil (identity evidence gap)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged, off-specification, or removed-soil material generated by conditioning and its destination. Separate saleable downgraded product from waste and retain the final moisture basis."
+          amount:
+            expression: "measured rejected or removed mass by destination and moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted fresh truffle"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_single_primary_output: Treat accepted fresh farmed truffle as the primary output. Internal host-stand hand-offs and rejected material are not co-products."
+    source_ids: []
+  - rule_id: allocation_rule_2
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_avoid_subdivision: Subdivide establishment, stand management, harvest, and conditioning where a separate co-product or service has a distinct measured hand-off. Avoid allocation when a process can be directly assigned."
+    source_ids: []
+  - rule_id: allocation_rule_3
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_co_product_evidence: If host timber, fruit, prunings, nursery stock, or another product is intentionally sold or transferred as a co-product, declare its quantity, quality, destination, and hand-off evidence. Use a physical-causality allocation where a defensible relationship exists; otherwise use an explicitly justified economic allocation or another ISO 14044-consistent method."
+    source_ids: []
+  - rule_id: allocation_rule_4
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_residue_not_product: Treat unmarketed mortality, prunings, removed soil, rejects, and losses as waste or elementary flows according to destination unless evidence shows an intentional product or service hand-off."
+    source_ids: []
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_period_consistency: Apply the same allocation choice across the complete declared stand period and reconcile it with replacement, mortality, and output records."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "truffle_host_establishment"
+      flow_role: "establishment inputs, stand hand-off, mortality, land occupation"
+      record_type: "planting and nursery record"
+      raw_fields: "host species; inoculation status; nursery source; planted items or mass; planted area; establishment date; replacement; mortality; amendment product and nutrient basis"
+      collection_method: "supplier invoices, planting registers, block maps, and field interviews reconciled to planted area"
+      unit: "kg, item, ha, m2*a, kg nutrient"
+      frequency: "each establishment or replacement event"
+      temporal_coverage: "full establishment period and replacement events"
+      site_scope: "each stand block"
+      aggregation_rule: "aggregate by host species, block, and reporting period; retain source records"
+      quality_evidence: "signed planting records, supplier documents, block map, and survival check"
+    - protocol_id: cp_stand_management_records
+      process_id: "truffle_stand_management"
+      flow_role: "nutrient or amendment, irrigation, fuel, electricity, soil transformation, soil emissions inputs"
+      record_type: "stand-period activity record"
+      raw_fields: "stand age; area; irrigation meter; product identity; product mass; nutrient basis; fuel; electricity; soil state; residues; management dates"
+      collection_method: "meters, invoices, equipment logs, agronomic records, and method-ready soil or residue inventory"
+      unit: "kg product, kg nutrient, m3, kg, MJ, kWh, ha"
+      frequency: "monthly or per application, reconciled annually"
+      temporal_coverage: "declared reporting period plus linked stand establishment basis"
+      site_scope: "each stand block or contributing site"
+      aggregation_rule: "aggregate by stand block and period after removing duplicates and shared-service double counting"
+      quality_evidence: "meter or invoice reconciliation, site log, soil plan, and period completeness review"
+    - protocol_id: cp_harvest_output_records
+      process_id: "truffle_harvest"
+      flow_role: "harvest service, harvested product, rejects, soil disturbance"
+      record_type: "harvest lot record"
+      raw_fields: "harvest date; block; method; labor or service; incoming mass; accepted mass; reject mass; maturity; grade; soil disturbance; destination"
+      collection_method: "weighed lot records and harvest logs reconciled to sales or transfer records"
+      unit: "kg, h, service unit"
+      frequency: "each harvest lot"
+      temporal_coverage: "complete harvest season and declared reporting period"
+      site_scope: "each harvest block"
+      aggregation_rule: "sum lots by block and period; reconcile harvested = accepted + rejected + documented loss"
+      quality_evidence: "calibrated scale, lot ticket, sales or transfer record, and reject destination"
+    - protocol_id: cp_conditioning_records
+      process_id: "truffle_farm_gate_conditioning"
+      flow_role: "incoming truffle, water, accepted output, rejects and removed soil"
+      record_type: "conditioning batch record"
+      raw_fields: "batch id; incoming mass; water; energy if applicable; operation; accepted mass; grade; moisture or soil state; rejects; destination"
+      collection_method: "batch sheets, scale records, utility meter, and farm-gate hand-off record"
+      unit: "kg, m3, kWh"
+      frequency: "each conditioning batch"
+      temporal_coverage: "only the included pre-farm-gate conditioning period"
+      site_scope: "conditioning facility or site"
+      aggregation_rule: "aggregate batches and reconcile incoming mass to accepted output and rejects"
+      quality_evidence: "scale calibration, batch reconciliation, market-state specification, and hand-off record"
+  calculation_rules:
+    - id: calc_reference_scaling
+      applies_to: "all inventory rows"
+      rule: "normalized amount = period amount / accepted fresh-truffle output × 1 kg reference flow"
+      inputs:
+        - "period amount"
+        - "accepted fresh-truffle output"
+        - "reference amount"
+      output: "amount per 1 kg accepted fresh truffle"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_perennial_annualization
+      applies_to: "establishment and shared stand inputs"
+      rule: "Allocate each input to the declared reporting period using documented stand period, establishment period, replacement, and productive output; do not use an unstated universal lifetime."
+      inputs:
+        - "establishment and stand records"
+        - period
+        - output
+        - "replacement and mortality"
+      output: "period-attributed inventory amount"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_nutrient_basis
+      applies_to: "nutrient or soil-amendment input"
+      rule: "nutrient basis = supplied product mass × declared nutrient fraction; retain product mass and each declared nutrient basis as separate outputs."
+      inputs:
+        - "product mass"
+        - label
+        - invoice
+        - "or supplier nutrient fraction"
+      output: "kg product and kg nutrient basis"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_managed_soil_emissions
+      applies_to: "managed-soil nitrogen emission"
+      rule: "Apply the selected geographically appropriate method to collected nutrient, amendment, residue, and soil activity records; document factors and avoid counting the same nitrogen source twice."
+      inputs:
+        - "nutrient basis"
+        - "residue and soil activity"
+        - "selected method factors"
+      output: "method-calculated elementary emissions"
+      source_ids:
+        - ipcc-2019-afolu
+    - id: calc_mass_reconciliation
+      applies_to: "harvest and conditioning"
+      rule: "incoming mass = accepted output + rejects + documented process loss for each lot or batch, with moisture and soil state retained."
+      inputs:
+        - "lot or batch incoming mass"
+        - "accepted mass"
+        - rejects
+        - losses
+      output: "reconciled mass balance and QA finding"
+      source_ids:
+        - iso-14044-2006
+  data_quality_requirements:
+    - id: dq_identity_and_boundary
+      applies_to: "all datasets"
+      requirement: "Declare product identity, host species, inoculation status, farm-gate state, boundary processes, and whether conditioning is included."
+      evidence: "site description, product specification, and dataset metadata"
+    - id: dq_perennial_time_series
+      applies_to: "establishment and stand management"
+      requirement: "Link multi-year inputs, replacement, mortality, stand age, productive periods, and outputs to an explicit time basis."
+      evidence: "stand register, block history, and reporting-period reconciliation"
+    - id: dq_input_reconciliation
+      applies_to: "product inputs and services"
+      requirement: "Reconcile invoices, meters, contractor records, and field logs to the declared blocks and periods; explain missing or zero records."
+      evidence: "primary records and reconciliation worksheet"
+    - id: dq_output_mass_balance
+      applies_to: "harvest and conditioning"
+      requirement: "Reconcile harvested, accepted, rejected, and documented loss mass with consistent moisture, soil-adherence, and grading bases."
+      evidence: "calibrated scale records, lot tickets, batch sheets, and destination records"
+    - id: dq_emission_method
+      applies_to: "elementary emissions"
+      requirement: "Identify the selected method, geography, factors, activity data, and uncertainty; do not present provisional estimates as measured emissions."
+      evidence: "method record, factor reference, and calculation worksheet"
+    - id: dq_identity_evidence
+      applies_to: "evidence gap or parameterized flows"
+      requirement: "Keep identity evidence gaps explicit and replace them with verified or reviewed identities before active or published use."
+      evidence: "identity review record and final dataset readback"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "reference flow and terminal outputs"
+    rule: "Exactly one terminal accepted fresh-truffle output must be linked to the reference flow; its species or cultivar, market state, mass basis, and farm-gate hand-off must be declared."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_process_completeness
+    applies_to: "process map"
+    rule: "A conforming dataset must resolve whether host establishment, stand management, harvest, and conditional conditioning are included, and must not omit an applicable process without a documented reason."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_period_reconciliation
+    applies_to: "perennial production"
+    rule: "Every establishment and stand input must be linked to a declared site, block, period, and output basis; replacement and mortality records must not be double counted."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and conditioning"
+    rule: "For each harvest lot or conditioning batch, incoming mass must reconcile to accepted product, rejects, and documented loss within the declared measurement tolerance."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_identity_and_parameterization
+    applies_to: "all flow cards"
+    rule: "identity evidence gaps must remain explicitly evidence gap or parameterized; an exact fixed identity may be added only after verified identity review and must not change the card's real direction, type, or boundary meaning."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground agricultural production dataset for fresh farmed truffles at the farm gate"
+  downstream_use: "secondary_dataset for process and lifecyclemodel construction; may support background_dataset use only after identity, completeness, and quality review"
+  allowed_use: "farm-gate fresh-truffle footprinting, comparative cultivation studies with declared site and period, and downstream processing studies that use the declared farm-gate market state"
+  excluded_use: "wild truffle collection; nursery-stock production without a truffle-product hand-off; processed or preserved truffle products; unqualified regional averages; datasets that omit the perennial time basis or accepted-output reconciliation"
+  required_metadata: "CPC 3.0 code 01272; species or cultivar; host species; inoculation status; site and geography; stand age; establishment and reporting periods; area; management route; inputs and nutrient basis; harvest and conditioning boundary; maturity, grade, soil state, moisture, accepted output, rejects, residues, and co-products"
+  required_quality_disclosure: "measured versus calculated fields; evidence gap or parameterized identities; method and factors for soil emissions; time and site coverage; data gaps; allocation choice; mass-balance findings; and representativeness limitations"
+  update_trigger: "new verified reference or input identities; changed host or inoculation route; new stand-management technology; changed farm-gate market state; revised soil-emission method; changed allocation decision; or evidence that the productive-period and output basis is no longer representative"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html"
+    used_for: "functional-unit scaling, boundary definition, time-basis disclosure, allocation hierarchy, and data-quality rules"
+  - id: "ipcc-2019-afolu"
+    type: "official_guidance"
+    reference: "IPCC 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "managed-soil and residue-related emission method selection and activity-data requirements"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:63bd8e7c0657a273f593ae28ab0ebf8a9547d4cbf433dedf83a6e3af83808aa0"
+  generated_content_sha256: "sha256:c0a19abb201fc4056c29fcbd8ac2feb4594023e765846be712a8a4476d1cf2da"

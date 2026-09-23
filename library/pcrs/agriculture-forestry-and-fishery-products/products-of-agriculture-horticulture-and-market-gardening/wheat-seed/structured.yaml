@@ -158,16 +158,18 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: nitrogen_fertilizer_carrier
-          role: "Nitrogen fertilizer carrier"
-          name: "Urea"
+        - row_id: field_seed_multiplication_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
           flow_type: "product"
-          flow_ref:
-            uuid: "3f8850c0-f718-4c4b-8fcb-8fd42e03aa8e"
-          property_unit: "Mass / kg"
-          description: "Nitrogen fertilizer carrier is recorded as an input product flow. Amount rule: measured product mass and kg N; normalization basis: per 1,000 kg harvested seed crop."
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
           amount:
-            expression: "measured product mass and kg N"
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -187,26 +189,6 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: phosphate_fertilizer
-          role: "Phosphate fertilizer"
-          name: "Phosphate fertilizer"
-          flow_type: "product"
-          flow_ref:
-            uuid: "9c196b01-6aad-4252-a6e8-f853853a830c"
-          property_unit: "Mass / kg"
-          description: "Phosphate fertilizer is recorded as an input product flow. Amount rule: measured product mass; normalization basis: per 1,000 kg harvested seed crop."
-          amount:
-            expression: "measured product mass"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per 1,000 kg harvested seed crop"
-              kind: "process_output"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_fertilizer_input_records
-              source_ids: []
-            ranges:
               - role: default_estimate
                 lower: "0"
                 upper: "0.3"
@@ -215,26 +197,6 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: potassium_fertilizer
-          role: "Potassium fertilizer"
-          name: "Potassium fertilizer"
-          flow_type: "product"
-          flow_ref:
-            uuid: "dd008d87-16e4-4e85-a048-b9949f6fbca6"
-          property_unit: "Mass / kg"
-          description: "Potassium fertilizer is recorded as an input product flow. Amount rule: measured product mass; normalization basis: per 1,000 kg harvested seed crop."
-          amount:
-            expression: "measured product mass"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per 1,000 kg harvested seed crop"
-              kind: "process_output"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_fertilizer_input_records
-              source_ids: []
-            ranges:
               - role: default_estimate
                 lower: "0"
                 upper: "0.3"
@@ -1415,8 +1377,25 @@ published_dataset_profile:
   allowed_use: "downstream wheat seed or wheat cultivation data construction where seed class, treatment status, geography, moisture basis, and declared gate match the dataset metadata"
   excluded_use: "commodity wheat grain, seed production outside the declared route, and studies requiring omitted breeding research or capital goods burdens"
   required_metadata: "reference flow; geography; crop cycle; seed class; treatment status; moisture basis; physical purity; germination rate; declared gate; collection protocol coverage; DQR"
-  required_quality_disclosure: "record coverage, calculation rules, measurement devices or primary records, unresolved omissions, and data quality scores"
+  required_quality_disclosure: "record coverage, calculation rules, measurement devices or primary records, evidence gap omissions, and data quality scores"
   update_trigger: "material change in production route, geography, seed treatment, conditioning technology, reference flow qualifiers, collection protocol coverage, or data quality score"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
 data_sources:
   - id: "fao-wheat-seed-production"
     type: "official_guidance"
@@ -1449,5 +1428,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:6f75aa21456d4355b6d2dfd466d3c45d3cb02df6b11782404c0f72ba25d0da6c"
-  generated_content_sha256: "sha256:ea7a49d097bc05166208c3038fb086938491d46cdecd622d1ab409db6ec9283c"
+    sha256: "sha256:864e2e8e3064cf7e129682c00609f71387a8889fbc291ac96974dd1f953457e5"
+  generated_content_sha256: "sha256:d6d74daf76a1d3aa509b3b42d8ff5b3a03f81967ab40afc7cc560c2c008f2514"

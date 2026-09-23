@@ -1,10 +1,838 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01219"
-  title: "Other leafy or stem vegetables"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.other-leafy-or-stem-vegetables"
+  classification_refs: "CPC 3.0:01219 Other leafy or stem vegetables"
+  covered_products: "Fresh, unprocessed leafy or stem vegetables at farm gate, including chard, parsley, purslane, rhubarb, sorrel, savory, tarragon, watercress, and other salad vegetables outside specified CPC leaves"
+  excluded_products: "Seeds and transplants sold for planting, spices or aromatic crops classified in CPC 016, asparagus, artichokes, cabbages, cauliflower, broccoli, lettuce, chicory, spinach, roots, bulbs, tubers, and processed, frozen, cooked, dried, or retail-ready products beyond the declared farm gate"
+  representative_product: "Marketable fresh leafy or stem vegetables, sorted to the declared crop, grade, harvest maturity, trim state, and market route"
+  production_route: "Direct sowing or transplant establishment, managed crop production, repeated or single harvest, sorting and optional farm-gate washing, cooling, and packaging"
+  market_state: "Fresh, unprocessed produce at farm gate, loose or in declared primary packaging"
+functional_unit:
+  what: "Marketable fresh other leafy or stem vegetables at farm gate"
+  how_much: "1,000 kg"
+  how_well: "Fresh, unprocessed, and saleable under the declared crop identity, harvest maturity, grade, trim, washing, and packaging state"
+  how_long_or_cycle: "One declared crop cycle and harvest period; repeated harvests are aggregated by crop-year and establishment cohort"
+  reference_flow_link: "other_leafy_stem_vegetables_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "establishment and cultivation"
+      rule: "Include seed or transplant establishment, crop management, harvest, and the represented crop cycle; attribute shared bed preparation to the declared crop and cycle without double counting."
+      source_ids:
+        - fao-good-agricultural-practices
+        - extension-leafy-vegetable-production
+    - rule_id: boundary_farm_gate
+      applies_to: "harvest and handling"
+      rule: "End at transfer of the declared fresh marketable product at farm gate; include on-farm sorting, trimming, washing, cooling, and primary packaging when performed before transfer."
+      source_ids:
+        - usda-ams-fresh-produce
+        - codex-fresh-produce-hygiene
+    - rule_id: boundary_managed_soils
+      applies_to: "field nutrients and residues"
+      rule: "Include applicable direct and indirect nitrogen emissions and returned-residue nitrogen with one declared method and prevent double counting between fertilizer, residue, and soil pools."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_residue_destinations
+      applies_to: "crop residues and rejects"
+      rule: "Distinguish field return, composting, feed, treatment, and disposal; unspecified residues and downgraded produce are waste until a documented co-product hand-off exists."
+      source_ids:
+        - fao-good-agricultural-practices
+        - codex-fresh-produce-hygiene
+boundary_abstraction:
+  declared_starting_condition: "Prepared agricultural bed, field, or protected growing area receiving seed, transplants, or an established crop, with prior land use and excluded pre-plant work disclosed"
+  starting_condition_role: "Beginning of the declared crop cycle and field-year attribution"
+  product_classification_scope: "Fresh other leafy or stem vegetables under CPC 3.0:01219 through farm-gate hand-off"
+  recursive_input_rule: "Purchased seed, transplants, and other same-category planting material are distinct upstream product inputs and are linked once rather than recreated inside this PCR."
+  upstream_dataset_requirement: "Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, transport services, and packaging when used."
+  disclosure: "Declare crop identity, botanical type where relevant, geography, field or protected route, crop cycle, irrigation source, nutrient basis, crop-protection program, harvest schedule, residue fate, washing, cooling, packaging, and farm-gate hand-off."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Other leafy or stem vegetables"
+    uuid: "4dda0ce0-12e0-4cc0-9d3d-f218fa3e6892"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "farm-gate hand-off"
+    - "production geography"
+    - "crop identity and botanical name where relevant"
+    - "production year and crop cycle"
+    - "field or protected route"
+    - "harvest period"
+    - "grade and maturity"
+    - "trim state"
+    - "washed or unwashed"
+    - "packaging state"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_product_mass
+    applies_to: "harvested and farm-gate produce"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Keep harvest-ready, gross harvested, marketable, rejected, and trimmed masses distinct."
+  - id: field_year_normalization
+    applies_to: "crop and field records"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Record quantities by field, crop, and cycle before normalizing them to marketable output from the corresponding crop-year."
+  - id: nutrient_basis
+    applies_to: "fertilizer and organic amendment inputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Convert product mass using documented nutrient concentration and preserve each nutrient basis separately."
+  - id: water_volume
+    applies_to: "irrigation and wash water"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record metered delivered water by source and use; do not substitute rainfall for delivered irrigation."
+process_map:
+  - id: crop_establishment
+    name: "Crop establishment"
+    inclusion: "required"
+    inclusion_condition: "once per direct-sown or transplanted crop cycle"
+    role: "foreground establishment"
+    quantitative_reference: "established crop area and planting input"
+  - id: field_crop_management
+    name: "Field or protected crop management"
+    inclusion: "required"
+    inclusion_condition: "each represented crop cycle and field-year"
+    role: "foreground managed biological production"
+    quantitative_reference: "managed area, input activity, and harvest-ready mass"
+  - id: harvest_and_farm_gate_preparation
+    name: "Harvest and farm-gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each represented harvest lot or period"
+    role: "foreground harvest, grading, and hand-off"
+    quantitative_reference: "1,000 kg marketable fresh product"
+process_inventory:
+  - id: crop_establishment
+    label: "Crop establishment"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Seed or transplant material"
+          name: "Seed or transplant material"
+          flow_type: "product"
+          property_unit: "Mass or number of items / kg or plant"
+          description: "Record the crop-specific seed lot, seedlings, or transplants that enter the declared field or growing area."
+          amount:
+            expression: "Record purchased or produced planting units by crop, lot, field, and viability; retain the basis used for normalization."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare established and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - extension-leafy-vegetable-production
+            ranges:
+              - role: default_estimate
+                lower: "10000"
+                upper: "2000000"
+                unit: "plants/ha or viable seeds/ha"
+                basis: "broad category range pending crop-specific seed or transplant records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare established and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - extension-leafy-vegetable-production
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "150"
+                unit: "kg N/ha"
+                basis: "establishment application pending soil test and application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: default_estimate
+                lower: "0"
+                upper: "180"
+                unit: "kg P2O5/ha"
+                basis: "soil-test-dependent establishment application pending field records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: established_crop_output
+          role: "Established crop area"
+          name: "Established crop area"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "This internal hand-off records accepted crop area and is not the reference product."
+          amount:
+            expression: "Accepted area after emergence, establishment, and replacement losses are reconciled."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per establishment campaign"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - extension-leafy-vegetable-production
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: field_crop_management
+    label: "Field or protected crop management"
+    inputs:
+      product:
+        - row_id: field_crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-cycle and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids:
+                - extension-leafy-vegetable-production
+                - ipcc-2019-managed-soils
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg N/ha-cycle"
+                basis: "managed crop cycle pending soil test and application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg P2O5/ha-cycle"
+                basis: "soil-test-dependent crop cycle pending field records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "350"
+                unit: "kg K2O/ha-cycle"
+                basis: "soil-test-dependent crop cycle pending field records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered to the crop separately from precipitation and wash water."
+          amount:
+            expression: "Meter delivered irrigation by field, source, and irrigation event."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-cycle and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-water-efficiency
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12000"
+                unit: "m3/ha-cycle"
+                basis: "broad crop-cycle range pending meter and source records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: mobile_machinery_fuel_input
+          role: "Mobile machinery fuel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Mass or energy / kg or MJ"
+          description: "Record diesel or other fuel used by field machinery, harvest equipment, and on-farm transport."
+          amount:
+            expression: "Record fuel purchase, tank, or equipment-hour data and retain the energy or mass conversion used."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-cycle and per 1,000 kg marketable reference product"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection product"
+          name: "Crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record each crop-protection product and application separately with active ingredient and application area."
+          amount:
+            expression: "Record product mass and active ingredient from label, invoice, or application record; do not infer an active ingredient when the formulation is unknown."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-cycle and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Land occupation"
+          name: "Occupation, agricultural area"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Report land occupation for the represented crop area and duration; protected structures must be disclosed separately."
+          amount:
+            expression: "Field or protected growing area multiplied by occupied time for the declared cycle."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: water_resource_withdrawal
+          role: "Water resource withdrawal"
+          name: "Water resource withdrawal"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Report source-water withdrawal when it crosses the environmental boundary and distinguish it from delivered irrigation volume."
+          amount:
+            expression: "Record withdrawal at the source or use the declared source-to-field loss method; do not count precipitation as withdrawal."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-cycle and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-water-efficiency
+            ranges: []
+    outputs:
+      product:
+        - row_id: harvest_ready_output
+          role: "Harvest-ready leafy or stem vegetables"
+          name: "Harvest-ready leafy or stem vegetables"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This internal output records the crop mass available to harvest and handling before grade and trim losses."
+          amount:
+            expression: "Record harvest-ready mass from field or lot records before harvest and grading losses."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - extension-leafy-vegetable-production
+            ranges: []
+      waste:
+        - row_id: field_residue_output
+          role: "Field crop residues"
+          name: "Leafy or stem crop residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh or dry matter"
+          description: "Record non-marketable leaves, stems, roots, and postharvest residues by destination."
+          amount:
+            expression: "Weigh or calculate residue mass and declare field return, composting, feed, treatment, or disposal destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-cycle and per 1,000 kg marketable reference product"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2500"
+                unit: "kg fresh residue/1,000 kg marketable product"
+                basis: "broad first-pass crop residue range pending field and destination records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: soil_nitrogen_emissions
+          role: "Direct and indirect soil nitrogen emissions"
+          name: "Soil nitrogen emissions"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N"
+          description: "Calculate applicable soil emissions from synthetic, organic, and returned-residue nitrogen using one declared method."
+          amount:
+            expression: "Apply the declared IPCC or accepted regional method to activity data and retain factors and climate or management qualifiers."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable reference product"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_cycle_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+  - id: harvest_and_farm_gate_preparation
+    label: "Harvest and farm-gate preparation"
+    inputs:
+      product:
+        - row_id: harvest_ready_crop_input
+          role: "Harvest-ready crop input"
+          name: "Harvest-ready leafy or stem vegetables"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record harvested crop entering grading and farm-gate preparation from each field or lot."
+          amount:
+            expression: "Link each harvest lot to field, crop, date, and harvest method; measure gross input before grading and trimming."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable reference product"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - extension-leafy-vegetable-production
+            ranges: []
+        - row_id: wash_water_input
+          role: "Farm-gate wash water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used for washing or cooling only when the operation occurs before farm-gate transfer."
+          amount:
+            expression: "Meter or invoice water used for washing and cooling by lot or shift."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable reference product"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - codex-fresh-produce-hygiene
+            ranges: []
+        - row_id: primary_packaging_input
+          role: "Primary packaging"
+          name: "Primary packaging material"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Record packaging used before farm-gate hand-off by material and mass."
+          amount:
+            expression: "Weigh packaging consumed by lot and preserve material composition and reuse status."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable reference product"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - usda-ams-fresh-produce
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: other_leafy_stem_vegetables_farm_gate_output
+          role: "Marketable fresh other leafy or stem vegetables at farm gate"
+          name: "Other leafy or stem vegetables"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4dda0ce0-12e0-4cc0-9d3d-f218fa3e6892"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is the trimmed, graded, fresh, unprocessed product transferred at the declared farm gate."
+          amount:
+            expression: "Verified scale mass after excluding field, harvest, grading, and trim losses."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "1,000 kg marketable fresh other leafy or stem vegetables"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - usda-ams-fresh-produce
+                - codex-fresh-produce-hygiene
+            ranges: []
+      waste:
+        - row_id: rejected_trimmed_output
+          role: "Rejected and trimmed produce"
+          name: "Rejected and trimmed leafy or stem vegetables"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh material"
+          description: "Record rejected, damaged, wilted, undersized, overmature, and trimmed material by destination."
+          amount:
+            expression: "Measure or reconcile reject and trim mass and declare field return, feed, composting, treatment, or disposal."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable reference product"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - usda-ams-fresh-produce
+                - codex-fresh-produce-hygiene
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "400"
+                unit: "kg/1,000 kg marketable product"
+                basis: "broad first-pass range pending grade, damage, and trim records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_shared_bed_preparation
+    applies_to: "establishment and field management"
+    rule: "Attribute shared bed or protected-area preparation to the declared crop cycle using documented area, duration, and crop sequence; disclose intercropping or multi-crop use."
+    source_ids:
+      - fao-good-agricultural-practices
+  - rule_id: allocation_marketable_and_rejects
+    applies_to: "harvest and handling"
+    rule: "Reconcile harvest-ready or gross harvested mass to marketable product, rejects, and trimmings; treat rejects as waste unless a documented buyer, specification, quantity, and destination establish a co-product."
+    source_ids:
+      - usda-ams-fresh-produce
+  - rule_id: allocation_secondary_output
+    applies_to: "intentional secondary products"
+    rule: "For an intentional secondary product, report quantity and hand-off and apply an explicitly justified mass or economic allocation; no default avoided burden applies."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "crop_establishment"
+      flow_role: "planting material, establishment nutrients, accepted area"
+      record_type: "seed or transplant, purchase, application, and field records"
+      raw_fields: "crop_identity; botanical_name; lot_id; date; units_or_mass; viability; field_id; area; product_mass; nutrient_concentration; accepted_area"
+      collection_method: "reconcile purchases and applications to each crop and field"
+      unit: "plant; kg; ha"
+      frequency: "each establishment event"
+      temporal_coverage: "complete crop establishment period"
+      site_scope: "every represented field or protected area"
+      aggregation_rule: "sum by crop-field-cycle and preserve replacement losses"
+      quality_evidence: "invoices, labels, seed certificates, field maps, and acceptance records"
+    - protocol_id: cp_field_cycle_records
+      process_id: "field_crop_management"
+      flow_role: "nutrients, amendments, fuel, crop protection, land, residues, and emissions activity"
+      record_type: "field-cycle log, invoice, meter, application, and residue record"
+      raw_fields: "field_id; crop_identity; cycle_id; area; date; product_identity; product_mass; nutrient_concentration; amendment_dry_matter; fuel; electricity; irrigation; crop_protection; residue_mass; dry_matter; destination"
+      collection_method: "reconcile all activities to the same crop, field, and cycle"
+      unit: "ha; kg; m3; L; kWh"
+      frequency: "each event and cycle close"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "every represented field or protected area"
+      aggregation_rule: "sum by field-cycle before reference-flow normalization"
+      quality_evidence: "invoices, labels, analyses, meters, maps, and disposition receipts"
+    - protocol_id: cp_irrigation_records
+      process_id: "field_crop_management"
+      flow_role: "irrigation withdrawal and delivered water"
+      record_type: "meter, pump, source, and irrigation log"
+      raw_fields: "field_id; source; date; meter_start; meter_end; delivered_volume; withdrawal_volume; conveyance_loss; method"
+      collection_method: "reconcile source withdrawal to field delivery and retain loss method"
+      unit: "m3"
+      frequency: "each irrigation event"
+      temporal_coverage: "full declared cycle"
+      site_scope: "every represented irrigated field"
+      aggregation_rule: "sum by field-cycle and separate irrigation from wash water"
+      quality_evidence: "calibrated meters, pump records, and water permits"
+    - protocol_id: cp_harvest_records
+      process_id: "harvest_and_farm_gate_preparation"
+      flow_role: "harvest-ready and gross harvested product"
+      record_type: "harvest log and scale record"
+      raw_fields: "field_id; crop_identity; lot_id; harvest_date; harvest_pass; gross_mass; harvest_loss; maturity; grade; trim_state"
+      collection_method: "link each harvest lot to field and date"
+      unit: "kg; ha"
+      frequency: "each harvest lot or pass"
+      temporal_coverage: "complete harvest window"
+      site_scope: "every represented field and lot"
+      aggregation_rule: "sum by field-cycle without merging incompatible crop identities"
+      quality_evidence: "calibrated scales, lot tickets, and grade records"
+    - protocol_id: cp_handling_records
+      process_id: "harvest_and_farm_gate_preparation"
+      flow_role: "wash water, packaging, marketable output, rejects, and trim"
+      record_type: "lot, scale, meter, packaging, and waste records"
+      raw_fields: "lot_id; source_field; gross_input; wash_water; cooling_energy; packaging_material; packaging_mass; marketable_mass; grade; trim_state; reject_mass; reject_reason; destination"
+      collection_method: "preserve lot-level mass and utility reconciliation through transfer"
+      unit: "kg; m3; kWh"
+      frequency: "each lot or shift"
+      temporal_coverage: "complete harvest and packing period"
+      site_scope: "every represented handling line"
+      aggregation_rule: "reconcile input, product, rejects, trim, and mass change before aggregation"
+      quality_evidence: "calibrated scales, meters, grade inspection, and destination receipts"
+  calculation_rules:
+    - id: calc_nutrient_equivalent
+      applies_to: "fertilizer inputs"
+      rule: "Product mass multiplied by documented nutrient fraction equals kg N, P2O5, or K2O; retain each basis separately."
+      inputs:
+        - "product mass"
+        - "nutrient concentration"
+        - area
+      output: "nutrient-equivalent input"
+      source_ids:
+        - extension-leafy-vegetable-production
+    - id: calc_irrigation_withdrawal
+      applies_to: "irrigation"
+      rule: "Withdrawal equals metered or documented source volume; delivered irrigation and conveyance loss are reported separately."
+      inputs:
+        - "source meter"
+        - "field meter"
+        - "loss method"
+      output: "source withdrawal and delivered irrigation"
+      source_ids:
+        - fao-water-efficiency
+    - id: calc_field_cycle_normalization
+      applies_to: "cultivation"
+      rule: "Divide complete field-cycle quantity by marketable output from the corresponding crop and cycle."
+      inputs:
+        - "field-cycle quantity"
+        - "marketable mass"
+      output: "quantity per 1,000 kg reference product"
+      source_ids: []
+    - id: calc_product_balance
+      applies_to: "harvest and handling"
+      rule: "Gross harvested input plus measured mass change equals marketable product plus rejects and trimmings within declared uncertainty."
+      inputs:
+        - gross
+        - marketable
+        - reject
+        - trim
+        - "and mass-change records"
+      output: "reconciled output quantities"
+      source_ids:
+        - usda-ams-fresh-produce
+    - id: calc_managed_soil_emissions
+      applies_to: "soil nitrogen emissions"
+      rule: "Apply the declared applicable IPCC or accepted regional equations to synthetic, organic, and returned-residue nitrogen; preserve factors and prevent double counting."
+      inputs:
+        - "nitrogen activity data"
+        - factors
+        - "climate and management qualifiers"
+      output: "direct and indirect nitrogen emissions"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference product"
+      requirement: "Preserve crop identity, botanical name where relevant, market state, grade, maturity, trim, washing, packaging, geography, year, and cycle."
+      evidence: "lot specification and field records"
+    - id: dq_cycle_linkage
+      applies_to: "establishment and cultivation"
+      requirement: "Link every field-cycle to one crop identity and disclose crop sequence, replacements, failed area, and termination."
+      evidence: "field map, planting record, and production history"
+    - id: dq_water_separation
+      applies_to: "irrigation and handling"
+      requirement: "Separate source withdrawal, delivered irrigation, wash water, and precipitation and retain the measurement method."
+      evidence: "meters, pump records, and water log"
+    - id: dq_mass_balance
+      applies_to: "harvest and handling"
+      requirement: "Reconcile harvest-ready, gross, marketable, rejected, and trimmed masses and explain differences."
+      evidence: "calibrated scales and lot records"
+    - id: dq_input_completeness
+      applies_to: "all foreground inputs"
+      requirement: "Preserve nutrient basis, irrigation source, fuel and electricity coverage, crop-protection identity, packaging material, and residue destination."
+      evidence: "invoices, labels, meters, and logs"
+    - id: dq_method_transparency
+      applies_to: "calculations"
+      requirement: "Record method version, factors, normalization denominator, exclusions, and replacement of provisional estimates."
+      evidence: "calculation file and review record"
+validation_rules:
+  - rule_id: validation_reference_identity
+    applies_to: "reference product"
+    rule: "Use the verified Other leafy or stem vegetables UUID, mass property, mass unit group, kg, and all required qualifiers."
+    source_ids: []
+  - rule_id: validation_cycle_handoffs
+    applies_to: "process map"
+    rule: "Link crop establishment to each field-cycle and make harvest-ready output equal the harvest input before losses."
+    source_ids: []
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and handling"
+    rule: "Reconcile marketable output, rejects, trimmings, and mass change to gross harvested input within declared uncertainty."
+    source_ids:
+      - usda-ams-fresh-produce
+  - rule_id: validation_nutrients_emissions
+    applies_to: "field management"
+    rule: "Keep N, P2O5, and K2O distinct, document emission factors, and prevent returned-residue nitrogen double counting."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_parameterized_flows
+    applies_to: "parameterized rows"
+    rule: "Resolve every Flow Set to a compatible concrete UUID before publishing a final process dataset."
+    source_ids: []
+  - rule_id: validation_unmapped_flows
+    applies_to: "unmapped rows"
+    rule: "Planting material, internal crop and residue states, and rejected produce remain explicit coverage requirements until exact compatible identities are supplied."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground agricultural production dataset for fresh other leafy or stem vegetables at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "crop and supply-chain studies with compatible crop identity, geography, crop cycle, route, market state, and farm-gate boundary"
+  excluded_use: "seed or transplant production, specified CPC leafy or stem categories, spices and aromatic crops, processed products, distribution beyond farm gate, or comparisons omitting declared crop-cycle activities"
+  required_metadata: "crop identity; botanical name where relevant; geography; field or protected route; area; cycle and year; planting material; irrigation source; nutrient basis; crop-protection program; harvest and grade; maturity; washing; cooling; packaging; residue fate; farm-gate hand-off"
+  required_quality_disclosure: "primary-data coverage; meter and scale quality; crop-cycle linkage; mass balance; water separation; data gaps; provisional ranges; emission method; Flow Set resolutions; unmapped identities"
+  update_trigger: "verified identity, reviewed quantitative evidence, crop-specific product specification, source-method change, or managed-soil method change"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-good-agricultural-practices"
+    type: "official_guidance"
+    reference: "Food and Agriculture Organization of the United Nations, Good Agricultural Practices, https://www.fao.org/3/i6677e/i6677e.pdf"
+    used_for: "crop establishment, field management, inputs, residue handling, and good-practice boundary"
+  - id: "extension-leafy-vegetable-production"
+    type: "extension_guidance"
+    reference: "University of Florida IFAS Extension, Leafy Vegetables, https://edis.ifas.ufl.edu/topic_leafy_vegetables"
+    used_for: "crop-cycle process decomposition, planting, nutrient records, and harvest data"
+  - id: "fao-water-efficiency"
+    type: "official_guidance"
+    reference: "Food and Agriculture Organization of the United Nations, Water efficiency, https://www.fao.org/land-water/water/water-efficiency/en/"
+    used_for: "irrigation measurement, source withdrawal, and delivered-water separation"
+  - id: "usda-ams-fresh-produce"
+    type: "official_guidance"
+    reference: "United States Department of Agriculture Agricultural Marketing Service, Fresh Fruits and Vegetables, https://www.ams.usda.gov/grades-standards/vegetables"
+    used_for: "marketable grade, handling, product identity, and mass reconciliation"
+  - id: "codex-fresh-produce-hygiene"
+    type: "standard"
+    reference: "Codex Alimentarius, Codes of Practice, General Principles of Food Hygiene and fresh produce guidance, https://www.fao.org/fao-who-codexalimentarius/codex-texts/codes-of-practice/en/"
+    used_for: "farm-gate handling, washing, packing, and quality disclosure"
+  - id: "ipcc-2019-managed-soils"
+    type: "official_guidance"
+    reference: "IPCC, 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil nitrogen emissions and residue nitrogen"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:4c0609cb7a72dd969be75160b710fc3017ff109f804647f18461cc39290dad0b"
+  generated_content_sha256: "sha256:02116da7e723c712b5c6e570fef1d28f96a8ce8efa6838586f3068b4f1922bb3"

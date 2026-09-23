@@ -1,10 +1,1137 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01449"
-  title: "Other oilseeds, n.e.c."
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.other-oilseeds-n-e-c"
+  classification_system: "CPC"
+  classification_version: "3.0"
+  classification_code: "01449"
+  classification_title: "Other oilseeds, n.e.c."
+  included_products: "One named residual oilseed species classified in CPC 01449, such as castor bean, crambe seed or hempseed, delivered as harvested or conditioned grain."
+  excluded_products: "Oilseeds with separate CPC leaves; seed produced and certified specifically for sowing; extracted oil; press cake or meal; foods and manufactured products."
+  representative_product: "Conditioned grain of one declared residual oilseed species at the farm or conditioning gate."
+  production_route: "Species-specific managed production, harvest, seed extraction, optional drying and cleaning, grading, optional packaging and storage."
+  market_state: "Harvested or conditioned oilseed grain with declared species, intended use, moisture, purity or grade, and gate."
+functional_unit:
+  what: "Provision of one declared CPC 01449 oilseed species at the stated farm or conditioning gate."
+  how_much: "1 kg net oilseed mass at declared moisture."
+  how_well: "Named species, intended use, moisture basis, grade or purity, route and gate are mandatory."
+  how_long_or_cycle: "One crop cycle and associated conditioning lot, normalized to accepted product."
+  reference_flow_link: "reference_product"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The boundary begins with planting material and foreground-controlled field preparation. It includes managed production, harvest, species-specific threshing or seed extraction, optional drying, aeration and cleaning, grading, foreground packaging, storage and load-out to the declared gate. It excludes planting-seed certification, oil extraction, refining, meal manufacture, downstream transport and use. Alternative production or conditioning technologies require separate route declarations; inactive conditional nodes carry no exchanges."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "planting material entering the declared crop cycle"
+  starting_condition_role: "Start of foreground managed biological production for one named residual oilseed species."
+  product_classification_scope: "CPC 01449 only; separately classified oilseeds are outside scope."
+  recursive_input_rule: "Purchased CPC 01449 oilseed used as an input remains a separately recorded product input with species, state and supplier dataset."
+  upstream_dataset_requirement: "Link supplier datasets for planting material and purchased inputs or disclose source, geography and quality."
+  disclosure: "Species, cultivar where known, intended use, field mode, harvest/extraction technology, moisture, grade, gate, co-products, rejects, rework and shared-asset attribution."
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Other oilseeds, n.e.c."
+    uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "one named species"
+    - "intended use"
+    - "moisture basis"
+    - "grade or purity"
+    - "production and conditioning route"
+    - "declared gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_mass
+    applies_to: "Reference product and mass flows"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use net mass and retain gross mass, tare and scale evidence."
+  - id: moisture
+    applies_to: "Seed and residue mass"
+    required_property_ref:
+      name: "Mass and moisture fraction"
+      uuid: ""
+    required_unit: "kg and % wet basis or dry basis"
+    rule: "State the moisture convention and convert only from measured moisture."
+  - id: field_normalization
+    applies_to: "Field inputs"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Preserve field records, then normalize with accepted product from the same crop cycle."
+  - id: energy
+    applies_to: "Machinery, drying and storage"
+    required_property_ref:
+      name: "Energy, volume or mass"
+      uuid: ""
+    required_unit: "kWh, MJ, L or kg"
+    rule: "Preserve the recorded carrier and unit before conversion."
+process_map:
+  - id: managed_production
+    name: "Managed crop production"
+    inclusion: "required"
+    inclusion_condition: "Always included."
+    role: "Cultivate the declared named residual oilseed species and record field operations."
+    quantitative_reference: "Harvestable crop standing in the declared field or protected system."
+  - id: harvest_and_extraction
+    name: "Harvest and seed extraction"
+    inclusion: "required"
+    inclusion_condition: "Always included; threshing, pod opening or fruit dehulling follows the species route."
+    role: "Collect the crop and separate oilseed grain from field biomass."
+    quantitative_reference: "Gross harvested seed-bearing material."
+  - id: drying_and_conditioning
+    name: "Drying and primary conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "Include when drying, aeration, cleaning or stabilization occurs before hand-off."
+    role: "Reach the declared safe moisture and remove foreign matter."
+    quantitative_reference: "Conditioned oilseed mass at declared moisture."
+  - id: grading_packaging_and_storage
+    name: "Grading, packaging and storage"
+    inclusion: "conditional"
+    inclusion_condition: "Include foreground-controlled grading, bagging, bulk storage or load-out."
+    role: "Release one declared grade and use route at the stated gate."
+    quantitative_reference: "Net reference product at the declared gate."
+process_inventory:
+  - id: managed_production
+    label: "Managed crop production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Planting material"
+          name: "Select species- and cultivar-specific planting material flow"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measured planting material used for the declared field area."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_products
+          role: "Consolidated fertilizer and nutrient products"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "kg product and kg nutrient"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Record each physical fertilizer or amendment once with composition; expand to verified exchanges during dataset production."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg product/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "m3"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Metered irrigation water; zero for rainfed production."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop protection inputs"
+          name: "Select named active product flow"
+          flow_type: "product"
+          property_unit: "kg or L"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measured products applied; retain active ingredient and formulation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy carriers"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "L, kg, MJ or kWh"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measured energy for cultivation and field operations."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "L diesel-equivalent/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_crop
+          role: "Standing harvestable crop"
+          name: "Select species-specific intermediate product if separately modelled"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Calculated harvestable crop mass transferred to harvest."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "harvestable mass at field maturity"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_yield
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg/kg accepted product"
+                basis: "harvestable mass at field maturity"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: soil_n2o_emission
+          role: "Direct soil nitrous oxide"
+          name: "Select exact N2O-to-air identity after method and medium are declared"
+          flow_type: "elementary"
+          property_unit: "kg N2O"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Calculate from recorded N inputs using the declared regional method."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "kg N2O/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_loss_to_water
+          role: "Nitrate loss to water"
+          name: "Select exact nitrate species and receiving medium"
+          flow_type: "elementary"
+          property_unit: "kg nitrate-N"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Calculate only with a declared applicable method and receiving medium."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per crop cycle, normalized by accepted oilseed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "kg nitrate-N/kg product"
+                basis: "per crop cycle, normalized by accepted oilseed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_and_extraction
+    label: "Harvest and seed extraction"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Standing harvestable crop input"
+          name: "Select species-specific intermediate product if separately modelled"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Transfer the measured harvestable crop from managed production."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "gross harvestable crop entering harvest"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_yield
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg/kg accepted product"
+                basis: "gross harvestable crop entering harvest"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest machinery energy"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "L, kg, MJ or kWh"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measured harvest, threshing or extraction energy."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per harvested lot"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "L diesel-equivalent/kg product"
+                basis: "per harvested lot"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_oilseed_grain
+          role: "Raw extracted oilseed grain"
+          name: "Other oilseeds, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measured raw grain after species-specific extraction and before conditioning."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "gross raw seed at measured moisture"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "3"
+                unit: "kg/kg accepted product"
+                basis: "gross raw seed at measured moisture"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_residue
+          role: "Harvest and extraction residue"
+          name: "Select route-specific stalk, hull, pod or mixed biomass fate flow"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measure separated residue by fate; saleable co-products require separate output records."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per harvested lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4"
+                unit: "kg/kg raw seed"
+                basis: "per harvested lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_losses
+          role: "Field and handling losses"
+          name: "Select route-specific biological residue or loss flow"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Survey uncollected and handling losses without treating them as saleable output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg raw seed"
+                basis: "per harvested lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: drying_and_conditioning
+    label: "Drying and primary conditioning"
+    inputs:
+      product:
+        - row_id: raw_oilseed_input
+          role: "Raw oilseed input"
+          name: "Other oilseeds, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Transfer measured raw seed at incoming moisture."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "incoming conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "3"
+                unit: "kg/kg conditioned seed"
+                basis: "incoming conditioning lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditioning energy"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "kWh, MJ, L or kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Metered electricity and thermal fuel by lot; expand each actual carrier."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per conditioned lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kWh-equivalent/kg conditioned seed"
+                basis: "per conditioned lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cleaning_water
+          role: "Cleaning water"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "kg or m3"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Metered water only when wet cleaning occurs."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per conditioned lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "L/kg conditioned seed"
+                basis: "per conditioned lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_oilseed
+          role: "Conditioned oilseed grain"
+          name: "Other oilseeds, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measured conditioned seed at declared moisture and purity."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "conditioned lot output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.5"
+                upper: "1"
+                unit: "kg/kg raw seed"
+                basis: "conditioned lot output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cleaning_rejects
+          role: "Cleaning rejects and foreign matter"
+          name: "Select route-specific reject or organic residue flow"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measure stones, chaff, broken seed and foreign matter by fate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg raw seed"
+                basis: "per conditioned lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: dust_release
+          role: "Dust from dry handling"
+          name: "Select exact particulate identity and receiving air compartment"
+          flow_type: "elementary"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measure or calculate released dust after capture; do not use a generic particulate UUID."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per conditioned lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg/kg conditioned seed"
+                basis: "per conditioned lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: grading_packaging_and_storage
+    label: "Grading, packaging and storage"
+    inputs:
+      product:
+        - row_id: conditioned_oilseed_input
+          role: "Conditioned oilseed input"
+          name: "Other oilseeds, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Transfer conditioned seed to grading, storage or load-out."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "incoming finalization lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg/kg product"
+                basis: "incoming finalization lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: packaging_materials
+          role: "Packaging materials"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "kg or item"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Record actual bags, liners or labels; zero for bulk delivery."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per final product lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "kg/kg product"
+                basis: "per final product lot"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: storage_energy
+          role: "Storage and load-out energy"
+          name: ""
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "kWh"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Metered or allocated energy for ventilation, handling and load-out."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per final product lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kWh/kg product"
+                basis: "per final product lot"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product
+          role: "Declared other oilseed at gate"
+          name: "Other oilseeds, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Net accepted mass for one declared species, use, moisture, grade and gate."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg product"
+                basis: "reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_oilseed
+          role: "Downgraded saleable oilseed"
+          name: "Other oilseeds, n.e.c."
+          flow_type: "product"
+          flow_ref:
+            uuid: "b547a596-eefe-42d3-82b9-78cbbb445eb6"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measure separately when a lower grade remains a saleable oilseed output."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per grading lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg graded input"
+                basis: "per grading lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: final_rejects
+          role: "Final rejects and packaging waste"
+          name: "Select actual reject or packaging waste fate flow"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active."
+          amount:
+            expression: "Measure off-spec seed and packaging waste separately by fate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per final product lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg product"
+                basis: "per final product lot"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: direct_assignment
+    applies_to: "all nodes"
+    rule: "Directly assign measurable species-, field-, batch-, grade- and use-specific inputs."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: multi_output
+    applies_to: "saleable seed grades and species-specific co-products"
+    rule: "Record every intended output separately; allocate shared burdens by mass at the declared moisture basis unless reviewed economic evidence supports another rule."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: residue_fate
+    applies_to: "stalks, hulls, pods and rejects"
+    rule: "Treat as a co-product only with an independent saleable destination and reference flow; otherwise record residue or waste and fate."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: shared_assets
+    applies_to: "shared machinery, drying and storage"
+    rule: "Attribute once by measured hours, energy or throughput and prevent duplication between field and conditioning nodes."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field
+      process_id: "managed_production"
+      flow_role: "field inputs"
+      record_type: "primary activity record"
+      raw_fields: "species, field area, planting, product IDs, nutrient composition, water and protection products"
+      collection_method: "field log, invoices and meters"
+      unit: "ha; kg; m3; L"
+      frequency: "each operation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "declared field or protected unit"
+      aggregation_rule: "sum by product and field-cycle; each nutrient product once"
+      quality_evidence: "invoices, labels, calibrated meters"
+    - protocol_id: cp_energy
+      process_id: "all_processes"
+      flow_role: "energy carriers"
+      record_type: "meter or allocation record"
+      raw_fields: "carrier, quantity, unit, equipment, hours and process"
+      collection_method: "meter, fuel ticket or equipment log"
+      unit: "kWh; MJ; L; kg"
+      frequency: "each operation or batch"
+      temporal_coverage: "complete crop cycle and conditioning lots"
+      site_scope: "named field and facility"
+      aggregation_rule: "sum by carrier and assign once to process"
+      quality_evidence: "meter calibration, invoices, machine logs"
+    - protocol_id: cp_yield
+      process_id: "managed_production"
+      flow_role: "crop yield"
+      record_type: "weighing and survey record"
+      raw_fields: "standing estimate, harvested mass, area and loss"
+      collection_method: "calibrated scale and field survey"
+      unit: "kg; ha"
+      frequency: "each harvest lot"
+      temporal_coverage: "complete harvest window"
+      site_scope: "field and lot"
+      aggregation_rule: "reconcile standing, harvested and field-loss mass"
+      quality_evidence: "scale certificate and survey sheet"
+    - protocol_id: cp_emissions
+      process_id: "managed_production"
+      flow_role: "soil emissions"
+      record_type: "calculation input record"
+      raw_fields: "N inputs, species, medium, soil and method factors"
+      collection_method: "nutrient ledger and declared method"
+      unit: "kg N; kg emission"
+      frequency: "each crop cycle"
+      temporal_coverage: "all managed periods"
+      site_scope: "field"
+      aggregation_rule: "calculate separately by species and receiving medium"
+      quality_evidence: "nutrient ledger and method sheet"
+    - protocol_id: cp_harvest
+      process_id: "harvest_and_extraction"
+      flow_role: "seed and residues"
+      record_type: "lot mass record"
+      raw_fields: "gross crop, raw seed, residues, losses, technology and destination"
+      collection_method: "calibrated weighing and lot log"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "complete harvest window"
+      site_scope: "field and lot"
+      aggregation_rule: "mass reconcile all outputs and stock change"
+      quality_evidence: "scale certificate and lot tickets"
+    - protocol_id: cp_conditioning
+      process_id: "drying_and_conditioning"
+      flow_role: "moisture, product and rejects"
+      record_type: "batch record"
+      raw_fields: "incoming and outgoing mass, moisture, foreign matter, dust, water and route"
+      collection_method: "scale, moisture test, meter and batch log"
+      unit: "kg; %; m3"
+      frequency: "each batch"
+      temporal_coverage: "all conditioning batches"
+      site_scope: "conditioning line and batch"
+      aggregation_rule: "dry-matter and wet-mass reconciliation by batch"
+      quality_evidence: "scale and moisture calibration, batch sheet"
+    - protocol_id: cp_packaging
+      process_id: "grading_packaging_and_storage"
+      flow_role: "packaging"
+      record_type: "material issue record"
+      raw_fields: "material type, mass, count, reuse and product lot"
+      collection_method: "warehouse issue and packaging log"
+      unit: "kg; item"
+      frequency: "each lot"
+      temporal_coverage: "all packed lots"
+      site_scope: "packing line and lot"
+      aggregation_rule: "sum virgin and reused materials separately"
+      quality_evidence: "invoice, issue ticket, count check"
+    - protocol_id: cp_final
+      process_id: "grading_packaging_and_storage"
+      flow_role: "grades and reference product"
+      record_type: "final lot record"
+      raw_fields: "species, use, moisture, grade, accepted, downgraded, rejected and stock change"
+      collection_method: "calibrated scale, grade test and dispatch ticket"
+      unit: "kg; %"
+      frequency: "each lot"
+      temporal_coverage: "all released lots"
+      site_scope: "facility, store and lot"
+      aggregation_rule: "reconcile incoming with grades, rejects and stock change"
+      quality_evidence: "scale certificate, lab or grade report, dispatch ticket"
+  calculation_rules:
+    - id: normalize
+      applies_to: "all inputs"
+      rule: "Divide same-cycle or same-batch input by net accepted product at the declared gate."
+      inputs:
+        - "activity records and product mass"
+      output: "inventory per kg reference product"
+      source_ids: []
+    - id: moisture_balance
+      applies_to: "drying"
+      rule: "Conserve dry matter; calculate removed water from measured incoming and outgoing moisture and check losses."
+      inputs:
+        - "incoming/outgoing mass and moisture"
+      output: "dry-matter discrepancy"
+      source_ids:
+        - mass-balance-identity
+    - id: lot_balance
+      applies_to: "harvest and conditioning"
+      rule: "Input plus stock decrease equals products, residues, wastes, releases and stock increase."
+      inputs:
+        - "all measured lot flows"
+      output: "mass discrepancy"
+      source_ids:
+        - mass-balance-identity
+    - id: nutrient_expand
+      applies_to: "nutrient inputs"
+      rule: "Emit each physical product exchange once and retain composition for analytical N/P/K; do not duplicate compound products."
+      inputs:
+        - "product ID"
+        - "mass and composition"
+      output: "concrete product exchanges and nutrient ledger"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Species, use, moisture, grade, route and gate shall all be populated."
+      evidence: "lot and dispatch records"
+    - id: dq_mass
+      applies_to: "all processes"
+      requirement: "Calibrate scales and reconcile field, harvest, conditioning and final-lot balances."
+      evidence: "calibration certificates and balance sheet"
+    - id: dq_route
+      applies_to: "conditional processes"
+      requirement: "Activate only conditioning, packaging and storage routes that actually occur."
+      evidence: "operation and batch logs"
+    - id: dq_binding
+      applies_to: "all exchanges"
+      requirement: "After Flow Set expansion, each final exchange requires a verified UUID and selection evidence."
+      evidence: "flow identity audit"
+validation_rules:
+  - rule_id: validate_other
+    applies_to: "product identity"
+    rule: "Confirm the named species belongs in CPC 01449 and has no separate oilseed CPC leaf."
+    source_ids:
+      - unsd-cpc-30
+  - rule_id: validate_reference
+    applies_to: "reference flow"
+    rule: "Check 1 kg net mass and mandatory species, use, moisture, grade and gate qualifiers."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_balance
+    applies_to: "each lot"
+    rule: "Reconcile inputs, outputs, losses, stock and moisture change without double-counting transfers."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_ranges
+    applies_to: "every card"
+    rule: "Investigate observations outside screens, but do not reject supported real measurements solely for exceeding a provisional interval."
+    source_ids: []
+  - rule_id: validate_sets
+    applies_to: "parameterized inputs"
+    rule: "Check current Flow Set version, group constraint and concrete UUID evidence; allow at most one nutrient card per process."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "species-, field- and batch-specific other-oilseed foreground data package"
+  downstream_use: "secondary_dataset; may serve as background_dataset after geography, technology and time matching"
+  allowed_use: "modelling one named CPC 01449 oilseed from production to the declared gate"
+  excluded_use: "other CPC oilseeds, sowing seed, oil, meal or multi-species averages"
+  required_metadata: "species, use, moisture, grade, geography, cycle, production technology, conditioning route, gate and allocation"
+  required_quality_disclosure: "weighing and moisture checks, Flow Set expansion, unresolved identities, provisional ranges and gaps"
+  update_trigger: "change in species, use, technology, moisture, grade, gate, allocation or method factor"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.packaging-presentation-node
+      kind: "activity"
+      path: "library/modules/activities/packaging-presentation-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-30"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0, https://unstats.un.org/unsd/classifications/Econ/cpc"
+    used_for: "category boundary and residual-category decision"
+  - id: "fao-grain-storage"
+    type: "official_guidance"
+    reference: "FAO, Grain storage techniques, https://www.fao.org/4/s1250e/S1250E0u.htm"
+    used_for: "drying, cleaning, storage and moisture-record route"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation relation for mass inputs, outputs, losses and stock change"
+    used_for: "batch and moisture mass reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:3023ee7e48f199404734fea4791566f445c224f37a7877df1711489fa98dd073"
+  generated_content_sha256: "sha256:0229ab26be5da46e3aa862ee8e59c5a477e58cdd1f4f3b3066f314d9b5d8d650"

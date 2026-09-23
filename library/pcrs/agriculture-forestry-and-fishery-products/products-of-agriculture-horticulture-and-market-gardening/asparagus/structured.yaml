@@ -1,10 +1,901 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01211"
-  title: "Asparagus"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.asparagus"
+  classification_refs: "CPC 3.0:01211 Asparagus"
+  covered_products: "Fresh, unprocessed green, white, or purple asparagus spears at farm gate"
+  excluded_products: "Asparagus seed, crowns or transplants sold as planting material, and canned, frozen, pickled, dried, cooked, or otherwise processed asparagus"
+  representative_product: "Marketable fresh asparagus spears, trimmed and graded for the declared market"
+  production_route: "Perennial stand establishment, annual managed production, repeated spear harvest, and farm-gate preparation"
+  market_state: "Fresh, unprocessed produce at farm gate, loose or in declared primary packaging"
+functional_unit:
+  what: "Marketable fresh asparagus spears at farm gate"
+  how_much: "1,000 kg"
+  how_well: "Fresh, unprocessed, and saleable under declared grade, colour, size, trimming, and defect criteria"
+  how_long_or_cycle: "One declared harvest year, with establishment attributed across the declared productive stand life"
+  reference_flow_link: "asparagus_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_perennial_stand
+      applies_to: "establishment and productive years"
+      rule: "Include establishment and represented productive years; attribute establishment burdens using the declared stand life and output without double-counting replacement planting."
+      source_ids:
+        - osu-asparagus-production
+        - uc-asparagus-production
+    - rule_id: boundary_farm_gate
+      applies_to: "harvest and handling"
+      rule: "End at transfer of marketable fresh asparagus at farm gate; include on-farm grading, trimming, washing, cooling, and packaging when performed before transfer."
+      source_ids:
+        - penn-state-asparagus-production
+        - umn-asparagus-harvest
+    - rule_id: boundary_field_emissions
+      applies_to: "managed soil and residues"
+      rule: "Include applicable direct and indirect nitrogen emissions and returned-residue nitrogen using one declared method, avoiding double counting."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_residue_fate
+      applies_to: "fern and rejected material"
+      rule: "Distinguish field return, feed, composting, treatment, productive use, and disposal; an unspecified residue is not a co-product."
+      source_ids:
+        - umn-asparagus-harvest
+        - ipcc-2019-managed-soils
+boundary_abstraction:
+  declared_starting_condition: "Prepared agricultural field receiving crowns or transplants, with prior land use and excluded pre-plant operations disclosed"
+  starting_condition_role: "Beginning of perennial stand establishment and productive-life attribution"
+  product_classification_scope: "Fresh asparagus under CPC 3.0:01211 through farm-gate hand-off"
+  recursive_input_rule: "Purchased asparagus planting material is a distinct upstream product input and is linked once rather than recreated inside this PCR."
+  upstream_dataset_requirement: "Require upstream datasets for planting material, fertilizers, amendments, crop-protection products, irrigation water, energy, and packaging when used."
+  disclosure: "Declare prior land use, establishment year, stand age, productive-life assumption, irrigation system, nutrient basis, residue fate, harvest and grading method, washing, cooling, and packaging."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Asparagus"
+    uuid: "3a8d74d8-77a2-4242-b9d3-c0d1b2141b81"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "farm-gate hand-off"
+    - "production geography"
+    - "production year and stand age"
+    - "colour route (green/white/purple)"
+    - "harvest period"
+    - "grade and size criteria"
+    - "trimming state"
+    - "washed or unwashed"
+    - "packaging state"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_product_mass
+    applies_to: "harvested and farm-gate asparagus"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Keep gross harvested, marketable fresh, rejected fresh, and dry residue masses distinct."
+  - id: area_normalization
+    applies_to: "establishment and field-year records"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Record quantities by field and year before normalizing them to marketable output from the corresponding stand and year."
+  - id: nutrient_basis
+    applies_to: "fertilizer inputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Convert product mass only from documented nutrient concentration and preserve each nutrient basis."
+  - id: planting_material_count
+    applies_to: "crowns and transplants"
+    required_property_ref:
+      name: "Number of items"
+      uuid: ""
+    required_unit: "plant"
+    rule: "Record viable units; do not infer mass from count without a documented conversion."
+process_map:
+  - id: stand_establishment
+    name: "Perennial stand establishment"
+    inclusion: "required"
+    inclusion_condition: "once per established stand"
+    role: "foreground establishment"
+    quantitative_reference: "established productive area"
+  - id: annual_field_management
+    name: "Annual asparagus field management"
+    inclusion: "required"
+    inclusion_condition: "each represented production year"
+    role: "foreground managed biological production"
+    quantitative_reference: "managed hectare-year and harvest-ready spear mass"
+  - id: harvest_and_farm_gate_preparation
+    name: "Harvest and farm-gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each represented harvest year"
+    role: "foreground harvest, grading, and hand-off"
+    quantitative_reference: "1,000 kg marketable fresh asparagus"
+process_inventory:
+  - id: stand_establishment
+    label: "Perennial stand establishment"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Asparagus crowns or transplants"
+          name: "Asparagus crowns or transplants"
+          flow_type: "product"
+          property_unit: "Number of items / plant"
+          description: "Record viable crowns or transplants entering the field separately from seed and later replacement plants."
+          amount:
+            expression: "Count viable planting units by type and field."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare established; converted to 1,000 kg marketable asparagus using same-stand lifetime output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - osu-asparagus-production
+                - penn-state-asparagus-production
+            ranges:
+              - role: typical_range
+                lower: "14800"
+                upper: "34600"
+                unit: "plants/ha"
+                basis: "viable planting units per established hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - osu-asparagus-production
+                  - penn-state-asparagus-production
+        - row_id: stand_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare established; converted to 1,000 kg marketable asparagus using same-stand lifetime output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - osu-asparagus-production
+                - uc-ipm-asparagus-fertilization
+            ranges:
+              - role: typical_range
+                lower: "34"
+                upper: "224"
+                unit: "kg N/ha"
+                basis: "establishment-year field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - osu-asparagus-production
+                  - uc-ipm-asparagus-fertilization
+              - role: typical_range
+                lower: "0"
+                upper: "224"
+                unit: "kg P2O5/ha"
+                basis: "establishment field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - osu-asparagus-production
+              - role: default_estimate
+                lower: "0"
+                upper: "300"
+                unit: "kg K2O/ha"
+                basis: "broad first-pass establishment field range pending soil-test and application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_irrigation_water
+          role: "Establishment irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered establishment irrigation separately from rainfall and annual irrigation."
+          amount:
+            expression: "Meter delivered water by field and source."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare established"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - uc-ipm-asparagus-irrigation
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "15240"
+                unit: "m3/ha established"
+                basis: "broad first-pass establishment water range pending field-meter records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: established_stand_output
+          role: "Established productive asparagus stand"
+          name: "Established productive asparagus stand"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "This internal hand-off records accepted productive area and is not the reference product."
+          amount:
+            expression: "Accepted area after failed plants and replacements are reconciled."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per establishment campaign"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - osu-asparagus-production
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: annual_field_management
+    label: "Annual asparagus field management"
+    inputs:
+      product:
+        - row_id: annual_field_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-year; converted to 1,000 kg marketable asparagus using same field-year output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_year_records
+              source_ids:
+                - osu-asparagus-production
+                - uc-ipm-asparagus-fertilization
+            ranges:
+              - role: typical_range
+                lower: "78"
+                upper: "168"
+                unit: "kg N/ha-year"
+                basis: "productive field-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - osu-asparagus-production
+                  - uc-ipm-asparagus-fertilization
+              - role: default_estimate
+                lower: "0"
+                upper: "300"
+                unit: "kg P2O5/ha-year"
+                basis: "broad first-pass productive field-year range pending soil-test and application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: default_estimate
+                lower: "0"
+                upper: "500"
+                unit: "kg K2O/ha-year"
+                basis: "broad first-pass productive field-year range pending soil-test and application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: annual_irrigation_water
+          role: "Annual irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered water separately from rainfall, with source and irrigation technology declared."
+          amount:
+            expression: "Meter delivered irrigation water by field-year."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-year; converted to 1,000 kg marketable asparagus using same field-year output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_year_records
+              source_ids:
+                - uc-ipm-asparagus-irrigation
+            ranges:
+              - role: typical_range
+                lower: "4570"
+                upper: "15240"
+                unit: "m3/ha-year"
+                basis: "annual applied irrigation across documented production regions"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - uc-ipm-asparagus-irrigation
+        - row_id: field_electricity_input
+          role: "Purchased field electricity"
+          name: "Purchased electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record purchased electricity for irrigation and field operations separately from water volume and fuel."
+          amount:
+            expression: "Meter or allocate electricity to the field-year without counting pumping twice."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-year; converted to 1,000 kg marketable asparagus using same field-year output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_year_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5000"
+                unit: "kWh/ha-year"
+                basis: "broad first-pass range dependent on irrigation lift and mechanization"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvest_ready_spears_output
+          role: "Harvest-ready asparagus spears in field"
+          name: "Harvest-ready asparagus spears in field"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh spears"
+          description: "This internal hand-off is fresh spear mass ready for harvest, before farm-gate grading and trimming."
+          amount:
+            expression: "Gross harvested mass plus separately measured field losses."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-year; converted to 1,000 kg marketable asparagus using same field-year output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - osu-asparagus-production
+                - uc-small-farms-asparagus
+            ranges:
+              - role: typical_range
+                lower: "560"
+                upper: "4480"
+                unit: "kg fresh spears/ha-year"
+                basis: "early through mature productive years"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - osu-asparagus-production
+                  - uc-small-farms-asparagus
+      waste:
+        - row_id: fern_residue_output
+          role: "Senesced fern and asparagus field residue"
+          name: "Senesced asparagus fern and field residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter"
+          description: "Record physical residue mass by destination, distinguishing field incorporation, removal, burning, composting, and other treatment."
+          amount:
+            expression: "Measure or estimate dry matter and nitrogen content by destination."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per managed hectare-year"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_year_records
+              source_ids:
+                - umn-asparagus-harvest
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "15000"
+                unit: "kg dry matter/ha-year"
+                basis: "broad first-pass senesced-biomass range pending dry-matter and destination records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: direct_n2o_air_output
+          role: "Direct nitrous oxide from managed soil"
+          name: "Nitrous oxide to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct N2O from synthetic and organic nitrogen and returned residue nitrogen as a separate atmospheric output."
+          amount:
+            expression: "Apply the declared applicable IPCC or accepted regional method and preserve N2O-N to N2O conversion."
+            value_mode: "calculated_value"
+            specificity: "scenario_specific"
+            basis:
+              text: "per 1,000 kg marketable asparagus; nitrogen input is the calculation driver"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_year_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg N2O/ha-year"
+                basis: "non-negative first-pass interval pending site-specific nitrogen activity and factor selection"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_and_farm_gate_preparation
+    label: "Harvest and farm-gate preparation"
+    inputs:
+      product:
+        - row_id: harvest_ready_spears_input
+          role: "Harvest-ready asparagus spears"
+          name: "Harvest-ready asparagus spears in field"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh spears"
+          description: "Use the internal hand-off from the same field-year and reconcile it to product and losses."
+          amount:
+            expression: "Equal the corresponding harvest_ready_spears_output before harvest losses."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - osu-asparagus-production
+                - umn-asparagus-harvest
+            ranges: []
+        - row_id: washing_water_input
+          role: "Washing water"
+          name: "Washing water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Include make-up water only when washing occurs before farm-gate transfer."
+          amount:
+            expression: "Meter make-up and recirculated water and retain wastewater linkage."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable asparagus"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "m3/1,000 kg marketable asparagus"
+                basis: "broad first-pass make-up and recirculated water range pending handling-meter records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: primary_packaging_input
+          role: "Primary packaging"
+          name: "Flexible primary packaging for fresh asparagus"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Record flexible bands, sleeves, and bags supplied with the product by material; record rigid trays and crates separately."
+          amount:
+            expression: "Measure packaging issued to transferred product and identify returnable packaging separately."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable asparagus"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - penn-state-asparagus-production
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/1,000 kg marketable asparagus"
+                basis: "broad first-pass flexible-packaging quantity pending material records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rigid_packaging_input
+          role: "Rigid primary packaging"
+          name: "Rigid primary packaging for fresh asparagus"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "rigid-container-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Record rigid trays and crates supplied with the product by material and return cycle."
+          amount:
+            expression: "Measure packaging issued to transferred product, and record returnable-container turns separately."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable asparagus"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - penn-state-asparagus-production
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/1,000 kg marketable asparagus"
+                basis: "broad first-pass rigid-packaging quantity pending material and return-cycle records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: asparagus_farm_gate_output
+          role: "Marketable fresh asparagus at farm gate"
+          name: "Asparagus"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3a8d74d8-77a2-4242-b9d3-c0d1b2141b81"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is trimmed, graded, fresh, unprocessed asparagus transferred at the declared farm gate."
+          amount:
+            expression: "Verified scale mass after excluding harvest, trim, and reject losses."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "1,000 kg marketable fresh asparagus"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - penn-state-asparagus-production
+                - osu-asparagus-production
+            ranges: []
+      waste:
+        - row_id: rejected_asparagus_output
+          role: "Rejected and trimmed asparagus"
+          name: "Rejected and trimmed fresh asparagus material"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh material"
+          description: "Record rejected spears and trimmings by physical state and destination."
+          amount:
+            expression: "Measure reject and trim mass and declare field return, feed, composting, treatment, or disposal."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable asparagus"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handling_records
+              source_ids:
+                - osu-asparagus-production
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg marketable asparagus"
+                basis: "broad first-pass range pending grade and trim records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_establishment_over_life
+    applies_to: "stand establishment"
+    rule: "Attribute establishment burdens across actual represented productive years and marketable output; disclose lifetime, failed area, replacement, and early termination without double counting."
+    source_ids:
+      - osu-asparagus-production
+      - uc-asparagus-production
+  - rule_id: allocation_market_and_rejects
+    applies_to: "harvest preparation"
+    rule: "Reconcile incoming spear mass to marketable asparagus and rejected or trimmed material; treat rejects as waste unless a documented product specification, buyer, quantity, and destination establish a co-product."
+    source_ids:
+      - osu-asparagus-production
+  - rule_id: allocation_secondary_output
+    applies_to: "valorized residue"
+    rule: "For an intentional secondary product, report quantity and hand-off and apply an explicitly justified allocation or substitution method; no default economic value or avoided burden applies."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "stand_establishment"
+      flow_role: "planting material, nutrients, water, and accepted area"
+      record_type: "field, purchase, application, and meter records"
+      raw_fields: "field_id; date; planting_material_type; units_planted; failed_units; product_mass; nutrient_concentration; irrigation_volume; established_area"
+      collection_method: "reconcile purchases and applications to each establishment field"
+      unit: "plant; kg; m3; ha"
+      frequency: "each operation"
+      temporal_coverage: "complete establishment campaign"
+      site_scope: "every represented field"
+      aggregation_rule: "sum by field and preserve failures and replacements"
+      quality_evidence: "invoices, labels, meters, field maps, and acceptance records"
+    - protocol_id: cp_field_year_records
+      process_id: "annual_field_management"
+      flow_role: "nutrients, water, electricity, residues, and emission activity"
+      record_type: "field-year log, invoice, meter, and application record"
+      raw_fields: "field_id; year; stand_age; area; product_identity; product_mass; nutrient_concentration; irrigation_volume; electricity; residue_mass; dry_matter; residue_nitrogen; destination"
+      collection_method: "reconcile all records to the same field-year"
+      unit: "ha; kg; kg nutrient; m3; kWh"
+      frequency: "each event and annual close"
+      temporal_coverage: "full year including postharvest fern management"
+      site_scope: "every represented productive field"
+      aggregation_rule: "sum by field-year before reference-flow normalization"
+      quality_evidence: "invoices, labels, analyses, meters, and disposition records"
+    - protocol_id: cp_harvest_records
+      process_id: "harvest_and_farm_gate_preparation"
+      flow_role: "harvest-ready and gross harvested spears"
+      record_type: "harvest log and scale record"
+      raw_fields: "field_id; harvest_date; harvest_pass; gross_mass; field_loss; harvest_method; area"
+      collection_method: "link every harvest lot to field and date"
+      unit: "kg; ha"
+      frequency: "each harvest pass"
+      temporal_coverage: "complete harvest window"
+      site_scope: "every represented field"
+      aggregation_rule: "sum by field-year without merging stand ages before normalization"
+      quality_evidence: "calibrated scales and harvest tickets"
+    - protocol_id: cp_handling_records
+      process_id: "harvest_and_farm_gate_preparation"
+      flow_role: "water, packaging, marketable output, and rejects"
+      record_type: "lot, scale, meter, packaging, and waste records"
+      raw_fields: "lot_id; source_field; gross_input; wash_water; packaging_material; packaging_mass; marketable_mass; grade; colour; trim_state; reject_mass; reject_reason; destination"
+      collection_method: "preserve lot-level mass and utility reconciliation through transfer"
+      unit: "kg; m3"
+      frequency: "each lot or shift"
+      temporal_coverage: "complete harvest and packing period"
+      site_scope: "every represented handling line"
+      aggregation_rule: "reconcile input, product, rejects, and mass change before aggregation"
+      quality_evidence: "calibrated scales, meters, grade inspection, and destination receipts"
+  calculation_rules:
+    - id: calc_establishment_attribution
+      applies_to: "establishment"
+      rule: "Divide establishment quantity by attributed lifetime marketable output of the same stand and update expected years with actual years."
+      inputs:
+        - "establishment quantity"
+        - cohort
+        - "productive-life assumption"
+        - "annual output"
+      output: "establishment burden per kg marketable asparagus"
+      source_ids:
+        - osu-asparagus-production
+        - uc-asparagus-production
+    - id: calc_nutrient_equivalent
+      applies_to: "fertilizer inputs"
+      rule: "Product mass multiplied by documented nutrient fraction equals kg N, P2O5, or K2O."
+      inputs:
+        - "product mass"
+        - "nutrient concentration"
+        - area
+      output: "nutrient-equivalent input"
+      source_ids:
+        - uc-ipm-asparagus-fertilization
+        - osu-asparagus-production
+    - id: calc_field_normalization
+      applies_to: "annual inputs"
+      rule: "Divide complete field-year quantity by marketable output from the corresponding field-year."
+      inputs:
+        - "field-year quantity"
+        - "marketable mass"
+      output: "quantity per 1,000 kg reference product"
+      source_ids: []
+    - id: calc_product_balance
+      applies_to: "harvest and handling"
+      rule: "Gross harvested mass plus or minus measured mass change equals marketable product plus rejects and trimmings."
+      inputs:
+        - gross
+        - marketable
+        - reject
+        - trim
+        - "and mass-change records"
+      output: "reconciled output quantities"
+      source_ids: []
+    - id: calc_managed_soil_emissions
+      applies_to: "managed-soil nitrogen emissions"
+      rule: "Apply the declared applicable IPCC or accepted regional equations to synthetic, organic, and returned-residue nitrogen; preserve conversions and prevent double counting."
+      inputs:
+        - "nitrogen activity data"
+        - factors
+        - "climate and management qualifiers"
+      output: "direct and indirect nitrogen emissions"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference product"
+      requirement: "Preserve farm-gate state, colour route, grade, size, trim, washing, packaging, geography, production year, and stand age."
+      evidence: "lot specification and field records"
+    - id: dq_period_linkage
+      applies_to: "establishment and annual management"
+      requirement: "Link every field-year to one establishment cohort and disclose replacements, abandonment, productive years, and termination."
+      evidence: "field map, planting record, and production history"
+    - id: dq_mass_balance
+      applies_to: "harvest and handling"
+      requirement: "Reconcile harvest-ready, gross, marketable, rejected, and trimmed masses and explain differences."
+      evidence: "calibrated scales and lot records"
+    - id: dq_input_completeness
+      applies_to: "all foreground inputs"
+      requirement: "Preserve nutrient basis, irrigation source, electricity coverage, packaging material, and residue destination for every represented field or lot."
+      evidence: "invoices, labels, meters, and logs"
+    - id: dq_method_transparency
+      applies_to: "calculations"
+      requirement: "Record method version, factors, productive-life denominator, exclusions, and replacement of provisional estimates."
+      evidence: "calculation file and review record"
+validation_rules:
+  - rule_id: validation_reference_identity
+    applies_to: "reference product"
+    rule: "Use the verified Asparagus UUID, mass property, mass unit group, kg, and all required qualifiers."
+    source_ids: []
+  - rule_id: validation_handoffs
+    applies_to: "process map"
+    rule: "Link establishment to each field-year and make harvest-ready output equal its harvest input before losses."
+    source_ids: []
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and handling"
+    rule: "Reconcile marketable output, rejects, trimmings, and mass change to gross harvested input within declared uncertainty."
+    source_ids: []
+  - rule_id: validation_nutrients_emissions
+    applies_to: "annual management"
+    rule: "Keep N, P2O5, and K2O distinct, document emission factors, and prevent returned-residue nitrogen double counting."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_parameterized_flows
+    applies_to: "parameterized rows"
+    rule: "Resolve every Flow Set to a compatible concrete UUID before publishing a final process dataset."
+    source_ids: []
+  - rule_id: validation_unmapped_flows
+    applies_to: "unmapped rows"
+    rule: "Planting material, internal stand and spear states, fern residue, and rejects remain explicit coverage requirements until exact compatible identities are supplied."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground agricultural production dataset for fresh asparagus at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "fresh-asparagus crop and supply-chain studies with compatible geography, stand age, product state, and route"
+  excluded_use: "nursery planting material, processed asparagus, post-farm distribution, or comparisons omitting perennial establishment"
+  required_metadata: "geography; field area; establishment cohort; stand age; year; productive-life assumption; colour route; harvest and grade; irrigation; nutrient basis; residue fate; washing; cooling; packaging; farm-gate hand-off"
+  required_quality_disclosure: "primary-data coverage; scale and meter quality; lifetime attribution; mass balance; data gaps; provisional ranges; emission method; Flow Set resolutions; unmapped identities"
+  update_trigger: "verified identity, reviewed quantitative evidence, product specification, lifetime attribution, or managed-soil method changes"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "osu-asparagus-production"
+    type: "extension_guidance"
+    reference: "Oklahoma State University Extension, Asparagus Production, HLA-6018, https://extension.okstate.edu/fact-sheets/asparagus-production"
+    used_for: "stand life, establishment, planting density, nutrients, harvest, yield, and rejects"
+  - id: "uc-ipm-asparagus-irrigation"
+    type: "extension_guidance"
+    reference: "University of California Statewide IPM Program, Asparagus: Irrigation, https://ipm.ucanr.edu/agriculture/asparagus/irrigation/"
+    used_for: "irrigation systems and annual applied-water range"
+  - id: "uc-ipm-asparagus-fertilization"
+    type: "extension_guidance"
+    reference: "University of California Statewide IPM Program, Asparagus: Fertilization, UC ANR Publication 3435, https://ipm.ucanr.edu/agriculture/asparagus/fertilization/"
+    used_for: "establishment and maintenance nutrient ranges"
+  - id: "uc-asparagus-production"
+    type: "extension_guidance"
+    reference: "University of California ANR, Asparagus Production in California, Publication 7234, https://anrcatalog.ucanr.edu/pdf/7234.pdf"
+    used_for: "perennial production route and establishment boundary"
+  - id: "uc-small-farms-asparagus"
+    type: "extension_guidance"
+    reference: "University of California Small Farms Network, Asparagus, https://ucanr.edu/program/uc-small-farms-network/asparagus"
+    used_for: "production-year yield progression"
+  - id: "penn-state-asparagus-production"
+    type: "extension_guidance"
+    reference: "Penn State Extension, Asparagus Production, https://extension.psu.edu/asparagus-production"
+    used_for: "fresh market state, planting density, grade, and packaging"
+  - id: "umn-asparagus-harvest"
+    type: "extension_guidance"
+    reference: "University of Minnesota Extension, Harvesting Asparagus, https://extension.umn.edu/agriculture/specialty-crops/vegetable-farming/harvesting-asparagus"
+    used_for: "harvest boundary and postharvest fern management"
+  - id: "ipcc-2019-managed-soils"
+    type: "official_guidance"
+    reference: "IPCC, 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil nitrogen emissions and residue nitrogen"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e792ba86a214e2734b53c9516dee27e281d04c00ace4d7ce54d7691a293b3fb9"
+  generated_content_sha256: "sha256:9b5b42f9333b9cda7e1a17a65db5114bfb943f874b62753a368c7d850520baa5"

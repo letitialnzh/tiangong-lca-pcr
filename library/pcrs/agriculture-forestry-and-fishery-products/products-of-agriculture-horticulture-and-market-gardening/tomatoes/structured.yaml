@@ -1,10 +1,1233 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01234"
-  title: "Tomatoes"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.tomatoes"
+  classification_refs: "CPC 3.0:01234 Tomatoes"
+  covered_products: "Fresh, whole, unprocessed tomatoes delivered at a declared farm-gate or pack-house gate, including round, ribbed, elongated, cherry, and cocktail types"
+  excluded_products: "Tomato seed and transplants; canned, dried, juiced, pureed, concentrated, sauced, or cooked tomato products; retail and consumer stages"
+  representative_product: "Marketable fresh tomatoes meeting the declared maturity, firmness, cleanliness, size, defect, and packaging criteria"
+  production_route: "Open-field, greenhouse, hydroponic, or substrate cultivation with establishment, crop management, harvest, grading, optional washing or cooling, and primary packing"
+  market_state: "Fresh whole tomatoes at the declared farm-gate or pack-house gate, loose, trussed, or in declared primary packaging"
+functional_unit:
+  what: "Marketable fresh tomatoes at the declared farm-gate or pack-house gate"
+  how_much: "1,000 kg net accepted tomatoes"
+  how_well: "Tomato type and cultivar group, maturity or colour stage, firmness, size and grade, cleanliness, defect tolerance, moisture condition, truss state where applicable, washing or cooling state, and packaging state are declared"
+  how_long_or_cycle: "One declared tomato crop cycle and harvest campaign; all harvest rounds from the same planting are aggregated to the declared gate"
+  reference_flow_link: "tomatoes_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "establishment and crop management"
+      rule: "Include production-unit preparation attributable to the crop cycle, planting, crop management, supplied water, nutrient inputs, crop protection, energy, and direct crop emissions. Disclose prior land use and exclude unrelated infrastructure construction."
+      source_ids:
+        - fao-tomato-good-agricultural-practices
+        - fao-greenhouse-vegetables-2013
+    - rule_id: boundary_route_specificity
+      applies_to: "open-field, greenhouse, hydroponic, and substrate routes"
+      rule: "Keep route-specific infrastructure, heating, pumping, recirculation, substrate, drainage, and crop-cycle records separate when they materially change the inventory."
+      source_ids:
+        - fao-greenhouse-vegetables-2013
+    - rule_id: boundary_gate_preparation
+      applies_to: "harvest, grading, washing, cooling, and packing"
+      rule: "End the default foreground boundary at the declared farm-gate or pack-house gate. Include grading, washing, cooling, and primary packaging only when they occur before that gate."
+      source_ids:
+        - codex-cxs-293-2008
+        - usda-ams-tomato-grade-standard
+    - rule_id: boundary_nitrogen_emissions
+      applies_to: "nutrient inputs, soil, drainage, and residues"
+      rule: "Estimate applicable direct and indirect nitrogen emissions with one declared method using recorded nutrient inputs, drainage or leaching evidence, and residue fate. Avoid double counting pathways."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_residue_fate
+      applies_to: "rejected fruit, crop residues, wash solids, and wastewater"
+      rule: "Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. A credit requires documented recipient, intended use, and allocation treatment."
+      source_ids:
+        - fao-tomato-good-agricultural-practices
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "Prepared field, greenhouse, hydroponic, or substrate production unit receiving tomato seed or transplant material, with prior land use and excluded infrastructure work disclosed"
+  starting_condition_role: "Start of the declared tomato crop cycle and foreground input accounting"
+  product_classification_scope: "Fresh whole tomatoes under CPC 3.0:01234 through the declared farm-gate or pack-house gate"
+  recursive_input_rule: "Purchased tomato seed or transplants are recorded at their received hand-off state and linked once to an upstream dataset; their own production is outside this PCR unless a separate upstream dataset is supplied."
+  upstream_dataset_requirement: "Require upstream datasets for seed or transplants, nutrient products, growing media, crop-protection products, irrigation water, energy, packaging, and purchased transport or treatment services when used."
+  disclosure: "Declare production geography, tomato type and cultivar group, route, crop-cycle dates, planting density, irrigation and fertigation method, nutrient basis, crop-protection program, harvest rounds, accepted and rejected mass, washing and cooling, packaging, water recirculation or drainage, residue fate, and gate location."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Tomatoes, production mix, at farm gate, fresh and unprocessed"
+    uuid: "43dac9a5-d7b1-4536-84f3-38fa2f56562e"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "production geography"
+    - "tomato type and cultivar group"
+    - open-field
+    - greenhouse
+    - hydroponic
+    - "or substrate route"
+    - "seed or transplant status"
+    - "planting date"
+    - "harvest dates and rounds"
+    - "crop-cycle or annual production basis"
+    - "maturity and colour stage"
+    - "size and grade"
+    - "firmness and defect criteria"
+    - "irrigation and nutrient delivery method"
+    - "washing and cooling state"
+    - "packaging state"
+    - "declared gate"
+    - "rejected-fruit and crop-residue fate"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_tomato_mass
+    applies_to: "reference product and harvest reconciliation"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Express the reference as net accepted tomato mass at the declared gate. Weigh harvested, marketable, downgraded, rejected, foreign material, and crop-residue streams separately."
+  - id: crop_cycle_normalization
+    applies_to: "field, greenhouse, hydroponic, and substrate routes"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha or m2; kg"
+    rule: "Record each production unit and planting campaign separately, then normalize inputs and outputs to accepted mass from the same crop cycle."
+  - id: nutrient_product_basis
+    applies_to: "mineral fertilizers, fertigation products, manure, compost, and amendments"
+    required_property_ref:
+      name: "Product and nutrient mass"
+      uuid: ""
+    required_unit: "kg product; kg N, P2O5, or K2O"
+    rule: "Preserve purchased product mass and declared nutrient concentration. Convert to nutrient basis only from a label, supplier specification, nutrient plan, or laboratory result."
+  - id: irrigation_delivery_basis
+    applies_to: "irrigation, fertigation carrier water, and source withdrawal"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record delivered irrigation and source withdrawal separately and distinguish rainfall, recirculated solution, drainage, and discharge where modelled."
+  - id: harvest_round_aggregation
+    applies_to: "repeated-harvest tomato routes"
+    required_property_ref:
+      name: "Mass and time"
+      uuid: ""
+    required_unit: "kg and crop cycle"
+    rule: "Sum each harvest round from the same planting and reconcile accepted fruit, downgraded fruit, field losses, and residues before normalization."
+  - id: energy_carrier_conversion
+    applies_to: "electricity, heating, pumping, and mobile machinery"
+    required_property_ref:
+      name: "Energy or carrier mass"
+      uuid: ""
+    required_unit: "kWh, MJ, L, or kg"
+    rule: "Preserve measured carrier, operation, conversion factor, and production unit. Do not infer greenhouse heating from crop yield alone."
+  - id: packaging_mass_basis
+    applies_to: "crates, cartons, trays, films, pallets, and reusable containers"
+    required_property_ref:
+      name: "Mass or item count"
+      uuid: ""
+    required_unit: "kg or item"
+    rule: "Record package mass or item count together with capacity, reuse cycles, return rate, and lot assignment when packaging is included before the gate."
+process_map:
+  - id: crop_establishment
+    name: "Tomato crop establishment"
+    inclusion: "required"
+    inclusion_condition: "every represented planting, bed, greenhouse compartment, hydroponic unit, or substrate cycle"
+    role: "foreground crop establishment"
+    quantitative_reference: "planted area, planting material, and crop-cycle dates"
+  - id: crop_management
+    name: "Tomato crop management"
+    inclusion: "required"
+    inclusion_condition: "each represented tomato crop cycle"
+    role: "foreground managed biological production"
+    quantitative_reference: "production-unit area, irrigation, nutrients, protection, energy, and harvest campaign"
+  - id: harvest_and_gate_preparation
+    name: "Tomato harvest and gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each represented harvest campaign"
+    role: "foreground harvest, conditioning, packaging, and gate hand-off"
+    quantitative_reference: "1,000 kg marketable fresh tomato output"
+  - id: purchased_transport_to_gate
+    name: "Purchased transport to declared gate"
+    inclusion: "conditional"
+    inclusion_condition: "when transport service crosses the foreground boundary before the declared gate"
+    role: "foreground delivery service"
+    quantitative_reference: "tonne-kilometres from production unit or pack-house to gate"
+process_inventory:
+  - id: crop_establishment
+    label: "Tomato crop establishment"
+    inputs:
+      product:
+        - row_id: seed_or_transplant_input
+          role: "Tomato seed or transplant material"
+          name: "Tomato seed or transplant material"
+          flow_type: "product"
+          property_unit: "Mass or viable count / kg seed or plant"
+          description: "Tomato seed or transplants cross the boundary when accepted for establishment in the declared production unit. Record seed and transplants as distinct forms."
+          amount:
+            expression: "Record supplier lot, seed mass or viable plant count, planting date, planted area, unused material, and replacement material by production unit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.01"
+                upper: "12"
+                unit: "kg seed or 2,500 plants per ha"
+                basis: "declared planted area and tomato crop-cycle output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_irrigation_water
+          role: "Establishment irrigation water"
+          name: "Irrigation water supplied to crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Water applied for bed preparation, seed emergence, transplant establishment, or initial fertigation is recorded by source and production unit."
+          amount:
+            expression: "Sum metered or documented water-balance deliveries during establishment, excluding rainfall and separately identified recirculated solution."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "400"
+                unit: "m3/ha"
+                basis: "establishment period from planting to uniform stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: establishment_planting_loss
+          role: "Establishment planting losses"
+          name: "Establishment planting material loss"
+          flow_type: "waste"
+          property_unit: "Mass or count / kg or plant"
+          description: "Unused seed, failed transplants, and establishment losses are recorded when discarded or sent to a defined treatment route."
+          amount:
+            expression: "Reconcile purchased and planted lots with unused and failed material records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15"
+                unit: "percent of purchased planting material"
+                basis: "purchased lot to planted or accepted establishment material"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: crop_management
+    label: "Tomato crop management"
+    inputs:
+      product:
+        - row_id: crop_irrigation_water
+          role: "Crop irrigation and fertigation water"
+          name: "Irrigation water supplied to crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Delivered crop water crosses the boundary when supplied to the field, greenhouse, hydroponic unit, or substrate unit. Record source, meter, recirculation, drainage, and crop-cycle period."
+          amount:
+            expression: "Sum metered or documented water-balance deliveries during crop management; report recirculated solution and drainage separately where material."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+                - fao-greenhouse-vegetables-2013
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5,000"
+                unit: "m3/ha per crop cycle"
+                basis: "open-field, greenhouse, hydroponic, or substrate tomato crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-greenhouse-vegetables-2013
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "40"
+                upper: "600"
+                unit: "kg N/ha per crop cycle"
+                basis: "total mineral and organic nitrogen applied to the represented tomato production unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "350"
+                unit: "kg P2O5/ha per crop cycle"
+                basis: "soil-test or recipe-supported phosphorus application"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "50"
+                upper: "1,000"
+                unit: "kg K2O/ha per crop cycle"
+                basis: "soil-test or recipe-supported potassium application"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products"
+          name: "Tomato crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg formulated product and kg active ingredient"
+          description: "Crop-protection products cross the boundary when purchased and applied to the represented tomato crop. Record active ingredient and formulated product information separately."
+          amount:
+            expression: "Sum invoices and application logs by product, active ingredient, treated area, and crop cycle; preserve concentration and timing."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - fao-tomato-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "kg formulated product/ha per crop cycle"
+                basis: "total formulated crop-protection product applied to the represented production unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: mobile_machinery_fuel
+          role: "Mobile machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume or mass / L or kg"
+          description: "Fuel for tractors, sprayers, harvest aids, forklifts, and other mobile machinery is recorded by operation and production unit."
+          amount:
+            expression: "Sum delivery records or machine fuel logs by operation; preserve fuel type and conversion basis."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - fao-tomato-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L/ha per crop cycle"
+                basis: "field and harvest machinery fuel for the represented production unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: production_electricity_input
+          role: "Production electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Electricity for pumping, fertigation, ventilation, lighting, cooling, and other production operations is recorded by meter and operation."
+          amount:
+            expression: "Sum sub-meter or invoice records allocated to the represented production unit and crop cycle; separate renewable generation and purchased electricity."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - fao-greenhouse-vegetables-2013
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8,000"
+                unit: "kWh/ha per crop cycle"
+                basis: "pumping, ventilation, lighting, and production equipment for the represented route"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: irrigation_source_withdrawal
+          role: "Irrigation source withdrawal"
+          name: "Water resource withdrawal"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Water withdrawn from a river, aquifer, reservoir, or municipal source is recorded when attributable to the tomato production unit."
+          amount:
+            expression: "Record source-meter withdrawal or a documented water balance and reconcile delivered, recirculated, stored, and discharged water."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "6,000"
+                unit: "m3/ha per crop cycle"
+                basis: "source withdrawal allocated to the represented tomato production unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: marketable_tomato_output
+          role: "Marketable fresh tomatoes"
+          name: "Fresh tomatoes at the declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Marketable tomatoes are the accepted product crossing the declared farm-gate or pack-house gate. Reconcile output by lot, harvest round, and grade."
+          amount:
+            expression: "Sum net accepted mass after grading and any included washing or cooling, excluding package tare."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "10"
+                upper: "300"
+                unit: "tonnes/ha per crop cycle"
+                basis: "accepted fresh tomato output from the represented production unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_tomato_output
+          role: "Downgraded or rejected tomato fruit"
+          name: "Rejected or downgraded tomato fruit"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Fruit that fails the declared grade, maturity, size, appearance, or soundness criterion is recorded separately from accepted product, with its fate declared."
+          amount:
+            expression: "Weigh downgraded and rejected fruit by harvest round and reconcile with harvested and accepted mass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - codex-cxs-293-2008
+                - usda-ams-tomato-grade-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "40"
+                unit: "percent of harvested tomato mass"
+                basis: "downgraded, rejected, and unmarketable tomato fruit by harvest campaign"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_residue_output
+          role: "Tomato vines and crop residue"
+          name: "Tomato crop residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet biomass"
+          description: "Vines, leaves, roots, substrate residues, and other crop biomass leaving the production unit are recorded by fate, including field return, composting, feed use, treatment, or disposal."
+          amount:
+            expression: "Measure or calculate residue mass from harvest records and documented residue-management operations; retain moisture basis."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_fate_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "8"
+                unit: "kg wet residue/kg accepted tomatoes"
+                basis: "crop biomass leaving the production unit after harvest and termination"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: direct_soil_n2o_emission
+          role: "Direct soil nitrous oxide emission"
+          name: "Nitrous oxide to air from managed tomato production soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Direct nitrous oxide from managed soil or growing media is estimated from declared nitrogen inputs and the selected emission method."
+          amount:
+            expression: "Apply one declared method to measured or calculated nitrogen inputs and avoid counting the same pathway in both soil and drainage records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha per crop cycle"
+                basis: "direct managed-soil emission estimate from declared nitrogen input"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ammonia_emission
+          role: "Ammonia emission from nutrient use"
+          name: "Ammonia to air from tomato production"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Ammonia emissions are recorded when the declared nutrient method estimates volatilization from applied fertilizer or organic nutrient products."
+          amount:
+            expression: "Calculate from declared nutrient input and emission method, keeping product, application, and environmental conditions traceable."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "kg NH3/ha per crop cycle"
+                basis: "volatilization estimate from declared nutrient inputs"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_loss
+          role: "Nitrate loss to water"
+          name: "Nitrate loss from tomato production"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N as nitrate"
+          description: "Nitrate loss is recorded when drainage, leaching, or runoff from the declared production unit is estimated or measured."
+          amount:
+            expression: "Use measured drainage or a declared nitrogen-balance method and record receiving medium, drainage fraction, and nutrient basis."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ipcc-2019-managed-soils
+                - fao-greenhouse-vegetables-2013
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg N/ha per crop cycle"
+                basis: "nitrate loss in drainage, leaching, or runoff from the represented unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_and_gate_preparation
+    label: "Tomato harvest and gate preparation"
+    inputs:
+      product:
+        - row_id: gate_preparation_electricity
+          role: "Harvest and gate-preparation electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Electricity used for sorting, washing, cooling, grading, packing, and other pre-gate handling is recorded when those operations occur before the declared gate."
+          amount:
+            expression: "Sum sub-meter or invoice records for included pre-gate operations and allocate them to tomato lots handled."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_energy_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "120"
+                unit: "kWh/tonne accepted tomatoes"
+                basis: "included washing, grading, cooling, and packing operations"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: washing_process_water
+          role: "Washing or process water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Water used to wash or condition tomatoes crosses the boundary when the operation occurs before the declared gate. Washing is optional and must be disclosed."
+          amount:
+            expression: "Sum metered or documented washing water and keep reused, treated, and discharged portions separate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_washing_records
+              source_ids:
+                - codex-cxs-293-2008
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3"
+                unit: "m3/tonne accepted tomatoes"
+                basis: "optional washing and conditioning before the declared gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rigid_primary_packaging
+          role: "Rigid primary packaging"
+          name: "Rigid container packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "rigid-container-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Reusable or single-use crates, cartons, trays, and other rigid primary packaging are recorded when supplied or consumed before the declared gate."
+          amount:
+            expression: "Record package type, mass, capacity, reuse cycles, return rate, and tomato lot assignment."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - codex-cxs-293-2008
+            ranges:
+              - role: qa_guardrail
+                lower: "5"
+                upper: "180"
+                unit: "kg packaging/tonne accepted tomatoes"
+                basis: "package mass after reuse-cycle allocation and package-capacity assignment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: wash_trim_waste
+          role: "Wash solids and trimming rejects"
+          name: "Tomato washing and trimming waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet waste"
+          description: "Soil, leaves, stems, damaged fruit, and other solids removed during grading or washing are recorded with treatment or disposal route."
+          amount:
+            expression: "Weigh or calculate solids removed during included conditioning and reconcile with accepted product and rejected fruit."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_washing_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "kg wet waste/tonne accepted tomatoes"
+                basis: "solids removed during included grading and washing"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wastewater_output
+          role: "Wastewater sent to treatment"
+          name: "Wastewater from tomato conditioning"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Wash or conditioning wastewater leaves the pre-gate operation when discharged to a treatment service or other documented route."
+          amount:
+            expression: "Record discharged wastewater after accounting for reuse, evaporation, and retained solids; identify receiving treatment route."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_washing_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3"
+                unit: "m3/tonne accepted tomatoes"
+                basis: "wastewater discharged from included conditioning operations"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: purchased_transport_to_gate
+    label: "Purchased transport to declared gate"
+    inputs:
+      product:
+        - row_id: road_freight_to_gate
+          role: "Road freight to declared gate"
+          name: "Road freight transport service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Transport service / tonne-kilometre"
+          description: "Purchased road transport is included when a third-party service moves tomatoes, packaging, or production materials to the declared gate before hand-off."
+          amount:
+            expression: "Record loaded mass, route distance, backhaul or return assumption, vehicle or service type, and material moved; calculate tonne-kilometres."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh tomato output"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_transport_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "km per declared tomato lot"
+                basis: "route distance from production unit or pack-house to declared gate"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_accepted_and_rejected
+    applies_to: "accepted tomatoes, downgraded fruit, and rejects"
+    rule: "Allocate shared crop-cycle inputs first to declared accepted tomato output using measured mass reconciliation. Report downgraded and rejected fruit separately; use economic or physical allocation only when a documented productive recipient exists."
+    source_ids:
+      - iso-14044-2006
+      - codex-cxs-293-2008
+  - rule_id: allocation_multiple_varieties
+    applies_to: "multiple tomato types, cultivars, or harvest campaigns"
+    rule: "Keep types and campaigns separate when input regimes, route, grade, or market state differ. If aggregated, allocate shared operations by measured mass or another declared physical relationship and retain disaggregation evidence."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_reusable_packaging
+    applies_to: "reusable crates, pallets, and containers"
+    rule: "Allocate packaging burdens over documented reuse cycles and declared capacity or mass basis. Include return and loss records when attributable to the declared gate."
+    source_ids:
+      - iso-14044-2006
+      - codex-cxs-293-2008
+  - rule_id: allocation_residue_use
+    applies_to: "crop residue, wash solids, and wastewater solids"
+    rule: "Keep residue treatment and productive use separate from accepted product. Assign a credit only when recipient, intended use, substitution claim, and allocation method are documented."
+    source_ids:
+      - iso-14044-2006
+      - fao-tomato-good-agricultural-practices
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "crop_establishment"
+      flow_role: "seed, transplants, planting water, planting losses"
+      record_type: "supplier lot, planting log, establishment log"
+      raw_fields: "lot id; material form; mass or viable count; variety; planting date; area; unused and failed material"
+      collection_method: "reconcile supplier records to planting-unit logs and retain lot documents"
+      unit: "kg, plant, seed, m3, ha"
+      frequency: "each lot and planting event"
+      temporal_coverage: "complete crop-cycle establishment period"
+      site_scope: "each field, compartment, hydroponic unit, or substrate unit"
+      aggregation_rule: "aggregate by planting campaign and production unit"
+      quality_evidence: "supplier invoice; planting log; lot traceability"
+    - protocol_id: cp_irrigation_records
+      process_id: "crop_establishment_or_crop_management"
+      flow_role: "irrigation, fertigation water, source withdrawal, drainage"
+      record_type: "meter record, water balance, fertigation log"
+      raw_fields: "source; meter reading; delivered volume; rainfall; recirculation; drainage; discharge; area; date"
+      collection_method: "read meters or reconstruct a documented water balance and reconcile source and delivered volumes"
+      unit: "m3, mm, ha"
+      frequency: "each irrigation event or daily total"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each irrigation zone and production unit"
+      aggregation_rule: "sum by crop cycle and retain source and receiving-medium split"
+      quality_evidence: "meter calibration; water-balance closure; operator log"
+    - protocol_id: cp_nutrient_records
+      process_id: "crop_establishment_or_crop_management"
+      flow_role: "nutrient products and calculated emissions"
+      record_type: "invoice, label, nutrient plan, application log"
+      raw_fields: "product; formulation; mass; nutrient concentration; date; area; application method; soil or drainage condition"
+      collection_method: "reconcile purchase, storage, and application records; calculate nutrient equivalents"
+      unit: "kg product, kg N, kg P2O5, kg K2O"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each production unit and nutrient zone"
+      aggregation_rule: "aggregate by product, nutrient, and crop cycle"
+      quality_evidence: "label or supplier specification; nutrient-plan review"
+    - protocol_id: cp_crop_protection_records
+      process_id: "crop_management"
+      flow_role: "crop-protection products"
+      record_type: "application log and supplier record"
+      raw_fields: "product; active ingredient; concentration; mass or volume; date; treated area; application purpose"
+      collection_method: "reconcile application logs with supplier records and crop-protection plan"
+      unit: "kg, L, ha"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field, compartment, or crop zone"
+      aggregation_rule: "aggregate by product and active ingredient per crop cycle"
+      quality_evidence: "operator record; product label; application authorization"
+    - protocol_id: cp_energy_records
+      process_id: "crop_management"
+      flow_role: "machinery fuel and production electricity"
+      record_type: "fuel log, meter, invoice, equipment log"
+      raw_fields: "carrier; quantity; meter; operation; equipment; production unit; date; allocation basis"
+      collection_method: "read meters or reconcile delivery and equipment records to included operations"
+      unit: "L, kg, kWh, MJ"
+      frequency: "each delivery, meter period, or operation"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each production unit and included service"
+      aggregation_rule: "sum by carrier, operation, and crop cycle"
+      quality_evidence: "meter record; invoice; conversion record"
+    - protocol_id: cp_harvest_records
+      process_id: "crop_management"
+      flow_role: "accepted, downgraded, rejected, and harvested tomatoes"
+      record_type: "harvest ticket, scale record, grading record"
+      raw_fields: "date; lot; harvest round; gross mass; accepted mass; grade; rejected mass; packaging tare; gate state"
+      collection_method: "use calibrated scale and lot-level grading reconciliation"
+      unit: "kg, percent"
+      frequency: "each harvest lot"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each field, compartment, and pack-house line"
+      aggregation_rule: "sum harvest rounds and reconcile gross, accepted, rejected, and tare masses"
+      quality_evidence: "scale check; grading record; lot traceability"
+    - protocol_id: cp_residue_fate_records
+      process_id: "crop_management"
+      flow_role: "vines, roots, substrate residue, and crop residues"
+      record_type: "residue log, contractor ticket, treatment record"
+      raw_fields: "residue type; wet mass; moisture; date; fate; recipient; transport; treatment"
+      collection_method: "weigh or calculate residue and retain fate evidence"
+      unit: "kg, percent, km"
+      frequency: "each removal or treatment event"
+      temporal_coverage: "crop termination and residue handling period"
+      site_scope: "each production unit"
+      aggregation_rule: "aggregate by fate and crop cycle"
+      quality_evidence: "weighbridge or contractor record; recipient declaration"
+    - protocol_id: cp_washing_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "washing water, wash solids, wastewater, and trimming rejects"
+      record_type: "water meter, wash log, waste ticket, drain record"
+      raw_fields: "lot; water in; reuse; discharge; solids; rejected fruit; date; line; treatment route"
+      collection_method: "reconcile input water, reused water, discharged wastewater, solids, and product output"
+      unit: "m3, kg"
+      frequency: "each lot or operating shift"
+      temporal_coverage: "all included pre-gate conditioning"
+      site_scope: "each washing or conditioning line"
+      aggregation_rule: "aggregate by tomato lot and gate period"
+      quality_evidence: "meter record; waste ticket; mass-balance check"
+    - protocol_id: cp_gate_energy_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "sorting, cooling, and packing electricity"
+      record_type: "sub-meter, invoice, equipment log"
+      raw_fields: "line; operation; kWh; date; lot throughput; allocation basis"
+      collection_method: "allocate metered energy to included tomato throughput and retain line records"
+      unit: "kWh, kg"
+      frequency: "each shift or meter period"
+      temporal_coverage: "all included pre-gate operations"
+      site_scope: "each pack-house line"
+      aggregation_rule: "sum by operation and tomato lot"
+      quality_evidence: "sub-meter or invoice; throughput record"
+    - protocol_id: cp_packaging_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "rigid packaging, crates, and pallets"
+      record_type: "packaging specification, issue log, return log"
+      raw_fields: "package type; material; tare; capacity; count; reuse cycles; return; loss; lot"
+      collection_method: "reconcile package issue and return records to lot throughput and declared reuse basis"
+      unit: "kg, item, cycle"
+      frequency: "each issue and return event"
+      temporal_coverage: "full included gate period"
+      site_scope: "each pack-house and transport route"
+      aggregation_rule: "allocate by capacity or documented mass basis"
+      quality_evidence: "supplier specification; issue and return log"
+    - protocol_id: cp_transport_records
+      process_id: "purchased_transport_to_gate"
+      flow_role: "purchased road freight"
+      record_type: "transport order, bill, route record"
+      raw_fields: "material; loaded mass; origin; destination; distance; vehicle or service; return assumption; date"
+      collection_method: "calculate tonne-kilometres from verified route and loaded mass"
+      unit: "tkm, kg, km"
+      frequency: "each shipment"
+      temporal_coverage: "all included pre-gate shipments"
+      site_scope: "each route and declared gate"
+      aggregation_rule: "aggregate by material and tomato lot"
+      quality_evidence: "bill of lading; route record; mass record"
+  calculation_rules:
+    - id: calc_accepted_output
+      applies_to: "accepted tomato reference flow"
+      rule: "Sum net accepted tomato mass by harvest lot after grading and included washing or cooling, excluding package tare."
+      inputs:
+        - "harvest tickets"
+        - "scale records"
+        - "grade records"
+        - "package tare"
+      output: "kg accepted tomatoes"
+      source_ids:
+        - codex-cxs-293-2008
+    - id: calc_mass_reconciliation
+      applies_to: "harvest and gate preparation"
+      rule: "Gross harvested mass = accepted mass + downgraded or rejected fruit + trim and foreign material + measured process loss; investigate unexplained residual."
+      inputs:
+        - "gross mass"
+        - "accepted mass"
+        - "reject mass"
+        - trim
+        - loss
+        - "moisture basis"
+      output: "reconciled tomato mass balance"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_nutrient_equivalents
+      applies_to: "nutrient products"
+      rule: "Nutrient mass = formulated product mass × documented nutrient concentration; retain product and nutrient bases separately."
+      inputs:
+        - "product mass"
+        - "label or supplier concentration"
+        - "application date"
+      output: "kg N, kg P2O5, and kg K2O"
+      source_ids:
+        - fao-greenhouse-vegetables-2013
+    - id: calc_water_balance
+      applies_to: "irrigation and washing water"
+      rule: "Source withdrawal = delivered water + retained storage change + discharge or drainage − identified recirculated return, with units and period reconciled."
+      inputs:
+        - "meter readings"
+        - delivery
+        - rainfall
+        - recirculation
+        - drainage
+        - "storage change"
+      output: "m3 source withdrawal and delivered water"
+      source_ids:
+        - fao-crop-evapotranspiration-56
+    - id: calc_crop_cycle_normalization
+      applies_to: "all crop-cycle amounts"
+      rule: "Normalized amount = recorded or calculated amount ÷ accepted tomato output × 1,000 kg. Preserve production-unit and crop-cycle denominator."
+      inputs:
+        - "recorded amount"
+        - "accepted output"
+      output: "amount per 1,000 kg accepted tomatoes"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_nitrogen_emissions
+      applies_to: "direct and indirect nitrogen emissions"
+      rule: "Apply one declared IPCC-compatible or jurisdictional method to documented nitrogen inputs, soil or substrate conditions, drainage, and residue fate; do not sum overlapping factors."
+      inputs:
+        - "kg N applied"
+        - "method factors"
+        - drainage
+        - "residue fate"
+      output: "kg N2O, NH3, or nitrate loss by receiving medium"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_reusable_packaging
+      applies_to: "reusable crates and pallets"
+      rule: "Allocated packaging burden = item burden ÷ documented reuse cycles × tomato-lot share by capacity or declared mass basis."
+      inputs:
+        - "item mass"
+        - "reuse cycles"
+        - "lot capacity or mass"
+        - "return and loss records"
+      output: "kg packaging allocated to tomato lot"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_transport_service
+      applies_to: "purchased road freight"
+      rule: "Transport service = loaded mass in tonnes × verified route distance in kilometres; report return or backhaul assumption separately."
+      inputs:
+        - "shipment mass"
+        - "route distance"
+        - "service record"
+      output: "tonne-kilometres"
+      source_ids:
+        - fao-tomato-good-agricultural-practices
+  data_quality_requirements:
+    - id: quality_identity_qualifiers
+      applies_to: "reference flow and all product lots"
+      requirement: "Declare tomato type, cultivar group, route, geography, gate, maturity, grade, and packaging state; retain evidence gap platform identity for later foreground resolution."
+      evidence: "lot metadata; product specification; gate record"
+    - id: quality_mass_closure
+      applies_to: "harvest, rejects, residues, washing, and wastewater"
+      requirement: "Close the product and process mass balance for each represented crop cycle or document the unexplained difference and its effect on normalized values."
+      evidence: "calibrated scale; mass-balance worksheet; waste ticket"
+    - id: quality_temporal_coverage
+      applies_to: "crop-cycle inputs and outputs"
+      requirement: "Cover the full planting-to-gate crop cycle and every harvest round; identify missing periods, substitutions, and averaging windows."
+      evidence: "planting log; harvest log; meter periods"
+    - id: quality_route_disclosure
+      applies_to: "open-field, greenhouse, hydroponic, and substrate production"
+      requirement: "Identify route, occupied area, infrastructure attribution, recirculation, heating, lighting, substrate, drainage, and crop-termination treatment whenever included."
+      evidence: "production-unit record; equipment log; route declaration"
+    - id: quality_nutrient_traceability
+      applies_to: "nutrient inputs and nitrogen emissions"
+      requirement: "Link each nutrient value to a product record, concentration, application log, and declared emission method; distinguish product mass from nutrient mass."
+      evidence: "invoice; label; nutrient plan; calculation worksheet"
+    - id: quality_water_traceability
+      applies_to: "irrigation, withdrawal, washing, and drainage"
+      requirement: "Identify source, meter or water-balance method, delivered volume, recirculation, drainage, discharge, and receiving medium."
+      evidence: "meter record; water-balance closure; discharge record"
+    - id: quality_reject_and_residue_fate
+      applies_to: "downgraded fruit, crop residue, wash solids, and wastewater"
+      requirement: "Record measured amount, moisture basis where relevant, destination, treatment, transport, and recipient evidence for every non-product stream."
+      evidence: "waste ticket; contractor record; recipient declaration"
+    - id: quality_energy_and_transport
+      applies_to: "fuel, electricity, and purchased transport"
+      requirement: "Retain carrier or service type, quantity, operation, route, date, meter or shipment evidence, and allocation basis."
+      evidence: "invoice; meter record; bill of lading; route record"
+validation_rules:
+  - rule_id: validation_reference_mass
+    applies_to: "reference flow and accepted output"
+    rule: "Require 1,000 kg net accepted tomatoes as normalized reference amount and retain the platform-verified reference product identity for CPC 3.0 01234."
+    source_ids:
+      - codex-cxs-293-2008
+  - rule_id: validation_mass_reconciliation
+    applies_to: "harvest and gate-preparation inventory"
+    rule: "Check that accepted output, downgraded or rejected fruit, residues, trim, wastewater solids, and process losses reconcile with gross harvested or received mass within documented measurement tolerance."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_crop_cycle_completeness
+    applies_to: "crop establishment and crop management"
+    rule: "Reject a dataset that omits a represented planting campaign, harvest round, or route-specific input without a justified zero or documented exclusion."
+    source_ids:
+      - fao-tomato-good-agricultural-practices
+  - rule_id: validation_nutrient_basis
+    applies_to: "nutrient products and emissions"
+    rule: "Check product mass, nutrient concentration, nutrient amount, application timing, and declared emission method before accepting nitrogen, ammonia, or nitrate values."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_water_balance
+    applies_to: "irrigation, source withdrawal, washing, and drainage"
+    rule: "Check units, source, meter or balance period, delivered water, recirculation, discharge, and receiving medium; investigate negative or unexplained balances."
+    source_ids:
+      - fao-crop-evapotranspiration-56
+  - rule_id: validation_gate_state
+    applies_to: "reference product and process boundary"
+    rule: "Check that washing, cooling, packaging, transport, and pack-house operations are included only when before the declared gate and disclosed in metadata."
+    source_ids:
+      - codex-cxs-293-2008
+      - usda-ams-tomato-grade-standard
+  - rule_id: validation_range_screen
+    applies_to: "all important inventory rows"
+    rule: "Compare site values with the row range or documented evidence. Values outside a range require an explanation, revised evidence, or an explicit scenario declaration."
+    source_ids:
+      - codex-cxs-293-2008
+      - fao-greenhouse-vegetables-2013
+  - rule_id: validation_residue_fate
+    applies_to: "rejects and residues"
+    rule: "Require a fate and destination for each rejected fruit, crop residue, wash solid, and wastewater stream; do not apply a credit without documented productive use."
+    source_ids:
+      - iso-14044-2006
+published_dataset_profile:
+  dataset_role: "Foreground tomato production dataset that may be published as a secondary_dataset and used as a documented agricultural production input"
+  downstream_use: "Downstream process and lifecyclemodel construction for fresh whole tomato supply at the same declared gate and compatible route, geography, period, and product qualifiers"
+  allowed_use: "Comparative or attributional LCA when crop-cycle completeness, gate state, route, mass reconciliation, nutrient basis, water balance, and residue fate are disclosed"
+  excluded_use: "Canned, dried, juiced, pureed, concentrated, cooked, retail, consumer, or materially different tomato routes without an explicit transformation or reallocation model"
+  required_metadata: "canonical PCR id; reference amount; tomato type and cultivar group; geography; production route; planting and harvest dates; gate; maturity and grade; accepted, rejected, residue, and wastewater masses; irrigation source and method; nutrient basis; crop-protection program; energy and transport; packaging and reuse; platform identity resolution status"
+  required_quality_disclosure: "temporal coverage; site and production-unit coverage; measurement and mass-balance closure; route and technology; water and nutrient evidence; residue fate; missing data; ranges used; allocation; uncertainty fields"
+  update_trigger: "new production route, material changes in irrigation or fertigation, heating or lighting, crop-protection regime, grade or gate definition, packaging system, residue fate, source method, or verified product and flow identities"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "codex-cxs-293-2008"
+    type: "standard"
+    reference: "FAO/WHO Codex Alimentarius, Standard for Tomatoes (CXS 293-2008), https://www.fao.org/fao-who-codexalimentarius/sh-proxy/hu/?lnk=1&url=https://workspace.fao.org/sites/codex/Standards/CXS%20293-2008/CXS_293e.pdf; retrieved 2026-09-14"
+    used_for: "product definition, commercial types, maturity, quality, gate preparation, and grade evidence"
+  - id: "usda-ams-tomato-grade-standard"
+    type: "official_guidance"
+    reference: "USDA Agricultural Marketing Service, Tomato Grades and Standards, https://www.ams.usda.gov/grades-standards/tomato-grades-and-standards; retrieved 2026-09-14"
+    used_for: "grade, maturity, cleanliness, defect, and reject classification"
+  - id: "fao-tomato-good-agricultural-practices"
+    type: "official_guidance"
+    reference: "FAO, Manual de buenas prácticas agrícolas en la cadena del tomate, https://www.fao.org/family-farming/detail/es/c/286792/; retrieved 2026-09-14"
+    used_for: "tomato process decomposition, crop management, crop protection, residue, and transport practices"
+  - id: "fao-greenhouse-vegetables-2013"
+    type: "official_guidance"
+    reference: "FAO, Good Agricultural Practices for greenhouse vegetable crops, https://www.fao.org/4/i3284e/i3284e.pdf; retrieved 2026-09-14"
+    used_for: "greenhouse, fertigation, water, nutrient, electricity, drainage, and route-specific methodology"
+  - id: "fao-crop-evapotranspiration-56"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, Crop evapotranspiration, https://www.fao.org/4/X0490E/X0490E00.htm; retrieved 2026-09-14"
+    used_for: "irrigation measurement and water-balance method"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html; retrieved 2026-09-14"
+    used_for: "nitrogen emission method and managed-soil boundary"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html; retrieved 2026-09-14"
+    used_for: "allocation, co-product, attribution, and data-quality principles"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "PCR mass-balance reconciliation method: gross received or harvested mass equals accepted product plus separately recorded downgraded, residue, treatment, and unexplained loss streams"
+    used_for: "calculation and validation mass closure"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:c71cb8bd29c226cba48873fc521f3d781da4f4a56093298b91f5a9529c03c29d"
+  generated_content_sha256: "sha256:532cec110973f78d002a08645269ec6e8eab0d4623b68457cbd9136279f5e139"

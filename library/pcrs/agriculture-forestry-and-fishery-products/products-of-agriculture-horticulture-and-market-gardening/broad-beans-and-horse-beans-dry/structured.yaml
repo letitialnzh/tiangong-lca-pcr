@@ -1,10 +1,1165 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01702"
-  title: "Broad beans and horse beans, dry"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.broad-beans-and-horse-beans-dry"
+  classification_refs: "CPC 3.0 01702 Broad beans and horse beans, dry"
+  covered_products: "mature dry *Vicia faba* grain sold as broad, faba, field, or horse bean"
+  excluded_products: "green/fresh beans; planting seed sold as seed; other dry pulses; forage, silage, cover crop or green manure; processed bean fractions"
+  representative_product: "cleaned and graded mature dry *Vicia faba* grain"
+  production_route: "managed cool-season field production, mature harvest, threshing/cleaning, conditional drying and grading; route deltas are declared from their parent node"
+  market_state: "harvested grain, unprocessed, at Production mix, at farm gate, with moisture, grade and intended food/feed market declared"
+functional_unit:
+  what: "cleaned, graded, mature dry *Vicia faba* grain accepted at farm gate"
+  how_much: "1,000 kg net grain mass"
+  how_well: "declared moisture and market grade; excludes foreign matter, straw/hulls, shattering loss, downgraded grain, rejects and seed sold for planting"
+  how_long_or_cycle: "one declared crop cycle and linked conditioning lots"
+  reference_flow_link: "accepted output of farm_gate_grading"
+system_boundary:
+  rules:
+    - rule_id: boundary_field_to_gate
+      applies_to: "full route"
+      rule: "Include field establishment and management through accepted graded dry grain, including route-specific pre-drying, threshing, cleaning, drying and grading."
+      source_ids:
+        - vce-faba-bean-2024
+        - fao-grain-postharvest
+    - rule_id: boundary_identity
+      applies_to: "reference output"
+      rule: "Count only mature dry *Vicia faba* grain; exclude green harvest, planting-seed certification, other pulses and downstream processing."
+      source_ids:
+        - vce-faba-bean-2024
+        - feedipedia-faba-bean
+    - rule_id: boundary_harvest_node
+      applies_to: "harvest"
+      rule: "Keep harvest distinct because standing crop becomes collected material and creates shattering, field-residue and hand-off records before conditioning."
+      source_ids:
+        - fao-predrying
+    - rule_id: boundary_conditioning_states
+      applies_to: "post-harvest"
+      rule: "Record harvested material, clean grain, stabilized grain, residues, removed water, rejects and losses at their actual hand-offs."
+      source_ids:
+        - fao-grain-postharvest
+    - rule_id: boundary_residue_destination
+      applies_to: "residues"
+      rule: "Separate returned, removed, burned and discarded residues in soil-emission calculations and prevent double counting."
+      source_ids:
+        - ipcc-2019-managed-soils
+boundary_abstraction:
+  declared_starting_condition: "prepared field and purchased or retained planting material entering the declared crop cycle"
+  starting_condition_role: "foreground agricultural start; preceding crop, land occupation and retained-seed origin disclosed when material"
+  product_classification_scope: "mature dry *Vicia faba* grain represented by CPC 3.0 01702"
+  recursive_input_rule: "retained grain used for sowing is an input from a separately described prior-cycle or seed dataset, not current-cycle reference output"
+  upstream_dataset_requirement: "supplier/region-specific datasets for planting material, nutrients, crop protection, water and energy; actual identities retained"
+  disclosure: "site, season, cultivar class, prior crop, sowing, irrigation, management, harvest state, pre-drying, threshing, cleaning, drying, grading, moisture, destinations and hand-off"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Broad beans and horse beans, dry"
+    uuid: "b9ccab43-8330-44f4-b125-456e97ec6e87"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "*Vicia faba* identity"
+    - "mature dry grain"
+    - "production geography"
+    - "winter/spring crop"
+    - "rainfed/irrigated"
+    - harvest
+    - "threshing and drying route"
+    - "wet-basis moisture"
+    - grade
+    - market
+    - accepted
+    - downgraded
+    - rejected
+    - "residue and loss quantities"
+    - "crop cycle"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report net grain mass at measured farm-gate moisture; exclude packaging, foreign matter, residues, downgraded grain and rejects."
+  - id: moisture_conversion
+    applies_to: "grain before/after drying"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg and % wet basis"
+    rule: "Preserve dry matter: dry matter = wet mass × (1 − moisture fraction); convert only from paired mass and moisture observations."
+  - id: nutrient_products
+    applies_to: "all mineral/organic fertilizers and nutrient-bearing amendments"
+    required_property_ref:
+      name: "product mass and analysis"
+      uuid: ""
+    required_unit: "kg product and kg nutrient"
+    rule: "Collect each product and analysis separately, but use one consolidated nutrient-supply Product-input card per process."
+  - id: area_yield
+    applies_to: "field production"
+    required_property_ref:
+      name: "area and accepted grain mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Calculate yield from cultivated area and accepted grain in the same crop cycle; disclose failed area."
+  - id: energy_identity
+    applies_to: "all energy uses"
+    required_property_ref:
+      name: "carrier-specific property"
+      uuid: ""
+    required_unit: "original unit plus MJ or kWh"
+    rule: "Preserve carrier, original quantity and conversion basis."
+process_map:
+  - id: managed_field_production
+    name: "Managed faba bean production"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "biological-production parent with winter/spring and rainfed/irrigated route delta records"
+    quantitative_reference: "crop cycle and cultivated hectare"
+  - id: mature_crop_harvest
+    name: "Mature harvest and pre-drying"
+    inclusion: "required"
+    inclusion_condition: "always; pre-drying may be zero"
+    role: "independent capture parent with manual, windrow and combine technology delta records"
+    quantitative_reference: "kg standing crop entering harvest"
+  - id: threshing_cleaning
+    name: "Threshing and cleaning"
+    inclusion: "required"
+    inclusion_condition: "may be physically integrated with harvest but quantitatively distinct"
+    role: "primary conditioning to clean grain"
+    quantitative_reference: "kg collected material"
+  - id: moisture_stabilization
+    name: "Moisture-controlled drying"
+    inclusion: "conditional"
+    inclusion_condition: "grain above declared gate moisture or active drying/aeration"
+    role: "preservation to stable moisture"
+    quantitative_reference: "kg clean grain entering drying"
+  - id: farm_gate_grading
+    name: "Grading and hand-off"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "sorting to accepted, downgraded, rework and reject states"
+    quantitative_reference: "kg conditioned grain"
+process_inventory:
+  - id: managed_field_production
+    label: "Managed faba bean production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Planting material"
+          name: "*Vicia faba* planting material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased seed or retained mature grain actually sown."
+          amount:
+            expression: "measured mass sown, net of unused material"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "50"
+                upper: "600"
+                unit: "kg"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_products
+          role: "Consolidated nutrient products"
+          name: "agricultural nutrient supply products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg product, with nutrient analysis"
+          description: "This sole nutrient card covers every mineral fertilizer, organic fertilizer, lime and nutrient-bearing amendment. Raw records retain actual products and analyses for concrete UUID resolution."
+          amount:
+            expression: "sum product masses after retaining individual product records; zero when none"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg product"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record withdrawal or delivered water only for irrigated lots, preserving source and conveyance boundary."
+          amount:
+            expression: "measured withdrawal or delivered volume"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_treatment_products
+          role: "Field treatment products"
+          name: "crop-protection and non-nutrient inoculation products"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L formulated product"
+          description: "Record formulated crop-protection products and non-nutrient inoculants by product and concentration."
+          amount:
+            expression: "measured formulated-product amount applied"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg or L formulated product"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy"
+          name: "field-operation energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ and kWh, preserving carrier quantity"
+          description: "Record fuels and electricity for soil preparation, sowing, irrigation pumping and crop management."
+          amount:
+            expression: "carrier-specific metered or invoiced use allocated to crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ energy-equivalent"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_mature_crop
+          role: "Standing mature crop"
+          name: "standing mature *Vicia faba* crop"
+          flow_type: "product"
+          property_unit: "Mass / kg above-ground harvested fraction"
+          description: "Hand the mature crop to harvest; it is not accepted dry grain."
+          amount:
+            expression: "harvested material plus measured field/shattering losses, moisture state declared"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "111"
+                upper: "909"
+                unit: "m2 cultivated area"
+                basis: "area implied by 1.1–9 t/ha reported dry-seed yield per 1,000 kg accepted grain, before losses"
+                basis_kind: "reference_flow"
+                evidence_kind: "external_source"
+                source_ids:
+                  - feedipedia-faba-bean
+      waste:
+        []
+      elementary:
+        - row_id: managed_soil_emissions
+          role: "Managed-soil emissions"
+          name: "managed-soil emissions by substance and compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg substance"
+          description: "Calculate substance- and compartment-specific emissions from nutrient inputs, residue N, deposition, leaching, lime and urea using the declared national or IPCC method."
+          amount:
+            expression: "method calculation from collected field and residue records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg reported substances"
+                basis: "per 1,000 kg accepted dry grain; substances remain separate before screening"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: mature_crop_harvest
+    label: "Mature harvest and pre-drying"
+    inputs:
+      product:
+        - row_id: harvest_energy
+          role: "Harvest energy"
+          name: "harvest energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ and kWh, preserving carrier quantity"
+          description: "Record fuels/electricity for cutting, pulling, windrowing, combining, pickup and movement to conditioning."
+          amount:
+            expression: "carrier-specific use assigned to lot/period"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ energy-equivalent"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_harvest_material
+          role: "Collected harvest material"
+          name: "collected mature faba bean harvest material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record collected pods/plants or combine material as the intended output and record its pre-drying state at the conditioning hand-off."
+          amount:
+            expression: "measured wet mass with moisture and included plant fractions"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - fao-grain-postharvest
+                - fao-predrying
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "6000"
+                unit: "kg wet harvested material"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_residue_product
+          role: "Valuable field residues"
+          name: "faba bean field residues with beneficial destination"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record removed straw/stems as co-product only with a beneficial destination and positive value; returned residues stay in residue management."
+          amount:
+            expression: "measured/calculated removed dry matter by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - vce-faba-bean-2024
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg dry matter"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_grain_loss
+          role: "Shattering and harvest loss"
+          name: "faba bean grain lost during harvest"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record grain lost by shattering, pickup or harvest operation; never include it in accepted/downgraded output."
+          amount:
+            expression: "measured loss sample or lot mass-balance estimate"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - fao-predrying
+                - feedipedia-faba-bean
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg grain"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: threshing_cleaning
+    label: "Threshing and cleaning"
+    inputs:
+      product:
+        - row_id: conditioning_energy
+          role: "Conditioning energy"
+          name: "conditioning energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ and kWh, preserving carrier quantity"
+          description: "Record fuels/electricity for threshing, shelling, winnowing, screening and material movement."
+          amount:
+            expression: "carrier use metered/allocated to lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "MJ energy-equivalent"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cleaned_grain
+          role: "Cleaned grain"
+          name: "cleaned mature faba bean grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record threshed/cleaned grain as the intended output with incoming moisture; send it to drying when above target, otherwise to grading."
+          amount:
+            expression: "measured lot mass after foreign matter removal"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - fao-grain-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1800"
+                unit: "kg at incoming moisture"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_residue_product
+          role: "Valuable straw and hulls"
+          name: "faba bean straw and pod hulls with beneficial destination"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record separated straw/hulls as co-product only with beneficial destination and positive value."
+          amount:
+            expression: "measured/moisture-corrected mass by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4000"
+                unit: "kg dry matter"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Cleaning rejects"
+          name: "discarded threshing and cleaning residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record contaminated straw/hulls, soil, stones, foreign matter and unrecovered grain by class and destination."
+          amount:
+            expression: "measured reject mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg residues"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: moisture_stabilization
+    label: "Moisture-controlled drying"
+    inputs:
+      product:
+        - row_id: drying_energy
+          role: "Drying energy"
+          name: "drying and aeration energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ and kWh, preserving carrier quantity"
+          description: "Record fuels/electricity/purchased heat for drying or aeration; natural drying records zero purchased energy plus time/weather."
+          amount:
+            expression: "carrier use metered to lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ energy-equivalent"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_grain
+          role: "Stabilized grain"
+          name: "moisture-stabilized mature faba bean grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record grain handed to grading after natural/mechanical drying with paired mass and moisture."
+          amount:
+            expression: "measured outgoing mass verified by dry-matter balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_lot
+              source_ids:
+                - fao-grain-postharvest
+                - feedipedia-faba-bean
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "14"
+                unit: "percent moisture, wet basis"
+                basis: "stabilized grain lot; above 12% requires aeration/destination justification and above 14% explicit non-storage hand-off"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-grain-postharvest
+                  - feedipedia-faba-bean
+      waste:
+        - row_id: drying_loss
+          role: "Drying loss"
+          name: "grain rejected during drying"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record spilled, mould-, heat- or pest-damaged grain; exclude calculated water removal."
+          amount:
+            expression: "measured loss plus reconciled unexplained dry-matter loss"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg grain dry-matter equivalent"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: removed_water
+          role: "Removed water"
+          name: "water to air from grain drying"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate water removed from paired mass/moisture and keep it separate from dry-matter loss."
+          amount:
+            expression: "incoming water mass minus outgoing water mass"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_lot
+              source_ids:
+                - fao-grain-drying
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1500"
+                unit: "kg water"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: farm_gate_grading
+    label: "Grading and hand-off"
+    inputs:
+      product:
+        - row_id: grading_energy
+          role: "Grading energy"
+          name: "grading energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ and kWh, preserving carrier quantity"
+          description: "Record electricity/fuel for screens, separators, conveyors and handling, including shared cleaning once."
+          amount:
+            expression: "carrier use assigned to grading lots"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "MJ energy-equivalent"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_dry_grain
+          role: "Accepted dry grain"
+          name: "Broad beans and horse beans, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b9ccab43-8330-44f4-b125-456e97ec6e87"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "The intended reference output is accepted grain at declared grade, moisture and farm-gate hand-off."
+          amount:
+            expression: "1,000 kg net accepted grain"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "one reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "one reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "identity_reference"
+                source_ids: []
+        - row_id: downgraded_grain
+          role: "Downgraded grain"
+          name: "downgraded mature faba bean grain by grade and destination"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record damaged, split, undersized or off-grade grain as co-product only with sale/beneficial destination; exclude it from accepted output."
+          amount:
+            expression: "measured net mass at each beneficial hand-off"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg grain"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Grading rejects"
+          name: "grading rejects and discarded off-spec grain"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record off-spec grain without beneficial destination and foreign material as waste. Rework loops to cleaning or grading and is counted only at final hand-off."
+          amount:
+            expression: "measured reject mass net of documented rework return"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg rejects"
+                basis: "per 1,000 kg accepted dry grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_output_classification
+    applies_to: "all outputs"
+    rule: "Assign each quantity once to accepted product, valuable co-product, field-returned residue, rework, downgraded product, waste or loss at one hand-off."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_residue_default
+    applies_to: "straw/stems/leaves/hulls"
+    rule: "Field-returned material has no co-product allocation; removed material is a co-product only with beneficial destination and positive value, otherwise waste."
+    source_ids:
+      - vce-faba-bean-2024
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_economic_precedence
+    applies_to: "independently valuable co-products"
+    rule: "Use economic allocation with contemporaneous farm-gate values; otherwise single-output treatment. Report mass-allocation sensitivity when values are unavailable, unstable, or based on fewer than three representative transactions."
+    source_ids: []
+  - rule_id: allocation_rework
+    applies_to: "damaged/off-spec grain"
+    rule: "Retain burdens through re-cleaning/re-grading, count loop energy once, and classify material only at final hand-off."
+    source_ids: []
+  - rule_id: allocation_route_period
+    applies_to: "mixed routes/shared runs"
+    rule: "Attribute field burdens by crop cycle and post-harvest burdens by metered lot or throughput share; assign shared cleaning/changeover once."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_cycle
+      process_id: "managed_field_production"
+      flow_role: "inputs, area and emission drivers"
+      record_type: "field log/invoice/meter"
+      raw_fields: "crop; field; dates; area; seed; each nutrient product/analysis; treatments; water; carriers; lime/urea; prior crop"
+      collection_method: "reconcile logs, invoices, meters and maps"
+      unit: "native units, kg, L, m3, MJ, kWh, ha"
+      frequency: "each operation"
+      temporal_coverage: "crop cycle"
+      site_scope: "each field/route"
+      aggregation_rule: "retain product rows; sum like identities; allocate shared use by documented driver"
+      quality_evidence: "invoices, calibration, map, application/meter log"
+    - protocol_id: cp_harvest_lot
+      process_id: "mature_crop_harvest"
+      flow_role: "crop, collected state, residues and losses"
+      record_type: "ticket/sample/log"
+      raw_fields: "lot; maturity; route; pre-drying; masses; moisture; fractions; shatter; residue dry matter/destination; energy"
+      collection_method: "scales plus representative loss sampling"
+      unit: "kg, %, kg DM, MJ, kWh"
+      frequency: "field/lot"
+      temporal_coverage: "harvest period"
+      site_scope: "field/route"
+      aggregation_rule: "reconcile standing, collected, residue and loss; weight routes by accepted output"
+      quality_evidence: "calibration, sample design, log"
+    - protocol_id: cp_conditioning_lot
+      process_id: "threshing_cleaning"
+      flow_role: "clean grain, residues, rejects and energy"
+      record_type: "batch/meter/scale"
+      raw_fields: "lot; route; mass/moisture; residue mass/moisture/destination/value; rejects; energy/changeover"
+      collection_method: "calibrated instruments and destination records"
+      unit: "kg, %, kg DM, MJ, kWh"
+      frequency: "lot/run"
+      temporal_coverage: "campaign"
+      site_scope: "line/site"
+      aggregation_rule: "close wet/dry mass balance; assign shared burdens once"
+      quality_evidence: "calibration, batch sheet, receipt"
+    - protocol_id: cp_drying_lot
+      process_id: "moisture_stabilization"
+      flow_role: "stable grain, energy, water and loss"
+      record_type: "dryer/meter/moisture log"
+      raw_fields: "lot; technology; paired mass/moisture; duration; temperature; airflow; carriers; losses"
+      collection_method: "calibrated mass/moisture and energy records"
+      unit: "kg, %, MJ, kWh, h, °C"
+      frequency: "lot"
+      temporal_coverage: "campaign"
+      site_scope: "drying route"
+      aggregation_rule: "preserve dry matter; calculate water; assign energy/loss"
+      quality_evidence: "calibration, dryer/meter/inspection log"
+    - protocol_id: cp_grading_lot
+      process_id: "farm_gate_grading"
+      flow_role: "accepted, downgraded, rework and rejects"
+      record_type: "grading/scale/sales record"
+      raw_fields: "lot; incoming mass/moisture; criteria; each output mass/destination/value; rework; energy; date"
+      collection_method: "scale/sorter reconciled to destination"
+      unit: "kg, %, currency/kg, MJ, kWh"
+      frequency: "lot"
+      temporal_coverage: "reporting period"
+      site_scope: "grading site"
+      aggregation_rule: "accepted + downgraded + rejects = input − measured loss; rework only at final hand-off"
+      quality_evidence: "calibration, ticket, invoice, receipt"
+  calculation_rules:
+    - id: calc_moisture_dry_matter
+      applies_to: "moisture conversion"
+      rule: "dry matter = wet mass × (1 − wet-basis moisture fraction); normalized wet mass = dry matter / (1 − target fraction)"
+      inputs:
+        - "paired mass/moisture"
+      output: "dry matter and normalized mass"
+      source_ids:
+        - fao-grain-drying
+    - id: calc_removed_water
+      applies_to: "drying"
+      rule: "incoming water minus outgoing water; do not count as dry-matter loss"
+      inputs:
+        - "paired mass/moisture"
+      output: "kg water"
+      source_ids:
+        - fao-grain-drying
+    - id: calc_accepted_yield
+      applies_to: "field/reference"
+      rule: "accepted net grain divided by cultivated area; disclose failed area and moisture"
+      inputs:
+        - output
+        - area
+        - moisture
+      output: "kg/ha"
+      source_ids: []
+    - id: calc_residue_n
+      applies_to: "returned residue"
+      rule: "selected national method or IPCC Equation 11.6, separating above/below ground and removed/burned fractions"
+      inputs:
+        - yield
+        - "residue DM/N"
+        - "destination fractions"
+      output: "kg residue N returned"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_mass_balance
+      applies_to: "post-harvest lots"
+      rule: "incoming dry matter = accepted + downgraded + valuable residue + final waste/loss dry matter; investigate residual"
+      inputs:
+        - "all states/moisture"
+      output: "closure error/flag"
+      source_ids: []
+    - id: calc_route_mix
+      applies_to: "route alternatives"
+      rule: "sum(route result × accepted-output share); enter shared burdens once"
+      inputs:
+        - "route inventories/shares"
+      output: "production mix"
+      source_ids: []
+    - id: calc_economic_allocation
+      applies_to: "valuable outputs"
+      rule: "output value / sum independently valuable output values on same period/moisture basis"
+      inputs:
+        - "masses/prices/moisture"
+      output: "allocation fractions"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "grain"
+      requirement: "Demonstrate *Vicia faba*, mature dry-grain purpose, market name, grade and non-seed hand-off."
+      evidence: "crop/lot/specification/invoice"
+    - id: dq_temporal
+      applies_to: "route"
+      requirement: "Link one representative crop cycle to its post-harvest lots; justify averaging and retain failed crops."
+      evidence: "dated records"
+    - id: dq_measurement
+      applies_to: "mass/moisture/energy/water"
+      requirement: "Use calibrated instruments or documented invoices/meters; retain basis, uncertainty and substitutions."
+      evidence: "calibration and raw records"
+    - id: dq_completeness
+      applies_to: "output states"
+      requirement: "Reconcile accepted, downgraded, reworked, residue, waste, shattering, handling and removed-water states."
+      evidence: "node balances/receipts"
+    - id: dq_route_specificity
+      applies_to: "alternatives"
+      requirement: "Keep winter/spring, rainfed/irrigated, manual/mechanical and natural/mechanical drying records separate before mixing."
+      evidence: "route-coded records"
+    - id: dq_flow_identity
+      applies_to: "parameterized/unmapped rows"
+      requirement: "Resolve every emitted Product exchange and substance/compartment-specific elementary exchange to verified UUIDs before TIDAS publication."
+      evidence: "resolution record"
+    - id: dq_range_review
+      applies_to: "quantitative rows"
+      requirement: "Use ranges only as QA screens; investigate exceptions and retain foreground values."
+      evidence: "QA note/raw record"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference output"
+    rule: "Require the stated product/property/unit-group UUIDs, 1,000 kg, mature dry *Vicia faba*, moisture, grade and farm-gate hand-off."
+    source_ids: []
+  - rule_id: validate_scope
+    applies_to: "package"
+    rule: "Reject green beans, planting seed sold as seed, other pulse species, downstream processing or post-gate transport in the reference output."
+    source_ids: []
+  - rule_id: validate_processes
+    applies_to: "graph"
+    rule: "Require field production, harvest, threshing/cleaning and grading; require drying when moisture exceeds target or active drying/aeration occurs."
+    source_ids:
+      - fao-grain-postharvest
+      - fao-predrying
+  - rule_id: validate_route_delta
+    applies_to: "alternatives"
+    rule: "Name parent and real topology/inventory/calculation/data/validation delta; require shares for coexisting routes and forbid unqualified merging of mutually exclusive routes."
+    source_ids: []
+  - rule_id: validate_mode_indexing
+    applies_to: "cycles/lots/runs"
+    rule: "Link inputs, outputs, cleaning and changeover to cycles/lots/periods; prevent duplicate shared-run burdens."
+    source_ids: []
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "each process"
+    rule: "At most one nutrient Product-input card, bound only to flow-set.agricultural-nutrient-supply@0.3.0 without group; retain actual products separately."
+    source_ids: []
+  - rule_id: validate_output_states
+    applies_to: "all output nodes"
+    rule: "Give every accepted, downgraded, reworked, valuable residue, returned residue, waste and loss one class and hand-off; rejected material cannot be accepted output."
+    source_ids: []
+  - rule_id: validate_allocation
+    applies_to: "multi-output nodes"
+    rule: "Require explicit single-output/economic decision, values and period; require mass sensitivity when values are weak and prevent double hand-offs."
+    source_ids: []
+  - rule_id: validate_moisture
+    applies_to: "drying/final grain"
+    rule: "Require paired mass/moisture, dry-matter preservation, separate removed water and investigation of unexplained loss."
+    source_ids:
+      - fao-grain-drying
+  - rule_id: validate_rework
+    applies_to: "rejects"
+    rule: "Point rework to cleaning or grading, retain prior burdens, count loop energy once and record final destination."
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "Flow Cards"
+    rule: "Require exactly one complete Range per quantitative card and exact EN/ZH/structured agreement of label, role, bounds, unit, basis, basis kind, evidence kind and source ids."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground production dataset for mature dry *Vicia faba* grain at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after representativeness review"
+  allowed_use: "farm-gate footprints and supply-chain models for unprocessed dry broad/faba/horse bean grain with declared moisture, grade and route"
+  excluded_use: "green beans; planting seed; other pulses; processed ingredients; undisclosed generic pulse proxy"
+  required_metadata: "identity; geography; crop cycle; season route; irrigation; prior crop; harvest/threshing/drying/grading; moisture; grade; market; route shares; destinations; allocation; hand-off"
+  required_quality_disclosure: "age/coverage; primary share; calibration; substitutions; range exceptions; mass balance; residue destinations; emission method; allocation/sensitivity; unresolved identities"
+  update_trigger: "material change in cultivar, route, input regime, yield/climate, technology, moisture/grade, destination/value, allocation/emission method, or data older than five years"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "vce-faba-bean-2024"
+    type: "extension_guidance"
+    reference: "Virginia Cooperative Extension, *Faba Bean: A Multipurpose Specialty Crop for the Mid-Atlantic USA*, SPES-590, https://www.pubs.ext.vt.edu/SPES/spes-590/spes-590.html"
+    used_for: "identity, green/dry distinction, cool-season production, residue return"
+  - id: "fao-grain-postharvest"
+    type: "official_guidance"
+    reference: "FAO, *Agricultural engineering in development: Grain and post-harvest systems*, https://www.fao.org/4/T0522E/T0522E03.htm"
+    used_for: "harvest, pre-drying, threshing, cleaning, drying and about 14% storage moisture"
+  - id: "fao-predrying"
+    type: "official_guidance"
+    reference: "FAO, *Agricultural engineering in development: Pre-drying*, https://www.fao.org/4/T0522E/T0522E06.htm"
+    used_for: "pre-drying boundary, route conditions and field-delay losses"
+  - id: "fao-grain-drying"
+    type: "handbook"
+    reference: "FAO, *Farm structures in tropical climates: Grain drying*, https://www.fao.org/4/s1250e/S1250E0u.htm"
+    used_for: "wet-basis moisture, dry-matter conversion and drying controls"
+  - id: "feedipedia-faba-bean"
+    type: "handbook"
+    reference: "Feedipedia (INRAE, CIRAD, AFZ and FAO), *Faba bean (Vicia faba)*, https://feedipedia.review.fao.org/node/4926"
+    used_for: "identity, maturity, 1.1–9 t/ha yield span, shattering/splitting and 12% storage moisture"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, *2019 Refinement, Volume 4, Chapter 11*, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil emissions, N-fixing pulse residue N and destination double-counting prevention"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:759eafd232e03087039323c718f223bc9ec3733d17b412fb2362782e22017280"
+  generated_content_sha256: "sha256:2638f24d210489676f6b462680ce2ce366f4b1725b5a07be5d58d708370d9af1"

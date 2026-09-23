@@ -1,10 +1,822 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01344"
-  title: "Cherries"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cherries"
+  classification_refs: "CPC 3.0:01344 Cherries"
+  covered_products: "Fresh, whole, unprocessed cherries at the declared orchard or pack-house gate"
+  excluded_products: "Nursery production; dried, frozen, canned, juiced, fermented or otherwise processed cherries; retail, consumers, downstream transport, unrelated land conversion and infrastructure"
+  representative_product: "Marketable fresh whole cherry at declared maturity, grade and gate"
+  production_route: "Orchard establishment or renewal; managed tree and fruit production; irrigation, nutrient, soil-amendment and crop-protection management; harvest; optional grading, cooling and primary packing"
+  market_state: "Fresh whole cherries in bulk or declared primary packaging at the orchard or pack-house gate"
+functional_unit:
+  what: "Marketable fresh cherries at the declared orchard or pack-house gate"
+  how_much: "1,000 kg"
+  how_well: "Fresh and unprocessed; declared species or cultivar, maturity, size or grade, stem condition, cleanliness, cooling or washing state, and packaging state"
+  how_long_or_cycle: "One declared production year or orchard crop cycle, including all harvest lots attributed to that cycle"
+  reference_flow_link: "cherries_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_declared_orchard_cycle
+      applies_to: "establishment and orchard management"
+      rule: "Include the declared establishment or productive-cycle renewal, management and inputs that produce the fresh output; exclude unrelated infrastructure."
+      source_ids:
+        - fao-good-agricultural-practices
+        - globalgap-ifa-fruit-vegetables-v6
+    - rule_id: boundary_farm_gate_conditioning
+      applies_to: "harvest and primary conditioning"
+      rule: "End at the declared orchard or pack-house gate; include grading, cooling, washing and primary packing only when before that gate."
+      source_ids:
+        - fao-fresh-fruit-postharvest-guidance
+        - globalgap-ifa-fruit-vegetables-v6
+    - rule_id: boundary_soil_residue_pathway
+      applies_to: "nutrients, soil, residues and rejects"
+      rule: "Use one declared nitrogen and residue method; do not double count pathways or claim a residue credit without destination and function evidence."
+      source_ids:
+        - ipcc-2019-refinement-afolu
+        - fao-good-agricultural-practices
+boundary_abstraction:
+  declared_starting_condition: "Prepared orchard unit receiving cherry planting material or entering a declared productive cycle; prior land use and excluded infrastructure are disclosed"
+  starting_condition_role: "Start of orchard establishment, production year or productive crop-cycle accounting"
+  product_classification_scope: "Fresh cherries under CPC 3.0:01344 through the declared orchard or pack-house gate"
+  recursive_input_rule: "Link purchased planting material once; nursery and propagation remain outside this PCR unless a separate upstream dataset is supplied. Do not recursively expand same-category inputs without evidence."
+  upstream_dataset_requirement: "Provide upstream datasets for planting material, nutrients and amendments, crop protection, irrigation water, electricity, fuel, packaging, transport or treatment services when used."
+  disclosure: "Declare geography, cultivar, route, orchard age, cycle, irrigation, nutrient and crop-protection program, harvest lots, gate, output reconciliation, handling, packaging, residue and wastewater fate."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fresh cherries at orchard or pack-house gate"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - geography
+    - "species and cultivar"
+    - "orchard route and age"
+    - "cycle dates"
+    - "declared gate"
+    - maturity
+    - grade
+    - "stem and cooling state"
+    - irrigation
+    - "nutrient and crop-protection basis"
+    - packaging
+    - residue
+    - "reject and wastewater fate"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_product_mass
+    applies_to: "harvest lots and gate output"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile harvested fruit, marketable output, rejects, trim, residues and documented loss as separate quantities."
+  - id: orchard_cycle_normalization
+    applies_to: "orchard and crop-cycle records"
+    required_property_ref:
+      name: "Area, time and mass"
+      uuid: ""
+    required_unit: "ha, year, kg"
+    rule: "Record by orchard block and normalize to marketable output attributed to the same declared cycle."
+  - id: nutrient_product_basis
+    applies_to: "fertilizer and soil amendment"
+    required_property_ref:
+      name: "Product mass and nutrient"
+      uuid: ""
+    required_unit: "kg product, kg N, kg P2O5, kg K2O"
+    rule: "Record actual product mass and calculate nutrients only from a label, supplier specification, nutrient plan or laboratory result."
+  - id: water_energy_basis
+    applies_to: "irrigation, cooling, electricity and fuel"
+    required_property_ref:
+      name: "Volume, energy or fuel"
+      uuid: ""
+    required_unit: "m3, kWh, MJ, L"
+    rule: "Keep water, electricity and fuel separate and disclose every conversion or shared-equipment allocation."
+process_map:
+  - id: cherry_orchard_establishment
+    name: "Cherry orchard establishment"
+    inclusion: "required"
+    inclusion_condition: "represented planting, replanting or orchard-unit establishment"
+    role: "foreground orchard establishment"
+    quantitative_reference: "established area and attributed output"
+  - id: managed_cherry_orchard_cycle
+    name: "Managed cherry orchard cycle"
+    inclusion: "required"
+    inclusion_condition: "every represented production year or productive cycle"
+    role: "foreground biological production"
+    quantitative_reference: "managed area and harvest"
+  - id: cherry_harvest_and_gate_handling
+    name: "Cherry harvest and gate handling"
+    inclusion: "required"
+    inclusion_condition: "represented harvest and declared gate"
+    role: "foreground harvest, conditioning and gate hand-off"
+    quantitative_reference: "1,000 kg gate output"
+  - id: cherry_residue_and_reject_routing
+    name: "Cherry residue and reject routing"
+    inclusion: "conditional"
+    inclusion_condition: "residue, reject, recovery or treatment occurs before the gate"
+    role: "foreground residue and reject fate"
+    quantitative_reference: "measured routed mass"
+process_inventory:
+  - id: cherry_orchard_establishment
+    label: "Cherry orchard establishment"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Cherry planting material"
+          name: "Cherry planting material"
+          flow_type: "product"
+          property_unit: "Count or mass / plant or kg"
+          description: "Cherry trees, rootstocks or grafted plants cross the establishment boundary as purchased or transferred material."
+          amount:
+            expression: "Record purchased, planted and replaced quantities by orchard block."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+        - row_id: cherry_orchard_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_and_amendment_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: establishment_land_occupation
+          role: "Orchard land occupation"
+          name: "Land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha year"
+          description: "The orchard block occupies land during establishment and the burden is allocated to productive cycles."
+          amount:
+            expression: "Orchard area multiplied by the documented establishment allocation period."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: managed_cherry_orchard_cycle
+    label: "Managed cherry orchard cycle"
+    inputs:
+      product:
+        - row_id: irrigation_water_input
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Irrigation water crosses the orchard boundary when delivered to the represented cherry block."
+          amount:
+            expression: "Metered or supplier-recorded volume allocated to the block."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+        - row_id: orchard_electricity_input
+          role: "Electricity for irrigation and cooling"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Purchased electricity used by pumps, cooling equipment or orchard equipment is recorded for the represented cycle."
+          amount:
+            expression: "Metered or invoiced electricity allocated to the block and cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_and_fuel_records
+              source_ids:
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+        - row_id: orchard_fuel_input
+          role: "Mobile machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or volume / MJ or L"
+          description: "Fuel used by tractors, sprayers and harvest equipment crosses the boundary when consumed."
+          amount:
+            expression: "Fuel issue records, tank measurements or invoices allocated to orchard work."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_and_fuel_records
+              source_ids:
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+        - row_id: managed_cherry_orchard_cycle_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_and_amendment_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products"
+          name: "Crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg product or L"
+          description: "Named products and active substances used on the orchard are recorded without collapsing distinct products into a generic flow."
+          amount:
+            expression: "Record each named formulation and active substance by block and application event."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: productive_land_occupation
+          role: "Productive orchard land occupation"
+          name: "Land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha year"
+          description: "Productive cherry area is occupied for the declared cycle and normalized to marketable gate output."
+          amount:
+            expression: "Productive orchard area times the cycle duration divided by marketable gate output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_cycle_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: water_withdrawal
+          role: "Irrigation water withdrawal"
+          name: "Water resource withdrawal"
+          flow_type: "elementary"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Source-specific water withdrawal is recorded separately from delivered irrigation water to avoid double counting."
+          amount:
+            expression: "Calculate from metered source withdrawal and disclose source and return flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: soil_n2o_emission
+          role: "Managed-soil nitrous oxide emission"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Direct and indirect soil nitrogen emissions are represented only after the nutrient basis and selected method are declared."
+          amount:
+            expression: "Apply one selected method to documented nitrogen inputs and disclose factors and conversions."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_and_amendment_records
+              source_ids:
+                - ipcc-2019-refinement-afolu
+            ranges: []
+  - id: cherry_harvest_and_gate_handling
+    label: "Cherry harvest and gate handling"
+    inputs:
+      product:
+        - row_id: primary_packaging_input
+          role: "Primary packaging"
+          name: "Primary packaging material"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "rigid-container-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Crates, cartons, punnets or other primary packaging cross the boundary when applied before the declared pack-house gate."
+          amount:
+            expression: "Record packaging material mass by lot, format and reuse status."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_and_packaging_records
+              source_ids:
+                - fao-fresh-fruit-postharvest-guidance
+            ranges: []
+        - row_id: pre_gate_cooling_energy
+          role: "Pre-gate cooling energy"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Cooling or cold-room electricity used before the declared pack-house gate is included when it is part of the selected route."
+          amount:
+            expression: "Metered or allocated electricity for cooling by cherry lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_and_packaging_records
+              source_ids:
+                - fao-fresh-fruit-postharvest-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_cherry_output
+          role: "Marketable fresh cherries"
+          name: "Fresh cherries at declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Marketable cherries leave the foreground system at the declared orchard or pack-house gate as the reference product."
+          amount:
+            expression: "Weighed marketable output after declared grading and pre-gate handling."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "1,000 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids:
+                - fao-fresh-fruit-postharvest-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: cherry_residue_and_reject_routing
+    label: "Cherry residue and reject routing"
+    inputs:
+      product:
+        - row_id: reject_cherry_input
+          role: "Rejected or downgraded cherries"
+          name: "Rejected or downgraded cherries"
+          flow_type: "product"
+          property_unit: "Mass / kg wet fruit"
+          description: "Rejected or downgraded fruit enters this conditional process when it is routed to recovery, treatment or disposal before the gate."
+          amount:
+            expression: "Record weighed reject mass and destination by lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - fao-fresh-fruit-postharvest-guidance
+            ranges: []
+      waste:
+        - row_id: residual_waste_output
+          role: "Residual waste to treatment or disposal"
+          name: "Residual organic waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet matter"
+          description: "Residual waste leaves the conditional routing process when no documented recovery function is assigned."
+          amount:
+            expression: "Record mass and destination; do not claim a recovery credit without function evidence."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - fao-fresh-fruit-postharvest-guidance
+                - globalgap-ifa-fruit-vegetables-v6
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: recovered_organic_output
+          role: "Recovered organic material"
+          name: "Recovered organic material"
+          flow_type: "product"
+          property_unit: "Mass / kg wet or dry matter"
+          description: "Recovered organic material is recorded only when a measured destination and receiving function are documented."
+          amount:
+            expression: "Record recovered mass, moisture basis and destination; do not claim substitution without function evidence."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - fao-fresh-fruit-postharvest-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: residue_pathway_emission
+          role: "Soil or water pathway from residues"
+          name: "Residue-related soil or water release"
+          flow_type: "elementary"
+          property_unit: "Mass / kg substance"
+          description: "Documented soil or water releases from residue handling are recorded only when the destination and method are known."
+          amount:
+            expression: "Use the declared residue pathway and selected emission method; otherwise retain as an coverage finding item."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable gate output"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - ipcc-2019-refinement-afolu
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_shared_orchard_cycles
+    applies_to: "establishment and multiple cycles"
+    rule: "Allocate shared orchard burdens by documented area-time, tree-year or another justified physical basis and disclose the basis."
+    source_ids:
+      - fao-good-agricultural-practices
+  - rule_id: allocation_marketable_and_reject_outputs
+    applies_to: "harvest and gate handling"
+    rule: "Treat marketable cherries as the reference output; record downgraded fruit, culls, trim and recovered material separately, and allocate only where a genuine co-product function exists."
+    source_ids:
+      - fao-fresh-fruit-postharvest-guidance
+      - globalgap-ifa-fruit-vegetables-v6
+  - rule_id: allocation_recovered_residue_claim
+    applies_to: "recovered residues"
+    rule: "Do not claim avoided production unless destination, function, quantity and receiving-system evidence are documented."
+    source_ids:
+      - fao-good-agricultural-practices
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_orchard_establishment_records
+      process_id: "cherry_orchard_establishment"
+      flow_role: "planting material and area"
+      record_type: "orchard register and planting log"
+      raw_fields: "block_id; cultivar; plants; date; area; tree density"
+      collection_method: "document review and field reconciliation"
+      unit: "plant, ha, date"
+      frequency: "each event"
+      temporal_coverage: "establishment and allocated cycles"
+      site_scope: "each block"
+      aggregation_rule: "reconcile purchased, planted and failed plants"
+      quality_evidence: "supplier lot and field register"
+    - protocol_id: cp_orchard_cycle_records
+      process_id: "managed_cherry_orchard_cycle"
+      flow_role: "orchard area and cycle"
+      record_type: "block register and farm log"
+      raw_fields: "block_id; area; dates; age; yield; weather; operations"
+      collection_method: "record review and block reconciliation"
+      unit: "ha, year, kg"
+      frequency: "monthly and cycle close"
+      temporal_coverage: "full cycle"
+      site_scope: "each block"
+      aggregation_rule: "aggregate by block and declared cycle"
+      quality_evidence: "block register and signed farm log"
+    - protocol_id: cp_irrigation_records
+      process_id: "managed_cherry_orchard_cycle"
+      flow_role: "irrigation and withdrawal"
+      record_type: "meter and pump log"
+      raw_fields: "block_id; source; volume; dates; method; allocation"
+      collection_method: "meter readout and allocation review"
+      unit: "m3"
+      frequency: "event or monthly"
+      temporal_coverage: "full cycle"
+      site_scope: "block and source"
+      aggregation_rule: "sum measured volume and allocate shared meters"
+      quality_evidence: "calibrated meter"
+    - protocol_id: cp_energy_and_fuel_records
+      process_id: "managed_cherry_orchard_cycle"
+      flow_role: "electricity and fuel"
+      record_type: "utility bill and equipment log"
+      raw_fields: "equipment; type; quantity; hours; allocation"
+      collection_method: "invoice and log review"
+      unit: "kWh, MJ, L"
+      frequency: "monthly and issue"
+      temporal_coverage: "full cycle"
+      site_scope: "orchard and gate equipment"
+      aggregation_rule: "allocate by hours, area or throughput"
+      quality_evidence: "invoice or meter"
+    - protocol_id: cp_nutrient_and_amendment_records
+      process_id: "cherry_orchard_establishment_managed_cherry_orchard_cycle"
+      flow_role: "fertilizer and amendments"
+      record_type: "purchase, application, label and plan"
+      raw_fields: "product; mass; N; P2O5; K2O; date; block; area"
+      collection_method: "record review and nutrient balance"
+      unit: "kg product and nutrient"
+      frequency: "application"
+      temporal_coverage: "full cycle"
+      site_scope: "each block"
+      aggregation_rule: "sum actual products and nutrients"
+      quality_evidence: "label or laboratory result"
+    - protocol_id: cp_crop_protection_records
+      process_id: "managed_cherry_orchard_cycle"
+      flow_role: "crop protection"
+      record_type: "spray log and purchase record"
+      raw_fields: "product; formulation; active substance; quantity; date; area"
+      collection_method: "record reconciliation"
+      unit: "kg or L"
+      frequency: "application"
+      temporal_coverage: "full cycle"
+      site_scope: "each block"
+      aggregation_rule: "sum product and disclose active substance"
+      quality_evidence: "label and signed log"
+    - protocol_id: cp_harvest_lot_records
+      process_id: "managed_cherry_orchard_cycle_cherry_harvest_and_gate_handling"
+      flow_role: "harvest and gate output"
+      record_type: "harvest ticket and scale record"
+      raw_fields: "block_id; lot_id; date; cultivar; harvested; marketable; grade; rejects"
+      collection_method: "scale reconciliation"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "all harvests"
+      site_scope: "block and gate"
+      aggregation_rule: "reconcile harvest, output, rejects and loss"
+      quality_evidence: "scale and traceability"
+    - protocol_id: cp_conditioning_and_packaging_records
+      process_id: "cherry_harvest_and_gate_handling"
+      flow_role: "cooling, packaging and wastewater"
+      record_type: "pack-house log and invoices"
+      raw_fields: "lot_id; water; electricity; material; quantity; cooling; destination"
+      collection_method: "mass balance and document review"
+      unit: "m3, kWh, kg"
+      frequency: "lot or shift"
+      temporal_coverage: "gate period"
+      site_scope: "each gate"
+      aggregation_rule: "allocate utilities and packaging to output"
+      quality_evidence: "meter and invoice"
+    - protocol_id: cp_residue_and_reject_records
+      process_id: "managed_cherry_orchard_cycle_cherry_harvest_and_gate_handling_cherry_residue_and_reject_routing"
+      flow_role: "residues, culls and waste"
+      record_type: "residue log and destination receipt"
+      raw_fields: "source; mass; moisture; destination; treatment; function; date"
+      collection_method: "weighing and destination review"
+      unit: "kg wet or dry matter"
+      frequency: "event or monthly"
+      temporal_coverage: "full cycle"
+      site_scope: "orchard and gate"
+      aggregation_rule: "reconcile source to recovery and residuals"
+      quality_evidence: "scale and receipt"
+  calculation_rules:
+    - id: calc_cycle_normalization
+      applies_to: "all process rows"
+      rule: "normalized amount = recorded amount / marketable gate output * 1,000 kg."
+      inputs:
+        - "block records"
+        - dates
+        - "gate output"
+      output: "normalized amount"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_nutrient_basis
+      applies_to: "fertilizer and amendment rows"
+      rule: "Keep product mass and N, P2O5 and K2O mass separate; calculate only from declared evidence."
+      inputs:
+        - "product mass"
+        - "nutrient fractions or result"
+      output: "product and nutrient amount"
+      source_ids:
+        - globalgap-ifa-fruit-vegetables-v6
+    - id: calc_soil_emissions
+      applies_to: "soil emission rows"
+      rule: "Apply one selected IPCC-compatible nitrogen method to documented inputs and disclose factors and conversions."
+      inputs:
+        - "N input"
+        - factors
+        - qualifiers
+      output: "elementary-flow amount"
+      source_ids:
+        - ipcc-2019-refinement-afolu
+    - id: calc_mass_reconciliation
+      applies_to: "harvest, gate and residue rows"
+      rule: "Reconcile harvest, marketable output, rejects, residues, recovered material and documented loss."
+      inputs:
+        - "lot records"
+        - scale
+        - "destination records"
+      output: "mass balance"
+      source_ids:
+        - fao-fresh-fruit-postharvest-guidance
+  data_quality_requirements:
+    - id: quality_identity_and_scope
+      applies_to: "all datasets"
+      requirement: "Declare species, cultivar, geography, block, route, orchard age, gate and cycle dates."
+      evidence: "orchard and lot registers"
+    - id: quality_measurement_traceability
+      applies_to: "measured inputs and outputs"
+      requirement: "Prefer calibrated meters, scales, invoices, application logs and destination receipts; document shared-record allocation."
+      evidence: "primary records and worksheet"
+    - id: quality_temporal_completeness
+      applies_to: "full cycle"
+      requirement: "Cover all harvests and applications and identify missing months, blocks or lots."
+      evidence: "cycle completeness checklist"
+    - id: quality_mass_balance
+      applies_to: "harvest and handling"
+      requirement: "Reconcile harvested, marketable, rejected, trimmed, recovered, residual and documented loss quantities."
+      evidence: "lot mass balance"
+    - id: quality_factor_disclosure
+      applies_to: "calculated soil and residue pathways"
+      requirement: "Disclose the selected factor method, nutrient basis, conversion and any excluded pathway."
+      evidence: "calculation worksheet and source reference"
+validation_rules:
+  - rule_id: validate_reference_qualifiers
+    applies_to: "reference flow and dataset"
+    rule: "Reject when required species, geography, route, cycle, gate, maturity, grade, stem or handling qualifiers are absent."
+    source_ids:
+      - fao-good-agricultural-practices
+      - globalgap-ifa-fruit-vegetables-v6
+  - rule_id: validate_cycle_and_output_reconciliation
+    applies_to: "cycle and gate output"
+    rule: "Check that inputs belong to the declared block and period and that output plus rejects, residues and loss reconcile to harvest."
+    source_ids:
+      - fao-fresh-fruit-postharvest-guidance
+  - rule_id: validate_nutrient_and_emission_basis
+    applies_to: "nutrient and emission rows"
+    rule: "Check product mass, nutrient basis, factor method and qualifiers; prevent duplicate nitrogen pathways."
+    source_ids:
+      - ipcc-2019-refinement-afolu
+  - rule_id: validate_gate_and_downstream_exclusion
+    applies_to: "boundary and use"
+    rule: "Check an explicit gate and exclude retail, consumers, downstream transport and processed cherries."
+    source_ids:
+      - globalgap-ifa-fruit-vegetables-v6
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset after review and release controls"
+  downstream_use: "Foreground agricultural modelling for fresh cherries at a declared orchard or pack-house gate"
+  allowed_use: "Use with product, geography, route, cycle, gate, input basis, residue fate and quality qualifiers retained"
+  excluded_use: "Processed cherries, retail or consumer stages, unqualified regional substitution, or missing gate and cycle scope"
+  required_metadata: "PCR id; CPC reference; product identity; geography; orchard scope; route; age; cycle dates; gate; grade; inputs; irrigation; residue fate; reference amount and unit"
+  required_quality_disclosure: "Temporal and site coverage, completeness, primary-record share, allocation, mass reconciliation, factors and identity evidence gaps"
+  update_trigger: "Change in route, irrigation, nutrient method, cycle allocation, gate handling, packaging or emission method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-good-agricultural-practices"
+    type: "official_guidance"
+    reference: "FAO good agricultural practices and orchard production guidance"
+    used_for: "orchard processes, inputs, boundary and cycle disclosure"
+  - id: "fao-fresh-fruit-postharvest-guidance"
+    type: "extension_guidance"
+    reference: "FAO fresh-fruit post-harvest handling guidance"
+    used_for: "harvest, grading, cooling, packing, reject and mass reconciliation"
+  - id: "globalgap-ifa-fruit-vegetables-v6"
+    type: "standard"
+    reference: "GLOBALG.A.P. Integrated Farm Assurance fruit and vegetables requirements"
+    used_for: "traceability, input, water, nutrient, crop-protection and quality evidence"
+  - id: "ipcc-2019-refinement-afolu"
+    type: "method_factor"
+    reference: "2019 IPCC Refinement, AFOLU"
+    used_for: "managed-soil nitrogen methods and emission-pathway disclosure"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:99a8b74ec691cdfd56d0d14437073f44970b931c5db8b84a320dfc9405f6b02b"
+  generated_content_sha256: "sha256:e88b51cf4def0ca2fa947ad0b2d50fceb209d2785b564ede4983b8af9f29dfdf"

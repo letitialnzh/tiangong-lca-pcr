@@ -1,10 +1,1220 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01707"
-  title: "Pigeon peas, dry"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.pigeon-peas-dry"
+  classification_refs: "CPC 3.0:01707 Pigeon peas, dry"
+  covered_products: "Mature, cleaned and graded dry whole pigeonpea grain at farm gate"
+  excluded_products: "Green vegetable pigeonpea; planting seed sold as seed; split dhal; flour; cooked or canned product; downstream milling"
+  representative_product: "Mature dry whole grain of *Cajanus cajan*"
+  production_route: "Managed cultivation; whole-plant cutting or mature-pod picking; drying; threshing; cleaning; grading; conditional final drying"
+  market_state: "Harvested grain, unprocessed; production mix, at farm gate"
+functional_unit:
+  what: "Mature dry whole pigeonpea grain, cleaned and graded, at farm gate"
+  how_much: "1,000 kg as delivered"
+  how_well: "Declared commercial grade, measured moisture, damage and foreign-matter basis, with unresolved rejects excluded"
+  how_long_or_cycle: "One declared crop cycle including every contributing harvest flush and conditioning lot"
+  reference_flow_link: "pigeonpea_farm_gate_grain"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The boundary starts with the declared field condition before establishment and ends at farm-gate hand-off of accepted grain. Cultivation hands a standing mature crop to an independent harvest node. Harvest creates whole-plant, branch or mature-pod lots. Drying, threshing, cleaning and grading create prepared grain. Conditional final drying stabilizes grain that has not reached the declared hand-off moisture."
+      source_ids: []
+    - rule_id: system_boundary_rule_2
+      applies_to: "foreground_system_boundary"
+      rule: "The crop-cycle model uses single-period attribution: later harvest flushes are batches within the same crop cycle."
+      source_ids: []
+    - rule_id: boundary_crop_cycle
+      applies_to: "Cultivation"
+      rule: "Include all attributable operations and inputs from the declared starting condition through maturity, including failed establishment and field loss."
+      source_ids:
+        - icrisat-pigeonpea-production-1992
+    - rule_id: boundary_harvest_routes
+      applies_to: "Harvest"
+      rule: "Model whole-plant cutting and mature-pod picking separately; index each repeated flush and do not treat standing crop retained for a later flush as harvested output."
+      source_ids:
+        - icrisat-pigeonpea-production-1992
+    - rule_id: boundary_conditioning
+      applies_to: "Conditioning"
+      rule: "Include field or floor drying, threshing, cleaning, grading and conditional final drying before farm gate; link every loss, reject and rework path to its producing node."
+      source_ids:
+        - icrisat-pigeonpea-production-1992
+    - rule_id: boundary_downstream
+      applies_to: "Product transformation"
+      rule: "Exclude dehulling, splitting, milling, cooking, canning, retail packing and distribution beyond farm gate."
+      source_ids: []
+    - rule_id: boundary_soil_emissions
+      applies_to: "Managed soil"
+      rule: "When N inputs or returned residues occur, include direct and relevant indirect managed-soil N2O pathways under the declared applicable method."
+      source_ids:
+        - ipcc-managed-soils-2019
+boundary_abstraction:
+  declared_starting_condition: "Field area, prior crop and residue state, soil management condition, establishment material and opening date before the crop cycle"
+  starting_condition_role: "Foreground cultivation starting condition"
+  product_classification_scope: "Mature dry whole pigeonpea grain within CPC 3.0:01707"
+  recursive_input_rule: "Returned grain rework remains linked to its originating lot and retains prior burdens; purchased pigeonpea used for sowing or blending is a separate upstream input."
+  upstream_dataset_requirement: "Use supplier-specific datasets for purchased seed, nutrient products, crop-protection products, water, fuels, electricity and services when available; disclose representative substitutes."
+  disclosure: "Geography; period; variety or maturity class; sole/intercrop status; crop duration; harvest route and flushes; drying and threshing technology; moisture and grade; residue destinations; allocation; rework; farm-gate hand-off"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Pigeon peas, dry"
+    uuid: "6cac6f0d-9d09-4685-86f5-e1cc1ac94511"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species *Cajanus cajan*"
+    - "mature dry whole grain"
+    - "harvest route"
+    - "crop cycle and flush count"
+    - geography
+    - "cultivation system"
+    - moisture
+    - grade
+    - "damage and foreign matter"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Grain-state mass"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report as-delivered mass with wet-basis moisture; convert dry matter as wet mass × (1 - moisture fraction)."
+  - id: area_to_reference
+    applies_to: "Field inputs, emissions and output"
+    required_property_ref:
+      name: "Stated activity property"
+      uuid: ""
+    required_unit: "source unit and kg reference product"
+    rule: "Retain area and crop-cycle records, then normalize by accepted farm-gate grain from the same cycle."
+  - id: nutrient_composition
+    applies_to: "Consolidated nutrient supply"
+    required_property_ref:
+      name: "Product mass and nutrient-element mass"
+      uuid: ""
+    required_unit: "kg product and kg element"
+    rule: "Preserve every actual product, mass, nutrient composition and application date; product mass is not nutrient mass."
+  - id: lot_reconciliation
+    applies_to: "Harvest and conditioning"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile input with products, co-products, rework transfers, rejects, moisture removal and physical loss without counting returned material twice."
+process_map:
+  - id: managed_cultivation
+    name: "Managed pigeonpea cultivation"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Managed biological production with an alternative production route delta"
+    quantitative_reference: "one field crop cycle"
+  - id: harvest_capture
+    name: "Whole-plant cutting or mature-pod picking"
+    inclusion: "required"
+    inclusion_condition: "Declare route and flush"
+    role: "Harvest/capture using alternative technology routes"
+    quantitative_reference: "one harvest lot"
+  - id: field_floor_drying
+    name: "Field or floor drying"
+    inclusion: "required"
+    inclusion_condition: "Always before threshing"
+    role: "Primary conditioning by lot"
+    quantitative_reference: "one drying lot"
+  - id: thresh_clean_grade
+    name: "Threshing, cleaning and grading"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Batch production for primary conditioning and grading"
+    quantitative_reference: "one conditioning batch"
+  - id: final_drying_rework
+    name: "Final drying and rework"
+    inclusion: "conditional"
+    inclusion_condition: "Grain requires further drying or re-cleaning"
+    role: "Batch production for stabilization and rework"
+    quantitative_reference: "one drying/rework batch"
+process_inventory:
+  - id: managed_cultivation
+    label: "Managed pigeonpea cultivation"
+    inputs:
+      product:
+        - row_id: sowing_material
+          role: "Sowing material"
+          name: "Pigeonpea sowing material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record seed actually sown, including resowing."
+          amount:
+            expression: "measured mass sown by field and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: typical_range
+                lower: "4.2"
+                upper: "70"
+                unit: "kg/ha per crop cycle"
+                basis: "planted hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - icrisat-pigeonpea-production-1992
+        - row_id: agricultural_nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg product and kg nutrient element"
+          description: "This single card covers all mineral fertilizers, organic fertilizers, lime and nutrient-bearing amendments. Foreground expansion retains every actual product and nutrient composition; separate N, P, K or organic-fertilizer cards are prohibited."
+          amount:
+            expression: "measured masses by actual product, composition and application event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg product/ha per crop cycle"
+                basis: "all nutrient-bearing products applied to one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered irrigation only when it occurs; rainfall is not a product input."
+          amount:
+            expression: "metered or calculated delivered water by event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15000"
+                unit: "m3/ha per crop cycle"
+                basis: "delivered irrigation for one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_supplies_services
+          role: "Crop-protection and inoculant products"
+          name: "Crop-protection and non-nutrient inoculant products"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L"
+          description: "Record each crop-protection product and non-nutrient inoculant by identity and field event. Do not combine these products with energy or field services."
+          amount:
+            expression: "measured formulated-product quantity by field event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg formulated product/ha per crop cycle"
+                basis: "recorded non-nutrient field products for one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy supply"
+          name: "Field-operation energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuels, electricity and qualifying machinery-energy services separately by carrier and operation."
+          amount:
+            expression: "convert measured carrier and qualifying service records to energy by field event"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/ha per crop cycle"
+                basis: "recorded field energy for one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_non_energy_services
+          role: "Non-energy field services"
+          name: "Non-energy field services"
+          flow_type: "product"
+          property_unit: "Service / service-hour"
+          description: "Record manual labour, animal traction or other non-energy field services separately when represented as Product inputs."
+          amount:
+            expression: "measured service quantity by operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "service-hour/ha per crop cycle"
+                basis: "recorded non-energy field services for one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: managed_soil_n2o
+          role: "Managed-soil nitrous oxide"
+          name: "Nitrous oxide to air from managed soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and relevant indirect N2O from recorded synthetic N, organic N, returned residue N and other applicable sources."
+          amount:
+            expression: "calculated from foreground N activity and declared factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - ipcc-managed-soils-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha per crop cycle"
+                basis: "included direct and indirect pathways for one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: standing_mature_crop
+          role: "Standing mature crop"
+          name: "Standing mature pigeonpea crop"
+          flow_type: "product"
+          property_unit: "Mass / kg grain equivalent"
+          description: "Record the mature crop handed to harvest, identified by field, crop cycle and maturity evidence."
+          amount:
+            expression: "harvest receipts plus measured field loss and retained mature material"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "100"
+                upper: "5000"
+                unit: "kg/ha per crop cycle"
+                basis: "standing mature grain equivalent for one hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preharvest_loss
+          role: "Pre-harvest loss"
+          name: "Pre-harvest pigeonpea loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg grain equivalent"
+          description: "Record mature pods or grain lost before collection; standing crop retained for another flush is not loss."
+          amount:
+            expression: "field sampling and crop-cycle reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.8"
+                unit: "kg loss/kg standing mature grain equivalent"
+                basis: "mature grain equivalent in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: harvest_capture
+    label: "Whole-plant cutting or mature-pod picking"
+    inputs:
+      product:
+        - row_id: harvest_inputs
+          role: "Standing mature crop input"
+          name: "Standing mature pigeonpea crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the mature crop by originating field, harvest lot and flush."
+          amount:
+            expression: "lot-linked crop input"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per harvest lot and flush"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "20"
+                unit: "kg standing crop/kg collected dry-grain equivalent"
+                basis: "one harvest lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest energy supply"
+          name: "Harvest-operation energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuel, electricity and qualifying machinery-energy services used for cutting, picking, bundling and movement to the drying place."
+          amount:
+            expression: "energy converted from measured carrier and qualifying service records"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per harvest lot and flush"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg collected dry-grain equivalent"
+                basis: "one harvest lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_harvest_material
+          role: "Collected plants, branches or mature pods"
+          name: "Collected pigeonpea harvest material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the physical state handed to drying and keep whole-plant, branch and pod-picked lots separate."
+          amount:
+            expression: "weighed collected mass by field, route and flush"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg collected material/kg harvest input"
+                basis: "harvest-lot mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: harvest_loss
+          role: "Harvest loss and incidental material"
+          name: "Harvest loss and incidental material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record shattered pods, spilled grain and cut material without intended use; exclude living crop retained for a later flush."
+          amount:
+            expression: "field estimate or lot mass-balance difference"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg loss/kg harvest input"
+                basis: "harvest-lot mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: field_floor_drying
+    label: "Field or floor drying"
+    inputs:
+      product:
+        - row_id: predrying_input
+          role: "Collected harvest material received"
+          name: "Collected pigeonpea harvest material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the weighed harvested material handed from the identified harvest lot into this drying lot."
+          amount:
+            expression: "weighed material entering the drying lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per drying lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_predrying
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "20"
+                unit: "kg wet material/kg dry-grain equivalent"
+                basis: "one drying lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dried_harvest_material
+          role: "Dried plants or pods for threshing"
+          name: "Dried pigeonpea plants or pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the prepared dry lot handed to threshing with its measured output moisture."
+          amount:
+            expression: "weighed dry material with output moisture by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per drying lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_predrying
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: typical_range
+                lower: "1"
+                upper: "14"
+                unit: "day"
+                basis: "elapsed exposure for one drying lot"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - icrisat-pigeonpea-production-1992
+      waste:
+        - row_id: predrying_loss
+          role: "Weather damage and spillage"
+          name: "Pre-threshing drying loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged, contaminated or spilled material separately from calculated water removal."
+          amount:
+            expression: "reject and spill mass plus unexplained physical loss, excluding water removed"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per drying lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_predrying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg physical loss/kg drying input"
+                basis: "drying-lot mass balance excluding removed water"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: thresh_clean_grade
+    label: "Threshing, cleaning and grading"
+    inputs:
+      product:
+        - row_id: conditioning_inputs
+          role: "Dried harvested material input"
+          name: "Dried pigeonpea plants or pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record dried harvested material by originating drying lot."
+          amount:
+            expression: "weighed material by conditioning batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "20"
+                unit: "kg dried material/kg accepted and downgraded grain"
+                basis: "one conditioning batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditioning energy supply"
+          name: "Conditioning energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record energy carriers and qualifying machinery-energy services used for threshing, cleaning and grading."
+          amount:
+            expression: "energy converted from measured carrier and qualifying service records by batch"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg accepted and downgraded grain"
+                basis: "one conditioning batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_clean_grain
+          role: "Accepted cleaned grain"
+          name: "Accepted cleaned pigeonpea grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The hand-off is to final drying when moisture exceeds the declared condition, or to farm-gate release otherwise. This intended output is declared together with any intended stem or pod-wall co-product before attribution."
+          amount:
+            expression: "weighed grain by grade, moisture and batch"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg accepted grain/kg conditioning input"
+                basis: "conditioning-batch mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_grain
+          role: "Downgraded grain"
+          name: "Downgraded pigeonpea grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record usable grain outside the reference grade with its grade, reason, destination and hand-off."
+          amount:
+            expression: "weighed downgrade by reason and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg downgraded grain/kg conditioning input"
+                basis: "conditioning-batch mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: stem_pod_coproduct
+          role: "Stems and pod walls with intended use"
+          name: "Pigeonpea stems and pod walls with intended use"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record stems, branches or pod walls as co-products only with documented production intent, recipient and use; otherwise classify them as residue or waste."
+          amount:
+            expression: "weighed or moisture-corrected transfer to recipient"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry output/kg dry conditioning input"
+                basis: "conditioning-batch dry-matter balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: conditioning_rejects
+          role: "Rejects and cleaning loss"
+          name: "Conditioning rejects and cleaning loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged or contaminated grain, foreign matter, dust and physical loss. Assign disposal, recovery or rework; unresolved rejects cannot enter accepted output."
+          amount:
+            expression: "weighed rejects plus physical balance difference, excluding removed water"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg reject/kg conditioning input"
+                basis: "conditioning-batch mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: final_drying_rework
+    label: "Final drying and rework"
+    inputs:
+      product:
+        - row_id: final_drying_inputs
+          role: "Grain entering final drying or rework"
+          name: "Cleaned pigeonpea grain requiring final drying or rework"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted or off-spec grain separately by reason, originating batch and technology."
+          amount:
+            expression: "measured batch input with incoming moisture and grade"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per final-drying or rework batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_drying
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg incoming grain/kg stabilized grain"
+                basis: "one final-drying or rework batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: final_drying_energy
+          role: "Final-drying and rework energy"
+          name: "Final-drying and rework energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record purchased fuel, electricity and qualifying energy services used for final drying or rework; ambient solar drying has zero purchased energy."
+          amount:
+            expression: "energy converted from measured carrier and qualifying service records by batch"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per final-drying or rework batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_final_drying
+              source_ids:
+                - icrisat-pigeonpea-production-1992
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg stabilized grain"
+                basis: "one final-drying or rework batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: pigeonpea_farm_gate_grain
+          role: "Farm-gate mature dry pigeonpea grain"
+          name: "Pigeon peas, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "6cac6f0d-9d09-4685-86f5-e1cc1ac94511"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This accepted reference output excludes every unresolved reject and downgrade."
+          amount:
+            expression: "exactly the accepted as-delivered reference mass with measured moisture"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "one PCR reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: recovered_downgraded_grain
+          role: "Recovered downgraded grain"
+          name: "Recovered downgraded pigeonpea grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record grain still outside the reference grade after rework only when it leaves for a documented lower-grade use."
+          amount:
+            expression: "weighed outgoing mass by origin and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per rework batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_drying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg downgraded output/kg rework input"
+                basis: "rework-batch mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: final_drying_reject
+          role: "Final drying damage and reject"
+          name: "Final-drying damage and unrecovered reject"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record heat or mould damage, contamination and physical loss; calculated water removal is not waste."
+          amount:
+            expression: "weighed reject plus physical balance difference, excluding water removed"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per final-drying or rework batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_final_drying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg reject/kg batch input"
+                basis: "final-drying or rework-batch mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivision_first
+    applies_to: "All nodes"
+    rule: "Subdivide field, flush, lot, batch, technology and rework records before allocation when independent measurements exist."
+    source_ids: []
+  - rule_id: allocation_crop_cycle
+    applies_to: "Shared cultivation"
+    rule: "Attribute shared cultivation burdens once across all flushes in proportion to dry accepted and downgraded grain mass unless a reviewed causal method is used; never reapply them per flush."
+    source_ids: []
+  - rule_id: allocation_intended_outputs
+    applies_to: "Grain, stems and pods"
+    rule: "Treat outputs as co-products only with production intent, quality state, recipient and hand-off. Apply one declared economic, physical or reviewed causal method to the complete intended-output set and disclose sensitivity."
+    source_ids: []
+  - rule_id: allocation_rework
+    applies_to: "Re-drying and re-cleaning"
+    rule: "Returned material retains prior burdens; add incremental burdens once and do not count returned mass as new input or accepted output before release."
+    source_ids: []
+  - rule_id: allocation_reject_exit
+    applies_to: "Downgrade and waste"
+    rule: "Downgraded outputs follow the complete-output attribution rule; treatment of waste remains with the producing node unless a disclosed downstream waste convention applies."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation
+      process_id: "managed_cultivation"
+      flow_role: "inputs, mature crop, loss, soil-emission activity"
+      record_type: "field-cycle record"
+      raw_fields: "field; area; dates; variety; crop system; seed; actual nutrient products/composition; irrigation; protection; energy; residue management; yield/loss"
+      collection_method: "invoices, logs, meters, sampling and reconciliation"
+      unit: "native units, ha, kg"
+      frequency: "each event; crop-cycle summary"
+      temporal_coverage: "full crop cycle"
+      site_scope: "every field"
+      aggregation_rule: "aggregate by field/cycle then normalize by accepted grain"
+      quality_evidence: "dates, calibration, labels, reconciliation"
+    - protocol_id: cp_harvest
+      process_id: "harvest_capture"
+      flow_role: "crop input, services, collected state, loss"
+      record_type: "harvest-lot/flush record"
+      raw_fields: "field; cycle; route; flush; maturity; date; crop estimate; service; collected mass; retained crop; loss"
+      collection_method: "scale, sampling and operation log"
+      unit: "kg and service units"
+      frequency: "every lot/flush"
+      temporal_coverage: "all contributing flushes"
+      site_scope: "every field/route"
+      aggregation_rule: "keep routes/flushes separate and reconcile states"
+      quality_evidence: "lot id, scale check, maturity evidence"
+    - protocol_id: cp_predrying
+      process_id: "field_floor_drying"
+      flow_role: "wet input, dry output, moisture and loss"
+      record_type: "drying-lot record"
+      raw_fields: "lot; location; time; protection; input/output mass and moisture; damage; spill"
+      collection_method: "scale, moisture meter and lot log"
+      unit: "kg, %, day"
+      frequency: "every lot"
+      temporal_coverage: "full interval"
+      site_scope: "every drying place"
+      aggregation_rule: "report water removal separately from physical loss"
+      quality_evidence: "calibration, traceability, inspection"
+    - protocol_id: cp_conditioning
+      process_id: "thresh_clean_grade"
+      flow_role: "batch input, services, grades, co-product and reject"
+      record_type: "batch record"
+      raw_fields: "batch; source lot; technology; input; moisture; energy; cleaning/changeover; outputs; grade; damage; destination"
+      collection_method: "scale, meter, service and grade records"
+      unit: "kg, %, energy/service"
+      frequency: "each batch/changeover"
+      temporal_coverage: "all contributing batches"
+      site_scope: "every route/site"
+      aggregation_rule: "reconcile before grade/destination aggregation"
+      quality_evidence: "calibration, lineage, destination receipt"
+    - protocol_id: cp_final_drying
+      process_id: "final_drying_rework"
+      flow_role: "input, energy, moisture, release, downgrade and reject"
+      record_type: "drying/rework batch"
+      raw_fields: "batch; origin; reason; input/output mass/moisture; route; temperature; duration; energy; grade; destination"
+      collection_method: "scale, moisture/temperature/time/energy records"
+      unit: "kg, %, °C, hour, energy"
+      frequency: "every pass"
+      temporal_coverage: "full intervention"
+      site_scope: "every route/site"
+      aggregation_rule: "retain prior burdens, add incremental burdens once, reconcile outputs"
+      quality_evidence: "calibration, lineage, release record"
+  calculation_rules:
+    - id: calc_moisture
+      applies_to: "Wet/dry mass"
+      rule: "dry matter = wet mass × (1 - wet-basis moisture fraction); water removed preserves dry matter."
+      inputs:
+        - "mass and moisture"
+      output: "dry matter and water removed"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_normalization
+      applies_to: "All activities"
+      rule: "Sum only linked records, divide by accepted as-delivered grain and multiply by 1,000 kg."
+      inputs:
+        - "linked quantities and accepted grain"
+      output: "quantity per reference flow"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_soil_n2o
+      applies_to: "N additions and residues"
+      rule: "Apply the declared applicable IPCC or reviewed national Tier method, including relevant direct, volatilization/deposition and leaching/runoff pathways."
+      inputs:
+        - "N composition"
+        - "residue N"
+        - factors
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-managed-soils-2019
+    - id: calc_reconciliation
+      applies_to: "Every lot/batch"
+      rule: "Input dry mass equals accepted, intended co-product, downgrade, reject and physical-loss dry mass; rework return is a transfer."
+      inputs:
+        - "linked input/output mass and moisture"
+      output: "variance and completeness flag"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Reference output"
+      requirement: "Confirm species, whole-grain state, farm-gate status, grade, moisture, damage and foreign matter."
+      evidence: "release and specification"
+    - id: dq_temporal
+      applies_to: "Route lineage"
+      requirement: "Cover every input event, flush, drying lot, batch and rework pass."
+      evidence: "field-to-gate lineage"
+    - id: dq_completeness
+      applies_to: "Output states"
+      requirement: "Classify every output as accepted, downgrade, intended co-product, rework, residue, waste or loss."
+      evidence: "reconciled balance"
+    - id: dq_measurement
+      applies_to: "Quantities"
+      requirement: "Use calibrated or verified equipment and state estimation methods and uncertainty."
+      evidence: "calibration and records"
+    - id: dq_representativeness
+      applies_to: "Production mix"
+      requirement: "Weight fields/routes by accepted output and disclose exclusions, substitutions and shares."
+      evidence: "contribution table"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "Reference product"
+    rule: "Reject green, planting-seed-market or processed product and grain without species, moisture, grade and farm-gate qualifiers."
+    source_ids: []
+  - rule_id: validate_lineage
+    applies_to: "Process map"
+    rule: "Require continuous field–cycle–flush–drying-lot–conditioning-batch–rework–farm-gate lineage and one parent for every alternative route."
+    source_ids:
+      - icrisat-pigeonpea-production-1992
+  - rule_id: validate_flushes
+    applies_to: "Pod picking"
+    rule: "Require flush ids, retained standing crop and one-time attribution of shared cultivation burdens."
+    source_ids:
+      - icrisat-pigeonpea-production-1992
+  - rule_id: validate_grades
+    applies_to: "Grading"
+    rule: "Require accepted and non-accepted states, a hand-off for every state, and separation of downgrade, reject, waste and rework."
+    source_ids: []
+  - rule_id: validate_rework
+    applies_to: "Rework"
+    rule: "Reject double counting of returned mass or prior burdens and exclude unresolved off-spec grain from accepted output."
+    source_ids: []
+  - rule_id: validate_multi_output
+    applies_to: "Intended outputs"
+    rule: "Require complete output enumeration and an explicit attribution decision; one output cannot occur at two hand-offs."
+    source_ids: []
+  - rule_id: validate_mode_indexing
+    applies_to: "Periods/lots/batches"
+    rule: "Link inputs, outputs, cleaning/changeover and yield to the relevant period, flush, lot or batch; reject duplicated shared burdens."
+    source_ids: []
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "Cultivation Product inputs"
+    rule: "Permit at most one fertilizer/nutrient Product input card. It must be agricultural_nutrient_supply, bind only to flow-set.agricultural-nutrient-supply version 0.3.0, have no group, and cover mineral, organic and amendment products together."
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "Every Flow Card"
+    rule: "Require exactly one complete Range; require lower not greater than upper and EN/ZH/structured equivalence."
+    source_ids: []
+  - rule_id: validate_final_condition
+    applies_to: "Farm-gate grain"
+    rule: "Require measured final moisture. ICRISAT's 6–8% observation is source-specific QA guidance, not a universal grade unless adopted by the declared specification."
+    source_ids:
+      - icrisat-pigeonpea-production-1992
+published_dataset_profile:
+  dataset_role: "Foreground farm-gate production dataset for mature dry pigeonpea grain"
+  downstream_use: "secondary_dataset; background_dataset after representativeness and quality review"
+  allowed_use: "Processes and lifecycle models requiring mature dry whole pigeonpea grain within the declared geography, period, route mix, grade and moisture basis"
+  excluded_use: "Green pigeonpea, planting seed, split dhal, flour, cooked/canned product, unreviewed generic pulse substitution, downstream transport or processing"
+  required_metadata: "PCR id/version; geography; period; fields/cycles; variety; crop system; harvest routes/flushes; technologies; grade; moisture; damage/foreign matter; residue destinations; allocation; rework; coverage and uncertainty"
+  required_quality_disclosure: "measured/estimated shares; missing records; substitutions; route coverage; balance variance; moisture conversion; emission method/factors; allocation sensitivity; Flow Set resolution status"
+  update_trigger: "Material change in boundary, UUID, grade/moisture basis, topology, technology mix, co-product use, attribution, emission method, geography or QA evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "icrisat-pigeonpea-production-1992"
+    type: "handbook"
+    reference: "Singh, F. and Oswalt, D. L. (1992), *Pigeonpea Botany and Production Practices*, ICRISAT. https://oar.icrisat.org/2422/1/Pigeonpea-Botany-Production-Practices.pdf"
+    used_for: "Identity, cultivation, sowing rate, maturity, whole-plant/repeated-picking routes, drying, threshing, cleaning and moisture guidance"
+  - id: "ipcc-managed-soils-2019"
+    type: "method_factor"
+    reference: "IPCC (2019), *2019 Refinement to the 2006 IPCC Guidelines*, Volume 4, Chapter 11. https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil direct and indirect N2O method"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of dry matter and physical mass across a declared process node"
+    used_for: "Moisture conversion, reconciliation and fraction bounds"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:69c90c12f99d0999526d7124305acb71f7a38fa2965ed6bee1d4a2cfa740314b"
+  generated_content_sha256: "sha256:907bcc76fd60df7fd3d14e9dc364538e97fbe247d0c49e213adca03642f2fd2b"

@@ -1,10 +1,824 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01342"
-  title: "Pears and quinces"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.pears-and-quinces"
+  classification_refs: "CPC 3.0: 01342 Pears and quinces"
+  covered_products: "fresh cultivated pears and quinces at farm gate"
+  excluded_products: "nursery trees; wild fruit; juice, cider, dried, canned, preserved, or otherwise processed fruit; downstream logistics"
+  representative_product: "fresh whole pear or quince"
+  production_route: "managed perennial orchard, harvest, and conditional farm-gate handling"
+  market_state: "fresh whole fruit with species, cultivar, maturity, grade, and hand-off state declared"
+functional_unit:
+  what: "marketable fresh pears and quinces at the farm gate"
+  how_much: "1,000 kg declared hand-off fruit"
+  how_well: "whole marketable fruit meeting declared species, cultivar, maturity, grade, and destination requirements"
+  how_long_or_cycle: "one orchard production year with perennial establishment allocated over the declared productive period"
+  reference_flow_link: "terminal marketable fruit output from harvest_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: boundary_orchard_to_farm_gate
+      applies_to: "all datasets"
+      rule: "Include orchard management, harvest, and pre-hand-off handling; exclude downstream transport and processing."
+      source_ids:
+        - fao-good-agricultural-practices
+    - rule_id: boundary_perennial_establishment
+      applies_to: "establishment and replacement"
+      rule: "Include establishment only for the declared allocation period and disclose productive lifetime and replacement rate."
+      source_ids:
+        - fao-good-agricultural-practices
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "soil and crop-protection emissions"
+      rule: "Use one declared geographically applicable method and the same activity records as nutrient accounting."
+      source_ids:
+        - ipcc-2019-refinement
+    - rule_id: boundary_post_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm storage, transport, distribution, retail packaging, processing, consumption, and end-of-life unless explicitly extended."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "established or newly planted managed orchard at the start of the declared accounting period, with trees, nutrients, water, energy, and crop-protection inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed pear and quince production"
+  product_classification_scope: "cultivated fresh pears and quinces corresponding to CPC 3.0 code 01342"
+  recursive_input_rule: "planting stock is an upstream nursery input and must not loop to this marketable-fruit PCR"
+  upstream_dataset_requirement: "compatible datasets for planting stock, nutrients, amendments, crop protection, electricity, fuel, irrigation, packaging or crate service, and included waste treatment"
+  disclosure: "orchard age and productive period, species/cultivar mix, area, soil, climate, planting density, crop year, yield, irrigation, inputs, residue fate, losses, and hand-off boundary"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fresh pears and quinces at farm gate"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species and cultivar"
+    - "pear/quince share"
+    - geography
+    - "orchard age"
+    - "crop year"
+    - "harvest window"
+    - "grade and maturity"
+    - irrigation
+    - "yield basis"
+    - "handling included"
+    - "cull destination"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_declared_hand_off
+    applies_to: "terminal fruit"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh accepted fruit at the declared hand-off state and retain species, cultivar, maturity, grade, and condition basis."
+  - id: perennial_area_to_reference
+    applies_to: "orchard inputs and emissions"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Allocate perennial establishment over the declared productive period, divide annual totals by same-year marketable yield, then scale to 1,000 kg."
+  - id: nutrient_product_and_basis
+    applies_to: "nutrients and amendments"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg product and kg N, P2O5, or K2O"
+    rule: "Record actual product and calculate nutrient content without merging products."
+  - id: mixed_crop_yield_basis
+    applies_to: "mixed pear/quince blocks"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg fruit"
+    rule: "Separate species where possible; otherwise disclose mass-weighted crop mix and allocation basis."
+process_map:
+  - id: orchard_establishment
+    name: "Pear and quince orchard establishment and replacement"
+    inclusion: "conditional"
+    inclusion_condition: "new planting, replanting, or replacement occurs within the allocation period"
+    role: "establish perennial production capacity"
+    quantitative_reference: "planted area, tree count, and allocated orchard years"
+  - id: orchard_management
+    name: "Annual pear and quince orchard management"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production and field operations"
+    quantitative_reference: "orchard area, crop-year inputs, and crop-year yield"
+  - id: harvest_farm_gate
+    name: "Harvest and farm-gate fruit handling"
+    inclusion: "required"
+    inclusion_condition: "always; handling only when before hand-off"
+    role: "convert standing crop into declared marketable fruit"
+    quantitative_reference: "harvested, accepted, cull, and hand-off mass"
+process_inventory:
+  - id: orchard_establishment
+    label: "Pear and quince orchard establishment and replacement"
+    inputs:
+      product:
+        - row_id: nursery_tree_input
+          role: "Nursery trees and planting stock"
+          name: "Pear or quince nursery tree and planting stock"
+          flow_type: "product"
+          property_unit: "Number of trees / tree; Mass / kg when measured by mass"
+          description: "Record planting stock crossing into establishment or replacement; retain species, cultivar, rootstock, tree count, and planting year."
+          amount:
+            expression: "counted trees planted or replaced"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per planted hectare allocated to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: orchard_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare allocated to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: establishment_irrigation_input
+          role: "Establishment irrigation"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water supplied to newly planted or replacement orchard blocks during establishment, including metered or scheduled irrigation and zero values for rainfed blocks."
+          amount:
+            expression: "meter or irrigation-schedule volume for establishment; document zero for rainfed blocks"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare allocated to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: orchard_land_occupation
+          role: "Managed orchard land occupation"
+          name: "Managed orchard land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2 year"
+          description: "Record the area-time occupation of land managed as pear or quince orchard during establishment and allocate it to the declared fruit output."
+          amount:
+            expression: "orchard area multiplied by occupation time and allocated to fruit output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: establishment_residue_output
+          role: "Establishment residues"
+          name: "Orchard establishment residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record establishment residues by material class, quantity, and destination so that removal, retention, treatment, and disposal are distinguishable."
+          amount:
+            expression: "measured or documented mass by residue class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: orchard_management
+    label: "Annual pear and quince orchard management"
+    inputs:
+      product:
+        - row_id: orchard_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop-year area converted to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+        - row_id: orchard_irrigation_input
+          role: "Irrigation water"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record crop-year irrigation events and reconcile the supplied water volume to the managed orchard block and declared crop year."
+          amount:
+            expression: "sum irrigation events reconciled to block area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop-year area converted to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection formulation"
+          name: "Crop-protection formulation for pear and quince orchards"
+          flow_type: "product"
+          property_unit: "Mass of formulation / kg"
+          description: "Record each crop-protection formulation and application event used for pear or quince production, including formulation mass and treated area."
+          amount:
+            expression: "sum formulation mass by product and event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per crop-year area converted to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: orchard_fuel_input
+          role: "Mobile machinery fuel"
+          name: "Mobile agricultural machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume or mass / L or kg"
+          description: "Record fuel consumed by mobile orchard machinery from invoices, tank records, or contractor activity and retain the conversion basis."
+          amount:
+            expression: "invoices, tank records, or contractor activity converted to declared fuel basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per crop-year area converted to 1,000 kg fruit"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+        - row_id: orchard_electricity_input
+          role: "Orchard electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used for orchard operations and allocate metered or documented consumption to the orchard block and crop year."
+          amount:
+            expression: "meter reading or documented allocation to orchard block and crop year"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per crop-year area converted to 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: production_land_occupation
+          role: "Production land occupation"
+          name: "Managed orchard land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2 year"
+          description: "Record annual occupation of productive orchard land and allocate its area-time total to the marketable pear and quince output."
+          amount:
+            expression: "annual area and occupation time allocated to marketable fruit"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        - row_id: standing_fruit_output
+          role: "Standing crop fruit"
+          name: "Pears and quinces, harvested fruit"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record harvested pear and quince mass by species or cultivar before any included farm-gate handling, preserving the crop-year yield basis."
+          amount:
+            expression: "measured harvested mass by species or cultivar before included handling"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop-year area scaled to reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: pruning_residue_output
+          role: "Pruning and orchard residues"
+          name: "Pear and quince orchard residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry or wet basis as declared"
+          description: "Record pruning and orchard residues by quantity, dry or wet basis, and destination, with the selected residue calculation method documented."
+          amount:
+            expression: "measured or calculated by residue fate"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids:
+                - ipcc-2019-refinement
+            ranges: []
+      elementary:
+        - row_id: direct_n2o_emission
+          role: "Direct nitrous oxide"
+          name: "Nitrous oxide emission to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct nitrous oxide emissions from crop-year nitrogen records using the selected IPCC or regional method and document the factor basis."
+          amount:
+            expression: "selected IPCC or regional method applied to crop-year nitrogen records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_emission_records
+              source_ids:
+                - ipcc-2019-refinement
+            ranges: []
+        - row_id: ammonia_emission
+          role: "Ammonia"
+          name: "Ammonia emission to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate ammonia emissions from product, application, and regional factor records and preserve the method used for the orchard crop year."
+          amount:
+            expression: "product, application, and regional factor calculation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_emission_records
+              source_ids:
+                - ipcc-2019-refinement
+            ranges: []
+        - row_id: nitrate_loss
+          role: "Nitrate loss"
+          name: "Nitrate emission to water or soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Calculate nitrate loss to water or soil from the selected leaching or runoff method applied to nitrogen and water-balance records."
+          amount:
+            expression: "selected leaching or runoff method applied to nitrogen and water-balance records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_emission_records
+              source_ids:
+                - ipcc-2019-refinement
+            ranges: []
+  - id: harvest_farm_gate
+    label: "Harvest and farm-gate fruit handling"
+    inputs:
+      product:
+        - row_id: handling_electricity_input
+          role: "Handling electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used for harvesting or farm-gate handling and allocate metered or batch consumption to accepted fruit."
+          amount:
+            expression: "meter or batch allocation to accepted fruit"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+        - row_id: reusable_crate_input
+          role: "Reusable crate service"
+          name: "Pallet and crate packaging function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "pallet-and-crate-packaging"
+          property_unit: "Mass or service / kg or use"
+          description: "Record reusable crate or pallet use as a packaging function, including throughput, return rate, and the mass or use basis."
+          amount:
+            expression: "crate uses or mass allocated by accepted throughput and return rate"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+        - row_id: handling_water_input
+          role: "Handling water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record process water crossing the handling boundary from meter or batch records and distinguish it from irrigation water."
+          amount:
+            expression: "meter or batch record for water crossing the handling boundary"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: cull_fruit_output
+          role: "Cull fruit"
+          name: "Cull pears and quinces"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected or culled pears and quinces by batch, quantity, and destination at the farm-gate handling step."
+          amount:
+            expression: "measured rejected mass by destination and batch"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_fruit_output
+          role: "Marketable pears and quinces"
+          name: "Fresh pears and quinces at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted pear and quince mass at the declared hand-off state as the terminal marketable fruit output."
+          amount:
+            expression: "measured accepted mass at declared hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: handling_waste_output
+          role: "Handling residues and wastewater"
+          name: "Farm-gate fruit-handling waste"
+          flow_type: "waste"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record handling residues and wastewater by material class, batch quantity, and destination at the declared farm-gate boundary."
+          amount:
+            expression: "measured batch quantity by material class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_handling_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_by_subdivision
+    applies_to: "orchard and handling"
+    rule: "Prefer separate pear/quince block and handling records before allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_mixed_pear_quince
+    applies_to: "mixed production"
+    rule: "Use measured crop-year mass allocation when crop-specific records are unavailable and disclose the mix."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_orchard_establishment
+    applies_to: "perennial establishment"
+    rule: "Allocate establishment over the declared productive period using the same period for inputs and outputs."
+    source_ids:
+      - fao-good-agricultural-practices
+  - rule_id: allocation_cull_and_byproducts
+    applies_to: "culls and co-products"
+    rule: "Subdivide by destination; use economic allocation only for documented valuable co-products when subdivision is infeasible."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_orchard_establishment_records
+      process_id: "orchard_establishment"
+      flow_role: "trees, inputs, land, residues"
+      record_type: "planting plan, nursery invoice, field log, area record"
+      raw_fields: "block_id; species; cultivar; rootstock; tree_count; planting_year; area; inputs; residue_fate"
+      collection_method: "reconcile planting and replacement to blocks and allocation period"
+      unit: "tree; ha; kg; m3"
+      frequency: "each event"
+      temporal_coverage: "declared allocation period"
+      site_scope: "all included blocks"
+      aggregation_rule: "sum by block, product, and destination"
+      quality_evidence: "maps; invoices; field records"
+    - protocol_id: cp_orchard_activity_records
+      process_id: "orchard_management"
+      flow_role: "nutrients, irrigation, protection, fuel, electricity, land"
+      record_type: "invoices, labels, spray log, meter, contractor record"
+      raw_fields: "block_id; area; date; product; amount; nutrient_content; water; fuel; electricity"
+      collection_method: "reconcile every input to block and crop year"
+      unit: "kg; kg nutrient; m3; L; kWh; ha"
+      frequency: "each event or meter period"
+      temporal_coverage: "full crop year"
+      site_scope: "all included blocks"
+      aggregation_rule: "sum by physical identity; normalize with same-year yield"
+      quality_evidence: "invoices; labels; calibrated meters"
+    - protocol_id: cp_orchard_emission_records
+      process_id: "orchard_management"
+      flow_role: "soil and crop-protection emissions"
+      record_type: "nutrient balance, soil, weather, drainage, residue, factor record"
+      raw_fields: "fertilizer_N; organic_N; residue_N; application_method; soil; climate; drainage; factor_set"
+      collection_method: "calculate each pathway using one declared method"
+      unit: "kg N; kg emission; ha"
+      frequency: "event and annual calculation"
+      temporal_coverage: "full crop year"
+      site_scope: "all included blocks"
+      aggregation_rule: "calculate by block, aggregate, normalize by yield"
+      quality_evidence: "factors; model version; balance review"
+    - protocol_id: cp_harvest_and_handling_records
+      process_id: "harvest_farm_gate"
+      flow_role: "harvest, accepted fruit, culls, energy, water, crates, waste"
+      record_type: "harvest ticket, scale, batch sheet, meter, crate log"
+      raw_fields: "block_id; batch_id; harvest_date; harvested_mass; accepted_mass; cull_mass; species; cultivar; grade; electricity; water; crate_uses; destination"
+      collection_method: "reconcile batches to accepted hand-off output"
+      unit: "kg; kWh; m3; use"
+      frequency: "each harvest or batch"
+      temporal_coverage: "harvest and handling period"
+      site_scope: "all included batches"
+      aggregation_rule: "sum accepted fruit, culls, and wastes; close mass balance"
+      quality_evidence: "calibrated scales; quality and meter records"
+  calculation_rules:
+    - id: calc_orchard_to_reference_flow
+      applies_to: "orchard inputs and emissions"
+      rule: "crop-year amount per area / same-year marketable yield per area × 1,000 kg"
+      inputs:
+        - amount
+        - area
+        - "accepted fruit mass"
+      output: "amount per 1,000 kg fruit"
+      source_ids: []
+    - id: calc_nutrient_content
+      applies_to: "fertilizers and amendments"
+      rule: "product mass × declared nutrient fraction"
+      inputs:
+        - product
+        - mass
+        - assay
+        - basis
+      output: "kg N, kg P2O5, kg K2O"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_perennial_establishment_allocation
+      applies_to: "establishment"
+      rule: "total burden × declared productive-period share"
+      inputs:
+        - "establishment amount"
+        - "productive period"
+      output: "allocated annual amount"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_managed_soil_emissions
+      applies_to: "N2O, ammonia, nitrate"
+      rule: "selected IPCC or regional factors applied to crop-year activity records"
+      inputs:
+        - activity
+        - "soil/climate"
+        - factors
+      output: "pathway emissions"
+      source_ids:
+        - ipcc-2019-refinement
+    - id: calc_handling_mass_balance
+      applies_to: "harvest and handling"
+      rule: "harvested input = accepted fruit + culls + handling waste + measured losses within uncertainty"
+      inputs:
+        - "batch masses"
+        - destinations
+      output: "reconciled outputs"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference and outputs"
+      requirement: "Confirm pear or quince species, cultivar, crop mix, maturity, grade, and hand-off; do not substitute apple or generic fruit."
+      evidence: "orchard, lot, and sales records"
+    - id: dq_temporal_alignment
+      applies_to: "all rows"
+      requirement: "Use the same crop year for inputs, emissions, harvest, yield, and handling; disclose proxy years."
+      evidence: "dated field and batch records"
+    - id: dq_perennial_allocation
+      applies_to: "establishment"
+      requirement: "Document orchard age, productive period, replacement rate, and allocation period."
+      evidence: "planting maps and orchard records"
+    - id: dq_mass_and_destination
+      applies_to: "outputs and waste"
+      requirement: "Retain calibrated mass records and destination evidence for fruit, culls, residues, and wastewater or solids."
+      evidence: "scales and destination tickets"
+    - id: dq_completeness
+      applies_to: "process map and flows"
+      requirement: "Reconcile every included block and batch and distinguish zero, not applicable, proxy, and missing values."
+      evidence: "block roster and reconciliation"
+    - id: dq_identity_resolution
+      applies_to: "all identity evidence gaps"
+      requirement: "Before final publication, resolve identities to verified UUIDs or retain explicit unmapped coverage; never force a nearby product identity."
+      evidence: "identity review record"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "terminal output"
+    rule: "One terminal marketable fruit output equals 1,000 kg after scaling and declares species, mix, maturity, grade, and hand-off qualifiers."
+    source_ids: []
+  - rule_id: validation_orchard_route
+    applies_to: "process map"
+    rule: "Include management once; include establishment only for its allocation period and handling only before hand-off."
+    source_ids: []
+  - rule_id: validation_crop_year_reconciliation
+    applies_to: "orchard inventory"
+    rule: "Area, inputs, emissions, harvest, culls, residue fates, and yields refer to the same crop year and represented blocks."
+    source_ids: []
+  - rule_id: validation_nutrient_and_emission_basis
+    applies_to: "nutrients and emissions"
+    rule: "Reconcile nutrient content, residue fate, soil emissions, and factors with the disclosed method and basis."
+    source_ids:
+      - ipcc-2019-refinement
+  - rule_id: validation_handling_mass_balance
+    applies_to: "handling"
+    rule: "Reconcile harvested input with accepted fruit, culls, wastes, and losses within declared uncertainty."
+    source_ids: []
+  - rule_id: validation_flow_identity
+    applies_to: "every flow"
+    rule: "Use fixed only for exact verified UUIDs and parameterized only for applicable reviewed Flow Sets; otherwise retain unmapped coverage."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground fresh pear and quince orchard and farm-gate fruit dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "farm-gate LCA preserving crop mix, geography, crop year, orchard allocation, hand-off state, and allocation rules"
+  excluded_use: "nursery, processed fruit, retail or consumer systems, or studies omitting perennial allocation and crop-mix qualifiers"
+  required_metadata: "species/cultivar; crop mix; geography; orchard age; area; crop year; yield; irrigation; nutrient/protection records; boundary; cull destination; allocation basis disclosure"
+  required_quality_disclosure: "temporal, geographical, technological, completeness, measurement, uncertainty, identity, and allocation quality"
+  update_trigger: "changed crop route, orchard guidance, crop mix, hand-off definition, Flow Set taxonomy, or verified identity mapping"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-good-agricultural-practices"
+    type: "official_guidance"
+    reference: "FAO good agricultural practices guidance for orchard management and harvest records"
+    used_for: "boundary, establishment, nutrient, and collection rules"
+  - id: "ipcc-2019-refinement"
+    type: "method_factor"
+    reference: "2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories"
+    used_for: "soil and residue emission methods"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006 Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation and co-product handling"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:dc8edc3dd6f952e15b37ffdf8591c21e1a3b8a4bcb5790f5d28e397f24f1c7ea"
+  generated_content_sha256: "sha256:71bd21297b242549eb8f97d1e80192092b79d62126026b28bca86683b1e8b5e7"

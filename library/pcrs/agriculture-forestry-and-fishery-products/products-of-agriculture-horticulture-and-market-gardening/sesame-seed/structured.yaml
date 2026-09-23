@@ -1,10 +1,962 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01444"
-  title: "Sesame seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.sesame-seed"
+  classification_refs: "CPC 3.0 01444; narrower grain route"
+  covered_products: "Whole sesame commodity grain, with declared color and market grade"
+  excluded_products: "Any sesame seed produced or sold for sowing, regardless of certification; dehulled, roasted or ground seed; oil and meal"
+  representative_product: "Whole harvested and first-cleaned sesame grain"
+  production_route: "Annual managed sesame crop; rainfed or irrigated; manual/field-thresh or direct-combine harvest; first cleaning and conditional drying"
+  market_state: "Unprocessed whole grain at farm gate, with measured moisture, foreign matter and broken-seed state"
+functional_unit:
+  what: "Whole harvested sesame grain accepted at the farm gate"
+  how_much: "1 kg net seed mass"
+  how_well: "Declare variety, color, grade, moisture, foreign matter and broken-seed fractions"
+  how_long_or_cycle: "One crop cycle through farm-gate transfer"
+  reference_flow_link: "accepted_gate_seed"
+system_boundary:
+  rules:
+    - rule_id: crop_boundary
+      applies_to: "Field to gate"
+      rule: "Include actual sowing, crop management, harvest, first cleaning, grading and any pre-gate drying, including contracted pre-gate work."
+      source_ids:
+        - ncstate-sesame-2026
+        - tamu-sesame-2007
+    - rule_id: capture_boundary
+      applies_to: "Standing mature crop"
+      rule: "Separate harvest from growth: capsule opening, hand or header capture, and threshing determine recovered mass and loss."
+      source_ids:
+        - ncstate-sesame-2026
+    - rule_id: downstream_boundary
+      applies_to: "After gate"
+      rule: "Exclude post-gate transport, food processing, oil pressing, dehulling and roasting."
+      source_ids:
+        - tamu-sesame-2007
+boundary_abstraction:
+  declared_starting_condition: "Field before sesame sowing, with previous crop and land condition disclosed; purchased seed and inputs enter with independent upstream burdens."
+  starting_condition_role: "Declared crop-cycle starting point, not a zero-impact input."
+  product_classification_scope: "Whole commodity sesame grain only."
+  recursive_input_rule: "Sown sesame is a measured input; do not feed the gate output into its own crop model. Resolve the sowing seed to an independent upstream dataset or disclose the gap."
+  upstream_dataset_requirement: "Link seed, fertilizers, protection products, fuel, electricity and purchased services to independent upstream datasets where used."
+  disclosure: "Field, season, water regime, cultivar trait, harvest route, pre-gate handling, gate location, rejection path and residue disposition."
+reference_flow_definition:
+  reference_amount: "1 kg net whole sesame grain"
+  product_flow_ref:
+    name: "Sesame seed"
+    uuid: "fa13af02-bb6e-4d44-a4a8-6464c0eece63"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Farm and crop year"
+    - "cultivar and shattering trait"
+    - "rainfed or irrigated"
+    - "manual or mechanical harvest"
+    - "grain moisture"
+    - damage
+    - "foreign matter"
+    - "color and grade"
+    - "actual pre-gate conditioning"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_gate_mass
+    applies_to: "Reference output"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use weighed accepted whole-seed mass at actual gate moisture; never silently substitute dry matter."
+  - id: mass_balance
+    applies_to: "Harvest, conditioning and gate"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Reconcile captured seed to accepted, downgraded, rejected and conditioning loss, accounting for moisture change; report field loss separately before capture."
+  - id: area_yield
+    applies_to: "Field records"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Retain original area and input records; normalize attributed crop-cycle inventory by accepted gate kg."
+process_map:
+  - id: crop_management
+    name: "Managed sesame crop"
+    inclusion: "required"
+    inclusion_condition: "Every field/cycle, rainfed or irrigated"
+    role: "Grow mature capsules; irrigation adds water and pumping records"
+    quantitative_reference: "Field-cycle inputs per accepted kg"
+  - id: harvest_thresh
+    name: "Seed capture and threshing"
+    inclusion: "required"
+    inclusion_condition: "Manual/field-thresh or direct combine according to cultivar and practice"
+    role: "Capture raw seed; measure shattering and equipment loss"
+    quantitative_reference: "Captured kg by field/run"
+  - id: first_clean_dry
+    name: "First cleaning and stabilization"
+    inclusion: "conditional"
+    inclusion_condition: "Include actual cleaning or drying; declare bypass otherwise"
+    role: "Remove chaff and foreign matter; stabilize high-moisture seed"
+    quantitative_reference: "Weighed input/output and energy by pass"
+  - id: grade_gate
+    name: "Grade and farm-gate release"
+    inclusion: "required"
+    inclusion_condition: "Every transferred lot"
+    role: "Split accepted, downgraded and rejected destinations"
+    quantitative_reference: "Net gate kg"
+process_inventory:
+  - id: crop_management
+    label: "Managed sesame crop"
+    inputs:
+      product:
+        - row_id: sowing_seed
+          role: "Sowing seed"
+          name: "Sesame sowing material, independently verified"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained planting material as an independent upstream product; the fixed grain output UUID must not stand in for any sowing seed."
+          amount:
+            expression: "Actual kg sown by field."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "1.1"
+                upper: "3.4"
+                unit: "kg seed/ha"
+                basis: "one crop hectare; NC 1 lb/acre and Texas 3 lb/acre regional planting examples, not a universal limit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ncstate-sesame-2026
+                  - tamu-sesame-2007
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ncstate-sesame-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg product/ha"
+                basis: "sum of separately recorded mineral fertilizer, organic fertilizer, lime and nutrient-bearing amendment product masses per crop hectare; screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: protection_input
+          role: "Crop-protection product applied"
+          name: "Applied crop-protection product, identified per formulation"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each herbicide, insecticide or fungicide used, including active ingredient and concentration, without assuming an application."
+          amount:
+            expression: "Actual kg of this formulation applied in the field-cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ncstate-sesame-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg product/ha"
+                basis: "one crop hectare, each applied protection or harvest-aid product separately; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_aid_input
+          role: "Harvest aid applied"
+          name: "Applied harvest-aid product, identified per formulation"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include a desiccant or other harvest aid only if applied; retain product identity and application event."
+          amount:
+            expression: "Actual kg applied before harvest."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ncstate-sesame-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg product/ha"
+                basis: "one crop hectare, each applied protection or harvest-aid product separately; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_fuel
+          role: "Field machinery fuel"
+          name: "Field machinery fuel, identified per fuel type"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record fuel for actual planting, cultivation, spraying or pumping operations; share equipment use by logged time or area."
+          amount:
+            expression: "Measured or invoiced litres attributed to the field-cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/ha"
+                basis: "one crop hectare; all assigned field operations, carrier-specific measured litres; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_electricity
+          role: "Field electricity"
+          name: "Electricity supplied to the field operation"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record metered electricity for irrigation pumping or other actual crop operations, if used."
+          amount:
+            expression: "Metered kWh attributed to this field-cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kWh/ha"
+                basis: "one crop hectare; conditional electric machinery or irrigation pumping, measured kWh; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supplied to crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "The irrigated production branch adds measured delivered water and source; rainfed fields declare no irrigation."
+          amount:
+            expression: "Metered or documented water delivered to the field-cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted gate kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - tamu-sesame-2007
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "one crop hectare; zero on rainfed routes, measured withdrawal/delivery on irrigated routes; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_crop
+          role: "Mature crop hand-off"
+          name: "Mature sesame-bearing plants, internal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The crop is a standing biological intermediate handed to harvest, not a second gate product."
+          amount:
+            expression: "Estimate standing seed mass from field samples and link field and season to harvest lot; retain area in cp_field."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg/ha"
+                basis: "one crop hectare; provisional standing biomass screen, not a second saleable seed output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: harvest_thresh
+    label: "Seed capture and threshing"
+    inputs:
+      product:
+        - row_id: harvest_fuel
+          role: "Harvest machinery fuel"
+          name: "Harvest machinery fuel, identified per fuel type"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record fuel for actual cutting, threshing or combining machines. For shattering varieties, cutting, field drying, bundling and manual threshing labor hours stay in cp_harvest; a direct-combine run reports combine passes. These technology routes are mutually exclusive for a harvest run. [ncstate-sesame-2026]"
+          amount:
+            expression: "Actual litres consumed by harvest run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per captured kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L/ha"
+                basis: "one harvested hectare, conditional route and measured machinery fuel; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_seed
+          role: "Captured raw seed"
+          name: "Raw whole sesame seed, internal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh threshed seed before cleaning; state moisture, visible debris and damaged-seed condition."
+          amount:
+            expression: "Weighed seed captured by field/run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per captured kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg raw seed/ha"
+                basis: "one harvested hectare; provisional broad captured-seed screen before first conditioning, replace with scale records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: first_clean_dry
+    label: "First cleaning and stabilization"
+    inputs:
+      product:
+        - row_id: seed_to_clean
+          role: "Raw seed for conditioning"
+          name: "Raw whole sesame seed, internal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use the linked raw harvest lot; no new independent supply is created."
+          amount:
+            expression: "Weighed incoming lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cleaning_electricity
+          role: "Cleaning electricity"
+          name: "Electricity supplied to seed-cleaning equipment"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Include electricity for actual seed cleaning passes. A lot bypassing cleaning has no cleaning electricity."
+          amount:
+            expression: "Metered kWh by lot and pass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids:
+                - tamu-sesame-2007
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: drying_electricity
+          role: "Drying electricity"
+          name: "Electricity supplied to seed-drying equipment"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Include fan or electrically heated drying electricity only when moisture stabilization occurs before gate."
+          amount:
+            expression: "Metered kWh by lot and drying pass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: drying_fuel
+          role: "Drying fuel"
+          name: "Stationary combustion fuel for drying, identified per fuel type"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "stationary-combustion-fuel"
+          property_unit: "Volume / L"
+          description: "Include thermal fuel only when fuel-fired pre-gate drying actually occurs; state fuel identity."
+          amount:
+            expression: "Metered or invoiced litres by lot and drying pass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "L liquid fuel/kg processed seed"
+                basis: "per kg seed entering this actual conditioning or drying run; liquid-fuel screen only, convert other carriers separately"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_seed
+          role: "Prepared whole seed"
+          name: "Prepared whole sesame seed, internal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "After actual debris removal and any moisture stabilization, hand whole seed to grading; record before/after moisture and mass."
+          amount:
+            expression: "Weighed post-conditioning lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: offspec_seed
+          role: "Off-spec whole seed"
+          name: "Off-spec whole sesame seed, internal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate recoverable or downgradable whole sesame seed from foreign-material screenings. Record its re-cleaning loop, buyer or final disposal decision; only a sold lot becomes a distinct product at the gate."
+          amount:
+            expression: "Weighed off-spec seed mass per pass and final disposition."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: screening_chaff
+          role: "Foreign-material screenings"
+          name: "Chaff and foreign-material screenings"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record removed chaff and foreign material as a waste output when it leaves conditioning for disposal. It is distinct from recoverable off-spec seed."
+          amount:
+            expression: "Weighed screenings removed by cleaning pass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per prepared kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_condition
+              source_ids:
+                - tamu-sesame-2007
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade_gate
+    label: "Grade and farm-gate release"
+    inputs:
+      product:
+        - row_id: seed_to_grade
+          role: "Whole seed to grade"
+          name: "Whole sesame seed, internal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Grade the identified prepared lot, or the captured lot when conditioning is explicitly bypassed."
+          amount:
+            expression: "Weighed grading input."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted kg"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_gate_seed
+          role: "Accepted gate seed"
+          name: "Sesame seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fa13af02-bb6e-4d44-a4a8-6464c0eece63"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The sole fixed reference output is accepted unprocessed whole sesame grain with actual grade and moisture."
+          amount:
+            expression: "Weighed accepted net seed at farm gate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "1 kg accepted farm-gate seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_seed
+          role: "Sold downgraded seed"
+          name: "Downgraded whole sesame grain, destination-specific"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "A sold lower-grade lot is separate from accepted reference mass; retain documented buyer and use."
+          amount:
+            expression: "Weighed mass sold as lower grade."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: gate_reject
+          role: "Unsold rejected seed"
+          name: "Rejected sesame, destination-specific"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Trace rejected material to re-cleaning, recovery or disposal. Re-entry retains the originating crop and harvest burdens."
+          amount:
+            expression: "Weighed rejected mass by final path."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per accepted kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_product
+    applies_to: "Grain with retained stalk and loss"
+    rule: "Attribute crop burdens to saleable seed; field-retained stalks and unrecovered or unsold seed are not reference product. Record actual residue destination."
+    source_ids:
+      - ncstate-sesame-2026
+  - rule_id: grade_split
+    applies_to: "Accepted and sold downgraded grain"
+    rule: "Keep grades and masses separate. If both are sold, allocate common burdens on physical seed mass, disclosing shares and grade criteria; economic allocation requires a justified exception and documented prices."
+    source_ids:
+      - tamu-sesame-2007
+  - rule_id: sold_residue
+    applies_to: "Deliberately sold stalk or chaff"
+    rule: "If residues are marketed, record dry mass and destination and review multi-output allocation before release; do not assume zero burden."
+    source_ids:
+      - ncstate-sesame-2026
+  - rule_id: run_rework
+    applies_to: "Shared runs and re-cleaning"
+    rule: "Attribute shared machinery, cleaning and changeovers once using recorded time or mass. A reworked lot retains original burdens plus each actual additional pass; intermediate mass is not counted twice."
+    source_ids:
+      - tamu-sesame-2007
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field
+      process_id: "crop_management"
+      flow_role: "Crop inputs and water"
+      record_type: "Field log and invoice"
+      raw_fields: "Field; area; crop year; cultivar; water route; field sample seed mass; each input identity and mass; fuel L; electricity kWh; irrigation m3"
+      collection_method: "Match application and meter logs to each field"
+      unit: "kg; L; kWh; m3; ha"
+      frequency: "Each operation"
+      temporal_coverage: "Whole crop cycle"
+      site_scope: "Every contributing field"
+      aggregation_rule: "Sum actual use; apportion shared operations once"
+      quality_evidence: "Invoices, meter and application logs"
+    - protocol_id: cp_harvest
+      process_id: "harvest_thresh"
+      flow_role: "Capture, loss, residue"
+      record_type: "Harvest log and field survey"
+      raw_fields: "Field; run; capsule trait; harvest mode; fuel; labor; raw kg; moisture; estimated loss; residue path"
+      collection_method: "Weigh lots and survey loss by stated method"
+      unit: "kg; h; L; percent"
+      frequency: "Each run"
+      temporal_coverage: "Whole harvest"
+      site_scope: "Each field/run"
+      aggregation_rule: "Join lot to field cycle; sum actual runs"
+      quality_evidence: "Scale, moisture and loss records"
+    - protocol_id: cp_condition
+      process_id: "first_clean_dry"
+      flow_role: "Cleaning, drying and rejects"
+      record_type: "Batch log and meter"
+      raw_fields: "Lot; pass; input/output kg and moisture; cleaning kWh; drying kWh; drying fuel L; off-spec seed kg and path; screenings kg and path"
+      collection_method: "Weigh and test each pass or record bypass"
+      unit: "kg; percent; kWh; L"
+      frequency: "Each pass"
+      temporal_coverage: "Before gate"
+      site_scope: "Farm and contracted pre-gate site"
+      aggregation_rule: "Count each pass once"
+      quality_evidence: "Scale, meter, test and disposal tickets"
+    - protocol_id: cp_gate
+      process_id: "grade_gate"
+      flow_role: "Accepted and other grade states"
+      record_type: "Grade and transfer ticket"
+      raw_fields: "Lot; accepted kg; moisture; color; foreign matter; broken seed; grade; downgraded/rejected kg and path"
+      collection_method: "Weigh, inspect and grade before transfer"
+      unit: "kg; percent"
+      frequency: "Each lot"
+      temporal_coverage: "Crop year"
+      site_scope: "Each gate"
+      aggregation_rule: "Sum accepted output for denominator; retain other destinations"
+      quality_evidence: "Signed ticket and quality report"
+  calculation_rules:
+    - id: reconcile_seed
+      applies_to: "Harvest through gate"
+      rule: "Estimate available standing seed as captured seed plus separately surveyed field loss. For the post-capture lot, captured mass = accepted + downgraded + rejected + conditioning loss + moisture-change adjustment; investigate residual difference."
+      inputs:
+        - Scale
+        - "moisture and field-loss records"
+      output: "Reconciled lot balance with separate field-loss record"
+      source_ids:
+        - tamu-sesame-2007
+        - ncstate-sesame-2026
+    - id: normalize_gate
+      applies_to: "All attributed inventory"
+      rule: "Divide attributed input/emission totals by net accepted gate kg; retain field/run links."
+      inputs:
+        - "Input records"
+        - "allocation and gate tickets"
+      output: "Per-kg inventory"
+      source_ids: []
+    - id: capture_loss_rate
+      applies_to: "Harvest route comparison"
+      rule: "Report surveyed lost seed mass relative to estimated available seed, with method and uncertainty."
+      inputs:
+        - "Loss survey and captured mass"
+      output: "Capture-loss fraction"
+      source_ids:
+        - ncstate-sesame-2026
+  data_quality_requirements:
+    - id: product_identity
+      applies_to: "Final product"
+      requirement: "Verify whole sesame grain, cultivar, color, grade, farm-gate state; no sowing-seed substitution."
+      evidence: "Crop and sale records"
+    - id: mass_moisture
+      applies_to: "Harvest and gate"
+      requirement: "Keep original scale and moisture tests; disclose any estimates and unexplained balance difference."
+      evidence: "Scale and lab/sample sheets"
+    - id: route_coverage
+      applies_to: "Field and batches"
+      requirement: "Show complete field/run coverage and final paths for rework, sold downgrade, waste and residue."
+      evidence: "Field, run and disposition logs"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "Gate product"
+    rule: "Require fixed whole-seed UUID, mass property/group, kg and actual gate state; reject oil, dehulled and sowing-seed products under this flow."
+    source_ids: []
+  - rule_id: validate_routes
+    applies_to: "Field and harvest"
+    rule: "Require rainfed/irrigated and manual/direct-combine choices with cultivar and run evidence; include pumping for irrigation and prevent default simultaneous harvest routes."
+    source_ids:
+      - ncstate-sesame-2026
+      - tamu-sesame-2007
+  - rule_id: validate_loss_grades
+    applies_to: "Harvest and conditioning"
+    rule: "Require loss method, moisture, cleaning/drying passes or bypass, and accepted/downgraded/rejected destinations; no rejected seed in accepted mass."
+    source_ids:
+      - ncstate-sesame-2026
+      - tamu-sesame-2007
+  - rule_id: validate_run_burdens
+    applies_to: "Shared machinery and rework"
+    rule: "Count each run, cleaning/changeover and rework pass once; resolve unexplained mass imbalance."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground farm-gate whole sesame grain dataset"
+  downstream_use: "secondary_dataset; background_dataset after review"
+  allowed_use: "Whole commodity sesame grain at a comparable farm gate with disclosed region, year, route, moisture and grade"
+  excluded_use: "Any sowing-seed output; oil, meal, dehulled, roasted or ground products; assuming regional extension input rates are universal"
+  required_metadata: "Farm and crop year; field area; variety and shattering trait; water and harvest mode; lot lineage; gate; moisture, color and grade"
+  required_quality_disclosure: "Coverage and missing inputs; measured versus estimated losses; shared-run attribution; rejected and residue paths; upstream seed identity"
+  update_trigger: "Verified planting-seed flow, materially new harvest or conditioning route, changed gate or allocation evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "ncstate-sesame-2026"
+    type: "extension_guidance"
+    reference: "NC State Extension, Sesame Production Fact Sheet (2026), https://content.ces.ncsu.edu/sesame-production-fact-sheet"
+    used_for: "Biological production, shattering, harvest route, loss and moisture"
+  - id: "tamu-sesame-2007"
+    type: "extension_guidance"
+    reference: "Texas A&M AgriLife Research and Extension Center, Sesame Production Guide (2007), https://sanangelo.tamu.edu/agronomy/agronomy-publications/sesame-production-guide/"
+    used_for: "Irrigation distinction, combine damage, first cleaning and grade handling"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:67ca766e2788e16e07d7d1cce24a68fafa5b83f32a00c5208e4ca3e31f2d6ddc"
+  generated_content_sha256: "sha256:4caeab1efb6cd070e7543b44f11087ba225a46bc8839af12711f4cde6049ce26"

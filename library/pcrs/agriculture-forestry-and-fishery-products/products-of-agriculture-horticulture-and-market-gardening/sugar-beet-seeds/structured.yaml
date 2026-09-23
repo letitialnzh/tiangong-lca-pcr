@@ -1,10 +1,1590 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01803"
-  title: "Sugar beet seeds"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.sugar-beet-seeds"
+  classification_refs: "CPC 3.0: 01803 Sugar beet seeds"
+  covered_products: "Uncoated, unpelleted, unprimed and chemically untreated cleaned, size-graded sugar beet reproductive material suitable for sowing"
+  excluded_products: "Sugar beet roots; fodder beet or vegetable beet seed; buyer planting services; washed, polished, primed, coated, pelleted or chemically treated seed"
+  representative_product: "Cleaned seed-grade sugar beet seed"
+  production_route: "Managed biological seed production by one declared direct-seeded or steckling/transplant route, followed by pollination, harvest, field stabilization, threshing, dry cleaning, size grading and lot release"
+  market_state: "Seed-grade, cleaned for sowing; dry, size-graded, untreated and traceable by lot"
+functional_unit:
+  what: "Cleaned, size-graded sugar beet seed suitable for sowing"
+  how_much: "1,000 kg"
+  how_well: "Lot passes the declared varietal identity, analytical purity, germination/viability, moisture and seed-health acceptance criteria"
+  how_long_or_cycle: "One complete seed-production campaign, including every establishment/vernalization and reproductive phase attributed to the released lot"
+  reference_flow_link: "Accepted output of grading_lot_release; all phase and run records reconcile to the released lot"
+system_boundary:
+  rules:
+    - rule_id: boundary_seed_state
+      applies_to: "product hand-off"
+      rule: "End at untreated, uncoated, unpelleted cleaned and size-graded sowing seed; exclude washing, polishing, priming, coating, pelleting and chemical treatment."
+      source_ids:
+        - imanishi-et-al-2019
+    - rule_id: boundary_route_choice
+      applies_to: "parent establishment"
+      rule: "Select exactly one direct-seeded or steckling route and include its complete establishment, vernalization and transfer records."
+      source_ids:
+        - cfia-sugar-beet-biology
+    - rule_id: boundary_pollination_identity
+      applies_to: "reproductive production"
+      rule: "Include isolation, parent-line placement, flowering synchronization, off-type removal and male-parent disposition needed to preserve the intended cross."
+      source_ids:
+        - cfia-sugar-beet-biology
+        - usda-aphis-sugar-beet-seed-production
+    - rule_id: boundary_harvest_independence
+      applies_to: "harvest"
+      rule: "Model harvest separately because standing crop becomes dry collected material and field residues and shattering losses require an independent hand-off."
+      source_ids:
+        - usda-aphis-sugar-beet-seed-production
+    - rule_id: boundary_stabilization
+      applies_to: "stabilization"
+      rule: "Declare the usable pre-intervention state, field or supplemental drying input, stable dry state and losses before threshing."
+      source_ids:
+        - usda-aphis-sugar-beet-seed-production
+boundary_abstraction:
+  declared_starting_condition: "Acquired parent seed or selected steckling material with declared genetic identity enters one specified seed-production route"
+  starting_condition_role: "Upstream propagation input to the foreground seed campaign"
+  product_classification_scope: "Sugar beet reproductive material produced for sowing; excludes commercial root production and downstream enhanced or treated seed states"
+  recursive_input_rule: "Purchased sugar beet parent seed in the same category is an upstream product input with supplier dataset or disclosed proxy; it is not expanded recursively inside the same foreground campaign"
+  upstream_dataset_requirement: "Require geography, crop year, parent-line identity, treatment state, quantity and supplier dataset or proxy disclosure for purchased propagation material"
+  disclosure: "Declare route, periods, parent arrangement, isolation control, pollination responsibility, harvest/stabilization method, conditioning technology, lot tests, grades and every reject destination"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Sugar beet seeds"
+    uuid: "7c8b5317-9f13-48cd-847c-f6d1f5248d54"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar and parent-line identity"
+    - "direct-seeded or steckling route"
+    - "production geography and crop years"
+    - "vernalization method"
+    - "isolation and pollination controls"
+    - "lot id"
+    - "harvest and stabilization route"
+    - "moisture basis"
+    - "size grade"
+    - "purity and germination/viability result"
+    - "untreated/uncoated/unpelleted state"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted reference seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report net accepted seed mass at the declared moisture basis; exclude packaging and test samples not returned to the lot."
+  - id: seed_count_conversion
+    applies_to: "counts of parents or seed units"
+    required_property_ref:
+      name: "Count and Mass"
+      uuid: ""
+    required_unit: "item and kg"
+    rule: "Preserve measured counts; any count-to-mass conversion shall use lot-specific thousand-unit mass and retain the measurement record."
+  - id: phase_normalization
+    applies_to: "all establishment and reproductive flows"
+    required_property_ref:
+      name: "applicable measured property"
+      uuid: ""
+    required_unit: "stated row unit"
+    rule: "Normalize after linking every phase and crop year to the released lot; do not annualize or duplicate first-period burdens."
+  - id: lot_mass_reconciliation
+    applies_to: "harvest through lot release"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile received mass to accepted, downgraded, rejected, sampled, residue and loss states at every node."
+process_map:
+  - id: parent_establishment_vernalization
+    name: "Parent establishment and vernalization route delta"
+    inclusion: "required"
+    inclusion_condition: "Use exactly one declared route: direct-seeded overwintering or steckling production/transplanting."
+    role: "Managed biological production with biological route delta, first period"
+    quantitative_reference: "Established and vernalized male and female parent population entering reproductive production"
+  - id: reproductive_seed_production
+    name: "Reproductive seed production and pollination"
+    inclusion: "required"
+    inclusion_condition: "After the declared parent route has produced vernalized parents."
+    role: "Managed biological production, reproductive period"
+    quantitative_reference: "Mature female seed-bearing crop ready for harvest"
+  - id: harvest_field_stabilization
+    name: "Harvest, swathing and field stabilization technology delta"
+    inclusion: "required"
+    inclusion_condition: "When the female seed crop has reached the declared harvest maturity."
+    role: "Harvest and preservation/stabilization with technology delta"
+    quantitative_reference: "Dry harvested seed-bearing material delivered to threshing"
+  - id: threshing_primary_cleaning
+    name: "Threshing and primary dry cleaning"
+    inclusion: "required"
+    inclusion_condition: "For every harvested lot before size grading."
+    role: "Primary conditioning"
+    quantitative_reference: "Cleaned unsized seed lot delivered to grading"
+  - id: grading_lot_release
+    name: "Size grading, testing and lot release"
+    inclusion: "required"
+    inclusion_condition: "For every cleaned lot placed on the market as sowing seed."
+    role: "Grading, sorting and batch release"
+    quantitative_reference: "1,000 kg accepted cleaned seed-grade sugar beet seed at farm gate"
+process_inventory:
+  - id: parent_establishment_vernalization
+    label: "Parent establishment and vernalization route delta"
+    inputs:
+      product:
+        - row_id: parent_propagation_material
+          role: "Parent seed or steckling propagation material"
+          name: "Sugar beet parent propagation material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured mass and count of parent seed, roots or stecklings entering the declared route"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids:
+                - cfia-sugar-beet-biology
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply functions"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Sum the mass of all mineral fertilizers, organic fertilizers, lime and nutrient-bearing amendments used in this process; retain concrete exchanges in foreground records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1500"
+                unit: "kg"
+                basis: "broad provisional total supplied product mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured irrigation water supplied during parent establishment, overwintering and vernalization management"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3"
+                basis: "broad provisional irrigation volume per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_crop_protection
+          role: "Crop protection products"
+          name: "Crop protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured active products and formulated products applied to the parent phase"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg"
+                basis: "broad provisional supplied product mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_field_fuel
+          role: "Field-operation fuel"
+          name: "Agricultural machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured fuel consumed for land preparation, sowing or planting, rouging, lifting, storage handling and transplanting attributable to this phase"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L"
+                basis: "broad provisional fuel volume per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: vernalization_electricity
+          role: "Controlled-vernalization electricity"
+          name: "Electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Metered electricity for cold storage or controlled vernalization; record zero for field-overwintered direct-seeded production"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kWh"
+                basis: "broad provisional electricity use per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: vernalized_parent_population
+          role: "Established vernalized parent population"
+          name: "Vernalized sugar beet parent plants"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Calculated mass or count transferred to reproductive production"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_parent_phase
+              source_ids:
+                - cfia-sugar-beet-biology
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1000000"
+                unit: "plants"
+                basis: "broad provisional parent-plant count per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: parent_phase_rejects
+          role: "Rejected or off-type parent material"
+          name: "Rejected sugar beet parent material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured parent material rejected during selection, winter survival assessment or transplant preparation, by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "broad provisional reject mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_phase_residues
+          role: "Parent-phase crop residues"
+          name: "Sugar beet crop residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated residues leaving the field or managed on site, by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg"
+                basis: "broad provisional residue mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: parent_managed_soil_emissions
+          role: "Direct managed-soil emissions"
+          name: "Reported managed-soil emission substances to their receiving media"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the parent phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Calculate each reported substance separately from nutrient, residue and field records; never use a generic pollutant identity"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_parent_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "broad provisional aggregate screening mass; concrete dataset retains substances separately per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: reproductive_seed_production
+    label: "Reproductive seed production and pollination"
+    inputs:
+      product:
+        - row_id: reproductive_parent_population
+          role: "Vernalized male and female parent population"
+          name: "Vernalized sugar beet parent plants"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Transfer the same parent population output from the first phase, preserving parent-line and route identity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids:
+                - cfia-sugar-beet-biology
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1000000"
+                unit: "plants"
+                basis: "broad provisional parent-plant count per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: reproductive_nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply functions"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Sum the mass of all mineral fertilizers, organic fertilizers, lime and nutrient-bearing amendments used in this process; retain concrete exchanges in foreground records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1500"
+                unit: "kg"
+                basis: "broad provisional total supplied product mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: reproductive_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured irrigation water supplied during reproductive growth and pollination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3"
+                basis: "broad provisional irrigation volume per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: reproductive_crop_protection
+          role: "Crop protection products"
+          name: "Crop protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured formulated products applied during reproductive production"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg"
+                basis: "broad provisional supplied product mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: reproductive_field_fuel
+          role: "Reproductive-field operation fuel"
+          name: "Agricultural machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured fuel for field operations, isolation maintenance, rouging, synchronization and male-row removal"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L"
+                basis: "broad provisional fuel volume per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_seed_crop
+          role: "Mature female seed-bearing crop"
+          name: "Mature sugar beet seed crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated seed-bearing female crop transferred to harvest"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids:
+                - usda-aphis-sugar-beet-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "8000"
+                unit: "kg"
+                basis: "broad provisional mature seed-bearing crop mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: removed_pollinator_biomass
+          role: "Removed male pollinator biomass"
+          name: "Sugar beet pollinator biomass"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated male-parent biomass removed after pollination, with on-field, recovered or waste destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids:
+                - cfia-sugar-beet-biology
+                - usda-aphis-sugar-beet-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg"
+                basis: "broad provisional pollinator biomass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: reproductive_offtypes_losses
+          role: "Off-type, failed and lost reproductive plants"
+          name: "Rejected reproductive sugar beet plants"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured plants removed or lost before harvest, by reason and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg"
+                basis: "broad provisional reject and loss mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: reproductive_managed_soil_emissions
+          role: "Direct managed-soil emissions"
+          name: "Reported managed-soil emission substances to their receiving media"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the reproductive phase boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Calculate each reported substance separately from nutrient, residue and field records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reproductive_phase
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "broad provisional aggregate screening mass; concrete dataset retains substances separately per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_field_stabilization
+    label: "Harvest, swathing and field stabilization technology delta"
+    inputs:
+      product:
+        - row_id: standing_mature_seed_crop
+          role: "Standing mature female seed crop"
+          name: "Mature sugar beet seed crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the harvest boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Transfer the mature female seed crop from reproductive production"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - usda-aphis-sugar-beet-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "8000"
+                unit: "kg"
+                basis: "broad provisional crop mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_fuel
+          role: "Swathing and harvest fuel"
+          name: "Agricultural machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record this flow at the harvest boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured fuel consumed for swathing, windrow handling and combine harvest"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "L"
+                basis: "broad provisional fuel volume per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stabilization_energy
+          role: "Supplemental stabilization energy"
+          name: "Electricity or fuel for forced air or supplemental drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh"
+          description: "Record this flow at the harvest boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured energy used only when field drying alone does not meet the declared stable hand-off condition"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kWh"
+                basis: "broad provisional energy use per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dry_harvested_seed_material
+          role: "Dry harvested seed-bearing material"
+          name: "Dry harvested sugar beet seed-bearing material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the harvest boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured dry material delivered to threshing, preserving lot and parent identity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - usda-aphis-sugar-beet-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "6000"
+                unit: "kg"
+                basis: "broad provisional harvested material mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_field_residue
+          role: "Harvested stalk and field residue"
+          name: "Sugar beet seed-crop residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the harvest boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated non-seed biomass retained on field, recovered or discarded"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg"
+                basis: "broad provisional field-residue mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: shattered_lost_seed
+          role: "Shattered and uncollected seed"
+          name: "Lost sugar beet seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the harvest boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Calculate seed loss from field observations, yield reconciliation or collection trials"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "broad provisional shattered seed loss per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: threshing_primary_cleaning
+    label: "Threshing and primary dry cleaning"
+    inputs:
+      product:
+        - row_id: harvested_material_to_thresher
+          role: "Dry harvested seed-bearing material"
+          name: "Dry harvested sugar beet seed-bearing material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured material received from harvest with lot identity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "6000"
+                unit: "kg"
+                basis: "broad provisional received mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: threshing_cleaning_electricity
+          role: "Threshing and cleaning electricity"
+          name: "Electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Metered electricity for threshing, conveying, aspiration and dry cleaning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kWh"
+                basis: "broad provisional electricity use per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: threshing_cleaning_fuel
+          role: "Threshing and cleaning fuel"
+          name: "Stationary or mobile equipment fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Volume / L"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured fuel when threshing or cleaning is fuel driven"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "L"
+                basis: "broad provisional fuel volume per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cleaned_unsized_seed
+          role: "Cleaned unsized sugar beet seed"
+          name: "Cleaned unsized sugar beet seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured cleaned seed lot transferred to size grading"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "broad provisional cleaned-seed mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: threshing_chaff
+          role: "Threshing chaff and stalk fragments"
+          name: "Sugar beet seed-crop chaff"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated separated plant material by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4000"
+                unit: "kg"
+                basis: "broad provisional chaff mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cleaning_foreign_matter
+          role: "Separated foreign matter"
+          name: "Foreign matter from seed cleaning"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured material removed by screens and aspiration, by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "broad provisional foreign-matter mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: conditioning_dust_release
+          role: "Uncaptured conditioning dust"
+          name: "Particulate matter to air, size fraction to be reported"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the conditioning boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated uncaptured dust released to air; retain the reported particle-size identity"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg"
+                basis: "broad provisional uncaptured dust mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: grading_lot_release
+    label: "Size grading, testing and lot release"
+    inputs:
+      product:
+        - row_id: cleaned_seed_to_grading
+          role: "Cleaned unsized seed lot"
+          name: "Cleaned unsized sugar beet seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured cleaned seed received for grading under the same lot identity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "broad provisional received mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grading_electricity
+          role: "Grading and testing electricity"
+          name: "Electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Metered electricity for conveying, sizing, gravity separation and testing attributable to the lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kWh"
+                basis: "broad provisional electricity use per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_seed_grade_sugar_beet_seed
+          role: "Accepted cleaned seed-grade sugar beet seed, intended output"
+          name: "Sugar beet seeds"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7c8b5317-9f13-48cd-847c-f6d1f5248d54"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Exactly 1,000 kg accepted lot mass at the declared farm-gate hand-off"
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_lot_release
+              source_ids:
+                - oecd-sugar-fodder-beet-seed-scheme
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_viable_seed
+          role: "Downgraded viable seed co-product"
+          name: "Downgraded sugar beet seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured seed that remains viable but does not enter the accepted reference lot; declare destination and whether it is an intended co-product"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "broad provisional downgraded seed mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_damaged_offtype_seed
+          role: "Rejected damaged, off-type or non-viable seed"
+          name: "Rejected sugar beet seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured seed rejected by identity, damage, purity, germination or viability criteria, by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "broad provisional rejected seed mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: lot_test_samples_consumed
+          role: "Consumed or discarded lot-test samples"
+          name: "Sugar beet seed test samples"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured sample mass not returned to the accepted lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg"
+                basis: "broad provisional destructive sample mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grading_changeover_residue
+          role: "Grading and changeover residue"
+          name: "Seed grading residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured retained material and cleanout residue from lot changeover, by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg"
+                basis: "broad provisional cleanout residue per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: grading_dust_release
+          role: "Uncaptured grading dust"
+          name: "Particulate matter to air, size fraction to be reported"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow at the lot release boundary and preserve lot, period and destination linkage."
+          amount:
+            expression: "Measured or calculated uncaptured dust released to air during grading"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cleaned seed-grade sugar beet seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lot_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "broad provisional uncaptured dust mass per 1,000 kg accepted reference seed output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_phase_linkage
+    applies_to: "multi-period campaign"
+    rule: "Attribute first-period establishment/vernalization and second-period reproductive burdens once to the resulting lot using traceable field and crop-year links; do not duplicate burdens across annual datasets."
+    source_ids:
+      - cfia-sugar-beet-biology
+  - rule_id: allocation_parent_routes
+    applies_to: "route alternatives"
+    rule: "Direct-seeded and steckling routes are mutually exclusive. Do not average both unless a production-weighted aggregate reports each route separately before aggregation."
+    source_ids:
+      - cfia-sugar-beet-biology
+  - rule_id: allocation_intended_outputs
+    applies_to: "accepted and downgraded seed"
+    rule: "Treat accepted seed and any intentionally marketed downgraded viable seed as the complete intended output set. Prefer physical mass allocation when subdivision cannot avoid shared burdens; disclose prices and sensitivity if economic allocation is used."
+    source_ids: []
+  - rule_id: allocation_residue_waste
+    applies_to: "parent biomass, field residue, chaff and rejects"
+    rule: "Treat material without intended product hand-off as residue or waste; do not assign avoided burden without a documented recovery function and destination."
+    source_ids: []
+  - rule_id: allocation_rework
+    applies_to: "re-cleaned or re-graded seed"
+    rule: "Return rework to the producing lot, retain its processing burdens once, and exclude it from accepted output until it passes release criteria."
+    source_ids: []
+  - rule_id: allocation_batch_shared
+    applies_to: "shared runs and changeovers"
+    rule: "Allocate metered run inputs by causal record or processed mass and assign changeover residues to the affected runs once; never count a shared run at two nodes."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_parent_phase
+      process_id: "parent_establishment_vernalization"
+      flow_role: "all parent-phase inputs and outputs"
+      record_type: "field, store and invoice records"
+      raw_fields: "route; field; crop year; parent line; quantities; dates; cold-store meter; rejects; destinations"
+      collection_method: "reconcile field logs, purchase records, meters and transfer counts"
+      unit: "row unit"
+      frequency: "each operation and transfer"
+      temporal_coverage: "entire first phase"
+      site_scope: "all supplying fields and stores"
+      aggregation_rule: "sum by route and released lot; no cross-route averaging before disclosure"
+      quality_evidence: "invoices, field logs, cold-store records, transfer and selection records"
+    - protocol_id: cp_reproductive_phase
+      process_id: "reproductive_seed_production"
+      flow_role: "pollination-phase inputs and outputs"
+      record_type: "field and parent-line records"
+      raw_fields: "parent rows; isolation; flowering; applications; water; fuel; removals; mature crop; emissions data"
+      collection_method: "reconcile mapped field operations and parent-line inspections"
+      unit: "row unit"
+      frequency: "each operation and inspection"
+      temporal_coverage: "entire reproductive phase"
+      site_scope: "all production fields"
+      aggregation_rule: "sum by lot and parent line; preserve male/female dispositions"
+      quality_evidence: "field map, isolation inspection, application log and crop estimate"
+    - protocol_id: cp_harvest
+      process_id: "harvest_field_stabilization"
+      flow_role: "harvest, energy, collected material and loss"
+      record_type: "harvest tickets, meters and field observations"
+      raw_fields: "dates; crop mass; fuel; electricity; moisture; drying duration; residues; shattering"
+      collection_method: "weigh transferred material and reconcile field observations"
+      unit: "row unit"
+      frequency: "each field and harvest run"
+      temporal_coverage: "harvest through stable hand-off"
+      site_scope: "all fields and drying locations"
+      aggregation_rule: "mass-weight by lot after separate route reporting"
+      quality_evidence: "weigh tickets, meter logs, moisture tests and loss checks"
+    - protocol_id: cp_conditioning
+      process_id: "threshing_primary_cleaning"
+      flow_role: "received material, energy and separated states"
+      record_type: "run and meter records"
+      raw_fields: "lot; run; received mass; energy; cleaned mass; chaff; foreign matter; dust control"
+      collection_method: "weigh run inputs/outputs and read meters"
+      unit: "row unit"
+      frequency: "each conditioning run"
+      temporal_coverage: "entire conditioning campaign"
+      site_scope: "all conditioning equipment"
+      aggregation_rule: "reconcile by run then aggregate equivalent lots"
+      quality_evidence: "calibrated scales, meter records and cleanout log"
+    - protocol_id: cp_lot_release
+      process_id: "grading_lot_release"
+      flow_role: "grade states, energy, tests and release"
+      record_type: "lot, test and release records"
+      raw_fields: "lot; size fractions; mass; purity; germination; viability; moisture; test sample; rejects; destination; meter"
+      collection_method: "weigh every grade and link accredited or declared test results"
+      unit: "row unit"
+      frequency: "each grading run and released lot"
+      temporal_coverage: "grading through farm-gate release"
+      site_scope: "all grading and test locations"
+      aggregation_rule: "accepted output is only released conforming mass; other states remain separate"
+      quality_evidence: "scale calibration, test report, release certificate and traceability record"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all rows"
+      rule: "row quantity / accepted released lot mass × 1,000 kg"
+      inputs:
+        - "measured row quantity"
+        - "accepted lot mass"
+      output: "normalized row amount"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_phase_attribution
+      applies_to: "first and reproductive periods"
+      rule: "sum uniquely linked operations across all phases of the lot before normalization"
+      inputs:
+        - "field id"
+        - "crop year"
+        - route
+        - "lot id"
+        - quantities
+      output: "full-campaign inventory"
+      source_ids:
+        - cfia-sugar-beet-biology
+    - id: calc_mass_balance
+      applies_to: "each material node"
+      rule: "received mass = accepted transfers + downgraded + rejected + residue + samples + measured/calculated loss, within uncertainty"
+      inputs:
+        - "node mass records"
+      output: "closure and unexplained difference"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_managed_soil_emissions
+      applies_to: "field phases"
+      rule: "apply the declared current method separately to recorded nutrient and residue inputs; retain substance and receiving medium"
+      inputs:
+        - "nutrient and residue records"
+        - "method factors"
+      output: "substance-specific elementary flows"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference lot"
+      requirement: "Preserve cultivar, parent lines, lot id, untreated state and certification/acceptance status."
+      evidence: "lot certificate and release record"
+    - id: dq_route_period
+      applies_to: "full campaign"
+      requirement: "Trace every field, crop year, vernalization/overwintering event and transfer to one route and released lot."
+      evidence: "field map, transfer record and campaign ledger"
+    - id: dq_pollination
+      applies_to: "reproductive phase"
+      requirement: "Record isolation control, parent ratio/placement, flowering synchronization, off-type removal and male-parent disposition."
+      evidence: "inspection and parent-line records"
+    - id: dq_measurement
+      applies_to: "mass and energy"
+      requirement: "Use calibrated scales and meters or document estimation method and uncertainty."
+      evidence: "calibration and meter evidence"
+    - id: dq_completeness
+      applies_to: "all nodes"
+      requirement: "Reconcile all accepted, downgraded, rejected, residue, loss and rework states; explain material balance gaps."
+      evidence: "node reconciliation"
+    - id: dq_representativeness
+      applies_to: "aggregation"
+      requirement: "Disclose geography, crop years, route shares, technology shares and excluded sites."
+      evidence: "aggregation workbook and dataset metadata"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "The flow UUID, mass property, unit group, 1,000 kg amount, market state and required qualifiers shall all be present and consistent."
+    source_ids: []
+  - rule_id: validate_route_exclusivity
+    applies_to: "parent production"
+    rule: "Exactly one direct-seeded or steckling route shall be declared per foreground package, with all required phases linked."
+    source_ids:
+      - cfia-sugar-beet-biology
+  - rule_id: validate_period_once
+    applies_to: "multi-period attribution"
+    rule: "Each establishment, vernalization, reproductive and termination event shall be attributed once and only once to released outputs."
+    source_ids: []
+  - rule_id: validate_isolation_pollination
+    applies_to: "reproductive production"
+    rule: "Verify isolation evidence, parent identity, flowering/pollination management and male-parent disposition before accepting varietal-identity claims."
+    source_ids:
+      - oecd-sugar-fodder-beet-seed-scheme
+      - usda-aphis-sugar-beet-seed-production
+  - rule_id: validate_batch_changeover
+    applies_to: "conditioning and grading"
+    rule: "Runs, shared energy, cleaning and changeover residues shall carry run and lot keys and shall not be double counted."
+    source_ids: []
+  - rule_id: validate_output_states
+    applies_to: "grading"
+    rule: "Accepted, downgraded viable, rejected, sample and residue states shall have distinct quantities and hand-offs; rejected material cannot enter the reference output."
+    source_ids: []
+  - rule_id: validate_rework_loop
+    applies_to: "re-cleaning or re-grading"
+    rule: "Every rework loop shall return to a named node, retain prior burdens and close before release."
+    source_ids: []
+  - rule_id: validate_treatment_exclusion
+    applies_to: "product state"
+    rule: "Reject a dataset that includes polishing, washing, priming, coating, pelleting or chemical seed treatment while claiming this reference state."
+    source_ids:
+      - imanishi-et-al-2019
+  - rule_id: validate_mass_balance
+    applies_to: "all material nodes"
+    rule: "Investigate unexplained mass-balance differences and disclose accepted uncertainty before use as secondary or background data."
+    source_ids:
+      - mass-balance-identity
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Production of sowing seed inputs for sugar beet cultivation models and supply-chain inventories"
+  allowed_use: "Untreated cleaned and size-graded sugar beet seed with route, geography, periods and lot-quality state matching the study"
+  excluded_use: "Commercial root production; buyer planting; fodder/vegetable beet seed; polished, washed, primed, coated, pelleted or chemically treated commercial seed"
+  required_metadata: "Required qualifiers; process geography; field and crop years; route and phase linkage; parent-line and isolation controls; production mode; lot id; moisture basis; grades; tests; reject destinations; allocation method"
+  required_quality_disclosure: "Primary-data share, metering and scale coverage, route/site aggregation, mass-balance closure, provisional-range replacements, emission method and unresolved flow identities"
+  update_trigger: "Change in parent route, vernalization practice, isolation or pollination control, harvest/stabilization route, conditioning technology, acceptance specification, treatment state, allocation method or representative crop years"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "cfia-sugar-beet-biology"
+    type: "official_guidance"
+    reference: "Canadian Food Inspection Agency, The Biology of Beta vulgaris L. (Sugar Beet), <https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/beta-vulgaris>"
+    used_for: "Biennial lifecycle, vernalization, direct-seeded and steckling routes, parent disposition"
+  - id: "usda-aphis-sugar-beet-seed-production"
+    type: "official_guidance"
+    reference: "USDA APHIS, sugar beet environmental impact statement, <https://www.aphis.usda.gov/sites/default/files/03_32301p_feis_std.pdf>"
+    used_for: "Hybrid parent management, isolation, male-row removal, swathing, field drying and combine harvest"
+  - id: "oecd-sugar-fodder-beet-seed-scheme"
+    type: "standard"
+    reference: "OECD Schemes for the Varietal Certification of Sugar Beet and Fodder Beet Seed, <https://www.oecd.org/content/dam/oecd/en/topics/policy-sub-issues/seeds/Seed%20scheme%20rules%20and%20regulations.pdf/_jcr_content/renditions/original./Seed%20scheme%20rules%20and%20regulations.pdf>"
+    used_for: "Varietal certification, lot identity and official control"
+  - id: "imanishi-et-al-2019"
+    type: "literature"
+    reference: "Imanishi et al. (2019), The biochemistry underpinning industrial seed technology and mechanical processing of sugar beet, DOI 10.1007/s00425-019-03257-5"
+    used_for: "Boundary between cleaning/sizing and downstream washing, polishing, priming, coating and pelleting"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass identity applied at each foreground node"
+    used_for: "Reference normalization and material reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:21489f9244f70b555bc2dc0693e5c0faa4400ae949d421bce1d3efbd8ea95566"
+  generated_content_sha256: "sha256:d9e6ee98560b2f9c4a96934c80e2d8337208b557aeaf00edc4f4b1ae963de362"

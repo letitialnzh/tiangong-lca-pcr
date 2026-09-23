@@ -1,10 +1,765 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01353"
-  title: "Raspberries, blackberries, mulberries and loganberries"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.raspberries-blackberries-mulberries-and-loganberries"
+  classification_refs: "CPC 3.0 / 01353"
+  covered_products: "Fresh raspberries, blackberries, mulberries and loganberries"
+  excluded_products: "Processed products; nursery plants and propagating material"
+  representative_product: "Marketable fresh berries, with species, cultivar and grade declared"
+  production_route: "Managed biological production → harvest → primary conditioning → grading/sorting → dispatch"
+  market_state: "Fresh marketable product at declared outlet condition"
+functional_unit:
+  what: "Marketable fresh berries at the declared outlet"
+  how_much: "1 kg"
+  how_well: "Species, cultivar, system, season, quality grade, condition and saleable-yield definition declared"
+  how_long_or_cycle: "One declared production season; perennial establishment and multi-year attribution disclosed"
+  reference_flow_link: "One declared marketable berry product flow; identity unresolved"
+system_boundary:
+  rules:
+    - rule_id: boundary_start_end
+      applies_to: "all datasets"
+      rule: "Include crop management through dispatch; exclude downstream processing and retail."
+      source_ids:
+        - source-fao-lca-guidance
+    - rule_id: boundary_perennial
+      applies_to: "perennial systems"
+      rule: "Disclose establishment and productive-period attribution; do not assign all establishment burdens to one season silently."
+      source_ids:
+        - source-fao-lca-guidance
+boundary_abstraction:
+  declared_starting_condition: "Field or protected-production unit ready for the declared season; purchased inputs enter when received by the operator"
+  starting_condition_role: "Foreground begins with crop-stand management and ends at farm-gate or first marketable outlet"
+  product_classification_scope: "Fresh raspberries, blackberries, mulberries and loganberries; semantic scope governs inclusion"
+  recursive_input_rule: "Same-category fruit used as an input is an internal transfer, not a recursively modelled new crop output"
+  upstream_dataset_requirement: "Use separately documented background datasets for electricity, fuel, fertilizer, amendments, packaging, water supply and purchased services"
+  disclosure: "Declare land/structure, crop age, season, outlet, yields, losses, irrigation, nutrient products, packaging and exclusions"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Raspberries, blackberries, mulberries and loganberries"
+    uuid: "562e96d5-9c9f-4b90-877c-b2ebf33c87cc"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - cultivar
+    - "production system"
+    - "harvest season"
+    - "quality grade"
+    - "marketable yield"
+    - "outlet condition"
+    - "allocation basis"
+    - "crop age or establishment treatment"
+reference_flows:
+  []
+measurement_rules:
+  - id: rule_mass_reference
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Normalize results to 1 kg marketable fresh product at the declared outlet."
+  - id: rule_yield_basis
+    applies_to: "yield and inventory"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg fresh product"
+    rule: "Use weighed marketable output; disclose harvested-but-rejected and field-loss amounts separately."
+  - id: rule_nutrient_basis
+    applies_to: "fertilizer and soil amendment"
+    required_property_ref:
+      name: "Product mass and nutrient mass where available"
+      uuid: ""
+    required_unit: "kg product; kg nutrient"
+    rule: "Record the actual product and N/P/K basis; never substitute an unlabeled generic product."
+  - id: rule_perennial_attribution
+    applies_to: "perennial inputs"
+    required_property_ref:
+      name: "Mass, area or time"
+      uuid: ""
+    required_unit: "kg, ha, year"
+    rule: "Allocate establishment and shared stand inputs over the declared productive period and disclose the basis."
+process_map:
+  - id: process_crop_establishment
+    name: "Crop establishment and stand maintenance"
+    inclusion: "conditional"
+    inclusion_condition: "Include establishment, replacement and multi-year stand management"
+    role: "biological production"
+    quantitative_reference: "area and productive period"
+  - id: process_crop_management
+    name: "Seasonal crop management"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "biological production"
+    quantitative_reference: "season and marketable kg"
+  - id: process_harvest
+    name: "Harvest and field capture"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "harvest capture"
+    quantitative_reference: "harvested and marketable mass"
+  - id: process_conditioning_grading
+    name: "Primary conditioning and grading"
+    inclusion: "conditional"
+    inclusion_condition: "Include washing, cooling, sorting or packing before outlet"
+    role: "primary conditioning"
+    quantitative_reference: "dispatched kg"
+  - id: process_reject_routing
+    name: "Reject, loss and co-product routing"
+    inclusion: "conditional"
+    inclusion_condition: "Include non-marketable fruit and co-products"
+    role: "attribution and waste routing"
+    quantitative_reference: "mass balance"
+process_inventory:
+  - id: process_crop_establishment
+    label: "Crop establishment and stand maintenance"
+    inputs:
+      product:
+        - row_id: establishment_inputs
+          role: "Establishment materials"
+          name: "Establishment material (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual plants, trellis, substrate and replacement materials by block and event."
+          amount:
+            expression: "measured purchase or issue amount allocated over the productive period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: establishment_land
+          role: "Establishment land occupation"
+          name: "Land occupation or transformation (UUID unresolved; intentionally blank)"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha-year"
+          description: "Record area, duration and transformation status for the declared stand."
+          amount:
+            expression: "site register and area map"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: process_crop_management
+    label: "Seasonal crop management"
+    inputs:
+      product:
+        - row_id: process_crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_input_records
+              source_ids:
+                - source-fao-lca-guidance
+                - source-ipcc-2019-refinement
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_services
+          role: "Irrigation water"
+          name: "Irrigation water supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation water by plot, source, operation and season."
+          amount:
+            expression: "meter, delivery, invoice or operation log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_input_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: energy_services
+          role: "Energy services"
+          name: "Electricity, fuel or energy carrier (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or mass / kWh, MJ or kg"
+          description: "Record electricity, fuel and other energy carriers used by field operations and purchased services."
+          amount:
+            expression: "meter, delivery, invoice or operation log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_input_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: process_harvest
+    label: "Harvest and field capture"
+    inputs:
+      product:
+        - row_id: harvest_materials
+          role: "Harvest materials"
+          name: "Harvest material (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual harvest aids and field packaging by harvest period."
+          amount:
+            expression: "issue and return reconciliation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_berries
+          role: "Harvested berries"
+          name: "Harvested fresh berries (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh harvested berries by species and grade before conditioning."
+          amount:
+            expression: "lot scale records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_yield_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_losses
+          role: "Harvest losses"
+          name: "Harvest loss (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record field losses or estimates with the destination and estimation method."
+          amount:
+            expression: "weighed loss or reconciled mass balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_yield_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: process_conditioning_grading
+    label: "Primary conditioning and grading"
+    inputs:
+      product:
+        - row_id: conditioning_inputs
+          role: "Conditioning water"
+          name: "Conditioning water supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used for washing or other conditioning operations linked to each lot."
+          amount:
+            expression: "receiving, utility and packaging records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditioning energy"
+          name: "Conditioning energy supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or mass / kWh, MJ or kg"
+          description: "Record electricity, fuel and other energy used for cooling, washing, sorting or packing equipment."
+          amount:
+            expression: "meter, invoice and lot-linked run log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_packaging
+          role: "Conditioning packaging"
+          name: "Conditioning packaging material (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass / kg"
+          description: "Record packaging and presentation materials consumed by the conditioning run when applicable."
+          amount:
+            expression: "invoice, issue record and lot-linked run log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_berries
+          role: "Marketable berries"
+          name: "Raspberries, blackberries, mulberries and loganberries (UUID bound in reference flow)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use final weighed product at the declared farm-gate or first marketable outlet."
+          amount:
+            expression: "lot dispatch weight"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              collection_protocol_id: cp_yield_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Conditioning rejects"
+          name: "Conditioning reject (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record grading rejects by destination and treatment route."
+          amount:
+            expression: "reject weight or reconciled mass balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable fresh berry"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_records
+              source_ids:
+                - source-fao-lca-guidance
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg marketable berry"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_marketable_rejects
+    applies_to: "outputs and rejects"
+    rule: "Separate products, rejects and waste by measured mass and destination. If co-products remain, use a documented physical or economic basis and report sensitivity."
+    source_ids:
+      - source-fao-lca-guidance
+  - rule_id: allocation_multi_period
+    applies_to: "perennial systems"
+    rule: "Allocate shared establishment and stand-management burdens over the productive period using disclosed yield or time shares."
+    source_ids:
+      - source-fao-lca-guidance
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "process_crop_establishment"
+      flow_role: "inputs and land"
+      record_type: "field log, invoice, area map"
+      raw_fields: "area, age, plants, materials, dates"
+      collection_method: "reconcile field and purchase records"
+      unit: "kg, ha, year"
+      frequency: "event/annual"
+      temporal_coverage: "establishment and productive period"
+      site_scope: "each block"
+      aggregation_rule: "allocate by declared period"
+      quality_evidence: "invoices, maps, review"
+    - protocol_id: cp_input_records
+      process_id: "process_crop_management"
+      flow_role: "inputs"
+      record_type: "invoice, meter, application log"
+      raw_fields: "product, nutrient content, amount, date, field"
+      collection_method: "primary records and reconciliation"
+      unit: "kg, kg nutrient, m3, kWh, L"
+      frequency: "event/monthly"
+      temporal_coverage: "full season"
+      site_scope: "block/site"
+      aggregation_rule: "sum by season"
+      quality_evidence: "invoices, meters"
+    - protocol_id: cp_yield_records
+      process_id: "process_harvest"
+      flow_role: "outputs"
+      record_type: "weigh ticket, harvest log"
+      raw_fields: "species, grade, mass, date, block"
+      collection_method: "weigh each lot and outlet"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "full season"
+      site_scope: "block/outlet"
+      aggregation_rule: "sum lots and grades"
+      quality_evidence: "calibrated scale"
+    - protocol_id: cp_harvest_records
+      process_id: "process_harvest"
+      flow_role: "harvest materials"
+      record_type: "issue/waste log"
+      raw_fields: "material, quantity, route"
+      collection_method: "issue and return reconciliation"
+      unit: "kg"
+      frequency: "harvest period"
+      temporal_coverage: "full season"
+      site_scope: "harvest operation"
+      aggregation_rule: "sum by material"
+      quality_evidence: "inventory records"
+    - protocol_id: cp_conditioning_records
+      process_id: "process_conditioning_grading"
+      flow_role: "conditioning inputs"
+      record_type: "meter, packing log, invoice"
+      raw_fields: "input, amount, lot, energy"
+      collection_method: "lot-linked records"
+      unit: "kg, m3, kWh"
+      frequency: "lot/daily"
+      temporal_coverage: "full season"
+      site_scope: "conditioning unit"
+      aggregation_rule: "allocate by lot mass"
+      quality_evidence: "meters, invoices"
+    - protocol_id: cp_reject_records
+      process_id: "process_reject_routing"
+      flow_role: "rejects and destinations"
+      record_type: "grading/destination log"
+      raw_fields: "mass, quality, destination, treatment"
+      collection_method: "mass-balance each lot"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "full season"
+      site_scope: "site/outlet"
+      aggregation_rule: "reconcile all outputs"
+      quality_evidence: "receipts, balance"
+    - protocol_id: cp_emission_calculation
+      process_id: "all_relevant_processes"
+      flow_role: "elementary exchanges"
+      record_type: "calculation record"
+      raw_fields: "activity, factor, method, uncertainty"
+      collection_method: "apply declared method"
+      unit: "kg substance or MJ"
+      frequency: "reporting period"
+      temporal_coverage: "declared period"
+      site_scope: "site/block"
+      aggregation_rule: "calculate then normalize"
+      quality_evidence: "cited method"
+  calculation_rules:
+    - id: calc_normalize_marketable
+      applies_to: "all rows"
+      rule: "inventory amount / marketable fresh berry mass"
+      inputs:
+        - "process amount"
+        - "marketable mass"
+      output: "per kg"
+      source_ids:
+        - source-fao-lca-guidance
+    - id: calc_nutrient_application
+      applies_to: "fertilizer card"
+      rule: "product mass × declared nutrient fraction; retain product mass"
+      inputs:
+        - "product mass"
+        - "nutrient fraction"
+      output: "product and nutrient amounts"
+      source_ids:
+        - source-fao-lca-guidance
+    - id: calc_perennial_share
+      applies_to: "establishment"
+      rule: "shared burden × declared season/yield share"
+      inputs:
+        - burden
+        - period
+        - yield
+      output: "season amount"
+      source_ids:
+        - source-fao-lca-guidance
+    - id: calc_mass_balance
+      applies_to: "harvest and routing"
+      rule: "harvested = marketable + rejects + losses within declared tolerance"
+      inputs:
+        - "all mass records"
+      output: "reconciled balance"
+      source_ids:
+        - source-fao-lca-guidance
+  data_quality_requirements:
+    []
+validation_rules:
+  - rule_id: validation_reference
+    applies_to: "reference flow"
+    rule: "Confirm one product flow, mass property and kg unit; unresolved identity remains a review finding."
+    source_ids:
+      - source-fao-lca-guidance
+  - rule_id: validation_completeness
+    applies_to: "foreground package"
+    rule: "Required processes and protocols must be present or marked not applicable with justification."
+    source_ids:
+      - source-fao-lca-guidance
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and routing"
+    rule: "Check harvested mass against marketable output, rejects and losses; unexplained gaps fail validation."
+    source_ids:
+      - source-fao-lca-guidance
+  - rule_id: validation_nutrient_basis
+    applies_to: "fertilizer and amendments"
+    rule: "Check product, nutrient content, amount, date, area and source record; generic unlabeled totals fail."
+    source_ids:
+      - source-fao-lca-guidance
+      - source-ipcc-2019-refinement
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset only after completeness and review"
+  downstream_use: "Fresh berry foreground production and linked product-system modelling"
+  allowed_use: "Declared fresh berry system, season and outlet"
+  excluded_use: "Processed products, retail, unspecified systems or undisclosed seasons"
+  required_metadata: "species, cultivar, geography, age, system, season, outlet, yield, products, allocation, losses"
+  required_quality_disclosure: "completeness, representativeness, measurement basis, uncertainty and unresolved identities"
+  update_trigger: "new season, replacement, route/input/outlet change, or corrected mass balance"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "source-fao-lca-guidance"
+    type: "official_guidance"
+    reference: "FAO environmental performance guidance for food and agriculture"
+    used_for: "boundary, process map, collection, allocation and quality"
+  - id: "source-ipcc-2019-refinement"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement to the 2006 Guidelines"
+    used_for: "conditional field-emission and nutrient-related calculation method"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:08681d3ea3b7fb5f99042c894c5de7c706107cad0f1d620f2ef45ea8a4300093"
+  generated_content_sha256: "sha256:9400ff8307665ce48bb179a956109ed51ccb6c2f1b702057321f23bcf6427f96"

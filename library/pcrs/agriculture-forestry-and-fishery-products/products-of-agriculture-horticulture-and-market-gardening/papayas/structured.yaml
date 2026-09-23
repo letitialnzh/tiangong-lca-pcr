@@ -1,10 +1,795 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01317"
-  title: "Papayas"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.papayas"
+  classification_refs: "CPC 3.0:01317"
+  covered_products: "Fresh whole papayas from managed cultivation, including farm-gate or first-packing-site presentation before processing"
+  excluded_products: "Dried, frozen, canned, pulped, juiced, fermented, or otherwise processed papaya; papaya planting material; papaya waste sold as a separate product"
+  representative_product: "Marketable fresh whole papaya at the declared farm or first packing-site gate"
+  production_route: "Open-field or protected cultivation followed by harvest and optional primary sorting, washing, cooling, and packing"
+  market_state: "Fresh, whole, marketable product at a declared gate; cultivar, grade, maturity, and packing state are required qualifiers"
+functional_unit:
+  what: "Marketable fresh whole papaya delivered at the declared farm or first packing-site gate"
+  how_much: "1 kg of marketable fresh whole papaya"
+  how_well: "Whole fruit meeting the declared cultivar or product identity, maturity, grade, size, trim, washing, cooling, and packaging qualifiers"
+  how_long_or_cycle: "One declared production cycle and harvest campaign, with all harvest lots linked to the same field or protected unit and gate"
+  reference_flow_link: "fresh whole papaya at the declared gate; product-flow"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "establishment and crop management"
+      rule: "Include inputs and direct cultivation exchanges from the declared starting condition through the represented harvest campaign, and allocate them to marketable output from the same declared cycle."
+      source_ids:
+        - fao-papaya-production-guidance
+    - rule_id: boundary_declared_gate
+      applies_to: "harvest and gate handling"
+      rule: "End at the declared farm or first packing-site gate; include sorting, trimming, washing, cooling, and primary packaging only when they occur before that hand-off."
+      source_ids:
+        - codex-cxc-53-2003
+    - rule_id: boundary_soil_emissions
+      applies_to: "managed soil and residues"
+      rule: "Apply one declared method to nitrogen emissions and avoid double counting fertilizer, amendment, and returned-residue nitrogen."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_residue_fate
+      applies_to: "field residue and rejects"
+      rule: "Record field residue and postharvest rejects by destination; an unspecified reject or residue is not a co-product."
+      source_ids:
+        - fao-papaya-production-guidance
+boundary_abstraction:
+  declared_starting_condition: "Prepared production plot or protected growing unit receiving papaya seed or seedling material, with prior land use and pre-establishment work disclosed"
+  starting_condition_role: "Beginning of the declared papaya production cycle"
+  product_classification_scope: "Fresh whole papayas under CPC 3.0:01317 through the declared farm or first packing-site gate"
+  recursive_input_rule: "Purchased papaya seed or seedlings are upstream product inputs linked once; they are not recreated as an additional papaya fruit cycle inside this PCR."
+  upstream_dataset_requirement: "Use compatible upstream datasets for seed or seedlings, fertilizers and amendments, crop-protection products, irrigation water, energy, packaging, transport, and waste treatment whenever they are used before the declared gate."
+  disclosure: "Declare cultivar or product identity, geography, route, field or protected-unit area, cycle dates, irrigation source and method, nutrient basis, crop-protection programme, harvest lots, grade and maturity, washing, cooling, packing, reject destination, residue fate, and gate."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Fresh whole papaya at farm or first packing-site gate"
+    uuid: "5f8859fd-4690-4c28-afbe-c4846a84da32"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Papaya identity and cultivar"
+    - "production country or region"
+    - "open-field or protected route"
+    - "field or protected-unit identifier"
+    - "cycle and harvest dates"
+    - "planted area"
+    - "irrigation source and method"
+    - "nutrient and soil-amendment product and nutrient basis"
+    - "crop-protection programme"
+    - "harvested mass"
+    - "marketable grade and maturity"
+    - "rejects and residue fate"
+    - washing
+    - cooling
+    - packaging
+    - "declared gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_product_mass
+    applies_to: "harvested fruit and gate output"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep harvested gross mass, marketable papaya, downgraded or rejected fruit, trimming, and field residue as separate quantities."
+  - id: area_and_cycle_normalization
+    applies_to: "establishment and crop management"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Record each field or protected unit, planted area, cycle dates, and harvest campaign before normalizing inputs and outputs to marketable product."
+  - id: nutrient_equivalent_basis
+    applies_to: "fertilizer and soil-amendment inputs"
+    required_property_ref:
+      name: "Product mass and nutrient mass"
+      uuid: ""
+    required_unit: "kg product, kg N, kg P2O5, or kg K2O"
+    rule: "Record the actual product and declared nutrient concentration; preserve whether the model is based on product mass or nutrient equivalent."
+  - id: irrigation_volume
+    applies_to: "irrigation and water withdrawal"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Distinguish water withdrawn at the source from water delivered to the crop and record rainfall separately when it is modelled."
+  - id: multiple_harvest_reconciliation
+    applies_to: "successive harvests"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Aggregate harvest lots only after linking them to the same field or protected unit, cycle, cultivar, grade, and declared gate."
+process_map:
+  - id: papaya_crop_establishment
+    name: "Papaya crop establishment"
+    inclusion: "required"
+    inclusion_condition: "every represented crop cycle"
+    role: "foreground establishment"
+    quantitative_reference: "planted area, planting-material quantity, and cycle"
+  - id: papaya_crop_management
+    name: "Papaya crop management"
+    inclusion: "required"
+    inclusion_condition: "every represented crop cycle"
+    role: "foreground managed biological production"
+    quantitative_reference: "field or protected-unit cycle and marketable output"
+  - id: papaya_harvest
+    name: "Papaya harvest and field handling"
+    inclusion: "required"
+    inclusion_condition: "every represented harvest campaign"
+    role: "foreground harvest and field segregation"
+    quantitative_reference: "gross harvest, marketable output, rejects, and residue"
+  - id: papaya_gate_preparation
+    name: "Papaya gate preparation and hand-off"
+    inclusion: "conditional"
+    inclusion_condition: "only when sorting, washing, cooling, or primary packing occurs before the declared gate"
+    role: "foreground gate handling"
+    quantitative_reference: "1,000 kg marketable fresh papaya"
+process_inventory:
+  - id: papaya_crop_establishment
+    label: "Papaya crop establishment"
+    inputs:
+      product:
+        - row_id: papaya_planting_material
+          role: "Papaya planting material"
+          name: "Papaya seed or seedling planting material"
+          flow_type: "product"
+          property_unit: "Number of items or mass / seedling or kg"
+          description: "Record seed, seedling, or grafted planting material entering the declared field or protected unit. Identify the material type and do not treat it as marketable papaya fruit."
+          amount:
+            expression: "Count or weigh planting material by cultivar, field or protected unit, and cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per planted hectare or protected unit, then per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_establishment_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+        - row_id: papaya_crop_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_input_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "600"
+                unit: "kg product/ha or protected-unit cycle"
+                basis: "broad screening interval pending product invoices, soil tests, and nutrient declarations"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: papaya_land_occupation
+          role: "Land occupation for papaya production"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*year"
+          description: "Record the occupied cultivated area and duration for the declared papaya cycle; distinguish annualized productive occupation from land transformation."
+          amount:
+            expression: "Planted area multiplied by the occupied fraction of the year represented by the cycle."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_papaya_establishment_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: papaya_crop_management
+    label: "Papaya crop management"
+    inputs:
+      product:
+        - row_id: papaya_irrigation_water
+          role: "Crop-cycle irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered to the crop by source and irrigation technology, excluding rainfall unless the study explicitly models rainfall as a withdrawal."
+          amount:
+            expression: "Meter or document delivered irrigation by field or protected unit and cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_input_records
+              source_ids:
+                - fao-irrigation-drainage-paper-56
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "20,000"
+                unit: "m3/ha or protected-unit cycle"
+                basis: "broad interval dependent on climate, soil, cultivar, crop age, and irrigation technology"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: papaya_mobile_fuel
+          role: "Crop-cycle mobile machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or mass / MJ or kg fuel"
+          description: "Record fuel used by tractors, pumps, sprayers, mowers, and other mobile or field machinery that crosses the cultivation boundary."
+          amount:
+            expression: "Meter, invoice, or equipment log allocated to the papaya field or protected unit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_input_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+        - row_id: papaya_crop_protection
+          role: "Crop-protection products"
+          name: "Papaya crop-protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg product or kg active ingredient"
+          description: "Record only crop-protection products actually applied, retaining active ingredient, formulation, application rate, and target treatment. The product identity requires foreground binding before publication."
+          amount:
+            expression: "Product mass and declared active-ingredient mass by application event."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_input_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: papaya_water_withdrawal
+          role: "Crop production water withdrawal"
+          name: "Water resource withdrawal"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Record source withdrawal when it is distinct from water delivered to the crop and disclose the source type and return or loss treatment."
+          amount:
+            expression: "Source withdrawal meter or documented abstraction volume, reconciled to irrigation delivery."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_input_records
+              source_ids:
+                - fao-irrigation-drainage-paper-56
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: papaya_soil_nitrogen_emissions
+          role: "Managed-soil nitrogen emissions"
+          name: "Managed-soil nitrogen emissions"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N or kg N2O-N"
+          description: "Calculate direct and indirect managed-soil nitrogen emissions from the declared fertilizer, amendment, and returned-residue nitrogen basis using one declared method."
+          amount:
+            expression: "Apply the declared method factor to the documented nitrogen input and retained residue basis; do not duplicate an emission already supplied by an upstream dataset."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_papaya_input_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+  - id: papaya_harvest
+    label: "Papaya harvest and field handling"
+    inputs:
+      product:
+        - row_id: papaya_harvest_containers
+          role: "Harvest containers or field crates"
+          name: "Harvest container or crate function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "pallet-and-crate-packaging"
+          property_unit: "Mass or item-service / kg or container-use"
+          description: "Record reusable or single-use harvest containers entering the harvest operation and distinguish reusable service cycles from consumed packaging material."
+          amount:
+            expression: "Count container uses and record material mass when a consumed container crosses the boundary."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign and per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_harvest_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+      waste:
+        - row_id: papaya_harvest_rejects
+          role: "Harvest rejects"
+          name: "Papaya harvest rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet fruit"
+          description: "Record fruit rejected at harvest or field sorting and identify whether it is left in the field, composted, fed, sold into another product route, or sent to waste treatment."
+          amount:
+            expression: "Weigh or reconcile rejected fruit by lot and destination; do not credit it as a co-product without a documented receiving route."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign and per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_harvest_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+      elementary:
+        - row_id: papaya_field_residue
+          role: "Field residue"
+          name: "Papaya field residue"
+          flow_type: "elementary"
+          property_unit: "Mass / kg dry matter or wet biomass"
+          description: "Record non-marketable plant material and fruit residue remaining in or removed from the field, with destination and treatment disclosed."
+          amount:
+            expression: "Weigh, estimate from documented biomass sampling, or calculate from harvested and marketable balances by field and cycle."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per 1,000 kg marketable output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_papaya_harvest_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+    outputs:
+      product:
+        - row_id: papaya_gross_harvest
+          role: "Gross harvested papaya"
+          name: "Fresh whole papaya, gross harvested"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record gross harvested fresh papaya before grading, rejection, trimming, washing, cooling, or primary packing."
+          amount:
+            expression: "Weigh every harvest lot at the field or harvest-station entry point."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign and per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_harvest_records
+              source_ids:
+                - fao-papaya-production-guidance
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: papaya_gate_preparation
+    label: "Papaya gate preparation and hand-off"
+    inputs:
+      product:
+        - row_id: papaya_gate_input
+          role: "Gross harvested papaya received for gate preparation"
+          name: "Fresh whole papaya, gross harvested"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "When preparation occurs before the declared gate, reconcile the harvested lot entering sorting, washing, cooling, or primary packing to the harvest process output."
+          amount:
+            expression: "Reconcile receiving weights to the originating harvest lot and declared gate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per gate-preparation campaign and per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_gate_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+        - row_id: papaya_washing_water
+          role: "Conditional gate washing water"
+          name: "Process water for papaya washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water only when papayas are washed before the declared gate, including the treatment or discharge destination of the used water."
+          amount:
+            expression: "Meter or batch record for water entering the washing operation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable output washed before the declared gate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_gate_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+        - row_id: papaya_primary_packaging
+          role: "Conditional primary packaging"
+          name: "Primary packaging function for fresh papaya"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "carton-and-box-packaging"
+          property_unit: "Mass or item-service / kg or package-use"
+          description: "Record only primary packaging applied before the declared gate, including material, mass, reusable cycles, and packaging loss."
+          amount:
+            expression: "Count packages and record consumed material mass per marketable output lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable output packed before the declared gate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_gate_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+      waste:
+        - row_id: papaya_gate_wastewater
+          role: "Gate preparation wastewater or wash loss"
+          name: "Papaya gate-preparation wastewater or wash loss"
+          flow_type: "waste"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record wastewater or wash-related product loss generated before the declared gate and link it to the treatment or discharge route."
+          amount:
+            expression: "Measure or reconcile wastewater and wash loss from the gate-preparation batch balance."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable output washed before the declared gate"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_papaya_gate_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: papaya_marketable_output
+          role: "Marketable fresh whole papaya at the declared gate"
+          name: "Fresh whole papaya at farm or first packing-site gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted marketable output after the declared grading, optional washing, cooling, and primary packing steps."
+          amount:
+            expression: "Sum accepted lot weights after grade, maturity, and presentation decisions at the declared gate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "reference flow of 1 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_papaya_gate_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+      waste:
+        - row_id: papaya_gate_rejects
+          role: "Gate rejects and packaging loss"
+          name: "Papaya gate rejects and packaging loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet fruit or kg packaging"
+          description: "Record downgraded fruit, trimming, damaged fruit, and packaging loss rejected before the declared gate and identify each destination."
+          amount:
+            expression: "Reconcile received mass, accepted output, rejects, and measured process loss for each gate-preparation lot."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_papaya_gate_records
+              source_ids:
+                - codex-cxc-53-2003
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_marketable_output: Allocate crop-cycle inputs and direct cultivation exchanges to marketable fresh papaya using marketable mass as the primary output basis. source_ids: iso-14044-2006."
+    source_ids: []
+  - rule_id: allocation_rule_2
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_rejects: Treat field and gate rejects as waste unless a documented receiving route creates a separately specified co-product. Do not assign avoided-product credit within this PCR. source_ids: iso-14044-2006, fao-papaya-production-guidance."
+    source_ids: []
+  - rule_id: allocation_rule_3
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_reusable_containers: Model reusable harvest containers and crates by recorded service cycles; assign their production burden across documented uses and retain consumed packaging as a separate input. source_ids: iso-14044-2006, codex-cxc-53-2003."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_papaya_establishment_records
+      process_id: "papaya_crop_establishment"
+      flow_role: "planting material and occupied area"
+      record_type: "field establishment record"
+      raw_fields: "cultivar; material type; supplier; quantity; field or protected-unit id; planted area; cycle start"
+      collection_method: "supplier record, planting log, and area register"
+      unit: "seedling, kg, ha"
+      frequency: "each cycle"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each represented field or protected unit"
+      aggregation_rule: "reconcile planted quantity and area to the same cycle"
+      quality_evidence: "purchase record, planting log, and field map"
+    - protocol_id: cp_papaya_input_records
+      process_id: "papaya_crop_management"
+      flow_role: "water, fuel, nutrient products, crop protection, and emissions basis"
+      record_type: "input and application record"
+      raw_fields: "product; formulation; nutrient or active ingredient; quantity; source; application date; irrigation meter; fuel meter; field id"
+      collection_method: "invoice review, meter reading, application log, and source register"
+      unit: "kg product, kg nutrient, m3, MJ, kg fuel"
+      frequency: "each application or meter period"
+      temporal_coverage: "full declared cycle"
+      site_scope: "each represented field or protected unit"
+      aggregation_rule: "sum applications and meter periods after field and cycle reconciliation"
+      quality_evidence: "invoices, meters, calibration checks, and application records"
+    - protocol_id: cp_papaya_harvest_records
+      process_id: "papaya_harvest"
+      flow_role: "containers, harvest, rejects, and residue"
+      record_type: "harvest lot and residue record"
+      raw_fields: "lot id; date; field id; gross mass; grade; reject mass; residue mass; container use; destination"
+      collection_method: "calibrated scale, lot sheet, container log, and residue estimate"
+      unit: "kg and container-use"
+      frequency: "each harvest lot"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each harvest lot"
+      aggregation_rule: "aggregate only lots sharing field, cycle, cultivar, grade, and gate"
+      quality_evidence: "scale check, lot reconciliation, and destination evidence"
+    - protocol_id: cp_papaya_gate_records
+      process_id: "papaya_gate_preparation"
+      flow_role: "receiving, washing, packaging, output, and gate rejects"
+      record_type: "packing or gate batch record"
+      raw_fields: "batch id; received mass; wash water; wash loss; packaging type and mass; cooling; accepted mass; reject mass; destination; gate"
+      collection_method: "batch sheet, water meter, packaging issue record, and scale"
+      unit: "kg, m3, package-use"
+      frequency: "each gate batch"
+      temporal_coverage: "full period before declared hand-off"
+      site_scope: "each declared farm or first packing-site gate"
+      aggregation_rule: "reconcile batch input to accepted output and separately identified losses"
+      quality_evidence: "scale and meter checks, packaging records, and destination records"
+  calculation_rules:
+    - id: calc_marketable_normalization
+      applies_to: "all processes"
+      rule: "Normalize each collected quantity to the accepted marketable papaya mass at the declared gate: quantity / marketable_gate_mass."
+      inputs:
+        - field
+        - cycle
+        - lot
+        - "and gate records"
+      output: "quantity per kg or 1,000 kg marketable papaya"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_nutrient_equivalent
+      applies_to: "fertilizer and soil amendments"
+      rule: "product_mass × declared nutrient fraction; retain product mass and nutrient-equivalent result as separate fields."
+      inputs:
+        - "product invoice"
+        - formulation
+        - "and declared N/P2O5/K2O fraction"
+      output: "product mass and nutrient mass"
+      source_ids:
+        - fao-papaya-production-guidance
+    - id: calc_soil_nitrogen_emissions
+      applies_to: "managed soil emissions"
+      rule: "Apply one selected IPCC-compatible factor method to documented nitrogen inputs and returned residue nitrogen, with no duplicate upstream emission."
+      inputs:
+        - "nutrient records"
+        - "residue basis"
+        - "method factor"
+      output: "declared soil-emission flows"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_mass_balance
+      applies_to: "harvest and gate preparation"
+      rule: "gross harvested mass = marketable output + rejects + residue or process loss, with any documented stock change shown separately."
+      inputs:
+        - "harvest lots"
+        - "gate batches"
+        - "reject and residue records"
+      output: "reconciled mass-balance check"
+      source_ids:
+        - codex-cxc-53-2003
+    - id: calc_reusable_container_burden
+      applies_to: "harvest containers and crates"
+      rule: "Divide container production burden by documented service cycles and assign the used-cycle share to the represented papaya output."
+      inputs:
+        - "container mass"
+        - material
+        - "expected or observed service cycles"
+      output: "container burden per declared output"
+      source_ids:
+        - iso-14044-2006
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "all product and input flows"
+      requirement: "Declare cultivar, material or product identity, field or protected-unit id, gate, and identity evidence gap status where no fixed or parameterized binding exists."
+      evidence: "source records, labels, invoices, and dataset metadata"
+    - id: quality_measurement
+      applies_to: "mass, water, fuel, nutrient, and packaging rows"
+      requirement: "Use calibrated scales or meters where available; otherwise document the estimation method, conversion factor, and uncertainty."
+      evidence: "calibration record, meter log, or estimation worksheet"
+    - id: quality_temporal
+      applies_to: "all processes"
+      requirement: "Cover the complete declared production cycle and harvest campaign, and disclose missing periods or substituted records."
+      evidence: "cycle calendar, lot register, and data-quality note"
+    - id: quality_completeness
+      applies_to: "inventory and emissions"
+      requirement: "Reconcile field inputs, harvest, accepted output, rejects, residue, water, nutrient basis, and packaging to the declared gate."
+      evidence: "mass balance, application log, and gate batch reconciliation"
+    - id: quality_disclosure
+      applies_to: "dataset package"
+      requirement: "Preserve all required qualifiers, boundary decisions, allocation choice, Flow Set bindings, and identity evidence gap coverage in dataset metadata."
+      evidence: "dataset metadata and PCR conformance checklist"
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "validation_identity: The dataset must identify papaya cultivar or product category, field or protected unit, production route, cycle, declared gate, and all evidence gap input or output identities. source_ids: fao-papaya-production-guidance."
+    source_ids: []
+  - rule_id: validation_rule_2
+    applies_to: "foreground_dataset_conformance"
+    rule: "validation_mass_balance: For every harvest and gate batch, gross harvested or received mass must reconcile to marketable output, rejects, residue, wastewater or wash loss, packaging loss, and any disclosed stock change. source_ids: codex-cxc-53-2003."
+    source_ids: []
+  - rule_id: validation_rule_3
+    applies_to: "foreground_dataset_conformance"
+    rule: "validation_normalization: Every normalized inventory value must use the same declared marketable gate mass and must not mix farm-gate and first-packing-site outputs. source_ids: iso-14044-2006."
+    source_ids: []
+  - rule_id: validation_rule_4
+    applies_to: "foreground_dataset_conformance"
+    rule: "validation_nutrient_emissions: Nutrient-equivalent inputs and managed-soil emissions must identify their basis and use one non-duplicative calculation method. source_ids: ipcc-2019-managed-soils."
+    source_ids: []
+  - rule_id: validation_rule_5
+    applies_to: "foreground_dataset_conformance"
+    rule: "validation_temporal: The dataset must cover the represented production cycle and harvest campaign or explicitly disclose missing records and substitutions. source_ids: fao-papaya-production-guidance."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground agricultural production dataset for fresh whole papaya"
+  downstream_use: "Secondary dataset for farm-to-gate LCA and background dataset input to product-system models when the declared gate and qualifiers match"
+  allowed_use: "Comparative or attributional modelling of fresh whole papaya when cultivar, geography, route, cycle, gate, marketable output, and inventory completeness are compatible"
+  excluded_use: "Processed papaya products; generic fruit substitution; transport, retail, consumer, or end-of-life claims beyond the declared gate; datasets with unreported rejects or residue fate"
+  required_metadata: "Papaya identity and cultivar, geography, route, field or protected-unit id, cycle dates, area, irrigation source, nutrient and crop-protection basis, harvest and grade, washing, cooling, packaging, reject and residue destinations, declared gate, reference mass, Flow Set bindings, and identity evidence gap coverage"
+  required_quality_disclosure: "Measurement basis, collection period, completeness, mass-balance result, allocation rule, provisional ranges, data substitutions, uncertainty, and evidence gap UUID or flow identities"
+  update_trigger: "Change in cultivation route, irrigation system, nutrient or crop-protection programme, harvest or gate handling, packaging, accepted product definition, method factors, or resolved identity mappings"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-papaya-production-guidance"
+    type: "extension_guidance"
+    reference: "FAO crop-production and good-agricultural-practice guidance for tropical fruit production"
+    used_for: "production-route decomposition, planting, crop management, harvest records, residue handling, and data collection"
+  - id: "fao-irrigation-drainage-paper-56"
+    type: "handbook"
+    reference: "FAO Irrigation and drainage paper 56, *Crop evapotranspiration*"
+    used_for: "irrigation measurement and water-delivery distinction"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement to the 2006 IPCC Guidelines, managed soils and nitrogen emissions"
+    used_for: "managed-soil nitrogen calculation and non-duplication rule"
+  - id: "codex-cxc-53-2003"
+    type: "official_guidance"
+    reference: "Codex Alimentarius CXC 53-2003, Code of hygienic practice for fresh fruits and vegetables"
+    used_for: "harvest, washing, packing, hygiene, batch reconciliation, and gate handling"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, environmental management—life cycle assessment—requirements and guidelines"
+    used_for: "normalization, allocation, reusable-container treatment, and validation principles"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:42db630f7c7ee8bb9d995162819493274df2e08008b28df59a1e80e701d31162"
+  generated_content_sha256: "sha256:2c57caab2d6ffac514539a7d49970193f61492b945ab0fdda32d772bb1cd4cca"

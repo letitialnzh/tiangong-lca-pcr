@@ -1,10 +1,886 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01193"
-  title: "Fonio"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.fonio"
+  classification_refs: "CPC 3.0: 01193 Fonio"
+  covered_products: "cultivated white or black fonio grain, harvested and threshed, with the hull retained, at the farm gate"
+  excluded_products: "fonio seed for planting; wild-collected grain; forage, hay, silage, grazing or cover-crop service; dehulled, washed, de-sanded, milled, precooked, parboiled or brewed fonio"
+  representative_product: "dry threshed fonio grain with hull retained"
+  production_route: "rainfed or irrigated smallholder or commercial cultivation, harvest, and conditional farm-gate primary post-harvest preparation"
+  market_state: "dry threshed unhulled grain at farm gate, with moisture, foreign matter, and intended use declared"
+functional_unit:
+  what: "dry threshed fonio grain with hull retained at the farm gate"
+  how_much: "1,000 kg as-received grain"
+  how_well: "marketable harvested grain with species, moisture, foreign-matter basis, and intended use declared; dehulling is not included"
+  how_long_or_cycle: "one declared annual crop cycle from sowing through the farm-gate hand-off"
+  reference_flow_link: "terminal grain output from fonio_field_production when primary post-harvest preparation is excluded, otherwise from fonio_primary_postharvest"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include field preparation, sowing, crop management, harvest, field drying, threshing, and farm-gate primary dry cleaning or drying when those operations occur before hand-off."
+      source_ids:
+        - fao-millets-fonio
+        - cirad-fonio-production-postharvest
+    - rule_id: boundary_primary_vs_food_processing
+      applies_to: "post-harvest operations"
+      rule: "Exclude dehulling, husk removal, washing, de-sanding, milling, precooking, parboiling, brewing, and other food preparation; declare them as downstream operations."
+      source_ids:
+        - cirad-fonio-production-postharvest
+        - fao-fonio-postharvest
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil and field emissions"
+      rule: "Include direct and indirect nitrogen-related emissions using a geographically applicable method and the same nutrient, residue, soil, and climate activity data used for the inventory."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - emep-eea-2023-guidebook
+    - rule_id: boundary_residue_fate
+      applies_to: "stalks, leaves, chaff, and other residues"
+      rule: "Distinguish residues retained or returned to soil, burned, removed as useful fodder, and removed as waste; prevent double counting residue nitrogen and exported biomass."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_post_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, commercial storage, packaging, dehulling, washing, milling, food manufacture, and consumption unless the study scope explicitly extends beyond this PCR."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "prepared field at the beginning of the fonio crop cycle, with seed and purchased or retained management inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed fonio grain production"
+  product_classification_scope: "cultivated white or black fonio grain corresponding to CPC 3.0 code 01193"
+  recursive_input_rule: "seed used for sowing is a distinct upstream seed-supply input; it must not be represented by looping the harvested-grain reference flow back into the same production process"
+  upstream_dataset_requirement: "compatible upstream datasets for seed, nutrient products, crop-protection formulations, fuels, electricity, irrigation supply, and contracted field services when those burdens are outside the foreground operator"
+  disclosure: "species, cultivar or landrace, geography, field area, sowing and harvest dates, previous crop, establishment method, tillage, nutrient and irrigation practice, yield, moisture, residue fate, and primary post-harvest operations"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fonio, production mix, at farm gate, harvested grain, unprocessed"
+    uuid: "0cd0dc39-a4ec-4caf-addb-1ec276c2f286"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "white or black fonio species"
+    - "cultivar or landrace"
+    - "production geography"
+    - "crop year"
+    - "harvest and drying dates"
+    - "moisture at hand-off"
+    - "foreign-matter basis"
+    - "intended use"
+    - "primary post-harvest preparation included or excluded"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "reference fonio grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report the as-received grain mass together with measured moisture and the basis used for any dry-matter conversion."
+  - id: species_and_state_identity
+    applies_to: "reference product"
+    required_property_ref:
+      name: "product identity"
+      uuid: ""
+    required_unit: "categorical"
+    rule: "Identify white or black fonio and retain whether the hull is present; do not use a generic millet or dehulled-fonio flow as a substitute."
+  - id: area_to_reference_conversion
+    applies_to: "area-based field flows"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Divide crop-cycle totals per hectare by marketable grain yield from the same fields and crop year before scaling to 1,000 kg grain."
+  - id: nutrient_basis
+    applies_to: "nutrient applications"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Preserve formulated product mass, nutrient content, and reporting basis as separate fields."
+  - id: moisture_basis_consistency
+    applies_to: "grain and residue masses"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use one declared wet or dry basis within each balance; convert only with measured moisture and retain the original wet mass."
+process_map:
+  - id: fonio_field_production
+    name: "Fonio field production and harvest"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production and harvest"
+    quantitative_reference: "cultivated hectare and marketable grain mass for one crop cycle"
+  - id: fonio_primary_postharvest
+    name: "Farm-gate fonio primary post-harvest preparation"
+    inclusion: "conditional"
+    inclusion_condition: "threshing, winnowing, dry cleaning, or forced-air drying is separated from field records and occurs before hand-off"
+    role: "reconcile harvested grain to dry threshed unhulled grain at the declared hand-off"
+    quantitative_reference: "incoming grain and accepted grain mass"
+process_inventory:
+  - id: fonio_field_production
+    label: "Fonio field production and harvest"
+    inputs:
+      product:
+        - row_id: fonio_seed_input
+          role: "Fonio seed for sowing"
+          name: "Fonio seed for sowing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained seed crossing into the crop cycle. Identify white or black fonio and the local seed lot; do not substitute the harvested-grain reference flow for planting seed."
+          amount:
+            expression: "measured seed mass sown by field and sowing event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted using same-cycle marketable grain yield"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids:
+                - fao-cultivating-fonio
+            ranges:
+              - role: qa_guardrail
+                lower: "2"
+                upper: "30"
+                unit: "kg seed/ha"
+                basis: "one crop cycle; retain the actual seed rate and establishment method, including broadcasting or row sowing"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fonio_field_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "kg N/ha"
+                basis: "one crop cycle; replace with soil-test, nutrient-plan, and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "60"
+                unit: "kg P2O5/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg K2O/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "6000"
+                unit: "kg dry matter/ha"
+                basis: "one crop cycle; report zero where no amendment crosses the boundary"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fonio_irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation delivered to the field separately from rainfall, including pumping or purchased-water activity when within the foreground boundary."
+          amount:
+            expression: "metered volume or verified pump-flow calculation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "m3/ha"
+                basis: "one crop cycle, including rainfed production at zero"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fonio_field_diesel_input
+          role: "Diesel fuel used by field machinery"
+          name: "Diesel fuel for agricultural machinery"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record diesel consumed by owned or controlled machinery. Assign contractor fuel to an upstream service dataset when the service is modelled separately."
+          amount:
+            expression: "measured or invoiced diesel assigned to fonio field operations"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "L/ha"
+                basis: "one crop cycle; zero where operations are represented by upstream services or non-diesel equipment"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fonio_crop_protection_input
+          role: "Crop-protection formulation applied"
+          name: "Crop-protection formulation by physical product identity"
+          flow_type: "product"
+          property_unit: "Mass / kg formulation"
+          description: "Create one exchange for each actual herbicide, fungicide, insecticide, or other formulation and retain the active ingredient, concentration, and application event."
+          amount:
+            expression: "measured formulation mass by product and application event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg formulation/ha"
+                basis: "each separately identified formulation in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: fonio_land_occupation
+          role: "Land occupation by fonio cultivation"
+          name: "Land occupation, arable crop, annual"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2·year"
+          description: "Record the cultivated area and occupation period for the fonio crop cycle as an elementary resource intervention; include land transformation only when the crop cycle causes a documented change in land use."
+          amount:
+            expression: "cultivated area multiplied by occupation time for the declared crop cycle"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.5"
+                upper: "2"
+                unit: "m2·year per m2 cultivated"
+                basis: "annual crop occupation; replace with field dates where available"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: fonio_grain_field_output
+          role: "Harvested fonio grain at farm gate"
+          name: "Fonio, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "0cd0dc39-a4ec-4caf-addb-1ec276c2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record marketable dry threshed unhulled grain at the terminal field-production output. When primary post-harvest preparation is separated, this is the measured intermediate transferred to that process."
+          amount:
+            expression: "measured marketable grain mass at the declared moisture and foreign-matter basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare; terminal output is scaled to 1,000 kg reference grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "150"
+                upper: "800"
+                unit: "kg grain/ha"
+                basis: "broad reported fonio yield context; retain local measured yield and moisture"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-ecocrop-fonio
+        - row_id: fonio_removed_straw_output
+          role: "Fonio straw removed as useful product"
+          name: "Fonio straw removed at field edge"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record stalks and leaves only when deliberately collected and transferred as a useful fodder or material co-product. Residues retained or incorporated in the field are not this output."
+          amount:
+            expression: "measured removed straw mass by destination and moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg dry matter/ha"
+                basis: "one crop cycle; zero where residues remain or are returned to soil"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: fonio_field_n2o_air_output
+          role: "Nitrous oxide released to ambient air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate soil nitrous oxide from collected mineral and organic nitrogen, residue fate, and an applicable IPCC tier or reviewed regional method."
+          amount:
+            expression: "calculated from collected nitrogen activity data and declared emission factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+        - row_id: fonio_field_ammonia_air_output
+          role: "Ammonia released to ambient air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate ammonia volatilization by nutrient product, application method, timing, and geographically applicable factor."
+          amount:
+            expression: "calculated from nitrogen application records and applicable factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - emep-eea-2023-guidebook
+            ranges: []
+        - row_id: fonio_field_nitrate_water_output
+          role: "Nitrate released to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Record nitrate leaching or runoff only when supported by a geographically applicable model, monitored balance, or reviewed inventory method."
+          amount:
+            expression: "calculated from nitrogen inputs, crop and soil conditions, drainage or runoff, and selected method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+  - id: fonio_primary_postharvest
+    label: "Farm-gate fonio primary post-harvest preparation"
+    inputs:
+      product:
+        - row_id: fonio_primary_grain_input
+          role: "Threshed fonio grain entering primary preparation"
+          name: "Fonio, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "0cd0dc39-a4ec-4caf-addb-1ec276c2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the measured grain batch transferred from field production to separated threshing, winnowing, dry cleaning, or forced-air drying before the farm-gate hand-off."
+          amount:
+            expression: "measured incoming grain mass and moisture for each matched batch"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per preparation batch and converted to 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_primary_postharvest_records
+              source_ids: []
+            ranges: []
+        - row_id: fonio_postharvest_electricity_input
+          role: "Electricity supplied to primary preparation"
+          name: "Electricity supply for fonio primary post-harvest preparation"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by mechanical threshing, fans, conveyors, dry cleaners, or forced-air dryers included before the farm-gate hand-off."
+          amount:
+            expression: "metered electricity or equipment power multiplied by verified operating time"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_primary_postharvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "60"
+                unit: "kWh/1,000 kg accepted grain"
+                basis: "zero for fully manual or sun-dried preparation; retain equipment and operating-time records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fonio_postharvest_heat_input
+          role: "Thermal energy supplied to grain drying"
+          name: "Process heat for fonio grain drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "purchased-process-heat"
+          property_unit: "Energy / MJ"
+          description: "Record supplied heat or fuel energy used for forced-air or other active drying before hand-off; sun drying is recorded as an operation with zero purchased thermal energy."
+          amount:
+            expression: "measured fuel or heat converted to delivered energy while retaining carrier identity"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_primary_postharvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "MJ/1,000 kg accepted grain"
+                basis: "zero without active drying; broad candidate range pending equipment and moisture records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fonio_primary_grain_output
+          role: "Dry threshed fonio grain at farm gate"
+          name: "Fonio, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "0cd0dc39-a4ec-4caf-addb-1ec276c2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record accepted grain after the included threshing, winnowing, dry cleaning, or drying steps at the declared farm-gate moisture and foreign-matter basis. Dehulling is outside this process."
+          amount:
+            expression: "measured accepted grain mass at declared moisture and foreign-matter basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_primary_postharvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "8"
+                upper: "14"
+                unit: "percent moisture, wet basis"
+                basis: "declared market and storage state; use the buyer specification when different"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: fonio_primary_reject_waste
+          role: "Chaff, foreign matter, and non-useful grain rejects"
+          name: "Fonio primary-preparation rejects and foreign matter"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record chaff, stones, soil, weed material, damaged grain, and other rejects by material class and destination. Useful grain fractions handed off for feed or another use are separate product co-products."
+          amount:
+            expression: "measured reject mass by material class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_primary_postharvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "120"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "preparation batch; distinguish useful co-products from disposal waste"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fonio_primary_grain_loss
+          role: "Grain loss during primary preparation"
+          name: "Fonio grain loss during primary post-harvest preparation"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record unexplained or unavoidable grain loss separately from identifiable foreign matter and rejects; investigate losses before assigning them to disposal or residue pathways."
+          amount:
+            expression: "incoming grain minus accepted grain, useful co-products, identified rejects, and measured moisture or process losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_primary_postharvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "matched batch balance; explain values above the screen"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_by_subdivision
+    applies_to: "field production and primary preparation"
+    rule: "Prefer separate records for field production, harvest, and primary preparation, and measure grain, useful straw, useful screenings, and disposal waste separately before applying allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_field_residue
+    applies_to: "residues retained, incorporated, or burned"
+    rule: "Do not treat retained residues as co-products; include their management and associated emissions in field production and prevent double counting with removed straw."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_removed_straw
+    applies_to: "useful removed straw or fodder"
+    rule: "If subdivision cannot resolve shared field burdens, apply economic allocation using contemporaneous farm-gate values, disclose moisture bases, and test mass allocation as a sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_primary_outputs
+    applies_to: "useful screenings and grain fractions"
+    rule: "Treat an intentionally marketed fraction with positive value as a co-product and other rejects as waste; allocate only the separated primary-preparation burdens when subdivision is infeasible."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_activity_records
+      process_id: "fonio_field_production"
+      flow_role: "seed, nutrients, irrigation, fuel, crop protection, land"
+      record_type: "field log, input invoice, application record, meter, or contractor record"
+      raw_fields: "field_id; species; cultivar; area; input_product; amount; nutrient_content; date; operation; contractor_scope; sowing_date; harvest_date"
+      collection_method: "reconcile physical inputs and operations to each field and crop cycle"
+      unit: "kg; kg nutrient; L; m3; ha; m2·year"
+      frequency: "each event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum by physical identity; calculate nutrients without merging products; normalize with same-cycle area and yield"
+      quality_evidence: "invoices; product labels; calibrated meters; field logs"
+    - protocol_id: cp_harvest_output_records
+      process_id: "fonio_field_production"
+      flow_role: "grain, straw, residue fate"
+      record_type: "scale, yield estimate, moisture test, bale record, or destination record"
+      raw_fields: "field_id; harvest_date; grain_mass; grain_moisture; foreign_matter; straw_mass; straw_moisture; residue_fate; destination"
+      collection_method: "reconcile harvested and removed masses to field area and crop cycle"
+      unit: "kg; percent; ha"
+      frequency: "each harvest or field lot"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum accepted grain and each residue destination separately"
+      quality_evidence: "scale or yield-monitor checks; moisture records; destination evidence"
+    - protocol_id: cp_field_emission_activity
+      process_id: "fonio_field_production"
+      flow_role: "emissions to air and water"
+      record_type: "nutrient, soil, weather, residue, and emission-model records"
+      raw_fields: "fertilizer_N; organic_N; residue_N; application_method; soil; climate; drainage; factor_set; model_version"
+      collection_method: "calculate each emission with one declared geographically applicable method"
+      unit: "kg N; kg emission; ha"
+      frequency: "each event and crop-cycle calculation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "calculate per field, area-weight, then normalize by same-cycle yield"
+      quality_evidence: "source records; factor provenance; model file; nutrient-balance review"
+    - protocol_id: cp_primary_postharvest_records
+      process_id: "fonio_primary_postharvest"
+      flow_role: "incoming grain, energy, accepted grain, rejects, losses"
+      record_type: "batch ticket, scale, moisture test, electricity meter, fuel record, and destination record"
+      raw_fields: "batch_id; incoming_mass; incoming_moisture; operation; electricity; heat; accepted_mass; accepted_moisture; rejects; loss; destination"
+      collection_method: "reconcile matched batches and meters to accepted output; keep dehulling and washing outside this protocol"
+      unit: "kg; percent; kWh; MJ"
+      frequency: "each batch or meter period"
+      temporal_coverage: "all included pre-gate preparation"
+      site_scope: "all included equipment and batches"
+      aggregation_rule: "sum matched batches; allocate shared meters by time or processed mass; close wet-mass balance"
+      quality_evidence: "calibrated scales and moisture meters; meter reconciliation; destination records"
+  calculation_rules:
+    - id: calc_area_to_reference_flow
+      applies_to: "field flows"
+      rule: "crop-cycle amount per hectare / marketable grain yield per hectare × 1,000 kg"
+      inputs:
+        - "flow amount"
+        - area
+        - "same-cycle grain mass"
+      output: "amount per 1,000 kg grain"
+      source_ids: []
+    - id: calc_nutrient_content
+      applies_to: "fertilizer and amendment inputs"
+      rule: "product mass × declared nutrient fraction; preserve product identity and nutrient reporting basis"
+      inputs:
+        - "product identity"
+        - mass
+        - assay
+        - "reporting basis"
+      output: "kg N, kg P2O5, kg K2O by source"
+      source_ids: []
+    - id: calc_managed_soil_n2o
+      applies_to: "soil N2O"
+      rule: "apply selected IPCC tier or regional method to mineral N, organic N, returned-residue N, volatilization, and leaching pathways"
+      inputs:
+        - "nitrogen activity"
+        - "residue fate"
+        - "soil and climate"
+        - factors
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_ammonia_volatilization
+      applies_to: "ammonia to air"
+      rule: "calculate by nutrient product, application method, timing, and applicable factor"
+      inputs:
+        - "nutrient records"
+        - "application details"
+        - factors
+      output: "kg NH3"
+      source_ids:
+        - emep-eea-2023-guidebook
+    - id: calc_primary_postharvest_mass_balance
+      applies_to: "primary preparation"
+      rule: "incoming wet grain = accepted grain + useful fractions + rejects + moisture and other measured losses within uncertainty"
+      inputs:
+        - "incoming and output masses"
+        - moisture
+        - "loss records"
+      output: "reconciled outputs per accepted grain"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_energy_carrier_conversion
+      applies_to: "post-harvest energy"
+      rule: "convert measured fuel or heat carrier to delivered energy using the declared carrier property and retain the original carrier record"
+      inputs:
+        - "fuel or heat amount"
+        - "carrier property"
+        - "equipment record"
+      output: "kWh or MJ delivered"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference product"
+      requirement: "Confirm white or black fonio rather than millet, sorghum, quinoa, or dehulled fonio; retain species, cultivar or landrace, intended use, hull state, and hand-off."
+      evidence: "crop, lot, and sales records"
+    - id: dq_temporal_alignment
+      applies_to: "all foreground rows"
+      requirement: "Use inputs, harvest, yield, emissions, and primary-preparation records from the same crop cycle; disclose proxy years or borrowed activity data."
+      evidence: "dated field and batch records"
+    - id: dq_mass_and_moisture
+      applies_to: "grain, straw, and batch outputs"
+      requirement: "Retain scale checks and moisture measurements for every wet or dry basis conversion and reconcile the original mass basis."
+      evidence: "calibration and moisture-test records"
+    - id: dq_completeness
+      applies_to: "process map and flows"
+      requirement: "Reconcile every represented field and primary-preparation batch and distinguish zero, not applicable, proxy, and missing values."
+      evidence: "field roster; batch reconciliation"
+    - id: dq_boundary_processing
+      applies_to: "post-harvest route"
+      requirement: "Demonstrate that dehulling, washing, de-sanding, milling, and food processing are excluded or represented by a separate downstream dataset."
+      evidence: "operation log; process diagram; facility records"
+    - id: dq_identity_resolution
+      applies_to: "parameterized and unmapped flows"
+      requirement: "Resolve every Flow Set reference and unmapped physical exchange to a verified UUID before final TIDAS process publication."
+      evidence: "identity review record"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "terminal output"
+    rule: "Exactly one terminal fonio grain output equals 1,000 kg after scaling, uses the verified reference identity, and declares species, hull state, moisture, and foreign-matter qualifiers."
+    source_ids: []
+  - rule_id: validation_process_route
+    applies_to: "process map"
+    rule: "Include field production once; include primary post-harvest preparation only when it occurs before farm-gate hand-off and is not already embedded in field records; exclude dehulling and washing."
+    source_ids:
+      - cirad-fonio-production-postharvest
+  - rule_id: validation_crop_cycle_reconciliation
+    applies_to: "field inventory"
+    rule: "Area, inputs, harvest outputs, residue fates, and emissions refer to the same fields and crop cycle."
+    source_ids: []
+  - rule_id: validation_nitrogen_balance
+    applies_to: "nitrogen inventory"
+    rule: "Reconcile mineral and organic nutrient content, returned and removed residue nitrogen, and emission pathways with methods and factors disclosed."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_primary_postharvest_balance
+    applies_to: "primary preparation"
+    rule: "Reconcile incoming grain with accepted grain, useful fractions, rejects, moisture loss, and unexplained loss within declared uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_flow_identity
+    applies_to: "every flow"
+    rule: "Accept only exact verified UUIDs as fixed and applicable existing Flow Sets as parameterized; otherwise retain unmapped coverage."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground fonio grain production dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "farm-gate LCA of white or black fonio grain and downstream systems that preserve declared species, geography, moisture, residue, allocation, and primary-preparation context"
+  excluded_use: "planting seed, wild collection, forage or silage, dehulled or washed fonio, flour, precooked or parboiled products, brewing, or another cereal without a reviewed proxy decision"
+  required_metadata: "species; cultivar or landrace; geography; crop year; area; sowing and harvest dates; yield; moisture; foreign matter; intended use; tillage; nutrients; irrigation; residue fate; primary post-harvest boundary; allocation; identity resolution"
+  required_quality_disclosure: "foreground coverage; proxy inputs; missing records; range exceedances; emission methods; moisture basis; meter and mass-balance reconciliations; downstream processing exclusions"
+  update_trigger: "new reviewed fonio agronomy or post-harvest evidence, material route change, revised emission method, changed Flow Set or UUID identity, or representative data outside QA ranges"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-millets-fonio"
+    type: "official_guidance"
+    reference: "FAO, Millets: West African fonio and related millets, https://www.fao.org/fileadmin/templates/esw/esw_new/documents/Links/publications_other/6_millets.pdf"
+    used_for: "crop duration, drought adaptation, cultivation context, and post-harvest labour distinction"
+  - id: "fao-ecocrop-fonio"
+    type: "official_guidance"
+    reference: "FAO Ecocrop, Digitaria exilis crop data sheet, https://ecocrop.apps.fao.org/ecocrop/srv/en/cropView?id=5329"
+    used_for: "maturity, harvest season, and broad fonio yield context"
+  - id: "fao-cultivating-fonio"
+    type: "official_guidance"
+    reference: "FAO, Cultivating fonio, cultivating traditions, https://www.fao.org/newsroom/story/cultivating-fonio-cultivating-traditions/"
+    used_for: "planting practice, row sowing, yield-improvement context, and storage training"
+  - id: "cirad-fonio-production-postharvest"
+    type: "handbook"
+    reference: "CIRAD, Le fonio, une céréale africaine, https://publications.cirad.fr/une_notice.php?dk=560957"
+    used_for: "production systems, harvest, drying, threshing, winnowing, and processing boundary"
+  - id: "fao-fonio-postharvest"
+    type: "handbook"
+    reference: "AGRIS/CIRAD, Improvement of fonio post-harvest technology, https://agris.fao.org/search/en/providers/122653/records/64745b8c96fdec8b71b6ffc0"
+    used_for: "dehulling, washing, de-sanding, and mechanized post-harvest distinction"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O, residue nitrogen, volatilization and leaching pathways"
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "European Environment Agency, EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023"
+    used_for: "agricultural ammonia method and QA context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy and disclosure"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to matched fonio primary-preparation batches"
+    used_for: "batch reconciliation and validation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:4d6fc3318195233843ab4ae46ef03de6a78313757dcaf17160accc095d1bc228"
+  generated_content_sha256: "sha256:af81cd0b463229c6f575b5ba98c82570ef71efbb2a5d1e7993f2d223eac17da6"

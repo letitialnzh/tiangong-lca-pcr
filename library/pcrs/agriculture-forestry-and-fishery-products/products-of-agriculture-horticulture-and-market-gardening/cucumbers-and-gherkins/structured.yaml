@@ -1,10 +1,1156 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01232"
-  title: "Cucumbers and gherkins"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cucumbers-and-gherkins"
+  classification_refs: "CPC 3.0: 01232 Cucumbers and gherkins"
+  covered_products: "Fresh whole cucumbers and gherkins, including slicing and pickling types, delivered in the declared maturity, grade, washing, cooling, and packaging state"
+  excluded_products: "Seed, transplants, nursery outputs, pickled or fermented cucumbers, canned products, cut vegetables, prepared salads, retail services, and post-gate transport or storage"
+  representative_product: "Marketable fresh cucumber or gherkin meeting the declared size, maturity, firmness, cleanliness, defect, and grade requirements"
+  production_route: "Seeded or transplanted open-field or protected cultivation, managed vine growth, irrigation and nutrient application, crop protection, repeated harvest, grading, optional washing and cooling, and primary packing"
+  market_state: "Fresh and unprocessed whole fruit at the declared farm-gate or pack-house gate, loose or in declared primary packaging"
+functional_unit:
+  what: "Marketable fresh cucumber or gherkin at the declared farm-gate or pack-house hand-off"
+  how_much: "1,000 kg"
+  how_well: "Fresh, whole, and unprocessed fruit with declared crop type, maturity, size, grade, firmness, cleanliness, defect tolerance, moisture state, and packaging state"
+  how_long_or_cycle: "One declared crop cycle and harvest campaign; all harvest rounds attributable to the same planting are reconciled before normalization"
+  reference_flow_link: "cucumber_or_gherkin_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "establishment and cultivation"
+      rule: "Include field or protected-bed preparation attributable to the declared crop cycle, planting, vine management, irrigation, nutrient and crop protection, and direct crop emissions; disclose prior land use and exclude unrelated infrastructure construction."
+      source_ids:
+        - fao-crop-evapotranspiration-56
+        - ipcc-2019-managed-soils-n2o
+    - rule_id: boundary_repeated_harvest
+      applies_to: "harvest rounds"
+      rule: "Attribute every harvest round from the planting campaign to the same crop cycle and reconcile marketable fruit, downgraded fruit, field losses, and residues before normalizing."
+      source_ids:
+        - fao-cucumber-production-guide
+        - usda-ams-cucumber-standard
+    - rule_id: boundary_gate_preparation
+      applies_to: "sorting, washing, cooling, and packing"
+      rule: "End the default foreground boundary at the declared farm-gate or pack-house gate. Include sorting, washing, cooling, and primary packaging only when they occur before that gate."
+      source_ids:
+        - usda-ams-cucumber-standard
+        - usda-ams-pickling-cucumber-standard
+    - rule_id: boundary_residue_fate
+      applies_to: "vines, leaves, rejected fruit, and trim"
+      rule: "Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. Do not assign a co-product credit without a documented recipient and intended use."
+      source_ids:
+        - iso-14044-2006
+        - fao-cucumber-production-guide
+boundary_abstraction:
+  declared_starting_condition: "Prepared field bed or protected cultivation unit receiving cucumber or gherkin seed or transplant material, with prior land use and excluded infrastructure work disclosed"
+  starting_condition_role: "Start of the declared cucumber or gherkin crop cycle and foreground input accounting"
+  product_classification_scope: "Fresh cucumbers and gherkins classified under CPC 3.0:01232 through the declared farm-gate or pack-house hand-off"
+  recursive_input_rule: "Seed, transplants, and other same-category planting materials are recorded at their received hand-off state and linked to an upstream dataset; their own production is not recreated inside this PCR."
+  upstream_dataset_requirement: "Use upstream datasets for seed or transplants, nutrient products, crop-protection products, supplied water, fuels, electricity, packaging, and purchased transport or treatment services when those inputs cross the boundary."
+  disclosure: "Declare crop type, cultivar group, geography, route, planting density, crop-cycle dates, irrigation source and method, nutrient basis, crop-protection program, trellis or protected route, harvest rounds, grade, yield, reject and residue fates, primary handling, packaging, and gate state."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fresh cucumber or gherkin at farm gate"
+    uuid: "7b96f91c-8055-431e-8b7d-f24fd4e6d17e"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "crop type (slicing cucumber"
+    - "pickling cucumber"
+    - "or gherkin)"
+    - "cultivar or variety group"
+    - "production geography"
+    - "open-field or protected route"
+    - "planting and harvest dates"
+    - "harvest round"
+    - "fruit maturity and size"
+    - "grade and defect criteria"
+    - "irrigated or rain-fed status"
+    - "washing and cooling state"
+    - "packaging state"
+    - "declared gate"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_cucumber_mass
+    applies_to: "reference fruit, harvest, rejects, and residues"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh harvested, marketable, downgraded, rejected, and residue streams separately and reconcile them before converting the inventory to the 1,000 kg reference output."
+  - id: crop_type_separation
+    applies_to: "slicing cucumbers, pickling cucumbers, and gherkins"
+    required_property_ref:
+      name: "Product identity"
+      uuid: ""
+    required_unit: "declared crop type"
+    rule: "Keep crop types separate where variety, harvest frequency, grade, price, or input regime differs; combine them only after each crop-cycle inventory is reconciled and the aggregation rule is recorded."
+  - id: nutrient_product_basis
+    applies_to: "mineral and organic nutrient inputs"
+    required_property_ref:
+      name: "Product and nutrient mass"
+      uuid: ""
+    required_unit: "kg product, kg N, kg P2O5, kg K2O"
+    rule: "Record formulated product mass and documented nutrient concentration separately. Convert nutrient equivalents only from a supplier specification, label, soil plan, or laboratory result."
+  - id: water_delivery_basis
+    applies_to: "irrigation, fertigation, washing, and source withdrawal"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record crop irrigation, fertigation carrier water, washing water, and source withdrawal as distinct quantities and disclose the meter or water-balance basis."
+  - id: area_time_basis
+    applies_to: "field beds and protected cultivation units"
+    required_property_ref:
+      name: "Area-time"
+      uuid: ""
+    required_unit: "m2*a"
+    rule: "Record occupied production area and crop occupation period; durable protected structures and long-lived trellis assets require a separate declared attribution if they are included."
+  - id: postharvest_mass_change
+    applies_to: "washing, cooling, and packing"
+    required_property_ref:
+      name: "Mass and moisture"
+      uuid: ""
+    required_unit: "kg and percent"
+    rule: "Retain measured water gain or loss during primary handling separately from harvested crop mass. Do not treat wash water uptake or cooling loss as yield without a documented mass reconciliation."
+process_map:
+  - id: crop_establishment
+    name: "Cucumber and gherkin crop establishment"
+    inclusion: "required"
+    inclusion_condition: "every represented planting, bed, or protected-cultivation unit"
+    role: "foreground crop establishment"
+    quantitative_reference: "planted area, planting material, and crop-cycle dates"
+  - id: crop_management
+    name: "Vine and crop management"
+    inclusion: "required"
+    inclusion_condition: "each represented crop cycle"
+    role: "foreground managed biological production"
+    quantitative_reference: "crop area, irrigation, nutrient applications, protection, and harvest campaign"
+  - id: harvest_and_gate_preparation
+    name: "Harvest and farm-gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each represented harvest campaign"
+    role: "foreground harvest, grading, conditioning, and hand-off"
+    quantitative_reference: "1,000 kg marketable fresh output"
+process_inventory:
+  - id: crop_establishment
+    label: "Cucumber and gherkin crop establishment"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Seed or transplant planting material"
+          name: "Cucumber or gherkin seed or transplant material"
+          flow_type: "product"
+          property_unit: "Mass or viable count / kg seed or plant"
+          description: "Seed or transplants cross the boundary when accepted for establishment in the declared field, bed, or protected unit. The record identifies crop type and planting material form."
+          amount:
+            expression: "Record supplier lot, seed mass or viable plant count, planting date, crop type, and unused or failed planting material by production unit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_planting_records
+              source_ids:
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "8"
+                unit: "kg seed or 2,500 plants per 1,000 kg output"
+                basis: "declared planted area and crop-cycle output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg product/ha"
+                basis: "preplant or starter application to the represented production unit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_irrigation_water
+          role: "Establishment irrigation water"
+          name: "Irrigation water supplied to crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water applied for bed preparation, seed emergence, or transplant establishment by source and production unit."
+          amount:
+            expression: "Sum metered or documented water-balance deliveries during establishment, excluding rainfall."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "m3/ha"
+                basis: "establishment period from planting to uniform stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: crop_land_occupation
+          role: "Occupied crop production area"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record the area and time occupied by the field bed or protected cultivation unit for the declared planting campaign."
+          amount:
+            expression: "Multiply declared production area by the crop occupation period and state whether protected structures are excluded or separately attributed."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_area_and_cycle_records
+              source_ids:
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "0.01"
+                upper: "0.3"
+                unit: "ha per 1,000 kg output"
+                basis: "declared crop area and marketable crop-cycle output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: crop_management
+    label: "Vine and crop management"
+    inputs:
+      product:
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "350"
+                unit: "kg N/ha"
+                basis: "total nutrient application to the represented crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "220"
+                unit: "kg P2O5/ha"
+                basis: "soil-test-supported nutrient application"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "550"
+                unit: "kg K2O/ha"
+                basis: "soil-test-supported nutrient application"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_irrigation_water
+          role: "Irrigation water during vine growth"
+          name: "Irrigation water supplied to crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered during vine growth and fruit set by source, field or protected unit, and irrigation event or meter period."
+          amount:
+            expression: "Sum metered or documented water-balance deliveries and retain fertigation carrier water within the irrigation record."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "400"
+                upper: "2,000"
+                unit: "m3/ha"
+                basis: "delivered irrigation from establishment through final harvest"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products"
+          name: "Crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg formulated product"
+          description: "Record each herbicide, insecticide, fungicide, biological control, or adjuvant application by formulation and active ingredient where available."
+          amount:
+            expression: "Reconcile supplier records, spray logs, stock changes, application rate, and treated area for each crop cycle."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "45"
+                unit: "kg formulated product/ha"
+                basis: "all crop-protection applications in the represented crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy_input
+          role: "Mobile machinery fuel for field and protected cultivation"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or volume / MJ or L"
+          description: "Record fuel or electricity used for bed preparation, cultivation, fertigation, spraying, pumping, trellis operations, and crop maintenance. Long-lived infrastructure is handled through separate disclosure."
+          amount:
+            expression: "Use fuel invoices, equipment logs, pump meters, or contractor records and allocate shared operations to the crop cycle."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1,200"
+                unit: "MJ or kWh/ha"
+                basis: "field and protected-cultivation operations during the crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_crop_output
+          role: "Harvestable cucumber and gherkin fruit"
+          name: "Harvested cucumber or gherkin fruit before grading"
+          flow_type: "product"
+          property_unit: "Mass / kg wet fruit"
+          description: "Record fruit removed from the crop during each harvest round before grading and farm-gate preparation."
+          amount:
+            expression: "Use harvest tickets or calibrated scales for every represented harvest round and crop type."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_reconciliation
+              source_ids:
+                - fao-cucumber-production-guide
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "1,000"
+                upper: "1,700"
+                unit: "kg harvested fruit per 1,000 kg marketable output"
+                basis: "crop-cycle harvest before grading and field losses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: crop_residue_output
+          role: "Field vines and crop residue"
+          name: "Cucumber and gherkin crop residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet matter"
+          description: "Record leaves, vines, roots, and unharvested fruit remaining after the final harvest and identify whether they are returned, removed, or treated."
+          amount:
+            expression: "Weigh or calculate residue from field records and reconcile it with harvested fruit and the production unit area."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - fao-cucumber-production-guide
+            ranges:
+              - role: qa_guardrail
+                lower: "100"
+                upper: "2,500"
+                unit: "kg wet matter per 1,000 kg marketable output"
+                basis: "end-of-cycle vines, leaves, roots, and unharvested fruit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: reject_output
+          role: "Unmarketable fruit and grading rejects"
+          name: "Cucumber or gherkin grading rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet fruit"
+          description: "Record fruit rejected for size, shape, maturity, damage, disease, or other grade criteria and document the destination."
+          amount:
+            expression: "Reconcile grading rejects to harvested or received fruit and marketable output by crop type and harvest round."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - usda-ams-cucumber-standard
+                - usda-ams-pickling-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "700"
+                unit: "kg wet fruit per 1,000 kg marketable output"
+                basis: "rejected fruit after harvest and grading"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: direct_n2o_air_output
+          role: "Direct nitrous oxide from managed soil"
+          name: "Nitrous oxide, emissions to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct soil nitrous oxide from eligible crop-cycle nitrogen inputs with the selected IPCC-compatible method and report it to air."
+          amount:
+            expression: "Apply the declared emission factor and climate or soil method to eligible nitrogen inputs; document the factor and avoid counting the same pathway twice."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg N2O/ha"
+                basis: "managed-soil nitrogen emissions in the declared crop cycle"
+                basis_kind: "n_input"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ipcc-2019-managed-soils-n2o
+        - row_id: nitrate_freshwater_output
+          role: "Nitrate loss to freshwater"
+          name: "Nitrate, emissions to freshwater"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NO3-"
+          description: "Model nitrate loss only when the declared nutrient-surplus or water-loss method supports the pathway and its factor is documented."
+          amount:
+            expression: "Calculate from eligible nitrogen surplus and the selected site or method factor; do not infer nitrate loss from fertilizer purchase alone."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh cucumber or gherkin output"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "45"
+                unit: "kg NO3-/ha"
+                basis: "declared nitrogen surplus and receiving-water pathway"
+                basis_kind: "n_input"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_and_gate_preparation
+    label: "Harvest and farm-gate preparation"
+    inputs:
+      product:
+        - row_id: harvested_fruit_input
+          role: "Harvested fruit received for preparation"
+          name: "Harvested cucumber or gherkin fruit before grading"
+          flow_type: "product"
+          property_unit: "Mass / kg wet fruit"
+          description: "Record cucumber and gherkin lots received from the crop-management process for sorting, washing, cooling, or primary packing."
+          amount:
+            expression: "Use the crop-cycle harvest reconciliation and the receiving scale for the same lot and crop type."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable farm-gate output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_reconciliation
+              source_ids:
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "1,000"
+                upper: "1,700"
+                unit: "kg received fruit per 1,000 kg marketable output"
+                basis: "harvest lots received for sorting, washing, cooling, or packing"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: washing_water_input
+          role: "Washing water"
+          name: "Process water for primary produce washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used to remove soil or foreign material when washing is performed before the declared gate."
+          amount:
+            expression: "Record meter or batch water use and distinguish make-up water, recirculated water, and discharge where measured."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable washed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_utility_records
+              source_ids:
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "m3 per 1,000 kg washed output"
+                basis: "primary washing line throughput"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: postharvest_energy_input
+          role: "Primary cooling and packing energy"
+          name: "Electricity supply for primary conditioning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity or fuel used for sorting, washing, cooling, and primary packing before hand-off."
+          amount:
+            expression: "Allocate meter or equipment records to cucumber and gherkin batches by throughput, run time, or documented production order."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_energy_records
+              source_ids:
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "120"
+                unit: "kWh per 1,000 kg output"
+                basis: "sorting, washing, cooling, and packing line"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: primary_packaging_input
+          role: "Primary packaging material"
+          name: "Primary packaging material"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "pallet-and-crate-packaging"
+          property_unit: "Mass / kg packaging material"
+          description: "Record crates, cartons, films, pallets, or other packaging that crosses the boundary before the declared gate, distinguishing reusable and one-way materials."
+          amount:
+            expression: "Use packaging specifications, counts, unit mass, reuse cycles, and batch output to calculate the attributable packaging mass."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg packed output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "35"
+                unit: "kg packaging material per 1,000 kg packed output"
+                basis: "declared primary packaging format and reuse practice"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: washing_waste_output
+          role: "Washing wastewater and handling losses"
+          name: "Cucumber and gherkin washing wastewater or handling waste"
+          flow_type: "waste"
+          property_unit: "Mass or volume / kg wet waste or m3"
+          description: "Record discharged wash water, removed soil, damaged fruit, and handling losses leaving the primary preparation line, with their treatment or disposal fate."
+          amount:
+            expression: "Use batch records and treatment or discharge records; keep fruit rejects separate from water discharge when separate measurements exist."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_utility_records
+              source_ids:
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "6"
+                unit: "m3 per 1,000 kg washed output"
+                basis: "primary washing and handling line discharge"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_farm_gate_output
+          role: "Marketable fresh cucumber or gherkin at gate"
+          name: "Fresh cucumber or gherkin at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the declared reference product after harvest, grading, optional washing or cooling, and primary packing that occur before the hand-off."
+          amount:
+            expression: "Use the final calibrated dispatch scale or lot record after grade acceptance and reconcile it to received fruit and rejects."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "1,000 kg reference output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_output_records
+              source_ids:
+                - usda-ams-cucumber-standard
+                - usda-ams-pickling-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "1,000"
+                upper: "1,000"
+                unit: "kg marketable output"
+                basis: "declared reference product at the farm-gate or pack-house gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids:
+                  - usda-ams-cucumber-standard
+      waste:
+        - row_id: final_reject_output
+          role: "Final grading and packing rejects"
+          name: "Final cucumber or gherkin grading rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet fruit"
+          description: "Record fruit rejected after final sorting or packing and identify whether it is sold for another use, fed, composted, treated, or discarded."
+          amount:
+            expression: "Weigh final rejects and reconcile them with received harvest and marketable gate output by batch."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_output_records
+              source_ids:
+                - usda-ams-cucumber-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg wet fruit per 1,000 kg marketable output"
+                basis: "final grading and packing rejects"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_crop_type
+    applies_to: "mixed cucumber and gherkin production"
+    rule: "Attribute shared inputs to slicing cucumber, pickling cucumber, or gherkin using recorded production-unit area, crop-cycle output, or another documented physical basis. Do not average distinct crop types before their individual balances are complete."
+    source_ids:
+      - fao-cucumber-production-guide
+  - rule_id: allocation_repeated_harvest
+    applies_to: "multiple harvest rounds from one planting"
+    rule: "Treat all harvest rounds attributable to one planting campaign as one crop-cycle inventory and reconcile each round before normalizing to total marketable output."
+    source_ids:
+      - fao-cucumber-production-guide
+  - rule_id: allocation_shared_protected_unit
+    applies_to: "greenhouse or other protected units with multiple crops"
+    rule: "Allocate shared energy, water, and management records using declared area, occupied time, throughput, or another physical relationship. Disclose durable infrastructure separately."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residue_fate
+    applies_to: "vines, leaves, rejected fruit, and trim"
+    rule: "Do not provide a co-product credit unless a recipient, quantity, and intended use are documented. Otherwise report the material as residue or waste and retain the crop-cycle burden."
+    source_ids:
+      - usda-ams-cucumber-standard
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_planting_records
+      process_id: "crop_establishment"
+      flow_role: "seed, transplants, and establishment inputs"
+      record_type: "seed lot, transplant, invoice, and planting record"
+      raw_fields: "lot; crop type; cultivar; material form; viable quantity; field; date; unused quantity"
+      collection_method: "reconcile supplier records to planting log"
+      unit: "kg seed or plants"
+      frequency: "each planting campaign"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field, bed, or protected unit"
+      aggregation_rule: "sum by planting campaign and crop type"
+      quality_evidence: "supplier label, lot trace, and planting record"
+    - protocol_id: cp_nutrient_records
+      process_id: "crop_establishment_crop_management"
+      flow_role: "nutrient products and nutrient equivalents"
+      record_type: "nutrient plan, soil test, supplier invoice, and application log"
+      raw_fields: "product; formulation; nutrient concentration; date; area; quantity; application method"
+      collection_method: "reconcile product mass and application record"
+      unit: "kg product, kg N, kg P2O5, kg K2O"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each production unit"
+      aggregation_rule: "sum by nutrient and crop cycle"
+      quality_evidence: "soil test, label or supplier specification, and application log"
+    - protocol_id: cp_irrigation_records
+      process_id: "crop_establishment_crop_management"
+      flow_role: "crop irrigation and fertigation carrier water"
+      record_type: "meter, pump, controller, or water-balance record"
+      raw_fields: "source; meter readings; event date; area; method; rainfall; carrier use"
+      collection_method: "meter reading or documented water-balance calculation"
+      unit: "m3"
+      frequency: "each event or meter period"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field, bed, or protected unit"
+      aggregation_rule: "sum by source and crop cycle"
+      quality_evidence: "meter calibration or documented balance inputs"
+    - protocol_id: cp_field_energy_records
+      process_id: "crop_establishment_crop_management"
+      flow_role: "mobile machinery fuel and pumping energy"
+      record_type: "fuel invoice, pump meter, and equipment activity log"
+      raw_fields: "carrier; quantity; equipment; operation; field; date; allocation basis"
+      collection_method: "supplier record plus activity or meter log"
+      unit: "L, MJ, or kWh"
+      frequency: "each refuelling, operation, or meter period"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each production unit"
+      aggregation_rule: "allocate shared use by area, hours, or throughput"
+      quality_evidence: "invoice, meter record, and allocation calculation"
+    - protocol_id: cp_crop_protection_records
+      process_id: "crop_management"
+      flow_role: "crop-protection products"
+      record_type: "spray log and supplier record"
+      raw_fields: "product; active ingredient; rate; area; date; target; lot"
+      collection_method: "record each application and product lot"
+      unit: "kg product or kg active ingredient"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each production unit"
+      aggregation_rule: "sum by product or active ingredient and crop cycle"
+      quality_evidence: "application log and product label"
+    - protocol_id: cp_area_and_cycle_records
+      process_id: "crop_establishment"
+      flow_role: "land occupation and crop-cycle dates"
+      record_type: "field register or protected-unit register"
+      raw_fields: "area; bed or unit; crop dates; route; structure status; land use"
+      collection_method: "verify register against field map and production records"
+      unit: "ha, m2, and days"
+      frequency: "each crop cycle"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field or protected unit"
+      aggregation_rule: "calculate area-time and normalize to output"
+      quality_evidence: "field map, register, and date evidence"
+    - protocol_id: cp_harvest_reconciliation
+      process_id: "crop_management_harvest_and_gate_preparation"
+      flow_role: "harvest fruit, field losses, and residues"
+      record_type: "harvest ticket, scale record, and residue record"
+      raw_fields: "field; crop type; round; date; gross fruit; marketable fruit; reject; residue; fate"
+      collection_method: "weigh each round or use documented lot reconciliation"
+      unit: "kg wet fruit or residue"
+      frequency: "each harvest round"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each field, bed, or protected unit"
+      aggregation_rule: "reconcile crop-cycle fruit and residue streams"
+      quality_evidence: "scale record, lot ticket, and fate record"
+    - protocol_id: cp_residue_and_reject_records
+      process_id: "crop_management_harvest_and_gate_preparation"
+      flow_role: "crop residues and rejected fruit"
+      record_type: "residue survey, grading sheet, and fate record"
+      raw_fields: "field; crop type; round; material; mass; date; destination; recipient"
+      collection_method: "weigh, estimate, and document each residue or reject stream and its fate"
+      unit: "kg wet material"
+      frequency: "each harvest round and final clearance"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each production unit"
+      aggregation_rule: "aggregate by material and destination and reconcile to harvest output"
+      quality_evidence: "scale record, grading sheet, and recipient or treatment record"
+    - protocol_id: cp_postharvest_utility_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "wash water, wastewater, and handling loss"
+      record_type: "batch sheet, utility meter, and treatment record"
+      raw_fields: "batch; received mass; make-up water; recirculation; discharge; loss; fate"
+      collection_method: "batch record plus meter or treatment record"
+      unit: "kg and m3"
+      frequency: "each batch or meter period"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each preparation line"
+      aggregation_rule: "aggregate by batch and normalize to gate output"
+      quality_evidence: "meter record, batch sheet, and treatment receipt"
+    - protocol_id: cp_postharvest_energy_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "sorting, cooling, and packing energy"
+      record_type: "electricity meter and equipment throughput record"
+      raw_fields: "meter period; line; kWh; throughput; cooling time; batch"
+      collection_method: "allocate meter use by throughput or run time"
+      unit: "kWh or MJ"
+      frequency: "each meter period or batch"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each preparation line"
+      aggregation_rule: "allocate shared energy and reconcile to batch output"
+      quality_evidence: "meter data and allocation calculation"
+    - protocol_id: cp_packaging_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "primary packaging"
+      record_type: "packaging specification, bill of materials, count, and reuse record"
+      raw_fields: "material; unit mass; units; batch; output; reuse cycles"
+      collection_method: "reconcile count, specification, and batch output"
+      unit: "kg material and units"
+      frequency: "each packaging lot or batch"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each preparation line"
+      aggregation_rule: "separate reusable and one-way material per packed output"
+      quality_evidence: "supplier specification, count sheet, and reuse declaration"
+    - protocol_id: cp_gate_output_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "marketable product and final rejects"
+      record_type: "dispatch scale, grade record, and reject record"
+      raw_fields: "batch; crop type; date; gate; packed mass; grade; reject; fate"
+      collection_method: "final scale and lot reconciliation"
+      unit: "kg wet fruit"
+      frequency: "each dispatch lot"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "declared gate"
+      aggregation_rule: "sum saleable output and rejects; normalize to 1,000 kg"
+      quality_evidence: "calibrated scale or lot record and grade record"
+  calculation_rules:
+    - id: calc_nutrient_equivalent
+      applies_to: "nutrient inputs"
+      rule: "product mass × declared nutrient fraction; retain product mass and nutrient basis as separate records"
+      inputs:
+        - invoice
+        - formulation
+        - "nutrient plan"
+        - "application log"
+      output: "kg N, kg P2O5, or kg K2O by crop cycle"
+      source_ids:
+        - fao-cucumber-production-guide
+    - id: calc_crop_cycle_normalization
+      applies_to: "all crop-cycle inputs and outputs"
+      rule: "crop-cycle quantity ÷ marketable gate output × 1,000 kg"
+      inputs:
+        - "crop-cycle quantity"
+        - "gate output"
+      output: "normalized quantity per 1,000 kg output"
+      source_ids: []
+    - id: calc_repeated_harvest_output
+      applies_to: "harvest rounds"
+      rule: "sum marketable fruit from all rounds assigned to the planting; reconcile gross fruit, rejects, losses, and residues first"
+      inputs:
+        - "harvest tickets"
+        - "receiving records"
+        - "reject records"
+      output: "total marketable crop-cycle output"
+      source_ids:
+        - fao-cucumber-production-guide
+    - id: calc_area_time
+      applies_to: "land occupation"
+      rule: "production area × crop occupation period, with protected structure treatment declared separately"
+      inputs:
+        - "area register"
+        - "planting and final harvest dates"
+      output: "m2*a"
+      source_ids:
+        - fao-cucumber-production-guide
+    - id: calc_nitrogen_emission
+      applies_to: "direct soil nitrous oxide"
+      rule: "apply the selected IPCC-compatible factor to eligible nitrogen input and declared soil or climate method"
+      inputs:
+        - "nutrient records"
+        - "method choice"
+        - area
+      output: "kg N2O emitted to air"
+      source_ids:
+        - ipcc-2019-managed-soils-n2o
+    - id: calc_water_balance
+      applies_to: "irrigation and washing"
+      rule: "sum metered deliveries or documented balance components; preserve source withdrawal, delivered water, recirculation, and discharge as distinct quantities"
+      inputs:
+        - "meter readings"
+        - rainfall
+        - "pumping or batch records"
+      output: "m3 by water role"
+      source_ids:
+        - fao-crop-evapotranspiration-56
+    - id: calc_gate_mass_balance
+      applies_to: "harvest and preparation"
+      rule: "received fruit = marketable output + rejects + residue or handling loss within declared measurement uncertainty"
+      inputs:
+        - "harvest tickets"
+        - "batch records"
+        - "reject and residue records"
+      output: "reconciled mass balance"
+      source_ids:
+        - usda-ams-cucumber-standard
+    - id: calc_packaging_attribution
+      applies_to: "primary packaging"
+      rule: "unit count × unit mass ÷ declared reuse cycles, allocated to packed output"
+      inputs:
+        - "packaging specification"
+        - count
+        - "reuse declaration"
+        - output
+      output: "kg packaging per 1,000 kg output"
+      source_ids:
+        - usda-ams-cucumber-standard
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "product and flow records"
+      requirement: "Declare crop type, cultivar group, production route, gate, maturity, grade, and product state; resolve platform identities during foreground dataset construction where required."
+      evidence: "lot record, product description, and reference-flow qualifiers"
+    - id: quality_measurement
+      applies_to: "water, energy, inputs, and outputs"
+      requirement: "Prefer calibrated scales, meters, supplier invoices, application logs, and batch records; disclose estimates and allocation calculations when direct measurement is unavailable."
+      evidence: "meter calibration, scale record, invoice, or calculation sheet"
+    - id: quality_temporal
+      applies_to: "crop-cycle inventory"
+      requirement: "Cover the full planting campaign and harvest period, including all nutrient and protection applications, irrigation events, and harvest rounds."
+      evidence: "planting date, application logs, irrigation record, harvest tickets, and dispatch records"
+    - id: quality_completeness
+      applies_to: "crop-cycle and gate balance"
+      requirement: "Reconcile planting material, nutrients, irrigation, energy, harvest fruit, marketable output, rejects, residues, wastewater, and packaging when in scope."
+      evidence: "crop-cycle inventory and mass-balance reconciliation"
+    - id: quality_route_disclosure
+      applies_to: "open-field and protected routes"
+      requirement: "Identify protected cultivation, trellis or durable infrastructure treatment, irrigation technology, and route-specific energy use before combining observations."
+      evidence: "production-unit register, energy records, and allocation note"
+    - id: quality_identity_resolution
+      applies_to: "parameterized and unmapped rows"
+      requirement: "Resolve each parameterized row to a verified foreground UUID during data-package construction and record any remaining unmapped coverage before final process publication."
+      evidence: "identity review record and foreground package check"
+validation_rules:
+  - rule_id: validate_reference_output
+    applies_to: "reference flow"
+    rule: "The reference output must be fresh whole cucumber or gherkin at the declared gate and use mass in kg; pickled, fermented, canned, cut, or retail products are outside this PCR."
+    source_ids:
+      - usda-ams-cucumber-standard
+      - usda-ams-pickling-cucumber-standard
+  - rule_id: validate_crop_type
+    applies_to: "product identity and aggregation"
+    rule: "Crop type and route must be declared. Slicing cucumbers, pickling cucumbers, and gherkins may be aggregated only after separate crop-cycle balances and an explicit physical allocation basis are available."
+    source_ids:
+      - fao-cucumber-production-guide
+  - rule_id: validate_cycle_dates
+    applies_to: "establishment, management, and harvest"
+    rule: "Planting, applications, irrigation, harvest rounds, and gate output must fall within or be explicitly attributed to the declared crop cycle."
+    source_ids:
+      - fao-cucumber-production-guide
+  - rule_id: validate_nutrient_basis
+    applies_to: "nutrient inputs and emissions"
+    rule: "Product mass, nutrient concentration, nutrient basis, and emission method must be internally consistent; do not count product mass and its nutrient equivalent as duplicate exchanges."
+    source_ids:
+      - ipcc-2019-managed-soils-n2o
+      - fao-cucumber-production-guide
+  - rule_id: validate_mass_balance
+    applies_to: "harvest and gate preparation"
+    rule: "Harvest or receiving mass must reconcile with marketable output, rejects, residues, wastewater-related losses, and documented measurement uncertainty."
+    source_ids:
+      - usda-ams-cucumber-standard
+  - rule_id: validate_flow_set_resolution
+    applies_to: "parameterized rows"
+    rule: "During foreground data generation, each parameterized row must resolve to a verified UUID compatible with its Flow Set group, property, unit, direction, and use context; otherwise retain an explicit coverage finding."
+    source_ids: []
+  - rule_id: validate_qualifiers
+    applies_to: "reference flow and dataset metadata"
+    rule: "Required qualifiers must be present, including crop type, route, crop cycle, harvest round, grade, washing, cooling, packaging, and declared gate."
+    source_ids:
+      - usda-ams-cucumber-standard
+      - usda-ams-pickling-cucumber-standard
+published_dataset_profile:
+  dataset_role: "Foreground agricultural production dataset for fresh cucumbers and gherkins at the declared farm-gate or pack-house gate"
+  downstream_use: "secondary_dataset for cucumber or gherkin product systems; background_dataset only when a representative regional or market-average dataset includes the required route and quality metadata"
+  allowed_use: "Crop-cycle inventory, product comparison, farm improvement, pack-house improvement, and fresh cucumber or gherkin supply-chain assessment within the declared product state and geography"
+  excluded_use: "Pickled, fermented, canned, cut, prepared, retail, consumption, seed-production, or unqualified vegetable substitution; do not extrapolate between open-field and protected routes without scenario disclosure"
+  required_metadata: "crop type; cultivar group; route; geography; crop-cycle dates; planting material; irrigation source and quantity; nutrient basis; crop protection; harvest rounds; yield; grade; washing and cooling; packaging; residue and reject fate; declared gate"
+  required_quality_disclosure: "time coverage, site scope, measured versus calculated values, route treatment, allocation rules, mass-balance result, platform identity resolution status, and all provisional estimates requiring replacement by foreground records"
+  update_trigger: "change in crop type or route, irrigation technology, nutrient program, protected-cultivation energy, harvest or grade specification, washing or cooling line, packaging format, gate definition, or evidence affecting material quantities or boundary rules"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-cucumber-production-guide"
+    type: "official_guidance"
+    reference: "FAO, crop production and good-practice guidance for cucumber and gherkin cultivation"
+    used_for: "crop route, planting, crop management, harvest rounds, residue context, and boundary decisions"
+  - id: "fao-crop-evapotranspiration-56"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, *Crop evapotranspiration*"
+    used_for: "irrigation scheduling and water-balance context"
+  - id: "ipcc-2019-managed-soils-n2o"
+    type: "method_factor"
+    reference: "IPCC, *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*"
+    used_for: "managed-soil nitrogen-emission method and calculation rule"
+  - id: "usda-ams-cucumber-standard"
+    type: "official_guidance"
+    reference: "USDA Agricultural Marketing Service, *Cucumber Grades and Standards*"
+    used_for: "cucumber maturity, size, quality, grade, defects, and gate acceptance context"
+  - id: "usda-ams-pickling-cucumber-standard"
+    type: "official_guidance"
+    reference: "USDA Agricultural Marketing Service, *Pickling Cucumber Grades and Standards*"
+    used_for: "pickling cucumber and gherkin size, quality, grade, and reject context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, *Environmental management — Life cycle assessment — Requirements and guidelines*"
+    used_for: "allocation, co-product, and residue-treatment principles"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:2c5aa1845c2f6c94d1d975f47faab37641e0a9c349359a3d06a980b691fa4c01"
+  generated_content_sha256: "sha256:7823e698d2b73e206a5c237b5e71704704c845c76ea3f74a63b8f2d630c2c118"

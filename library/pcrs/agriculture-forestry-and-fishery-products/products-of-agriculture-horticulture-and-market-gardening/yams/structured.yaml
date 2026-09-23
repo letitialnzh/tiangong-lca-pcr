@@ -1,10 +1,1005 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01540"
-  title: "Yams"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.yams"
+  classification_refs: "CPC 3.0 01540 (Yams), exact candidate mapping context"
+  covered_products: "Fresh whole ware-yam tubers of *Dioscorea* spp. at farm gate"
+  excluded_products: "Seed yams as sale product; other roots and tubers; peeled, cut, dried, frozen, cooked, fermented, chipped, or milled yams"
+  representative_product: "Fresh marketable yam tubers, whole and unprocessed"
+  production_route: "Managed field cultivation; tuber lifting; first cleaning or trimming when performed; grading and farm-gate hand-off"
+  market_state: "Fresh, unprocessed produce at farm gate"
+functional_unit:
+  what: "Fresh, whole, marketable yam tubers at farm gate"
+  how_much: "1,000 kg net mass"
+  how_well: "Sound and saleable under the declared buyer or grade specification; soil, packaging, rejected tubers, and free wash water excluded"
+  how_long_or_cycle: "A single-period declared yam crop cycle ending at farm-gate hand-off"
+  reference_flow_link: "Net accepted output of yam_grading"
+system_boundary:
+  rules:
+    - rule_id: boundary_managed_cultivation
+      applies_to: "yam_cultivation"
+      rule: "Include field establishment, management inputs, irrigation when used, field energy, and direct managed-soil emissions for the crop cycle."
+      source_ids:
+        - fao-quality-declared-yam-planting-material
+        - iita-yam-yield-2020
+    - rule_id: boundary_harvest_handoff
+      applies_to: "yam_harvest"
+      rule: "Treat lifting and field collection as a distinct hand-off; distinguish collected yams, damaged tubers, and uncollected loss."
+      source_ids:
+        - fao-yam-postharvest
+    - rule_id: boundary_primary_conditioning
+      applies_to: "yam_primary_conditioning"
+      rule: "Include loose-soil removal, trimming, conditional washing, drainage, and air drying before grading; exclude storage undertaken to extend life."
+      source_ids:
+        - fao-yam-postharvest
+    - rule_id: boundary_grading
+      applies_to: "yam_grading"
+      rule: "Reconcile conditioned tubers into accepted product, downgraded product, rejects, and physical loss."
+      source_ids:
+        - fao-yam-postharvest
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "Prepared field and identifiable yam planting material are available; purchased inputs retain linked upstream datasets."
+  starting_condition_role: "Foreground collection begins with field establishment and input application for one crop cycle."
+  product_classification_scope: "Fresh whole ware-yam tubers at farm gate."
+  recursive_input_rule: "Purchased or internally transferred seed yam/setts remain explicit Product-flow inputs. Same-category planting material links to a separately bounded dataset and does not recursively expand the current ware-yam process."
+  upstream_dataset_requirement: "Link suitable upstream datasets for planting material, fertilizers, crop-protection products, fuels, electricity, irrigation supply, and waste treatment."
+  disclosure: "Declare seed source, field area, crop dates, management regime, conditioning steps, grade definition, reject destinations, and excluded storage or packaging."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Yams"
+    uuid: "227a29cc-a11c-4357-9188-2ee8ead339bd"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species or species group"
+    - "cultivar where known"
+    - "production country and site"
+    - "crop-cycle dates"
+    - "rainfed or irrigated regime"
+    - "whole fresh state"
+    - "washing status"
+    - "grade or buyer specification"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted farm-gate yams"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh net accepted tubers after grading; exclude tare, packaging, free water, loose soil, downgraded lots, and rejects."
+  - id: transfer_mass
+    applies_to: "yam material transferred between nodes"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use measured wet mass at every hand-off and disclose any moisture-changing interval."
+  - id: area_conversion
+    applies_to: "occupied field area"
+    required_property_ref:
+      name: "area per crop cycle"
+      uuid: ""
+    required_unit: "ha·crop_cycle"
+    rule: "Match cultivated area to harvested tuber mass from the same plots and cycle before normalization."
+  - id: nutrient_mass
+    applies_to: "fertilizer inputs"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg nutrient"
+    rule: "Preserve physical fertilizer products and calculate N, P2O5, and K2O equivalents separately."
+process_map:
+  - id: yam_cultivation
+    name: "Managed yam cultivation"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Establish and manage yam plants until tubers are ready for lifting"
+    quantitative_reference: "Per harvest-ready tuber output"
+  - id: yam_harvest
+    name: "Yam lifting and field collection"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Lift tubers and transfer collected tubers to preparation"
+    quantitative_reference: "Per collected-tuber output"
+  - id: yam_primary_conditioning
+    name: "Primary conditioning at farm gate"
+    inclusion: "required"
+    inclusion_condition: "Always; individual operations conditional"
+    role: "Remove soil and plant matter; trim; conditionally wash and drain"
+    quantitative_reference: "Per conditioned-tuber output"
+  - id: yam_grading
+    name: "Grading and farm-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Separate accepted, downgraded, and rejected states"
+    quantitative_reference: "Per 1,000 kg accepted yams"
+process_inventory:
+  - id: yam_cultivation
+    label: "Managed yam cultivation"
+    inputs:
+      product:
+        - row_id: seed_yam_setts
+          role: "Yam planting material"
+          name: "Yam planting material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record disease-screened whole seed yams or cut setts planted in contributing plots."
+          amount:
+            expression: "measured fresh mass planted"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material_energy_inputs
+              source_ids:
+                - fao-quality-declared-yam-planting-material
+            ranges:
+              - role: qa_guardrail
+                lower: "20"
+                upper: "500"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: yam_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material_energy_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg product"
+                basis: "per 1,000 kg accepted yam output at farm gate; retain nutrient analyses separately"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered to the field only for irrigated production; rainfed production records zero."
+          amount:
+            expression: "metered or calibrated field delivery"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "m3"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_diesel
+          role: "Mobile machinery fuel for cultivation"
+          name: "Mobile machinery fuel, diesel carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record diesel used by field equipment; keep every other carrier as a separate exchange."
+          amount:
+            expression: "measured fuel issued to cultivation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material_energy_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "L"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: field_area_occupation
+          role: "Occupied field area"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha·crop_cycle"
+          description: "Match field area and crop-cycle dates to the harvest from the same plots."
+          amount:
+            expression: "contributing area divided by harvest-ready tuber mass"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvest-ready yam tubers"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_area_and_yield
+              source_ids:
+                - iita-yam-yield-2020
+            ranges:
+              - role: typical_range
+                lower: "0.0435"
+                upper: "0.0763"
+                unit: "ha·crop_cycle"
+                basis: "per 1,000 kg harvest-ready yam tubers; regional example only"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - iita-yam-yield-2020
+    outputs:
+      product:
+        - row_id: harvest_ready_yams
+          role: "Harvest-ready yam crop"
+          name: "Harvest-ready yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This intermediate tuber state is handed to yam_harvest and is not the reference product."
+          amount:
+            expression: "measured or plot-estimated tuber mass immediately before lifting"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_mass_transfers
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_soil_n2o
+          role: "Direct nitrous oxide from managed soil"
+          name: "Nitrous oxide, to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct N2O separately from indirect pathways using the selected IPCC tier or a better regional method."
+          amount:
+            expression: "nitrogen input multiplied by the direct N2O-N factor and by 44/28"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - ipcc-2006-managed-soils-n2o
+            ranges:
+              - role: uncertainty_range
+                lower: "0.003"
+                upper: "0.03"
+                unit: "kg N2O-N/kg N input"
+                basis: "per kg N input applied to managed soil"
+                basis_kind: "n_input"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2006-managed-soils-n2o
+  - id: yam_harvest
+    label: "Yam lifting and field collection"
+    inputs:
+      product:
+        - row_id: harvest_ready_yams_received
+          role: "Harvest-ready yam crop received"
+          name: "Harvest-ready yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the cultivation output on the same lot and crop-cycle basis."
+          amount:
+            expression: "equal to transferred harvest_ready_yams"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_diesel
+          role: "Mobile harvest machinery fuel"
+          name: "Mobile harvest machinery fuel, diesel carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record diesel used by lifting and collection equipment; manual harvest records zero."
+          amount:
+            expression: "measured fuel issued to harvest"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg collected yam output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material_energy_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "L"
+                basis: "per 1,000 kg collected yam output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_yams
+          role: "Collected yam tubers"
+          name: "Collected fresh yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record all tubers physically lifted and delivered to conditioning, including tubers later rejected."
+          amount:
+            expression: "measured transfer mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_mass_transfers
+              source_ids:
+                - fao-yam-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1800"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_damaged_yams
+          role: "Tubers damaged or lost during lifting"
+          name: "Damaged yam tubers"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record unusable tubers damaged during lifting or separately quantified as uncollected loss; saleable downgraded tubers are not waste."
+          amount:
+            expression: "measured damaged or unrecovered tuber mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg collected yam output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_and_loss_records
+              source_ids:
+                - fao-yam-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg"
+                basis: "per 1,000 kg collected yam output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: yam_primary_conditioning
+    label: "Primary conditioning at farm gate"
+    inputs:
+      product:
+        - row_id: collected_yams_received
+          role: "Collected yam tubers received"
+          name: "Collected fresh yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the complete collected-tuber state before cleaning or trimming."
+          amount:
+            expression: "equal to transferred collected_yams"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1800"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wash_water
+          role: "Conditioning wash water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Mass / kg"
+          description: "Record water only when washing occurs because of contamination or buyer requirements; dry cleaning records zero."
+          amount:
+            expression: "measured water supplied to yam washing"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg conditioned yam output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_records
+              source_ids:
+                - fao-yam-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg conditioned yam output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_electricity
+          role: "Conditioning electricity"
+          name: "Electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by washers, conveyors, or fans; unpowered conditioning records zero."
+          amount:
+            expression: "metered electricity assigned to conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg conditioned yam output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material_energy_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kWh"
+                basis: "per 1,000 kg conditioned yam output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_yams
+          role: "Conditioned yam tubers"
+          name: "Conditioned fresh yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record intact tubers after loose-soil removal, trimming, and any washing and drainage, ready for grading."
+          amount:
+            expression: "measured mass transferred to grading after free water drains"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_mass_transfers
+              source_ids:
+                - fao-yam-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1600"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_solid_residue
+          role: "Removed soil and plant matter"
+          name: "Conditioning solid residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record solids removed during conditioning. Split soil and plant matter in a concrete dataset if destinations differ."
+          amount:
+            expression: "measured residue mass leaving conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg conditioned yam output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_and_loss_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg"
+                basis: "per 1,000 kg conditioned yam output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wastewater
+          role: "Wash wastewater"
+          name: "Wastewater from produce washing"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record wastewater only when washing is active and identify discharge, reuse, or treatment."
+          amount:
+            expression: "measured or water-balanced discharge"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg conditioned yam output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg conditioned yam output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: yam_grading
+    label: "Grading and farm-gate hand-off"
+    inputs:
+      product:
+        - row_id: conditioned_yams_received
+          role: "Conditioned yam tubers received"
+          name: "Conditioned fresh yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the complete conditioned state before grading."
+          amount:
+            expression: "equal to transferred conditioned_yams"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1600"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_yams
+          role: "Accepted farm-gate yams as intended output"
+          name: "Yams"
+          flow_type: "product"
+          flow_ref:
+            uuid: "227a29cc-a11c-4357-9188-2ee8ead339bd"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is the reference product after applying the declared grade or buyer specification."
+          amount:
+            expression: "exactly 1,000 kg net accepted tubers"
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_yams
+          role: "Downgraded but saleable yams as intended output"
+          name: "Downgraded fresh yam tubers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record sound lower-grade tubers sold to a distinct destination as a separate intended Product flow."
+          amount:
+            expression: "measured lower-grade saleable mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_and_loss_records
+              source_ids:
+                - fao-yam-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Rejected yam tubers"
+          name: "Rejected yam tubers"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record unsaleable cut, crushed, punctured, diseased, or rotten tubers by destination."
+          amount:
+            expression: "measured rejected mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted yam output at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_and_loss_records
+              source_ids:
+                - fao-yam-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg"
+                basis: "per 1,000 kg accepted yam output at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivide
+    applies_to: "separately measured fields, operations, grades, or destinations"
+    rule: "Prefer subdivision and direct assignment before allocation."
+    source_ids: []
+  - rule_id: allocation_single_output
+    applies_to: "residues and rejects without an intended product function"
+    rule: "Assign burdens to accepted yams and retain residues and rejects as Waste flows; do not credit avoided disposal without an explicit scenario."
+    source_ids: []
+  - rule_id: allocation_saleable_downgrade
+    applies_to: "downgraded yams sold as intended product"
+    rule: "Declare all intended outputs and use a justified physical or economic allocation only when subdivision is impracticable; report basis and sensitivity."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_seed_retention
+    applies_to: "internally retained planting material"
+    rule: "Record an internal Product-flow transfer and burden decision; prevent the same tuber mass and burden from being both current output and free next-cycle input."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_material_energy_inputs
+      process_id: "cultivation_harvest_conditioning"
+      flow_role: "planting material, fertilizer products, diesel, electricity"
+      record_type: "invoice, issue log, meter, product analysis"
+      raw_fields: "date, identity, quantity, unit, analysis, process, plot or lot"
+      collection_method: "reconcile purchases and issues; preserve physical products before conversion"
+      unit: "native unit and kg nutrient"
+      frequency: "each event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "contributing farm and plots"
+      aggregation_rule: "sum by product and process, then normalize"
+      quality_evidence: "invoices, labels, meter and issue logs"
+    - protocol_id: cp_water_records
+      process_id: "cultivation_and_conditioning"
+      flow_role: "irrigation water, wash water, wastewater"
+      record_type: "meter, pump log, vessel count, balance"
+      raw_fields: "source, date, volume or mass, destination"
+      collection_method: "meter preferred; otherwise calibrated pump-time or vessel count"
+      unit: "m3 or kg"
+      frequency: "each event"
+      temporal_coverage: "crop cycle and conditioning"
+      site_scope: "field and conditioning area"
+      aggregation_rule: "sum by source and destination"
+      quality_evidence: "calibration and balance check"
+    - protocol_id: cp_field_area_and_yield
+      process_id: "cultivation"
+      flow_role: "area occupation and yield"
+      record_type: "field map, plot register, harvest ticket"
+      raw_fields: "plot, area, dates, harvest-ready mass"
+      collection_method: "match surveyed area to plot harvest"
+      unit: "ha, date, kg"
+      frequency: "each plot and harvest"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "every contributing plot"
+      aggregation_rule: "include only plots entering package"
+      quality_evidence: "map, register, calibrated scale"
+    - protocol_id: cp_crop_mass_transfers
+      process_id: "all_nodes"
+      flow_role: "intermediate and accepted yam masses"
+      record_type: "scale and transfer log"
+      raw_fields: "time, origin, destination, gross, tare, net, lot, state"
+      collection_method: "calibrated weighing at each hand-off"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "harvest through hand-off"
+      site_scope: "all contributing lots"
+      aggregation_rule: "sum by state and reconcile"
+      quality_evidence: "calibration and traceability"
+    - protocol_id: cp_reject_and_loss_records
+      process_id: "harvest_conditioning_grading"
+      flow_role: "damaged tubers, residues, downgraded yams, rejects"
+      record_type: "sorted-bin weights and disposition logs"
+      raw_fields: "role, reason, grade, mass, destination, lot"
+      collection_method: "weigh every separated state"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "harvest through grading"
+      site_scope: "all contributing lots"
+      aggregation_rule: "sum separately by identity and destination"
+      quality_evidence: "scale, inspection, receiving evidence"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "every inventory row"
+      rule: "attributable amount × 1,000 / net accepted-yam mass"
+      inputs:
+        - "attributable amount"
+        - "accepted mass"
+      output: "amount per 1,000 kg reference product"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_nutrient_equivalent
+      applies_to: "fertilizer inputs"
+      rule: "physical fertilizer mass × declared nutrient fraction; keep N, P2O5, and K2O separate"
+      inputs:
+        - "product mass"
+        - analysis
+      output: "kg nutrient"
+      source_ids: []
+    - id: calc_land_intensity
+      applies_to: "field area"
+      rule: "contributing area × 1,000 / harvest-ready tuber mass from the same plots"
+      inputs:
+        - ha
+        - "kg tubers"
+      output: "ha·crop_cycle per 1,000 kg tubers"
+      source_ids:
+        - iita-yam-yield-2020
+    - id: calc_direct_n2o
+      applies_to: "direct soil N2O"
+      rule: "apply selected direct N2O-N factor, then multiply by 44/28"
+      inputs:
+        - "kg N input"
+        - factor
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2006-managed-soils-n2o
+    - id: calc_node_mass_balance
+      applies_to: "harvest, conditioning, grading"
+      rule: "input yam mass = yam Product outputs + yam Waste outputs + stock change + documented loss"
+      inputs:
+        - transfer
+        - reject
+        - "and stock records"
+      output: "residual and completeness flag"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "product and intermediate states"
+      requirement: "Preserve species or group, cultivar where known, lot, grade, and state; never merge other tuber crops into yam output."
+      evidence: "lot records and buyer specification"
+    - id: dq_temporal
+      applies_to: "foreground records"
+      requirement: "Use one reporting period covering one complete crop cycle and every included harvest, conditioning, and grading event; no replacement or termination event occurs."
+      evidence: "dated field and transfer records"
+    - id: dq_mass_balance
+      applies_to: "transfer nodes"
+      requirement: "Reconcile accepted, downgraded, rejected, residue, wastewater, loss, and stock-change states without double counting."
+      evidence: "node reconciliation"
+    - id: dq_conditional_routes
+      applies_to: "irrigation, washing, powered operations"
+      requirement: "Record zero only after confirming the operation did not occur."
+      evidence: "operation log and meter or invoice"
+    - id: dq_range_use
+      applies_to: "amount ranges"
+      requirement: "Use ranges as screens; actual foreground records determine reported values, and regional examples are not universal limits."
+      evidence: "range exception review"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "The reference output shall be exactly 1,000 kg net accepted Yams flow with every required qualifier declared."
+    source_ids: []
+  - rule_id: validate_node_linkage
+    applies_to: "process graph"
+    rule: "Cultivation, harvest, conditioning, and grading transfer rows shall match by lot and mass basis."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_grade_completeness
+    applies_to: "grading"
+    rule: "Every incoming tuber mass shall be accepted, downgraded, rejected, stock change, or documented loss with a destination."
+    source_ids:
+      - fao-yam-postharvest
+      - mass-balance-identity
+  - rule_id: validate_conditional_inputs
+    applies_to: "irrigation, washing, electricity, diesel"
+    rule: "Zero is conforming only when records show the relevant operation or carrier was absent."
+    source_ids: []
+  - rule_id: validate_range_denominators
+    applies_to: "all ranges"
+    rule: "Each bound shall use its stated field, process-output, nitrogen-input, or reference-flow denominator; conditional ranges apply only when active."
+    source_ids: []
+  - rule_id: validate_no_extended_boundary
+    applies_to: "dataset boundary"
+    rule: "Curing, extended storage, packaging, and post-gate transport shall be excluded or represented as explicit downstream processes."
+    source_ids:
+      - fao-yam-postharvest
+published_dataset_profile:
+  dataset_role: "Foreground farm production package suitable for reviewed secondary_dataset or background_dataset publication"
+  downstream_use: "Attributional process and lifecycle-model construction for fresh whole yams at farm gate"
+  allowed_use: "The declared geography, crop cycle, management regime, conditioning route, and grade"
+  excluded_use: "Seed-yam production; other tuber crops; processed, packaged, or stored yam chains; retail and consumption"
+  required_metadata: "geography; site and plot coverage; crop dates; species; cultivar where known; seed source; irrigation status; input products; harvest method; washing status; grade; destinations; allocation"
+  required_quality_disclosure: "record coverage; measured versus estimated shares; calibration; range exceptions; mass-balance residuals; unresolved UUIDs; source representativeness"
+  update_trigger: "Changed boundary, flow identity, market state, methodology source, process topology, allocation decision, or evidence invalidating a range or rule"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-yam-postharvest"
+    type: "official_guidance"
+    reference: "FAO, *Yams: Post-harvest Operations*, https://www.fao.org/fileadmin/user_upload/inpho/docs/Post_Harvest_Compendium_-_Yams.pdf; FAO crop profile, https://www.fao.org/4/x5014e/X5014e0f.htm"
+    used_for: "maturity, careful lifting, conditional washing and drying, damage removal, grading, route decomposition"
+  - id: "fao-quality-declared-yam-planting-material"
+    type: "official_guidance"
+    reference: "FAO, *Quality declared planting material — protocols and standards for vegetatively propagated crops*, https://www.fao.org/4/i1195e/i1195e00.pdf"
+    used_for: "seed-yam and sett identity and quality context"
+  - id: "iita-yam-yield-2020"
+    type: "extension_guidance"
+    reference: "IITA, *IITA BIP team achieves 23 tons per hectare yield for yam in Nigeria* (2020), https://iita.org/news-item/iita-bip-team-achieves-23-tons-per-hectare-yield-for-yam-in-nigeria/"
+    used_for: "Nigerian regional yield example, crop duration, cultivation operations"
+  - id: "ipcc-2006-managed-soils-n2o"
+    type: "method_factor"
+    reference: "IPCC, *2006 Guidelines for National Greenhouse Gas Inventories*, Volume 4, Chapter 11"
+    used_for: "direct managed-soil N2O method and factor uncertainty"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied at each declared process node"
+    used_for: "transfers, reference identity, node reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:b62b8311526b4f4380706d80d236e8bfe37b44abaf892e970e9a4ab26e73a99a"
+  generated_content_sha256: "sha256:fef9b23918c84381a8a995a30728e533db3efaae0e7787e5bcf97dd2ebac1f2e"

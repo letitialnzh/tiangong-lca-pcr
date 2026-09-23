@@ -1,10 +1,978 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01921"
-  title: "Cotton, whether or not ginned"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cotton-whether-or-not-ginned"
+  classification_refs: "CPC 3.0: 0 > 01 > 019 > 0192 > 01921"
+  covered_products: "seed cotton at farm gate; ginned cotton lint at gin gate"
+  excluded_products: "yarn; fabric; cottonseed oil or meal; synthetic fibre"
+  representative_product: "accepted seed cotton or accepted lint, route declared"
+  production_route: "managed cultivation and harvest; optional mechanical ginning, cleaning and grading"
+  market_state: "unprocessed seed cotton or cleaned ginned lint, moisture and grade declared"
+functional_unit:
+  what: "accepted cotton in declared seed-cotton or lint state"
+  how_much: "1,000 kg"
+  how_well: "cultivar, route, moisture, grade, contamination and acceptance declared"
+  how_long_or_cycle: "one crop cycle and harvest lot; linked gin batch when applicable"
+  reference_flow_link: "accepted_cotton_product"
+system_boundary:
+  rules:
+    - rule_id: boundary_field
+      applies_to: "cultivation"
+      rule: "Include crop-attributed preparation, planting, nutrients, protection, irrigation, energy and direct emissions."
+      source_ids:
+        - ipcc-2019-refinement
+        - fao-cotton-guide
+    - rule_id: boundary_harvest
+      applies_to: "harvest"
+      rule: "Separate harvest, grading, rejects, loss and farm hand-off from crop growth."
+      source_ids:
+        - fao-cotton-guide
+        - mass-balance-identity
+    - rule_id: boundary_gin
+      applies_to: "ginning"
+      rule: "Include intake, conditioning, separation, cleaning, grading and bale preparation; stop before spinning."
+      source_ids:
+        - usda-cotton-ginning
+    - rule_id: boundary_routes
+      applies_to: "alternatives"
+      rule: "Keep rainfed/irrigated, picker/stripper and saw/roller technology strata separate before weighting."
+      source_ids:
+        - fao-cotton-guide
+        - usda-cotton-ginning
+    - rule_id: boundary_route_delta_evidence
+      applies_to: "production and technology deltas"
+      rule: "Managed cultivation is the production parent. Irrigation changes water, pumping energy and field-emission records; harvest equipment changes energy, losses and contamination; saw versus roller ginning changes conditioning, separation, cleaning and quality records. These routes coexist in the category but are mutually exclusive within one stratum."
+      source_ids:
+        - fao-cotton-guide
+        - usda-cotton-ginning
+    - rule_id: boundary_conditioning_stabilization
+      applies_to: "ginned route"
+      rule: "Raw seed cotton enters ginning; drying or moisture conditioning, separation and cleaning prepare moisture-safe graded lint for bale hand-off. Conditioning energy and service inputs are recorded in gin energy; cottonseed is an intended co-product; trash, moisture change, dust, rejects and loss remain separately classified."
+      source_ids:
+        - usda-cotton-ginning
+        - mass-balance-identity
+    - rule_id: boundary_single_period
+      applies_to: "all routes"
+      rule: "Model one crop cycle and its linked harvest and gin batches in one linked accounting interval; single-period; no storage, replacement or termination is included. Temporary holding is assigned to the linked lot."
+      source_ids:
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "prepared field before current-cycle inputs"
+  starting_condition_role: "foreground entry; crop-attributed preparation included"
+  product_classification_scope: "CPC 3.0 01921"
+  recursive_input_rule: "same-category input uses its supplying dataset and is not recursively recreated"
+  upstream_dataset_requirement: "representative upstream dataset; unresolved identity selected from foreground evidence before publication"
+  disclosure: "route, irrigation, harvest, moisture, grade, gin technology, batch, co-product destinations and exclusions"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Accepted seed cotton or ginned cotton lint, declared route"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "kg"
+  required_qualifiers:
+    - "seed cotton at farm gate or lint at gin gate"
+    - geography
+    - "crop year"
+    - cultivar
+    - moisture
+    - grade
+    - technology
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh at declared hand-off; do not combine seed-cotton and lint masses."
+  - id: moisture_alignment
+    applies_to: "biomass"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg wet; kg dry"
+    rule: "Preserve wet mass and moisture; convert with lot-specific fraction."
+  - id: normalization
+    applies_to: "field and gin records"
+    required_property_ref:
+      name: "Area; Mass"
+      uuid: ""
+    required_unit: "ha; kg"
+    rule: "Collect by field-cycle or batch, then normalize once."
+process_map:
+  - id: cotton_cultivation
+    name: "Managed cotton cultivation"
+    inclusion: "required"
+    inclusion_condition: "one field crop cycle"
+    role: "managed biological production parent; alternative production route delta separates rainfed and irrigated inventory, calculation and validation requirements"
+    quantitative_reference: "ha planted"
+  - id: cotton_harvest
+    name: "Harvest, grading and farm hand-off"
+    inclusion: "required"
+    inclusion_condition: "one harvest lot"
+    role: "harvest and grading-sorting of incoming harvestable seed cotton; picker/stripper alternative technology delta changes equipment, loss and contamination records"
+    quantitative_reference: "1000 kg accepted seed cotton"
+  - id: cotton_ginning
+    name: "Ginning and lint hand-off"
+    inclusion: "conditional"
+    inclusion_condition: "ginned route only"
+    role: "material treatment by separation; primary conditioning by drying/cleaning; preservation stabilization to moisture-safe lint; saw/roller alternative technology delta; batch or continuous production"
+    quantitative_reference: "1000 kg accepted lint"
+process_inventory:
+  - id: cotton_cultivation
+    label: "Managed cotton cultivation"
+    inputs:
+      product:
+        - row_id: cotton_seed
+          role: "Cotton planting seed"
+          name: "Cotton planting seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured seed mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha crop cycle"
+                basis: "planting seed per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg, m3, kg N, kg P2O5 and kg K2O"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measure each supplied product once and calculate nutrient content"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg product/ha crop cycle"
+                basis: "solid nutrient products per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop protection and defoliation products"
+          name: "Crop protection and defoliation products"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured formulation and active substance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha treated in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg or L/ha crop cycle"
+                basis: "formulated products per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "metered or calculated delivered water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha irrigated in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12000"
+                unit: "m3/ha crop cycle"
+                basis: "delivered irrigation water"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy supply"
+          name: "Field energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured carrier consumption"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/ha crop cycle"
+                basis: "field carrier energy"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Agricultural land occupation"
+          name: "arable"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "b88d3b6d-229e-477e-bce1-e16376f75c7b"
+          binding: "fixed"
+          property_unit: "Area*time / ha*a"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "area multiplied by occupation duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_trace
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "ha*a/ha crop cycle"
+                basis: "occupation duration"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: standing_seed_cotton
+          role: "Harvestable seed cotton internal transfer"
+          name: "Harvestable seed cotton"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "harvest output plus measured field loss"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/ha crop cycle"
+                basis: "harvestable seed cotton"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_n2o
+          role: "Direct nitrous oxide to air"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg N2O"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "IPCC calculation from collected N activity"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg N2O/ha crop cycle"
+                basis: "direct N2O"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ammonia_air
+          role: "Ammonia to air"
+          name: "ammonia"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg NH3"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured or modelled NH3"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg NH3/ha crop cycle"
+                basis: "NH3 per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_water
+          role: "Nitrate to receiving water"
+          name: "Nitrate to receiving water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate or kg nitrate-N"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured or modelled by compartment and basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg nitrate/ha crop cycle"
+                basis: "nitrate per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: cotton_harvest
+    label: "Harvest, grading and farm hand-off"
+    inputs:
+      product:
+        - row_id: harvestable_seed_cotton_input
+          role: "Harvestable seed cotton internal input"
+          name: "Harvestable seed cotton"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "linked transfer from cultivation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1500"
+                unit: "kg/1000 kg accepted seed cotton"
+                basis: "harvest input balance"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest energy supply"
+          name: "Harvest energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured carrier use"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1000 kg accepted seed cotton"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/1000 kg seed cotton"
+                basis: "harvest energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_seed_cotton
+          role: "Accepted seed cotton"
+          name: "Seed cotton at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "weighed accepted output"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "1000 kg accepted seed cotton"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "unginned reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        []
+  - id: cotton_ginning
+    label: "Ginning and lint hand-off"
+    inputs:
+      product:
+        - row_id: gin_seed_cotton
+          role: "Seed cotton internal input"
+          name: "Seed cotton"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive raw seed cotton from the linked harvest lot; preserve moisture, grade and contamination before primary conditioning and separation."
+          amount:
+            expression: "weighed gin intake"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1000 kg accepted lint"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1500"
+                upper: "4000"
+                unit: "kg seed cotton/1000 kg lint"
+                basis: "gin intake"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: gin_energy
+          role: "Gin energy supply"
+          name: "Gin energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "metered carrier use"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1000 kg accepted lint"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/1000 kg lint"
+                basis: "gin energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: ginned_lint
+          role: "Intended ginned cotton lint output"
+          name: "Ginned cotton lint"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record cleaned, moisture-stabilized and graded lint as the intended output at bale/gin-gate hand-off; off-grade lint is downgraded or rejected and is not counted as accepted lint."
+          amount:
+            expression: "weighed accepted lint"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "1000 kg accepted lint"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_batch
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "ginned reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: cottonseed_coproduct
+          role: "Intended cottonseed co-product output"
+          name: "Cottonseed co-product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record separated cottonseed as an intended co-product at its sale, crushing, feed, planting or other declared hand-off; rejected seed is routed separately."
+          amount:
+            expression: "weighed separated cottonseed by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1000 kg accepted lint"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2500"
+                unit: "kg/1000 kg lint"
+                basis: "cottonseed output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: gin_trash
+          role: "Gin trash and rejected material"
+          name: "Gin trash and rejected cotton"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "weighed or balanced exit by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1000 kg accepted lint"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/1000 kg lint"
+                basis: "gin trash"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: gin_particulate
+          role: "Gin particulate matter to air"
+          name: "Particulate matter to air, size fraction declared"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow with the stated material state, route and destination."
+          amount:
+            expression: "measured or calculated after control"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1000 kg accepted lint"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_gin_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg/1000 kg lint"
+                basis: "controlled particulate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_field
+    applies_to: "cultivation"
+    rule: "Attribute to linked seed cotton; residues left in field receive no product allocation."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_gin
+    applies_to: "lint and cottonseed"
+    rule: "Prefer subdivision; otherwise declared economic allocation with mass sensitivity."
+    source_ids:
+      - iso-14044
+      - mass-balance-identity
+  - rule_id: allocation_reject
+    applies_to: "rework/rejects"
+    rule: "Return rework once; route rejects by destination and exclude from accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_runs
+    applies_to: "gin runs"
+    rule: "Assign startup, cleaning and changeover once by meter or throughput-time driver."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_trace
+      process_id: "cotton_cultivation"
+      flow_role: "land and identity"
+      record_type: "field log"
+      raw_fields: "field, area, dates, cultivar"
+      collection_method: "records and maps"
+      unit: "ha"
+      frequency: "field-cycle"
+      temporal_coverage: "complete cycle"
+      site_scope: "all fields"
+      aggregation_rule: "preserve strata"
+      quality_evidence: "maps and logs"
+    - protocol_id: cp_field_inputs
+      process_id: "cotton_cultivation"
+      flow_role: "inputs"
+      record_type: "invoice/application log"
+      raw_fields: "identity, amount, analysis, date"
+      collection_method: "reconcile purchase and use"
+      unit: "native"
+      frequency: "event"
+      temporal_coverage: "complete cycle"
+      site_scope: "all fields"
+      aggregation_rule: "sum once"
+      quality_evidence: "invoices and logs"
+    - protocol_id: cp_irrigation
+      process_id: "cotton_cultivation"
+      flow_role: "water"
+      record_type: "meter"
+      raw_fields: "volume, source, field"
+      collection_method: "meter or balance"
+      unit: "m3"
+      frequency: "event"
+      temporal_coverage: "complete cycle"
+      site_scope: "irrigated fields"
+      aggregation_rule: "sum delivered"
+      quality_evidence: "calibration"
+    - protocol_id: cp_energy
+      process_id: "cultivation_harvest"
+      flow_role: "energy"
+      record_type: "meter/fuel log"
+      raw_fields: "carrier, quantity, equipment"
+      collection_method: "reconcile meters and invoices"
+      unit: "MJ; kWh"
+      frequency: "operation"
+      temporal_coverage: "full route"
+      site_scope: "all equipment"
+      aggregation_rule: "by node"
+      quality_evidence: "invoices and meters"
+    - protocol_id: cp_field_emissions
+      process_id: "cotton_cultivation"
+      flow_role: "emissions"
+      record_type: "calculation"
+      raw_fields: "N, factors, compartments"
+      collection_method: "disclosed IPCC tier"
+      unit: "kg/ha"
+      frequency: "field-cycle"
+      temporal_coverage: "complete cycle"
+      site_scope: "all fields"
+      aggregation_rule: "field then aggregate"
+      quality_evidence: "factor provenance"
+    - protocol_id: cp_mass_balance
+      process_id: "cultivation_harvest"
+      flow_role: "biomass"
+      record_type: "lot mass"
+      raw_fields: "intake, accepted, reject, loss, moisture"
+      collection_method: "calibrated scales"
+      unit: "kg"
+      frequency: "lot"
+      temporal_coverage: "all lots"
+      site_scope: "all included fields and harvest lots"
+      aggregation_rule: "close per lot"
+      quality_evidence: "calibration"
+    - protocol_id: cp_gin_batch
+      process_id: "cotton_ginning"
+      flow_role: "batch flows"
+      record_type: "batch log"
+      raw_fields: "intake, lint, seed, trash, energy, grade, controls"
+      collection_method: "scales and meters"
+      unit: "kg; MJ; kWh"
+      frequency: "batch"
+      temporal_coverage: "all batches"
+      site_scope: "all included gin lines"
+      aggregation_rule: "close per batch"
+      quality_evidence: "calibration and bale records"
+  calculation_rules:
+    - id: calc_moisture
+      applies_to: "biomass"
+      rule: "dry mass = wet mass × (1 − moisture fraction)"
+      inputs:
+        - "wet mass"
+        - moisture
+      output: "dry mass"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_emissions
+      applies_to: "soil"
+      rule: "apply declared IPCC tier once to collected N activity"
+      inputs:
+        - "N activity"
+        - factors
+      output: "direct emissions"
+      source_ids:
+        - ipcc-2019-refinement
+    - id: calc_normalization
+      applies_to: "nodes"
+      rule: "normalize after route mass balance closes"
+      inputs:
+        - totals
+        - "accepted output"
+      output: "per 1000 kg"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_gin_balance
+      applies_to: "gin"
+      rule: "intake = lint + seed + trash + moisture change + loss"
+      inputs:
+        - "batch masses"
+      output: "balance"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "product"
+      requirement: "Route, gate, cultivar, moisture and grade present."
+      evidence: "lot/bale record"
+    - id: dq_completeness
+      applies_to: "all"
+      requirement: "One complete crop cycle and all linked batches; missingness quantified."
+      evidence: "reconciliation"
+    - id: dq_calibration
+      applies_to: "quantities"
+      requirement: "Current calibration or uncertainty assessment."
+      evidence: "certificates"
+    - id: dq_strata
+      applies_to: "routes"
+      requirement: "Alternative routes remain separate until transparent weighting."
+      evidence: "stratum ledger"
+validation_rules:
+  - rule_id: validate_route
+    applies_to: "reference"
+    rule: "Exactly one route and gate declared."
+    source_ids: []
+  - rule_id: validate_reference_identity
+    applies_to: "reference"
+    rule: "Before activation bind exact Product UUID, property and unit group."
+    source_ids: []
+  - rule_id: validate_nutrients
+    applies_to: "cultivation"
+    rule: "Exactly one set-only nutrient card and no group."
+    source_ids: []
+  - rule_id: validate_balance
+    applies_to: "harvest/gin"
+    rule: "Close mass balance within declared uncertainty."
+    source_ids: []
+  - rule_id: validate_states
+    applies_to: "outputs"
+    rule: "Every accepted, downgraded, reworked and discarded state has one destination."
+    source_ids: []
+  - rule_id: validate_runs
+    applies_to: "gin"
+    rule: "Startup, cleaning and changeover are assigned once."
+    source_ids: []
+  - rule_id: validate_route_deltas
+    applies_to: "alternative routes"
+    rule: "Name the parent activity, evidence each changed inventory/calculation/validation category, and select one mutually exclusive route per stratum."
+    source_ids: []
+  - rule_id: validate_conditioning_states
+    applies_to: "ginning"
+    rule: "Record raw seed-cotton intake, any drying/moisture-conditioning inputs, prepared moisture-safe lint, cottonseed, trash, dust, rejects, loss and each hand-off."
+    source_ids: []
+  - rule_id: validate_single_period
+    applies_to: "all routes"
+    rule: "Confirm one linked accounting interval and require single-period records; no storage, replacement or termination."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground cotton production dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "studies matching route, geography, grade and technology"
+  excluded_use: "yarn, fabric or oil without downstream processes; substitution between seed cotton and lint"
+  required_metadata: "route, gate, crop year, cultivar, irrigation, harvest, moisture, grade, gin technology, allocation and destinations"
+  required_quality_disclosure: "coverage, calibration, route weights, balance, emission tier, allocation sensitivity and unresolved identities"
+  update_trigger: "changed agronomy, technology, yield, grade, markets, allocation, emission method or identity"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-cotton-guide"
+    type: "official_guidance"
+    reference: "FAO cotton production and crop-water guidance"
+    used_for: "cultivation, irrigation and harvest"
+  - id: "usda-cotton-ginning"
+    type: "official_guidance"
+    reference: "USDA Cotton Ginners Handbook"
+    used_for: "ginning boundary and records"
+  - id: "ipcc-2019-refinement"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4"
+    used_for: "field emissions"
+  - id: "iso-14044"
+    type: "standard"
+    reference: "ISO 14044:2006"
+    used_for: "allocation"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "conservation of mass with moisture adjustment"
+    used_for: "balances and normalization"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:28970aa49dd7abef8e3207ef33bc6a81f2e5d4201644e3cf3bc599d3c758479d"
+  generated_content_sha256: "sha256:0b3981def2f60cb1429c24e42fce0eaf8868b370341936e4f6c586abe2cc24c5"

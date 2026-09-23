@@ -1,10 +1,846 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01330"
-  title: "Grapes"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.grapes"
+  classification_refs: "CPC 3.0 01330, exact"
+  covered_products: "Fresh grapes from managed vineyards, including table, wine, juice, raisin, and other cultivars when route and product state are declared"
+  excluded_products: "Wine, juice, dried grapes, concentrate, grape seed products, retail services, and unmanaged collection"
+  representative_product: "Fresh whole grapes at farm gate"
+  production_route: "Perennial vineyard establishment or replanting, managed cultivation, harvest, and conditional farm-gate conditioning"
+  market_state: "Fresh whole grapes at farm gate, un-packed or packed as declared"
+functional_unit:
+  what: "Fresh whole grapes handed over at the farm gate in the declared product state"
+  how_much: "1 kg of saleable fresh grapes"
+  how_well: "Cultivar or route, product state, quality or grade, moisture or maturity specification when measured, and declared use route"
+  how_long_or_cycle: "One reported vineyard crop cycle; perennial establishment and replanting are annualized over the declared productive life"
+  reference_flow_link: "fresh_grapes_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: boundary_grape_farm_gate
+      applies_to: "all processes"
+      rule: "Include managed vineyard production through the declared fresh-grape farm-gate hand-off; exclude downstream processing and distribution unless extended explicitly."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_perennial_annualization
+      applies_to: "establishment and replanting"
+      rule: "Annualize establishment, trellis, and replanting burdens over the declared productive life and disclose the basis."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_background_inputs
+      applies_to: "purchased inputs"
+      rule: "Include upstream supply through delivery while keeping foreground application and use records at the vineyard boundary."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "Established vineyard soil and perennial vine stock at the start of the crop cycle, with replanting included when within the declared annualization period"
+  starting_condition_role: "Foreground agricultural production; purchased planting material, nutrients, pesticides, fuel, electricity, packaging, and water are upstream inputs unless directly collected"
+  product_classification_scope: "CPC 3.0 01330 grapes; route and market state shall be declared"
+  recursive_input_rule: "Record same-category grape inputs as identified internal transfers and do not recursively substitute the reference output"
+  upstream_dataset_requirement: "Use documented background datasets for purchased inputs and disclose geography, technology, and temporal coverage"
+  disclosure: "Disclose area, vine age or establishment year, cultivar or route, irrigation, crop year, yield, saleability, product state, and conditional packing"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Fresh whole grapes at farm gate"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or product route"
+    - "fresh or packed state"
+    - "grade or saleability criterion"
+    - "farm-gate location"
+    - "crop year"
+    - "yield basis"
+reference_flows:
+  []
+measurement_rules:
+  - id: measurement_reference_mass
+    applies_to: "reference product and mass rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report saleable output and mass inventory on a consistent fresh basis; disclose moisture or dry-matter conversion."
+  - id: measurement_yield_basis
+    applies_to: "cultivation and harvest"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg fresh grapes/ha and kg/crop cycle"
+    rule: "Record harvested, saleable, cull, and retained-use quantities before normalizing to the reference flow."
+  - id: measurement_nutrient_basis
+    applies_to: "fertilizer and soil amendment total"
+    required_property_ref:
+      name: "Nutrient or product mass"
+      uuid: ""
+    required_unit: "kg product and kg N, P2O5, or K2O"
+    rule: "Record actual product and nutrient analysis; do not infer nutrient quantity from a generic name."
+  - id: measurement_water_basis
+    applies_to: "irrigation and conditioning water"
+    required_property_ref:
+      name: "Volume or mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Distinguish metered or calculated applied irrigation from rainfall."
+process_map:
+  - id: vineyard_establishment_replanting
+    name: "Vineyard establishment and replanting"
+    inclusion: "conditional"
+    inclusion_condition: "Include establishment, vine replacement, trellis installation, or removal during the annualization period."
+    role: "Establish or renew the perennial production asset."
+    quantitative_reference: "per productive hectare and crop cycle"
+  - id: vineyard_cultivation_harvest
+    name: "Vineyard cultivation and harvest"
+    inclusion: "required"
+    inclusion_condition: "Always included."
+    role: "Manage vines and soil, apply inputs, harvest grapes, and quantify outputs and losses."
+    quantitative_reference: "per saleable kg"
+  - id: farm_gate_sorting_packing
+    name: "Farm-gate sorting and packing"
+    inclusion: "conditional"
+    inclusion_condition: "Include when sorting, cooling, packing, or on-farm storage is part of the declared hand-off."
+    role: "Condition and hand over the declared market state."
+    quantitative_reference: "per packed or un-packed kg"
+process_inventory:
+  - id: vineyard_establishment_replanting
+    label: "Vineyard establishment and replanting"
+    inputs:
+      product:
+        - row_id: vine_planting_material_input
+          role: "Grapevine planting material"
+          name: "Grapevine planting material"
+          flow_type: "product"
+          property_unit: "Mass or item count / kg or item"
+          description: "Record purchased or internally propagated vines, grafted plants, or replacement stock crossing the establishment boundary."
+          amount:
+            expression: "record actual stock quantity and document any count-to-mass conversion"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare and annualized to the reported crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_vineyard_establishment_records
+              source_ids: []
+            ranges: []
+        - row_id: establishment_fuel_input
+          role: "Establishment machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Mass or energy carrier / kg or MJ"
+          description: "Record fuel for soil preparation, planting, trellis work, and vine removal."
+          amount:
+            expression: "measured fuel or contractor records allocated to establishment"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare and annualized to the reported crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_vineyard_establishment_records
+              source_ids: []
+            ranges: []
+        - row_id: establishment_irrigation_input
+          role: "Irrigation water for establishment"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water applied to newly established or replanted vines."
+          amount:
+            expression: "meter, irrigation schedule, or documented water balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare and annualized to the reported crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_vineyard_establishment_records
+              source_ids:
+                - fao-56-crop-evapotranspiration
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: establishment_land_occupation
+          role: "Land occupation by vineyard establishment"
+          name: "Land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2 year"
+          description: "Record occupied area and duration for establishment or replanting and any change from the prior land state."
+          amount:
+            expression: "area multiplied by occupation duration and annualized to the crop cycle"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare and annualized to the reported crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_vineyard_establishment_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: removed_vine_material_waste
+          role: "Removed vine and trellis material"
+          name: "Non-hazardous agricultural waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record removed vines, old trellis components, and residues by destination."
+          amount:
+            expression: "weigh or reconcile removed material by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare and annualized to the reported crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_vineyard_establishment_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: vineyard_cultivation_harvest
+    label: "Vineyard cultivation and harvest"
+    inputs:
+      product:
+        - row_id: vineyard_cultivation_harvest_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_input_records
+              source_ids:
+                - ipcc-2019-refinement-vol4
+            ranges: []
+        - row_id: crop_irrigation_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record applied irrigation by vineyard block and crop cycle; rainfed blocks report zero with supporting evidence."
+          amount:
+            expression: "metered or calculated volume by block and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_input_records
+              source_ids:
+                - fao-56-crop-evapotranspiration
+            ranges: []
+        - row_id: field_machinery_fuel_input
+          role: "Nutrient and harvest machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Mass or energy carrier / kg or MJ"
+          description: "Record fuel for tillage, mowing, spraying, pruning, harvest, and in-field transport."
+          amount:
+            expression: "measured fuel or contractor activity converted with a documented carrier basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_input_records
+              source_ids: []
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products"
+          name: "Crop-protection product"
+          flow_type: "product"
+          property_unit: "Product mass or volume / kg or L"
+          description: "Record fungicides, insecticides, herbicides, biological controls, and adjuvants by actual product, active ingredient where available, dose, and event."
+          amount:
+            expression: "sum actual applications by block and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_input_records
+              source_ids:
+                - fao-pesticide-management-code-2014
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: crop_land_occupation
+          role: "Vineyard land occupation"
+          name: "Land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2 year"
+          description: "Record productive vineyard area and occupation duration for the crop cycle."
+          amount:
+            expression: "cultivated area multiplied by crop-cycle occupation duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_input_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+    outputs:
+      product:
+        - row_id: harvested_grapes_to_conditioning
+          role: "Harvested fresh grapes to conditioning"
+          name: "Fresh harvested grapes for farm-gate conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record harvested mass transferred to conditioning, or directly to farm-gate hand-off when conditioning is not included."
+          amount:
+            expression: "weigh lots and reconcile to saleable output, culls, and retained or lost material"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and converted to 1 kg saleable fresh grapes"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_yield_records
+              source_ids: []
+            ranges: []
+        - row_id: fresh_grapes_farm_gate_output
+          role: "Fresh whole grapes at farm gate"
+          name: "Fresh whole grapes at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use when grapes leave the vineyard as un-packed farm-gate product; otherwise transfer harvested quantity to conditioning."
+          amount:
+            expression: "saleable fresh grape mass at the declared hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and converted to 1 kg saleable fresh grapes"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_and_yield_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: harvest_residue_culls
+          role: "Vineyard harvest residues and culls"
+          name: "Non-hazardous agricultural waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Reconcile bunches, berries, stems, and other harvested material not sold as the declared product by destination."
+          amount:
+            expression: "total harvested mass less saleable product and declared retained-use destinations"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and converted to 1 kg saleable fresh grapes"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_and_yield_records
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: soil_n2o_air_output
+          role: "Nitrous oxide to ambient air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and applicable indirect soil nitrous oxide from documented nitrogen, residue, soil, and drainage data."
+          amount:
+            expression: "apply the declared method and factors to collected activity data"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_records
+              source_ids:
+                - ipcc-2019-refinement-vol4
+            ranges: []
+        - row_id: soil_ammonia_air_output
+          role: "Ammonia to ambient air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate ammonia volatilization using the nutrient product, application method, weather, and applicable factor method."
+          amount:
+            expression: "calculate from documented nitrogen applications and the declared method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_records
+              source_ids:
+                - ipcc-2019-refinement-vol4
+            ranges: []
+        - row_id: soil_nitrate_water_output
+          role: "Nitrate to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Record nitrate leaching or runoff only when a monitored balance, applicable model, or reviewed method supports it."
+          amount:
+            expression: "calculate from nitrogen inputs, soil, drainage, and the declared method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1 kg saleable fresh grapes"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_records
+              source_ids:
+                - ipcc-2019-refinement-vol4
+            ranges: []
+  - id: farm_gate_sorting_packing
+    label: "Farm-gate sorting and packing"
+    inputs:
+      product:
+        - row_id: conditioning_grape_input
+          role: "Harvested grapes received"
+          name: "Fresh harvested grapes for farm-gate conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the measured lot entering on-farm sorting, cooling, packing, or short storage."
+          amount:
+            expression: "weigh inbound lots at the conditioning hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: packaging_material_input
+          role: "Packaging materials"
+          name: "Packaging function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "carton-and-box-packaging"
+          property_unit: "Mass / kg packaging"
+          description: "Record cartons, trays, films, crates, pallets, and other packaging actually used, with reusable returns separate."
+          amount:
+            expression: "count or weigh packaging consumed per packed lot less documented reusable returns"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_water_input
+          role: "Conditioning water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used for cleaning or product-contact surfaces inside the declared conditioning boundary."
+          amount:
+            expression: "meter or cleaning log for the campaign"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_electricity_input
+          role: "Electricity for sorting and cooling"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by sorting, cooling, weighing, and packing equipment."
+          amount:
+            expression: "sub-meter, equipment log, or documented allocation from site electricity records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: packed_grapes_farm_gate_output
+          role: "Packed fresh grapes at farm gate"
+          name: "Fresh whole grapes at farm gate, packed state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record saleable packed grapes leaving the conditioning operation. This row is not applicable when the declared hand-off is un-packed."
+          amount:
+            expression: "weigh saleable packed lots at the declared hand-off"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: conditioning_culls_waste
+          role: "Conditioning culls and damaged grapes"
+          name: "Non-hazardous agricultural waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record grapes removed during sorting or packing and identify each destination."
+          amount:
+            expression: "inbound grape mass less packed output and other declared destinations"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_waste_output
+          role: "Used packaging and cleaning waste"
+          name: "Non-hazardous waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record one-way packaging losses and non-hazardous cleaning waste by material and destination."
+          amount:
+            expression: "weigh or reconcile waste by material and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per campaign and converted to 1 kg packed farm-gate grapes"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_grape_outputs
+    applies_to: "harvested grapes, saleable grapes, culls, and retained-use residues"
+    rule: "Reconcile all harvested mass to saleable product, co-products, retained use, and waste. Use physical mass allocation only when functions and quality are comparable; otherwise document a justified method."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_perennial_asset
+    applies_to: "establishment, trellis, and replanting"
+    rule: "Allocate annualized perennial-asset burdens using declared productive life and area, and disclose simultaneous crop or land uses."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_packing_losses
+    applies_to: "conditional sorting and packing"
+    rule: "Attribute conditioning inputs to packed product, culls, and other outputs using measured mass reconciliation unless a reviewed alternative is justified."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_vineyard_establishment_records
+      process_id: "vineyard_establishment_replanting"
+      flow_role: "planting stock, fuel, irrigation, land, removed material"
+      record_type: "nursery invoices, maps, fuel and irrigation logs"
+      raw_fields: "area, cultivar, vine count, date, fuel, water, material, destination"
+      collection_method: "collect farm and contractor records; reconcile to block area"
+      unit: "kg, item, m3, L, m2 year"
+      frequency: "each event"
+      temporal_coverage: "establishment period annualized to crop cycle"
+      site_scope: "vineyard block"
+      aggregation_rule: "sum by block and annualize by productive life"
+      quality_evidence: "invoices, maps, meters, receipts"
+    - protocol_id: cp_field_input_records
+      process_id: "vineyard_cultivation_harvest"
+      flow_role: "fertilizer, irrigation, fuel, crop protection, land"
+      record_type: "invoices, application logs, meters, maps"
+      raw_fields: "product, formulation, nutrient analysis, dose, date, area, water, fuel, active ingredient"
+      collection_method: "collect each application and convert only with documented factors"
+      unit: "kg, kg nutrient, m3, L, m2 year"
+      frequency: "each application and crop cycle"
+      temporal_coverage: "one crop year"
+      site_scope: "vineyard block and farm"
+      aggregation_rule: "sum by block and crop cycle"
+      quality_evidence: "invoices, labels, meters, applications"
+    - protocol_id: cp_field_emission_records
+      process_id: "vineyard_cultivation_harvest"
+      flow_role: "soil emissions"
+      record_type: "nitrogen ledger, residue, soil and drainage records"
+      raw_fields: "nutrient, residue, soil, weather, drainage, factor method"
+      collection_method: "calculate after checking method applicability"
+      unit: "kg N2O, kg NH3, kg nitrate"
+      frequency: "each crop cycle"
+      temporal_coverage: "one crop year"
+      site_scope: "block or declared model region"
+      aggregation_rule: "apply method consistently"
+      quality_evidence: "factor source and worksheet"
+    - protocol_id: cp_harvest_and_yield_records
+      process_id: "vineyard_cultivation_harvest"
+      flow_role: "harvested grapes, output, culls"
+      record_type: "harvest tickets and weigh records"
+      raw_fields: "harvested, saleable, grade, culls, destination, date"
+      collection_method: "weigh lots and reconcile all destinations"
+      unit: "kg"
+      frequency: "each lot and crop cycle"
+      temporal_coverage: "one harvest season"
+      site_scope: "block, lot, and farm"
+      aggregation_rule: "sum lots and report yield"
+      quality_evidence: "calibrated scale and tickets"
+    - protocol_id: cp_conditioning_records
+      process_id: "farm_gate_sorting_packing"
+      flow_role: "inbound grapes, packaging, water, electricity, output, waste"
+      record_type: "packing, utility, inventory, and waste records"
+      raw_fields: "inbound, package, count, water, kWh, output, culls, waste"
+      collection_method: "collect campaign records and reconcile mass balance"
+      unit: "kg, item, m3, kWh"
+      frequency: "each campaign or lot"
+      temporal_coverage: "packing season"
+      site_scope: "conditioning site"
+      aggregation_rule: "sum campaigns by packed output"
+      quality_evidence: "scale, invoices, utilities, receipts"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all rows"
+      rule: "normalized amount = reported amount / saleable fresh grape output; retain original amount and basis"
+      inputs:
+        - "flow amount"
+        - "saleable output"
+        - conversion
+      output: "amount per kg reference flow"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_perennial_annualization
+      applies_to: "establishment"
+      rule: "annualized burden = event burden × crop-cycle share of declared productive life"
+      inputs:
+        - "event amount"
+        - life
+        - duration
+        - area
+      output: "crop-cycle burden"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_nutrient_basis
+      applies_to: "fertilizer total"
+      rule: "nutrient amount = sum(product mass × declared nutrient fraction) by nutrient and event"
+      inputs:
+        - "product mass and nutrient fraction"
+      output: "kg product and kg N, P2O5, or K2O"
+      source_ids:
+        - ipcc-2019-refinement-vol4
+    - id: calc_mass_balance
+      applies_to: "harvest and conditioning"
+      rule: "inbound or harvested mass = saleable output + co-products or retained use + waste and losses"
+      inputs:
+        - "weigh and destination records"
+      output: "reconciled amounts"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_soil_emissions
+      applies_to: "soil emissions"
+      rule: "apply the selected geographic factor or model to recorded nutrient, residue, soil, and drainage inputs"
+      inputs:
+        - "activity ledger and method"
+      output: "emission amounts"
+      source_ids:
+        - ipcc-2019-refinement-vol4
+  data_quality_requirements:
+    - id: quality_identity_route
+      applies_to: "all datasets"
+      requirement: "State route, product state, grade, location, crop year, and saleability rule."
+      evidence: "farm specification and metadata"
+    - id: quality_mass_reconciliation
+      applies_to: "harvest and conditioning"
+      requirement: "Reconcile product, culls, retained use, and waste and investigate residuals."
+      evidence: "scales, tickets, packing logs"
+    - id: quality_input_completeness
+      applies_to: "cultivation and establishment"
+      requirement: "Cover material nutrient, protection, water, fuel, electricity, planting-stock, and area records."
+      evidence: "invoices, logs, meters, maps"
+    - id: quality_temporal_geography
+      applies_to: "all processes"
+      requirement: "Report crop year, block or region, technology, irrigation, and exceptional events."
+      evidence: "farm records and questionnaire"
+    - id: quality_method_disclosure
+      applies_to: "emissions and annualization"
+      requirement: "Disclose factors, life assumptions, allocation, missing data, and substitutions."
+      evidence: "calculation worksheet and sources"
+validation_rules:
+  - rule_id: validation_reference_qualifiers
+    applies_to: "reference flow"
+    rule: "Reject a dataset missing route, product state, location, crop year, or saleability criterion."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_yield_mass_balance
+    applies_to: "harvest and conditioning"
+    rule: "Check harvested or inbound mass against outputs and losses within documented tolerance."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_nutrient_traceability
+    applies_to: "fertilizer"
+    rule: "Trace every nutrient total to an actual product and declared nutrient basis."
+    source_ids:
+      - ipcc-2019-refinement-vol4
+  - rule_id: validation_period_annualization
+    applies_to: "perennial establishment"
+    rule: "Check a declared productive life and prevent repeated counting in every crop cycle."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_conditional_packing
+    applies_to: "conditioning"
+    rule: "Include packing only when the declared hand-off includes it; otherwise cultivation supplies the reference output."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_emission_method
+    applies_to: "soil emissions"
+    rule: "Identify factor or model, input basis, geography, and temporal applicability."
+    source_ids:
+      - ipcc-2019-refinement-vol4
+published_dataset_profile:
+  dataset_role: "secondary_dataset for fresh grape production; background_dataset use is allowed when representativeness is disclosed"
+  downstream_use: "Foreground agricultural inventories and food or beverage product systems"
+  allowed_use: "Modelling declared fresh grape routes within the stated boundary and product state"
+  excluded_use: "Direct substitution for wine, juice, dried grape, concentrate, retail, consumer use, or undisclosed routes"
+  required_metadata: "route, cultivar, farm-gate state, geography, crop year, vine age, yield, irrigation, packing, allocation, and reference product qualifiers"
+  required_quality_disclosure: "input completeness, mass balance, factors, productive-life assumptions, missing data, and QA findings"
+  update_trigger: "change in route, nutrient or protection method, irrigation, packing boundary, classification, or reviewed method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, https://www.iso.org/standard/38498.html"
+    used_for: "boundary, annualization, allocation, reconciliation, and validation"
+  - id: "fao-56-crop-evapotranspiration"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, https://www.fao.org/4/X0490E/X0490E00.htm"
+    used_for: "irrigation collection and water balance"
+  - id: "ipcc-2019-refinement-vol4"
+    type: "method_factor"
+    reference: "2019 IPCC Refinement, Volume 4, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "soil emission calculations and nutrient basis"
+  - id: "fao-pesticide-management-code-2014"
+    type: "official_guidance"
+    reference: "FAO/WHO International Code of Conduct on Pesticide Management, https://www.fao.org/3/i3604e/i3604e.pdf"
+    used_for: "crop-protection traceability"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:19d1c77ac080f8c7f473036716bd9925c37cda73810aed4b2eab3d5628afe33e"
+  generated_content_sha256: "sha256:1b3dec5ee15c067ec61702e7a0feae397ed3319b549fef207195967c85ef7e6b"

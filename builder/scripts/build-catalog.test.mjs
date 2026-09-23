@@ -107,8 +107,9 @@ test("catalog generator emits a self-consistent material index and complete CPC 
   assert.equal(wheatSeed.legacy_reference, null);
 
   const wheatOther = coverage.entries.find((entry) => entry.code === "01112");
-  assert.equal(wheatOther.coverage_status, "unmapped");
-  assert.equal(wheatOther.mapping, null);
+  assert.equal(wheatOther.coverage_status, "mapped");
+  assert.equal(wheatOther.mapping.mapping_type, "exact");
+  assert.equal(wheatOther.mapping.acceptance.status, "accepted");
   assert.equal(wheatOther.legacy_reference, null);
 });
 

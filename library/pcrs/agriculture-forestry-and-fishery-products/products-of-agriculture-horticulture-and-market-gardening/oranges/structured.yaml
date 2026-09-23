@@ -1,10 +1,721 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01323"
-  title: "Oranges"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.oranges"
+  classification_refs: "CPC 3.0:01323"
+  covered_products: "Fresh whole oranges from managed citrus orchard production"
+  excluded_products: "Juice, concentrate, essential oil, dried or preserved oranges, retail or consumer-ready products, and post-farm-gate transport"
+  representative_product: "Fresh whole oranges accepted at the declared farm gate"
+  production_route: "Perennial citrus orchard establishment, cultivation, harvest, and optional farm-gate sorting or packing"
+  market_state: "Fresh, whole, accepted farm-gate oranges with declared maturity and grade"
+functional_unit:
+  what: "Fresh whole oranges accepted at farm gate"
+  how_much: "1 kg accepted oranges"
+  how_well: "Actual cultivar or variety where known, rootstock or orchard route, maturity, grade, moisture condition, and accepted farm-gate quality"
+  how_long_or_cycle: "One declared production year or crop cycle; orchard establishment and productive life are disclosed"
+  reference_flow_link: "reference_flow_oranges_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: boundary_start_condition
+      applies_to: "all processes"
+      rule: "Start at the declared orchard-establishment or production-year condition and include foreground inputs, resource use, emissions, harvest, and accepted farm-gate orange output; exclude retail, consumer use, and downstream processing."
+      source_ids:
+        - fao-good-agricultural-practices
+        - codex-fresh-fruits-vegetables-cxc-53
+    - rule_id: boundary_perennial_disclosure
+      applies_to: "establishment and cultivation"
+      rule: "Declare orchard age, productive life, replacement or replanting, and whether establishment is included; do not combine annual and perennial time bases without an allocation calculation."
+      source_ids:
+        - fao-good-agricultural-practices
+    - rule_id: boundary_recursive_input
+      applies_to: "planting material"
+      rule: "Record the actual crossing point of purchased or transferred planting material; disclose self-propagation and parent-stock allocation when the material is produced within the foreground system."
+      source_ids:
+        - fao-good-agricultural-practices
+boundary_abstraction:
+  declared_starting_condition: "Managed orchard land or the declared establishment event enters the production system; when establishment is excluded, the existing orchard is declared as the starting condition"
+  starting_condition_role: "Foreground perennial agricultural production start with orchard age, land history, and establishment allocation disclosed"
+  product_classification_scope: "CPC 3.0:01323 fresh whole oranges"
+  recursive_input_rule: "Record purchased or transferred same-category planting material only when it crosses the foreground boundary; self-propagated material requires origin and allocation disclosure rather than recursive substitution"
+  upstream_dataset_requirement: "Use upstream datasets for nursery material, fertilizer, soil amendments, crop protection, energy, packaging, and contracted services when they are not foreground operations"
+  disclosure: "Declare cultivar or variety, route, orchard age, establishment inclusion, productive life, crop-cycle or orchard-year basis, accepted yield, farm-gate condition, and rejected-fruit destination"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Fresh whole oranges at farm gate"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "orange cultivar or variety"
+    - "rootstock where known"
+    - region
+    - "orchard age and production route"
+    - "production-year or crop-cycle basis"
+    - "maturity and grade"
+    - "accepted yield"
+    - "farm-gate condition"
+    - "rejects and co-products"
+    - "post-harvest destination"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product and product-output normalization"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Normalize the inventory to 1 kg of accepted whole oranges at the declared farm gate."
+  - id: perennial_time_basis
+    applies_to: "orchard establishment and productive cultivation"
+    required_property_ref:
+      name: "Area-time and accepted output"
+      uuid: ""
+    required_unit: "ha year; kg"
+    rule: "Disclose productive life and allocate establishment, replacement, and non-bearing inputs over the declared productive period and accepted yield."
+  - id: nutrient_product_and_basis
+    applies_to: "fertilizer and soil-amendment input"
+    required_property_ref:
+      name: "Product mass and nutrient basis"
+      uuid: ""
+    required_unit: "kg product; kg N, P2O5, or K2O"
+    rule: "Record each actual product and its applied product mass; retain the product analysis and calculate nutrient mass without replacing product mass."
+  - id: water_measurement_basis
+    applies_to: "irrigation and source withdrawal"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Prefer meter or delivery records, distinguish irrigation applied from source withdrawal, and disclose the water-balance method when direct measurement is unavailable."
+process_map:
+  - id: p01323_orchard_establishment
+    name: "Citrus orchard establishment and renewal"
+    inclusion: "conditional"
+    inclusion_condition: "Include when planting, grafting, site preparation, replacement, or establishment inputs contribute to the declared production period."
+    role: "establishment and perennial time-basis node"
+    quantitative_reference: "per established area allocated to accepted orchard-year output"
+  - id: p01323_orchard_cultivation
+    name: "Orange orchard cultivation"
+    inclusion: "required"
+    inclusion_condition: "Include field and orchard management during the declared production year or crop cycle."
+    role: "managed biological production node"
+    quantitative_reference: "per orchard-year and 1 kg accepted oranges"
+  - id: p01323_harvest_farm_gate
+    name: "Orange harvest and farm-gate handling"
+    inclusion: "required"
+    inclusion_condition: "Include harvest, on-farm sorting or washing, temporary protection, and optional farm-gate packing when present."
+    role: "harvest and delivery node"
+    quantitative_reference: "per harvested and accepted orange mass"
+process_inventory:
+  - id: p01323_orchard_establishment
+    label: "Citrus orchard establishment and renewal"
+    inputs:
+      product:
+        - row_id: orange_planting_material_input
+          role: "Planting or grafting material supplied"
+          name: "Orange planting or grafting material for orchard establishment"
+          flow_type: "product"
+          property_unit: "Mass or item count / kg or item"
+          description: "Record nursery trees, rootstocks, grafts, or other planting material crossing into orchard establishment. Declare whether the material is purchased, transferred, or self-propagated and retain the count-to-mass or item-basis conversion used."
+          amount:
+            expression: "measured number and type of plants by block and establishment year; calculate mass only when required by the selected dataset representation"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per established area allocated to 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_01323_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: p01323_orchard_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per established area allocated to 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_01323_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+      waste:
+        - row_id: orange_establishment_residue
+          role: "Establishment and renewal residues to declared destination"
+          name: "Citrus establishment biomass residue to declared destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg as received or kg dry matter"
+          description: "Record removed vegetation, failed plants, rootstock residues, and renewal biomass leaving the establishment process. Retained mulch or compost must be identified as an internal destination rather than counted as exported waste."
+          amount:
+            expression: "measured or calculated residue mass by block and event"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per established area allocated to 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+      elementary:
+        - row_id: orange_establishment_land_occupation
+          role: "Orchard land occupation during establishment"
+          name: "Land occupation for citrus orchard production"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a or ha year"
+          description: "Record the area and duration occupied while the orchard is established, including non-bearing years when they are part of the declared system boundary."
+          amount:
+            expression: "orchard area multiplied by disclosed occupation duration and allocated over accepted orange output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per established area allocated to 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+    outputs:
+      product:
+        - row_id: orange_established_orchard_capacity
+          role: "Established orchard capacity transferred to cultivation"
+          name: "Established citrus orchard production capacity"
+          flow_type: "product"
+          property_unit: "Area or production capacity / ha or orchard-year"
+          description: "Record this internal hand-off only when establishment is modelled as a separate process. It is not saleable orange product and must not be counted as a second product output."
+          amount:
+            expression: "documented establishment completion and productive-period allocation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "linked to declared orchard-year accepted orange output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: p01323_orchard_cultivation
+    label: "Orange orchard cultivation"
+    inputs:
+      product:
+        - row_id: p01323_orchard_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+        - row_id: orange_irrigation_water_input
+          role: "Irrigation water applied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation delivered to the orchard and distinguish it from source withdrawal and rainfall. State the measurement or water-balance method."
+          amount:
+            expression: "meter, delivery record, or documented water balance for the orchard block"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: orange_cultivation_energy_input
+          role: "Mobile machinery fuel and field energy"
+          name: "Mobile agricultural machinery fuel or energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or fuel mass / MJ or kg"
+          description: "Record fuel or mobile machinery energy used for orchard operations, including mowing, spraying, pruning, and field transport when crossing the foreground boundary."
+          amount:
+            expression: "fuel issue records, machine-hour records with documented fuel factor, or contractor invoice allocation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: orange_crop_protection_input
+          role: "Crop-protection formulation applied"
+          name: "Orange orchard crop-protection formulation"
+          flow_type: "product"
+          property_unit: "Product mass / kg product"
+          description: "Record the actual formulated crop-protection products applied, including product name, active ingredient, rate, treated area, and application event."
+          amount:
+            expression: "product invoice, spray log, or contractor record reconciled to treated area"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+      waste:
+        - row_id: orange_pruning_residue
+          role: "Pruning and orchard residues to declared destination"
+          name: "Citrus orchard residue to declared destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg as received or kg dry matter"
+          description: "Record prunings, removed branches, and other orchard residues leaving the foreground system. State whether they are mulched, burned, composted, treated, or removed."
+          amount:
+            expression: "weighed residue, volume-to-mass conversion, or documented fraction of pruning records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+      elementary:
+        - row_id: orange_cultivation_land_occupation
+          role: "Orchard land occupation during productive year"
+          name: "Land occupation for citrus orchard production"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a or ha year"
+          description: "Record occupied orchard area and the productive-year duration used for normalization."
+          amount:
+            expression: "mapped orchard area multiplied by productive-year duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: orange_soil_n2o_emission
+          role: "Direct nitrous oxide emissions from managed orchard soil"
+          name: "Nitrous oxide emission to air from managed orchard soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O or kg N2O-N"
+          description: "Record direct managed-soil emissions calculated from applied nitrogen and the declared emission method; retain the applied nutrient basis separately."
+          amount:
+            expression: "calculate from collected nitrogen input and the declared emissions method, or use site measurement"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+        - row_id: orange_nitrogen_water_emission
+          role: "Nitrogen runoff or leaching from orchard soil"
+          name: "Reported nitrogen emission from managed orchard soil to the declared receiving compartment"
+          flow_type: "elementary"
+          property_unit: "Mass of reported nitrogen species / kg substance or kg N"
+          description: "Record reported nitrate or other nitrogen losses to the receiving water or soil compartment when the data package calculates them from a nutrient and water balance."
+          amount:
+            expression: "site measurement or method calculation from collected nutrient and water-balance records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and 1 kg accepted oranges"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_01323_cultivation_records
+              source_ids:
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+  - id: p01323_harvest_farm_gate
+    label: "Orange harvest and farm-gate handling"
+    inputs:
+      product:
+        - row_id: orange_harvest_energy_input
+          role: "Harvest energy and field transport service"
+          name: "Harvest energy supply or mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or fuel mass / MJ or kg"
+          description: "Record harvest machinery fuel, electricity, or contracted harvest energy crossing the foreground boundary. Separate post-farm-gate transport from this card."
+          amount:
+            expression: "harvest log, fuel issue record, machine-hour factor, or contractor allocation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested and accepted orange mass"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_harvest_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges: []
+        - row_id: orange_packaging_input
+          role: "Farm-gate packaging function"
+          name: "Farm-gate packaging function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass or packaging unit / kg or item"
+          description: "Record crates, cartons, pallets, or other packaging only when it crosses the declared farm-gate handling boundary. State reuse, return, and loss assumptions."
+          amount:
+            expression: "packaging issue records divided by accepted orange output, with reuse cycles documented"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per harvested and accepted orange mass"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_harvest_records
+              source_ids:
+                - codex-fresh-fruits-vegetables-cxc-53
+            ranges: []
+        - row_id: orange_farm_gate_product
+          role: "Accepted fresh oranges at farm gate"
+          name: "Fresh whole oranges at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted whole-orange output that meets the declared farm-gate maturity, grade, and quality qualifiers. This is the sole reference product output."
+          amount:
+            expression: "weigh accepted output after harvest and any included farm-gate handling"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted oranges at farm gate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_01323_harvest_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - codex-fresh-fruits-vegetables-cxc-53
+            ranges: []
+      waste:
+        - row_id: orange_harvest_rejects
+          role: "Harvest rejects and fruit losses to declared destination"
+          name: "Rejected or lost oranges to declared destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record oranges rejected during harvest, sorting, washing, or farm-gate inspection and identify whether they are sold into another product route, fed, composted, treated, or discarded."
+          amount:
+            expression: "weigh rejects or calculate from harvested, accepted, and destination quantities"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested and accepted orange mass"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_harvest_records
+              source_ids:
+                - codex-fresh-fruits-vegetables-cxc-53
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: orange_farm_gate_emissions
+          role: "Farm-gate handling emissions"
+          name: "Farm-gate handling emission to the declared receiving compartment"
+          flow_type: "elementary"
+          property_unit: "Mass of reported substance / kg substance"
+          description: "Record direct emissions from optional washing, handling, or on-farm combustion only when those activities are inside the declared boundary; retain the receiving medium and pollutant identity."
+          amount:
+            expression: "site measurement or method calculation from the handling activity record"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested and accepted orange mass"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_01323_harvest_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_accepted_output
+    applies_to: "orchard cultivation and harvest"
+    rule: "Normalize all inputs and emissions to accepted orange output. Report harvested but rejected fruit separately and do not silently include it in the reference product."
+    source_ids:
+      - codex-fresh-fruits-vegetables-cxc-53
+  - rule_id: allocation_establishment_over_life
+    applies_to: "orchard establishment and renewal"
+    rule: "Allocate establishment and renewal burdens over the disclosed productive life and accepted yield; disclose the allocation period and replacement events."
+    source_ids:
+      - fao-good-agricultural-practices
+  - rule_id: allocation_co_products
+    applies_to: "rejected fruit and secondary routes"
+    rule: "If rejected fruit or another co-product has a separately documented market route, apply a documented physical or economic allocation rule and report the chosen basis; otherwise assign the declared destination treatment without claiming a second reference product."
+    source_ids:
+      - fao-good-agricultural-practices
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_01323_establishment_records
+      process_id: "p01323_orchard_establishment"
+      flow_role: "planting, nutrients, residues, land, orchard capacity"
+      record_type: "nursery records, planting logs, block maps, renewal records"
+      raw_fields: "block; cultivar; rootstock; plant count; product; product mass; nutrient analysis; area; year; residue destination"
+      collection_method: "reconcile invoices, field logs, maps, and measured or documented conversions"
+      unit: "kg, item, kg nutrient, ha year"
+      frequency: "each establishment or renewal event"
+      temporal_coverage: "full establishment and disclosed allocation period"
+      site_scope: "orchard block"
+      aggregation_rule: "aggregate by block and allocate over productive life and accepted output"
+      quality_evidence: "signed logs, invoices, maps, product analyses"
+    - protocol_id: cp_01323_cultivation_records
+      process_id: "p01323_orchard_cultivation"
+      flow_role: "nutrients, irrigation, fuel, crop protection, residues, emissions"
+      record_type: "input invoices, spray logs, meter records, machine records, soil or water balance"
+      raw_fields: "block; date; product; quantity; nutrient basis; irrigation volume; fuel; machine hours; treated area; residue mass; emission method"
+      collection_method: "monthly or event-level reconciliation to block area and orchard-year output"
+      unit: "kg product, kg nutrient, m3, MJ, kg residue"
+      frequency: "each event, aggregated monthly"
+      temporal_coverage: "one production year or declared crop cycle"
+      site_scope: "orchard block and site"
+      aggregation_rule: "sum events, preserve product and nutrient bases, normalize to accepted output"
+      quality_evidence: "meter checks, invoices, spray records, factor documentation, mass balance"
+    - protocol_id: cp_01323_harvest_records
+      process_id: "p01323_harvest_farm_gate"
+      flow_role: "harvest energy, packaging, rejects, emissions, accepted product"
+      record_type: "harvest tickets, weighbridge records, packing records, destination records"
+      raw_fields: "date; block; harvested mass; accepted mass; reject mass; destination; fuel or energy; package type; package mass; reuse cycles"
+      collection_method: "reconcile harvest and destination masses to farm-gate product totals"
+      unit: "kg, MJ, kg packaging, item"
+      frequency: "each harvest lot"
+      temporal_coverage: "full harvest season and declared farm-gate period"
+      site_scope: "orchard and handling point"
+      aggregation_rule: "aggregate lots and preserve separate accepted, rejected, and co-product routes"
+      quality_evidence: "calibrated scales, lot tickets, package issue records, destination receipts"
+  calculation_rules:
+    - id: calc_accepted_output_normalization
+      applies_to: "all quantitative rows"
+      rule: "Divide the annual or crop-cycle inventory amount by accepted whole-orange mass at farm gate and report per 1 kg accepted output."
+      inputs:
+        - "accepted mass"
+        - "row amount"
+      output: "normalized row value"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_establishment_allocation
+      applies_to: "establishment rows"
+      rule: "Allocate establishment and renewal amount by declared productive-life years and accepted yield, preserving the disclosed allocation period."
+      inputs:
+        - "establishment amount"
+        - "productive life"
+        - "accepted yield"
+      output: "allocated orchard-year amount"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_nutrient_basis
+      applies_to: "nutrient input rows"
+      rule: "Retain product mass and calculate nutrient mass from product analysis and applied product quantity; do not replace the product input with nutrient mass."
+      inputs:
+        - "product quantity"
+        - "product analysis"
+      output: "product mass and nutrient mass"
+      source_ids:
+        - ipcc-2019-refinement-agriculture
+    - id: calc_reject_mass_balance
+      applies_to: "harvest rejects and product output"
+      rule: "Check harvested mass against accepted output, rejects, co-products, and recorded stock change; explain any evidence gap difference."
+      inputs:
+        - harvested
+        - accepted
+        - reject
+        - co-product
+        - "stock change"
+      output: "reconciled mass balance"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "product, route, and inputs"
+      requirement: "Identify cultivar or variety where known, orchard route, farm-gate condition, input products, and reject destinations."
+      evidence: "product description, invoices, lot records"
+    - id: quality_measurement
+      applies_to: "mass, water, energy, and area-time rows"
+      requirement: "Use calibrated scales or meters where available; document conversions, factors, and uncertainty when direct measurement is unavailable."
+      evidence: "calibration record, meter log, factor note"
+    - id: quality_temporal
+      applies_to: "all processes"
+      requirement: "Cover the complete declared production year or crop cycle and disclose missing events, exceptional weather, replanting, or off-season operations."
+      evidence: "annual production log and gap note"
+    - id: quality_completeness
+      applies_to: "inventory and emissions"
+      requirement: "Reconcile purchased inputs, field records, harvest mass, accepted product, rejects, co-products, and destinations before normalization."
+      evidence: "input reconciliation and mass balance"
+    - id: quality_disclosure
+      applies_to: "dataset metadata"
+      requirement: "State the starting condition, orchard age, productive-life allocation, region, yield basis, farm-gate boundary, and identity evidence gaps."
+      evidence: "dataset metadata and process notes"
+validation_rules:
+  - rule_id: validation_reference_qualifiers
+    applies_to: "reference flow"
+    rule: "Reject a data package that omits cultivar or variety where known, route, orchard age or production-year basis, maturity, grade, farm-gate condition, accepted yield, or reject destination."
+    source_ids:
+      - codex-fresh-fruits-vegetables-cxc-53
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and farm-gate handling"
+    rule: "Check harvested mass against accepted product, rejects, co-products, stock change, and documented measurement uncertainty; investigate unexplained imbalance."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_nutrient_and_water_basis
+    applies_to: "cultivation"
+    rule: "Confirm fertilizer product mass versus nutrient mass, irrigation applied versus source withdrawal, and the associated measurement or calculation method."
+    source_ids:
+      - ipcc-2019-refinement-agriculture
+      - fao-good-agricultural-practices
+  - rule_id: validation_perennial_allocation
+    applies_to: "establishment and cultivation"
+    rule: "Confirm productive-life allocation and prevent double counting of establishment, renewal, or orchard capacity across production years."
+    source_ids:
+      - fao-good-agricultural-practices
+  - rule_id: validation_identity_evidence
+    applies_to: "reference and unmapped flows"
+    rule: "Preserve identity evidence gaps as explicit foreground-resolution requirements; do not substitute a nearby citrus or product flow merely to populate a UUID."
+    source_ids:
+      - tidas-flow-identity-policy
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset when the completed package passes its stated quality checks"
+  downstream_use: "Foreground orange-orchard process datasets, farm-gate orange supply-chain models, and lifecycle models using fresh whole oranges as an input"
+  allowed_use: "Regional or site-specific modelling when cultivar, route, time basis, yield, farm-gate condition, allocation, and data quality disclosure are retained"
+  excluded_use: "Juice, concentrate, oil, dried fruit, retail distribution, consumer use, and routes whose product identity or boundary is not disclosed"
+  required_metadata: "cultivar or variety; rootstock where known; region; orchard age; establishment inclusion; productive life; production-year or crop-cycle basis; accepted yield; maturity; grade; farm-gate condition; reject destinationss"
+  required_quality_disclosure: "temporal coverage, site scope, measurement and conversion method, nutrient and water basis, mass-balance result, allocation rule, and missing-data treatment"
+  update_trigger: "new orchard route, cultivar or market state; revised productive-life or yield evidence; changed Flow Set taxonomy; resolved reference identity; or material change in boundary or allocation method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-good-agricultural-practices"
+    type: "official_guidance"
+    reference: "FAO good agricultural practices guidance"
+    used_for: "orchard management, records, and farm-gate production data"
+  - id: "codex-fresh-fruits-vegetables-cxc-53"
+    type: "official_guidance"
+    reference: "Codex guidance for fresh fruits and vegetables"
+    used_for: "product quality, handling, and farm-gate quality descriptors"
+  - id: "ipcc-2019-refinement-agriculture"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4 agriculture methods"
+    used_for: "managed-soil and nutrient-related emission calculations"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "conservation-of-mass method identity"
+    used_for: "harvest, reject, co-product, and accepted-output reconciliation"
+  - id: "tidas-flow-identity-policy"
+    type: "official_guidance"
+    reference: "repository flow-identity policy"
+    used_for: "semantic preservation and explicit coverage finding"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:3376271376259399e4ad60af71afa5ecc9cf171d6d1f1e4c97536a83e9e3c558"
+  generated_content_sha256: "sha256:133f7278f367f8fb5c26d9ddfe6143bf4df36f76f9a9a5beeb2f50d93bba001c"

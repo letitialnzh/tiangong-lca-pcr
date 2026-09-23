@@ -1,10 +1,1016 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01194"
-  title: "Quinoa"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.quinoa"
+  classification_refs: "CPC 3.0: 01194 Quinoa"
+  covered_products: "harvested quinoa grain for food, feed, or further processing at the farm gate"
+  excluded_products: "certified seed; leaves or forage; popped, cooked, dehulled, milled, flaked, or packaged products; off-farm services"
+  representative_product: "unprocessed harvested quinoa grain"
+  production_route: "managed quinoa cultivation, harvest, and conditional on-farm grain conditioning"
+  market_state: "unprocessed grain at farm gate with declared moisture, impurity, and intended-use state"
+functional_unit:
+  what: "quinoa grain at the farm gate"
+  how_much: "1,000 kg as-received grain"
+  how_well: "harvested, unprocessed grain with declared moisture, foreign matter, damage, and intended use"
+  how_long_or_cycle: "one declared quinoa crop cycle"
+  reference_flow_link: "terminal grain output from quinoa_field_production when no conditioning is included, otherwise from quinoa_grain_conditioning"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include field preparation, sowing, crop management, harvest, and on-farm cleaning or drying performed before the declared farm-gate hand-off."
+      source_ids:
+        - fao-quinoa-cultivation-guide
+        - iso-14044-2006
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil and crop inputs"
+      rule: "Include direct and indirect nitrogen-related emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - emep-eea-2023-guidebook
+    - rule_id: boundary_residue_fate
+      applies_to: "quinoa residues"
+      rule: "Distinguish residues returned to soil, burned, removed as a useful product, and removed as waste; do not count exported residue nitrogen as soil residue nitrogen."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_post_farm_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, storage, dehulling, milling, food or feed manufacture, packaging, and use unless the study explicitly extends beyond this PCR."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "prepared agricultural field at the start of the quinoa crop cycle, with seed and purchased management inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed quinoa grain production"
+  product_classification_scope: "cultivated quinoa grain corresponding to CPC 3.0 code 01194"
+  recursive_input_rule: "purchased or retained quinoa seed for sowing is an explicit seed input linked to a distinct upstream seed-supply dataset and must not loop to this harvested-grain process"
+  upstream_dataset_requirement: "compatible upstream datasets for seed, fertilizers, soil amendments, crop-protection products, fuels, electricity, irrigation supply, and contracted services"
+  disclosure: "cultivar, geography, field area, sowing and harvest dates, preceding crop, tillage, irrigation, inputs, yield, moisture, residue fate, conditioning, and allocation context"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Quinoa, production mix, at farm gate, harvested grain, unprocessed"
+    uuid: "21dd21b4-e6ec-43c2-b2c8-c18f47567236"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - cultivar
+    - "production geography"
+    - "harvest year"
+    - "rainfed or irrigated status"
+    - "harvest date"
+    - "moisture at hand-off"
+    - "foreign-matter basis"
+    - "intended use"
+    - "conditioning included or excluded"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "reference quinoa grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report as-received grain mass and measured moisture; retain the moisture basis for every dry-matter conversion."
+  - id: area_to_reference_conversion
+    applies_to: "area-based field flows"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Divide crop-cycle totals per hectare by marketable grain yield from the same fields and crop cycle before scaling to 1,000 kg grain."
+  - id: nutrient_content_basis
+    applies_to: "nutrient applications"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Preserve formulated product mass and declared nutrient-content basis as separate fields. Do not infer nutrient mass from product name alone."
+  - id: water_and_energy_units
+    applies_to: "irrigation and energy"
+    required_property_ref:
+      name: "volume, mass, or energy"
+      uuid: ""
+    required_unit: "m3, kg, MJ, or kWh"
+    rule: "Record metered irrigation and energy in native units, document conversions, and retain pumping or carrier assumptions."
+process_map:
+  - id: quinoa_field_production
+    name: "Quinoa field production and harvest"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production and harvest"
+    quantitative_reference: "cultivated hectare and harvested grain mass for one crop cycle"
+  - id: quinoa_grain_conditioning
+    name: "On-farm quinoa grain conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "drying, cleaning, sorting, or temporary handling occurs before farm-gate hand-off and is not embedded in field records"
+    role: "prepare harvested grain for the declared farm-gate state"
+    quantitative_reference: "incoming and accepted grain mass"
+process_inventory:
+  - id: quinoa_field_production
+    label: "Quinoa field production and harvest"
+    inputs:
+      product:
+        - row_id: quinoa_seed_input
+          role: "Quinoa seed for sowing"
+          name: "Quinoa seed for sowing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained quinoa seed crossing into the crop cycle. The harvested-grain reference flow must never be substituted for seed identity."
+          amount:
+            expression: "measured seed mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted with same-cycle marketable yield"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids:
+                - fao-quinoa-cultivation-guide
+            ranges:
+              - role: typical_range
+                lower: "4"
+                upper: "15"
+                unit: "kg seed/ha"
+                basis: "drilled or comparable establishment; document justified rates outside the range"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: quinoa_field_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "kg N/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "120"
+                unit: "kg P2O5/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "kg K2O/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered to the field separately from precipitation; use zero only when the field is documented as rainfed."
+          amount:
+            expression: "metered volume or verified pump-flow calculation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "7000"
+                unit: "m3/ha"
+                basis: "one crop cycle, including rainfed production at zero"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_mobile_fuel_input
+          role: "Mobile machinery fuel supplied"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or mass / MJ or kg"
+          description: "Record diesel or another machinery fuel consumed by field operations; do not include fuel embedded in upstream input datasets."
+          amount:
+            expression: "measured fuel use by operation or verified contractor allocation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "L/ha"
+                basis: "field operations for one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_electricity_input
+          role: "Electricity for irrigation or field equipment"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record purchased electricity only for field equipment or irrigation pumping inside the foreground boundary."
+          amount:
+            expression: "meter reading or pump energy calculation allocated to the quinoa field"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "900"
+                unit: "kWh/ha"
+                basis: "field equipment and irrigation pumping where applicable"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products supplied"
+          name: "Crop-protection formulation by product and active ingredient"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record each herbicide, insecticide, fungicide, or other crop-protection formulation with its active ingredient and application event. The formulation identity requires foreground binding before publication."
+          amount:
+            expression: "measured formulation mass by product and event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_input_identity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15"
+                unit: "kg product/ha"
+                basis: "one crop cycle; zero is valid when no product is applied"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: soil_amendment_input
+          role: "Soil amendment supplied"
+          name: "Soil amendment by material identity"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record lime, gypsum, compost, or another amendment only when it crosses the declared field boundary and identify its composition and application event."
+          amount:
+            expression: "measured amendment mass by material and field"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2500"
+                unit: "kg product/ha"
+                basis: "one crop cycle; document material composition"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation_input
+          role: "Land occupation by quinoa cultivation"
+          name: "Land occupation by agricultural cultivation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record the field area and occupation duration for the crop cycle as an elementary resource input."
+          amount:
+            expression: "cultivated area multiplied by occupation duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges: []
+        - row_id: irrigation_withdrawal_input
+          role: "Irrigation water withdrawn from the environment"
+          name: "Water resource withdrawal for irrigation"
+          flow_type: "elementary"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record direct water withdrawal when the foreground operator pumps from a natural source. Do not duplicate water already represented by an upstream irrigation-supply dataset."
+          amount:
+            expression: "metered withdrawal or verified source-flow calculation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_field_activity_records
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        - row_id: harvested_quinoa_grain_output
+          role: "Harvested quinoa grain sent to conditioning"
+          name: "Quinoa, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "21dd21b4-e6ec-43c2-b2c8-c18f47567236"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record harvested, marketable grain leaving the field process. This is an internal product transfer when conditioning is included and the terminal reference output when it is not."
+          amount:
+            expression: "measured harvested grain mass at declared moisture and foreign-matter basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field-process output scaled to 1,000 kg reference grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "250"
+                upper: "5000"
+                unit: "kg grain/ha"
+                basis: "harvested marketable grain for one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: removed_quinoa_residue_output
+          role: "Removed quinoa straw or residue for declared use"
+          name: "Quinoa crop residue for declared use"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record above-ground residue removed from the field only when it is measured and intentionally transferred to a declared use. Residue left or incorporated in the field is recorded through residue fate and emissions calculations rather than as a product co-output."
+          amount:
+            expression: "measured removed residue mass by destination and moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "6000"
+                unit: "kg dry matter/1,000 kg grain"
+                basis: "zero when residues remain in the field; destination and moisture must be declared"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_harvest_loss_output
+          role: "Field harvest loss and non-marketable grain"
+          name: "Non-marketable quinoa grain and harvest loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record measured grain left in the field or rejected before conditioning only when it is relevant to the mass balance. Describe whether it remains on the field, is fed, composted, or treated as waste."
+          amount:
+            expression: "measured or calculated difference between harvested grain and marketable grain, by fate"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg/1,000 kg harvested grain"
+                basis: "loss or non-marketable grain by documented fate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: nitrous_oxide_emission
+          role: "Nitrous oxide emitted to air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Include direct and indirect soil N2O associated with nitrogen inputs, residue fate, and applicable drainage or leaching pathways."
+          amount:
+            expression: "calculated with the selected geographically applicable soil-emission method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_emission_activity
+              source_ids: []
+            ranges: []
+        - row_id: ammonia_emission
+          role: "Ammonia emitted to air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Include ammonia volatilization from fertilizer and organic nutrient applications using application method and local factors."
+          amount:
+            expression: "calculated from nitrogen source, application method, and applicable volatilization factor"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_emission_activity
+              source_ids: []
+            ranges: []
+        - row_id: nitrogen_oxides_emission
+          role: "Nitrogen oxides emitted to air"
+          name: "Nitrogen oxides emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NOx"
+          description: "Include nitrogen oxides from field fuel combustion and nitrogen-related agricultural emissions when the selected method requires them."
+          amount:
+            expression: "calculate from fuel activity and applicable agricultural emission method without double counting background fuel datasets"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_emission_activity
+              source_ids: []
+            ranges: []
+        - row_id: nitrate_water_emission
+          role: "Nitrate released to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Include nitrate leaching or runoff from managed fields when supported by drainage, soil, and nutrient records."
+          amount:
+            expression: "calculate nitrogen leaching or runoff with the selected geographically applicable method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_emission_activity
+              source_ids: []
+            ranges: []
+        - row_id: phosphate_water_emission
+          role: "Phosphate released to water"
+          name: "Phosphate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg phosphate"
+          description: "Include phosphate runoff or erosion-related release when soil, slope, and nutrient data support a site or regional method."
+          amount:
+            expression: "calculate runoff or erosion loss with the selected method and disclose whether the result is modelled or measured"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_emission_activity
+              source_ids: []
+            ranges: []
+  - id: quinoa_grain_conditioning
+    label: "On-farm quinoa grain conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_grain_input
+          role: "Harvested grain entering conditioning"
+          name: "Quinoa, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "21dd21b4-e6ec-43c2-b2c8-c18f47567236"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record grain received from field production when cleaning or drying is inside the farm-gate boundary."
+          amount:
+            expression: "measured incoming batch mass at recorded moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_electricity_input
+          role: "Electricity for grain conditioning"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by fans, cleaners, conveyors, and other conditioning equipment inside the boundary."
+          amount:
+            expression: "meter reading allocated to matched quinoa conditioning batches"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "kWh/1,000 kg grain"
+                basis: "included cleaning, conveying, and fan operation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_heat_input
+          role: "Thermal energy supplied to drying"
+          name: "Process heat for grain drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "purchased-process-heat"
+          property_unit: "Energy / MJ"
+          description: "Record supplied heat or fuel energy used to reduce grain moisture before hand-off."
+          amount:
+            expression: "measured fuel or delivered heat converted to energy while retaining carrier identity"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1400"
+                unit: "MJ/1,000 kg grain"
+                basis: "zero when no active drying occurs; broad candidate estimate pending batch records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water_input
+          role: "Conditioning water supplied"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record water used for dust suppression or cleaning only when it crosses the conditioning process boundary."
+          amount:
+            expression: "metered water use matched to conditioning batches"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_quinoa_grain_output
+          role: "Conditioned quinoa grain at farm gate"
+          name: "Quinoa, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "21dd21b4-e6ec-43c2-b2c8-c18f47567236"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record accepted grain after included cleaning or drying at the declared moisture and foreign-matter state."
+          amount:
+            expression: "measured accepted grain mass at declared hand-off moisture and impurity basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "8"
+                upper: "14"
+                unit: "percent moisture, wet basis"
+                basis: "market state must be declared; values outside the screen require product specification evidence"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: useful_screenings_output
+          role: "Useful quinoa screenings for declared use"
+          name: "Quinoa screenings for declared use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record screenings or downgraded grain as a product only when they are measured and intentionally transferred to a declared use."
+          amount:
+            expression: "measured useful screenings by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "120"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "zero when no useful screenings are handed off"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_reject_waste_output
+          role: "Foreign matter and rejected grain"
+          name: "Quinoa-conditioning foreign matter and rejected grain"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record stones, soil, weed material, contaminated grain, dust, and other rejects by material identity and destination."
+          amount:
+            expression: "measured reject mass by material class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quinoa_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "conditioning batch; separate useful screenings from waste"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_by_subdivision
+    applies_to: "field production and conditioning"
+    rule: "Prefer separate records for field production, conditioning, grain, useful screenings, removed residue, and waste before applying allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_retained_residue
+    applies_to: "residues returned or incorporated in the field"
+    rule: "Do not treat retained residues as co-products; include their management and associated emissions in field production and prevent double counting with removed residue."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_removed_residue
+    applies_to: "marketable removed residue"
+    rule: "If shared field burdens cannot be subdivided, apply economic allocation using contemporaneous declared farm-gate values and disclose moisture bases; test mass allocation as a sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_conditioning_outputs
+    applies_to: "useful screenings and rejected grain"
+    rule: "Treat an intentionally transferred output with positive value as a co-product and other rejects as waste; use economic allocation at conditioning hand-off only when subdivision is infeasible."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_quinoa_field_activity_records
+      process_id: "quinoa_field_production"
+      flow_role: "seed, nutrients, water, fuel, electricity, amendments, crop protection"
+      record_type: "field log, invoice, application record, meter, or contractor record"
+      raw_fields: "field_id; area; cultivar; input_product; amount; nutrient_content; date; operation; irrigation; contractor_scope"
+      collection_method: "reconcile physical inputs and operations to each field and crop cycle"
+      unit: "kg; kg nutrient; L; m3; kWh; ha"
+      frequency: "each event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum by physical identity; calculate nutrient contents without merging products; normalize using same-cycle area and yield"
+      quality_evidence: "invoices; labels; calibrated meters; field logs"
+    - protocol_id: cp_quinoa_input_identity_records
+      process_id: "quinoa_field_production"
+      flow_role: "seed, crop protection, amendments"
+      record_type: "seed certificate, product label, invoice, supplier record"
+      raw_fields: "product_name; active_ingredient; formulation; lot; supplier; amount; application_date; field_id"
+      collection_method: "retain product identity and match each input to its application record"
+      unit: "kg; percent; date"
+      frequency: "each input event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented suppliers and fields"
+      aggregation_rule: "do not merge formulations with different identities or active ingredients"
+      quality_evidence: "labels; certificates; supplier documents"
+    - protocol_id: cp_quinoa_harvest_output_records
+      process_id: "quinoa_field_production"
+      flow_role: "grain, residue, harvest loss, residue fate"
+      record_type: "weighbridge, yield monitor, moisture test, bale record, field inspection"
+      raw_fields: "field_id; harvest_date; grain_mass; grain_moisture; residue_mass; residue_moisture; fate; destination"
+      collection_method: "reconcile harvested and removed masses to field area and crop cycle"
+      unit: "kg; percent; ha"
+      frequency: "each harvest"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum accepted grain and each residue or loss destination separately"
+      quality_evidence: "scale or yield-monitor calibration; moisture records; destination evidence"
+    - protocol_id: cp_quinoa_emission_activity
+      process_id: "quinoa_field_production"
+      flow_role: "soil and crop emissions"
+      record_type: "nutrient, soil, weather, residue, drainage, and emission-model records"
+      raw_fields: "fertilizer_N; organic_N; residue_N; application_method; soil; climate; drainage; factor_set; model_version"
+      collection_method: "calculate each pathway with one declared geographically applicable method"
+      unit: "kg N; kg emission; ha"
+      frequency: "each event and crop-cycle calculation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "calculate per field, area-weight, then normalize by same-cycle yield"
+      quality_evidence: "source records; factor provenance; model file; nutrient-balance review"
+    - protocol_id: cp_quinoa_conditioning_records
+      process_id: "quinoa_grain_conditioning"
+      flow_role: "incoming grain, energy, water, accepted grain, screenings, rejects"
+      record_type: "batch ticket, scale, moisture test, meter, fuel, and destination record"
+      raw_fields: "batch_id; incoming_mass; incoming_moisture; electricity; heat; water; accepted_mass; accepted_moisture; screenings; rejects"
+      collection_method: "reconcile batches and meters to accepted output"
+      unit: "kg; percent; kWh; MJ; m3"
+      frequency: "each batch or meter period"
+      temporal_coverage: "all pre-gate conditioning"
+      site_scope: "all included equipment and batches"
+      aggregation_rule: "sum matched batches; allocate shared meters by time or processed mass; close wet-mass balance"
+      quality_evidence: "calibrated scales and moisture meters; meter reconciliation"
+  calculation_rules:
+    - id: calc_area_to_reference_flow
+      applies_to: "field flows"
+      rule: "crop-cycle amount per hectare / marketable grain yield per hectare × 1,000 kg"
+      inputs:
+        - "flow amount"
+        - area
+        - "same-cycle grain mass"
+      output: "amount per 1,000 kg grain"
+      source_ids: []
+    - id: calc_nutrient_content
+      applies_to: "fertilizer and amendment inputs"
+      rule: "product mass × declared nutrient fraction; preserve elemental or oxide-equivalent basis"
+      inputs:
+        - "product identity"
+        - mass
+        - assay
+        - "reporting basis"
+      output: "kg N, kg P2O5, kg K2O by source"
+      source_ids: []
+    - id: calc_managed_soil_n2o
+      applies_to: "soil N2O"
+      rule: "apply the selected IPCC tier or regional method to fertilizer N, organic N, returned-residue N, volatilization, and leaching pathways"
+      inputs:
+        - "nitrogen activity"
+        - "residue fate"
+        - "soil and climate"
+        - factors
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_ammonia_volatilization
+      applies_to: "ammonia to air"
+      rule: "calculate by fertilizer type, application method, timing, and applicable factor"
+      inputs:
+        - "nitrogen product records"
+        - "application details"
+        - factors
+      output: "kg NH3"
+      source_ids:
+        - emep-eea-2023-guidebook
+    - id: calc_conditioning_mass_balance
+      applies_to: "grain conditioning"
+      rule: "incoming wet grain = accepted grain + useful screenings + rejects + moisture and other measured losses within uncertainty"
+      inputs:
+        - masses
+        - moisture
+        - "loss records"
+      output: "reconciled outputs per accepted grain"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_dry_matter_conversion
+      applies_to: "grain and residue"
+      rule: "as-received mass × (1 − measured moisture fraction) = dry-matter mass; retain both bases"
+      inputs:
+        - mass
+        - "moisture result"
+      output: "as-received and dry-matter values"
+      source_ids:
+        - fao-quinoa-cultivation-guide
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference product"
+      requirement: "Confirm quinoa rather than amaranth, buckwheat, or mixed grain; retain cultivar, intended use, market state, and hand-off."
+      evidence: "crop, lot, and sales records"
+    - id: dq_temporal_alignment
+      applies_to: "all foreground rows"
+      requirement: "Use input, harvest, yield, residue, emission, and conditioning records from the same crop cycle; disclose proxy years."
+      evidence: "dated field and batch records"
+    - id: dq_mass_and_moisture
+      applies_to: "grain and residue"
+      requirement: "Retain scale or yield-monitor calibration and moisture measurements for every basis conversion."
+      evidence: "calibration and moisture-test records"
+    - id: dq_input_identity
+      applies_to: "seed, crop protection, and amendments"
+      requirement: "Retain product labels, formulation or active ingredient, supplier, lot, and application event; resolve UUIDs before final process publication."
+      evidence: "labels; certificates; invoices; identity review"
+    - id: dq_completeness
+      applies_to: "process map and flows"
+      requirement: "Reconcile every represented field and conditioning batch and distinguish zero, not applicable, proxy, and missing values."
+      evidence: "field roster; batch reconciliation"
+    - id: dq_emission_method
+      applies_to: "elementary emissions"
+      requirement: "Disclose method tier, factors, soil and climate inputs, drainage assumptions, and whether values are measured or modelled."
+      evidence: "method version; factor provenance; model inputs"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "terminal output"
+    rule: "Exactly one terminal quinoa grain output equals 1,000 kg after scaling, uses the fixed reference UUID, and declares moisture and quality qualifiers."
+    source_ids: []
+  - rule_id: validation_process_route
+    applies_to: "process map"
+    rule: "Include field production once; include conditioning only before farm-gate hand-off and avoid double counting embedded energy, water, or rejects."
+    source_ids: []
+  - rule_id: validation_crop_cycle_reconciliation
+    applies_to: "field inventory"
+    rule: "Area, inputs, harvest outputs, residue fates, losses, and emissions refer to the same crop cycle and represented fields."
+    source_ids: []
+  - rule_id: validation_nitrogen_balance
+    applies_to: "nitrogen inventory"
+    rule: "Reconcile nutrient content, returned and removed residue nitrogen, and emission pathways with the selected methods and factors disclosed."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_conditioning_balance
+    applies_to: "conditioning"
+    rule: "Reconcile incoming wet grain with accepted grain, screenings, rejects, moisture loss, and other measured loss within uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_flow_identity
+    applies_to: "every flow"
+    rule: "Accept only exact verified UUIDs as fixed and applicable reviewed Flow Set groups as parameterized; otherwise retain unmapped coverage."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground quinoa grain production dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "farm-gate LCA of quinoa grain and downstream systems that preserve declared geography, moisture, residue, allocation, and conditioning context"
+  excluded_use: "certified seed, leaves or forage, popped or dehulled products, milling, food or feed manufacture, or another crop without a reviewed proxy decision"
+  required_metadata: "geography; cultivar; harvest year; field area; yield; moisture; intended use; tillage; irrigation; seed; nutrients; crop protection; residue fate; conditioning; allocation; identity resolution"
+  required_quality_disclosure: "foreground coverage; proxy inputs; missing records; range exceedances; emission methods; meter and mass-balance reconciliations"
+  update_trigger: "new reviewed quinoa evidence, material route change, revised emission method, changed Flow Set or UUID identity, or representative data outside QA ranges"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-quinoa-cultivation-guide"
+    type: "official_guidance"
+    reference: "FAO, Guía de cultivo de la quínoa, https://www.fao.org/family-farming/detail/en/c/411552/"
+    used_for: "quinoa crop stages, establishment, harvest, and post-harvest context"
+  - id: "feedipedia-quinoa"
+    type: "official_guidance"
+    reference: "FAO Feedipedia, Quinoa (Chenopodium quinoa), https://feedipedia.org/node/229"
+    used_for: "crop identity, seeding-rate context, harvest-loss and product-state context"
+  - id: "fao-56-crop-evapotranspiration"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, Crop evapotranspiration, https://www.fao.org/4/X0490E/X0490E00.htm"
+    used_for: "irrigation measurement and crop-water accounting context"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O, volatilization and leaching pathways, residue nitrogen, and double-counting controls"
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "European Environment Agency, EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023"
+    used_for: "agricultural ammonia and air-emission method context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "boundary, allocation hierarchy, and disclosure"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to matched grain-conditioning batches"
+    used_for: "conditioning mass-balance calculation and validation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:eed12878dc68f91cb922556edaf14f06289169fcdf193bd27ccf2a555f813e61"
+  generated_content_sha256: "sha256:12a656127723fa7d939d9af68deb5a95f580c30fb549d74277bc96637c94d7bc"

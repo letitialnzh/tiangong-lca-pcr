@@ -1,10 +1,1169 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01930"
-  title: "Plants and parts of plants used primarily in perfumery, in pharmacy, or for insecticidal, fungicidal or similar purposes"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.plants-and-parts-of-plants-used-primarily-in-perfumery-in-pharmacy-or-for-insecticidal-e225248a"
+  classification_refs: "CPC 3.0: 0 > 01 > 019 > 0193 > 01930"
+  covered_products: "Cultivated or wild-collected plants, leaves, flowers, fruits, seeds, bark, wood, stems, roots, rhizomes or other plant parts used primarily for the declared perfumery, pharmacy, insecticidal, fungicidal or similar purpose, fresh or primary-dried at producer or collection gate"
+  excluded_products: "essential oils, extracts, distillates, formulated medicines, fragrances or pesticides; crops primarily sold for food or beverages; mixtures without declared species, plant part, use, origin route and market state"
+  representative_product: "Accepted fresh or primary-dried material of one declared taxon and plant part at the declared moisture basis"
+  production_route: "Managed cultivation is the managed-biological-production parent; wild collection is an alternative production route adding source ecosystem, collection range, resource removal and sustainable-collection records. They are mutually exclusive for the same material quantity and converge at harvest, grading and primary conditioning. Fresh hand-off and primary drying are mutually exclusive technology strata under the conditioning parent."
+  market_state: "Fresh or primary-dried, unextracted plant material at producer or collection gate; state must be declared"
+functional_unit:
+  what: "Accepted specialty plant material meeting the declared taxon, plant-part, intended-use and quality specification"
+  how_much: "1,000 kg"
+  how_well: "Declared species or taxon, plant part, intended use, cultivated or wild-collected origin, fresh or primary-dried state, moisture basis, foreign matter and acceptance grade"
+  how_long_or_cycle: "One cultivated crop cycle or one wild-collection period and the linked conditioning batch or continuous operating interval"
+  reference_flow_link: "accepted_specialty_plant"
+system_boundary:
+  rules:
+    - rule_id: boundary_origin_route
+      applies_to: "all material"
+      rule: "Select exactly one of managed cultivation or wild collection for each material quantity. Cultivation includes current-cycle management inputs, land occupation and field emissions; wild collection includes source population, collection range, resource removal, collection inputs and residual state."
+      source_ids:
+        - who-gacp-medicinal-plants
+        - fairwild-standard
+    - rule_id: boundary_independent_harvest
+      applies_to: "harvest/capture hand-off"
+      rule: "Treat removal of the target plant part from the production site or wild source as an independent node responsibility because its output state, loss and hand-off records differ from growth or source management."
+      source_ids:
+        - who-gacp-medicinal-plants
+        - fairwild-standard
+    - rule_id: boundary_conditioning
+      applies_to: "primary conditioning"
+      rule: "Include post-harvest cleaning, grading, cutting and primary drying or stabilization needed for producer/collection hand-off. Fresh hand-off has no drying. There is no storage and attribution is single-period; exclude extraction, distillation, formulation and downstream manufacture."
+      source_ids:
+        - who-gacp-medicinal-plants
+        - who-quality-control-herbal-materials
+    - rule_id: boundary_route_delta
+      applies_to: "alternative routes and technologies"
+      rule: "Managed cultivation is the biological-production parent and wild collection is the alternative production route adding population/ecosystem, collection-range and resource-removal requirements. Conditioning is the parent activity; fresh hand-off and primary drying form an alternative technology route that changes energy, moisture-balance and emission requirements. Collect mutually exclusive strata separately before weighted aggregation."
+      source_ids:
+        - who-gacp-medicinal-plants
+        - fairwild-standard
+boundary_abstraction:
+  declared_starting_condition: "Cultivated route starts with the prepared production site before the current crop cycle; wild route starts with the declared population, ecosystem, collection range and collection period"
+  starting_condition_role: "foreground entry condition for mutually exclusive origin routes"
+  product_classification_scope: "CPC 3.0 01930"
+  recursive_input_rule: "When plant material of this category re-enters the boundary, record it as an external product input with a supplying dataset and do not recursively rebuild its production or collection."
+  upstream_dataset_requirement: "Every purchased product or service input uses a geographically, technologically and functionally representative upstream dataset or remains explicitly unresolved for foreground selection."
+  disclosure: "Declare taxon, plant part, use, cultivated or wild origin, location, cycle/collection period, fresh/dry state, moisture, harvest and conditioning technology, grades, reject/rework routes and every excluded activity."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Plants and parts of plants used primarily in perfumery, in pharmacy, or for insecticidal, fungicidal or similar purposes"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "kg"
+  required_qualifiers:
+    - "producer or collection gate"
+    - "species or taxon"
+    - "plant part"
+    - "intended use"
+    - "cultivated or wild-collected route"
+    - "fresh or primary-dried state"
+    - "moisture or dry-matter basis"
+    - geography
+    - "crop year or collection period"
+    - lot
+    - "grade and destination"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_unresolved_identity
+    applies_to: "reference product"
+    required_property_ref:
+      name: "mass property compatible with the finally verified reference flow"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reference property and unit-group identities are unresolved; do not invent UUIDs before identity verification. Measure mass at hand-off and report same-lot moisture."
+  - id: moisture_state_alignment
+    applies_to: "all plant-material hand-offs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg fresh matter or kg dry matter"
+    rule: "Declare and align fresh/dry basis before aggregation; dry mass equals wet mass multiplied by dry-matter fraction."
+  - id: route_mass_reconciliation
+    applies_to: "origin and conditioning nodes"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Balance cultivated or wild-collected input, accepted product, downgraded product, waste, loss and drying moisture separately; never assign the same material quantity to both origin routes."
+process_map:
+  - id: managed_cultivation
+    name: "Managed cultivation"
+    inclusion: "conditional"
+    inclusion_condition: "included only for cultivated lots; mutually exclusive with wild_collection for the same material quantity"
+    role: "managed biological production from declared propagation material to harvestable target plant or plant part"
+    quantitative_reference: "declared cultivated area and crop cycle"
+  - id: wild_collection
+    name: "Wild collection and resource removal"
+    inclusion: "conditional"
+    inclusion_condition: "included only for wild-collected lots; mutually exclusive with managed_cultivation for the same material quantity"
+    role: "independent removal and capture from the declared wild source with collection-period indexing"
+    quantitative_reference: "declared source area or collection unit and collection period"
+  - id: primary_conditioning
+    name: "Harvest, grading and primary conditioning"
+    inclusion: "required"
+    inclusion_condition: "one declared cultivated or wild-collected input route; fresh hand-off may omit drying"
+    role: "independent harvest/capture hand-off, cleaning, sorting, cutting and optional primary drying or stabilization to the producer or collection gate; the fresh/dried choice is an alternative technology route"
+    quantitative_reference: "1,000 kg accepted product at declared fresh or primary-dried state"
+process_inventory:
+  - id: managed_cultivation
+    label: "Managed cultivation"
+    inputs:
+      product:
+        - row_id: propagation_material
+          role: "Species-specific propagation material"
+          name: "Species-specific propagation material"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Record the actual seed, seedling, cutting, rhizome or other propagation material for the declared cultivated taxon; do not aggregate different propagation states without mass or count conversion."
+          amount:
+            expression: "measured quantity established or planted"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg or items/ha crop cycle"
+                basis: "actual propagation material per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated agricultural nutrient and fertilizer supply"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg, m3, kg N, kg P2O5 or kg K2O as applicable"
+          description: "Record mineral and organic fertilizers, manure, compost, lime and nutrient amendments once in this consolidated card, preserving each product identity and nutrient analysis."
+          amount:
+            expression: "measured supplied products and calculated nutrient contents"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg product/ha crop cycle"
+                basis: "sum of solid supplied products; liquids remain in native volume"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Actual crop-protection products"
+          name: "Actual formulated crop-protection products"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L product"
+          description: "Record each formulated herbicide, insecticide, fungicide or biological control product by trade identity, active substance and formulation; actual products are determined from field records."
+          amount:
+            expression: "measured formulated product and active substance applied"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per treated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg or L product/ha crop cycle"
+                basis: "total formulated products per treated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supply"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered to the field only for irrigated strata; rainfed strata create no exchange."
+          amount:
+            expression: "metered or calculated water delivered to the cultivated area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per irrigated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_water
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha crop cycle"
+                basis: "zero when rainfed; broad screen for delivered irrigation water"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_energy
+          role: "Cultivation machinery energy supply"
+          name: "Cultivation machinery fuel or energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-native property / MJ, kWh, kg or L"
+          description: "Record actual fuels, electricity or other carriers used for soil preparation, planting, maintenance, irrigation support and field operations."
+          amount:
+            expression: "measured carrier consumption attributed to the cultivated lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "MJ/ha crop cycle"
+                basis: "all cultivation energy carriers converted to MJ for the QA screen"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Occupation of agricultural land"
+          name: "agriculture"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "e1d56d4e-afe3-4b92-bd51-0a21f75e50a8"
+          binding: "fixed"
+          property_unit: "Area*time / ha*a"
+          description: "Record cultivated area multiplied by occupation duration for the actual crop cycle; distinguish materially different land-use strata."
+          amount:
+            expression: "cultivated area multiplied by occupation duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation_identity
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "ha*a/ha crop cycle"
+                basis: "occupation duration per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: cultivated_raw_material
+          role: "Cultivated raw target material transferred internally"
+          name: "Cultivated target plant material (internal)"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Transfer the declared harvestable species and plant part to the common harvest and conditioning node; exclude standing residues and uncollected loss."
+          amount:
+            expression: "measured or mass-balanced harvestable material transferred"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation_identity
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200000"
+                unit: "kg fresh matter/ha crop cycle"
+                basis: "harvestable target material transferred from cultivation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_n2o
+          role: "Direct nitrous oxide to air"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct managed-soil N2O from collected nitrogen activity data using the declared IPCC tier and factors."
+          amount:
+            expression: "calculated direct N2O emitted to air"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha crop cycle"
+                basis: "direct N2O to air per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ammonia_to_air
+          role: "Ammonia to air"
+          name: "ammonia"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg NH3"
+          description: "Record or calculate NH3 volatilization by nitrogen source and application event, retaining the nitrogen or substance basis used."
+          amount:
+            expression: "measured or calculated NH3 emitted to air"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg NH3/ha crop cycle"
+                basis: "ammonia mass as NH3 per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_to_water
+          role: "Nitrate to receiving water"
+          name: "Nitrate to reported water compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NO3 or kg NO3-N"
+          description: "Record nitrate leaching or runoff by actual receiving-water compartment and preserve whether the reported basis is nitrate or nitrate-nitrogen."
+          amount:
+            expression: "measured or modelled nitrate loss by compartment"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg NO3/ha crop cycle"
+                basis: "nitrate mass after declared substance-basis conversion"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: phosphorus_to_water
+          role: "Phosphorus substance to receiving water"
+          name: "Reported phosphorus substance to reported water compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg reported substance"
+          description: "Record the measured or modelled phosphorus species and receiving-water compartment; total P and phosphate are not interchangeable without conversion."
+          amount:
+            expression: "measured or modelled phosphorus loss by species and compartment"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg reported P substance/ha crop cycle"
+                basis: "reported phosphorus substance per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_releases
+          role: "Crop-protection active substances by compartment"
+          name: "Reported active substance to reported compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg active substance"
+          description: "Expand this umbrella from application records into concrete active-substance and receiving-compartment exchanges; do not use an unspecified pesticide UUID as a substitute."
+          amount:
+            expression: "calculated release by active substance and compartment"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per treated area and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg active substance/ha crop cycle"
+                basis: "sum of modelled releases without merging compartments"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: wild_collection
+    label: "Wild collection and resource removal"
+    inputs:
+      product:
+        - row_id: collection_energy
+          role: "Wild-collection equipment energy supply"
+          name: "Collection equipment fuel or energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-native property / MJ, kWh, kg or L"
+          description: "Record actual energy carriers used for access, cutting, digging, lifting or collection equipment; manual collection may record zero."
+          amount:
+            expression: "measured carrier consumption attributed to the collection lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted collection lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - fairwild-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/1000 kg accepted product"
+                basis: "all collection energy carriers converted to MJ"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: wild_biomass_withdrawal
+          role: "Species- and plant-part-specific wild biomass withdrawal"
+          name: "Declared wild plant resource withdrawal"
+          flow_type: "elementary"
+          property_unit: "Mass or count / kg or item"
+          description: "Record removal from the declared wild population by taxon, plant part, source ecosystem and collection area; do not bind a generic biomass row with an incompatible property."
+          amount:
+            expression: "measured removed biomass or count from the wild source"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per source area and collection period"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wild_collection
+              source_ids:
+                - fairwild-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200000"
+                unit: "kg fresh matter/collection unit period"
+                basis: "gross target biomass removed from the declared wild source"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: wild_collected_raw_material
+          role: "Wild-collected raw target material transferred internally"
+          name: "Wild-collected target plant material (internal)"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Transfer only the intended collected species and plant part to conditioning; keep incidental material, source residuals and uncollected biomass separate."
+          amount:
+            expression: "measured collected target material transferred"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per source area and collection period"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wild_collection
+              source_ids:
+                - fairwild-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200000"
+                unit: "kg fresh matter/collection unit period"
+                basis: "target material transferred from wild collection"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: collection_residues
+          role: "Incidental material leaving wild collection"
+          name: "Incidental collection material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record non-product plant or foreign material removed from the source and discarded outside the source ecosystem; material left in place is not a waste exchange."
+          amount:
+            expression: "measured incidental material crossing the node boundary as waste"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted collection lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wild_collection
+              source_ids:
+                - fairwild-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/1000 kg accepted product"
+                basis: "incidental material removed and discarded outside the source"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Harvest, grading and primary conditioning"
+    inputs:
+      product:
+        - row_id: incoming_raw_material
+          role: "Cultivated or wild-collected raw material"
+          name: "Cultivated or wild-collected target material (internal)"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Receive exactly one declared internal route state for each material quantity, preserving species, plant part, origin route, lot and fresh-mass basis."
+          amount:
+            expression: "measured internal transfer into conditioning"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per conditioning batch or continuous operating interval"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg fresh matter/run or period"
+                basis: "incoming target material assigned once to the conditioning run"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: process_water
+          role: "Washing or cleaning process water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record supplied water used for washing or wet cleaning; a dry-only route creates no exchange."
+          amount:
+            expression: "metered or calculated process water supplied"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_inputs
+              source_ids:
+                - who-quality-control-herbal-materials
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "m3/1000 kg accepted product"
+                basis: "zero for dry-only routes; water supplied to wet conditioning"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditioning and drying energy supply"
+          name: "Conditioning and drying energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-native property / MJ, kWh, kg or L"
+          description: "Record actual electricity, heat or fuels used for cleaning, cutting, sorting, ventilation, drying and stabilization, including run-linked cleaning and changeover energy."
+          amount:
+            expression: "measured carrier use assigned to the run or period"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "MJ/1000 kg accepted product"
+                basis: "all conditioning carriers converted to MJ"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_specialty_plant
+          role: "Accepted specialty plant material"
+          name: "Plants or plant parts for declared perfumery, pharmacy, insecticidal, fungicidal or similar use"
+          flow_type: "product"
+          property_unit: "Mass / kg at declared moisture basis"
+          description: "Record accepted material as an intended output at the producer or collection gate with one concrete species or taxon, plant part, intended use and fresh or primary-dried state."
+          amount:
+            expression: "measured accepted mass after sorting and conditioning"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_mass_balance
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg/reference flow"
+                basis: "accepted product reference mass at the declared moisture state"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_plant_material
+          role: "Downgraded plant material for another use"
+          name: "Downgraded plant material with declared destination"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record off-spec material as an intended output only when a documented recipient and beneficial destination exist; otherwise classify it as waste."
+          amount:
+            expression: "measured mass transferred to documented alternate use"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per conditioning run or period"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_destinations
+              source_ids:
+                - who-quality-control-herbal-materials
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/1000 kg incoming raw material"
+                basis: "downgraded mass with documented destination"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_plant_residues
+          role: "Conditioning plant residues and rejects"
+          name: "Plant residues and rejected material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record discarded plant parts, foreign matter and rejected target material by waste destination; do not include downgraded material with a documented product use."
+          amount:
+            expression: "measured discarded solid mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning run or period"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_destinations
+              source_ids:
+                - who-quality-control-herbal-materials
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/1000 kg incoming raw material"
+                basis: "solid residue and rejected mass leaving as waste"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wastewater
+          role: "Wastewater from wet conditioning"
+          name: "Wastewater from plant-material washing or wet conditioning"
+          flow_type: "waste"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record wastewater by measured quantity, composition and destination when washing or wet processing occurs; dry-only routes create no exchange."
+          amount:
+            expression: "measured wastewater sent to the declared destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_inputs
+              source_ids:
+                - who-quality-control-herbal-materials
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "m3/1000 kg accepted product"
+                basis: "zero for dry-only routes; wastewater crossing the boundary"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: water_vapour_to_air
+          role: "Water vapour to air from primary drying"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg water"
+          description: "Calculate moisture removed during primary drying from incoming and outgoing mass and moisture measurements; fresh hand-off routes record zero."
+          amount:
+            expression: "moisture removed by mass and moisture balance"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_records
+              source_ids:
+                - who-gacp-medicinal-plants
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg water/1000 kg accepted product"
+                basis: "zero for fresh hand-off; moisture removed during declared primary drying"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: plant_dust_to_air
+          role: "Plant particulate matter to air"
+          name: "Plant particulate matter by reported particle-size fraction"
+          flow_type: "elementary"
+          property_unit: "Mass / kg particulate matter"
+          description: "Record measured or modelled plant dust by reported particle-size fraction and receiving air compartment; do not bind an unspecified-particle row when a size fraction is available."
+          amount:
+            expression: "measured or modelled dust release after control"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_records
+              source_ids:
+                - who-quality-control-herbal-materials
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/1000 kg accepted product"
+                basis: "dust released after declared control equipment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_route_exclusivity
+    applies_to: "cultivated and wild origin"
+    rule: "Do not assign the same material quantity to both origin routes; weight strata by actual accepted mass only after each stratum is complete."
+    source_ids:
+      - who-gacp-medicinal-plants
+      - fairwild-standard
+  - rule_id: allocation_mass_balance_first
+    applies_to: "accepted, downgraded and waste outputs"
+    rule: "Record every output and destination separately and apply mass balance first. Allocate only when multiple economically valuable products share inseparable burdens; report method, price period and sensitivity."
+    source_ids:
+      - who-quality-control-herbal-materials
+  - rule_id: allocation_rework_and_runs
+    applies_to: "batches, continuous periods, rework and changeover"
+    rule: "Link inputs, outputs, cleaning and changeover events to one run or operating interval; rework retains producing-node burdens and adds only new operations, preventing shared-run double counting."
+    source_ids:
+      - who-gacp-medicinal-plants
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation_identity
+      process_id: "managed_cultivation"
+      flow_role: "route, taxon, area and internal hand-off"
+      record_type: "field and crop records"
+      raw_fields: "field id; taxon; plant part; crop dates; area; harvestable mass; moisture"
+      collection_method: "field register plus calibrated area and mass records"
+      unit: "ha; dates; kg; %"
+      frequency: "each field and crop cycle"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all cultivated sites"
+      aggregation_rule: "retain field strata; sum only after route checks"
+      quality_evidence: "field register, scale and moisture-test evidence"
+    - protocol_id: cp_cultivation_inputs
+      process_id: "managed_cultivation"
+      flow_role: "propagation, nutrients and crop protection"
+      record_type: "purchase, issue and application records"
+      raw_fields: "product identity; supplier; formulation; active substance or nutrient analysis; quantity; treated area; event"
+      collection_method: "reconcile invoices, stock issues and application logs"
+      unit: "kg; L; items; ha"
+      frequency: "each input and application event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all cultivated fields"
+      aggregation_rule: "sum by concrete product and field without double counting"
+      quality_evidence: "invoice, label, analysis and application log"
+    - protocol_id: cp_field_water
+      process_id: "managed_cultivation"
+      flow_role: "irrigation water"
+      record_type: "meter or irrigation record"
+      raw_fields: "water source; delivered volume; irrigated area; event"
+      collection_method: "meter reading or engineering calculation with method"
+      unit: "m3; ha"
+      frequency: "each irrigation event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all irrigated fields"
+      aggregation_rule: "sum delivered water by field; rainfed strata remain zero"
+      quality_evidence: "meter calibration or calculation inputs"
+    - protocol_id: cp_energy_records
+      process_id: "all_processes"
+      flow_role: "energy carriers and run-linked cleaning/changeover"
+      record_type: "meter, fuel and equipment logs"
+      raw_fields: "carrier; quantity; energy content; equipment; field/run; cleaning/changeover event"
+      collection_method: "reconcile meters, purchase and operating logs"
+      unit: "MJ; kWh; kg; L"
+      frequency: "each operation or operating interval"
+      temporal_coverage: "complete cycle, collection period or conditioning period"
+      site_scope: "all foreground sites"
+      aggregation_rule: "assign once to the consuming node and convert separately"
+      quality_evidence: "meter calibration, invoices and operating logs"
+    - protocol_id: cp_field_emissions
+      process_id: "managed_cultivation"
+      flow_role: "direct field emissions"
+      record_type: "activity and model records"
+      raw_fields: "N inputs; amendment; active substances; application event; soil/climate; receiving compartment; factor/model"
+      collection_method: "collect activity data and apply declared method"
+      unit: "kg substance; ha"
+      frequency: "each event and crop cycle"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all cultivated fields"
+      aggregation_rule: "calculate by field, substance and compartment then sum"
+      quality_evidence: "activity records, factor version and model output"
+    - protocol_id: cp_wild_collection
+      process_id: "wild_collection"
+      flow_role: "population, collection effort, withdrawal and residuals"
+      record_type: "collector and source-area records"
+      raw_fields: "taxon; plant part; ecosystem; source area; permit; collector; dates; gross removal; target output; incidental material; residual condition"
+      collection_method: "verified collection log and field observation"
+      unit: "kg; items; ha or declared collection unit"
+      frequency: "each collection event"
+      temporal_coverage: "complete collection period"
+      site_scope: "all source areas and collectors"
+      aggregation_rule: "retain source-area strata and reconcile gross removal"
+      quality_evidence: "permit, collector log, geolocation and field inspection"
+    - protocol_id: cp_conditioning_mass_balance
+      process_id: "primary_conditioning"
+      flow_role: "incoming, accepted, downgraded, waste and loss states"
+      record_type: "batch or continuous-period records"
+      raw_fields: "origin lot; input mass/moisture; accepted grades; downgraded mass/destination; waste mass/destination; output moisture"
+      collection_method: "calibrated weighing and same-lot moisture tests"
+      unit: "kg; %"
+      frequency: "each batch or continuous period"
+      temporal_coverage: "complete conditioning campaign"
+      site_scope: "all conditioning sites"
+      aggregation_rule: "close mass and moisture balance per run before aggregation"
+      quality_evidence: "scale calibration, lab/test record and destination receipt"
+    - protocol_id: cp_conditioning_inputs
+      process_id: "primary_conditioning"
+      flow_role: "water and wastewater"
+      record_type: "meter and discharge records"
+      raw_fields: "water source; supplied volume; wastewater mass/volume; composition; destination"
+      collection_method: "metering, tank balance and discharge documentation"
+      unit: "m3; kg"
+      frequency: "each batch or operating interval"
+      temporal_coverage: "complete conditioning campaign"
+      site_scope: "all wet-conditioning sites"
+      aggregation_rule: "balance supplied water, retained moisture and wastewater"
+      quality_evidence: "meter calibration and discharge receipt"
+    - protocol_id: cp_drying_records
+      process_id: "primary_conditioning"
+      flow_role: "drying moisture and dust"
+      record_type: "dryer and environmental records"
+      raw_fields: "input/output mass; input/output moisture; run time; controls; dust measurement/model; particle size; air compartment"
+      collection_method: "same-lot moisture balance plus measured or documented emission model"
+      unit: "kg water; kg particulate; particle-size fraction"
+      frequency: "each drying run"
+      temporal_coverage: "complete drying campaign"
+      site_scope: "all drying units"
+      aggregation_rule: "calculate water removed and dust after controls by run"
+      quality_evidence: "moisture test, run log, control record and emission evidence"
+    - protocol_id: cp_reject_destinations
+      process_id: "primary_conditioning"
+      flow_role: "downgrade, reject, rework and waste routing"
+      record_type: "grade and destination records"
+      raw_fields: "state; mass; reason; rework loop; recipient; beneficial use or waste destination; receipt"
+      collection_method: "reconcile sorting record with recipient or disposal evidence"
+      unit: "kg"
+      frequency: "each batch or period"
+      temporal_coverage: "complete campaign"
+      site_scope: "all grading sites"
+      aggregation_rule: "each rejected quantity has exactly one path and is excluded from accepted output"
+      quality_evidence: "grade record, recipient confirmation or waste receipt"
+  calculation_rules:
+    - id: calc_dry_matter
+      applies_to: "all plant material"
+      rule: "dry mass = wet mass × dry-matter fraction; declare wet or dry basis for every moisture percentage"
+      inputs:
+        - "wet mass"
+        - "same-lot moisture"
+      output: "kg dry matter"
+      source_ids:
+        - who-quality-control-herbal-materials
+    - id: calc_conditioning_balance
+      applies_to: "primary conditioning"
+      rule: "incoming mass = accepted + downgraded + solid waste + unrecovered loss + net water removed; report unexplained difference"
+      inputs:
+        - "run-level mass and moisture records"
+      output: "run mass balance and difference"
+      source_ids:
+        - who-gacp-medicinal-plants
+    - id: calc_managed_soil_n2o
+      applies_to: "cultivated soil"
+      rule: "calculate N2O-N with the declared IPCC tier, nitrogen activity and factors, then multiply by 44/28 for N2O"
+      inputs:
+        - "nitrogen by source"
+        - "soil/climate"
+        - factors
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_route_weighting
+      applies_to: "multi-origin aggregate"
+      rule: "aggregate = accepted-mass-weighted values from complete mutually exclusive strata; never treat a missing stratum as zero"
+      inputs:
+        - "stratum inventories"
+        - "accepted mass"
+      output: "weighted inventory"
+      source_ids:
+        - who-gacp-medicinal-plants
+        - fairwild-standard
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "every lot"
+      requirement: "Taxon, plant part, use, origin route, geography, fresh/dry state and moisture basis are complete and non-conflicting."
+      evidence: "lot identity, label, permit or supply record"
+    - id: dq_completeness
+      applies_to: "all nodes"
+      requirement: "Cover all sites, collectors, runs, inputs, outputs, rejects and destinations in the collection/crop period and linked conditioning period; quantify missing coverage."
+      evidence: "coverage register and mass balance"
+    - id: dq_wild_source
+      applies_to: "wild collection"
+      requirement: "Retain permit, collection range, population/habitat observation, collection intensity and residual condition to support resource-removal and sustainability interpretation."
+      evidence: "permit, geospatial record, collection log and inspection"
+    - id: dq_temporal_and_technology
+      applies_to: "all routes"
+      requirement: "Data represent the declared year/period and actual technology; aggregate alternative routes or technologies only after complete stratification."
+      evidence: "dated records, equipment records and stratum coverage"
+validation_rules:
+  - rule_id: validate_reference_identity_gap
+    applies_to: "reference flow"
+    rule: "Reference UUID, property UUID and unit-group UUID remain blank until one Tiangong Product flow compatible with category, gate, state and mass property is verified; reject similar species, extracts, formulations and generic biomass substitutes."
+    source_ids: []
+  - rule_id: validate_origin_exclusivity
+    applies_to: "each material quantity"
+    rule: "Declare exactly one cultivated or wild-collected origin route; the two routes must not double count."
+    source_ids:
+      - who-gacp-medicinal-plants
+      - fairwild-standard
+  - rule_id: validate_identity_qualifiers
+    applies_to: "reference product"
+    rule: "Fail when taxon, plant part, intended use, fresh/dry state, moisture basis, geography or lot is missing; do not merge states without conversion and stratification."
+    source_ids:
+      - who-quality-control-herbal-materials
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "managed_cultivation"
+    rule: "Permit at most one consolidated nutrient Product-input card; bind only to flow-set.agricultural-nutrient-supply version 0.3.0 at set level with no group and no separate N, P, K, manure, lime or amendment card."
+    source_ids: []
+  - rule_id: validate_runs_and_rework
+    applies_to: "conditioning runs"
+    rule: "Link every input, output, cleaning, changeover, downgrade, rework and discard path to a run/period; exclude rejects from accepted output and prevent shared-burden duplication."
+    source_ids:
+      - who-gacp-medicinal-plants
+  - rule_id: validate_mass_moisture_balance
+    applies_to: "conditioning"
+    rule: "Complete mass and moisture balance for each run; fresh routes have zero drying energy and water vapour, and wet routes balance supplied water and wastewater."
+    source_ids:
+      - who-quality-control-herbal-materials
+  - rule_id: validate_deferred_elementary_identity
+    applies_to: "nitrate, phosphorus, crop-protection releases, wild biomass and dust"
+    rule: "Before final process exchange, expand each umbrella into verified concrete substance/species, property and receiving/source compartment UUIDs; never auto-bind a broad search candidate."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground production package with cultivated or wild origin and conditioning route evidence"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "process or lifecycle-model use when taxon, plant part, use, origin route, geography, gate and fresh/dry state match"
+  excluded_use: "no representation of undeclared species/parts, extracts/oils/formulations, interchange of wild and cultivated origin, or use across moisture states without conversion"
+  required_metadata: "taxon; plant part; intended use; origin route; geography; crop cycle or collection period; lot/run; fresh/dry state; moisture; grade; harvest and conditioning technology; outputs and destinations"
+  required_quality_disclosure: "record coverage, measurement and model methods, identity/UUID gaps, strata, mass/moisture-balance difference, wild-source evidence, proxies and uncertainty"
+  update_trigger: "material change in taxon/part/use, origin route, hand-off state, geography, harvest/conditioning technology, quality rule, emission method or Tiangong identity binding"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "who-gacp-medicinal-plants"
+    type: "official_guidance"
+    reference: "World Health Organization (2003), WHO guidelines on good agricultural and collection practices (GACP) for medicinal plants, ISBN 92 4 154627 1"
+    used_for: "cultivated and collected route, harvest, primary processing, hygiene, records and quality controls"
+  - id: "fairwild-standard"
+    type: "standard"
+    reference: "FairWild Foundation, FairWild Standard Version 3.0"
+    used_for: "wild collection source, collection practice, traceability and sustainable resource-removal records"
+  - id: "who-quality-control-herbal-materials"
+    type: "official_guidance"
+    reference: "World Health Organization (2011), Quality control methods for herbal materials, ISBN 978 92 4 150073 9"
+    used_for: "identity, foreign matter, moisture, sampling and quality evidence"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC (2019), 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11"
+    used_for: "managed-soil nitrogen emissions and N2O conversion"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:5128710f4f18e1904b8dcb4381cd9b0489871abc38a373e795758c9192e8f7db"
+  generated_content_sha256: "sha256:8dc90e489430773ae9e5ac0a77707c4293e8dbcdfa56ef587884660b08a26c1a"

@@ -1,10 +1,1060 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01912"
-  title: "Alfalfa for forage and silage"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.alfalfa-for-forage-and-silage"
+  classification_refs: "CPC 3.0 01912, exact path 0 > 01 > 019 > 0191 > 01912"
+  covered_products: "freshly cut, unprocessed alfalfa forage at farm gate; fresh alfalfa intended for subsequent ensiling outside this boundary"
+  excluded_products: "alfalfa hay; silage; dried meal; pellets; seed; grazed biomass; inseparable alfalfa-grass mixtures"
+  representative_product: "accepted freshly cut alfalfa biomass"
+  production_route: "managed perennial stand establishment, regrowth management, repeated cutting and fresh farm-gate hand-off"
+  market_state: "fresh, unprocessed, unbaled biomass at farm gate"
+functional_unit:
+  what: "accepted freshly cut alfalfa forage at farm gate"
+  how_much: "1,000 kg fresh mass"
+  how_well: "unensiled, unfermented, undried and unbaled; declared dry-matter fraction and harvest quality basis; foreign material and rejected biomass excluded"
+  how_long_or_cycle: "one declared production year and its identified cuts, with establishment burdens annualized over the actual stand life"
+  reference_flow_link: "output of forage_harvest_handoff"
+system_boundary:
+  rules:
+    - rule_id: boundary_fresh_gate
+      applies_to: "reference product"
+      rule: "Stop at accepted freshly cut biomass at farm gate; exclude curing, drying, baling, ensiling, fermentation and downstream feed manufacture."
+      source_ids:
+        - uc-alfalfa-establishment
+        - usda-ars-alfalfa-management-2024
+    - rule_id: boundary_establishment
+      applies_to: "stand establishment"
+      rule: "Include seedbed preparation, seed and inoculation, establishment inputs, field operations and establishment losses; annualize them only across the actual productive output of that stand."
+      source_ids:
+        - umn-alfalfa-establishment
+    - rule_id: boundary_regrowth_periods
+      applies_to: "established stand"
+      rule: "Include production-year management and index operations by stand-year and, where attributable, by regrowth period or cut."
+      source_ids:
+        - usda-ars-alfalfa-management-2024
+    - rule_id: boundary_water_route
+      applies_to: "irrigated production"
+      rule: "Include supplied irrigation water and pumping energy only when irrigation occurs; rainfed production records zero supplied irrigation water rather than an imputed requirement."
+      source_ids:
+        - umn-alfalfa-drought-2024
+        - uc-alfalfa-irrigation
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil"
+      rule: "Include direct and indirect nitrogen-related field emissions and amendment-related carbon dioxide where the relevant inputs or residue-renewal events occur; avoid double counting returned and removed biomass."
+      source_ids:
+        - ipcc-2019-managed-soils
+boundary_abstraction:
+  declared_starting_condition: "prepared field before the target alfalfa stand is seeded"
+  starting_condition_role: "foreground starting condition for stand establishment; prior crop and soil state are disclosed context"
+  product_classification_scope: "fresh unprocessed alfalfa forage under CPC 3.0 01912"
+  recursive_input_rule: "purchased fresh alfalfa of the same category is not treated as a production input; if blended or resold, model it as a separately traced upstream product and exclude it from on-farm yield"
+  upstream_dataset_requirement: "use supplier-specific or representative datasets for seed, nutrient products, crop-protection products, water supply and energy carriers selected from foreground records"
+  disclosure: "field location, stand establishment year, stand age, expected and realized stand life, production year, cut schedule, irrigation route, management route, previous crop, dry-matter method and farm-gate hand-off"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Alfalfa for forage and silage"
+    uuid: "bff9b03b-b5c0-486e-99f6-0a2ab67d725c"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "production mix"
+    - "at farm gate"
+    - "fresh unprocessed produce"
+    - "harvest date and cut number"
+    - "stand age and establishment year"
+    - "fresh mass and dry-matter fraction"
+    - "pure alfalfa or declared separable alfalfa share"
+    - "rainfed or irrigation route"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_fresh_mass
+    applies_to: "accepted reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure or calculate fresh mass at farm-gate hand-off; do not substitute hay-equivalent or dry-matter mass."
+  - id: dry_matter_disclosure
+    applies_to: "every accepted cut"
+    required_property_ref:
+      name: "mass fraction"
+      uuid: ""
+    required_unit: "kg dry matter/kg fresh matter"
+    rule: "Determine from a representative sample or a documented laboratory result and retain the sampling basis."
+  - id: area_time_basis
+    applies_to: "stand establishment and annual production"
+    required_property_ref:
+      name: "area and time"
+      uuid: ""
+    required_unit: "ha, stand-year"
+    rule: "Record establishment area, production area, stand age, productive stand life and reporting-year fraction separately."
+  - id: cut_indexing
+    applies_to: "harvest and regrowth periods"
+    required_property_ref:
+      name: "count and date"
+      uuid: ""
+    required_unit: "cut, date"
+    rule: "Assign every accepted output, field operation and loss to a cut or to the whole stand-year."
+process_map:
+  - id: stand_establishment
+    name: "Perennial stand establishment"
+    inclusion: "required"
+    inclusion_condition: "new stand or replacement stand is established"
+    role: "managed biological production preparation and establishment phase"
+    quantitative_reference: "one hectare established stand and its actual productive life"
+  - id: annual_regrowth_management
+    name: "Established-stand regrowth management"
+    inclusion: "required"
+    inclusion_condition: "every productive stand-year"
+    role: "continuous production across a season, divided into attributable regrowth periods; alternative technology and biological route deltas remain separate declared strata"
+    quantitative_reference: "one productive hectare-year and its accepted fresh yield"
+  - id: forage_harvest_handoff
+    name: "Repeated cutting and farm-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "each accepted cut"
+    role: "independent harvest/capture and acceptance node"
+    quantitative_reference: "accepted fresh mass by cut, summed to 1,000 kg reference product"
+process_inventory:
+  - id: stand_establishment
+    label: "Perennial stand establishment"
+    inputs:
+      product:
+        - row_id: establishment_seed
+          role: "Alfalfa seed for sowing"
+          name: "Alfalfa seed for sowing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record certified or otherwise documented alfalfa seed by pure-live-seed basis. Keep seed-coating mass separate where the tag permits."
+          amount:
+            expression: "measured purchased and used mass, corrected to pure live seed for the seeded area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - umn-alfalfa-establishment
+            ranges:
+              - role: typical_range
+                lower: "10"
+                upper: "30"
+                unit: "kg pure live seed/ha established"
+                basis: "per hectare newly established stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - umn-alfalfa-establishment
+        - row_id: establishment_inoculant
+          role: "Rhizobium inoculant"
+          name: "Rhizobium inoculant"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ead26d6b-6270-4b4f-92a9-e81927e6a718"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record the inoculant product supplied for seed coating or in-furrow application separately from seed mass; use zero when no inoculant is supplied."
+          amount:
+            expression: "measured purchased and applied inoculant product mass for the seeded area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - umn-alfalfa-establishment
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kg inoculant product/ha established"
+                basis: "inoculant product supplied per hectare newly established stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_nutrients
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record all mineral fertilizers, organic fertilizers, lime and nutrient amendments in this single establishment card, expanded by actual product and nutrient composition in foreground generation. Do not assume mineral nitrogen where effective nodulation is established."
+          amount:
+            expression: "measured product mass and nutrient composition applied before or during establishment"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - umn-alfalfa-fertilizer
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg nutrient and amendment products/ha established"
+                basis: "total consolidated product mass per hectare newly established stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_irrigation_water
+          role: "Establishment irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record gross water supplied for germination and establishment by source and event; use zero for a rainfed route."
+          amount:
+            expression: "metered delivery or calculated volume from flow rate and operating time"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - uc-alfalfa-establishment
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "m3/ha established"
+                basis: "gross supplied establishment water per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_energy
+          role: "Establishment field energy"
+          name: "Establishment energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuel, electricity and qualifying energy services for tillage, seedbed preparation, seeding, rolling, amendment application and irrigation pumping."
+          amount:
+            expression: "energy converted from measured carrier quantities and electricity records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - uc-alfalfa-establishment
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/ha established"
+                basis: "field and pumping energy per hectare newly established stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_crop_protection
+          role: "Establishment crop-protection products"
+          name: "Crop-protection products as applied"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each formulated herbicide, fungicide or insect-control product actually applied during establishment; no default treatment is imposed."
+          amount:
+            expression: "measured formulated-product mass by application event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - uc-alfalfa-establishment
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg formulated product/ha established"
+                basis: "all establishment applications per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: establishment_land_occupation
+          role: "Land occupation during establishment"
+          name: "Agriculture land occupation"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "e1d56d4e-afe3-4b92-bd51-0a21f75e50a8"
+          binding: "fixed"
+          property_unit: "Area*time 93a60a56-a3c8-21da-a746-0800200c9a66 / ha*a"
+          description: "Record occupied agricultural land during the establishment phase without treating it as a Product-flow input."
+          amount:
+            expression: "established area multiplied by establishment-phase duration in years"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare newly established stand before stand-life annualization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_establishment_records
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "ha*a/ha established"
+                basis: "establishment duration cannot exceed the first stand-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - area-time-identity
+    outputs:
+      product:
+        - row_id: established_stand
+          role: "Established alfalfa stand transferred to production"
+          name: "Established alfalfa stand, internal transfer"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "Transfer the successfully established stand and its attributed establishment burden to subsequent productive stand-years; this is an internal foreground state, not the reference product."
+          amount:
+            expression: "surveyed successfully established area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare seeded area"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - uc-alfalfa-establishment
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "ha established/ha seeded"
+                basis: "successfully established fraction of seeded area"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - area-balance-identity
+      waste:
+        []
+      elementary:
+        []
+  - id: annual_regrowth_management
+    label: "Established-stand regrowth management"
+    inputs:
+      product:
+        - row_id: stand_year_input
+          role: "Established stand carried into the stand-year"
+          name: "Established alfalfa stand, internal transfer"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "Record the productive area and stand age carried from establishment or the preceding production year."
+          amount:
+            expression: "productive alfalfa area at the start of the reporting year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive stand-year"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_year_records
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "ha productive/ha enrolled"
+                basis: "productive fraction of enrolled stand area"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - area-balance-identity
+        - row_id: annual_nutrients
+          role: "Consolidated annual nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record all mineral fertilizers, organic fertilizers, lime and nutrient amendments in this single stand-year card. Use soil tests and yield goals; record mineral nitrogen only where field evidence shows a justified need rather than assuming it for a nodulated stand."
+          amount:
+            expression: "measured product mass and nutrient composition applied in the reporting stand-year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_year_records
+              source_ids:
+                - umn-alfalfa-fertilizer
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg nutrient and amendment products/ha*a"
+                basis: "consolidated annual product mass per productive hectare-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: annual_irrigation_water
+          role: "Annual irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record gross irrigation delivery by source, event and regrowth period; record zero for rainfed production."
+          amount:
+            expression: "metered delivery or calculated volume from flow rate and operating time"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_year_records
+              source_ids:
+                - umn-alfalfa-drought-2024
+                - usda-ars-alfalfa-irrigation
+            ranges:
+              - role: typical_range
+                lower: "4000"
+                upper: "8000"
+                unit: "m3/ha*a"
+                basis: "seasonal precipitation plus irrigation-equivalent water use per productive hectare-year; report supplied irrigation separately"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - umn-alfalfa-drought-2024
+                  - usda-ars-alfalfa-irrigation
+        - row_id: annual_field_energy
+          role: "Annual field-operation energy"
+          name: "Stand-management energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuel, electricity and qualifying energy services for irrigation pumping, scouting, nutrient and crop-protection application, and stand maintenance; harvest energy is recorded in the harvest node."
+          amount:
+            expression: "energy converted from carrier, meter and qualifying service records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stand_year_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "MJ/ha*a"
+                basis: "non-harvest field and pumping energy per productive hectare-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: annual_crop_protection
+          role: "Annual crop-protection products"
+          name: "Crop-protection products as applied"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each formulated product actually applied by date, active ingredient, treated area and regrowth period."
+          amount:
+            expression: "measured formulated-product mass by application event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_year_records
+              source_ids:
+                - uc-alfalfa-established-ipm
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg formulated product/ha*a"
+                basis: "all applications per productive hectare-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: annual_land_occupation
+          role: "Productive agricultural land occupation"
+          name: "Agriculture land occupation"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "e1d56d4e-afe3-4b92-bd51-0a21f75e50a8"
+          binding: "fixed"
+          property_unit: "Area*time 93a60a56-a3c8-21da-a746-0800200c9a66 / ha*a"
+          description: "Record the occupied productive alfalfa area for the reporting stand-year."
+          amount:
+            expression: "productive area multiplied by reporting-year fraction"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stand_year_records
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "ha*a/ha*a enrolled"
+                basis: "productive fraction of the reporting hectare-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - area-time-identity
+    outputs:
+      product:
+        - row_id: harvest_ready_biomass
+          role: "Harvest-ready fresh alfalfa biomass"
+          name: "Harvest-ready fresh alfalfa biomass, internal transfer"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Transfer standing biomass accepted for cutting to the harvest node by cut number. This internal state excludes unharvested regrowth and rejected patches."
+          amount:
+            expression: "measured or estimated standing fresh biomass released to each cut"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare and identified cut"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cut_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg fresh matter/ha per cut"
+                basis: "biomass released from one productive hectare to an identified cut"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: managed_soil_n_emissions
+          role: "Direct and indirect nitrogen field emissions"
+          name: "Nitrogen emission species from managed soils"
+          flow_type: "elementary"
+          property_unit: "Mass / kg species"
+          description: "Calculate nitrogen emissions by species and receiving compartment from actual nitrogen inputs, fixation-related residue renewal and other applicable managed-soil sources; do not use this umbrella as a final unspeciated exchange."
+          amount:
+            expression: "calculate separate N2O, NO, NH3 and nitrate-related exchanges using the selected inventory method and recorded activity data"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_stand_year_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg emitted species/kg relevant N input"
+                basis: "species-specific result per kilogram relevant nitrogen input before yield normalization"
+                basis_kind: "n_input"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2019-managed-soils
+        - row_id: amendment_co2
+          role: "Amendment-related carbon dioxide"
+          name: "Carbon dioxide (fossil), emissions to air unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg CO2"
+          description: "Calculate carbon dioxide from urea or carbonate amendment only when the corresponding product was applied."
+          amount:
+            expression: "selected method factor multiplied by recorded urea or carbonate amendment mass"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per productive hectare-year before yield normalization"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_stand_year_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg CO2/kg applicable amendment product"
+                basis: "carbon-dioxide result per kilogram applicable amendment before yield normalization"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2019-managed-soils
+  - id: forage_harvest_handoff
+    label: "Repeated cutting and farm-gate hand-off"
+    inputs:
+      product:
+        - row_id: harvest_biomass_input
+          role: "Harvest-ready biomass received from the field"
+          name: "Harvest-ready fresh alfalfa biomass, internal transfer"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Record the internal biomass entering each cut and preserve its stand-year and cut identity."
+          amount:
+            expression: "mass released by harvest_ready_biomass for the identified cut"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per identified cut"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cut_records
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "100000"
+                unit: "kg fresh matter/ha per cut"
+                basis: "biomass entering one identified cut"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Cutting and collection energy"
+          name: "Harvest energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record energy carriers and qualifying machinery-energy services for mowing, chopping where needed only to collect fresh forage, windrow pickup, field loading and movement to the farm-gate hand-off point. Exclude drying, baling and ensiling energy."
+          amount:
+            expression: "energy converted from carrier, meter and qualifying service records by cut"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cut_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/1,000 kg accepted fresh product"
+                basis: "cutting, collection and on-farm movement to the reference gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_fresh_alfalfa
+          role: "Accepted fresh alfalfa forage"
+          name: "Alfalfa for forage and silage"
+          flow_type: "product"
+          flow_ref:
+            uuid: "bff9b03b-b5c0-486e-99f6-0a2ab67d725c"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is the sole reference-product output. Sum accepted cut lots only after recording fresh mass, dry-matter fraction and rejection status."
+          amount:
+            expression: "exactly 1,000 kg accepted fresh mass after normalization"
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg fresh matter"
+                basis: "one normalized reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-flow-identity
+      waste:
+        - row_id: rejected_cut_biomass
+          role: "Rejected or lost cut biomass"
+          name: "Rejected or lost fresh alfalfa biomass"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh matter"
+          description: "Record cut biomass that is rejected, left in-field after cutting, sent to a separately traced recovery destination or discarded. Reworked or downgraded material remains linked to the producing cut and is never counted in accepted output."
+          amount:
+            expression: "incoming harvest biomass minus accepted fresh output and other measured destinations"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fresh reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cut_records
+              source_ids:
+                - umn-alfalfa-harvest-loss
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg fresh biomass/1,000 kg accepted product"
+                basis: "rejected and lost fresh biomass relative to accepted fresh output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_establishment_life
+    applies_to: "establishment burdens"
+    rule: "Attribute establishment inputs, emissions and losses to all accepted fresh output produced over the actual stand life. Use realized stand termination and output where known; disclose any prospective lifetime used for an incomplete stand. Do not allocate the same establishment burden again in later stand-years."
+    source_ids:
+      - umn-alfalfa-establishment
+      - usda-ars-alfalfa-management-2024
+  - rule_id: allocation_stand_year
+    applies_to: "annual management burdens"
+    rule: "Assign stand-year inputs first to the reporting hectare-year, then divide by accepted fresh output from that year. Do not spread annual inputs across other production years."
+    source_ids:
+      - area-time-identity
+  - rule_id: allocation_cut
+    applies_to: "cut-specific operations"
+    rule: "Assign harvest energy, cut-specific irrigation and losses to the identified cut; shared annual operations use a documented physical basis such as area or accepted fresh mass across cuts."
+    source_ids:
+      - usda-ars-alfalfa-management-2024
+  - rule_id: allocation_rejects
+    applies_to: "rejected or downgraded biomass"
+    rule: "Keep burdens with the producing stand-year and cut unless an evidenced recovered-product allocation is declared. Exclude rejected biomass from accepted reference output."
+    source_ids: []
+  - rule_id: allocation_no_double_count
+    applies_to: "all periods"
+    rule: "Establishment, stand-year and cut records carry unique phase and period identifiers; each input, output, loss and field event may enter the normalized result once only."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "stand_establishment"
+      flow_role: "establishment inputs and successful area"
+      record_type: "invoices, field-operation logs, seed tags, meter records, soil tests and stand survey"
+      raw_fields: "field_id, seeded_area, established_area, seed_mass, pure_live_seed_fraction, inoculant_mass, nutrient_product_mass, nutrient_composition, water_volume, energy_carrier_quantity, operation_date, product_application"
+      collection_method: "reconcile purchase and application records to the target field and survey establishment"
+      unit: "stated row units"
+      frequency: "each event and end-of-establishment survey"
+      temporal_coverage: "entire establishment phase"
+      site_scope: "each target field"
+      aggregation_rule: "sum event quantities; retain product identity; annualize only through calc_establishment_attribution"
+      quality_evidence: "invoices, seed certificates, calibrated meters, soil analyses and dated field logs"
+    - protocol_id: cp_stand_year_records
+      process_id: "annual_regrowth_management"
+      flow_role: "productive area, management inputs and field emissions"
+      record_type: "field logs, meter records, invoices, soil and tissue tests, weather and emission-model inputs"
+      raw_fields: "field_id, stand_age, productive_area, date, regrowth_period, nutrient_product, nutrient_composition, irrigation_volume, energy_quantity, crop_protection_mass, residue_return, amendment_mass"
+      collection_method: "collect every event against one field, stand-year and where possible one regrowth period"
+      unit: "stated row units"
+      frequency: "each event for a complete production year"
+      temporal_coverage: "complete reporting stand-year"
+      site_scope: "each productive field"
+      aggregation_rule: "sum within stand-year; retain regrowth-period tags; normalize through annual accepted output"
+      quality_evidence: "complete event log, meter calibration, invoices and method version"
+    - protocol_id: cp_cut_records
+      process_id: "forage_harvest_handoff"
+      flow_role: "cut input, accepted fresh mass, dry matter, energy and rejects"
+      record_type: "harvester or scale records, load tickets, fuel records and representative samples"
+      raw_fields: "field_id, stand_year, cut_number, harvest_date, incoming_biomass, accepted_fresh_mass, rejected_mass, destination, dry_matter_fraction, energy_quantity"
+      collection_method: "identify every cut and reconcile incoming, accepted and rejected mass"
+      unit: "kg, kg/kg, MJ"
+      frequency: "every cut and load"
+      temporal_coverage: "all cuts in the reporting production year"
+      site_scope: "each target field and farm-gate hand-off"
+      aggregation_rule: "sum accepted loads by cut and year; retain cut-specific rejects and energy; normalize to 1,000 kg accepted fresh mass"
+      quality_evidence: "calibrated scale or documented yield-estimation method, sample chain and mass-balance reconciliation"
+  calculation_rules:
+    - id: calc_establishment_attribution
+      applies_to: "establishment cards"
+      rule: "establishment quantity × reporting-year accepted output / accepted output over actual stand life; for a completed stand use realized lifetime output"
+      inputs:
+        - "establishment quantity"
+        - "stand-year outputs"
+        - "termination date"
+      output: "establishment burden assigned to reporting output"
+      source_ids:
+        - area-time-identity
+    - id: calc_fresh_normalization
+      applies_to: "all cards"
+      rule: "attributed row quantity ÷ accepted fresh mass × 1,000 kg"
+      inputs:
+        - "attributed row quantity"
+        - "accepted fresh mass"
+      output: "row quantity per reference flow"
+      source_ids:
+        - reference-flow-identity
+    - id: calc_energy
+      applies_to: "energy cards"
+      rule: "sum carrier quantity × declared net-energy conversion; retain carrier identity and do not add service and fuel representations of the same operation"
+      inputs:
+        - "carrier quantities"
+        - electricity
+        - "conversion factors"
+        - "operation ids"
+      output: "MJ by process and period"
+      source_ids: []
+    - id: calc_cut_mass_balance
+      applies_to: "each cut"
+      rule: "harvest-ready input = accepted fresh output + rejected/lost biomass + separately traced destinations, within stated measurement uncertainty"
+      inputs:
+        - "incoming biomass"
+        - "accepted mass"
+        - "rejected mass"
+        - "other destinations"
+      output: "reconciled cut mass balance"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_managed_soil_emissions
+      applies_to: "nitrogen and amendment emissions"
+      rule: "apply the declared inventory-method equations and factors to actual relevant N, urea, lime, residue and renewal activity data; separate species and compartments"
+      inputs:
+        - "recorded activity data"
+        - "method version and factors"
+      output: "species-specific elementary exchanges"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Confirm fresh, unprocessed, unensiled, undried and unbaled state at farm-gate hand-off."
+      evidence: "product description, harvest and dispatch records"
+    - id: dq_period_completeness
+      applies_to: "multi-period attribution"
+      requirement: "Identify establishment phase, every productive stand-year, every included cut, stand termination and any missing records; document prospective lifetime assumptions."
+      evidence: "period index and stand history"
+    - id: dq_mass_and_moisture
+      applies_to: "accepted output"
+      requirement: "Use calibrated fresh-mass measurement or a documented field estimate and a representative dry-matter sample for each cut."
+      evidence: "calibration, sample and laboratory records"
+    - id: dq_input_completeness
+      applies_to: "all processes"
+      requirement: "Reconcile seed, nutrient products, water, energy and crop-protection records to field area, operation and reporting period."
+      evidence: "invoice-to-field reconciliation"
+    - id: dq_route_separation
+      applies_to: "alternative routes"
+      requirement: "Keep rainfed/irrigated, management-system and harvest-technology strata separate unless production-weighted aggregation is demonstrated."
+      evidence: "stratum records and weighting calculation"
+    - id: dq_flow_resolution
+      applies_to: "parameterized cards"
+      requirement: "Resolve each generated exchange to one verified Product-flow UUID using actual product, composition, property, unit, geography and provider evidence."
+      evidence: "foreground Flow Set selection record"
+validation_rules:
+  - rule_id: validate_reference_gate
+    applies_to: "reference product"
+    rule: "Reject a package that includes ensiling, fermentation, drying, baling or feed manufacture in the reference-product process."
+    source_ids: []
+  - rule_id: validate_stand_periods
+    applies_to: "all processes"
+    rule: "Require establishment year, stand age, reporting stand-year, cut identifiers, actual or prospective stand life, and termination treatment; reject double attribution across periods."
+    source_ids: []
+  - rule_id: validate_nutrient_consolidation
+    applies_to: "each applicable process"
+    rule: "Permit at most one consolidated agricultural-nutrient-supply card and no nutrient group binding; require actual products and nutrient composition downstream."
+    source_ids: []
+  - rule_id: validate_n_fixing_crop
+    applies_to: "annual nutrient records"
+    rule: "Do not accept routine mineral-N input without evidence of the route-specific need; require nodulation or soil/plant evidence when mineral N is reported."
+    source_ids:
+      - umn-alfalfa-fertilizer
+  - rule_id: validate_cut_balance
+    applies_to: "each cut"
+    rule: "Require accepted output plus rejects and other destinations to reconcile with harvest-ready input within disclosed measurement uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_irrigation_route
+    applies_to: "water card"
+    rule: "Require zero supplied irrigation water for rainfed strata and event-linked measured or calculated delivery for irrigated strata."
+    source_ids: []
+  - rule_id: validate_reject_path
+    applies_to: "rejected biomass"
+    rule: "Require each rejected state to be left in field, recovered, downgraded or discarded with a declared destination; it shall not enter accepted output."
+    source_ids: []
+  - rule_id: validate_route_delta
+    applies_to: "alternative routes"
+    rule: "Require evidence for any claimed change in topology, inventory, calculation or validation and prevent averaging mutually exclusive post-harvest product states."
+    source_ids: []
+  - rule_id: validate_range_shape
+    applies_to: "every flow card"
+    rule: "Require exactly one complete Range with role, lower, upper, unit, basis, basis kind, evidence kind and source ids when externally or method supported."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground production dataset for fresh farm-gate alfalfa forage"
+  downstream_use: "secondary dataset and background dataset after review"
+  allowed_use: "crop-production inventories, livestock-feed supply chains and later silage systems that add downstream transformation explicitly"
+  excluded_use: "direct representation of hay, silage, pellets, meal, grazed forage, seed production or feed manufacturing"
+  required_metadata: "location, field, establishment year, stand age and life, reporting year, cut schedule, irrigation and management route, accepted fresh mass, dry-matter fraction, reject destinations and reference-gate evidence"
+  required_quality_disclosure: "record completeness by phase and cut, mass estimation method, dry-matter sampling, route separation, prospective stand-life assumptions, Flow Set selections and emission-method version"
+  update_trigger: "changed product gate, new route, revised stand-life attribution, changed cutting schedule, material yield or moisture change, new emission method, or newly verified flow identity"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "umn-alfalfa-establishment"
+    type: "extension_guidance"
+    reference: "University of Minnesota Extension, “Alfalfa establishment: Management strategies”, https://extension.umn.edu/agriculture/crop-production/forages/alfalfa-establishment-management-strategies"
+    used_for: "pure-live-seed basis, seed rate, coating/inoculation, establishment nutrients and perennial establishment records"
+  - id: "umn-alfalfa-fertilizer"
+    type: "extension_guidance"
+    reference: "University of Minnesota Extension, “Alfalfa fertilizer recommendations”, https://extension.umn.edu/agriculture/crop-production/nutrient-management-for-minnesota-crops/fertilizing-alfalfa"
+    used_for: "soil-test and yield-goal nutrient decisions, lime timing and limits on routine N fertilizer"
+  - id: "uc-alfalfa-establishment"
+    type: "extension_guidance"
+    reference: "UC Statewide IPM Program, “Planting and Establishing a Stand”, https://ipm.ucanr.edu/agriculture/alfalfa/planting-and-establishing-a-stand-stand-establishment/"
+    used_for: "establishment operations, irrigation, seedbed and stand acceptance"
+  - id: "uc-alfalfa-irrigation"
+    type: "extension_guidance"
+    reference: "UC Statewide IPM Program, “Irrigation and Wheel Traffic Considerations”, https://ipm.ucanr.edu/PMG/C001/m001scirrwheel.html"
+    used_for: "irrigation timing, field traffic and regrowth management"
+  - id: "uc-alfalfa-established-ipm"
+    type: "extension_guidance"
+    reference: "UC Statewide IPM Program, “Integrated Weed Management in Established Alfalfa”, https://ipm.ucanr.edu/agriculture/alfalfa/integrated-weed-management-in-established-alfalfa/"
+    used_for: "established-stand management, irrigation timing and crop-protection records"
+  - id: "umn-alfalfa-drought-2024"
+    type: "extension_guidance"
+    reference: "University of Minnesota Extension, “Alfalfa during drought”, reviewed 2024, https://extension.umn.edu/agriculture/crop-production/forages/alfalfa-during-drought"
+    used_for: "crop water-use rate, irrigation scheduling and rainfed/irrigated route separation"
+  - id: "umn-alfalfa-harvest-loss"
+    type: "extension_guidance"
+    reference: "University of Minnesota Extension, “Alfalfa scissors cut sampling procedure”, https://extension.umn.edu/agriculture/crop-production/forages/alfalfa-scissors-cut-sampling-procedure"
+    used_for: "harvest quality sampling and harvest-loss evidence"
+  - id: "usda-ars-alfalfa-irrigation"
+    type: "literature"
+    reference: "USDA Agricultural Research Service, “Effect of sprinkler irrigation depth and uniformity on alfalfa yield and quality”, https://www.ars.usda.gov/research/publications/publication/?seqNo115=337586"
+    used_for: "seasonal water use, multiple cuts and water-productivity context"
+  - id: "usda-ars-alfalfa-management-2024"
+    type: "dataset"
+    reference: "USDA Agricultural Research Service project report 440524, FY2024, https://www.ars.usda.gov/research/project/?accnNo=440524&fy=2024"
+    used_for: "perennial stand life, cutting schedules, cut contribution and route-specific management"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O, indirect nitrogen emissions, lime/urea CO2 and forage-renewal residue N"
+  - id: "area-time-identity"
+    type: "method_factor"
+    reference: "Physical area-time identity"
+    used_for: "establishment and stand-year attribution"
+  - id: "area-balance-identity"
+    type: "method_factor"
+    reference: "Physical area balance identity"
+    used_for: "seeded, established and productive area checks"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Physical mass-conservation identity"
+    used_for: "cut mass reconciliation and rejected biomass"
+  - id: "reference-flow-identity"
+    type: "method_factor"
+    reference: "PCR normalization identity"
+    used_for: "exact reference output and normalization"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f2f178549e920d27554dd10edbb991e54acab4839dc15758ef07213540ff5154"
+  generated_content_sha256: "sha256:dcf0fbfaf1e44afdfbe62dbb5ad01182d4d0d5bcd8a0a710089a2a6c2a8a9609"

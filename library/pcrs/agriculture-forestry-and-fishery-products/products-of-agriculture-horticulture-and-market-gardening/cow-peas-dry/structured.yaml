@@ -1,10 +1,1348 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01706"
-  title: "Cow peas, dry"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cow-peas-dry"
+  classification_refs: "CPC 3.0:01706 Cow peas, dry"
+  covered_products: "mature whole dry cowpea grain (Vigna unguiculata), including declared market classes and colours"
+  excluded_products: "green pods and leaves; planting seed sold as seed; cooked or canned grain; flour; splits; industrial fractions"
+  representative_product: "mature cleaned dry cowpea grain at farm gate"
+  production_route: "managed field production parent with rainfed or irrigated variants; synchronized single picking or staggered multiple pickings; pod drying, threshing, cleaning, grading and conditional final drying"
+  market_state: "harvested grain, unprocessed; production mix, at farm gate"
+functional_unit:
+  what: "accepted mature whole dry cowpea grain at the declared farm-gate hand-off"
+  how_much: "1,000 kg"
+  how_well: "declared species, market class or colour, grade, wet-basis moisture, foreign matter, insect damage, broken or split grain, crop year and lot status"
+  how_long_or_cycle: "one crop cycle through farm-gate hand-off; all staggered pickings and linked conditioning passes included"
+  reference_flow_link: "cowpeas_dry_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "field through farm gate"
+      rule: "Include establishment, management, every mature-pod picking, pod drying, threshing, winnowing or cleaning, grading, conditional final drying and farm-gate hand-off."
+      source_ids:
+        - iita-west-africa-cowpea-2018
+        - iita-farmers-guide-cowpea-2009
+    - rule_id: boundary_harvest_independent
+      applies_to: "harvest"
+      rule: "Keep harvest separate from field production because it changes the state from standing mature crop to collected pod lots and may comprise several dated pickings; keep conditioning separate because it begins after that hand-off."
+      source_ids:
+        - iita-farmers-guide-cowpea-2009
+    - rule_id: boundary_states
+      applies_to: "conditioning and grading"
+      rule: "Track pods, loose grain, stabilized grain, accepted grade, downgraded grain, rework and final reject as distinct states with exclusive hand-offs."
+      source_ids:
+        - iita-west-africa-cowpea-2018
+        - fao-cowpea-postharvest
+    - rule_id: boundary_storage
+      applies_to: "farm-gate endpoint"
+      rule: "Use a single-period crop-cycle route with no storage after hand-off. Include only drying or short holding needed to attain the declared hand-off condition; exclude storage and pest-control burdens after hand-off."
+      source_ids:
+        - fao-grain-drying-storage
+    - rule_id: boundary_route_delta
+      applies_to: "route variants"
+      rule: "For rainfed versus irrigated, manual versus mechanized, single versus multiple picking and passive versus powered drying, collect the changed input, energy, loss, pass and validation records under the named parent process; mutually exclusive alternatives cannot be combined for one lot."
+      source_ids:
+        - iita-farmers-guide-cowpea-2009
+        - iita-west-africa-cowpea-2018
+boundary_abstraction:
+  declared_starting_condition: "field establishment for the represented cowpea crop cycle, with seed or planting material and all inherited upstream product datasets entering the foreground"
+  starting_condition_role: "foreground start for managed biological production"
+  product_classification_scope: "CPC 3.0:01706 Cow peas, dry"
+  recursive_input_rule: "cowpea grain retained or purchased for planting remains a planting-material input with its upstream dataset and cannot be counted as the current farm-gate reference output"
+  upstream_dataset_requirement: "every purchased product, energy carrier, water service and planting-material input carries a geographically and temporally appropriate upstream dataset or an explicit data gap"
+  disclosure: "declare field location, crop year, production variant, picking pattern, harvested state, conditioning and drying technology, farm-gate specification and every output destination"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Cow peas, dry"
+    uuid: "c377d583-fcf6-47fe-ac52-95ec0a377058"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Vigna unguiculata"
+    - "mature whole dry grain"
+    - "production mix"
+    - "farm gate"
+    - "crop year"
+    - "market class or colour"
+    - grade
+    - "wet-basis moisture"
+    - "foreign matter"
+    - "insect damage"
+    - "broken or split fraction"
+    - "harvest route"
+    - "drying route"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report net accepted mass at the farm gate and do not include rejects, unresolved rework or packaging."
+  - id: moisture_basis
+    applies_to: "pods and grain"
+    required_property_ref:
+      name: "mass and moisture"
+      uuid: ""
+    required_unit: "kg; % wet basis"
+    rule: "Record moisture on a wet basis at every mass hand-off; use dry solids for comparisons across drying states."
+  - id: nutrient_product_basis
+    applies_to: "nutrient supply"
+    required_property_ref:
+      name: "product quantity and nutrient composition"
+      uuid: ""
+    required_unit: "native product unit; kg nutrient"
+    rule: "Record each mineral, organic or nutrient-bearing product once and derive nutrient quantities from its analysis without duplicating compound products."
+  - id: energy_conversion
+    applies_to: "energy carriers"
+    required_property_ref:
+      name: "native carrier quantity and net energy"
+      uuid: ""
+    required_unit: "L; kg; kWh; MJ"
+    rule: "Preserve the measured carrier unit and disclose every factor used to convert to MJ."
+process_map:
+  - id: field_production
+    name: "Managed cowpea field production"
+    inclusion: "required"
+    inclusion_condition: "All represented crop cycles"
+    role: "Managed biological production with declared alternative production route deltas from field establishment to physiologically mature standing plants"
+    quantitative_reference: "one field and crop cycle linked to final accepted grain"
+  - id: harvest_capture
+    name: "Mature-pod harvest and capture"
+    inclusion: "required"
+    inclusion_condition: "One picking for synchronized maturity or all pickings for staggered maturity"
+    role: "Independent removal of mature pods from the production context"
+    quantitative_reference: "one field-picking event or linked picking campaign"
+  - id: primary_conditioning
+    name: "Pod drying, threshing and initial cleaning"
+    inclusion: "required"
+    inclusion_condition: "Every harvested pod lot"
+    role: "Primary conditioning with declared alternative technology deltas from harvested pods to loose cleaned grain"
+    quantitative_reference: "one harvested-pod lot"
+  - id: final_drying
+    name: "Conditional final drying and stabilization"
+    inclusion: "conditional"
+    inclusion_condition: "Include when cleaned grain exceeds the declared farm-gate moisture or stability limit"
+    role: "Bounded stabilization from moist usable grain to dry stable grain"
+    quantitative_reference: "one drying lot and pass"
+  - id: grading_handoff
+    name: "Grading, routing and farm-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "Every conditioned grain lot"
+    role: "Exclusive classification into accepted, downgraded, rework or reject destinations"
+    quantitative_reference: "one grading lot linked to the farm-gate output"
+process_inventory:
+  - id: field_production
+    label: "Managed cowpea field production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Cowpea planting material"
+          name: "Cowpea seed for planting"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "measure planting material entering the represented field; do not classify the harvested reference product as planting seed"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "5"
+                upper: "250"
+                unit: "kg"
+                basis: "planting material per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Actual mineral fertilizers, organic fertilizers and nutrient-bearing amendments"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product mass or volume and nutrient content / kg, L or m3 product; kg nutrient"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "record each actual product and application once, retaining formulation and nutrient analysis; expand to verified concrete product UUIDs during dataset generation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg product equivalent"
+                basis: "sum of applied nutrient-bearing product mass per 1,000 kg accepted grain; volumes remain separately disclosed"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection products as applied"
+          flow_type: "product"
+          property_unit: "Product mass or volume / kg or L"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "measure each formulation and application; retain active ingredient and concentration separately"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg product equivalent"
+                basis: "total formulated product per 1,000 kg accepted grain; liquid volume remains separately reported"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_service
+          role: "Irrigation water supplied"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "measure delivered irrigation water when irrigation is used; zero is valid for rainfed fields"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3"
+                basis: "delivered irrigation water per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field-operation energy carriers"
+          name: "Measured fuel and purchased energy used by field operations"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Net energy / MJ"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "record actual carriers by operation and convert with disclosed factors; retain carrier quantities"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ"
+                basis: "field-operation energy per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Cultivated land occupation"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area time / ha crop-cycle"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "calculate cultivated area and occupied crop cycle linked to the accepted output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.05"
+                upper: "10"
+                unit: "ha crop-cycle"
+                basis: "cultivated land occupation per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: mature_standing_crop
+          role: "Mature standing cowpea crop"
+          name: "Intended output: physiologically mature cowpea plants and pods at harvest readiness"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "calculate moisture-characterized mature crop handed to harvest, including the declared single- or multiple-picking route"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "12000"
+                unit: "kg as harvested"
+                basis: "mature above-ground crop associated with 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_residue_intended
+          role: "Intended haulm or field-residue co-product"
+          name: "Cowpea haulm or crop residue deliberately recovered for use"
+          flow_type: "product"
+          property_unit: "Dry mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "measure only material with an intended destination and hand-off; otherwise classify it as residue retained on field or waste"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg dry matter"
+                basis: "intended recovered haulm per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_losses
+          role: "Unrecovered field residue and pre-harvest loss"
+          name: "Unrecovered crop residue, fallen pods and damaged material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "estimate by field sampling and reconcile separately from intended co-products"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg as observed"
+                basis: "unrecovered residue and pre-harvest loss per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: soil_n2o
+          role: "Direct and indirect managed-soil nitrous oxide"
+          name: "Nitrous oxide to air from managed soils"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "calculate from measured nitrogen activity data with the disclosed IPCC tier and factors; convert N2O-N to N2O by 44/28"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O"
+                basis: "managed-soil N2O per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - ipcc-2019-managed-soils
+  - id: harvest_capture
+    label: "Mature-pod harvest and capture"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Mature standing crop handed to harvest"
+          name: "Physiologically mature cowpea crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "carry forward the moisture-characterized mature crop from field production without duplication"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "12000"
+                unit: "kg as harvested"
+                basis: "mature crop input per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest energy carriers"
+          name: "Measured fuel and purchased energy used for picking, cutting or collection"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Net energy / MJ"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "record energy by picking event; include all repeated pickings for staggered maturity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ"
+                basis: "harvest energy per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_mature_pods
+          role: "Harvested mature cowpea pods"
+          name: "Mature dry or drying-ready cowpea pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh all collected mature-pod lots at each hand-off to pod drying and conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - iita-farmers-guide-cowpea-2009
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "5000"
+                unit: "kg pods as harvested"
+                basis: "harvested mature pods per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - iita-farmers-guide-cowpea-2009
+        - row_id: harvest_residue_coproduct
+          role: "Recovered harvest residue co-product"
+          name: "Recovered haulm or stems with an intended destination"
+          flow_type: "product"
+          property_unit: "Dry mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "measure only independently intended recovered material at its hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg dry matter"
+                basis: "recovered harvest residue per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_loss
+          role: "Shattered, uncollected or damaged harvest material"
+          name: "Harvest loss and damaged pods or grain without an intended product destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "estimate by representative loss sampling for every picking and exclude it from accepted output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "harvest loss per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Pod drying, threshing and initial cleaning"
+    inputs:
+      product:
+        - row_id: pod_lot_input
+          role: "Harvested pod lot"
+          name: "Harvested mature cowpea pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh incoming pods and record inlet moisture before drying, threshing and cleaning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - iita-farmers-guide-cowpea-2009
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "5000"
+                unit: "kg pods as received"
+                basis: "incoming pods per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - iita-farmers-guide-cowpea-2009
+        - row_id: conditioning_energy
+          role: "Conditioning energy carriers"
+          name: "Measured energy for pod drying, threshing, winnowing and cleaning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Net energy / MJ"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "record actual carriers by lot and pass; zero purchased energy is valid for passive sun drying and manual work when human labour is reported separately"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15000"
+                unit: "MJ"
+                basis: "conditioning energy per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: loose_cleaned_grain
+          role: "Loose cleaned cowpea grain"
+          name: "Threshed and winnowed cowpea grain before final moisture decision"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh prepared grain and record moisture, foreign matter, insect damage and broken grain at hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - iita-west-africa-cowpea-2018
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "prepared loose grain per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - iita-west-africa-cowpea-2018
+        - row_id: chaff_coproduct
+          role: "Intended pod-shell or chaff co-product"
+          name: "Pod shells, chaff or haulm deliberately supplied for use"
+          flow_type: "product"
+          property_unit: "Dry mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh separately only when an intended destination and hand-off exist"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg dry matter"
+                basis: "intended conditioning co-product per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Conditioning rejects and foreign matter"
+          name: "Pod fragments, stones, soil, foreign matter and unrecoverable damaged grain"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh exclusive reject destinations and distinguish disposal from on-field return or recovery"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "conditioning rejects per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: final_drying
+    label: "Conditional final drying and stabilization"
+    inputs:
+      product:
+        - row_id: moist_grain_input
+          role: "Moist cleaned grain requiring stabilization"
+          name: "Cleaned cowpea grain above the declared moisture or stability limit"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh and test each lot before the drying intervention; omit this process when the limit is already met"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_records
+              source_ids:
+                - fao-grain-drying-storage
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2500"
+                unit: "kg"
+                basis: "moist grain entering final drying per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-grain-drying-storage
+        - row_id: drying_energy
+          role: "Final-drying energy carriers"
+          name: "Measured purchased energy or fuel used for final drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Net energy / MJ"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "record actual carriers and operating time for each drying pass; passive ambient drying may report zero purchased energy"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ"
+                basis: "final-drying energy per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_dry_grain
+          role: "Stabilized dry cowpea grain"
+          name: "Cowpea grain meeting the declared moisture and stability condition"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh at outlet, test moisture and hand the lot to grading; return under-dried material only through a recorded additional pass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_records
+              source_ids:
+                - fao-grain-drying-storage
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg"
+                basis: "stabilized grain per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-grain-drying-storage
+      waste:
+        - row_id: drying_rejects
+          role: "Drying rejects"
+          name: "Moulded, insect-damaged or otherwise rejected grain removed during drying"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh rejects and record disposal, recovery or downgrade destination; do not include them in stabilized output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_records
+              source_ids:
+                - fao-cowpea-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "drying rejects per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-cowpea-postharvest
+      elementary:
+        - row_id: water_removed
+          role: "Water removed in final drying"
+          name: "Water to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "calculate from inlet and outlet mass and wet-basis moisture, reconciled with rejects and stock change"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_records
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg water"
+                basis: "water removed per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+  - id: grading_handoff
+    label: "Grading, routing and farm-gate hand-off"
+    inputs:
+      product:
+        - row_id: conditioned_grain_input
+          role: "Conditioned grain entering grading"
+          name: "Cleaned dry or stabilized cowpea grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh every lot entering grading and retain the path through or around final drying"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2500"
+                unit: "kg"
+                basis: "conditioned grain input per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grading_energy
+          role: "Grading and handling energy carriers"
+          name: "Measured energy used for grading, conveying and lot changeover cleaning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Net energy / MJ"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "record actual carriers by run and assign shared cleaning or changeover energy once"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ"
+                basis: "grading and handling energy per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rework_return
+          role: "Returned off-spec grain for rework"
+          name: "Off-spec cowpea grain returned from a prior grading pass"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh each return and link it to its originating lot and final exclusive destination; retain prior burdens"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "rework return per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cowpeas_dry_farm_gate
+          role: "Accepted dry cowpea grain at farm gate"
+          name: "Cow peas, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c377d583-fcf6-47fe-ac52-95ec0a377058"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "set to the reference amount after excluding downgraded, rejected and unresolved rework material"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "accepted mature dry cowpea grain at farm gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_grain
+          role: "Downgraded cowpea grain"
+          name: "Cowpea grain intentionally sold or handed off below the accepted reference grade"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh each downgraded destination and keep it mutually exclusive from accepted, rework and reject states"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "downgraded grain per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Final grading rejects"
+          name: "Foreign matter, severely damaged grain and other material with no product destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Quantify this role for the linked field, picking, lot or run and preserve its exclusive hand-off."
+          amount:
+            expression: "weigh final rejects and record disposal or recovery route; exclude them from accepted and downgraded outputs"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted dry cowpea grain at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids:
+                - fao-cowpea-postharvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "final rejects per 1,000 kg accepted grain"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-cowpea-postharvest
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_output_classification
+    applies_to: "all output nodes"
+    rule: "Classify every output as accepted product, independently intended co-product, residue retained in the system, rework, downgraded product or waste before attribution; a material may occupy only one final state."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_coproduct
+    applies_to: "intended haulm, chaff or downgraded grain"
+    rule: "When an independently intended output exists, make and disclose a study-specific attribution decision. Prefer a documented physical relation when causality supports it; otherwise disclose economic allocation, prices, period and sensitivity. Residues and wastes receive no automatic credit."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_batch
+    applies_to: "fields, pickings, lots and runs"
+    rule: "Assign direct records to their field, event or lot. Assign shared cleaning, changeover and run burdens once using measured throughput or another disclosed causal driver; never count the same campaign in each picking."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rework
+    applies_to: "returned off-spec material"
+    rule: "Retain burdens already carried by returned material, add only incremental rework burdens, and count its mass once at the final accepted, downgraded, recovered or discarded destination."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_records
+      process_id: "field_production"
+      flow_role: "planting, nutrients, protection, water, energy, land and N activity"
+      record_type: "field log, invoice, meter and application record"
+      raw_fields: "field; area; dates; product; amount; formulation; nutrient analysis; water; carrier; factor"
+      collection_method: "reconcile every application and operation to the field"
+      unit: "kg; L; m3; kWh; MJ; ha"
+      frequency: "each event"
+      temporal_coverage: "crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum by actual product or carrier, then normalize to accepted output"
+      quality_evidence: "invoice, calibrated meter, label and field log"
+    - protocol_id: cp_field_outputs
+      process_id: "field_production"
+      flow_role: "mature crop, intended residue and loss"
+      record_type: "field sample and mass record"
+      raw_fields: "field; area; crop state; fresh mass; dry matter; destination; loss"
+      collection_method: "representative sampling plus measured hand-off"
+      unit: "kg; %; ha"
+      frequency: "field and crop cycle"
+      temporal_coverage: "maturity to final picking"
+      site_scope: "each field"
+      aggregation_rule: "moisture-align exclusive output states"
+      quality_evidence: "sampling plan, scale calibration and destination record"
+    - protocol_id: cp_harvest_records
+      process_id: "harvest_capture"
+      flow_role: "pods, residue, loss and energy"
+      record_type: "picking ticket, scale, loss sample and machine log"
+      raw_fields: "field; picking date; route; inlet state; pod mass; residue; loss; carrier; moisture; destination"
+      collection_method: "record each picking and reconcile the linked campaign"
+      unit: "kg; %; L; kWh; MJ"
+      frequency: "each picking"
+      temporal_coverage: "all pickings in crop cycle"
+      site_scope: "each field and route"
+      aggregation_rule: "sum mutually exclusive outputs over all pickings"
+      quality_evidence: "dated ticket, calibrated scale and loss protocol"
+    - protocol_id: cp_conditioning_records
+      process_id: "primary_conditioning"
+      flow_role: "pods, grain, chaff, reject and energy"
+      record_type: "lot mass and operation log"
+      raw_fields: "lot; pass; inlet and outlet mass; moisture; carrier; duration; reject; co-product; destination"
+      collection_method: "weigh every inlet and exclusive outlet for each pass"
+      unit: "kg; %; kWh; MJ; h"
+      frequency: "each lot and pass"
+      temporal_coverage: "pod receipt through initial cleaning"
+      site_scope: "each conditioning location"
+      aggregation_rule: "reconcile moisture-aligned pass balances without duplicate returns"
+      quality_evidence: "calibrated scale, moisture meter and closure sheet"
+    - protocol_id: cp_drying_records
+      process_id: "final_drying"
+      flow_role: "moist grain, stabilized grain, reject, water and energy"
+      record_type: "drying lot log and moisture test"
+      raw_fields: "lot; pass; inlet and outlet mass; wet-basis moisture; energy; duration; reject; stock change"
+      collection_method: "test and weigh before and after every pass"
+      unit: "kg; %; kWh; MJ; h"
+      frequency: "each lot and pass"
+      temporal_coverage: "drying intervention"
+      site_scope: "each dryer or drying area"
+      aggregation_rule: "calculate dry solids and water balance; link every return"
+      quality_evidence: "calibrated meter, scale and pass history"
+    - protocol_id: cp_grading_records
+      process_id: "grading_handoff"
+      flow_role: "accepted, downgraded, rework, reject and energy"
+      record_type: "grading ticket, test and run log"
+      raw_fields: "lot; run; pass; grade; moisture; foreign matter; insects; broken fraction; each mass; destination; energy"
+      collection_method: "weigh and classify every exclusive output state"
+      unit: "kg; %; kWh; MJ"
+      frequency: "each lot, run and pass"
+      temporal_coverage: "grading through farm-gate hand-off"
+      site_scope: "each grading location"
+      aggregation_rule: "trace returns to origin and count final destinations once"
+      quality_evidence: "ticket, test result, scale calibration and destination evidence"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all flows"
+      rule: "normalized amount = represented amount × 1,000 / accepted farm-gate grain mass"
+      inputs:
+        - "represented amount"
+        - "accepted mass"
+      output: "amount per 1,000 kg reference product"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_moisture_balance
+      applies_to: "pods and grain"
+      rule: "dry solids = wet mass × (1 − wet-basis moisture fraction); water removed equals inlet water minus outlet water after rejects and stock change"
+      inputs:
+        - "inlet and outlet mass and moisture"
+        - reject
+        - "stock change"
+      output: "aligned dry solids and water removed"
+      source_ids:
+        - mass-balance-identity
+        - fao-grain-drying-storage
+    - id: calc_mass_closure
+      applies_to: "harvest and post-harvest nodes"
+      rule: "moisture-aligned input = mutually exclusive outputs + measured loss or release + stock change, within disclosed uncertainty"
+      inputs:
+        - "all linked inlet"
+        - outlet
+        - "loss and stock records"
+      output: "node closure and unexplained difference"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_soil_n2o
+      applies_to: "managed soils"
+      rule: "apply the disclosed IPCC tier to measured synthetic, organic, residue and other nitrogen activity; convert N2O-N to N2O by 44/28"
+      inputs:
+        - "nitrogen activity and selected factors"
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Retain species, crop year, class or colour, grade, moisture, foreign matter, insect damage, broken or split fraction and route."
+      evidence: "farm-gate ticket and laboratory or calibrated field test"
+    - id: dq_traceability
+      applies_to: "all processes"
+      requirement: "Link each field, picking, lot, run, pass, return and final destination with stable identifiers."
+      evidence: "field-to-lot trace and run history"
+    - id: dq_completeness
+      applies_to: "crop cycle"
+      requirement: "Cover all management events, every staggered picking, all conditioning passes, conditional drying, grading, rework and rejects."
+      evidence: "event index and completeness reconciliation"
+    - id: dq_mass_balance
+      applies_to: "material nodes"
+      requirement: "Reconcile moisture-aligned inputs, intended outputs, residues, downgraded material, rework, rejects, losses, releases and stock changes."
+      evidence: "closure worksheet with explained variance"
+    - id: dq_representativeness
+      applies_to: "published dataset"
+      requirement: "Report geography, season, fields, varieties or market classes, rainfed or irrigated share, picking routes, post-harvest technologies, drying share and aggregation weights."
+      evidence: "metadata register and weighted lot index"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Require the stated product, Mass and unit-group UUIDs, 1,000 kg amount and every required qualifier."
+    source_ids: []
+  - rule_id: validate_route_parent_delta
+    applies_to: "route variants"
+    rule: "Require a named parent process and current evidence for every changed input, topology, calculation, data or validation requirement; reject mutually exclusive variants reported for the same field-lot."
+    source_ids:
+      - iita-farmers-guide-cowpea-2009
+      - iita-west-africa-cowpea-2018
+  - rule_id: validate_picking_completeness
+    applies_to: "harvest"
+    rule: "For synchronized maturity require one declared picking; for staggered maturity require every dated picking and reconciliation to the field total."
+    source_ids:
+      - iita-farmers-guide-cowpea-2009
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "each process"
+    rule: "Allow at most one consolidated mineral-fertilizer, organic-fertilizer and nutrient-bearing amendment Product-input card per process; it must bind only to flow-set.agricultural-nutrient-supply version 0.3.0 without a group. Separate N, P, K, manure or amendment cards are prohibited."
+    source_ids: []
+  - rule_id: validate_output_handoffs
+    applies_to: "all output nodes"
+    rule: "Require an exclusive hand-off for accepted, intended co-product, residue, downgraded, rework, reject and loss states and an explicit attribution decision for each intended co-product."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_rework
+    applies_to: "conditioning, drying and grading"
+    rule: "Link every off-spec state to another pass, downgrade, recovery or disposal; retain prior burdens and prevent it from also appearing as accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_batch_accounting
+    applies_to: "fields, pickings, lots and runs"
+    rule: "Require production-mode identifiers on inputs, outputs, cleaning and changeover events and assign every shared burden once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_drying
+    applies_to: "final drying"
+    rule: "When the process is used, require inlet and outlet wet-basis moisture and mass, energy, pass history, rejects, water removed and mass closure; when omitted, require evidence that grain already met the hand-off condition."
+    source_ids:
+      - fao-grain-drying-storage
+  - rule_id: validate_ranges
+    applies_to: "all Flow Cards"
+    rule: "Require exactly one complete Range per quantitative Flow Card, including lower, upper, unit, basis, basis kind, evidence kind and a Sources field, with identical values and tokens in English, Chinese and structured output."
+    source_ids:
+      - mass-balance-identity
+published_dataset_profile:
+  dataset_role: "foreground production dataset for mature dry cowpea grain at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after representativeness review"
+  allowed_use: "LCA and footprint studies requiring unprocessed mature whole dry cowpea grain at farm gate"
+  excluded_use: "green pods or leaves, planting seed sold as seed, cooked or canned grain, flour, splits, industrial fractions, or undisclosed post-gate storage and processing"
+  required_metadata: "geography; crop year; field and lot coverage; species; variety or market class; colour; grade; moisture; foreign matter; insect damage; broken or split fraction; rainfed or irrigated share; picking pattern; conditioning and drying technology; output destinations; attribution method"
+  required_quality_disclosure: "primary-data coverage; calibration; sampling; missing data; provisional estimates; mass and moisture closure; factor versions; aggregation weights; range exceptions"
+  update_trigger: "material change in product boundary, platform identity, Flow Set contract, geography, crop year, management, harvest pattern, post-harvest technology, grade specification, pest condition, output destination, allocation or emission method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "iita-west-africa-cowpea-2018"
+    type: "official_guidance"
+    reference: "International Institute of Tropical Agriculture, Guide to cowpea production in West Africa, 2018, https://www.iita.org/wp-content/uploads/2020/05/Cowpea-manualENGLISH.pdf"
+    used_for: "cowpea identity, field route, harvesting, threshing, cleaning and post-harvest handling"
+  - id: "iita-farmers-guide-cowpea-2009"
+    type: "extension_guidance"
+    reference: "IITA, Farmers' Guide to Cowpea Production in West Africa, https://biblio.iita.org/documents/U09aBkDugjeCowpeaNothomDev.PDF-b9aea89d10a5dd347edef9689d6d8a38.pdf"
+    used_for: "mature dry pod harvest, one versus repeated picking, threshing, winnowing and cleaning"
+  - id: "fao-grain-drying-storage"
+    type: "official_guidance"
+    reference: "FAO, Farm structures in tropical climates, Chapter 9: Crop handling, conditioning and storage, https://www.fao.org/4/s1250e/S1250E0u.htm"
+    used_for: "grain moisture, cleaning, drying and storage-condition distinction"
+  - id: "fao-cowpea-postharvest"
+    type: "official_guidance"
+    reference: "FAO INPhO, Cowpea: Post-harvest Operations, https://www.fao.org/fileadmin/user_upload/inpho/docs/Post_Harvest_Compendium_-_Cowpeas.pdf"
+    used_for: "cowpea insect damage, stabilization and reject states"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O activity data, calculation and factors"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to moisture-aligned material inputs, outputs, losses, releases and stock change"
+    used_for: "mass closure, moisture calculation, hand-off, allocation and rework accounting"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:c656b63047fd7e8d43988d84c75c5d0c856c411d5ec85a2bb732e53a85582fd4"
+  generated_content_sha256: "sha256:852584242002fb4ba489a5d33e9ae68b0f32c06c8c3ff527fc17e25dfe79d5be"

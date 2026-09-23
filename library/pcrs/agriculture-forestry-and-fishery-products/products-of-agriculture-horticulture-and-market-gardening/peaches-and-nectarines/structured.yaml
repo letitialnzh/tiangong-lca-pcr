@@ -1,10 +1,676 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01345"
-  title: "Peaches and nectarines"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.peaches-and-nectarines"
+  classification_refs: "CPC 3.0 01345 — Peaches and nectarines"
+  covered_products: "Fresh cultivated peaches and nectarines, bulk or packed, at the declared first market hand-off"
+  excluded_products: "Nursery trees; orchard establishment unless annualized; processed fruit; downstream distribution, retail, consumer use, and end-of-life treatment"
+  representative_product: "1 kg net marketable fresh peach or nectarine with species, cultivar, maturity/quality grade, production system, geography, and harvest year declared"
+  production_route: "Managed perennial orchard production → harvest and field handling → optional on-site sorting, cooling, and packing"
+  market_state: "Fresh, harvested, marketable fruit at the declared hand-off; packaging is excluded from product mass"
+functional_unit:
+  what: "One kg of net marketable fresh peaches or nectarines at the declared farm-gate or first market hand-off"
+  how_much: "1 kg net product output, excluding culls, field losses, process rejects, and packaging"
+  how_well: "Declared species, cultivar, fresh state, harvest maturity, quality/market grade, production system, and product condition"
+  how_long_or_cycle: "One declared crop cycle and harvest season; disclose reporting period, orchard age, and annualisation convention"
+  reference_flow_link: "Semantic reference product below; identity is retained for foreground binding"
+system_boundary:
+  rules:
+    - rule_id: boundary_starting_condition
+      applies_to: "orchard production"
+      rule: "Start at the bearing-orchard crop cycle; exclude establishment and nursery inputs unless annualized and disclosed."
+      source_ids:
+        - source_ucanr_peach_nectarine_cultural
+        - source_iso_14044
+    - rule_id: boundary_management_and_harvest
+      applies_to: "orchard and harvest"
+      rule: "Include crop management, irrigation, nutrient and crop protection, pruning/thinning, harvest, and field handling."
+      source_ids:
+        - source_ucanr_peach_nectarine_cultural
+        - source_ucanr_peach_fertilizer
+    - rule_id: boundary_optional_packhouse
+      applies_to: "on-site conditioning"
+      rule: "Include on-site sorting, cooling, and packing only when before hand-off; otherwise disclose downstream."
+      source_ids:
+        - source_usda_ams_fresh_fruit_grades
+boundary_abstraction:
+  declared_starting_condition: "Bearing orchard block ready for the declared crop cycle"
+  starting_condition_role: "Fixes the annual foreground boundary; existing orchard capital and prior establishment are excluded unless annualized"
+  product_classification_scope: "Cultivated fresh peaches and nectarines from orchard production through the declared hand-off"
+  recursive_input_rule: "Do not recursively model same-category harvested fruit; a separate packing route records the upstream fruit dataset"
+  upstream_dataset_requirement: "Use linked background or secondary datasets for purchased inputs and resolve identity and geography"
+  disclosure: "Declare orchard age, productive area, species/cultivar, irrigation source, production system, crop cycle, yield, loss routes, and on-site conditioning"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Marketable fresh peaches or nectarines (semantic candidate)"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - cultivar
+    - "fresh market state"
+    - "harvest maturity"
+    - "quality or market grade"
+    - "production system"
+    - "production geography"
+    - "harvest year or crop cycle"
+    - "declared hand-off"
+    - "net product-mass basis"
+    - "on-site sorting/cooling/packing status"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Normalize to net marketable fruit mass; exclude containers, culls, and waste fruit."
+  - id: water_volume
+    applies_to: "irrigation and washing water"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Convert metered or documented water volume to m3."
+  - id: nutrient_basis
+    applies_to: "fertilizer and amendments"
+    required_property_ref:
+      name: "Product mass and nutrient basis"
+      uuid: ""
+    required_unit: "kg product; kg N/P/K"
+    rule: "Record actual product and declared or measured nutrient basis."
+process_map:
+  - id: orchard_management
+    name: "Bearing orchard management"
+    inclusion: "required"
+    inclusion_condition: "Every declared crop cycle"
+    role: "Managed biological production"
+    quantitative_reference: "Per crop cycle/per 1 kg net output"
+  - id: harvest_field_handling
+    name: "Harvest and field handling"
+    inclusion: "required"
+    inclusion_condition: "All fruit for the declared output"
+    role: "Remove mature fruit and transfer state"
+    quantitative_reference: "Per harvest/per 1 kg net output"
+  - id: onsite_sort_cool_pack
+    name: "On-site sorting, cooling, and packing"
+    inclusion: "conditional"
+    inclusion_condition: "When before hand-off"
+    role: "Condition and present market fruit"
+    quantitative_reference: "Per facility run/per 1 kg net output"
+process_inventory:
+  - id: orchard_management
+    label: "Bearing orchard management"
+    inputs:
+      product:
+        - row_id: orchard_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supplied for crop production (semantic candidate)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Supplied irrigation water crosses the orchard boundary as a product input and is distinguished from direct environmental withdrawal."
+          amount:
+            expression: "Metered or supplier-recorded volume assigned to the crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_inputs
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges:
+              - role: qa_guardrail
+                lower: "50"
+                upper: "600"
+                unit: "m3"
+                basis: "per 1,000 kg net marketable fruit output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: orchard_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_inputs
+              source_ids:
+                - source_ucanr_peach_fertilizer
+            ranges: []
+        - row_id: orchard_machinery_fuel
+          role: "Orchard machinery fuel"
+          name: "Mobile machinery fuel for orchard operations (semantic candidate)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Fuel energy or mass/volume / MJ, L, or kg"
+          description: "Fuel consumed by tractors, sprayers, mowers, or other mobile orchard machinery is recorded when consumed on site."
+          amount:
+            expression: "Fuel issue records or equipment logs assigned to the crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_inputs
+              source_ids:
+                - source_ucanr_nectarine_ipm
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: orchard_land_occupation
+          role: "Orchard land occupation"
+          name: "Land occupation by bearing fruit orchard (semantic candidate)"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record orchard area and occupation duration and allocate them to the declared crop cycle."
+          amount:
+            expression: "Orchard area multiplied by occupation duration and allocated to the crop cycle"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_inputs
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+    outputs:
+      product:
+        - row_id: fruit_at_harvest_maturity
+          role: "Fruit at harvestable maturity"
+          name: "Peaches or nectarines at harvestable maturity, gross crop output (semantic candidate)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Fruit at the declared harvest maturity leaves orchard management as the gross crop available for harvest."
+          amount:
+            expression: "Gross crop mass from orchard and harvest records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - source_usda_ams_fresh_fruit_grades
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+      waste:
+        - row_id: orchard_residues
+          role: "Orchard residues and removed fruit"
+          name: "Orchard pruning, thinning, and crop residues (semantic candidate)"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet or fresh mass"
+          description: "Pruning wood, thinned fruit, and other residues are recorded as waste or a separately declared recovery stream."
+          amount:
+            expression: "Weighed or documented residue mass by crop cycle and route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_inputs
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+      elementary:
+        []
+  - id: harvest_field_handling
+    label: "Harvest and field handling"
+    inputs:
+      product:
+        - row_id: harvestable_fruit
+          role: "Harvestable fruit"
+          name: "Peaches or nectarines at harvestable maturity for harvest (semantic candidate)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Gross fruit at declared harvest maturity crosses into harvest and field handling before loss deductions."
+          amount:
+            expression: "Gross fruit mass available to the harvest operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+        - row_id: harvest_machinery_fuel
+          role: "Harvest machinery fuel"
+          name: "Mobile machinery fuel for harvest and field handling (semantic candidate)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Fuel energy or mass/volume / MJ, L, or kg"
+          description: "Fuel consumed by harvest machinery or field transport before hand-off is recorded."
+          amount:
+            expression: "Fuel log or issue record assigned to the harvest operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_fruit
+          role: "Harvested fruit to conditioning"
+          name: "Gross harvested peaches or nectarines for conditioning (semantic candidate)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Fruit collected by harvest leaves as gross harvested fruit for the next declared process."
+          amount:
+            expression: "Weighed gross harvested mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+      waste:
+        - row_id: harvest_losses
+          role: "Harvest losses and damaged fruit"
+          name: "Harvest loss and damaged peach or nectarine fruit (semantic candidate)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Fruit dropped, damaged, spoiled, or left uncollected during harvest is recorded as waste with its route."
+          amount:
+            expression: "Weighed, counted-and-converted, or documented harvest-loss estimate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids:
+                - source_ucanr_peach_nectarine_cultural
+            ranges: []
+      elementary:
+        []
+  - id: onsite_sort_cool_pack
+    label: "On-site sorting, cooling, and packing"
+    inputs:
+      product:
+        - row_id: gross_fruit_to_packhouse
+          role: "Gross harvested fruit for conditioning"
+          name: "Gross harvested peaches or nectarines for on-site conditioning (semantic candidate)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Gross harvested fruit enters this conditional process when sorting, cooling, or packing is included before hand-off."
+          amount:
+            expression: "Mass received at the included facility or packing line"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packhouse_records
+              source_ids:
+                - source_usda_ams_fresh_fruit_grades
+            ranges: []
+        - row_id: packhouse_electricity
+          role: "Cooling and packing electricity"
+          name: "Electricity supply for on-site fruit conditioning and packing (semantic candidate)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity for cooling, sorting lines, lighting, and packing equipment inside the boundary."
+          amount:
+            expression: "Facility meter or documented throughput allocation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packhouse_records
+              source_ids:
+                - source_usda_ams_fresh_fruit_grades
+            ranges: []
+        - row_id: packhouse_process_water
+          role: "Washing or process water, conditional"
+          name: "Process water for on-site fruit conditioning (semantic candidate)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water for washing or wet conditioning only when before hand-off."
+          amount:
+            expression: "Metered or supplier-recorded volume assigned to the included run"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packhouse_records
+              source_ids:
+                - source_usda_ams_fresh_fruit_grades
+            ranges: []
+        - row_id: primary_packaging_materials
+          role: "Primary packaging materials, conditional"
+          name: "Primary packaging function for fresh peaches and nectarines (semantic candidate)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "rigid-container-packaging"
+          property_unit: "Packaging mass or service / kg or item"
+          description: "Record primary containers or wraps when they form part of the declared fresh-fruit market state."
+          amount:
+            expression: "Actual material mass or container count assigned to included product"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packhouse_records
+              source_ids:
+                - source_iso_14044
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_fresh_fruit
+          role: "Net marketable fresh fruit at hand-off"
+          name: "Marketable fresh peaches or nectarines at declared first market hand-off (semantic candidate)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Fruit passing the declared maturity and market-quality screen leaves as the PCR reference product; packaging and rejects are excluded."
+          amount:
+            expression: "Net weighed product mass after included sorting and conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packhouse_records
+              source_ids:
+                - source_usda_ams_fresh_fruit_grades
+            ranges: []
+      waste:
+        - row_id: packhouse_rejects
+          role: "Sorting rejects and packhouse losses"
+          name: "Sorting rejects and on-site packing losses of peaches or nectarines (semantic candidate)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Fruit rejected during sorting, cooling, or packing is recorded as waste with its downstream route."
+          amount:
+            expression: "Weighed or documented rejected mass by facility run and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg net marketable fruit output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packhouse_records
+              source_ids:
+                - source_usda_ams_fresh_fruit_grades
+                - source_iso_14044
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivision
+    applies_to: "separable blocks, species, cultivars, or runs"
+    rule: "Avoid allocation by separately measuring peach and nectarine activities whenever records permit."
+    source_ids:
+      - source_iso_14044
+  - rule_id: allocation_shared_crop_output
+    applies_to: "jointly managed outputs"
+    rule: "If subdivision is impossible, allocate by documented net marketable mass and disclose mix, basis, and sensitivity."
+    source_ids:
+      - source_iso_14044
+  - rule_id: allocation_residue_route
+    applies_to: "culls, residues, and diverted fruit"
+    rule: "Treat culls and residues as waste unless a separate product hand-off is documented; do not apply an automatic avoided-burden credit."
+    source_ids:
+      - source_iso_14044
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_orchard_inputs
+      process_id: "orchard_management"
+      flow_role: "orchard inputs, land, water, residues"
+      record_type: "invoices, meters, spray logs, field records"
+      raw_fields: "block_id; species; cultivar; area; irrigation; electricity; fuel; fertilizer and nutrient basis; crop protection; residues"
+      collection_method: "Collect primary records and reconcile to block and cycle"
+      unit: "kg; L; m3; kWh; MJ; m2"
+      frequency: "Each application or meter period"
+      temporal_coverage: "Complete crop cycle and harvest year"
+      site_scope: "Each block or documented aggregation"
+      aggregation_rule: "Sum by block and cycle; disclose shared-record allocation"
+      quality_evidence: "invoices; meters; logs; area records"
+    - protocol_id: cp_harvest_records
+      process_id: "harvest_field_handling"
+      flow_role: "gross harvest, fuel, losses"
+      record_type: "harvest tickets, weighbridge, bin and fuel logs"
+      raw_fields: "block_id; harvest date; species; cultivar; gross mass; fuel; damaged fruit; destination"
+      collection_method: "Weigh and reconcile to receiving and loss records"
+      unit: "kg; L; MJ"
+      frequency: "Each lot or shift"
+      temporal_coverage: "Harvest window in crop cycle"
+      site_scope: "Block, crew, or contractor"
+      aggregation_rule: "Sum by lot and retain assumptions"
+      quality_evidence: "weigh tickets; fuel receipts; supervisor approval"
+    - protocol_id: cp_packhouse_records
+      process_id: "onsite_sort_cool_pack"
+      flow_role: "conditioning, packaging, rejects, net output"
+      record_type: "facility meters, run sheets, pack-out reports"
+      raw_fields: "run_id; incoming mass; net mass; species; cultivar; grade; electricity; water; package mass/count; rejects"
+      collection_method: "Collect facility records and reconcile mass balance"
+      unit: "kg; kWh; m3; item"
+      frequency: "Each run or operating day"
+      temporal_coverage: "Declared inclusion period and harvest season"
+      site_scope: "Included facility or line"
+      aggregation_rule: "Sum by run and allocate shared services by throughput or mass"
+      quality_evidence: "meters; QA records; waste receipts"
+  calculation_rules:
+    - id: calc_net_marketable_output
+      applies_to: "harvest and packing"
+      rule: "Net marketable output = gross fruit − losses − rejects − declared diversions; do not subtract transferred streams twice."
+      inputs:
+        - "gross fruit"
+        - losses
+        - rejects
+      output: "kg net marketable fruit"
+      source_ids:
+        - source_usda_ams_fresh_fruit_grades
+        - source_iso_14044
+    - id: calc_crop_cycle_normalization
+      applies_to: "all flows"
+      rule: "Crop-cycle amount / kg net marketable output for the same declared scope."
+      inputs:
+        - "crop-cycle amount"
+        - "net output"
+      output: "amount per kg reference flow"
+      source_ids:
+        - source_iso_14044
+    - id: calc_nutrient_basis
+      applies_to: "fertilizer and amendments"
+      rule: "Convert actual products using label, analysis, or supplier certificate; retain product and nutrient masses."
+      inputs:
+        - "product mass"
+        - concentration
+      output: "kg product and kg N/P/K"
+      source_ids:
+        - source_ucanr_peach_fertilizer
+  data_quality_requirements:
+    - id: dq_identity_and_qualifiers
+      applies_to: "reference product and cycle records"
+      requirement: "Declare species, cultivar, production system, geography, harvest year, maturity/quality grade, hand-off, and conditioning."
+      evidence: "metadata; product description; grade records"
+    - id: dq_mass_balance
+      applies_to: "harvest and packing"
+      requirement: "Reconcile gross fruit, marketable product, losses, rejects, and diversions; investigate differences."
+      evidence: "weigh tickets; pack-out; waste receipts"
+    - id: dq_temporal_and_site_coverage
+      applies_to: "orchard and facility aggregation"
+      requirement: "Cover the complete crop cycle and identify every contributing block or facility; disclose gaps."
+      evidence: "crop calendar; block register; run list"
+validation_rules:
+  - rule_id: validation_reference_qualifiers
+    applies_to: "reference flow and metadata"
+    rule: "Reject a dataset missing required qualifiers, hand-off, or net product-mass basis."
+    source_ids:
+      - source_usda_ams_fresh_fruit_grades
+  - rule_id: validation_crop_cycle_completeness
+    applies_to: "orchard and harvest"
+    rule: "Check inputs, harvest lots, marketable output, and known losses share the same time and site scope."
+    source_ids:
+      - source_ucanr_peach_nectarine_cultural
+      - source_iso_14044
+  - rule_id: validation_water_exclusivity
+    applies_to: "irrigation water"
+    rule: "Do not count the same volume as supplied irrigation water and direct withdrawal."
+    source_ids:
+      - source_iso_14044
+  - rule_id: validation_product_mass_balance
+    applies_to: "harvest and conditioning"
+    rule: "Require a balance from gross fruit to net marketable output, losses, and rejects."
+    source_ids:
+      - source_iso_14044
+published_dataset_profile:
+  dataset_role: "Primary foreground crop-production dataset; may be released as a secondary dataset after review"
+  downstream_use: "Support process and lifecyclemodel construction for fresh peaches and nectarines at hand-off"
+  allowed_use: "Compare orchard and harvest when qualifiers, boundary, geography, crop cycle, and quality are compatible"
+  excluded_use: "Processed fruit, retail or consumer footprints, post-handoff transport, or a different product state"
+  required_metadata: "species; cultivar; production system; geography; orchard age; area; harvest year/cycle; hand-off; grade; net mass; loss routes"
+  required_quality_disclosure: "Site and period coverage; measured versus estimated inputs; yield/loss reconciliation; nutrient basis; allocations; exclusions"
+  update_trigger: "New crop-cycle evidence, production or irrigation change, market-state convention change, new factor guidance, or boundary/identity inconsistency"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "source_usda_ams_fresh_fruit_grades"
+    type: "official_guidance"
+    reference: "USDA AMS, Nectarines Grades and Standards, https://www.ams.usda.gov/grades-standards/nectarines-grades-and-standards"
+    used_for: "Fresh market state, maturity, quality, and grade qualifiers"
+  - id: "source_ucanr_peach_nectarine_cultural"
+    type: "extension_guidance"
+    reference: "UC IPM, Cultural Tips for Growing Peach and Nectarine, https://ipm.ucanr.edu/home-and-landscape/cultural-tips-for-growing-peach-and-nectarine/"
+    used_for: "Orchard, irrigation, pruning, thinning, harvest, sanitation, and process decomposition"
+  - id: "source_ucanr_peach_fertilizer"
+    type: "extension_guidance"
+    reference: "UC IPM, Fertilizer Applications — Peach, https://ipm.ucanr.edu/agriculture/peach/fertilizer-applications/"
+    used_for: "Nutrient input collection and split-application review"
+  - id: "source_ucanr_nectarine_ipm"
+    type: "extension_guidance"
+    reference: "UC IPM, Pest Management Guidelines — Nectarine, https://ipm.ucanr.edu/pdf/pmg/pmgnectarine.pdf"
+    used_for: "Crop-protection and weed-management inclusion and disclosure"
+  - id: "source_iso_14044"
+    type: "standard"
+    reference: "ISO 14044:2006, https://www.iso.org/standard/38498.html"
+    used_for: "Boundary, allocation, data quality, and mass-balance rules"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7e14a58ede89eca03791af8a5d79818b3a9c57f2a3ec12da290fa844be52c4c0"
+  generated_content_sha256: "sha256:03f0ba8108ab707dcb159bc2c55a170b29e3688d70c372d7cdb31a34966e4ade"

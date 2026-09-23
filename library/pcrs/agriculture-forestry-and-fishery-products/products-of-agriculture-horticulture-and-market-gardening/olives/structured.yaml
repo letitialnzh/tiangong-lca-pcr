@@ -1,10 +1,1106 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01450"
-  title: "Olives"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.olives"
+  classification_refs: "CPC 3.0 01450 Olives"
+  covered_products: "whole fresh olives for table, oil or dual-purpose fruit markets"
+  excluded_products: "cured olives, olive oil, pomace, leaves and timber"
+  representative_product: "fresh whole olive fruit at farm gate"
+  production_route: "perennial establishment, orchard management, harvest and conditional on-farm grading"
+  market_state: "saleable whole fresh unprocessed fruit at farm gate"
+functional_unit:
+  what: "whole fresh olive fruit delivered at farm gate"
+  how_much: "1 kg"
+  how_well: "state table/oil destination, cultivar, maturity, integrity and damage class"
+  how_long_or_cycle: "declared harvest year and orchard phase; attribute establishment across documented bearing years"
+  reference_flow_link: "sum sold accepted_fruit and downgraded_fruit when grading occurs; otherwise picked_fruit is the gate reference fruit"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "Include establishment, tree replacement, irrigation, nutrients and plant protection, pruning, on-site energy, fresh-fruit harvest and grading actually performed before the farm gate. Quantify soil emissions only with applicable methods and activity data, retaining substance and receiving medium. Link upstream production of purchased trees, fertilizers, electricity and fuels to background data. Exclude post-gate transport, pressing, curing, washing and packaging."
+      source_ids: []
+    - rule_id: boundary_fresh_fruit
+      applies_to: "farm-gate fruit"
+      rule: "Deliver only unprocessed whole fruit; model pressing and curing in separate systems."
+      source_ids:
+        - ioc-table-olives
+    - rule_id: boundary_periods
+      applies_to: "orchard cohorts"
+      rule: "Retain establishment, non-bearing, bearing, replacement and retirement years; do not assign all establishment inputs to one arbitrary harvest year."
+      source_ids:
+        - ioc-olive-growing
+    - rule_id: boundary_grading
+      applies_to: "conditional sorting"
+      rule: "Activate grading only when it occurs on farm; track destinations and losses by lot."
+      source_ids:
+        - uc-harvest-2013
+boundary_abstraction:
+  declared_starting_condition: "block land condition, preceding vegetation, tree age, cultivar, density, irrigation infrastructure and base year"
+  starting_condition_role: "foreground starting point for orchard establishment and multi-year burden"
+  product_classification_scope: "whole olive fruit; table/oil destination does not split PCR identity"
+  recursive_input_rule: "record source and amount of any same-category fruit input and stop recursive same-category tracing"
+  upstream_dataset_requirement: "link purchased trees, materials, water and energy to geography- and time-matched upstream datasets"
+  disclosure: "disclose establishment, bearing years, replacement, whether grading is on-site, and table/oil fruit destinations"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Olives"
+    uuid: "b07470dd-3947-4e02-8058-11967225f927"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or cultivar mix"
+    - "table/oil destination"
+    - "harvest date and maturity"
+    - "damage/grade"
+    - "geography and year"
+    - "irrigation regime"
+    - "harvest method"
+    - "fresh-fruit moisture and weighing condition"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use measured net mass of whole fresh fruit at the gate; exclude crate tare, oil and brine."
+  - id: orchard_area
+    applies_to: "perennial orchard"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "ha"
+    rule: "Record managed block area and production year; establishment area is a phase-attribution denominator only."
+  - id: nutrient_basis
+    applies_to: "fertilizers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg product and kg nutrient"
+    rule: "Keep fertilizer product mass and N, P, K nutrient mass separately; never mix these bases."
+  - id: fruit_balance
+    applies_to: "harvest and grading"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile gross lot mass with accepted, downgraded and rejected fruit, separated olive vegetation, non-plant matter, loss and stock change."
+process_map:
+  - id: establish
+    name: "Orchard establishment"
+    inclusion: "required"
+    inclusion_condition: "always for a new-orchard cohort; annualize recorded non-bearing years"
+    role: "multi-year orchard establishment"
+    quantitative_reference: "ha established"
+  - id: manage
+    name: "Olive orchard management"
+    inclusion: "required"
+    inclusion_condition: "bearing and non-bearing orchard years"
+    role: "managed biological production"
+    quantitative_reference: "ha orchard-year"
+  - id: harvest
+    name: "Fresh olive harvest"
+    inclusion: "required"
+    inclusion_condition: "fruiting years"
+    role: "independent removal from trees and on-farm collection"
+    quantitative_reference: "kg picked fruit"
+  - id: sort
+    name: "On-farm fruit grading"
+    inclusion: "conditional"
+    inclusion_condition: "only when grading or damage sorting is before the farm gate"
+    role: "grade and destination reconciliation"
+    quantitative_reference: "kg incoming fruit"
+process_inventory:
+  - id: establish
+    label: "Orchard establishment"
+    inputs:
+      product:
+        - row_id: young_trees
+          role: "Young olive trees"
+          name: "Young olive trees"
+          flow_type: "product"
+          property_unit: "Count / trees"
+          description: "Count planted replacement or initial trees; distinguish purchased nursery trees from on-site propagation."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "trees"
+                basis: "per ha established orchard"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establish_water
+          role: "Establishment irrigation water"
+          name: "Establishment irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Meter irrigation applied during non-bearing establishment; exclude rainfall."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3"
+                basis: "per ha in an establishment year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establish_fuel
+          role: "Establishment machine fuel"
+          name: "Establishment mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record liquid fuel used for site preparation and tree planting; other energy carriers are separate exchanges."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "L"
+                basis: "per ha established orchard"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: established_orchard
+          role: "Established orchard state"
+          name: "Established orchard state"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "Internal hand-off of planted living orchard area into the managed production period; not a sold olive product."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "ha"
+                basis: "per ha planted area"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: manage
+    label: "Olive orchard management"
+    inputs:
+      product:
+        - row_id: orchard_state
+          role: "Living orchard area"
+          name: "Living orchard area"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "Link established and replacement tree cohorts by block and period; do not purchase the internal state again."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "ha"
+                basis: "per ha managed area-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manage_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg product/ha"
+                basis: "sum of separately recorded mineral fertilizer, organic fertilizer, lime and nutrient-bearing amendment product masses per managed orchard hectare-year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop protection products"
+          name: "Crop protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record each pesticide or other crop-protection material by formulation and active ingredient when used."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg product"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Orchard irrigation water"
+          name: "Orchard irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Meter applied irrigation; declare rain-fed blocks as zero, not missing."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_fuel
+          role: "Orchard management fuel"
+          name: "Orchard mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record fuel for pruning, mowing, spraying and on-site equipment, without double counting contracted service fuel."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "L"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: pump_electricity
+          role: "Irrigation and orchard electricity"
+          name: "Irrigation and orchard electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Meter pumping and other orchard electricity only where supplied."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kWh"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_fruit
+          role: "Olive fruit on trees"
+          name: "Olive fruit on trees"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal harvestable fruit state at the end of orchard production; use measured harvested and loss records to close the fruit balance."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: pruning_biomass
+          role: "Pruned olive biomass leaving orchard"
+          name: "Pruned olive biomass leaving orchard"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only prunings removed from the orchard are waste or exported biomass; retained mulch stays inside soil-management boundary."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: field_n2o
+          role: "Direct soil nitrous oxide to air"
+          name: "Direct soil nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate N2O-N from recorded N inputs and the applicable reviewed soil-emission method; convert to N2O and disclose factors."
+          amount:
+            expression: "calculate from block-year N inputs with a declared applicable managed-soil method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg N2O"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_loss
+          role: "Nitrate to water"
+          name: "Nitrate to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate-N"
+          description: "Include only a documented leaching or runoff route and specify receiving medium and nitrogen basis."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha orchard-year or establishment year; convert to per kg reference fruit using linked bearing-year fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg nitrate-N"
+                basis: "per ha managed year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest
+    label: "Fresh olive harvest"
+    inputs:
+      product:
+        - row_id: fruit_on_tree
+          role: "Standing fruit available for harvest"
+          name: "Standing fruit available for harvest"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Link to this block-year's orchard fruit state without treating it as purchased product."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_fuel
+          role: "Harvest machine fuel"
+          name: "Harvest mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record fuel for mechanical picking and on-farm collection when used; hand harvest may be zero."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L"
+                basis: "per ha harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: picked_fruit
+          role: "Fresh picked olive fruit"
+          name: "Olives"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b07470dd-3947-4e02-8058-11967225f927"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh whole fruit entering on-farm grading; if no grading occurs, weigh the net saleable fruit at the farm gate and assign any unsold damage to harvest loss."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: uncollected_fruit
+          role: "Fruit lost or uncollected at harvest"
+          name: "Fruit lost or uncollected at harvest"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Estimate fallen, uncollected or damaged fruit not sold; document the observation basis and destination."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: sort
+    label: "On-farm fruit grading"
+    inputs:
+      product:
+        - row_id: incoming_fruit
+          role: "Fresh fruit entering on-farm grading"
+          name: "Fresh fruit entering on-farm grading"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use weighed picked fruit when on-farm sorting is performed; otherwise this entire node is inactive."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year, conditional sorting"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sorting_electricity
+          role: "On-farm sorting electricity"
+          name: "On-farm sorting electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Meter grader electricity only if sorting occurs before the farm gate."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kWh"
+                basis: "per ha harvest year, conditional sorting"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_fruit
+          role: "Saleable fresh whole olives"
+          name: "Olives"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b07470dd-3947-4e02-8058-11967225f927"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh accepted fruit; mark table or oil destination, cultivar, maturity, damage class and lot. This is the reference product at farm gate."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids:
+                - uc-harvest-2013
+                - uc-olive-fly
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_fruit
+          role: "Downgraded but sold whole olives"
+          name: "Olives"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b07470dd-3947-4e02-8058-11967225f927"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record whole fruit diverted from intended table grade to oil-fruit or other sold fresh-fruit grade; no oil is produced here."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids:
+                - uc-harvest-2013
+                - uc-olive-fly
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year, conditional grading"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_fruit
+          role: "Rejected whole olive fruit"
+          name: "Rejected whole olive fruit"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Weigh whole olive fruit rejected from sale; record damage reason and waste destination, excluding leaves, twigs and other foreign matter."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg"
+                basis: "per ha harvest year, conditional grading"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: olive_vegetative_debris
+          role: "Separated olive leaves and twigs"
+          name: "Separated olive leaves and twigs"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Weigh olive leaves and twigs separated from the harvest lot and document disposal or on-site return; never count them as fruit."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg"
+                basis: "per ha harvest year, conditional grading"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: extraneous_matter
+          role: "Separated non-plant contamination"
+          name: "Separated non-plant contamination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Weigh soil, stones or other non-plant debris separately from olive vegetation and record its disposal route."
+          amount:
+            expression: "from block-year or lot records; never replace actual amount with the screening range"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvested lot; normalize to net accepted farm-gate fruit mass"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sort
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg"
+                basis: "per ha harvest year, conditional grading"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: period_attribution
+    applies_to: "orchard establishment"
+    rule: "Attribute recorded establishment inputs over documented benefiting bearing years using saleable fresh-fruit mass; revise for actual retirement, replacement or material yield changes, without a universal lifetime."
+    source_ids:
+      - ioc-olive-growing
+  - rule_id: fruit_grade_attribution
+    applies_to: "table/oil grades"
+    rule: "Allocate shared orchard inputs between table/oil fruit lots by saleable fresh-fruit mass; assign grade-specific harvest or sorting inputs directly, and never treat rejected fruit as a co-product."
+    source_ids:
+      - uc-harvest-2013
+  - rule_id: double_count_prevention
+    applies_to: "all phases"
+    rule: "Record each orchard event once; assign each physical mixed fertilizer product to one input card by N first, then P, then K-only, while tracking other nutrient contents analytically without duplicate exchanges."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establish
+      process_id: "establish"
+      flow_role: "trees, land, water and fuel"
+      record_type: "primary activity record"
+      raw_fields: "trees, land, water and fuel"
+      collection_method: "planting and invoice records, meter and machine logs"
+      unit: "trees; ha; m3; L"
+      frequency: "each planting event"
+      temporal_coverage: "all establishment and replacement years"
+      site_scope: "orchard block"
+      aggregation_rule: "sum by block and year; link cohort to bearing years"
+      quality_evidence: "planting invoices, plot map, meter readings"
+    - protocol_id: cp_manage
+      process_id: "manage"
+      flow_role: "distinct fertilizer products, nutrient composition, protection, irrigation, energy, pruning and fruit state"
+      record_type: "primary activity record"
+      raw_fields: "distinct fertilizer products, nutrient composition, protection, irrigation, energy, pruning and fruit state"
+      collection_method: "unique product ID, product mass and N/P/K fractions from invoice or formulation; application logs, meters, harvest estimates"
+      unit: "kg product; kg N/P/K; m3; L; kWh; ha"
+      frequency: "each operation"
+      temporal_coverage: "each managed calendar or crop year"
+      site_scope: "orchard block"
+      aggregation_rule: "one exchange per physical fertilizer product; sum nutrients analytically and all activity per block-year"
+      quality_evidence: "invoices, composition declarations, equipment log, meter readings, pruning tickets"
+    - protocol_id: cp_emissions
+      process_id: "manage"
+      flow_role: "direct N2O and nitrate activity"
+      record_type: "primary activity record"
+      raw_fields: "direct N2O and nitrate activity"
+      collection_method: "record N products, soil and receiving medium; apply declared local method"
+      unit: "kg N; kg N2O; kg nitrate-N"
+      frequency: "annual"
+      temporal_coverage: "each managed year"
+      site_scope: "orchard block"
+      aggregation_rule: "calculate separately by species and medium"
+      quality_evidence: "N ledger and cited factor method"
+    - protocol_id: cp_harvest
+      process_id: "harvest"
+      flow_role: "picked and uncollected fruit, harvest fuel"
+      record_type: "primary activity record"
+      raw_fields: "picked and uncollected fruit, harvest fuel"
+      collection_method: "weighbridge tickets and field loss survey"
+      unit: "kg; L"
+      frequency: "each harvest lot"
+      temporal_coverage: "whole harvest window"
+      site_scope: "block and lot"
+      aggregation_rule: "sum picked plus observed uncollected; retain harvest method"
+      quality_evidence: "scale calibration, tickets, survey sheets"
+    - protocol_id: cp_sort
+      process_id: "sort"
+      flow_role: "accepted, downgraded and rejected fruit, olive vegetation, non-plant matter, energy"
+      record_type: "primary activity record"
+      raw_fields: "accepted, downgraded and rejected fruit, olive vegetation, non-plant matter, energy"
+      collection_method: "grade tickets, separate fruit/vegetation/contaminant weighing and electricity meter"
+      unit: "kg; kWh"
+      frequency: "each sorted lot"
+      temporal_coverage: "all on-farm graded lots"
+      site_scope: "farm grading site and lot"
+      aggregation_rule: "reconcile gross incoming mass with fruit grades, olive vegetation, other matter, loss and stock change"
+      quality_evidence: "grade tickets, scale calibration, meter logs"
+  calculation_rules:
+    - id: annualize_establishment
+      applies_to: "new and replacement trees"
+      rule: "Attribute measured establishment-year inputs to benefiting bearing-year output; update on retirement and replacement."
+      inputs:
+        - "block cohorts"
+        - "planting dates"
+        - "input logs"
+        - "bearing-year fruit mass"
+      output: "kg input/kg accepted fruit"
+      source_ids:
+        - ioc-olive-growing
+    - id: fruit_reconcile
+      applies_to: "picked or sorted lot"
+      rule: "Gross incoming lot = accepted + downgraded + rejected fruit + separated olive vegetation + non-plant matter + measured loss + stock change."
+      inputs:
+        - "weighed gross lot input"
+        - "fruit grades"
+        - "vegetation and non-plant matter"
+      output: "kg discrepancy"
+      source_ids:
+        - mass-balance-identity
+    - id: fruit_normalize
+      applies_to: "all orchard-year inputs"
+      rule: "Divide linked block-year inputs by saleable fresh-fruit kg for the same benefiting periods; retain non-bearing years for attribution."
+      inputs:
+        - "block-year activity and saleable fruit mass"
+      output: "per kg reference fruit"
+      source_ids: []
+    - id: nutrient_convert
+      applies_to: "nutrient products"
+      rule: "Create one exchange per physical product; multiply its mass by each documented elemental nutrient fraction and retain N, P, K versus oxide label basis."
+      inputs:
+        - "unique product ID"
+        - "product mass"
+        - "declared nutrient fractions"
+      output: "kg N, P and K"
+      source_ids:
+        - uc-fertilizing-olives
+  data_quality_requirements:
+    - id: dq_periods
+      applies_to: "orchard cohort"
+      requirement: "Retain establishment, non-bearing, bearing, replacement and retirement periods and attribution version."
+      evidence: "block map and annual ledger"
+    - id: dq_route
+      applies_to: "fruit lot"
+      requirement: "Retain table/oil destination, cultivar, maturity, damage, harvest method and fresh-fruit gate state."
+      evidence: "lot and grade tickets"
+    - id: dq_mass
+      applies_to: "harvest and grading"
+      requirement: "Calibrate scales and reconcile fruit balance; flag missing, estimated and stock-change records."
+      evidence: "scale certificates and reconciliation"
+    - id: dq_inputs
+      applies_to: "all process inputs"
+      requirement: "Separate actual materials and carriers; never populate an inactive conditional process with default values."
+      evidence: "meter, invoices and operation logs"
+    - id: dq_emissions
+      applies_to: "soil emissions"
+      requirement: "Trace species, receiving medium, activity and applicable method; leave unresolved flows unmapped."
+      evidence: "method sheet and N ledger"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "reference product"
+    rule: "Check whole-fruit UUID, 1 kg net mass and required qualifiers; oil or cured fruit cannot substitute for fresh fruit."
+    source_ids:
+      - ioc-table-olives
+  - rule_id: validate_periods
+    applies_to: "perennial cohorts"
+    rule: "Check all establishment, non-bearing, bearing, replacement and retirement periods are allocated once and traceably."
+    source_ids:
+      - ioc-olive-growing
+  - rule_id: validate_route
+    applies_to: "harvest and grading"
+    rule: "Record hand or mechanical harvest and table/oil grade; inactive grading has no exchanges."
+    source_ids:
+      - uc-harvest-2013
+  - rule_id: validate_balance
+    applies_to: "fruit lot"
+    rule: "Review fruit, separated olive vegetation and non-plant matter against gross lot mass, reject destinations and damage class without double-counting transfers."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_range
+    applies_to: "each flow card"
+    rule: "Investigate out-of-screen observations without rejecting supported real measurements solely because of a provisional interval."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "block- and lot-specific fresh-olive foreground data package"
+  downstream_use: "secondary_dataset; may serve as background_dataset after geographic and temporal matching"
+  allowed_use: "farm-gate whole-fruit modelling with table/oil fruit destination split"
+  excluded_use: "not an olive-oil, cured-fruit or universal region/tree-age default dataset"
+  required_metadata: "block, geography, cultivar, tree age, establishment/bearing/replacement years, irrigation, harvest, grading and fruit destination"
+  required_quality_disclosure: "weighing and loss checks, cross-period attribution, unmapped exchanges, provisional ranges and data gaps"
+  update_trigger: "block change, replanting, harvest technology, grading location, quality definition or method-factor change"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "ioc-olive-growing"
+    type: "official_guidance"
+    reference: "International Olive Council, Olive Growing, https://www.internationaloliveoil.org/wp-content/uploads/2019/12/Olivicultura_eng.pdf"
+    used_for: "orchard establishment, management and harvest route"
+  - id: "ioc-table-olives"
+    type: "official_guidance"
+    reference: "International Olive Council, Table olives, https://www.internationaloliveoil.org/olive-world/table-olives/"
+    used_for: "fresh-fruit maturity, handling and curing boundary"
+  - id: "uc-harvest-2013"
+    type: "extension_guidance"
+    reference: "UC ANR, Mechanical Harvesting of California Table and Oil Olives, 2013, https://ucanr.edu/blog/topics-subtropics/article/mechanical-harvesting-california-table-and-oil-olives"
+    used_for: "harvest method and damage distinction"
+  - id: "uc-fertilizing-olives"
+    type: "extension_guidance"
+    reference: "UC ANR, Fertilizing Olives, https://ucanr.edu/node/107355/printable/print"
+    used_for: "site-specific nutrient recording"
+  - id: "uc-olive-fly"
+    type: "extension_guidance"
+    reference: "UC IPM, Olive Fruit Fly, https://ipm.ucanr.edu/agriculture/olive/olive-fruit-fly/"
+    used_for: "destination-specific fruit condition"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O method and N input pathways"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Gross incoming harvest lot = accepted + downgraded + rejected fruit + separated olive vegetation + non-plant matter + measured handling loss + stock change"
+    used_for: "lot mass reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:78973f39207775b424c91d2b926909851f37743322acb140c440259caeda24d1"
+  generated_content_sha256: "sha256:b0c1477da512b7ba089686b8c9c4295f5da67c03f3731ddecbb7de1d890ad11d"

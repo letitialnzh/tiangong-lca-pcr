@@ -1,10 +1,911 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01658"
-  title: "Vanilla, raw"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.vanilla-raw"
+  classification_refs: "CPC 3.0: 01658 Vanilla, raw"
+  covered_products: "Mature green uncured vanilla pods of declared species and grade at farm gate before curing"
+  excluded_products: "Cured or dried pods; cleaned or sorted plant-gate alternatives; extract, powder and planting material"
+  representative_product: "Mature green uncured Vanilla planifolia pods, declared grade, at farm gate"
+  production_route: "Perennial vine management, declared support and pollination route, repeated selective hand harvest, minimal conditioning and green-pod grading"
+  market_state: "Fresh green uncured and undried pods on an as-received mass basis before aroma-development processing"
+functional_unit:
+  what: "Mature green uncured vanilla pods of declared species and grade at farm gate before curing"
+  how_much: "1 kg as-received mass"
+  how_well: "Meets declared maturity and grade; green, uncured, undried and excluding rejected pods"
+  how_long_or_cycle: "Declared reporting period covering attributed perennial phases and every selective harvest round forming the reference amount"
+  reference_flow_link: "Output vanilla_raw_reference from green_pod_grading_handoff"
+system_boundary:
+  rules:
+    - rule_id: boundary_managed_vine_route
+      applies_to: "perennial_vine_management"
+      rule: "Include propagation or vine carry-in, support and shade, training and pruning, pollination, nutrients, water, energy, shared infrastructure and pod development."
+      source_ids:
+        - fao-vanilla-postharvest-compendium
+    - rule_id: boundary_selective_harvest
+      applies_to: "selective_pod_harvest"
+      rule: "Model repeated maturity-selective harvest independently and record collected pods, retained immature pods, incidental matter and losses by round."
+      source_ids:
+        - fao-vanilla-postharvest-compendium
+    - rule_id: boundary_primary_conditioning
+      applies_to: "on_farm_primary_conditioning"
+      rule: "Include only minimal pre-curing handling; exclude killing, sweating, fermentation, aroma development, deliberate drying and plant-gate cleaning."
+      source_ids:
+        - fao-vanilla-postharvest-compendium
+    - rule_id: boundary_grading_handoff
+      applies_to: "green_pod_grading_handoff"
+      rule: "Declare accepted grade and every downgraded or rejected destination, with hand-off before curing."
+      source_ids:
+        - fao-vanilla-postharvest-compendium
+    - rule_id: boundary_route_deltas
+      applies_to: "alternative support, pollination and handling routes"
+      rule: "Keep topology, inputs, energy, yield and asset-use differences separate unless route records support reproducible weighting."
+      source_ids:
+        - fao-vanilla-postharvest-compendium
+    - rule_id: boundary_excluded_processing
+      applies_to: "downstream operations"
+      rule: "Exclude curing, drying, aroma-development conditioning, plant-gate cleaning or sorting, grinding and extract manufacture."
+      source_ids:
+        - fao-vanilla-postharvest-compendium
+boundary_abstraction:
+  declared_starting_condition: "Established or newly planted managed vanilla vines with propagation source, species, support system, vine age or phase and prior-period carry-in declared"
+  starting_condition_role: "Starting stock for perennial managed production; establishment burdens are included or linked and attributed over the declared productive period"
+  product_classification_scope: "Mature green uncured pods at farm gate before curing; excludes cured, dried, plant-gate cleaned or sorted goods and extract"
+  recursive_input_rule: "Farm-retained vines, cuttings and green pods remain visible burden-carrying internal flows; purchased same-category material requires an upstream dataset and cannot be zero burden"
+  upstream_dataset_requirement: "Purchased propagation, nutrients, water and energy require compatible upstream datasets; Flow Sets resolve to verified UUIDs during foreground generation"
+  disclosure: "Declare species, support and shade, pollination route, vine phase and productive years, replacements, harvest rounds, maturity and grade, moisture basis, reject destinations and pre-curing hand-off"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Vanilla, raw"
+    uuid: "51e085e4-b15c-4933-b7eb-45eee9bd8958"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "botanical species"
+    - "mature-green criterion"
+    - "uncured and undried state"
+    - "producer grade"
+    - "as-received moisture basis"
+    - "farm-gate hand-off before curing"
+    - "support system"
+    - "pollination route"
+    - "harvest rounds"
+    - "geography and reporting period"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Normalize all inventory amounts to 1 kg accepted mature green uncured pods on the declared as-received moisture basis."
+  - id: grade_mass_reconciliation
+    applies_to: "harvest, conditioning and grading hand-offs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile input to accepted grade, rejected or downgraded pods, incidental matter and mass loss; rejected material never enters reference output."
+  - id: harvest_round_aggregation
+    applies_to: "repeated selective harvest"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Aggregate harvested and rejected mass by round before reporting-period aggregation, retaining dates and maturity criteria."
+  - id: perennial_normalization
+    applies_to: "establishment, replacement and shared infrastructure"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Attribute multi-period burdens once over accepted output of the same productive period; prohibit downstream re-annualization."
+process_map:
+  - id: perennial_vine_management
+    name: "Perennial vanilla-vine management and pod development"
+    inclusion: "required"
+    inclusion_condition: "Always; declare the alternative technology route delta for support and pollination, period, state and hand-off"
+    role: "Managed biological production parent"
+    quantitative_reference: "kg harvest-ready mature green pods"
+  - id: selective_pod_harvest
+    name: "Repeated selective harvest of mature green pods"
+    inclusion: "required"
+    inclusion_condition: "Always; use batch mode records for each round and declare route, period, state and hand-off"
+    role: "Harvest and capture"
+    quantitative_reference: "kg harvested green pods by round"
+  - id: on_farm_primary_conditioning
+    name: "Minimal on-farm pre-curing handling"
+    inclusion: "required"
+    inclusion_condition: "Always; declare route, period, state and hand-off"
+    role: "Primary conditioning"
+    quantitative_reference: "kg handled green uncured pods"
+  - id: green_pod_grading_handoff
+    name: "Green-pod grading and farm-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "Always; declare route, period, state and hand-off"
+    role: "Grading and sorting"
+    quantitative_reference: "1 kg accepted mature green uncured pods"
+process_inventory:
+  - id: perennial_vine_management
+    label: "Perennial vanilla-vine management and pod development"
+    inputs:
+      product:
+        - row_id: propagation_material
+          role: "Vanilla planting cuttings or established-vine carry-in"
+          name: "Vanilla planting cuttings or established vines"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Measured purchased stock plus attributed farm-retained stock; external identity is unresolved until species, propagation state, provider, geography, property and unit are verified; farm-retained stock is an internal burden-carrying transfer."
+          amount:
+            expression: "Measured purchased stock plus attributed farm-retained stock; external identity is unresolved until species, propagation state, provider, geography, property and unit are verified; farm-retained stock is an internal burden-carrying transfer."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods over the declared productive period"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_perennial_vine_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg reference product"
+                basis: "planting stock attributed per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_inputs
+          role: "Consolidated fertilizer and nutrient amendments"
+          name: "Actual fertilizer and nutrient products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg or compatible nutrient property/unit"
+          description: "Identity and quantity rule: Measured product quantities with nutrient composition retained."
+          amount:
+            expression: "Measured product quantities with nutrient composition retained."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_management_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg reference product"
+                basis: "consolidated nutrient products per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supplied to vines"
+          name: "Irrigation water from foreground source records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Identity and quantity rule: Metered volume or delivered volume calculated from pump hours and verified flow rate; rainfall is disclosed but not exchanged."
+          amount:
+            expression: "Metered volume or delivered volume calculated from pump hours and verified flow rate; rainfall is disclosed but not exchanged."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_management_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "20"
+                unit: "m3/kg reference product"
+                basis: "delivered irrigation per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: management_energy
+          role: "Energy carriers for management and shared equipment"
+          name: "Energy carriers from invoices, meters and fuel logs"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Identity and quantity rule: Measured carriers converted to energy with declared factors and linked to consuming nodes and periods."
+          amount:
+            expression: "Measured carriers converted to energy with declared factors and linked to consuming nodes and periods."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_management_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg reference product"
+                basis: "management and shared-equipment energy per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_vines_mature_pods
+          role: "Standing vines bearing harvest-ready mature green pods"
+          name: "Internal standing-vine and harvest-ready pod state"
+          flow_type: "product"
+          property_unit: "Mass / kg harvest-ready pods"
+          description: "Identity and quantity rule: Internal intermediate calculated from round-level harvest and loss reconciliation; no external UUID."
+          amount:
+            expression: "Internal intermediate calculated from round-level harvest and loss reconciliation; no external UUID."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_perennial_vine_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg/kg reference product"
+                basis: "harvest-ready pods per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cultivation_residues
+          role: "Prunings, dead vines and field residues"
+          name: "Internal/deferred crop residues by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Measure residues by retained, recovered, treated or discarded destination; in-situ material is not also exported as waste."
+          amount:
+            expression: "Measure residues by retained, recovered, treated or discarded destination; in-situ material is not also exported as waste."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_and_emission_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg reference product"
+                basis: "residues leaving productive use per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: reported_field_emissions
+          role: "Reported field emissions by substance and compartment"
+          name: "Unresolved substance-specific emissions to air, water or soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Calculate only from foreground activity records and a declared method; UUIDs are deferred until substance/species, chemical basis and receiving compartment are established."
+          amount:
+            expression: "Calculate only from foreground activity records and a declared method; UUIDs are deferred until substance/species, chemical basis and receiving compartment are established."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_and_emission_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg reference product"
+                basis: "screening total only; final exchanges remain substance and compartment specific"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: selective_pod_harvest
+    label: "Repeated selective harvest of mature green pods"
+    inputs:
+      product:
+        - row_id: harvest_ready_vines_input
+          role: "Standing vines and harvest-ready pods entering harvest"
+          name: "Internal standing-vine and harvest-ready pod state"
+          flow_type: "product"
+          property_unit: "Mass / kg harvest-ready pods"
+          description: "Identity and quantity rule: Internal transfer equal to reconciled harvest-ready pod mass across all rounds; no external UUID."
+          amount:
+            expression: "Internal transfer equal to reconciled harvest-ready pod mass across all rounds; no external UUID."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_selective_harvest_rounds
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg/kg reference product"
+                basis: "harvest-ready input per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Energy carriers for harvest equipment"
+          name: "Energy carriers from harvest-round records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Identity and quantity rule: Measure by harvest round; record zero when fully manual and no carrier crosses the boundary."
+          amount:
+            expression: "Measure by harvest round; record zero when fully manual and no carrier crosses the boundary."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg harvested green pods"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_selective_harvest_rounds
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg harvested green pods"
+                basis: "harvest energy per kg harvested green pods"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_green_pods
+          role: "Harvested mature green uncured pods"
+          name: "Internal harvested mature green uncured pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Sum measured harvest-round mass while retaining species, maturity, round and lot identifiers."
+          amount:
+            expression: "Sum measured harvest-round mass while retaining species, maturity, round and lot identifiers."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_selective_harvest_rounds
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "4"
+                unit: "kg/kg reference product"
+                basis: "harvested pods per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_rejects
+          role: "Pods lost or rejected during harvest"
+          name: "Internal/deferred rejected pod waste by condition and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Measure damaged, immaturely detached or diseased pods by round; pods retained on vines are neither output nor waste."
+          amount:
+            expression: "Measure damaged, immaturely detached or diseased pods by round; pods retained on vines are neither output nor waste."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested green pods"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_selective_harvest_rounds
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg harvested green pods"
+                basis: "rejected or lost pods per kg harvested pods"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: on_farm_primary_conditioning
+    label: "Minimal on-farm pre-curing handling"
+    inputs:
+      product:
+        - row_id: harvested_pods_input
+          role: "Harvested green uncured pods entering handling"
+          name: "Internal harvested mature green uncured pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Internal transfer equal to measured harvested-pod output, retaining lot and round identity."
+          amount:
+            expression: "Internal transfer equal to measured harvested-pod output, retaining lot and round identity."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg handled green pods"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_primary_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg/kg handled green pods"
+                basis: "harvested input per kg handled pods"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_green_pods
+          role: "Minimally handled green uncured pods"
+          name: "Internal minimally handled green uncured pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Measure after shade holding or loose field-matter removal; product remains green, uncured, undried and mostly odourless."
+          amount:
+            expression: "Measure after shade holding or loose field-matter removal; product remains green, uncured, undried and mostly odourless."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg handled green pods"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_primary_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.5"
+                upper: "1"
+                unit: "kg/kg harvested input"
+                basis: "handled green pods per kg harvested input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Loose field matter and handling rejects"
+          name: "Internal/deferred handling waste by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Measure removed soil, plant fragments and damaged pods by destination."
+          amount:
+            expression: "Measure removed soil, plant fragments and damaged pods by destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_primary_conditioning
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg harvested input"
+                basis: "removed matter and rejects per kg harvested input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: green_pod_grading_handoff
+    label: "Green-pod grading and farm-gate hand-off"
+    inputs:
+      product:
+        - row_id: conditioned_pods_input
+          role: "Minimally handled green pods entering grading"
+          name: "Internal minimally handled green uncured pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Internal transfer equal to measured handled-pod output."
+          amount:
+            expression: "Internal transfer equal to measured handled-pod output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_green_pod_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg/kg reference product"
+                basis: "grading input per kg accepted output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: vanilla_raw_reference
+          role: "Accepted mature green uncured vanilla pods at farm gate"
+          name: "Vanilla, raw"
+          flow_type: "product"
+          flow_ref:
+            uuid: "51e085e4-b15c-4933-b7eb-45eee9bd8958"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Identity and quantity rule: Exactly 1 kg after grade reconciliation; fixed identity is detail-confirmed CPC 01658 Product flow at farm gate and narrowed by required qualifiers."
+          amount:
+            expression: "Exactly 1 kg after grade reconciliation; fixed identity is detail-confirmed CPC 01658 Product flow at farm gate and narrowed by required qualifiers."
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "1 kg accepted mature green uncured pods"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - reference-normalization-definition
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference product"
+                basis: "reference product divided by the 1 kg reference amount"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        - row_id: off_grade_pods
+          role: "Off-grade, damaged or rejected green pods"
+          name: "Internal/deferred off-grade pod waste by state and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identity and quantity rule: Measure each off-grade, damage, rework, recovery or discard route; rework may return once with a linked lot and may not enter accepted output twice."
+          amount:
+            expression: "Measure each off-grade, damage, rework, recovery or discard route; rework may return once with a linked lot and may not enter accepted output twice."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg grading input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_green_pod_grading
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "off-grade or rejected pods per kg grading input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_perennial_periods
+    applies_to: "establishment, replacement and productive years"
+    rule: "Attribute once across the declared productive period using accepted green-pod mass from that period; retain phase/year links and disclose unproductive years."
+    source_ids: []
+  - rule_id: allocation_repeated_harvest
+    applies_to: "selective harvest rounds"
+    rule: "Assign round-specific inputs, energy, rejects and output directly; allocate truly shared burdens by harvested mass across relevant rounds without period-level duplication."
+    source_ids: []
+  - rule_id: allocation_shared_infrastructure
+    applies_to: "supports, shade, irrigation, tools and other shared assets"
+    rule: "Enumerate consuming nodes and service periods, choose one documented use-time, area or productive-output basis and prevent duplication."
+    source_ids: []
+  - rule_id: allocation_rejects
+    applies_to: "residues and rejected or off-grade pods"
+    rule: "Discard receives no avoided-burden credit; a recovered product leaving the boundary is separate and requires disclosed allocation or substitution and sensitivity."
+    source_ids: []
+  - rule_id: allocation_single_reference_product
+    applies_to: "accepted green uncured pods"
+    rule: "The baseline has one intended reference product; rejects, incidental matter, retained immature pods and residues cannot become co-products merely to reduce burden."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_perennial_vine_records
+      process_id: "perennial_vine_management"
+      flow_role: "propagation, vine phases, support, pollination, standing crop"
+      record_type: "field register"
+      raw_fields: "species; source; mass; vine count/age; establishment/replacement; support/shade; pollination; dates; harvest-ready mass"
+      collection_method: "Reconcile plot, propagation and observation records by route and period"
+      unit: "kg; count; date"
+      frequency: "each event and season"
+      temporal_coverage: "all burden-bearing years"
+      site_scope: "farm and plot"
+      aggregation_rule: "stratify before attribution and aggregation"
+      quality_evidence: "dated records, invoices, species record and sign-off"
+    - protocol_id: cp_management_inputs
+      process_id: "perennial_vine_management"
+      flow_role: "nutrients, irrigation, energy"
+      record_type: "invoice, log, meter"
+      raw_fields: "product; composition; mass; water source/volume; pump hours/rate; carrier/quantity; node; date"
+      collection_method: "record each event and calculate only with verified factors"
+      unit: "kg; m3; kWh; L; MJ"
+      frequency: "each application or meter interval"
+      temporal_coverage: "complete reporting period"
+      site_scope: "farm, plot and equipment route"
+      aggregation_rule: "sum by actual product/carrier before normalization"
+      quality_evidence: "invoice, calibration, log and factor record"
+    - protocol_id: cp_residue_and_emission_records
+      process_id: "perennial_vine_management"
+      flow_role: "residues and emissions"
+      record_type: "weighing log and calculation sheet"
+      raw_fields: "material; mass; destination; substance; basis; compartment; activity; factor; method"
+      collection_method: "weigh exported residues and calculate identified emissions only"
+      unit: "kg"
+      frequency: "each removal and calculation period"
+      temporal_coverage: "complete reporting period"
+      site_scope: "plot and destination"
+      aggregation_rule: "reconcile destinations; aggregate after resolution"
+      quality_evidence: "scale, receipt, method citation and review"
+    - protocol_id: cp_selective_harvest_rounds
+      process_id: "selective_pod_harvest"
+      flow_role: "harvest, rejects, losses, energy"
+      record_type: "lot sheet"
+      raw_fields: "round/date; plot; species; maturity; masses; retained status; carrier; labour mode"
+      collection_method: "weigh each round and link equipment records"
+      unit: "kg; MJ; date"
+      frequency: "every round"
+      temporal_coverage: "all contributing rounds"
+      site_scope: "plot, round and lot"
+      aggregation_rule: "sum linked rounds and keep rejects separate"
+      quality_evidence: "calibrated scale, signed lot sheet and energy log"
+    - protocol_id: cp_primary_conditioning
+      process_id: "on_farm_primary_conditioning"
+      flow_role: "input, handled pods, removed matter"
+      record_type: "handling sheet"
+      raw_fields: "lot; input/output mass; holding time; operations; rejects/destination; no-curing declaration"
+      collection_method: "weigh before/after and document no curing or deliberate drying"
+      unit: "kg; hour"
+      frequency: "every lot"
+      temporal_coverage: "all contributing lots"
+      site_scope: "handling area and lot"
+      aggregation_rule: "reconcile input, output, rejects and loss"
+      quality_evidence: "calibrated scale, time log, checklist and photos/equivalent"
+    - protocol_id: cp_green_pod_grading
+      process_id: "green_pod_grading_handoff"
+      flow_role: "accepted grade, off-grade, rework, hand-off"
+      record_type: "grading/dispatch record"
+      raw_fields: "lot; species; maturity; grade; input; accepted; off-grade; rework; destination; date; uncured state"
+      collection_method: "weigh each state and link accepted lots to pre-curing dispatch"
+      unit: "kg; date"
+      frequency: "every lot"
+      temporal_coverage: "all contributing lots"
+      site_scope: "grading site and lot"
+      aggregation_rule: "reconcile all states and remove rework duplication"
+      quality_evidence: "calibrated scale, grade specification, dispatch and no-curing declaration"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all inventory rows"
+      rule: "normalized amount = attributed amount / accepted reference mass"
+      inputs:
+        - "attributed amount"
+        - "accepted mass"
+      output: "amount per kg reference product"
+      source_ids:
+        - reference-normalization-definition
+    - id: calc_period_attribution
+      applies_to: "establishment, replacement, shared infrastructure"
+      rule: "attributed burden = recorded burden × documented service share"
+      inputs:
+        - burden
+        - nodes
+        - period
+        - "share basis"
+      output: "period-attributed burden"
+      source_ids: []
+    - id: calc_harvest_round_sum
+      applies_to: "repeated selective harvest"
+      rule: "period mass = sum of linked round masses; rejects and retained pods separate"
+      inputs:
+        - round
+        - harvested
+        - reject
+        - "retained status"
+      output: "period harvested/rejected mass"
+      source_ids: []
+    - id: calc_mass_reconciliation
+      applies_to: "handling and grading"
+      rule: "difference = input - accepted - rejects - retained/transferred outputs"
+      inputs:
+        - "input and all state masses"
+      output: "difference and completeness flag"
+      source_ids:
+        - reference-normalization-definition
+  data_quality_requirements:
+    - id: dq_identity_state
+      applies_to: "reference product and lots"
+      requirement: "Species, maturity, grade, uncured/undried state, moisture basis and farm-gate hand-off are complete."
+      evidence: "species, grade, lot, no-curing and dispatch records"
+    - id: dq_temporal_completeness
+      applies_to: "perennial route and harvest"
+      requirement: "Cover all burden-bearing phases and contributing rounds and disclose exclusions."
+      evidence: "plot history, phase, round and replacement records"
+    - id: dq_route_separation
+      applies_to: "alternative routes"
+      requirement: "Preserve route differences until weighting is reproducible."
+      evidence: "route-coded records and aggregation sheet"
+    - id: dq_mass_balance
+      applies_to: "harvest, handling, grading"
+      requirement: "Reconcile each round/lot and investigate differences beyond site tolerance."
+      evidence: "signed balance and calibration record"
+    - id: dq_flow_resolution
+      applies_to: "Flow Sets and unresolved cards"
+      requirement: "Resolve verified UUIDs when generating exchanges; resolve purchased propagation and elementary flows only after complete semantic identity."
+      evidence: "exchange-resolution and detail evidence"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference product"
+    rule: "Require fixed UUID, Mass property/unit group and all qualifiers; reject cured, dried, aroma-developed, plant-gate cleaned/sorted goods and extract."
+    source_ids:
+      - fao-vanilla-postharvest-compendium
+  - rule_id: validate_process_topology
+    applies_to: "process map"
+    rule: "Require all four nodes and hand-offs; harvest links to standing vines and conditioning/grading remain before curing."
+    source_ids:
+      - fao-vanilla-postharvest-compendium
+  - rule_id: validate_maturity_grade_species
+    applies_to: "every accepted lot"
+    rule: "Require species, maturity criterion, grade, green uncured state and farm-gate hand-off."
+    source_ids:
+      - fao-vanilla-postharvest-compendium
+  - rule_id: validate_period_attribution
+    applies_to: "perennial and shared burdens"
+    rule: "Require phase, service-period, consuming-node and attribution evidence; fail omission or duplication."
+    source_ids: []
+  - rule_id: validate_round_completeness
+    applies_to: "repeated selective harvest"
+    rule: "Require complete ordered rounds and reconcile harvested, rejected, retained and lost states."
+    source_ids: []
+  - rule_id: validate_reject_routing
+    applies_to: "rejected and off-grade states"
+    rule: "Each state links to one rework, downgraded/recovered exit or discard destination and is excluded from accepted output."
+    source_ids: []
+  - rule_id: validate_flow_bindings
+    applies_to: "all cards"
+    rule: "Fixed binding is limited to the detail-confirmed reference product; parameterized cards cite applicable Flow Sets and final exchanges require verified UUIDs."
+    source_ids: []
+  - rule_id: validate_mass_balance
+    applies_to: "harvest, handling and grading"
+    rule: "Reconcile inputs and outputs by round/lot and explain mass loss."
+    source_ids:
+      - reference-normalization-definition
+published_dataset_profile:
+  dataset_role: "Foreground production package for mature green uncured vanilla pods at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after independent review and geography, time and technology matching"
+  allowed_use: "Farm-gate LCA of green raw pods and upstream input to a separately modelled curing system"
+  excluded_use: "Cured/dried pods, plant-gate cleaned/sorted goods, extract, powder or unspecified aromatic vanilla product"
+  required_metadata: "species; plot/geography; support/shade; pollination; vine phase/productive period; replacements; rounds; maturity/grade; moisture; uncured state; reject destinations; hand-off"
+  required_quality_disclosure: "phase/round coverage; route separation; flow resolution; meter/scale quality; mass balance; shared infrastructure attribution; exclusions; provisional-range status"
+  update_trigger: "Change in species, route, period attribution, maturity/grade, hand-off state, topology, reference UUID, Flow Set version or entry of curing/plant processing"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-vanilla-postharvest-compendium"
+    type: "official_guidance"
+    reference: "Food and Agriculture Organization of the United Nations, *Vanilla: Post-harvest Operations*, Post-harvest Compendium"
+    used_for: "Production/harvest sequence; green mature pods mostly odourless; curing as separate aroma-development operation; pre-curing boundary and exclusions"
+  - id: "reference-normalization-definition"
+    type: "method_factor"
+    reference: "This PCR 1 kg as-received reference normalization and node mass-balance identity"
+    used_for: "Exact reference output, normalization and mass reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:20d2c9f33981a0c60b5a01a0dd6a4f6315c46d067cb7547451963aa05cd950d3"
+  generated_content_sha256: "sha256:92c11dcc6243a143f28333ea12a0f357bcee7399062a98e6324e4b81620ca433"

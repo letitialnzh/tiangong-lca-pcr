@@ -1,10 +1,1182 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01215"
-  title: "Spinach"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.spinach"
+  classification_refs: "CPC 3.0:01215 Spinach"
+  covered_products: "Fresh, unprocessed spinach leaves, baby leaf, bunches, or whole plants delivered at the declared gate"
+  excluded_products: "Spinach seed and planting material, frozen, canned, dried, cooked, pureed, or otherwise processed spinach, and downstream retail or consumption"
+  representative_product: "Marketable fresh spinach leaves meeting the declared harvest size, cleanliness, trimming, and grade requirements"
+  production_route: "Direct seeding or transplanted establishment, managed leaf production, repeated or single cutting, grading, optional washing and cooling, and primary packing"
+  market_state: "Fresh, unprocessed spinach at farm-gate or pack-house gate in loose, bunched, or declared primary packaging"
+functional_unit:
+  what: "Marketable fresh spinach at the declared farm-gate or pack-house gate"
+  how_much: "1,000 kg"
+  how_well: "Fresh and unprocessed, with declared leaf age or cut, harvest form, cleanliness, trimming, grade, moisture condition, and packaging state"
+  how_long_or_cycle: "One declared crop cycle and harvest campaign; successive cuts from one sowing are aggregated to the same crop-cycle output"
+  reference_flow_link: "spinach_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "establishment and field management"
+      rule: "Include bed preparation, sowing or transplanting, crop management, and crop-cycle inputs that produce the declared spinach output; disclose prior land use and exclude unrelated infrastructure construction."
+      source_ids:
+        - ucanr-spinach-production-1996
+        - govnl-spinach-production-guide-2025
+    - rule_id: boundary_gate_preparation
+      applies_to: "harvest and packing"
+      rule: "End the foreground system at the declared farm-gate or pack-house gate and include cutting, grading, trimming, washing, cooling, and primary packaging when they occur before that gate."
+      source_ids:
+        - usda-ams-bunched-spinach-standard
+        - psu-spinach-harvest-guidance-2025
+    - rule_id: boundary_soil_emissions
+      applies_to: "fertilizer, crop residues, and managed soil"
+      rule: "Estimate applicable direct and indirect nitrogen emissions using one declared method and the recorded nutrient inputs and residue fate; avoid double counting a nitrogen pathway."
+      source_ids:
+        - ipcc-2019-refinement-nitrogen
+    - rule_id: boundary_residue_fate
+      applies_to: "field residue, rejects, and trim"
+      rule: "Record field return, composting, feed use, treatment, or disposal separately; a material with no demonstrated productive use remains a residue or waste flow."
+      source_ids:
+        - ucanr-spinach-production-1996
+        - usda-ams-bunched-spinach-standard
+boundary_abstraction:
+  declared_starting_condition: "Prepared production bed or protected-cultivation unit receiving spinach seed or transplant material, with prior land use and excluded infrastructure work disclosed"
+  starting_condition_role: "Start of the declared spinach crop cycle and input accounting"
+  product_classification_scope: "Fresh spinach under CPC 3.0:01215 through the declared farm-gate or pack-house gate"
+  recursive_input_rule: "Purchased spinach seed or transplant material is an upstream product input linked once; its own production is outside this PCR unless a separate upstream dataset is supplied."
+  upstream_dataset_requirement: "Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, packaging, and purchased transport or treatment services when used."
+  disclosure: "Declare production geography, field or protected route, crop cycle, sowing density, irrigation source and meter basis, nutrient basis, crop-protection program, harvest form, yield and reject reconciliation, washing and cooling, packaging, residue fate, and gate location."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fresh spinach at farm gate"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "production geography"
+    - "crop type (baby leaf"
+    - bunching
+    - "or whole leaf)"
+    - "variety or cultivar group"
+    - "sowing or transplanting date"
+    - "harvest date and cut number"
+    - "declared gate"
+    - "grade and size criteria"
+    - "soil or protected-cultivation route"
+    - "washed or unwashed state"
+    - "cooling state"
+    - "packaging state"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_spinach_mass
+    applies_to: "marketable spinach and harvest records"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep gross cut mass, marketable fresh mass, rejected material, soil or foreign material, and field residue as separate measured or calculated quantities."
+  - id: area_yield_normalization
+    applies_to: "field and protected-cultivation records"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Record inputs and harvests by bed, field, or protected unit and normalize to the marketable output from the same crop cycle."
+  - id: nutrient_product_basis
+    applies_to: "fertilizer and compost inputs"
+    required_property_ref:
+      name: "Mass of product and declared nutrient"
+      uuid: ""
+    required_unit: "kg product, kg N, kg P2O5, or kg K2O"
+    rule: "Preserve purchased product mass and convert to nutrient basis only from the documented label, supplier specification, or laboratory result."
+  - id: water_volume_basis
+    applies_to: "irrigation and washing water"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record metered or calculated delivered water separately for crop irrigation and post-harvest washing; do not replace irrigation with rainfall unless the declared method requires a water balance."
+  - id: multi_cut_output
+    applies_to: "baby-leaf and repeated-harvest routes"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Sum marketable cuts from the declared sowing or transplanting campaign and reconcile each cut with rejects and unharvested crop material."
+process_map:
+  - id: crop_establishment
+    name: "Spinach crop establishment"
+    inclusion: "required"
+    inclusion_condition: "every represented sowing or transplanting campaign"
+    role: "foreground crop establishment"
+    quantitative_reference: "established bed or protected-cultivation area"
+  - id: crop_management
+    name: "Spinach crop management"
+    inclusion: "required"
+    inclusion_condition: "each represented crop cycle"
+    role: "foreground managed biological production"
+    quantitative_reference: "managed area and crop-cycle harvest"
+  - id: harvest_and_gate_preparation
+    name: "Harvest and gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each represented harvest campaign"
+    role: "foreground harvest, conditioning, and gate hand-off"
+    quantitative_reference: "1,000 kg marketable fresh spinach"
+process_inventory:
+  - id: crop_establishment
+    label: "Spinach crop establishment"
+    inputs:
+      product:
+        - row_id: seed_or_transplant_input
+          role: "Spinach seed or transplant material"
+          name: "Spinach seed or transplant material"
+          flow_type: "product"
+          property_unit: "Number of viable units or mass / seed, plant, or kg"
+          description: "Record the purchased planting material entering each declared bed or protected unit, distinguishing seed from transplants."
+          amount:
+            expression: "Record purchased lot quantity and viable seeding or transplanting quantity by bed."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - govnl-spinach-production-guide-2025
+            ranges:
+              - role: typical_range
+                lower: "10"
+                upper: "17"
+                unit: "kg seed/ha"
+                basis: "direct-seeded fresh-market spinach bed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - govnl-spinach-production-guide-2025
+                  - ufifas-leafy-vegetable-guide-2024
+        - row_id: crop_establishment_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - ucanr-spinach-production-1996
+                - govnl-spinach-production-guide-2025
+            ranges:
+              - role: typical_range
+                lower: "22"
+                upper: "34"
+                unit: "kg N/ha"
+                basis: "preplant or planting application to a fresh-market spinach crop"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ucanr-spinach-production-1996
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg P2O5/ha"
+                basis: "establishment application pending soil-test and nutrient-plan records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: default_estimate
+                lower: "0"
+                upper: "200"
+                unit: "kg K2O/ha"
+                basis: "establishment application pending soil-test and nutrient-plan records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_irrigation_water
+          role: "Irrigation water for establishment"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water delivered for bed preparation, germination, or transplant establishment separately from later crop irrigation."
+          amount:
+            expression: "Metered or water-balance estimate for establishment irrigation by bed and source."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach from the same crop cycle"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ucanr-spinach-production-1996
+                - fao-spinach-irrigation-schedule
+            ranges:
+              - role: typical_range
+                lower: "100"
+                upper: "300"
+                unit: "m3/ha"
+                basis: "delivered irrigation between seeding and emergence or transplant establishment"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ucanr-spinach-production-1996
+                  - fao-spinach-irrigation-schedule
+        - row_id: establishment_machinery_fuel
+          role: "Mobile machinery fuel for bed preparation"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or mass / MJ or kg"
+          description: "Record fuel used for bed preparation, cultivation, seeding, or transplanting when field machinery crosses the foreground boundary."
+          amount:
+            expression: "Metered fuel or equipment fuel log allocated to the spinach bed."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach from the same crop cycle"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - ucanr-spinach-production-1996
+            ranges:
+              - role: qa_guardrail
+                lower: "50"
+                upper: "400"
+                unit: "MJ/ha"
+                basis: "field preparation and planting operations"
+                basis_kind: "fuel_inventory"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: establishment_land_occupation
+          role: "Occupation of spinach production area"
+          name: "Occupation, agricultural land"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record the area occupied by the bed or protected unit for the crop-cycle establishment and attribution period."
+          amount:
+            expression: "Declared productive area multiplied by the represented crop-cycle duration."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_records
+              source_ids:
+                - govnl-spinach-production-guide-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "0.02"
+                upper: "0.5"
+                unit: "ha per 1,000 kg"
+                basis: "declared crop-cycle area normalized to marketable output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: crop_management
+    label: "Spinach crop management"
+    inputs:
+      product:
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ucanr-spinach-production-1996
+                - govnl-spinach-production-guide-2025
+            ranges:
+              - role: typical_range
+                lower: "22"
+                upper: "56"
+                unit: "kg N/ha"
+                basis: "preplant plus supplemental nitrogen for fresh-market spinach"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ucanr-spinach-production-1996
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg P2O5/ha"
+                basis: "in-season application pending soil-test and nutrient-plan records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: default_estimate
+                lower: "0"
+                upper: "200"
+                unit: "kg K2O/ha"
+                basis: "in-season application pending soil-test and nutrient-plan records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection product"
+          name: "Crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg product or kg active ingredient"
+          description: "Record each crop-protection product by active ingredient or commercial formulation when it is applied to the spinach crop."
+          amount:
+            expression: "Supplier invoice, spray log, or application record by field and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - govnl-spinach-production-guide-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg product/ha"
+                basis: "total applied crop-protection product for the represented crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_irrigation_water
+          role: "Irrigation water during crop growth"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation delivered during crop growth by field, source, and irrigation event or meter period."
+          amount:
+            expression: "Sum metered or documented water-balance irrigation deliveries for the represented crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ucanr-spinach-production-1996
+                - fao-spinach-irrigation-schedule
+            ranges:
+              - role: typical_range
+                lower: "413"
+                upper: "1240"
+                unit: "m3/ha"
+                basis: "total applied irrigation between seeding and harvest for fresh-market spinach"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ucanr-spinach-production-1996
+        - row_id: crop_machinery_fuel
+          role: "Mobile machinery fuel during crop management"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or mass / MJ or kg"
+          description: "Record fuel for cultivation, mechanical weed management, fertigation equipment, and other mobile machinery assigned to the crop cycle."
+          amount:
+            expression: "Fuel log or equipment activity estimate allocated to the spinach crop cycle."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - ucanr-spinach-production-1996
+            ranges:
+              - role: qa_guardrail
+                lower: "100"
+                upper: "800"
+                unit: "MJ/ha"
+                basis: "cultivation and crop-management operations"
+                basis_kind: "fuel_inventory"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: field_residue_output
+          role: "Spinach crop residue returned to soil"
+          name: "Spinach crop residue"
+          flow_type: "elementary"
+          property_unit: "Mass / kg wet residue"
+          description: "Record unharvested spinach biomass or cut residue returned to the field separately from marketable product and off-field rejects."
+          amount:
+            expression: "Reconcile pre-harvest biomass, harvested mass, and residue mass from field records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_reconciliation
+              source_ids:
+                - ucanr-spinach-production-1996
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4000"
+                unit: "kg wet residue/ha"
+                basis: "unharvested or returned spinach biomass in the crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: harvest_ready_spinach_output
+          role: "Harvest-ready fresh spinach from the crop"
+          name: "Harvest-ready fresh spinach"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the fresh spinach mass leaving the crop-management process for cutting, pulling, or pack-house preparation."
+          amount:
+            expression: "Field or bed harvest record before post-harvest reject and trim separation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_reconciliation
+              source_ids:
+                - psu-spinach-harvest-guidance-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1500"
+                unit: "kg harvested mass per 1,000 kg marketable output"
+                basis: "gross field harvest before grading, trimming, and reject separation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_spinach_loss_output
+          role: "Unmarketable field spinach and crop loss"
+          name: "Unmarketable spinach and crop loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet material"
+          description: "Record unharvested, damaged, bolted, or otherwise unmarketable spinach remaining in the field or removed before gate preparation."
+          amount:
+            expression: "Difference between potential or harvested crop mass and documented marketable output, with the physical fate declared."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_reconciliation
+              source_ids:
+                - psu-spinach-harvest-guidance-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg wet material per 1,000 kg marketable output"
+                basis: "field and pre-pack losses"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: direct_n2o_air_output
+          role: "Direct nitrous oxide from managed soil"
+          name: "Nitrous oxide, emissions to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct soil nitrous oxide from declared nitrogen inputs and the selected IPCC-compatible method; report the result to air."
+          amount:
+            expression: "Apply the declared nitrogen-emission factor to eligible crop-cycle nitrogen inputs and account for the selected climate and soil method."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-refinement-nitrogen
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15"
+                unit: "kg N2O/ha"
+                basis: "managed-soil nitrogen emissions for the represented crop cycle"
+                basis_kind: "n_input"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ipcc-2019-refinement-nitrogen
+        - row_id: nitrate_freshwater_output
+          role: "Nitrate to freshwater from field losses"
+          name: "Nitrate, emissions to freshwater"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NO3-"
+          description: "Model nitrate loss to freshwater only when the declared foreground water balance or emission method supports it."
+          amount:
+            expression: "Calculate from eligible nitrogen surplus and the selected site or method factor; do not infer a loss from fertilizer purchase alone."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-refinement-nitrogen
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "40"
+                unit: "kg NO3-/ha"
+                basis: "declared nitrogen surplus and water-loss pathway"
+                basis_kind: "n_input"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_and_gate_preparation
+    label: "Harvest and gate preparation"
+    inputs:
+      product:
+        - row_id: harvest_ready_spinach_input
+          role: "Harvest-ready fresh spinach entering preparation"
+          name: "Harvest-ready fresh spinach"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the harvested spinach transferred from the field or protected unit into grading, trimming, washing, cooling, or primary packing."
+          amount:
+            expression: "Transfer ticket or receiving scale record reconciled to the originating crop-cycle harvest."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_reconciliation
+              source_ids:
+                - psu-spinach-harvest-guidance-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1500"
+                unit: "kg received material per 1,000 kg marketable spinach"
+                basis: "harvested spinach received for grading, washing, cooling, or packing"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_water_input
+          role: "Wash water for optional post-harvest cleaning"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used for washing or removing soil and foreign material when washing occurs before the declared gate."
+          amount:
+            expression: "Metered or batch-recorded water used for spinach washing, excluding crop irrigation water."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable washed spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_records
+              source_ids:
+                - usda-ams-bunched-spinach-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "m3 per 1,000 kg marketable spinach"
+                basis: "batch washing or flume water crossing the gate-preparation boundary"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: postharvest_electricity_input
+          role: "Electricity for washing, cooling, and packing"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by washing, forced-air cooling, weighing, sorting, and packing equipment when those operations are in scope."
+          amount:
+            expression: "Metered or equipment-level electricity allocated to the spinach throughput."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach at gate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_energy_records
+              source_ids:
+                - psu-spinach-harvest-guidance-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "5"
+                upper: "120"
+                unit: "kWh per 1,000 kg marketable spinach"
+                basis: "washing, cooling, grading, and packing operations"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: primary_packaging_input
+          role: "Primary packaging for fresh spinach"
+          name: "Primary packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass / kg packaging material"
+          description: "Record bags, bands, crates, cartons, or other packaging that crosses the declared gate-preparation boundary with the spinach."
+          amount:
+            expression: "Packaging bill of materials and counted units reconciled to packed marketable output."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable packed spinach"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - usda-ams-bunched-spinach-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "2"
+                upper: "35"
+                unit: "kg packaging material per 1,000 kg spinach"
+                basis: "declared primary packaging format and reusable-container accounting"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: wash_trim_reject_output
+          role: "Washing and trimming reject"
+          name: "Spinach washing and trimming reject"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet material"
+          description: "Record soil, damaged leaves, coarse stems, and trimming material removed during preparation, with its physical fate."
+          amount:
+            expression: "Weigh or reconcile removed material against received and marketable packed spinach."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable spinach at gate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_records
+              source_ids:
+                - usda-ams-bunched-spinach-standard
+            ranges:
+              - role: typical_range
+                lower: "0"
+                upper: "250"
+                unit: "kg wet material per 1,000 kg marketable spinach"
+                basis: "soil, damaged leaves, coarse stems, and trim removed before gate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_wastewater_output
+          role: "Used wash water or wastewater"
+          name: "Wastewater from spinach washing"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Record used wash water leaving the preparation process when it is discharged or sent to treatment before the declared gate."
+          amount:
+            expression: "Water input less documented retained or evaporated quantity, reconciled to discharge or treatment records."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable washed spinach"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_postharvest_records
+              source_ids:
+                - usda-ams-bunched-spinach-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "m3 per 1,000 kg marketable washed spinach"
+                basis: "used wash water leaving the preparation boundary"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: spinach_farm_gate_output
+          role: "Marketable fresh spinach at the declared gate"
+          name: "Fresh spinach at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the packed or unpacked spinach product that crosses the declared farm-gate or pack-house gate after grading and any in-scope washing or cooling."
+          amount:
+            expression: "Final saleable mass from scale, dispatch, or lot records after reject and trim reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "reference flow of 1,000 kg marketable fresh spinach"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_output_records
+              source_ids:
+                - usda-ams-bunched-spinach-standard
+                - psu-spinach-harvest-guidance-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg marketable fresh spinach"
+                basis: "declared reference output at the farm-gate or pack-house gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids:
+                  - usda-ams-bunched-spinach-standard
+      waste:
+        - row_id: final_spinach_reject_output
+          role: "Final spinach rejects at gate preparation"
+          name: "Final spinach rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet material"
+          description: "Record product rejected after grading or packing, including the declared route to feed, composting, treatment, or disposal."
+          amount:
+            expression: "Final grading and packing reject weight reconciled to received harvest and marketable output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh spinach at gate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_output_records
+              source_ids:
+                - usda-ams-bunched-spinach-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg wet material per 1,000 kg marketable spinach"
+                basis: "grading and packing rejects after preparation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_single_crop_cycle
+    applies_to: "shared field, bed, or protected unit"
+    rule: "Attribute crop-cycle inputs to spinach using the recorded bed or unit area and the crop-cycle output; do not allocate to a second crop without its own records."
+    source_ids:
+      - ucanr-spinach-production-1996
+  - rule_id: allocation_multi_cut_spinach
+    applies_to: "repeated cuts from one sowing"
+    rule: "Treat successive cuts as outputs of the same declared crop cycle and reconcile each cut before normalizing to total marketable spinach."
+    source_ids:
+      - psu-spinach-harvest-guidance-2025
+  - rule_id: allocation_residue_fate
+    applies_to: "field residues, rejects, and trim"
+    rule: "Do not assign a co-product credit to residues unless a documented recipient, quantity, and intended use exists; otherwise retain the burden with spinach production and report the residue fate."
+    source_ids:
+      - usda-ams-bunched-spinach-standard
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "crop_establishment"
+      flow_role: "seed, transplant, and establishment nutrients"
+      record_type: "seed invoice, seed lot, transplant, and input application records"
+      raw_fields: "lot id; material type; viable quantity; field or bed; date; product mass; nutrient concentration"
+      collection_method: "retain supplier record and field application log"
+      unit: "seed, plant, kg product, kg nutrient"
+      frequency: "each campaign and application"
+      temporal_coverage: "full represented crop cycle"
+      site_scope: "each spinach bed or protected unit"
+      aggregation_rule: "sum by campaign and normalize to marketable output"
+      quality_evidence: "supplier label, lot trace, application record, and crop-cycle reconciliation"
+    - protocol_id: cp_irrigation_records
+      process_id: "crop_establishment_crop_management"
+      flow_role: "establishment and crop irrigation"
+      record_type: "meter, pump, irrigation controller, or water-balance record"
+      raw_fields: "source; meter start and end; event date; area; irrigation method; rainfall adjustment"
+      collection_method: "meter reading or documented water-balance calculation"
+      unit: "m3"
+      frequency: "each event or meter period"
+      temporal_coverage: "full represented crop cycle"
+      site_scope: "each field, bed, or protected unit"
+      aggregation_rule: "sum delivered irrigation by crop cycle and source"
+      quality_evidence: "calibrated meter or documented balance inputs"
+    - protocol_id: cp_field_energy_records
+      process_id: "crop_establishment_crop_management"
+      flow_role: "mobile machinery fuel"
+      record_type: "fuel invoice and equipment activity log"
+      raw_fields: "fuel type; quantity; equipment; operation; field; date; allocation basis"
+      collection_method: "supplier invoice plus equipment log or activity estimate"
+      unit: "L, kg, or MJ"
+      frequency: "each refuelling or operation"
+      temporal_coverage: "full represented crop cycle"
+      site_scope: "each spinach production unit"
+      aggregation_rule: "allocate shared operations by area, hours, or fuel record"
+      quality_evidence: "invoice, equipment log, and allocation calculation"
+    - protocol_id: cp_nutrient_records
+      process_id: "crop_management"
+      flow_role: "crop nutrients and nitrogen basis"
+      record_type: "nutrient plan, supplier invoice, and application log"
+      raw_fields: "product; nutrient concentration; application date; area; quantity; method"
+      collection_method: "reconcile product records with field application records"
+      unit: "kg product and kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "full represented crop cycle"
+      site_scope: "each spinach production unit"
+      aggregation_rule: "sum nutrient mass by crop cycle and declared basis"
+      quality_evidence: "soil test, label or supplier specification, and application log"
+    - protocol_id: cp_crop_protection_records
+      process_id: "crop_management"
+      flow_role: "crop-protection products"
+      record_type: "spray or treatment log and supplier record"
+      raw_fields: "product; active ingredient; rate; area; date; target; equipment"
+      collection_method: "record each application and product lot"
+      unit: "kg product or kg active ingredient"
+      frequency: "each application"
+      temporal_coverage: "full represented crop cycle"
+      site_scope: "each spinach production unit"
+      aggregation_rule: "sum by active ingredient and crop cycle"
+      quality_evidence: "application log and product label"
+    - protocol_id: cp_field_records
+      process_id: "crop_establishment"
+      flow_role: "land occupation and area"
+      record_type: "field register or protected-unit register"
+      raw_fields: "area; unit; land use; crop dates; bed identifier; protection structure"
+      collection_method: "verify area and dates against production register"
+      unit: "ha, m2, and days"
+      frequency: "each crop cycle"
+      temporal_coverage: "full represented crop cycle"
+      site_scope: "each spinach field or protected unit"
+      aggregation_rule: "calculate area-time and normalize to gate output"
+      quality_evidence: "field map, register, and date evidence"
+    - protocol_id: cp_harvest_reconciliation
+      process_id: "crop_management_harvest_and_gate_preparation"
+      flow_role: "harvest, field residue, and field loss"
+      record_type: "harvest ticket, scale record, and field loss record"
+      raw_fields: "field; cut number; date; gross mass; marketable mass; residue; loss; destination"
+      collection_method: "weigh each harvest or use documented lot reconciliation"
+      unit: "kg wet material"
+      frequency: "each cut or harvest lot"
+      temporal_coverage: "full represented harvest campaign"
+      site_scope: "each spinach field or bed"
+      aggregation_rule: "reconcile gross harvest, marketable output, rejects, and residue"
+      quality_evidence: "scale record, lot ticket, and destination record"
+    - protocol_id: cp_postharvest_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "wash water, electricity, rejects, and wastewater"
+      record_type: "pack-house batch and utility records"
+      raw_fields: "received mass; wash water; discharge; electricity; trim; batch; date; fate"
+      collection_method: "batch record plus meter allocation"
+      unit: "kg, m3, and kWh"
+      frequency: "each batch or meter period"
+      temporal_coverage: "full represented harvest campaign"
+      site_scope: "each preparation line or pack-house"
+      aggregation_rule: "aggregate by batch and normalize to marketable packed output"
+      quality_evidence: "meter record, batch sheet, and waste or treatment receipt"
+    - protocol_id: cp_postharvest_energy_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "washing, cooling, and packing electricity"
+      record_type: "electricity meter and equipment throughput record"
+      raw_fields: "meter period; line; kWh; throughput; cooling duration; batch"
+      collection_method: "meter allocation by throughput or run time"
+      unit: "kWh"
+      frequency: "each meter period or batch"
+      temporal_coverage: "full represented harvest campaign"
+      site_scope: "each in-scope preparation line"
+      aggregation_rule: "allocate shared electricity by throughput and reconcile to batch output"
+      quality_evidence: "meter data and allocation calculation"
+    - protocol_id: cp_packaging_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "primary packaging"
+      record_type: "packaging specification, bill of materials, and count record"
+      raw_fields: "material; unit mass; units; reuse status; batch; output mass"
+      collection_method: "packaging count and specification reconciliation"
+      unit: "kg material and units"
+      frequency: "each packaging lot or batch"
+      temporal_coverage: "full represented harvest campaign"
+      site_scope: "each preparation line"
+      aggregation_rule: "sum virgin and reusable packaging separately per packed output"
+      quality_evidence: "supplier specification, count sheet, and reuse declaration"
+    - protocol_id: cp_gate_output_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "marketable product and final rejects"
+      record_type: "dispatch scale, lot record, and reject record"
+      raw_fields: "lot; date; packed mass; unpacked mass; grade; reject; destination; gate"
+      collection_method: "final scale and lot reconciliation"
+      unit: "kg wet spinach"
+      frequency: "each dispatch lot"
+      temporal_coverage: "full represented harvest campaign"
+      site_scope: "declared gate"
+      aggregation_rule: "sum saleable output and reject streams; normalize to 1,000 kg"
+      quality_evidence: "certified scale or lot record and grade record"
+  calculation_rules:
+    - id: calc_nutrient_mass
+      applies_to: "fertilizer rows"
+      rule: "product mass × declared nutrient fraction; retain the original product mass and nutrient basis"
+      inputs:
+        - "product invoice"
+        - "nutrient concentration"
+        - "application record"
+      output: "kg N, kg P2O5, or kg K2O by crop cycle"
+      source_ids:
+        - govnl-spinach-production-guide-2025
+    - id: calc_crop_cycle_normalization
+      applies_to: "all crop-cycle inputs"
+      rule: "crop-cycle quantity ÷ marketable fresh spinach mass × 1,000 kg"
+      inputs:
+        - "crop-cycle input"
+        - "marketable output"
+      output: "normalized quantity per 1,000 kg output"
+      source_ids: []
+    - id: calc_multi_cut_output
+      applies_to: "repeated harvest routes"
+      rule: "sum marketable mass from all declared cuts in the campaign; reconcile gross mass and rejects before normalization"
+      inputs:
+        - "cut tickets"
+        - "lot records"
+        - "reject records"
+      output: "total crop-cycle marketable mass"
+      source_ids:
+        - psu-spinach-harvest-guidance-2025
+    - id: calc_area_time
+      applies_to: "land occupation"
+      rule: "production area × represented crop-cycle duration; disclose whether protected area is included"
+      inputs:
+        - "area register"
+        - "crop dates"
+      output: "area-time quantity"
+      source_ids:
+        - govnl-spinach-production-guide-2025
+    - id: calc_nitrogen_emission
+      applies_to: "direct soil nitrous oxide"
+      rule: "apply the selected IPCC-compatible factor to eligible nitrogen input and declared soil or climate method; document factors in the dataset"
+      inputs:
+        - "nutrient records"
+        - "method choice"
+        - "crop-cycle area"
+      output: "kg N2O emitted to air"
+      source_ids:
+        - ipcc-2019-refinement-nitrogen
+    - id: calc_gate_mass_balance
+      applies_to: "harvest and packing"
+      rule: "received harvest = marketable output + rejects + residue or loss, with documented measurement uncertainty"
+      inputs:
+        - "harvest tickets"
+        - "packing records"
+        - "reject and residue records"
+      output: "reconciled mass balance"
+      source_ids:
+        - usda-ams-bunched-spinach-standard
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "all flow and product records"
+      requirement: "Declare spinach form, cultivar group, crop route, gate, harvest cut, and product state; resolve platform identities during foreground dataset construction where required."
+      evidence: "lot record, product description, and reference-flow qualifiers"
+    - id: quality_measurement
+      applies_to: "inputs and outputs"
+      requirement: "Prefer calibrated meters, scales, supplier invoices, and application logs; document estimation and allocation methods where direct measurement is unavailable."
+      evidence: "meter calibration, scale record, invoice, or calculation sheet"
+    - id: quality_temporal
+      applies_to: "crop-cycle inventory"
+      requirement: "Cover the full represented crop cycle and harvest campaign, including all cuts and material applications."
+      evidence: "sowing or transplant date, application log, harvest tickets, and dispatch records"
+    - id: quality_completeness
+      applies_to: "crop-cycle balance"
+      requirement: "Reconcile seed or transplant material, nutrient inputs, irrigation, harvest, marketable output, residue, reject, and wastewater streams."
+      evidence: "crop-cycle mass and input reconciliation"
+    - id: quality_disclosure
+      applies_to: "dataset metadata"
+      requirement: "Disclose protected cultivation, irrigation source, nutrient basis, crop-protection products, washing, cooling, packaging, and residue destination."
+      evidence: "dataset metadata and supporting records"
+validation_rules:
+  - rule_id: validate_reference_output
+    applies_to: "reference flow"
+    rule: "The declared reference output must be marketable fresh spinach at the declared gate and must use mass in kg; a frozen, canned, cooked, or retail product is outside this PCR."
+    source_ids:
+      - usda-ams-bunched-spinach-standard
+  - rule_id: validate_crop_cycle_dates
+    applies_to: "crop establishment and management"
+    rule: "Sowing or transplanting, applications, irrigation, harvest cuts, and gate output must fall within the declared crop cycle or be explicitly attributed to it."
+    source_ids:
+      - govnl-spinach-production-guide-2025
+  - rule_id: validate_nutrient_basis
+    applies_to: "fertilizer inputs and emissions"
+    rule: "Product mass, nutrient concentration, nutrient basis, and emission calculation method must be present and internally consistent; avoid counting both product mass and nutrient mass as the same exchange."
+    source_ids:
+      - ucanr-spinach-production-1996
+      - ipcc-2019-refinement-nitrogen
+  - rule_id: validate_mass_balance
+    applies_to: "harvest and gate preparation"
+    rule: "Gross harvest and received mass must reconcile with marketable output, rejects, residues, and losses within the declared measurement uncertainty."
+    source_ids:
+      - usda-ams-bunched-spinach-standard
+  - rule_id: validate_flow_set_resolution
+    applies_to: "parameterized rows"
+    rule: "At foreground data generation, each parameterized row must resolve to a verified UUID compatible with the specified Flow Set group, property, unit, and geography; otherwise retain an explicit coverage finding."
+    source_ids: []
+  - rule_id: validate_qualifiers
+    applies_to: "reference flow and dataset metadata"
+    rule: "Required qualifiers must be present in the dataset package, including crop form, cut, gate, washing, cooling, packaging, and production route."
+    source_ids:
+      - usda-ams-bunched-spinach-standard
+      - psu-spinach-harvest-guidance-2025
+published_dataset_profile:
+  dataset_role: "foreground agricultural production dataset for fresh spinach at farm-gate or pack-house gate"
+  downstream_use: "secondary_dataset for fresh-spinach product systems; background_dataset only when the provider explicitly publishes a representative regional or market-average dataset with the required metadata"
+  allowed_use: "Comparative product studies, crop-cycle inventory modelling, farm or pack-house improvement, and declared fresh-spinach supply-chain assessments within the stated geography and product state"
+  excluded_use: "Frozen, canned, cooked, dried, retail, consumption, seed-production, or unqualified leafy-vegetable substitution; do not extrapolate across protected and open-field routes without scenario disclosure"
+  required_metadata: "product form; cultivar group; crop route; geography; crop dates; cut number; gate; yield; irrigation source and quantity; nutrient basis; crop-protection program; washing and cooling; packaging; residue and reject fate"
+  required_quality_disclosure: "temporal coverage, site scope, measurement versus calculated values, allocation rules, mass-balance result, platform identity resolution status, and all provisional estimates requiring replacement by foreground records"
+  update_trigger: "change in crop route, irrigation method, nutrient program, harvest form, wash or cooling line, packaging format, gate definition, or evidence that changes material quantities or boundary rules"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "ucanr-spinach-production-1996"
+    type: "literature"
+    reference: "University of California Agriculture and Natural Resources, *Spinach Production in California*, ANR Publication 7212, https://anrcatalog.ucanr.edu/pdf/7212.pdf"
+    used_for: "production route, irrigation, nutrient application, crop management, and boundary context"
+  - id: "govnl-spinach-production-guide-2025"
+    type: "official_guidance"
+    reference: "Government of Newfoundland and Labrador, *Vegetable Crops Production Guide: Spinach*, https://www.gov.nl.ca/ffa/files/agrifoods-plants-pdf-spinach.pdf"
+    used_for: "seeding, crop establishment, soil-test-based nutrient practice, and crop-cycle qualifiers"
+  - id: "ufifas-leafy-vegetable-guide-2024"
+    type: "extension_guidance"
+    reference: "University of Florida IFAS, *Leafy Vegetable Production*, https://ask.ifas.ufl.edu/publication/CV293?downloadOpen=true"
+    used_for: "seed-rate and harvest-period screening"
+  - id: "fao-spinach-irrigation-schedule"
+    type: "official_guidance"
+    reference: "FAO, *Crop Water Management: Determination of the Irrigation Schedule for Crops Other Than Rice*, https://www.fao.org/4/T7202E/t7202e06.htm"
+    used_for: "spinach irrigation scheduling context"
+  - id: "usda-ams-bunched-spinach-standard"
+    type: "official_guidance"
+    reference: "USDA Agricultural Marketing Service, *Bunched Spinach Grades and Standards*, https://www.ams.usda.gov/grades-standards/bunched-spinach-grades-and-standards"
+    used_for: "product grade, freshness, trimming, defect, reject, and gate-quality qualifiers"
+  - id: "psu-spinach-harvest-guidance-2025"
+    type: "extension_guidance"
+    reference: "Penn State Extension, *Mid-Atlantic Commercial Vegetable Production: Spinach harvest and post-harvest considerations*, https://extension.psu.edu/downloadable/download/sample/sample_id/128944/"
+    used_for: "harvest form, repeated cutting, handling, cooling, and gate-preparation context"
+  - id: "ipcc-2019-refinement-nitrogen"
+    type: "method_factor"
+    reference: "IPCC, *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, https://www.ipcc.ch/report/2019-refinement-to-the-2006-ipcc-guidelines-for-national-greenhouse-gas-inventories/"
+    used_for: "managed-soil nitrogen-emission method and calculation rule"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f75c08594fa8b36b819b0040213491fdb252c0f2c56f155a65c12a21b5d008cf"
+  generated_content_sha256: "sha256:a9658ad4a5d39f1a7a55564cbb69c14ac0dbb540ea7f98e780414689e86216b7"

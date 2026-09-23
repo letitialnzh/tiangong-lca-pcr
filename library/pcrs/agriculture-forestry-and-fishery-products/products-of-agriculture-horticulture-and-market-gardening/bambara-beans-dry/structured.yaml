@@ -1,10 +1,1361 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01708"
-  title: "Bambara beans, dry"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.bambara-beans-dry"
+  classification_refs: "CPC 3.0: 01708 Bambara beans, dry"
+  covered_products: "Mature dry shelled *Vigna subterranea* seed at farm gate"
+  excluded_products: "Fresh pods; planting seed sold as seed; roasted/boiled seed; flour; canned product; oil; downstream products"
+  representative_product: "Food-grade mature dry Bambara bean seed"
+  production_route: "Managed crop production, independent lifting/digging, primary conditioning, stabilization, shelling, and grading; sole/intercrop, manual/mechanized and ambient/mechanical routes may coexist only when separately declared"
+  market_state: "Dry shelled seed, production mix at farm gate; declare moisture basis, grade, damage/reject criteria, production mode and conditioning route"
+functional_unit:
+  what: "Mature dry shelled Bambara bean seed at farm gate"
+  how_much: "1,000 kg as-received reference product"
+  how_well: "Declared moisture, foreign matter, broken/damaged seed, pest damage and grade criteria"
+  how_long_or_cycle: "One crop cycle and its farm-gate conditioning campaign"
+  reference_flow_link: "reference_bambara_beans from clean_grade_final_dry"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "Crop production"
+      rule: "Include management inputs, direct managed-soil emissions, residues and losses through mature crop hand-off."
+      source_ids:
+        - sa-dard-bambara-2020
+        - sa-daff-bambara-2016
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_harvest
+      applies_to: "Harvest"
+      rule: "Model lifting/digging independently because it removes subterranean pods and creates collected pod, haulm, soil and field-loss states."
+      source_ids:
+        - sa-dard-bambara-2020
+        - tanzania-naliendele-2001
+    - rule_id: boundary_conditioning
+      applies_to: "Conditioning"
+      rule: "Include soil removal, pod detachment, drying, cleaning, grading and conditional final drying."
+      source_ids:
+        - fao-pulse-loss-2020
+        - fao-grain-handling
+    - rule_id: boundary_shell_state
+      applies_to: "Shelling"
+      rule: "Require shelling before the CPC 01708 reference-product hand-off. Keep dry pods as an intermediate and never combine pod and shelled-seed mass without a measured balance."
+      source_ids:
+        - feedipedia-bambara-byproducts-2016
+    - rule_id: boundary_exclusions
+      applies_to: "Downstream"
+      rule: "Exclude cooking, roasting, milling, canning, oil extraction, post-farm storage/transport and planting-seed certification."
+      source_ids:
+        - fao-forgotten-foods-2023
+boundary_abstraction:
+  declared_starting_condition: "Prepared field with prior crop, soil condition, retained residues and carry-over inputs disclosed"
+  starting_condition_role: "Start of managed production before sowing"
+  product_classification_scope: "Mature dry *Vigna subterranea* seed corresponding to CPC 3.0 01708"
+  recursive_input_rule: "Purchased Bambara grain used as an input is upstream product input and is not recursively represented as output of this foreground system"
+  upstream_dataset_requirement: "Link product, energy, water and service inputs to suitable upstream datasets; expand set-level nutrient records to concrete products and UUIDs in final processes"
+  disclosure: "Geography, crop year, area, sole/intercrop mode, irrigation, nutrient products/composition, crop protection, lifting, drying, shell state, grade, residue/reject routes and allocation"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Bambara beans, dry"
+    uuid: "855d61a4-389d-4db6-bbbd-c4f817ae16b4"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - dry_shelled_seed
+    - "moisture and basis"
+    - grade
+    - "foreign matter"
+    - "broken/damaged and pest-damaged fractions"
+    - geography
+    - "crop year"
+    - "sole/intercrop route"
+    - harvest
+    - "drying and shelling technology"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference product and material balances"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report 1,000 kg as received and declare moisture on one consistent basis."
+  - id: area_to_mass
+    applies_to: "Crop records"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg/ha and kg/1,000 kg"
+    rule: "Retain field area and gross/accepted yield before normalization."
+  - id: shell_state_mass
+    applies_to: "Pod, shell and seed hand-offs"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Reconcile in-shell input with seed, shells, foreign matter, rejects and moisture change."
+  - id: moisture_correction
+    applies_to: "Drying"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use paired mass and moisture measurements and conserve dry solids."
+process_map:
+  - id: crop_production
+    name: "Managed biological Bambara bean crop production"
+    inclusion: "required"
+    inclusion_condition: "One declared crop cycle"
+    role: "Alternative production route and technology delta; batch production indexed by crop cycle; single-period with no storage"
+    quantitative_reference: "per harvested area and accepted product"
+  - id: lift_and_recover
+    name: "Lift or dig and recover pods"
+    inclusion: "required"
+    inclusion_condition: "Crop has reached declared maturity"
+    role: "Independent harvest hand-off for pods, haulm, soil and field loss"
+    quantitative_reference: "per lifted pod lot"
+  - id: pod_conditioning
+    name: "Primary conditioning, preservation and stabilization of pods"
+    inclusion: "required"
+    inclusion_condition: "Lifted crop enters farm conditioning"
+    role: "Soil removal, pod detachment and drying create clean stabilized pods and separate debris and rejects"
+    quantitative_reference: "per kg dry pod output"
+  - id: shell_dry_pods
+    name: "Shell dry pods"
+    inclusion: "required"
+    inclusion_condition: "Every dry-pod lot contributing to CPC 01708"
+    role: "Creates shelled seed and separately routes shells and damage"
+    quantitative_reference: "per kg shelled-seed output"
+  - id: clean_grade_final_dry
+    name: "Cleaning, grading and sorting with conditional final drying"
+    inclusion: "required"
+    inclusion_condition: "Dry shelled seed is prepared for sale"
+    role: "Creates accepted, downgraded and rejected states and farm-gate hand-off"
+    quantitative_reference: "per 1,000 kg accepted product"
+process_inventory:
+  - id: crop_production
+    label: "Managed biological Bambara bean crop production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Planting material"
+          name: "Bambara bean planting material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record viable Bambara bean planting material entering the crop cycle; it is an upstream input rather than the farm-gate reference product."
+          amount:
+            expression: "Measured mass sown for the harvested area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "300"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: agricultural_nutrient_supply
+          role: "Consolidated nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record every mineral fertilizer, organic fertilizer and nutrient-bearing amendment used in this process in this single card; retain each concrete product, composition and application event in foreground records."
+          amount:
+            expression: "Sum measured masses of all nutrient-supplying products for the harvested area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - sa-dard-bambara-2020
+                - sa-daff-bambara-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record gross irrigation water by source, event and delivery system; use zero where irrigation is inactive."
+          amount:
+            expression: "measured or calculated gross irrigation delivery by event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - sa-daff-bambara-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3/1,000 kg accepted product"
+                basis: "gross irrigation supplied for the crop cycle"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field-operation energy supply"
+          name: "Field-operation energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuels, electricity and qualifying machinery-energy services by carrier and operation."
+          amount:
+            expression: "energy converted from measured carrier and qualifying service records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - sa-daff-bambara-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/1,000 kg accepted product"
+                basis: "recorded field energy for the crop cycle"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_products
+          role: "Crop-protection products"
+          name: "Crop-protection products as applied"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L"
+          description: "Record each crop-protection product separately by formulated-product identity and application event."
+          amount:
+            expression: "measured formulated-product quantity by application event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - sa-daff-bambara-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg formulated product/1,000 kg accepted product"
+                basis: "recorded crop-protection products for the crop cycle"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_crop_handoff
+          role: "Mature crop with subterranean pods"
+          name: "Mature Bambara bean crop with subterranean pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the mature managed crop at the hand-off to the independent lifting or digging node."
+          amount:
+            expression: "Harvest-area reconciliation of pods, haulm, adhering soil and field losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - sa-dard-bambara-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "15000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residue_and_loss
+          role: "Field residues and production losses"
+          name: "Bambara bean field residues and losses"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter"
+          description: "Record roots and other residues retained in soil and failed or unrecovered production; distinguish returned residue from removed haulm."
+          amount:
+            expression: "Field sampling and crop-cycle reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg dry matter"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: direct_soil_n2o
+          role: "Direct nitrous oxide from managed soil"
+          name: "Dinitrogen monoxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct N2O from actual nutrient and crop-residue nitrogen records using the selected IPCC tier."
+          amount:
+            expression: "IPCC managed-soil calculation with N2O-N to N2O conversion"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_crop_cycle_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30"
+                unit: "kg N2O"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: lift_and_recover
+    label: "Lift or dig and recover pods"
+    inputs:
+      product:
+        - row_id: mature_crop_received
+          role: "Mature crop received"
+          name: "Mature Bambara bean crop with subterranean pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the mature crop from crop_production and preserve the field and crop-cycle link."
+          amount:
+            expression: "Equal to the linked mature_crop_handoff"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "15000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Lifting and digging energy"
+          name: "Harvest energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuel, electricity and qualifying machinery-energy services used by the selected harvest technology."
+          amount:
+            expression: "energy converted from collected carrier and qualifying service records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg lifted pod lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "MJ/kg lifted pod lot"
+                basis: "one lifted pod lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_non_energy_service
+          role: "Non-energy harvest service"
+          name: "Manual or animal-traction harvest service"
+          flow_type: "product"
+          property_unit: "Service / service-hour"
+          description: "Record manual labour or animal traction separately when represented as a Product-service input."
+          amount:
+            expression: "measured service quantity by harvest lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg lifted pod lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "service-hour/kg lifted pod lot"
+                basis: "one lifted pod lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: lifted_pod_lot
+          role: "Intended output: lifted pod lot with adhering soil"
+          name: "Lifted Bambara bean pods with adhering soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record collected pods before soil removal and pod detachment and hand them to pod_conditioning."
+          amount:
+            expression: "Weighed lifted pod lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids:
+                - sa-dard-bambara-2020
+                - tanzania-naliendele-2001
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "5000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: haulm_coproduct
+          role: "Removed haulm with beneficial destination"
+          name: "Bambara bean haulm"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record haulm as a co-product only with a documented feed, bedding or other beneficial hand-off; otherwise classify it as returned residue or waste."
+          amount:
+            expression: "Moisture-corrected removed haulm by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids:
+                - sa-dard-bambara-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg dry matter"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_loss
+          role: "Unrecovered pods and harvest rejects"
+          name: "Bambara bean harvest loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record pods left in soil, spill, and immature or damaged pods rejected in the field; exclude them from accepted output."
+          amount:
+            expression: "Field sampling plus lifted-lot reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: pod_conditioning
+    label: "Primary conditioning, preservation and stabilization of pods"
+    inputs:
+      product:
+        - row_id: lifted_pod_lot_received
+          role: "Lifted pod lot received"
+          name: "Lifted Bambara bean pods with adhering soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the linked lifted lot with field, crop-cycle and harvest-lot identifiers."
+          amount:
+            expression: "Equal to the linked lifted_pod_lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry pod output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pod_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg"
+                basis: "per kg dry pod output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Pod-conditioning energy"
+          name: "Pod-conditioning energy carriers and services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record energy used for soil removal, pod detachment and primary drying; ambient drying may have zero purchased energy but retains time and route records."
+          amount:
+            expression: "Energy converted from actual carrier and equipment records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg dry pod output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pod_conditioning_records
+              source_ids:
+                - fao-pulse-loss-2020
+                - fao-grain-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15"
+                unit: "MJ"
+                basis: "per kg dry pod output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dry_pods
+          role: "Stabilized dry pods"
+          name: "Bambara bean dry pods, intermediate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record clean detached dry pods as the intermediate handed to shelling; dry pods are not the CPC 01708 reference product."
+          amount:
+            expression: "Weighed output at measured moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg dry pod output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pod_conditioning_records
+              source_ids:
+                - tanzania-naliendele-2001
+                - fao-pulse-loss-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per kg dry pod output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_debris_rejects
+          role: "Detached soil, debris and pod rejects"
+          name: "Pod-conditioning debris and rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record soil, roots, plant debris, spill, mouldy or damaged pods separately by return, recovery, downgrade or discard destination."
+          amount:
+            expression: "Weighed streams by state and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry pod output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pod_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3"
+                unit: "kg"
+                basis: "per kg dry pod output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: pod_drying_water
+          role: "Water evaporated during pod drying"
+          name: "Water to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate removed water from paired input/output mass and moisture measurements; do not classify it as product loss."
+          amount:
+            expression: "Dry-solids moisture balance"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry pod output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pod_conditioning_records
+              source_ids:
+                - fao-grain-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg water"
+                basis: "per kg dry pod output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: shell_dry_pods
+    label: "Shell dry pods"
+    inputs:
+      product:
+        - row_id: dry_pods_shelling_inputs
+          role: "Dry-pod input to shelling"
+          name: "Dry Bambara bean pods"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record dry pods by originating conditioning lot."
+          amount:
+            expression: "measured dry-pod input by shelling batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted shelled seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shelling_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "12"
+                unit: "kg dry pods/kg accepted shelled seed"
+                basis: "one shelling batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: shelling_energy
+          role: "Shelling energy supply"
+          name: "Shelling energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuel, electricity and qualifying machinery-energy services used for shelling."
+          amount:
+            expression: "energy converted from measured carrier and qualifying service records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted shelled seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_shelling_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12"
+                unit: "MJ/kg accepted shelled seed"
+                basis: "one shelling batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manual_shelling_service
+          role: "Manual shelling service"
+          name: "Manual shelling service"
+          flow_type: "product"
+          property_unit: "Service / service-hour"
+          description: "Record manual shelling separately when it is represented as a Product-service exchange."
+          amount:
+            expression: "measured manual service by shelling batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted shelled seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shelling_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12"
+                unit: "service-hour/kg accepted shelled seed"
+                basis: "one shelling batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dry_shelled_seed
+          role: "Dry shelled seed"
+          name: "Bambara beans, dry, shelled"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record intact dry seed at the shelling hand-off to final cleaning and grading."
+          amount:
+            expression: "Weighed intact shelled-seed output"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg accepted shelled seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shelling_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per kg accepted shelled seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: shell_coproduct
+          role: "Shells with beneficial destination"
+          name: "Bambara bean shells"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record shells as a co-product only with a documented beneficial destination; otherwise route them as waste."
+          amount:
+            expression: "Weighed shells by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted shelled seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shelling_records
+              source_ids:
+                - feedipedia-bambara-byproducts-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg dry matter"
+                basis: "per kg accepted shelled seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: shelling_rejects
+          role: "Broken seed, rejects and discarded shells"
+          name: "Bambara bean shelling rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record each rejected state and its rework, downgrade, recovery or discard destination; count rework once and only after final acceptance."
+          amount:
+            expression: "Weighed rejected material by state and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted shelled seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shelling_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg"
+                basis: "per kg accepted shelled seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: clean_grade_final_dry
+    label: "Cleaning, grading and sorting with conditional final drying"
+    inputs:
+      product:
+        - row_id: shelled_lot_input
+          role: "Shelled-seed lot input"
+          name: "Dry shelled Bambara bean lot"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive dry shelled seed from shelling as a mass-linked lot."
+          amount:
+            expression: "measured linked-lot input"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_lot_records
+              source_ids:
+                - fao-pulse-loss-2020
+                - fao-grain-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1500"
+                unit: "kg shelled lot/1,000 kg accepted product"
+                basis: "one final-conditioning lot"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: final_conditioning_energy
+          role: "Final-conditioning energy supply"
+          name: "Final-conditioning energy carriers and qualifying machinery-energy services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record cleaning, grading and conditional final-drying energy by carrier; drying energy is zero when inactive."
+          amount:
+            expression: "energy converted from actual carrier and qualifying service records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_final_lot_records
+              source_ids:
+                - fao-pulse-loss-2020
+                - fao-grain-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "16000"
+                unit: "MJ/1,000 kg accepted product"
+                basis: "one final-conditioning lot"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_bambara_beans
+          role: "Accepted dry shelled Bambara beans at farm gate"
+          name: "Bambara beans, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "855d61a4-389d-4db6-bbbd-c4f817ae16b4"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is the sole reference-product hand-off and excludes every pod, shell, downgraded, broken, damaged and rejected state."
+          amount:
+            expression: "1,000 kg accepted dry shelled-seed lot at measured moisture"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_seed
+          role: "Downgraded dry seed"
+          name: "Downgraded dry Bambara bean seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record saleable off-grade seed separately with its grade and destination; it is not reference product."
+          amount:
+            expression: "Weighed downgraded output by grade and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_lot_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: final_rejects
+          role: "Foreign matter, damaged seed and final rejects"
+          name: "Bambara bean cleaning and grading rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record material failing accepted or downgrade states with its recovery, feed or disposal destination."
+          amount:
+            expression: "Weighed reject streams by state and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_lot_records
+              source_ids:
+                - fao-pulse-loss-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: final_drying_water
+          role: "Water evaporated during final drying"
+          name: "Water to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record only when final drying is active and calculate from paired mass and moisture measurements."
+          amount:
+            expression: "Dry-solids moisture balance; zero when final drying is inactive"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_final_lot_records
+              source_ids:
+                - fao-grain-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg water"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_avoid
+    applies_to: "All nodes"
+    rule: "First avoid allocation by separately metering nodes and linking each crop cycle or lot once."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_intercrop
+    applies_to: "Intercropped fields"
+    rule: "Assign crop-specific inputs directly and shared operations by area, time or another causal driver; shares sum to one."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residue_status
+    applies_to: "Haulm and shells"
+    rule: "Without evidenced beneficial hand-off a stream is residue/waste with no co-product credit; beneficial hand-off makes it an intended co-product."
+    source_ids:
+      - iso-14044-2006
+      - feedipedia-bambara-byproducts-2016
+  - rule_id: allocation_coproduct
+    applies_to: "Intended co-products"
+    rule: "Where subdivision cannot avoid allocation, use contemporaneous farm-gate economic allocation and report mass-allocation sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_rework
+    applies_to: "Rework/rejects"
+    rule: "Retain rework burdens in the producing lot, count material only at final disposition, and never count rejects as accepted output."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_crop_cycle_records
+      process_id: "crop_production"
+      flow_role: "All crop inputs/outputs"
+      record_type: "Field logs, invoices, meters and yield records"
+      raw_fields: "field; cycle; area; route; input product and composition; water; energy; yield; residues; loss; emission method"
+      collection_method: "Link every event to harvested field"
+      unit: "original unit"
+      frequency: "event/cycle"
+      temporal_coverage: "full cycle"
+      site_scope: "field"
+      aggregation_rule: "sum then normalize by accepted product; causal attribution for intercrop"
+      quality_evidence: "invoices, calibration, labels, area and yield records"
+    - protocol_id: cp_harvest_lot_records
+      process_id: "lift_and_recover"
+      flow_role: "Harvest inputs/outputs"
+      record_type: "Harvest log, scales and samples"
+      raw_fields: "field; lot; method; energy; pod; haulm; soil; loss; destinations"
+      collection_method: "Link each lot to one field"
+      unit: "kg; MJ"
+      frequency: "lot"
+      temporal_coverage: "campaign"
+      site_scope: "field/technology"
+      aggregation_rule: "reconcile collected and uncollected states"
+      quality_evidence: "scale checks, sampling and receipts"
+    - protocol_id: cp_pod_conditioning_records
+      process_id: "pod_conditioning"
+      flow_role: "Conditioning inputs/outputs"
+      record_type: "Lot sheet, scales, moisture and equipment logs"
+      raw_fields: "input/output mass/moisture; route; energy; debris; reject; time"
+      collection_method: "Measure every state"
+      unit: "kg; %; MJ"
+      frequency: "lot"
+      temporal_coverage: "all lots"
+      site_scope: "site/route"
+      aggregation_rule: "dry-solids balance then normalize"
+      quality_evidence: "calibration, route log and closure"
+    - protocol_id: cp_shelling_records
+      process_id: "shell_dry_pods"
+      flow_role: "Shelling inputs/outputs"
+      record_type: "Batch sheet and destinations"
+      raw_fields: "pod mass/moisture; route; energy; seed; shells; rejects; rework"
+      collection_method: "Measure every batch"
+      unit: "kg; %; MJ"
+      frequency: "batch"
+      temporal_coverage: "all shelled lots"
+      site_scope: "sheller"
+      aggregation_rule: "balance and count rework once"
+      quality_evidence: "calibration, logs and closure"
+    - protocol_id: cp_final_lot_records
+      process_id: "clean_grade_final_dry"
+      flow_role: "Final lot inputs/outputs"
+      record_type: "Grade sheet, scales, moisture and dispatch"
+      raw_fields: "shell state; mass/moisture; grade; energy; accepted; downgrade; reject; rework"
+      collection_method: "Measure every state"
+      unit: "kg; %; MJ"
+      frequency: "lot"
+      temporal_coverage: "all sales lots"
+      site_scope: "site/route"
+      aggregation_rule: "balance then normalize to 1,000 kg"
+      quality_evidence: "calibration, grade and dispatch records"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "All cards"
+      rule: "amount / accepted mass × 1,000 kg"
+      inputs:
+        - "linked amount"
+        - "accepted mass"
+      output: "amount per reference flow"
+      source_ids: []
+    - id: calc_moisture_balance
+      applies_to: "Drying"
+      rule: "dry solids = wet mass × (1 − moisture fraction); water loss from paired states"
+      inputs:
+        - mass
+        - moisture
+        - "removed matter"
+      output: "corrected mass and water to air"
+      source_ids:
+        - fao-grain-handling
+    - id: calc_shelling_balance
+      applies_to: "Shelling"
+      rule: "pods = seed + shells + rejects + moisture change within uncertainty"
+      inputs:
+        - "batch states"
+      output: "shelling yield and residues"
+      source_ids:
+        - feedipedia-bambara-byproducts-2016
+    - id: calc_managed_soil_n2o
+      applies_to: "Crop production"
+      rule: "selected IPCC tier using actual synthetic/organic N and residue N; convert N2O-N to N2O"
+      inputs:
+        - "nutrient composition"
+        - residues
+        - area
+        - factors
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_intercrop_attribution
+      applies_to: "Shared operations"
+      rule: "shared amount × disclosed causal share; shares sum to one"
+      inputs:
+        - "shared record and driver"
+      output: "Bambara share"
+      source_ids:
+        - iso-14044-2006
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Product"
+      requirement: "Verify species, dry and shell states, grade and hand-off; segregate planting seed and processed products."
+      evidence: "specification, inspection and dispatch"
+    - id: dq_completeness
+      applies_to: "System"
+      requirement: "Cover all contributing fields/lots and reconcile pods, seed, haulm, shells, debris, rework, rejects and losses."
+      evidence: "linked node balances"
+    - id: dq_nutrients
+      applies_to: "Nutrient supply"
+      requirement: "Retain every concrete product and composition inside the one card and resolve final exchanges to UUIDs."
+      evidence: "invoices, labels and applications"
+    - id: dq_measurement
+      applies_to: "Quantities"
+      requirement: "Preserve raw units, instrument checks, method and uncertainty."
+      evidence: "calibration and workbook"
+    - id: dq_routes
+      applies_to: "Alternatives"
+      requirement: "Keep sole/intercrop, manual/mechanized, ambient/heated shelling and active/inactive final-drying routes distinct."
+      evidence: "route codes"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "Reference flow"
+    rule: "Fail when UUID, mass property/group, species, dry/shell state, moisture basis or farm-gate hand-off is missing."
+    source_ids: []
+  - rule_id: validate_route_topology
+    applies_to: "Process map"
+    rule: "Require production, independent harvest, pod conditioning, shelling and grading for the dry shelled reference product."
+    source_ids:
+      - sa-dard-bambara-2020
+      - fao-pulse-loss-2020
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "Crop inputs"
+    rule: "At most one nutrient product-input card; it binds only flow-set.agricultural-nutrient-supply version 0.3.0, without group."
+    source_ids: []
+  - rule_id: validate_mass_balance
+    applies_to: "Lots"
+    rule: "Input equals accepted, co-product, downgrade, reject, debris, loss and moisture change within disclosed uncertainty."
+    source_ids: []
+  - rule_id: validate_grade_handoffs
+    applies_to: "Grading"
+    rule: "Require accepted, downgraded and rejected destinations and exclude rejects from reference output."
+    source_ids:
+      - fao-pulse-loss-2020
+  - rule_id: validate_rework
+    applies_to: "Rework"
+    rule: "Require producing-lot link, one final disposition and no duplicated output or burden."
+    source_ids: []
+  - rule_id: validate_multioutput
+    applies_to: "Haulm/shells"
+    rule: "Require intended-product, residue or waste status, destination and attribution decision before credit."
+    source_ids:
+      - iso-14044-2006
+      - feedipedia-bambara-byproducts-2016
+  - rule_id: validate_run_attribution
+    applies_to: "Cycles/lots"
+    rule: "Require indexing and shares that reconcile to one; count shared burden once."
+    source_ids: []
+  - rule_id: validate_range_condition
+    applies_to: "Conditional cards"
+    rule: "Shelling ranges always apply; final-drying ranges apply only when final drying is active and use zero when inactive. Provisional ranges are QA screens, not limits."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground farm-production and conditioning dataset for mature dry Bambara beans"
+  downstream_use: "secondary_dataset or background_dataset when geography, shelled state and route match"
+  allowed_use: "Dry shelled *Vigna subterranea* seed at farm gate with matching qualifiers"
+  excluded_use: "Fresh, planting-seed, cooked, roasted, milled, canned, oil and post-farm activities"
+  required_metadata: "Geography; crop year; area; route; yield; irrigation; nutrient products/composition; technologies; shell state; moisture; grade; destinations; allocation; coverage"
+  required_quality_disclosure: "Primary-data share, estimates, calibration, balance closure, representativeness, UUID gaps, allocation sensitivity and unresolved destinations"
+  update_trigger: "Material change in product state, geography, yield, field practice, technology, grade, residue market, allocation, emission method or upstream data"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-forgotten-foods-2023"
+    type: "official_guidance"
+    reference: "FAO, *Compendium of Forgotten Foods* (2023), https://openknowledge.fao.org/3/cc5044en/cc5044en.pdf"
+    used_for: "Identity, dry seed and exclusions"
+  - id: "sa-dard-bambara-2020"
+    type: "extension_guidance"
+    reference: "North West Province DARD, *Bambara Groundnut: A Crop for the Future* (2020), https://dard.nwpg.gov.za/wp-content/uploads/2022/05/Bambara-groundnut-a-crop-for-the-future.pdf"
+    used_for: "Subterranean pods, lifting, inputs and residues"
+  - id: "sa-daff-bambara-2016"
+    type: "extension_guidance"
+    reference: "South Africa DAFF, *Bambara Groundnuts Production Guideline* (2016), https://nda.gov.za/phocadownloadpap/Brochures_and_Production_Guidelines/Bambara.pdf"
+    used_for: "Field management, nutrients and water"
+  - id: "tanzania-naliendele-2001"
+    type: "official_guidance"
+    reference: "Tanzania MAFS/Naliendele, *Farmer seed experts...* (2001), https://www.fao.org/fileadmin/templates/esw/esw_new/documents/Links/Publications_Tanzania/38_Farmer_seed_experts_Naliendele.pdf"
+    used_for: "Digging/lifting, drying and storage"
+  - id: "fao-pulse-loss-2020"
+    type: "official_guidance"
+    reference: "FAO, *Improving the Storability and Availability of Pulses by Reducing Post-Harvest Losses* (2020), https://www.fao.org/platform-food-loss-waste/resources/news/news-detail/COVID-19-Series-Improving-the-Storability-and-Availability-of-Pulses-by-Reducing-Post-Harvest-Losses/en"
+    used_for: "Harvest, drying, cleaning and damage control"
+  - id: "fao-grain-handling"
+    type: "handbook"
+    reference: "FAO, *Farm structures in tropical climates*, Chapter 9, https://www.fao.org/4/s1250e/S1250E0u.htm"
+    used_for: "Moisture, drying and storage quality"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil N2O and residue N"
+  - id: "feedipedia-bambara-byproducts-2016"
+    type: "literature"
+    reference: "INRAE/CIRAD/AFZ/FAO Feedipedia (2016), https://feedipedia.review.fao.org/node/529"
+    used_for: "Shell/offal states and feed destinations"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, confirmed 2022, https://www.iso.org/standard/38498.html"
+    used_for: "Allocation and inventory treatment"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:1cd0cef19be808442fed1ce97143cfca6e31f19a2b6fe10026720da3f775248c"
+  generated_content_sha256: "sha256:e5ba537327f3efbbb755051aed960e016eb4330065e4e54732d95de7625570fb"

@@ -1,10 +1,1205 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01446"
-  title: "Safflower seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.safflower-seed"
+  classification_refs: "CPC 3.0 01446 Safflower seed; this raw-grain route is narrower than the whole classification leaf when planting-seed handling is considered."
+  covered_products: "Whole harvested safflower grain for oilseed, birdseed or another declared raw-grain market."
+  excluded_products: "Extracted oil, press cake or meal, flowers, forage, processed feed, and certified or treated planting-seed output using the fixed grain UUID."
+  representative_product: "Whole accepted safflower grain at recorded moisture and grade, at physical farm-gate handover."
+  production_route: "Managed annual safflower cultivation is the parent activity. Dryland and irrigated production are alternative management routes: irrigation changes the water and pumping-energy inventory. Direct combining is the parent harvest technology; windrow plus pickup is a conditional alternative with an additional pass and field-drying interval. These harvest choices are mutually exclusive for each lot. [uc-safflower-production; wisconsin-safflower]"
+  market_state: "Whole unprocessed grain, as-harvested or first-cleaned, with any actual farm-side drying declared."
+functional_unit:
+  what: "Whole, accepted safflower grain handed over by the farm."
+  how_much: "1 kg at measured as-delivered moisture."
+  how_well: "Declare cultivar/oil class, market grade, admixture/cleaning state, damage and actual moisture."
+  how_long_or_cycle: "One identified field crop cycle and its linked harvest and pre-gate conditioning lots."
+  reference_flow_link: "Final accepted output of safflower_grading, or safflower_stabilization when pre-gate drying occurs."
+system_boundary:
+  rules:
+    - rule_id: field_to_gate
+      applies_to: "Foreground system"
+      rule: "Include crop management, separate harvest capture, and actual first cleaning, sorting, drying and storage before handover. Standing plants and collected grain are separate states so harvest loss is visible."
+      source_ids:
+        - uc-safflower-production
+        - wisconsin-safflower
+    - rule_id: route_delta
+      applies_to: "Production and harvest"
+      rule: "Irrigated fields add measured water and pumping burdens; dryland fields do not. Windrow/pickup adds cutting, field drying and pickup observations; direct-combine lots omit these. Record one path per lot."
+      source_ids:
+        - uc-safflower-production
+        - wisconsin-safflower
+    - rule_id: conditional_nodes
+      applies_to: "First handling"
+      rule: "Cleaning, drying and storage apply only when physically performed before gate; no California or Upper Midwest moisture target is a global condition."
+      source_ids:
+        - uc-safflower-production
+        - wisconsin-safflower
+    - rule_id: downstream
+      applies_to: "Exclusions"
+      rule: "Oil pressing, meal processing and post-gate transport remain outside. A separately sold residue or lower grade requires recorded mass, destination and attribution."
+      source_ids:
+        - uc-safflower-production
+        - wisconsin-safflower
+boundary_abstraction:
+  declared_starting_condition: "Record field area, previous crop/land use, soil preparation, seed supply, and available soil nutrient and water conditions at crop-cycle start."
+  starting_condition_role: "Starting point for managed annual safflower production, without assuming zero upstream burdens for inputs."
+  product_classification_scope: "Whole harvested safflower grain; treated or certified planting seed requires a verified distinct product identity."
+  recursive_input_rule: "Planting seed used as an input retains its actual upstream seed dataset; do not recursively treat this grain output as certified seed supply."
+  upstream_dataset_requirement: "Link purchased seed, fertilizer, crop protection products, fuel, electricity, water supply, and contracted pre-gate operations to supported upstream datasets or disclose gaps."
+  disclosure: "Field/crop year, farm gate, product state and moisture, irrigation, harvest route, actual pre-gate conditioning, all rejects/destinations and missing data."
+reference_flow_definition:
+  reference_amount: "1 kg accepted whole safflower grain at actual handover moisture."
+  product_flow_ref:
+    name: "Safflower seed"
+    uuid: "30eacea6-7a8a-457f-a766-c93480303927"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Location and crop year"
+    - "cultivar/oil class if known"
+    - "dryland or irrigated"
+    - "direct combine or windrow/pickup"
+    - "actual moisture"
+    - "cleaning and grade"
+    - "pre-gate drying/storage"
+    - "market destination"
+    - "physical gate."
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Accepted grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use measured final lot mass and moisture; never substitute wet harvest mass without adjustment."
+  - id: dry_matter
+    applies_to: "Differing moisture states"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Compare dry matter as wet kg × (1 − measured moisture fraction); keep both measured wet masses and moisture values."
+  - id: field_yield
+    applies_to: "Crop cycle"
+    required_property_ref:
+      name: "Mass per area"
+      uuid: ""
+    required_unit: "kg/ha"
+    rule: "Divide final accepted mass from the field by harvested area; identify any separately sold lower grade."
+process_map:
+  - id: safflower_cultivation
+    name: "Managed safflower crop"
+    inclusion: "required"
+    inclusion_condition: "Every field/crop year; declare dryland or irrigated."
+    role: "Grow the seed-bearing standing crop and hand it to harvest."
+    quantitative_reference: "Field area and input ledger."
+  - id: safflower_harvest
+    name: "Grain capture"
+    inclusion: "required"
+    inclusion_condition: "Direct combine or conditional windrow/pickup per lot."
+    role: "Separate collected grain from plant and record field loss."
+    quantitative_reference: "Harvest scale and route log."
+  - id: safflower_conditioning
+    name: "First seed conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "Actual first cleaning before gate."
+    role: "Convert raw harvested grain to prepared whole seed, separating screenings."
+    quantitative_reference: "In/out scale mass and energy."
+  - id: safflower_grading
+    name: "Grade and destination sorting"
+    inclusion: "required"
+    inclusion_condition: "Classify every transferred lot."
+    role: "Split accepted, downgraded and rejected states with handoffs."
+    quantitative_reference: "Grade tickets and mass balance."
+  - id: safflower_stabilization
+    name: "Farm-side drying or storage"
+    inclusion: "conditional"
+    inclusion_condition: "Actual pre-gate stabilization."
+    role: "Transform usable seed to measured stable handover state."
+    quantitative_reference: "Mass, moisture, energy and duration."
+process_inventory:
+  - id: safflower_cultivation
+    label: "Managed safflower crop"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Planting seed"
+          name: "Safflower planting seed, identity unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the actual safflower seed supply entering each field. A verified planting-seed flow UUID is not yet available; do not reuse the harvested-grain output UUID for a seed-grade input."
+          amount:
+            expression: "Recorded mass sown by field and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per field crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: typical_range
+                lower: "22"
+                upper: "34"
+                unit: "kg seed/ha"
+                basis: "one crop hectare; California 20–30 lb/acre regional row or drilled examples, not a universal limit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - uc-safflower-production
+        - row_id: safflower_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per field crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg product/ha"
+                basis: "one crop hectare, each fertilizer product separately; provisional screen only, replace with field application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop protection materials"
+          name: "Applied crop protection product, identity unresolved until product-specific lookup"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record each actual herbicide, fungicide or other protection product separately by formulation and application; omit categories not used on the field."
+          amount:
+            expression: "Product mass issued or applied by field and event."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per field crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg product/ha"
+                basis: "one crop hectare, each applied protection or harvest-aid product separately; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water supply, identity unresolved pending source-specific lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Include supplied water only on irrigated fields, with source and event recorded. Dryland fields declare the route and have no invented water supply row amount."
+          amount:
+            expression: "Metered or documented delivered water by field and event."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per irrigated field crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "one crop hectare; zero on rainfed routes, measured withdrawal/delivery on irrigated routes; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_fuel
+          role: "Field-operation fuel"
+          name: "Actual mobile machinery fuel for field equipment, identity unresolved until carrier-specific lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record tractor and other cultivation fuel actually consumed, excluding harvest fuel owned by the separate harvest node."
+          amount:
+            expression: "Metered or allocated litres by field operation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per field crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/ha"
+                basis: "one crop hectare; all assigned field operations, carrier-specific measured litres; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: pump_electricity
+          role: "Irrigation-pump electricity"
+          name: "Purchased electricity for irrigation pumping, identity unresolved pending supply lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "For electric pumping on irrigated fields, record metered electricity separately from supplied water and liquid fuel. Other pumping carriers require their own identified row in the foreground package."
+          amount:
+            expression: "Metered pumping electricity by field and crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per irrigated field crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kWh/ha"
+                basis: "one crop hectare; conditional electric machinery or irrigation pumping, measured kWh; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_crop
+          role: "Standing seed-bearing crop"
+          name: "Standing safflower crop, internal state"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "The managed biological output is the standing mature crop handed to harvest, not an extra sold seed output."
+          amount:
+            expression: "Recorded harvested field area and maturity handoff."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per crop cycle."
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "ha/ha cultivated"
+                basis: "one recorded cultivated hectare linked once to the harvest field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: safflower_harvest
+    label: "Grain capture"
+    inputs:
+      product:
+        - row_id: harvest_fuel
+          role: "Harvest equipment fuel"
+          name: "Actual mobile machinery fuel for harvest equipment, identity unresolved until carrier-specific lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record actual combine fuel and, for windrow/pickup lots, the separate cutting and pickup fuel. If a contractor service dataset already contains equipment fuel, do not count the same fuel again."
+          amount:
+            expression: "Litres by equipment pass and linked harvest lot."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per harvest lot."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L/ha"
+                basis: "one harvested hectare, conditional route and measured machinery fuel; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_service
+          role: "Contracted harvest service"
+          name: "Actual contracted harvest service, identity unresolved pending supplier/service lookup"
+          flow_type: "product"
+          property_unit: "Service / documented operating hour"
+          description: "When a contractor performs harvest, record the purchased service separately from direct fuel; disclose whether its upstream dataset already includes fuel and equipment."
+          amount:
+            expression: "Invoiced equipment hours or other documented service quantity by lot."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per harvest lot."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "h/ha"
+                basis: "one harvested hectare, contracted machine operating time recorded separately from fuel; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_grain
+          role: "Captured raw grain"
+          name: "Harvested safflower grain, internal pre-cleaning state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh uncleaned captured seed with admixture and actual moisture before sending it to first cleaning or grade sorting."
+          amount:
+            expression: "Scale mass and moisture per lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per harvest lot."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg raw seed/ha"
+                basis: "one harvested hectare; provisional broad captured-seed screen before first conditioning, replace with scale records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: safflower_conditioning
+    label: "First seed conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_seed_input
+          role: "Raw harvested seed intake"
+          name: "Raw harvested safflower grain, internal pre-cleaning state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh the harvested grain entering first cleaning and link any rejected lot returned for re-cleaning to its original run."
+          amount:
+            expression: "Incoming grain mass and measured moisture by cleaning run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per conditioning run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_electricity
+          role: "Cleaning electricity"
+          name: "Purchased electricity for cleaning, identity unresolved pending supply lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Include electricity metered for actual cleaning equipment; assign shared meter periods once by throughput or documented run time."
+          amount:
+            expression: "Metered or justified allocated kWh per cleaning run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per conditioning run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_fuel
+          role: "Cleaning fuel"
+          name: "Actual cleaning-equipment fuel, identity unresolved until carrier-specific lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Volume / L"
+          description: "Include fuel only if an engine powers first cleaning, as a separate carrier from electricity; do not count the same machine service twice."
+          amount:
+            expression: "Litres consumed or justified allocated to the cleaning run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per conditioning run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "L liquid fuel/kg processed seed"
+                basis: "per kg seed entering this actual conditioning or drying run; liquid-fuel screen only, convert other carriers separately"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_seed
+          role: "Prepared whole seed"
+          name: "Prepared whole safflower grain, internal state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Hand cleaned whole grain to grade sorting; this is an internal state, not a second sale."
+          amount:
+            expression: "Weighed clean mass and moisture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per conditioning run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: screenings
+          role: "Screenings"
+          name: "Safflower cleaning screenings, identity unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify broken seed, empty seed, weed seed and hull fragments by actual recovery, sale or disposal destination."
+          amount:
+            expression: "Weighed or reconciled removed mass by destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per conditioning run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: safflower_grading
+    label: "Grade and destination sorting"
+    inputs:
+      product:
+        - row_id: grade_input
+          role: "Seed lot to classify"
+          name: "Whole safflower grain, internal input state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Classify as-harvested or cleaned grain against declared buyer requirements and record mass and moisture before the split."
+          amount:
+            expression: "Incoming lot mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per grade lot."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_seed
+          role: "Accepted raw-grain grade"
+          name: "Safflower seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "30eacea6-7a8a-457f-a766-c93480303927"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Accepted whole seed goes to farm-gate sale or actual pre-gate drying. Count only its final handover mass as reference output."
+          amount:
+            expression: "Weighed accepted seed at measured moisture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg final farm-gate seed."
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_seed
+          role: "Downgraded sold grain"
+          name: "Downgraded safflower grain, identity unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "If a lower grade actually sells, weigh and identify its destination separately; do not assume it is waste or merge it into accepted mass."
+          amount:
+            expression: "Weighed sold lower grade by destination."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per grade lot."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Off-spec reject"
+          name: "Rejected safflower seed, identity unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Link rejects to the originating grade run and to re-cleaning, documented recovery or disposal; never count unreworked rejects as accepted."
+          amount:
+            expression: "Weighed reject and final disposition."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per grade lot."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: safflower_stabilization
+    label: "Farm-side drying or storage"
+    inputs:
+      product:
+        - row_id: stabilization_seed_input
+          role: "Usable seed before stabilization"
+          name: "Whole safflower grain, internal pre-stabilization state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted whole-seed lot entering an actual pre-gate drying or storage run with inlet mass and moisture."
+          amount:
+            expression: "Measured inlet mass and moisture by run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per stabilization run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: dryer_fuel
+          role: "Dryer fuel"
+          name: "Actual stationary combustion fuel for the dryer, identity unresolved until carrier-specific lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "stationary-combustion-fuel"
+          property_unit: "Volume / L"
+          description: "When a fuel-fired dryer actually operates before gate, record the identified carrier and consumed litres separately from seed and electricity."
+          amount:
+            expression: "Metered or justified allocated litres for the drying run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per stabilization run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "L liquid fuel/kg processed seed"
+                basis: "per kg seed entering this actual conditioning or drying run; liquid-fuel screen only, convert other carriers separately"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: dryer_electricity
+          role: "Dryer electricity"
+          name: "Purchased electricity for drying, identity unresolved pending supply lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity actually used by dryer fans or controls; do not combine it with fuel or seed mass."
+          amount:
+            expression: "Metered or justified allocated kWh for the drying run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per stabilization run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: storage_electricity
+          role: "Storage electricity"
+          name: "Purchased electricity for farm-side storage, identity unresolved pending supply lookup"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "If seed is stored before gate, record ventilation or handling electricity during the documented storage period separately from active drying."
+          amount:
+            expression: "Metered or justified allocated kWh and storage duration by lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per stabilization run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_seed
+          role: "Stabilized seed at gate"
+          name: "Safflower seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "30eacea6-7a8a-457f-a766-c93480303927"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "The measured final mass/moisture supersedes the pre-drying grade mass as reference output; no universal target moisture is imposed."
+          amount:
+            expression: "Weighed final accepted seed at actual moisture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg final farm-gate seed."
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - uc-safflower-production
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: stabilization_reject
+          role: "Damaged seed"
+          name: "Damaged safflower seed, identity unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identify actual spoilage or damaged seed with measured quantity and disposal/recovery destination."
+          amount:
+            expression: "Weighed off-spec mass by destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per stabilization run."
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: drying_water
+          role: "Evaporated drying water"
+          name: "Water to air, semantic elementary flow"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate actual water loss from inlet/outlet mass and moisture without treating it as sold grain or dry matter loss."
+          amount:
+            expression: "Inlet wet mass less outlet wet mass after separately accounting for rejected dry material."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per drying run."
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - wisconsin-safflower
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: single_seed_product
+    applies_to: "Normal crop"
+    rule: "Attribute crop and harvest burdens to accepted grain when straw stays in the field, uncaptured seed is lost, and screenings/rejects are discarded; these are not presumed saleable co-products."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: separate_sale
+    applies_to: "Sold lower grade or residue"
+    rule: "If lower-grade seed, screenings or straw actually sells, measure its mass/destination and document process subdivision or justified allocation before dataset use. No default economic split is supplied."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: run_attribution
+    applies_to: "Shared runs"
+    rule: "Link inputs to crop cycle and harvest, cleaning, drying and changeover energy to actual lots/runs. Assign a shared meter period once by measured throughput or documented time and include re-cleaning energy without double counting returned seed."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: reject_exclusion
+    applies_to: "Rework"
+    rule: "Accepted reference mass excludes rejected mass unless a linked rework pass restores accepted grade; the returning mass is not a new farm output."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field
+      process_id: "safflower_cultivation"
+      flow_role: "Field inputs and irrigation"
+      record_type: "Field log, invoices and meters"
+      raw_fields: "field_id, area_ha, crop_year, seed_kg, product_id, applied_kg, fuel_L, irrigation_m3, pump_kWh, route"
+      collection_method: "Reconcile issue log and meters"
+      unit: "ha; kg; L; m3; kWh"
+      frequency: "Each event"
+      temporal_coverage: "Full crop cycle"
+      site_scope: "Each field"
+      aggregation_rule: "Sum by field/year/input"
+      quality_evidence: "Invoices, log, meter, area record"
+    - protocol_id: cp_harvest
+      process_id: "safflower_harvest"
+      flow_role: "Capture and field loss"
+      record_type: "Work log, scale, moisture test"
+      raw_fields: "lot_id, field_id, direct_or_windrow, dates, fuel_L, service_hours, grain_kg, moisture, straw_chaff_kg, uncaptured_seed_kg, residue_fate"
+      collection_method: "Weigh lot and observe residue and uncaptured seed separately"
+      unit: "kg; fraction; L"
+      frequency: "Each lot"
+      temporal_coverage: "Harvest window"
+      site_scope: "Field and route"
+      aggregation_rule: "One recorded path and mass per lot"
+      quality_evidence: "Scale ticket, work log, moisture test"
+    - protocol_id: cp_conditioning
+      process_id: "safflower_conditioning"
+      flow_role: "Cleaning and screenings"
+      record_type: "Run ledger and meters"
+      raw_fields: "run_id, lot_id, in_kg, out_kg, screenings_kg, electricity_kWh, fuel_L, return_id, destinations"
+      collection_method: "Weigh input/output and meter energy"
+      unit: "kg; kWh or fuel unit"
+      frequency: "Each run"
+      temporal_coverage: "Before gate"
+      site_scope: "Farm or pre-gate contractor"
+      aggregation_rule: "Link returns, balance mass"
+      quality_evidence: "Scale, meter and disposition tickets"
+    - protocol_id: cp_grade
+      process_id: "safflower_grading"
+      flow_role: "Grade and handover"
+      record_type: "Grade/sale ticket"
+      raw_fields: "lot_id, grade, accepted_kg, downgrade_kg, reject_kg, moisture, gate_date, destinations"
+      collection_method: "Apply declared buyer grade and weigh states"
+      unit: "kg; fraction"
+      frequency: "Each lot"
+      temporal_coverage: "Before gate"
+      site_scope: "Farm gate"
+      aggregation_rule: "Sum final accepted once"
+      quality_evidence: "Grade and scale tickets"
+    - protocol_id: cp_stabilization
+      process_id: "safflower_stabilization"
+      flow_role: "Actual drying/storage"
+      record_type: "Dryer and store log"
+      raw_fields: "run_id, lot_id, inlet_kg, outlet_kg, inlet_moisture, outlet_moisture, dryer_fuel_L, dryer_electricity_kWh, storage_electricity_kWh, duration, reject_kg"
+      collection_method: "Weigh and moisture-test both sides; meter energy"
+      unit: "kg; fraction; energy unit; days"
+      frequency: "Each run"
+      temporal_coverage: "Before gate"
+      site_scope: "Farm/contractor"
+      aggregation_rule: "Dry-matter balance, final accepted once"
+      quality_evidence: "Scale, moisture, energy records"
+  calculation_rules:
+    - id: accepted_yield
+      applies_to: "Field crop cycle"
+      rule: "Final accepted kg ÷ harvested ha at declared moisture; disclose separate lower-grade sale."
+      inputs:
+        - accepted_kg
+        - area_ha
+      output: "kg/ha"
+      source_ids:
+        - wisconsin-safflower
+    - id: mass_balance
+      applies_to: "Harvest through gate"
+      rule: "Raw grain = final accepted + downgraded + rejected + process dry-matter loss + net water loss; count returned rework once and explain residual."
+      inputs:
+        - "Linked lot/run masses and moisture"
+      output: "Balance residual and destination"
+      source_ids:
+        - uc-safflower-production
+        - wisconsin-safflower
+    - id: dry_matter_balance
+      applies_to: "Drying"
+      rule: "Dry mass = wet kg × (1 − measured moisture fraction) for inlet and outlet; report separately removed dry matter."
+      inputs:
+        - "Inlet/outlet mass and moisture"
+      output: "Dry matter and evaporated water"
+      source_ids:
+        - wisconsin-safflower
+    - id: shared_run
+      applies_to: "Shared equipment period"
+      rule: "Assign measured period energy once by measured throughput or justified time; record mixed-product changeover."
+      inputs:
+        - "Meter total"
+        - runs
+        - "throughput/time"
+      output: "Energy per run"
+      source_ids:
+        - wisconsin-safflower
+  data_quality_requirements:
+    - id: identity
+      applies_to: "Final product"
+      requirement: "Demonstrate whole grain, farm gate, actual moisture and accepted grade; planting-seed claim needs separate verified identity."
+      evidence: "Sale, grade, UUID identity records"
+    - id: routes
+      applies_to: "Production/harvest"
+      requirement: "Identify dryland or irrigated and direct or windrow route for every field/lot; keep added operations explicit."
+      evidence: "Field water and harvest work logs"
+    - id: completeness
+      applies_to: "Mass and energy"
+      requirement: "Link field, harvest, cleaning, grading and drying; disclose missing meters, estimated shared loads and material-balance residual."
+      evidence: "Linked scale, moisture and meter records"
+    - id: period
+      applies_to: "Temporal coverage"
+      requirement: "Declare crop year and actual pre-gate storage period; separate years unless an aggregation rule is documented."
+      evidence: "Crop and storage log"
+validation_rules:
+  - rule_id: valid_identity
+    applies_to: "Reference output"
+    rule: "Require grain UUID 30eacea6-7a8a-457f-a766-c93480303927, Mass property, mass unit group, kg, actual moisture, grade and farm gate; reject planting-seed use of this fixed grain identity."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: valid_routes
+    applies_to: "Fields and harvest lots"
+    rule: "Every field has dryland/irrigated status and every lot exactly one direct or windrow/pickup path; selected irrigation and windrow routes require their additional records."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: valid_nodes
+    applies_to: "Conditional handling"
+    rule: "Activated cleaning or drying/storage nodes need linked input/output mass, energy and reject disposition; absent nodes get no invented default burden or global moisture threshold."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: valid_balance
+    applies_to: "Grade, rework, shared runs"
+    rule: "Reconcile accepted, downgraded, rejected and drying water by linked lot within a disclosed tolerance; keep straw/chaff and uncaptured seed as separately observed fates, not an invented elementary exchange; rejected grain needs a disposition and linked rework before acceptance; count shared energy once."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+  - rule_id: valid_scope
+    applies_to: "Dataset use"
+    rule: "Exclude pressing/meal and disclose any separately sold residue or screenings with attribution method."
+    source_ids:
+      - uc-safflower-production
+      - wisconsin-safflower
+published_dataset_profile:
+  dataset_role: "Foreground crop and first farm-gate grain data package; review is needed before publication."
+  downstream_use: "secondary_dataset; background_dataset only where region, year, route, grade and moisture are representative."
+  allowed_use: "Comparable raw whole safflower grain at the farm gate with declared routes and state."
+  excluded_use: "Planting seed, extracted oil, meal, processed feed, unknown gate or unknown moisture state."
+  required_metadata: "Crop year, region, field area, cultivar/oil class, irrigation, harvest route, grade, actual moisture, conditioning, storage, allocation, gate and UUIDs."
+  required_quality_disclosure: "Field/lot coverage, measured versus allocated values, balance residual, unresolved flow identities and regional applicability."
+  update_trigger: "New verified planting-seed identity, changed market route, new primary records, changed regional practice or revised product flow."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "uc-safflower-production"
+    type: "extension_guidance"
+    reference: "University of California Agriculture and Natural Resources, Safflower Production in California, Publication 21565, https://oilseeds.ucdavis.edu/sites/g/files/dgvnsk14771/files/inline-files/21565e.pdf"
+    used_for: "Harvest mode, losses, farm conditioning and downstream oil/meal distinction; California thresholds are regional."
+  - id: "wisconsin-safflower"
+    type: "extension_guidance"
+    reference: "University of Wisconsin and University of Minnesota extension, Safflower, Alternative Field Crops Manual (1992), https://corn.aae.wisc.edu/Crops/Safflower.aspx"
+    used_for: "Crop system, irrigation, harvest, cleaning, drying and buyer/storage distinction."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:2255f0999e15c3fd4e46f4bc504b2e4ec77c5fe1d4183258c2da1ee00e59d815"
+  generated_content_sha256: "sha256:12048604b7c20b87d050fddf1c19e670d99d0bd940082dabe336569192d7ee01"

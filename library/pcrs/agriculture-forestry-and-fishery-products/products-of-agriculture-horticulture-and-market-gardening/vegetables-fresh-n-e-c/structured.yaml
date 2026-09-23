@@ -1,10 +1,1149 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01290"
-  title: "Vegetables, fresh, n.e.c."
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.vegetables-fresh-n-e-c"
+  classification_refs: "CPC 3.0:01290; exact residual category reference"
+  covered_products: "Whole fresh vegetables, n.e.c., that remain outside narrower named CPC vegetable categories; species, cultivar, edible part, route, and market state must be declared"
+  excluded_products: "Narrower CPC vegetable categories; processed, frozen, salted, pickled, fermented, dried, powdered, canned, juiced, preserved, seed, planting-material, feed, and waste products"
+  representative_product: "The declared species or cultivar of a whole fresh residual-category vegetable at the first declared market hand-off"
+  production_route: "Managed crop production followed by harvest; optional primary conditioning, grading or sorting, and packaging or presentation when they occur before the declared hand-off"
+  market_state: "Fresh, whole, marketable product at the declared farm-gate, packhouse, or equivalent first-market hand-off; storage and distribution qualifiers are required when included"
+functional_unit:
+  what: "1 kg of declared, marketable whole fresh vegetable in the CPC 01290 residual category"
+  how_much: "1 kg net product at the declared first-market hand-off"
+  how_well: "Species or cultivar, edible part, grade or marketability state, production route, geography, crop cycle, and conditioning or packaging state are declared"
+  how_long_or_cycle: "One complete crop cycle and the associated harvest campaign, with the reporting period stated"
+  reference_flow_link: "reference_fresh_vegetable output from the last included process"
+system_boundary:
+  rules:
+    - rule_id: rule_residual_category_gate
+      applies_to: "product identity and reference flow"
+      rule: "Confirm that no narrower named CPC vegetable category applies before selecting this PCR; retain the species, cultivar, edible part, and route decision in dataset metadata."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: rule_first_market_handoff
+      applies_to: "system boundary"
+      rule: "End the default foreground boundary at the declared first-market hand-off of fresh whole product. Include post-harvest conditioning or packaging only when it occurs before that hand-off and is recorded as an included process."
+      source_ids:
+        - iso-14040-2006
+        - fao-fresh-produce-hygiene-2003
+    - rule_id: rule_upstream_input_linkage
+      applies_to: "purchased and transferred inputs"
+      rule: "Link upstream input datasets at the point where the input crosses the foreground boundary; do not hide an upstream product system inside a local activity record."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "Managed crop production begins with the declared land parcel or production unit prepared for the crop cycle, plus purchased or transferred inputs entering that unit"
+  starting_condition_role: "Foreground production boundary for the residual fresh-vegetable category"
+  product_classification_scope: "CPC 3.0:01290 only after narrower named CPC vegetable categories have been excluded by species, edible part, and route review"
+  recursive_input_rule: "A same-category vegetable input transferred between foreground units is recorded as a product input with source identity, quantity, state, and transfer boundary; its upstream production is not recursively rebuilt inside the receiving PCR unless explicitly included as a linked dataset"
+  upstream_dataset_requirement: "Use a declared upstream dataset for seed or planting material, purchased nutrients or amendments, energy, water supply, packaging, and any transferred product input when those activities are outside the foreground boundary"
+  disclosure: "Declare the starting land or production-unit state, route, species or cultivar, crop cycle, inclusion of conditioning and packaging, and all transfers, losses, and output destinations needed to reconcile the reference product"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Fresh vegetables"
+    uuid: "b9e1edf7-c890-448d-99c3-167460588c33"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Species or cultivar"
+    - "edible part"
+    - "production system"
+    - "production geography"
+    - "crop cycle or harvest period"
+    - "declared hand-off"
+    - "fresh and whole state"
+    - "grade or marketability"
+    - "inclusion or exclusion of conditioning and packaging"
+    - "storage duration when applicable"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: rule_reference_mass_basis
+    applies_to: "reference product and all normalized outputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report the reference product as net fresh mass at the declared hand-off. Record gross mass, package mass, and field or ungraded mass separately when they are used to derive the net reference amount."
+  - id: rule_water_volume_conversion
+    applies_to: "irrigation and conditioning water"
+    required_property_ref:
+      name: "Volume or Mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Preserve the measured source unit and document density or meter conversion when converting water records to the selected mass or volume basis."
+  - id: rule_nutrient_basis_declaration
+    applies_to: "fertilizer or soil amendment input"
+    required_property_ref:
+      name: "Mass of product and declared nutrient basis"
+      uuid: ""
+    required_unit: "kg product and kg nutrient"
+    rule: "Record the actual product applied and its declared N, P, K, or organic-nutrient basis; do not infer a product class from the residual vegetable category."
+  - id: rule_crop_cycle_time_index
+    applies_to: "crop production inputs and outputs"
+    required_property_ref:
+      name: "Mass, energy, or substance amount"
+      uuid: ""
+    required_unit: "row-specific unit"
+    rule: "Index every record to the same crop cycle and reporting period before normalization to 1 kg reference product."
+process_map:
+  - id: p_crop_production
+    name: "Managed crop production"
+    inclusion: "required"
+    inclusion_condition: "Always included for the declared crop cycle"
+    role: "Produces the standing crop and records crop management inputs and environmental exchanges"
+    quantitative_reference: "Per crop cycle, normalized to 1 kg reference product"
+  - id: p_harvest_capture
+    name: "Harvest and field capture"
+    inclusion: "required"
+    inclusion_condition: "Always included for removal of the declared product from the production unit"
+    role: "Separates the harvested fresh vegetable from the standing crop and records harvest operations and field losses"
+    quantitative_reference: "Per harvest campaign, normalized to 1 kg reference product"
+  - id: p_primary_conditioning
+    name: "Primary conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "Include when washing, trimming, cooling, cleaning, or another first conditioning step changes the declared product state before hand-off"
+    role: "Converts the harvested state to the declared conditioned state"
+    quantitative_reference: "Per conditioning batch, normalized to 1 kg reference product"
+  - id: p_grading_sorting
+    name: "Grading and sorting"
+    inclusion: "conditional"
+    inclusion_condition: "Include when product is classified into two or more grades or destinations before hand-off"
+    role: "Reconciles marketable, secondary, rejected, and loss states"
+    quantitative_reference: "Per grading batch, normalized to 1 kg reference product"
+  - id: p_packaging_presentation
+    name: "Packaging and presentation"
+    inclusion: "conditional"
+    inclusion_condition: "Include when packaging, labelling, or presentation is inside the declared boundary before hand-off"
+    role: "Converts the selected product state to the packaged or presented hand-off state"
+    quantitative_reference: "Per packaged batch, normalized to 1 kg reference product"
+process_inventory:
+  - id: p_crop_production
+    label: "Managed crop production"
+    inputs:
+      product:
+        - row_id: crop_seed_or_propagule
+          role: "Seed or planting material"
+          name: "Declared seed or planting material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Seed, transplants, or other planting material crosses the crop-production boundary when supplied to establish the declared crop cycle."
+          amount:
+            expression: "Actual mass or count converted to mass with the declared material basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - fao-crop-production-guidance-2016
+            ranges: []
+        - row_id: crop_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Irrigation water is recorded when water is withdrawn or supplied to the crop-production unit for the declared cycle."
+          amount:
+            expression: "Metered or documented irrigation application, including declared source and conveyance losses when inside the boundary"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - fao-crop-production-guidance-2016
+            ranges: []
+        - row_id: p_crop_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - fao-fertilizer-code-of-conduct-2019
+            ranges: []
+        - row_id: crop_electricity
+          role: "Crop-production electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Electricity is recorded for pumps, protected-cropping equipment, lighting, controls, or other crop-production equipment inside the boundary."
+          amount:
+            expression: "Metered electricity or supplier invoice allocation to the declared crop cycle"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+        - row_id: crop_fuel
+          role: "Crop-production fuel"
+          name: "Agricultural fuel supply or stationary-combustion-fuel"
+          flow_type: "product"
+          property_unit: "Mass or Energy / kg or MJ"
+          description: "Fuel is recorded for tractors, pumps, heating, or other mobile or stationary crop-production equipment inside the boundary."
+          amount:
+            expression: "Fuel issue, meter, or invoice record allocated to the declared crop cycle"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+      waste:
+        - row_id: crop_input_packaging_waste
+          role: "Crop-production input packaging waste"
+          name: "Non-hazardous input packaging waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Packaging discarded from crop inputs is recorded when it crosses the foreground boundary as a separately managed waste stream."
+          amount:
+            expression: "Weighed waste or supplier-packaging reconciliation"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      elementary:
+        - row_id: crop_land_occupation
+          role: "Land occupation"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Land occupation is recorded for the area and duration used by the declared crop cycle."
+          amount:
+            expression: "Declared occupied area multiplied by the crop-cycle duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_area_yield
+              source_ids:
+                - fao-crop-production-guidance-2016
+            ranges: []
+    outputs:
+      product:
+        - row_id: standing_crop_output
+          role: "Standing crop hand-off"
+          name: "Declared standing residual-category vegetable crop"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "The standing crop output is the declared crop state handed to harvest and is not yet the marketable reference flow."
+          amount:
+            expression: "Reconciled field output before harvest losses and downstream conditioning"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_area_yield
+              source_ids:
+                - fao-crop-production-guidance-2016
+            ranges: []
+      waste:
+        - row_id: crop_residue_output
+          role: "Uncollected crop residue"
+          name: "Crop residue or production loss waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh matter"
+          description: "Crop residue left in the field or removed from the crop-production unit is recorded by destination and treatment when material to the boundary."
+          amount:
+            expression: "Field residue and non-harvested biomass from crop-yield reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_area_yield
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      elementary:
+        - row_id: crop_soil_phosphate_loss
+          role: "Soil phosphate loss"
+          name: "Soil phosphate emission"
+          flow_type: "elementary"
+          property_unit: "Mass / kg P"
+          description: "Phosphate released to soil is recorded when the selected method identifies a loss pathway from crop nutrient management."
+          amount:
+            expression: "Apply the declared nutrient-loss method to collected P input and retention records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+        - row_id: crop_soil_nitrogen_loss
+          role: "Soil nitrogen loss"
+          name: "Soil nitrogen emission"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N"
+          description: "Nitrogen released to soil is calculated from the declared nutrient application and site or method factors selected for the dataset."
+          amount:
+            expression: "Apply the declared calculation method to crop-cycle nutrient inputs and retained crop nitrogen"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+        - row_id: crop_direct_n2o
+          role: "Direct soil nitrous oxide"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Direct soil nitrous oxide is calculated from the applicable nutrient-input method and declared management records."
+          amount:
+            expression: "Apply the selected IPCC-compatible direct-emission factor to the declared N input and document factor selection"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+        - row_id: crop_reactive_n_emissions
+          role: "Field ammonia and nitrogen oxides"
+          name: "one identified air emission: ammonia (NH3) or a method-reported nitrogen oxide species; generate separate exchanges and retain the reported NOx basis"
+          flow_type: "elementary"
+          property_unit: "Mass / kg substance"
+          description: "Ammonia and nitrogen-oxide releases are recorded separately when the selected method or site records support them."
+          amount:
+            expression: "Use recorded or method-calculated emissions and retain separate substance identities in the data package"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_inputs
+              source_ids:
+                - ipcc-2019-refinement-agriculture
+            ranges: []
+  - id: p_harvest_capture
+    label: "Harvest and field capture"
+    inputs:
+      product:
+        - row_id: harvest_standing_crop_input
+          role: "Standing crop for harvest"
+          name: "standing_crop_output"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "The standing crop enters harvest as the output state of managed crop production."
+          amount:
+            expression: "Quantity reconciled from crop production to harvest records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_area_yield
+              source_ids:
+                - fao-crop-production-guidance-2016
+            ranges: []
+        - row_id: harvest_fuel_input
+          role: "Harvest fuel or service input"
+          name: "Mobile machinery fuel or harvest service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Mass or Energy / kg or MJ"
+          description: "Fuel or a declared harvest service crosses the boundary when machinery or contracted operations remove the product from the field."
+          amount:
+            expression: "Harvest-operation fuel or service record allocated to the campaign"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_operations
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+      waste:
+        - row_id: harvest_field_loss
+          role: "Harvest damage and field loss"
+          name: "Harvest loss waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh matter"
+          description: "Harvest damage and field loss are recorded when product is not transferred to the next included process."
+          amount:
+            expression: "Difference between available standing crop and harvested hand-off, classified by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_operations
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_fresh_vegetable
+          role: "Harvested fresh vegetable"
+          name: "Harvested residual-category fresh vegetable"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Harvested whole fresh vegetables are handed to the next included process or directly to the declared hand-off when no downstream conditioning applies."
+          amount:
+            expression: "Weighed or reconciled harvested mass after field losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_operations
+              source_ids:
+                - fao-crop-production-guidance-2016
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: p_primary_conditioning
+    label: "Primary conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_harvested_input
+          role: "Harvested vegetable for conditioning"
+          name: "harvested_fresh_vegetable"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Harvested product enters conditioning when washing, trimming, cooling, or equivalent first preparation occurs before the declared hand-off."
+          amount:
+            expression: "Batch weigh-in reconciled to harvested output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - fao-fresh-produce-hygiene-2003
+            ranges: []
+        - row_id: conditioning_water
+          role: "Conditioning water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Conditioning water is included when it crosses the boundary for washing, cooling, or cleaning of the fresh vegetable."
+          amount:
+            expression: "Metered or batch-recorded water use, with recirculation and discharge basis declared"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - fao-fresh-produce-hygiene-2003
+            ranges: []
+        - row_id: conditioning_electricity
+          role: "Conditioning electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Electricity for pumps, cooling, washing, trimming, or controls is recorded when the conditioning step is included."
+          amount:
+            expression: "Metered or allocated electricity for the conditioning batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Conditioning rejects and trimmings"
+          name: "Conditioning reject or organic waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh matter"
+          description: "Trimmings, damaged pieces, and rejected material leaving conditioning are recorded by destination."
+          amount:
+            expression: "Weighed reject stream reconciled to conditioning input and output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+        - row_id: conditioning_wastewater
+          role: "Conditioning wastewater"
+          name: "Wastewater treatment service or wastewater"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Wastewater is recorded when used water leaves the included conditioning boundary for treatment or discharge."
+          amount:
+            expression: "Discharged or treated volume, with treatment route and pollutant records declared"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - fao-fresh-produce-hygiene-2003
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_fresh_vegetable
+          role: "Conditioned fresh vegetable"
+          name: "Conditioned residual-category fresh vegetable"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Conditioned fresh vegetable is the output after the optional first conditioning step and before grading, packaging, or hand-off."
+          amount:
+            expression: "Batch output mass after conditioning rejects and losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - fao-fresh-produce-hygiene-2003
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: p_grading_sorting
+    label: "Grading and sorting"
+    inputs:
+      product:
+        - row_id: grading_product_input
+          role: "Conditioned or harvested vegetable for grading"
+          name: "conditioned_fresh_vegetable or harvested_fresh_vegetable"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Product enters grading when two or more quality or destination states are created before the declared hand-off."
+          amount:
+            expression: "Weighed batch input and declared pre-grading state"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_reconciliation
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_grade_output
+          role: "Marketable grade output"
+          name: "Marketable fresh vegetable grade"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "The selected marketable grade output continues to packaging or becomes the reference flow when no packaging is included."
+          amount:
+            expression: "Weighed accepted grade output"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grading_reconciliation
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+        - row_id: secondary_grade_output
+          role: "Secondary grade or co-product output"
+          name: "Secondary fresh vegetable grade or co-product"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Secondary grades or co-products are recorded when intentionally marketed or transferred to a distinct declared destination."
+          amount:
+            expression: "Weighed secondary output with destination and market status"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_reconciliation
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      waste:
+        - row_id: grading_rejects
+          role: "Grading rejects"
+          name: "Grading reject or organic waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh matter"
+          description: "Rejects not transferred as a marketed product are recorded as waste with their destination and treatment route."
+          amount:
+            expression: "Difference between grading input and all declared product outputs, reconciled by destination"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grading_reconciliation
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      elementary:
+        []
+  - id: p_packaging_presentation
+    label: "Packaging and presentation"
+    inputs:
+      product:
+        - row_id: packaging_product_input
+          role: "Marketable vegetable for packaging"
+          name: "marketable_grade_output or declared harvested/conditioned output"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "The marketable output enters packaging when the package or presentation is inside the declared boundary before hand-off."
+          amount:
+            expression: "Weighed packaged-batch input"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-fresh-produce-hygiene-2003
+            ranges: []
+        - row_id: packaging_material
+          role: "Packaging material"
+          name: "Packaging material, rigid-container-packaging, carton-and-box-packaging, or pallet-and-crate-packaging"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Packaging material is recorded only when packaging is included in the declared product boundary."
+          amount:
+            expression: "Actual packaging material mass by material and reuse status, allocated to the packaged batch"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+        - row_id: packaging_electricity
+          role: "Packaging electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Electricity for packing, labelling, or presentation equipment is recorded when packaging is included."
+          amount:
+            expression: "Metered or allocated electricity for the packaged batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+      waste:
+        - row_id: packaging_rejects
+          role: "Packaging rejects"
+          name: "Packaging or packaged-product waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Damaged or rejected packaging and product-package losses are recorded by material and destination."
+          amount:
+            expression: "Weighed or reconciled rejects from the packaging batch"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference fresh vegetable"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-food-loss-waste-2019
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_fresh_vegetable
+          role: "Reference fresh vegetable"
+          name: "Declared CPC 01290 residual fresh vegetable"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "This is the final marketable fresh whole vegetable output at the declared first-market hand-off. If packaging is excluded, the last included process supplies this same reference-flow role without a packaging step."
+          amount:
+            expression: "Net marketable mass at the declared hand-off, excluding packaging mass"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "1 kg reference fresh vegetable"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: rule_single_output_crop_allocation
+    applies_to: "crop production with one declared marketable output"
+    rule: "Assign the full crop-cycle inventory to the declared reference product when no intentional co-product or secondary marketed output is reported."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: rule_grade_output_allocation
+    applies_to: "grading, sorting, and multiple marketed grades"
+    rule: "Report every intentional marketed grade or co-product. Apply physical mass allocation as the default when outputs have comparable fresh-material function; use an explicitly justified alternative only when mass does not represent the relevant causal relationship."
+    source_ids:
+      - iso-14044-2006
+      - fao-food-loss-waste-2019
+  - rule_id: rule_residue_not_coproduct
+    applies_to: "field residue, rejects, and non-marketed losses"
+    rule: "Treat residues and rejects as waste or destination-specific material unless they are intentionally marketed or transferred as a declared co-product with its own hand-off."
+    source_ids:
+      - fao-food-loss-waste-2019
+  - rule_id: rule_shared_input_allocation
+    applies_to: "shared machinery, infrastructure, or utilities"
+    rule: "Allocate shared records to the declared crop cycle and output set using documented area, time, mass, or activity drivers; retain the driver and contributing outputs."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_crop_area_yield
+      process_id: "p_crop_production"
+      flow_role: "area, crop-cycle output, and residue"
+      record_type: "field and harvest records"
+      raw_fields: "area; crop dates; cultivar; harvested mass; field residue; destination"
+      collection_method: "farm records, weighbridge, calibrated measurement, and grower interview"
+      unit: "ha, kg, date"
+      frequency: "every crop cycle"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each contributing field or production unit"
+      aggregation_rule: "aggregate by field and crop cycle, then reconcile to reported output"
+      quality_evidence: "field map, weighbridge record, and crop-cycle log"
+    - protocol_id: cp_crop_inputs
+      process_id: "p_crop_production"
+      flow_role: "seed, water, nutrient, energy, fuel, and calculated emissions"
+      record_type: "input and utility records"
+      raw_fields: "product identity; amount; nutrient basis; water meter; electricity; fuel; application date; source"
+      collection_method: "invoices, application logs, meters, supplier declarations, and method calculation"
+      unit: "kg, m3, kWh, MJ, kg nutrient"
+      frequency: "each application or meter period"
+      temporal_coverage: "full declared crop cycle"
+      site_scope: "each contributing field or production unit"
+      aggregation_rule: "allocate shared records by documented crop-cycle driver"
+      quality_evidence: "invoice, meter, application record, and factor-selection note"
+    - protocol_id: cp_harvest_operations
+      process_id: "p_harvest_capture"
+      flow_role: "harvested output, harvest fuel, and losses"
+      record_type: "harvest campaign records"
+      raw_fields: "operation date; machinery or contractor; fuel or service; harvested mass; damage; field destination"
+      collection_method: "harvest log, fuel issue, contractor record, and weighbridge"
+      unit: "kg, L, MJ, date"
+      frequency: "each harvest event"
+      temporal_coverage: "full harvest campaign"
+      site_scope: "each harvest block or campaign"
+      aggregation_rule: "reconcile standing crop, harvested output, and loss destinations"
+      quality_evidence: "harvest log, scale record, and contractor invoice"
+    - protocol_id: cp_conditioning_records
+      process_id: "p_primary_conditioning"
+      flow_role: "conditioning input, water, electricity, rejects, wastewater, and output"
+      record_type: "batch and utility records"
+      raw_fields: "batch id; input mass; water; electricity; reject mass; wastewater; output mass; treatment route"
+      collection_method: "batch sheet, meters, scale, and wastewater record"
+      unit: "kg, m3, kWh"
+      frequency: "each batch"
+      temporal_coverage: "all included conditioning batches"
+      site_scope: "each conditioning line or site"
+      aggregation_rule: "reconcile input to output, rejects, and wastewater by batch"
+      quality_evidence: "batch sheet, scale calibration, meter record, and treatment receipt"
+    - protocol_id: cp_grading_reconciliation
+      process_id: "p_grading_sorting"
+      flow_role: "grade outputs, rejects, and grading input"
+      record_type: "grading and sales records"
+      raw_fields: "batch id; input; accepted grade; secondary grade; reject; destination; sale status"
+      collection_method: "grading log, scale, sales record, and destination record"
+      unit: "kg, date"
+      frequency: "each grading batch"
+      temporal_coverage: "all included grading batches"
+      site_scope: "each grading line or site"
+      aggregation_rule: "reconcile input to all product outputs and rejects"
+      quality_evidence: "grade log, scale record, and destination evidence"
+    - protocol_id: cp_packaging_records
+      process_id: "p_packaging_presentation"
+      flow_role: "product input, packaging, electricity, rejects, and reference output"
+      record_type: "packaging and dispatch records"
+      raw_fields: "batch id; product input; material and mass; reuse status; electricity; reject; net output; hand-off"
+      collection_method: "packaging bill of materials, scale, meter, and dispatch record"
+      unit: "kg, kWh, date"
+      frequency: "each packaged batch"
+      temporal_coverage: "all included packaging batches"
+      site_scope: "each packaging line or site"
+      aggregation_rule: "report net product separately from packaging mass and reconcile rejects"
+      quality_evidence: "packaging specification, scale calibration, utility record, and dispatch record"
+  calculation_rules:
+    - id: rule_normalize_to_reference_flow
+      applies_to: "all inventory rows"
+      rule: "normalized_amount = recorded_or_calculated_amount / net_marketable_reference_mass"
+      inputs:
+        - "row amount"
+        - "net marketable reference mass"
+      output: "amount per 1 kg reference fresh vegetable"
+      source_ids:
+        - iso-14044-2006
+    - id: rule_calculate_crop_yield_reconciliation
+      applies_to: "crop production and harvest"
+      rule: "standing_crop = harvested_output + field_loss + residue + other_declared_destinations"
+      inputs:
+        - "field output"
+        - "harvested mass"
+        - losses
+        - residues
+        - destinations
+      output: "reconciled crop-cycle output set"
+      source_ids:
+        - fao-crop-production-guidance-2016
+        - fao-food-loss-waste-2019
+    - id: rule_calculate_nutrient_basis
+      applies_to: "fertilizer or soil amendment input"
+      rule: "nutrient_basis = product_mass * declared_nutrient_fraction for each declared nutrient basis"
+      inputs:
+        - "product mass"
+        - "supplier or laboratory nutrient fraction"
+      output: "kg N, P, K, or organic nutrient"
+      source_ids:
+        - fao-fertilizer-code-of-conduct-2019
+    - id: rule_calculate_crop_emissions
+      applies_to: "crop elementary outputs"
+      rule: "Apply the selected IPCC-compatible factor or measured value to the declared nutrient input, soil, climate, and management records; document factor hierarchy and units."
+      inputs:
+        - "nutrient input"
+        - "management records"
+        - "selected factor"
+        - "measured emissions where available"
+      output: "normalized substance-specific elementary flows"
+      source_ids:
+        - ipcc-2019-refinement-agriculture
+    - id: rule_reconcile_grade_outputs
+      applies_to: "grading and sorting"
+      rule: "grading_input = marketable_grade + secondary_grade + reject + unaccounted_loss; unaccounted loss must be investigated or disclosed"
+      inputs:
+        - "grading input"
+        - "all declared outputs"
+        - reject
+        - loss
+      output: "complete grade-output reconciliation"
+      source_ids:
+        - fao-food-loss-waste-2019
+    - id: rule_reconcile_packaged_output
+      applies_to: "packaging and presentation"
+      rule: "product_input = net_reference_output + packaging-process_product_loss + other_declared_product_destinations and packaging mass is reported separately"
+      inputs:
+        - "product input"
+        - "net output"
+        - losses
+        - "package material"
+      output: "net reference flow and package inventory"
+      source_ids:
+        - iso-14044-2006
+  data_quality_requirements:
+    - id: req_identity_qualifiers
+      applies_to: "all datasets"
+      requirement: "Declare species or cultivar, edible part, production route, geography, crop cycle, fresh state, grade or marketability, and first-market hand-off; document the residual-category decision."
+      evidence: "dataset metadata, crop record, and classification review"
+    - id: req_measurement_traceability
+      applies_to: "all quantitative rows"
+      requirement: "Prefer calibrated scales and meters, invoices, application logs, and supplier records; retain conversion factors and allocation drivers."
+      evidence: "measurement records, calibration evidence, and supplier documentation"
+    - id: req_temporal_coverage
+      applies_to: "crop production and harvest"
+      requirement: "Cover one complete crop cycle and harvest campaign; explain missing events, atypical weather, or off-season operations."
+      evidence: "crop calendar, field log, and reporting-period statement"
+    - id: req_mass_balance_completeness
+      applies_to: "crop, conditioning, grading, and packaging"
+      requirement: "Reconcile inputs, product outputs, co-products, residues, rejects, wastewater, and declared losses; investigate unexplained differences."
+      evidence: "batch, grade, weighbridge, and dispatch reconciliations"
+    - id: req_emission_method_disclosure
+      applies_to: "calculated elementary flows"
+      requirement: "State the factor or measurement method, nutrient basis, units, geography, climate or soil assumptions, and uncertainty or replacement plan."
+      evidence: "calculation sheet, factor reference, and method note"
+    - id: req_route_and_scope_disclosure
+      applies_to: "conditional processes"
+      requirement: "State whether conditioning, grading, packaging, storage, and distribution are included, and identify the first-market hand-off."
+      evidence: "process map, site description, and hand-off record"
+    - id: req_data_update_trigger
+      applies_to: "published datasets"
+      requirement: "Reassess the dataset after changes in cultivar, production technology, nutrient regime, irrigation regime, conditioning line, packaging format, geography, or applicable emission method."
+      evidence: "change log and periodic review record"
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_residual_category: reject the package when a narrower named CPC vegetable category applies or when the species or cultivar and edible part are absent."
+    source_ids: []
+  - rule_id: validation_rule_2
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_fresh_whole_state: reject processed, frozen, salted, pickled, fermented, dried, powdered, canned, juiced, preserved, seed, planting-material, feed, or waste products."
+    source_ids: []
+  - rule_id: validation_rule_3
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_reference_qualifiers: require all Required qualifiers and require the reference amount to be 1 kg net fresh product at the declared hand-off."
+    source_ids: []
+  - rule_id: validation_rule_4
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_process_completeness: require p_crop_production and p_harvest_capture; require each conditional process when its inclusion condition is true and do not count an omitted conditional process as an unexplained gap."
+    source_ids: []
+  - rule_id: validation_rule_5
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_flow_binding: accept a parameterized Flow Set binding only when the selected group matches the flow’s direction, type, material role, and process state; leave identity evidence gaps unmapped rather than forcing a fixed UUID."
+    source_ids: []
+  - rule_id: validation_rule_6
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_nutrient_disclosure: when crop_nutrient_or_amendment is present, require actual product identity, applied mass, declared nutrient basis, application timing, and upstream dataset or evidence reference."
+    source_ids: []
+  - rule_id: validation_rule_7
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_mass_reconciliation: require crop, conditioning, grading, and packaging balances to close within the declared measurement tolerance; investigate unaccounted mass."
+    source_ids: []
+  - rule_id: validation_rule_8
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_allocation: require all intentional marketed grades or co-products to be listed once and require the selected allocation driver and output set to be disclosed."
+    source_ids: []
+  - rule_id: validation_rule_9
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_emission_calculation: require substance-specific units, factor or measurement method, nutrient basis, and source evidence for every calculated elementary flow."
+    source_ids: []
+  - rule_id: validation_rule_10
+    applies_to: "foreground_dataset_conformance"
+    rule: "rule_validate_protocol_coverage: require every collected or calculated row to reference a declared collection protocol and every protocol to identify temporal and site scope."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground agricultural production dataset for a residual fresh-vegetable product category; may be published as a secondary_dataset and linked to background supply datasets"
+  downstream_use: "Construction of product, process, and lifecyclemodel projections for fresh whole vegetables in CPC 01290 when the residual-category gate is satisfied"
+  allowed_use: "Comparative or attributional LCA when species or cultivar, route, geography, crop cycle, hand-off, inventory basis, and data quality are disclosed"
+  excluded_use: "Processed or preserved vegetables; seed or planting material; feed or waste products; substitution claims without explicit evidence; extrapolation across unqualified species, route, geography, or market state"
+  required_metadata: "CPC 3.0:01290; canonical PCR id; species or cultivar; edible part; route; geography; crop cycle; hand-off; included processes; reference amount; reference flow identity; nutrient and irrigation basis; grade and loss destinations; packaging and storage scope"
+  required_quality_disclosure: "Data origin and period; site or field coverage; measurement and allocation methods; mass-balance status; emission-factor or measurement methods; exclusions; uncertainty or provisional ranges"
+  update_trigger: "New narrower classification coverage; changed cultivar or production route; material changes in nutrient, irrigation, energy, conditioning, grading, or packaging practice; revised emission methods; material data-quality findings"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.packaging-presentation-node
+      kind: "activity"
+      path: "library/modules/activities/packaging-presentation-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "iso-14040-2006"
+    type: "standard"
+    reference: "ISO 14040:2006, Environmental management — Life cycle assessment — Principles and framework, https://www.iso.org/standard/37456.html"
+    used_for: "PCR boundary framing and life-cycle inventory principles"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html"
+    used_for: "allocation, inventory normalization, data quality, and validation rules"
+  - id: "fao-crop-production-guidance-2016"
+    type: "official_guidance"
+    reference: "FAO, Save and Grow in practice: maize, rice, wheat, 2016, https://www.fao.org/3/i4009e/i4009e.pdf"
+    used_for: "crop-cycle records, field inputs, yield and production-unit evidence"
+  - id: "fao-fertilizer-code-of-conduct-2019"
+    type: "official_guidance"
+    reference: "FAO, International Code of Conduct for the Sustainable Use and Management of Fertilizers, 2019, https://openknowledge.fao.org/3/ca5253en/ca5253en.pdf"
+    used_for: "nutrient-basis declaration and fertilizer record requirements"
+  - id: "ipcc-2019-refinement-agriculture"
+    type: "method_factor"
+    reference: "2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "nutrient-related agricultural emission calculation method and factor disclosure"
+  - id: "fao-food-loss-waste-2019"
+    type: "official_guidance"
+    reference: "FAO, The State of Food and Agriculture 2019: Moving forward on food loss and waste reduction, https://www.fao.org/3/ca6030en/ca6030en.pdf"
+    used_for: "loss, reject, residue, destination, and reconciliation rules"
+  - id: "fao-fresh-produce-hygiene-2003"
+    type: "official_guidance"
+    reference: "FAO and WHO, Assuring Food Safety and Quality: Guidelines for Strengthening National Food Control Systems, 2003, https://www.fao.org/3/y8705e/y8705e.pdf"
+    used_for: "fresh-produce conditioning, water, hand-off, and hygiene-related record requirements"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:469ba54377e353ea93ec4f1b7e58d90b4c9055e24da4d41a405f2d43eb7f5702"
+  generated_content_sha256: "sha256:2b0d97761ad6aeba1ae8df9468f4428c98d41dfc819bd9c78e3a3db3a1572530"

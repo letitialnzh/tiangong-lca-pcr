@@ -1,10 +1,1542 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01411"
-  title: "Soya beans, seed for planting"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.soya-beans-seed-for-planting"
+  classification_refs: "CPC 3.0 01411, Soya beans, seed for planting"
+  covered_products: "Cleaned, graded, quality-controlled soya bean seed intended for sowing, including declared cultivar and seed class seed classes"
+  excluded_products: "Commodity soya bean grain; forage or silage soya bean; vegetable soybeans; processed soya bean products; downstream crop production; unqualified breeding research"
+  representative_product: "Accepted soya bean sowing seed at declared moisture basis, quality class, treatment status, packaging state, and gate"
+  production_route: "Managed soya bean seed multiplication or controlled seed production followed by harvest, conditioning, quality testing, optional treatment, and packaging"
+  market_state: "Seed lot accepted for sowing and transferred at the declared farm or delivery gate"
+functional_unit:
+  what: "Accepted soya bean seed for sowing at the declared seed gate"
+  how_much: "1 kg net accepted seed"
+  how_well: "Seed class or certification class, cultivar and seed class, variety or source-lot identity where applicable, moisture basis, physical purity, germination or viability, treatment status, packaging state, geography, and gate"
+  how_long_or_cycle: "One single-period declared seed production crop cycle; no storage is included unless the data package explicitly extends the gate"
+  reference_flow_link: "Reference amount and verified platform product flow below"
+system_boundary:
+  rules:
+    - rule_id: boundary_field_to_seed_gate
+      applies_to: "foreground boundary"
+      rule: "Include seed production, harvest, conditioning, quality testing, optional treatment, packaging, and only storage or delivery needed to reach the declared seed gate."
+      source_ids:
+        - fao-soya-seed-production
+        - fao-soya-drying-handling
+    - rule_id: boundary_gate_definition
+      applies_to: "reference product"
+      rule: "Use the farm gate by default. A delivered-seed gate requires storage or delivery records, losses, and gate hand-off."
+      source_ids:
+        - fao-soya-seed-production
+        - mass-balance-identity
+    - rule_id: boundary_seed_quality
+      applies_to: "accepted seed"
+      rule: "Include grading, quality testing, treatment status, and lot acceptance when they determine whether the output is accepted sowing seed."
+      source_ids:
+        - fao-soya-seed-production
+        - usda-seed-cleaning-handling
+    - rule_id: boundary_input_completeness
+      applies_to: "field and conditioning"
+      rule: "Provide a collected value, justified zero, or documented exclusion for source seed, nutrients, crop protection, irrigation, field energy, land, conditioning energy, packaging, rejects, and treatment."
+      source_ids:
+        - ipcc-2019-cropland
+        - ipcc-2019-managed-soils-n2o
+    - rule_id: boundary_output_separation
+      applies_to: "all outputs"
+      rule: "Separate accepted seed, intermediate harvested seed crop, rejects, screenings, dust, residues, packaging waste, and unexplained loss by measured mass and fate."
+      source_ids:
+        - mass-balance-identity
+        - fao-soya-drying-handling
+boundary_abstraction:
+  declared_starting_condition: "source seed lot, source seed lot, or declared seed-production starting material"
+  starting_condition_role: "reproduction identity and crop-production starting condition"
+  product_classification_scope: "CPC 3.0 01411, soya bean seed for sowing; commodity grain, forage or silage soya bean, and downstream soya bean products are outside this PCR"
+  recursive_input_rule: "A same-category seed input used to establish the crop is a declared starting input and is not current-cycle accepted output. A seed lot entering conditioning is an intermediate hand-off, not a second reference output."
+  upstream_dataset_requirement: "Source seed, nutrient products, crop-protection products, irrigation-water supply, energy carriers, packaging materials, and waste-treatment services require representative upstream datasets or a documented exclusion."
+  disclosure: "seed class; cultivar and seed-class route; variety or source-lot identity; field and geography; crop cycle; irrigation; nutrient and crop-protection records; harvest mass and moisture; conditioning, testing, treatment, packaging, storage, rejects, and gate"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Soya beans, seed for planting"
+    uuid: "dc436b03-e044-43a2-be71-c229dce5b901"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "seed class or certification class"
+    - "cultivar and seed class"
+    - "variety or source-lot identity where applicable"
+    - "treatment status"
+    - "moisture basis"
+    - "physical purity"
+    - "germination or viability"
+    - geography
+    - "crop cycle"
+    - "declared gate"
+    - "packaging state"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "kg"
+    rule: "Express the reference as net accepted soya bean sowing seed at the declared gate and exclude container tare."
+  - id: seed_count_conversion
+    applies_to: "seed count"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "kg and seeds"
+    rule: "Convert count to mass only with recorded thousand-kernel weight, lot count, or an equivalent transparent factor."
+  - id: seed_quality_attributes
+    applies_to: "accepted seed"
+    required_property_ref:
+      name: "declared quality property"
+      uuid: ""
+    required_unit: "percent or declared unit"
+    rule: "Retain moisture, physical purity, germination or viability, and treatment status as lot attributes; do not replace them with a universal default."
+  - id: moisture_basis
+    applies_to: "field and conditioning mass"
+    required_property_ref:
+      name: "Mass and moisture content"
+      uuid: ""
+    required_unit: "kg and declared mass fraction"
+    rule: "Preserve as-received mass and moisture basis. Convert only with measured moisture and an explicit mass-and-water equation."
+  - id: fertilizer_n_basis
+    applies_to: "nutrient inputs and soil emissions"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg product and kg nutrient"
+    rule: "Record formulated product mass and nutrient mass separately; nitrogen calculations use declared kg N input."
+  - id: water_basis
+    applies_to: "irrigation and withdrawal"
+    required_property_ref:
+      name: "Volume or Mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Distinguish supplied irrigation water, natural-resource withdrawal, and any separately reported consumption indicator."
+  - id: energy_inventory
+    applies_to: "field and conditioning energy"
+    required_property_ref:
+      name: "Mass, Volume, or Energy"
+      uuid: ""
+    required_unit: "kg, L, MJ, or kWh"
+    rule: "Preserve energy carrier, measured unit, operation, process, and conversion basis."
+  - id: packaging_count
+    applies_to: "count-based packaging"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item and kg"
+    rule: "Count-based packaging records must state bag capacity or material mass when conversion to mass is required."
+  - id: land_basis
+    applies_to: "land occupation"
+    required_property_ref:
+      name: "Area-time"
+      uuid: ""
+    required_unit: "ha·crop cycle or declared area-time unit"
+    rule: "Record planted area and crop-cycle occupation; do not use land occupation as a proxy for land transformation."
+process_map:
+  - id: field_soya_bean_seed_multiplication
+    name: "Field Soya bean Seed Multiplication"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "crop-cycle inputs and harvested seed crop before conditioning"
+  - id: seed_conditioning_treatment_and_packaging
+    name: "Seed Conditioning, Treatment, and Packaging"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "accepted cleaned and packaged soya bean sowing seed"
+  - id: seed_storage
+    name: "Seed Storage"
+    inclusion: "conditional"
+    inclusion_condition: "include when storage occurs before the declared gate or materially changes the delivered reference flow"
+    role: "foreground"
+    quantitative_reference: "stored and delivered accepted seed"
+process_inventory:
+  - id: field_soya_bean_seed_multiplication
+    label: "Field Soya bean Seed Multiplication"
+    inputs:
+      product:
+        - row_id: source_seed_or_parental_line_lot
+          role: "Source seed or source seed lot"
+          name: "soya bean source seed or source seed lot used for sowing"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dc436b03-e044-43a2-be71-c229dce5b901"
+          property_unit: "Mass / kg"
+          description: "Record the source lot that establishes the declared soya bean seed route. Identity, class, treatment, mass, and source field are separate from current-cycle accepted output."
+          amount:
+            expression: "measured source-lot mass by field or source-lot unit"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_seed_lot_records
+              source_ids:
+                - fao-soya-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_soya_bean_seed_multiplication_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_supplied
+          role: "Irrigation water supplied"
+          name: "irrigation water supplied to the seed-production field"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record delivered irrigation water from each declared source. A verified rain-fed route records a justified zero with supporting evidence."
+          amount:
+            expression: "metered or evidenced delivered irrigation by field and source"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_combustion_energy
+          role: "Field combustion energy"
+          name: "field fuel or combusted energy carrier"
+          flow_type: "product"
+          property_unit: "Mass, volume, or energy / kg, L, or MJ"
+          description: "Record fuel or directly supplied combustion energy used by field equipment, including pumping when the carrier is combusted on site. Keep mobile transport fuel outside this row."
+          amount:
+            expression: "measured fuel or energy use by field operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_pumping_electricity
+          role: "Irrigation pumping electricity"
+          name: "purchased electricity for irrigation pumping"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh or MJ"
+          description: "Record purchased electricity used for irrigation pumping or electrically driven field equipment at the field boundary."
+          amount:
+            expression: "meter, utility bill, or supplier record allocated to the declared field route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_products
+          role: "Crop-protection products"
+          name: "named crop-protection product or active substance"
+          flow_type: "product"
+          property_unit: "Mass / kg product or active substance"
+          description: "Record named formulated products and active substances used for weeds, pests, or diseases. Product identity and active-substance content remain distinct."
+          amount:
+            expression: "measured application by product and active substance"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - fao-soya-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: cultivated_land_occupation
+          role: "Cultivated land occupation"
+          name: "cultivated land occupation or transformation according to declared scope"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha·crop cycle"
+          description: "Record cultivated land occupation for the declared seed crop cycle. Verify the exact elementary-flow UUID at data-package generation."
+          amount:
+            expression: "planted area multiplied by the declared crop-cycle occupation basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_land_use_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: natural_water_withdrawal
+          role: "Natural water withdrawal"
+          name: "water resource withdrawn from the declared natural source"
+          flow_type: "elementary"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Keep natural-resource withdrawal distinct from delivered irrigation-water product input."
+          amount:
+            expression: "source-specific withdrawal measured or calculated from pumping records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: harvested_soya_bean_seed_crop_for_conditioning
+          role: "Harvested soya bean seed crop for conditioning"
+          name: "harvested soya bean seed crop for conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This intermediate product leaves field multiplication and enters seed conditioning; it is not an additional final reference output."
+          amount:
+            expression: "measured harvested seed-crop mass at the declared moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "process output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvested_seed_mass
+              source_ids:
+                - fao-soya-seed-production
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residues_and_non_seed_material
+          role: "Field residues and non-seed material"
+          name: "field residue or non-seed material by declared fate"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record residue, non-seed plant material, damaged seed, or other field material as waste unless it crosses the boundary as an intentionally sold or transferred product. No product-input Flow Set is assigned to this waste row."
+          amount:
+            expression: "measured or reconciled mass by fate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_residue_records
+              source_ids:
+                - ipcc-2019-cropland
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: managed_soil_nitrogen_emissions_to_air
+          role: "Managed-soil nitrogen emissions to air"
+          name: "nitrogen species emitted to air from managed soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg species and kg N"
+          description: "Record species-specific managed-soil emissions using the selected method tier, nutrient inputs, and declared soil and climate context."
+          amount:
+            expression: "calculated from nutrient inputs and the selected soil-emission method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed output"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrient_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: managed_soil_nitrogen_emissions_to_water
+          role: "Managed-soil nitrogen emissions to water"
+          name: "nitrogen species emitted to water from managed soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg species and kg N"
+          description: "Record nitrate or other nitrogen species reaching the declared water compartment when required by the selected method and scope."
+          amount:
+            expression: "calculated from nutrient inputs, site conditions, and the selected leaching method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed output"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrient_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fossil_carbon_dioxide_from_field_energy
+          role: "Fossil carbon dioxide from field energy"
+          name: "fossil carbon dioxide emitted to air from field energy"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate fossil combustion emissions from recorded field energy and a declared factor."
+          amount:
+            expression: "recorded fuel or energy quantity multiplied by the declared emission factor"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed output"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: seed_conditioning_treatment_and_packaging
+    label: "Seed Conditioning, Treatment, and Packaging"
+    inputs:
+      product:
+        - row_id: harvested_seed_crop_input
+          role: "Harvested seed crop input"
+          name: "harvested soya bean seed crop received for conditioning"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dc436b03-e044-43a2-be71-c229dce5b901"
+          property_unit: "Mass / kg"
+          description: "Record the field output received by conditioning as a separate intermediate input, retaining lot, moisture, and source-field identity."
+          amount:
+            expression: "measured receiving mass at declared moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted packaged seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_input_records
+              source_ids:
+                - mass-balance-identity
+                - fao-soya-drying-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_and_drying_electricity
+          role: "Conditioning and drying electricity"
+          name: "purchased electricity for seed conditioning and packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh or MJ"
+          description: "Record electricity for drying, shelling, cleaning, grading, testing, treatment, and packaging when it crosses the conditioning boundary."
+          amount:
+            expression: "meter, utility bill, or equipment log by conditioning campaign"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted packaged seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_energy_records
+              source_ids:
+                - fao-soya-drying-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_combustion_energy
+          role: "Conditioning combustion energy"
+          name: "drying fuel or delivered process heat"
+          flow_type: "product"
+          property_unit: "Mass, volume, or energy / kg, L, or MJ"
+          description: "Record fuel or directly supplied heat used for seed drying or other conditioning operations."
+          amount:
+            expression: "measured fuel or delivered heat by conditioning campaign"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted packaged seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_energy_records
+              source_ids:
+                - fao-soya-drying-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: seed_treatment_material
+          role: "Seed-treatment material"
+          name: "seed-treatment product or active substance"
+          flow_type: "product"
+          property_unit: "Mass / kg product or active substance"
+          description: "Record treatment products and active substances applied to accepted seed lots, including dose, treated mass, and treatment status."
+          amount:
+            expression: "measured treatment product and active-substance mass by lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg treated seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_treatment_records
+              source_ids:
+                - fao-soya-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: seed_packaging_function
+          role: "Seed packaging function"
+          name: "primary or secondary seed packaging material/function"
+          flow_type: "product"
+          property_unit: "Mass, count, or declared packaging quantity / kg or item"
+          description: "Record bags, liners, closures, labels, or other packaging functions used before the declared gate. Packaging remains separate from seed material."
+          amount:
+            expression: "packaging inventory issued per accepted seed batch, with count-to-mass conversion where required"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg packaged seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_input_records
+              source_ids:
+                - usda-seed-cleaning-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_soya_bean_sowing_seed
+          role: "Accepted soya bean sowing seed"
+          name: "Soya beans, seed for planting"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dc436b03-e044-43a2-be71-c229dce5b901"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Accepted cleaned, graded, tested, optionally treated, and packaged seed is the intended output and final reference product at the declared seed gate."
+          amount:
+            expression: "measured accepted output after quality release and packaging"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_accepted_seed_mass
+              source_ids:
+                - fao-soya-seed-production
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: intended_seed_coproduct_or_downgrade
+          role: "Intended co-product or downgraded seed stream"
+          name: "intentionally transferred downgraded or co-product seed stream"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this product output only when screenings, downgraded seed, or another separated stream is intentionally transferred across the boundary as a documented co-product or independent product. Identify its destination and do not count it as accepted sowing seed."
+          amount:
+            expression: "measured output by batch and declared destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_mass_records
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects_and_screenings
+          role: "Conditioning rejects and screenings"
+          name: "rejected seed, screenings, dust, or off-grade material by declared fate"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected seed, screenings, broken kernels, dust, and off-grade material by mass and fate. Do not assign a product-input Flow Set to waste."
+          amount:
+            expression: "weighed or reconciled reject stream by batch and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reject_mass_records
+              source_ids:
+                - usda-seed-cleaning-handling
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: packaging_waste
+          role: "Packaging waste"
+          name: "packaging waste by material and declared fate"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record packaging losses and discarded packaging by material and fate."
+          amount:
+            expression: "weighed packaging waste or inventory reconciliation by batch"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg packaged seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_waste_records
+              source_ids:
+                - usda-seed-cleaning-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: conditioning_dust_and_combustion_emissions
+          role: "Conditioning dust and combustion emissions"
+          name: "conditioning emission to air by substance and compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record particulate or combustion species emitted from cleaning and drying according to the selected compartment and method."
+          amount:
+            expression: "measured, collected, or calculated emission by campaign"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_emission_records
+              source_ids:
+                - fao-soya-drying-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: seed_storage
+    label: "Seed Storage"
+    inputs:
+      product:
+        - row_id: accepted_seed_entering_storage
+          role: "Accepted seed entering storage"
+          name: "Soya beans, seed for planting"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dc436b03-e044-43a2-be71-c229dce5b901"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Include only when storage is inside the declared gate. Track lot identity and stored mass separately from delivered output."
+          amount:
+            expression: "measured stored seed mass by lot and storage period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered accepted seed"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_lot_records
+              source_ids:
+                - fao-soya-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: storage_electricity
+          role: "Storage electricity"
+          name: "purchased electricity for seed storage"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh or MJ"
+          description: "Record electricity for storage climate control, handling, or monitoring when material and inside the boundary."
+          amount:
+            expression: "meter or utility record allocated by stored mass and duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered accepted seed"
+              kind: "storage_duration"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage_energy_records
+              source_ids:
+                - fao-soya-seed-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: storage_loss_or_damaged_seed
+          role: "Storage loss or damaged seed"
+          name: "storage loss or damaged seed by declared fate"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record storage loss, damaged lots, and destinations. No product-input Flow Set is assigned to this waste row."
+          amount:
+            expression: "inventory reconciliation or weighed loss by lot and storage period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered accepted seed"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_loss_records
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: delivered_accepted_soya_bean_seed
+          role: "Delivered accepted soya bean seed"
+          name: "Soya beans, seed for planting"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dc436b03-e044-43a2-be71-c229dce5b901"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Use only when the declared gate is after storage. It remains the same reference-product function and must not be counted with farm-gate output."
+          amount:
+            expression: "measured delivered mass after storage reconciliation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delivered_seed_mass
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit"
+                basis: "declared process or reference-flow basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_subdivision
+    applies_to: "field and conditioning processes"
+    rule: "Avoid allocation by separately recording seed multiplication, conditioning, treatment, packaging, rejects, and fate-specific handling whenever the processes can be subdivided."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_intended_outputs
+    applies_to: "intentional product outputs"
+    rule: "If a residue or off-grade stream is intentionally sold or transferred as a product, identify its destination and apply a declared attribution method only after product status is evidenced."
+    source_ids:
+      - iso-14044-2006
+      - mass-balance-identity
+  - rule_id: allocation_seed_quality
+    applies_to: "accepted seed and downgraded lots"
+    rule: "Do not allocate seed-quality burdens to commodity grain or a downgraded stream unless the alternate output is intentionally produced, separately identified, and included in the declared gate."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_fallback
+    applies_to: "multiple intended outputs"
+    rule: "If subdivision is not possible, use a declared mass, physical-property, economic, or other defensible method, disclose the rationale, and test a materially different method as sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_reject_fate
+    applies_to: "rejects and waste"
+    rule: "Keep field residue, conditioning rejects, packaging waste, storage losses, treatment, recovery, and disposal distinct; do not credit a displaced product without destination and substitution evidence."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rule_6
+    applies_to: "foreground_burden_allocation"
+    rule: "Every rejected or off-spec seed state is explicitly routed as reworked, downgraded, recovered, or discarded. A rework loop or boundary exit is linked to the producing conditioning node, and rejected material is excluded from accepted output until a new documented quality-release event occurs."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_source_seed_lot_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "source seed or source seed lot"
+      record_type: "seed lot record"
+      raw_fields: "lot; class; cultivar or source-lot role; treatment; mass; moisture; supplier or source field"
+      collection_method: "lot certificate, receiving record, calibrated scale"
+      unit: "kg and declared attributes"
+      frequency: "per lot"
+      temporal_coverage: "crop cycle"
+      site_scope: "field or production unit"
+      aggregation_rule: "sum by field or source-lot unit and normalize to harvested seed crop"
+      quality_evidence: "certificate, receiving record, scale"
+    - protocol_id: cp_nutrient_input_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "nutrient and amendment inputs"
+      record_type: "application record"
+      raw_fields: "product; formulation; nutrient content; mass; date; field; method"
+      collection_method: "invoice, label, application log, service record"
+      unit: "kg product and kg nutrient"
+      frequency: "per application"
+      temporal_coverage: "crop cycle"
+      site_scope: "field"
+      aggregation_rule: "sum product and nutrient mass by field"
+      quality_evidence: "invoice, label, application record"
+    - protocol_id: cp_irrigation_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "irrigation and withdrawal"
+      record_type: "meter or source record"
+      raw_fields: "source; meter; reading; volume; date; field; pumping energy"
+      collection_method: "calibrated meter, pump log, water record"
+      unit: "m3, kg, kWh"
+      frequency: "event or month"
+      temporal_coverage: "crop cycle"
+      site_scope: "field and source"
+      aggregation_rule: "sum by source and distinguish delivered water from withdrawal"
+      quality_evidence: "calibration, readings, source record"
+    - protocol_id: cp_field_energy_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "field fuel and electricity"
+      record_type: "fuel or utility record"
+      raw_fields: "operation; carrier; quantity; machine or supplier; date; field"
+      collection_method: "fuel log, meter, invoice, contractor record"
+      unit: "L, kg, MJ, kWh"
+      frequency: "operation or billing interval"
+      temporal_coverage: "crop cycle"
+      site_scope: "field or unit"
+      aggregation_rule: "attribute energy without double counting"
+      quality_evidence: "meter, invoice, log"
+    - protocol_id: cp_crop_protection_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "crop protection"
+      record_type: "application record"
+      raw_fields: "product; active substance; dose; area; date; field; target"
+      collection_method: "label and application log"
+      unit: "kg product, kg active substance, ha"
+      frequency: "per application"
+      temporal_coverage: "crop cycle"
+      site_scope: "field"
+      aggregation_rule: "sum by product and active substance"
+      quality_evidence: "label, applicator record"
+    - protocol_id: cp_land_use_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "land occupation"
+      record_type: "field area record"
+      raw_fields: "field; planted area; dates; crop duration"
+      collection_method: "field record, GIS, farm register"
+      unit: "ha and crop cycle"
+      frequency: "per cycle"
+      temporal_coverage: "crop cycle"
+      site_scope: "field"
+      aggregation_rule: "calculate area-time and normalize"
+      quality_evidence: "field map, GIS, farm record"
+    - protocol_id: cp_harvested_seed_mass
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "harvested seed crop"
+      record_type: "harvest record"
+      raw_fields: "field; date; mass; moisture; seed route; rejects"
+      collection_method: "calibrated scale and harvest record"
+      unit: "kg and moisture fraction"
+      frequency: "per harvest"
+      temporal_coverage: "crop cycle"
+      site_scope: "field and receiving point"
+      aggregation_rule: "reconcile before conditioning"
+      quality_evidence: "scale, harvest record"
+    - protocol_id: cp_field_residue_records
+      process_id: "field_soya_bean_seed_multiplication"
+      flow_role: "field residue"
+      record_type: "residue record"
+      raw_fields: "stream; mass; fate; date; field"
+      collection_method: "scale, baling ticket, field log"
+      unit: "kg"
+      frequency: "per event"
+      temporal_coverage: "crop cycle"
+      site_scope: "field"
+      aggregation_rule: "sum by fate and boundary crossing"
+      quality_evidence: "scale, ticket, field log"
+    - protocol_id: cp_conditioning_input_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "harvested seed input"
+      record_type: "batch receiving record"
+      raw_fields: "batch; input mass; moisture; source; date"
+      collection_method: "batch sheet and calibrated scale"
+      unit: "kg and moisture fraction"
+      frequency: "per batch"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "reconcile received mass to outputs"
+      quality_evidence: "batch sheet, scale"
+    - protocol_id: cp_conditioning_energy_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "conditioning energy"
+      record_type: "meter or equipment record"
+      raw_fields: "campaign; energy type; quantity; operation; period"
+      collection_method: "meter, utility bill, equipment log"
+      unit: "kWh, MJ, kg, L"
+      frequency: "campaign or interval"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "sum by operation and normalize"
+      quality_evidence: "meter, bill, equipment log"
+    - protocol_id: cp_seed_treatment_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "treatment material"
+      record_type: "treatment record"
+      raw_fields: "product; active substance; dose; treated mass; lot"
+      collection_method: "treatment log, label, supplier certificate"
+      unit: "kg product, kg active substance, kg seed"
+      frequency: "per batch"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "sum by product and treated lot"
+      quality_evidence: "log, label"
+    - protocol_id: cp_packaging_input_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "packaging"
+      record_type: "packaging issue record"
+      raw_fields: "type; item count; capacity; mass; batch"
+      collection_method: "inventory record or packing log"
+      unit: "item and kg"
+      frequency: "per batch"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "convert count only with declared capacity or mass"
+      quality_evidence: "packing log, inventory record"
+    - protocol_id: cp_accepted_seed_mass
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "accepted seed"
+      record_type: "release record"
+      raw_fields: "batch; mass; moisture; purity; germination; treatment; gate"
+      collection_method: "calibrated scale and quality test"
+      unit: "kg and attributes"
+      frequency: "per batch"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility and gate"
+      aggregation_rule: "sum released lots at declared basis"
+      quality_evidence: "scale, test, release record"
+    - protocol_id: cp_reject_mass_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "rejects and screenings"
+      record_type: "reject record"
+      raw_fields: "batch; stream; mass; fate"
+      collection_method: "scale or batch mass balance"
+      unit: "kg"
+      frequency: "per batch"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "sum by stream and fate"
+      quality_evidence: "scale, reject log, fate"
+    - protocol_id: cp_packaging_waste_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "packaging waste"
+      record_type: "waste record"
+      raw_fields: "material; mass; fate; period"
+      collection_method: "scale or contractor record"
+      unit: "kg"
+      frequency: "per shipment or campaign"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "sum by material and fate"
+      quality_evidence: "scale ticket, contractor record"
+    - protocol_id: cp_conditioning_emission_records
+      process_id: "seed_conditioning_treatment_and_packaging"
+      flow_role: "conditioning emissions"
+      record_type: "emission record"
+      raw_fields: "substance; compartment; mass or factor; campaign"
+      collection_method: "dust log, maintenance record, calculation"
+      unit: "kg"
+      frequency: "campaign or period"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "facility"
+      aggregation_rule: "sum by species and compartment"
+      quality_evidence: "log, calculation"
+    - protocol_id: cp_storage_lot_records
+      process_id: "seed_storage"
+      flow_role: "accepted seed in storage"
+      record_type: "inventory record"
+      raw_fields: "lot; mass; start and end dates; moisture; location"
+      collection_method: "inventory reconciliation and scale"
+      unit: "kg and days"
+      frequency: "per lot"
+      temporal_coverage: "storage period"
+      site_scope: "storage site"
+      aggregation_rule: "sum stored mass and retain duration"
+      quality_evidence: "inventory, scale"
+    - protocol_id: cp_storage_energy_records
+      process_id: "seed_storage"
+      flow_role: "storage electricity"
+      record_type: "meter or utility record"
+      raw_fields: "meter; quantity; period; stored mass"
+      collection_method: "meter or utility bill"
+      unit: "kWh or MJ"
+      frequency: "period"
+      temporal_coverage: "storage duration"
+      site_scope: "storage site"
+      aggregation_rule: "allocate by mass and duration"
+      quality_evidence: "meter, bill"
+    - protocol_id: cp_storage_loss_records
+      process_id: "seed_storage"
+      flow_role: "storage loss"
+      record_type: "loss record"
+      raw_fields: "lot; loss mass; category; fate; period"
+      collection_method: "inventory reconciliation and scale"
+      unit: "kg"
+      frequency: "per lot or period"
+      temporal_coverage: "storage period"
+      site_scope: "storage site"
+      aggregation_rule: "sum by fate"
+      quality_evidence: "inventory, disposal record"
+    - protocol_id: cp_delivered_seed_mass
+      process_id: "seed_storage"
+      flow_role: "delivered seed"
+      record_type: "delivery record"
+      raw_fields: "lot; mass; date; gate; receiver; moisture"
+      collection_method: "dispatch record and calibrated scale"
+      unit: "kg and moisture fraction"
+      frequency: "per shipment"
+      temporal_coverage: "delivery period"
+      site_scope: "declared gate"
+      aggregation_rule: "sum delivered lots without double count"
+      quality_evidence: "dispatch, scale"
+  calculation_rules:
+    - id: normalize_to_accepted_seed
+      applies_to: "all foreground rows"
+      rule: "divide each measured or calculated amount by net accepted seed at the same declared gate and basis"
+      inputs:
+        - "output records"
+        - "input records"
+      output: "amount per 1 kg reference flow"
+      source_ids:
+        - mass-balance-identity
+    - id: convert_seed_moisture_basis
+      applies_to: "field and conditioning mass"
+      rule: "convert only from recorded mass and moisture using an explicit water-and-dry-matter equation"
+      inputs:
+        - harvest
+        - receiving
+        - "quality records"
+      output: "declared-basis mass"
+      source_ids:
+        - mass-balance-identity
+        - fao-soya-drying-handling
+    - id: calculate_seed_conditioning_yield
+      applies_to: "conditioning output"
+      rule: "accepted seed mass divided by received harvested seed-crop mass, retaining rejects and moisture change separately"
+      inputs:
+        - "conditioning input"
+        - "accepted mass"
+        - "reject mass"
+      output: "yield, reject fraction, unexplained fraction"
+      source_ids:
+        - usda-seed-cleaning-handling
+        - mass-balance-identity
+    - id: calculate_land_occupation
+      applies_to: "land occupation"
+      rule: "planted area multiplied by declared crop-cycle occupation and normalized to accepted seed"
+      inputs:
+        - "land records"
+        - "accepted seed mass"
+      output: "area-time per reference flow"
+      source_ids:
+        - ipcc-2019-cropland
+    - id: calculate_water_withdrawal
+      applies_to: "water withdrawal"
+      rule: "convert metered volume where needed and keep source withdrawal separate from delivered irrigation"
+      inputs:
+        - "irrigation records"
+      output: "resource withdrawal per reference flow"
+      source_ids:
+        - ipcc-2019-cropland
+    - id: calculate_managed_soil_emissions
+      applies_to: "nitrogen emissions"
+      rule: "apply the selected method tier to nutrient inputs and declared soil, climate, and management context; disclose species conversion"
+      inputs:
+        - "nutrient records"
+        - "method factors"
+      output: "species-specific emissions"
+      source_ids:
+        - ipcc-2019-managed-soils-n2o
+    - id: calculate_field_energy_emissions
+      applies_to: "field energy"
+      rule: "multiply recorded fuel or energy by the declared factor and normalize to accepted seed"
+      inputs:
+        - "field energy"
+        - factor
+      output: "field-energy emissions"
+      source_ids:
+        - ipcc-2019-cropland
+    - id: calculate_conditioning_energy_emissions
+      applies_to: "conditioning energy"
+      rule: "multiply recorded conditioning fuel or energy by the declared factor and normalize"
+      inputs:
+        - "conditioning energy"
+        - factor
+      output: "conditioning emissions"
+      source_ids:
+        - fao-soya-drying-handling
+    - id: reconcile_field_outputs
+      applies_to: "field production"
+      rule: "harvested seed crop plus residue, non-seed material, and documented loss reconcile to the harvest record within declared tolerance"
+      inputs:
+        - harvest
+        - "residue records"
+      output: "field output balance"
+      source_ids:
+        - mass-balance-identity
+    - id: reconcile_conditioning_outputs
+      applies_to: "conditioning"
+      rule: "received mass and moisture reconcile to accepted seed, rejects, packaging waste, emissions, and documented loss"
+      inputs:
+        - "conditioning input"
+        - "accepted seed"
+        - rejects
+      output: "conditioning balance"
+      source_ids:
+        - mass-balance-identity
+        - fao-soya-drying-handling
+    - id: reconcile_storage_outputs
+      applies_to: "storage"
+      rule: "stored mass reconciles to delivered seed, storage loss, and closing inventory for the declared period"
+      inputs:
+        - storage
+        - delivery
+        - "loss records"
+      output: "storage balance"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_seed_identity
+      applies_to: "reference product and source lots"
+      requirement: "Declare seed class, cultivar and seed class, variety or source-lot identity where applicable, treatment status, moisture basis, physical purity, and germination or viability."
+      evidence: "certificate, lot record, quality test"
+    - id: dq_mass_records
+      applies_to: "all mass rows"
+      requirement: "Every mass identifies date, site or batch, unit, moisture basis where relevant, and measurement device or source record."
+      evidence: "calibration, weighbridge ticket, batch sheet"
+    - id: dq_temporal_coverage
+      applies_to: "crop-cycle and storage data"
+      requirement: "Cover the declared crop cycle and storage period and disclose single-season or multi-season aggregation."
+      evidence: "dated field, input, harvest, storage, release records"
+    - id: dq_input_completeness
+      applies_to: "field and conditioning inputs"
+      requirement: "Quantify or justify zero or exclusion for source seed, nutrients, crop protection, irrigation, field energy, land, conditioning energy, treatment, and packaging."
+      evidence: "ledgers, labels, meters, logs, invoices"
+    - id: dq_quality_release
+      applies_to: "accepted seed output"
+      requirement: "Retain lot-release basis, quality test method, moisture, purity, germination or viability, treatment status, and gate."
+      evidence: "test, certificate, release record"
+    - id: dq_reject_and_fate
+      applies_to: "rejects, residues, waste"
+      requirement: "Every non-reference stream has measured or reconciled mass and declared destination; product status is not inferred from a name."
+      evidence: "reject log, residue, dispatch or treatment record"
+    - id: dq_mass_balance
+      applies_to: "all processes"
+      requirement: "Reconcile field, conditioning, and storage outputs within declared tolerance and disclose unexplained fractions."
+      evidence: "scale records, batch sheets, inventory reconciliation"
+    - id: dq_binding_coordinate
+      applies_to: "Flow Set and fixed bindings"
+      requirement: "The final data package preserves each Flow Set's flow type, direction, coordinate, property, unit, use context, and geography. A fixed binding is allowed only for a directly verified platform UUID."
+      evidence: "identity record and Flow Set selection record"
+validation_rules:
+  - rule_id: validation_reference_flow
+    applies_to: "reference product"
+    rule: "Confirm the verified soya bean sowing-seed UUID, all qualifiers, and the declared gate; the final exchange must retain that UUID."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_scope
+    applies_to: "boundary"
+    rule: "Confirm that the dataset is soya bean seed for sowing and does not silently include commodity grain, forage or silage soya bean, downstream cultivation, or downstream processing."
+    source_ids:
+      - fao-soya-seed-production
+  - rule_id: validation_process_map
+    applies_to: "process inventory"
+    rule: "Confirm field seed production, conditioning, quality release, and included storage are separate, with explicit hand-offs."
+    source_ids:
+      - fao-soya-seed-production
+      - usda-seed-cleaning-handling
+  - rule_id: validation_flow_coordinates
+    applies_to: "inventory rows"
+    rule: "Confirm every parameterized row matches its Flow Set flow type, direction, coordinate, group, property, unit, use context, and geography constraints."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_nutrients_and_emissions
+    applies_to: "nutrients and soil emissions"
+    rule: "Confirm nutrient product mass, nutrient mass, method tier, factors, species, unit, and conversion; no module supplies a factor or product fact."
+    source_ids:
+      - ipcc-2019-managed-soils-n2o
+  - rule_id: validation_water_and_land
+    applies_to: "irrigation, withdrawal, land"
+    rule: "Keep delivered irrigation product input, natural water withdrawal, and land occupation distinct and prevent double counting."
+    source_ids:
+      - ipcc-2019-cropland
+  - rule_id: validation_quality_release
+    applies_to: "accepted seed"
+    rule: "Confirm seed class, quality attributes, treatment status, lot release, packaging state, and gate for the reference output."
+    source_ids:
+      - fao-soya-seed-production
+  - rule_id: validation_reject_fate
+    applies_to: "rejects and waste"
+    rule: "Confirm every rejected seed, screening, residue, packaging waste, and storage loss has a fate; do not assign a product-input Flow Set to waste."
+    source_ids:
+      - usda-seed-cleaning-handling
+      - mass-balance-identity
+  - rule_id: validation_mass_balance
+    applies_to: "all outputs"
+    rule: "Confirm field, conditioning, and storage balances reconcile within declared tolerance and accepted seed is not counted at two hand-offs."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_allocation
+    applies_to: "intentional co-products"
+    rule: "Confirm any intentional co-product is separately identified, destination is evidenced, and allocation or substitution treatment is disclosed."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_module_boundary
+    applies_to: "automatically selected modules"
+    rule: "Apply module obligations as structure and checks only; modules do not supply product quantities, UUIDs, emission factors, or seed facts."
+    source_ids:
+      - iso-14044-2006
+published_dataset_profile:
+  dataset_role: "unit_process"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "downstream LCA construction where seed class, route, quality attributes, geography, moisture, treatment, packaging, and gate match"
+  excluded_use: "commodity grain; forage or silage soya bean; downstream cultivation; food, feed, starch, or ethanol processing; datasets omitting seed-quality or gate qualifiers"
+  required_metadata: "reference flow; CPC scope; seed class; cultivar and seed class; variety or source-lot identity where applicable; geography; crop cycle; moisture; purity; germination or viability; treatment; packaging; gate; Flow Set selections; collection coverage; DQR"
+  required_quality_disclosure: "lot and field coverage, measurement records, quality-release evidence, calculation rules, structural coordinates and applicable Flow Set references, fixed UUID evidence if any, exclusions, mass-balance results, and data-quality scores"
+  update_trigger: "material change in route, cultivar or source-lot practice, conditioning technology, treatment, packaging, storage, reference qualifiers, Flow Set contract, collection coverage, or data quality"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-soya-seed-production"
+    type: "official_guidance"
+    reference: "FAO seed production and quality guidance, <https://www.fao.org/4/y4011e/y4011e0v.htm>"
+    used_for: "seed classes, quality attributes, lot acceptance, and seed-production boundary"
+  - id: "fao-soya-harvest-postharvest-2023"
+    type: "official_guidance"
+    reference: "FAO soya bean harvesting and post-harvesting handling, <https://www.fao.org/family-farming/detail/en/c/1619514/>"
+    used_for: "soya bean harvest, handling, and field-to-conditioning context"
+  - id: "fao-soya-drying-handling"
+    type: "handbook"
+    reference: "FAO, Agricultural engineering in development: Grain and post-harvest systems, <https://www.fao.org/4/t0522e/T0522E03.htm>"
+    used_for: "drying, moisture, cleaning, conditioning, and process hand-off"
+  - id: "usda-seed-cleaning-handling"
+    type: "handbook"
+    reference: "USDA, Seed cleaning and handling guidance, <https://www.govinfo.gov/content/pkg/GOVPUB-A-PURL-gpo20323/pdf/GOVPUB-A-PURL-gpo20323.pdf>"
+    used_for: "cleaning, grading, screenings, rejects, and handling records"
+  - id: "ipcc-2019-cropland"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 5 Cropland, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch05_Cropland.pdf>"
+    used_for: "cropland management, residue treatment, land, and crop-management method context"
+  - id: "ipcc-2019-managed-soils-n2o"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 11, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf>"
+    used_for: "managed-soil nitrogen emissions and factor selection"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy, data quality, and sensitivity expectations"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied as a PCR calculation identity for seed harvest, conditioning, packaging, storage, rejects, and reference-flow reconciliation."
+    used_for: "output reconciliation, normalization, and QA guardrails"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:db88f4c5a0e57f54262fcc177409a57a0607893629e686587a1f5617fa06763b"
+  generated_content_sha256: "sha256:215edb889c7eef94610e92e4c877dc6705bd7980a2889f8ca2dc8e4c68502b1f"
