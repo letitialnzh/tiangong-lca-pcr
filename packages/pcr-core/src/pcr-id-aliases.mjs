@@ -33,6 +33,7 @@ const CONTENT_MATURITIES = new Set(CONTENT_MATURITY_VALUES);
 const MANAGED_READ_FLAGS =
   fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW | fsConstants.O_NONBLOCK;
 const FATAL_UTF8_DECODER = new TextDecoder("utf-8", { fatal: true });
+let activeAliasReadCache = null;
 
 export class PcrIdAliasRegistryError extends Error {
   constructor({ source = PCR_ID_ALIAS_DIRECTORY, issues }) {
@@ -55,6 +56,11 @@ export class PcrIdAliasRegistryError extends Error {
  */
 export function readPcrIdAliases({ root, verifyCatalogBinding = true }) {
   const normalizedRoot = path.resolve(root);
+  const cacheKey = `${normalizedRoot}:${verifyCatalogBinding}`;
+  const cached = activeAliasReadCache?.get(cacheKey);
+  if (cached) {
+    return structuredClone(cached);
+  }
   const binding = verifyCatalogBinding
     ? readCatalogAliasBinding(normalizedRoot)
     : { mode: "standalone" };
@@ -114,9 +120,29 @@ export function readPcrIdAliases({ root, verifyCatalogBinding = true }) {
   }
 
   assertAliasSemantics({ root: normalizedRoot, records });
-  return records
+  const aliases = records
     .map(({ alias }) => structuredClone(alias))
     .sort((left, right) => compareText(left.source_pcr_id, right.source_pcr_id));
+  activeAliasReadCache?.set(cacheKey, aliases);
+  return structuredClone(aliases);
+}
+
+/**
+ * Reuse a fully verified alias registry only during one synchronous read operation.
+ * The cache never crosses a public operation boundary, so later reads observe disk changes.
+ */
+export function withPcrIdAliasReadCache(operation) {
+  const previousCache = activeAliasReadCache;
+  if (!previousCache) {
+    activeAliasReadCache = new Map();
+  }
+  try {
+    return operation();
+  } finally {
+    if (!previousCache) {
+      activeAliasReadCache = null;
+    }
+  }
 }
 
 function readCatalogAliasBinding(root) {

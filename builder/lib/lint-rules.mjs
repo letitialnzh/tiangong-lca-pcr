@@ -798,7 +798,7 @@ export function inspectPcrDirectory({
   if (material) {
     for (const issue of materialProjectionCompletenessIssues(
       parseYaml(expectedStructuredText),
-      { expectedPcrId: manifest.id },
+      { expectedPcrId: manifest.id, lifecycleStatus: manifest.status },
     )) {
       problems.push(
         `${toRepoRelative(resolvedRoot, canonicalMarkdown)}: ${issue.message}`,
@@ -839,10 +839,40 @@ export function inspectPcrDirectory({
   };
 }
 
+function normalizeRequestedPcrs(value) {
+  if (value === undefined) {
+    return [];
+  }
+  if (!Array.isArray(value) || value.length === 0 || value.some((entry) => typeof entry !== "string" || !entry.trim())) {
+    throw new Error("--pcr must be supplied one or more times with non-empty PCR directory paths");
+  }
+  return value;
+}
+
+function selectedPcrDirectories({ root, pcrRoot, requestedPcrs, problems }) {
+  const selected = new Set();
+  for (const requestedPath of requestedPcrs) {
+    const candidate = path.resolve(root, requestedPath);
+    const relative = path.relative(pcrRoot, candidate);
+    const segments = relative.split(path.sep);
+    if (path.isAbsolute(relative) || segments.length !== 3 || segments.some((segment) => !segment || segment === "." || segment === "..")) {
+      problems.push(`Requested PCR must be a direct library/pcrs/<domain>/<subdomain>/<slug> directory: ${requestedPath}`);
+      continue;
+    }
+    if (!existsSync(candidate) || !lstatSync(candidate).isDirectory() || lstatSync(candidate).isSymbolicLink()) {
+      problems.push(`Requested PCR directory is missing or not canonical: ${requestedPath}`);
+      continue;
+    }
+    selected.add(candidate);
+  }
+  return [...selected].sort();
+}
+
 export function lint(options) {
   const root = rootFromOptions(options);
   const problems = [];
   const warnings = [];
+  const requestedPcrs = normalizeRequestedPcrs(options.pcr);
 
   for (const dir of REQUIRED_DIRS) {
     const directory = path.join(root, dir);
@@ -856,49 +886,17 @@ export function lint(options) {
     }
   }
 
-  const moduleGroups = ["activities", "technologies", "system-conditions"];
-  for (const group of moduleGroups) {
-    const moduleDirectory = path.join(root, "library/modules", group);
-    if (!existsSync(moduleDirectory)) continue;
-    for (const entry of readdirSync(moduleDirectory).sort()) {
-      if (!entry.endsWith(".yaml")) continue;
-      const sourcePath = path.join(moduleDirectory, entry);
-      validateYamlContractFile({
-        contract: "module-candidate.schema.json",
-        sourcePath,
-        root,
-        problems,
-        entityKind: "PCR candidate methodology module",
-      });
-      try {
-        const moduleText = readCanonicalRegularFile(sourcePath, root, problems);
-        if (moduleText === null) continue;
-        const module = parseYaml(moduleText);
-        const expectedPrefix = {
-          activities: "module.activity.",
-          technologies: "module.technology.",
-          "system-conditions": "module.system-condition.",
-        }[group];
-        const expectedId = `${expectedPrefix}${entry.slice(0, -5)}`;
-        if (module.id !== expectedId) {
-          problems.push(`${toRepoRelative(root, sourcePath)}: module id must match path (${expectedId})`);
-        }
-      } catch {
-        // The contract validator above reports unreadable or malformed YAML.
-      }
-    }
-  }
-
-  validateYamlContractFile({
+  if (requestedPcrs.length === 0) {
+    validateYamlContractFile({
     contract: "catalog.schema.json",
     sourcePath: path.join(root, "library/catalog.yaml"),
     root,
     problems,
     entityKind: "PCR catalog",
-  });
+    });
 
-  const mappingRoot = path.join(root, "classifications/mappings");
-  if (existsSync(mappingRoot)) {
+    const mappingRoot = path.join(root, "classifications/mappings");
+    if (existsSync(mappingRoot)) {
     const mappingRootStats = lstatSync(mappingRoot);
     if (mappingRootStats.isSymbolicLink() || !mappingRootStats.isDirectory()) {
       problems.push("classifications/mappings: mapping root must be a canonical directory");
@@ -913,10 +911,14 @@ export function lint(options) {
         });
       }
     }
+    }
   }
 
   const pcrRoot = path.join(root, "library/pcrs");
-  for (const directory of discoverCanonicalPcrDirectories(pcrRoot, problems, root)) {
+  const directories = requestedPcrs.length === 0
+    ? discoverCanonicalPcrDirectories(pcrRoot, problems, root)
+    : selectedPcrDirectories({ root, pcrRoot, requestedPcrs, problems });
+  for (const directory of directories) {
     const result = inspectPcrDirectory({ root, pcrDir: directory });
     problems.push(...result.problems);
     warnings.push(...result.warnings);

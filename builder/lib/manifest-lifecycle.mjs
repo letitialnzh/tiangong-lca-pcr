@@ -24,6 +24,10 @@ import {
 } from "./lifecycle-vocab.mjs";
 import { inspectPcrDirectory } from "./lint-rules.mjs";
 import {
+  installCandidatePromotionMappings,
+  planCandidatePromotionMappings,
+} from "./classification-promotion.mjs";
+import {
   compareSemver,
   isValidSemver,
   lifecycleTransitionProblems,
@@ -48,6 +52,7 @@ import {
 } from "./published-revision-state.mjs";
 import { PCR_EN_FILE, PCR_ZH_FILE } from "./scaffold-templates.mjs";
 import { validateManifest, validateStructured } from "./schema-contracts.mjs";
+import { buildOrCheckCatalog } from "../scripts/build-catalog.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(__dirname, "../..");
@@ -660,6 +665,12 @@ export function lifecycle(options) {
   }
 
   const currentManifest = parseYaml(readRequiredText(paths.manifestPath, "PCR manifest"));
+  const promotesScaffold =
+    workspace === "current" && currentManifest.status === "scaffold" && status === "candidate";
+  const now = new Date().toISOString();
+  const mappingPlan = promotesScaffold
+    ? planCandidatePromotionMappings({ root, manifest: currentManifest, decidedAtUtc: now })
+    : null;
   const translationProblems = translationTargetProblems(currentManifest, translation);
   if (translationProblems.length > 0) {
     throw operationError("PCR lifecycle translation target rejected", root, paths.pcrDir, translationProblems);
@@ -680,7 +691,6 @@ export function lifecycle(options) {
   }
 
   const changed = [];
-  let now;
   const result = runPcrDirectoryTransaction({
     root,
     pcr: paths.pcrDir,
@@ -762,7 +772,6 @@ export function lifecycle(options) {
         next.translation_status[translation.language] = translation.status;
         changed.push(`translation_status.${translation.language}: ${translation.status}`);
       }
-      now = new Date().toISOString();
       next.updated_at_utc = now;
       const problems = lifecycleTransitionProblems(current, next);
       if (problems.length > 0) {
@@ -802,6 +811,12 @@ export function lifecycle(options) {
     },
   });
 
+  let promotedMappings = [];
+  if (mappingPlan) {
+    promotedMappings = installCandidatePromotionMappings(root, mappingPlan);
+    buildOrCheckCatalog(root);
+  }
+
   const manifestPath = workspace === "current"
     ? paths.currentManifestPath
     : path.join(paths.pcrDir, "revision", "manifest.next.yaml");
@@ -813,6 +828,12 @@ export function lifecycle(options) {
     "",
     "Summary:",
     ...changed.map((entry) => `- ${entry}`),
+    ...promotedMappings.map((coordinate) => `- accepted classification mapping: ${coordinate}`),
+    ...(mappingPlan
+      ? [mappingPlan.aliasUpdated
+        ? "- CPC alias registry rebuilt (same-id retired alias removed) and catalog artifacts rebuilt"
+        : "- catalog and coverage artifacts rebuilt"]
+      : []),
     `- updated_at_utc: ${now}`,
     "",
     "Next:",
@@ -1032,11 +1053,10 @@ export function publish(options) {
     path.join(sourceWorkspace, PCR_EN_FILE),
     "canonical Markdown file",
   );
+  const sourceProjection = parsePcrMarkdownToStructured(sourceMarkdown);
+  const sourceManifestName = workspace === "current" ? "manifest.yaml" : "manifest.next.yaml";
   const sourceManifest = parseYaml(
-    readRequiredText(
-      path.join(sourceWorkspace, workspace === "current" ? "manifest.yaml" : "manifest.next.yaml"),
-      "PCR manifest",
-    ),
+    readRequiredText(path.join(sourceWorkspace, sourceManifestName), "PCR manifest"),
   );
   const sourceModuleSelection = moduleReferencesFromManifest({ root, manifest: sourceManifest });
   const sourceInspection = inspectPcrDirectory({
@@ -1044,7 +1064,7 @@ export function publish(options) {
     pcrDir: sourceWorkspace,
     manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
     structuredText: structuredProjectionYaml(
-      parsePcrMarkdownToStructured(sourceMarkdown),
+      sourceProjection,
       { sourceMarkdown, moduleReferences: sourceModuleSelection.moduleReferences },
     ),
     checkBilingualRuleAlignment: true,
@@ -1099,11 +1119,10 @@ export function publish(options) {
         path.join(lockedWorkspace, PCR_EN_FILE),
         "canonical Markdown file",
       );
+      const lockedProjection = parsePcrMarkdownToStructured(lockedMarkdown);
+      const lockedManifestName = workspace === "current" ? "manifest.yaml" : "manifest.next.yaml";
       const lockedManifest = parseYaml(
-        readRequiredText(
-          path.join(lockedWorkspace, workspace === "current" ? "manifest.yaml" : "manifest.next.yaml"),
-          "PCR manifest",
-        ),
+        readRequiredText(path.join(lockedWorkspace, lockedManifestName), "PCR manifest"),
       );
       const lockedModuleSelection = moduleReferencesFromManifest({ root, manifest: lockedManifest });
       const lockedInspection = inspectPcrDirectory({
@@ -1111,7 +1130,7 @@ export function publish(options) {
         pcrDir: lockedWorkspace,
         manifestFileName: workspace === "current" ? "manifest.yaml" : "manifest.next.yaml",
         structuredText: structuredProjectionYaml(
-          parsePcrMarkdownToStructured(lockedMarkdown),
+          lockedProjection,
           { sourceMarkdown: lockedMarkdown, moduleReferences: lockedModuleSelection.moduleReferences },
         ),
         checkBilingualRuleAlignment: true,

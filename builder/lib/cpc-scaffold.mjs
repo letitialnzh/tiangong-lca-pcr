@@ -548,15 +548,7 @@ content_maturity: empty_scaffold
 domains:
   - ${yamlString(normalizeAsciiSlug(leaf.path_titles[0] ?? "unclassified"))}
 modules:
-  core:
-    - pcr-minimum-content
-    - unit-of-analysis
-    - reference-flow
-    - inventory-flow-taxonomy
-    - system-boundary
-    - allocation
-    - data-quality
-    - validation-rules
+  core: []
 target_entities:
   - flow
   - process

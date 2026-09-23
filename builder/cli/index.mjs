@@ -17,7 +17,7 @@ const COMMAND_OPTIONS = Object.freeze({
     values: ["root", "sample-pcr", "pcr-id", "title-en", "title-zh-CN"],
     booleans: ["help"],
   }),
-  lint: Object.freeze({ values: ["root"], booleans: ["help"] }),
+  lint: Object.freeze({ values: ["root", "pcr"], booleans: ["help"] }),
   "module-checklist": Object.freeze({
     values: ["root", "pcr", "format"],
     booleans: ["help"],
@@ -95,7 +95,8 @@ function parseArgs(argv) {
         `Unknown option for ${command}: --${key || "(empty)"}. Allowed options: ${allowed}`,
       );
     }
-    if (seenOptions.has(key)) {
+    const repeatable = command === "lint" && key === "pcr";
+    if (seenOptions.has(key) && !repeatable) {
       throw new Error(`Duplicate option for ${command}: --${key}`);
     }
     seenOptions.add(key);
@@ -113,7 +114,7 @@ function parseArgs(argv) {
       if (inlineValue.length === 0) {
         throw new Error(`--${key} requires a non-empty value`);
       }
-      options[key] = inlineValue;
+      options[key] = repeatable ? [...(options[key] ?? []), inlineValue] : inlineValue;
       continue;
     }
 
@@ -121,7 +122,7 @@ function parseArgs(argv) {
     if (next === undefined || next.startsWith("--")) {
       throw new Error(`--${key} requires a value`);
     }
-    options[key] = next;
+    options[key] = repeatable ? [...(options[key] ?? []), next] : next;
     index += 1;
   }
 
@@ -133,7 +134,7 @@ function printHelp() {
 
 Usage:
   node builder/cli/index.mjs init [--root <path>] [--sample-pcr <domain/path/slug>]
-  node builder/cli/index.mjs lint [--root <path>]
+  node builder/cli/index.mjs lint [--root <path>] [--pcr <library/pcrs/domain/subdomain/slug>]...
   node builder/cli/index.mjs module-plan --context <route-context.yaml> [--format json|yaml|markdown] [--root <path>]
   node builder/cli/index.mjs module-checklist --pcr <library/pcrs/...> [--format json|yaml|markdown] [--root <path>]
   node builder/cli/index.mjs import-cpc --source <csv> [--classification-version 3.0] [--legacy-scaffolds]
