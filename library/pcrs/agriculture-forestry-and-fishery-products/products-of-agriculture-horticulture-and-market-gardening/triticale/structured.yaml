@@ -1,10 +1,812 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01191"
-  title: "Triticale"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.triticale"
+  classification_refs: "CPC 3.0: 01191 Triticale"
+  covered_products: "harvested triticale grain for feed, food, or further processing, at the farm gate"
+  excluded_products: "certified triticale seed; whole-crop forage, hay, silage, grazing or cover-crop service; flour and other milled products"
+  representative_product: "unprocessed harvested triticale grain"
+  production_route: "managed spring or winter triticale cultivation, harvest, and conditional on-farm grain conditioning"
+  market_state: "unprocessed grain at farm gate, with moisture and quality state declared"
+functional_unit:
+  what: "triticale grain at the farm gate"
+  how_much: "1,000 kg as-received grain"
+  how_well: "harvested, unprocessed grain meeting declared moisture, impurity, damage, and intended-use specifications"
+  how_long_or_cycle: "one declared crop cycle"
+  reference_flow_link: "terminal grain output from triticale_field_production when conditioning is absent, otherwise from farm_gate_grain_conditioning"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include field preparation, sowing, crop management, harvest, and on-farm cleaning or drying performed before the farm-gate hand-off."
+      source_ids:
+        - uga-small-grains-handbook
+        - uw-triticale-production
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil emissions"
+      rule: "Include direct and indirect nitrogen-related emissions using geographically applicable methods and the same activity data used for nutrient and residue accounting."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - emep-eea-2023-guidebook
+    - rule_id: boundary_residue_fate
+      applies_to: "straw and crop residues"
+      rule: "Distinguish residues returned to soil, burned, removed as product, and removed as waste; prevent double counting residue nitrogen and exported straw."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_post_farm_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, storage, milling, feed manufacture, food processing, and use unless study scope explicitly extends beyond this PCR."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "prepared field at the start of the crop cycle, with seed and purchased management inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed triticale grain production"
+  product_classification_scope: "cultivated triticale grain corresponding to CPC 3.0 code 01191"
+  recursive_input_rule: "purchased or retained triticale for sowing is an explicit seed input linked to a distinct upstream seed-supply dataset and must not loop to this grain process"
+  upstream_dataset_requirement: "compatible upstream datasets for seed, fertilizers, crop-protection formulations, fuels, electricity, irrigation supply, and contracted services"
+  disclosure: "crop type, cultivar, geography, field area, crop dates, previous crop, tillage, irrigation, yield, moisture, residue fate, and conditioning boundary"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Triticale, production mix, at farm gate, harvested grain, unprocessed"
+    uuid: "490074de-43a7-452a-8574-5b53c368bfb9"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "spring or winter type"
+    - cultivar
+    - "production geography"
+    - "harvest year"
+    - "moisture at hand-off"
+    - "impurity basis"
+    - "intended use"
+    - "conditioning included or excluded"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "reference triticale grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report as-received mass and measured moisture; retain moisture basis for every dry-matter conversion."
+  - id: area_to_reference_conversion
+    applies_to: "area-based field flows"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Divide crop-cycle totals per hectare by marketable grain yield on the same area and cycle before scaling to 1,000 kg grain."
+  - id: nutrient_content_basis
+    applies_to: "nutrient applications"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Preserve formulated product mass and declared nutrient-content basis as separate fields."
+process_map:
+  - id: triticale_field_production
+    name: "Triticale field production and harvest"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production and harvest"
+    quantitative_reference: "cultivated hectare and harvested grain mass for one crop cycle"
+  - id: farm_gate_grain_conditioning
+    name: "On-farm triticale grain conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "cleaning, drying, sorting, or temporary handling occurs before farm-gate hand-off and is not embedded in field records"
+    role: "prepare harvested grain to declared market state"
+    quantitative_reference: "incoming and accepted grain mass"
+process_inventory:
+  - id: triticale_field_production
+    label: "Triticale field production and harvest"
+    inputs:
+      product:
+        - row_id: triticale_seed_input
+          role: "Triticale seed for sowing"
+          name: "Triticale seed for sowing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained triticale seed crossing into the crop cycle. Do not substitute the harvested-grain UUID for seed identity."
+          amount:
+            expression: "measured seed mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted with same-cycle yield"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids:
+                - uga-small-grains-handbook
+                - usda-nrcs-triticale-cover-crop
+            ranges:
+              - role: typical_range
+                lower: "84"
+                upper: "134"
+                unit: "kg seed/ha"
+                basis: "drilled or comparable establishment; document justified rates outside the range"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - uga-small-grains-handbook
+                  - usda-nrcs-triticale-cover-crop
+        - row_id: triticale_field_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg N/ha"
+                basis: "one crop cycle; replace with regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "180"
+                unit: "kg P2O5/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "220"
+                unit: "kg K2O/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation water delivered to the field separately from precipitation."
+          amount:
+            expression: "metered volume or verified pump-flow calculation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8000"
+                unit: "m3/ha"
+                basis: "one crop cycle, including rainfed production at zero"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_diesel_input
+          role: "Diesel fuel used by field machinery"
+          name: "Diesel fuel for agricultural machinery"
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Record diesel consumed by owned or controlled machinery; contractor fuel belongs in an upstream service dataset when that service is modelled separately."
+          amount:
+            expression: "measured or invoiced diesel assigned to triticale operations"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "L/ha"
+                basis: "one crop cycle; zero when operations are represented by upstream services or non-diesel equipment"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection formulation applied"
+          name: "Applied crop-protection formulation by physical product identity"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Create one exchange per actual herbicide, fungicide, insecticide, or other formulation and retain its active ingredient, concentration, and dose; do not aggregate unlike products."
+          amount:
+            expression: "measured formulation mass by product and application event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg formulation/ha"
+                basis: "each separately identified formulation in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_triticale_grain_output
+          role: "Harvested triticale grain at farm gate"
+          name: "Triticale, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "490074de-43a7-452a-8574-5b53c368bfb9"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record marketable grain at the terminal hand-off of the unconditioned route; with separate conditioning, it is the measured intermediate transferred to conditioning."
+          amount:
+            expression: "measured marketable grain mass at declared moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare; terminal output is scaled to 1,000 kg"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids:
+                - uw-triticale-production
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "9000"
+                unit: "kg grain/ha"
+                basis: "one crop cycle at declared moisture; replace with regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: removed_triticale_straw_output
+          role: "Triticale straw removed from field"
+          name: "Triticale straw removed at field edge"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record straw only when deliberately removed and handed off as a useful product; retained or incorporated residues are not this output."
+          amount:
+            expression: "measured removed straw mass at declared moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12000"
+                unit: "kg straw/ha"
+                basis: "one crop cycle at declared moisture; zero where residues remain in field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: field_n2o_air_output
+          role: "Nitrous oxide released to ambient air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate soil nitrous oxide from collected nitrogen inputs and residue activity using an applicable IPCC tier or reviewed regional method."
+          amount:
+            expression: "calculated from collected activity data and declared factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+        - row_id: field_ammonia_air_output
+          role: "Ammonia released to ambient air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate ammonia volatilization by fertilizer or amendment product, application method, timing, and local method."
+          amount:
+            expression: "calculated from nitrogen application records and applicable factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - emep-eea-2023-guidebook
+            ranges: []
+        - row_id: field_nitrate_water_output
+          role: "Nitrate released to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Record nitrate leaching or runoff only when supported by a geographically applicable model, monitored balance, or reviewed inventory method."
+          amount:
+            expression: "calculated from nitrogen inputs, crop and soil conditions, drainage or runoff, and selected method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+  - id: farm_gate_grain_conditioning
+    label: "On-farm triticale grain conditioning"
+    inputs:
+      product:
+        - row_id: harvested_grain_conditioning_input
+          role: "Harvested grain entering conditioning"
+          name: "Triticale, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "490074de-43a7-452a-8574-5b53c368bfb9"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record measured grain transferred from field production into cleaning, drying, sorting, or temporary handling."
+          amount:
+            expression: "measured incoming grain mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning batch and converted to 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_electricity_input
+          role: "Electricity supplied to conditioning"
+          name: "Electricity supply for grain conditioning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by cleaning, conveying, ventilation, and drying controls."
+          amount:
+            expression: "metered electricity or equipment power multiplied by verified operating time"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kWh/1,000 kg grain"
+                basis: "included conditioning before farm-gate hand-off"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_heat_input
+          role: "Thermal energy supplied to drying"
+          name: "Process heat for grain drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "purchased-process-heat"
+          property_unit: "Energy / MJ"
+          description: "Record supplied heat or fuel energy used to reduce grain moisture."
+          amount:
+            expression: "measured fuel or heat converted to delivered energy while retaining carrier identity"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1200"
+                unit: "MJ/1,000 kg grain"
+                basis: "zero without active drying; broad candidate estimate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_triticale_grain_output
+          role: "Conditioned triticale grain at farm gate"
+          name: "Triticale, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "490074de-43a7-452a-8574-5b53c368bfb9"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record accepted grain after included cleaning or drying at declared farm-gate state."
+          amount:
+            expression: "measured accepted grain mass at declared moisture and impurity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - uga-small-grains-handbook
+                - uw-triticale-production
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "13"
+                unit: "percent moisture, wet basis"
+                basis: "grain intended for long-term storage; another market moisture is permitted when declared"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - uga-small-grains-handbook
+                  - uw-triticale-production
+        - row_id: triticale_screenings_output
+          role: "Triticale screenings directed to use"
+          name: "Triticale grain screenings for declared use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record triticale-dominant screenings or broken kernels as product only when measured and deliberately handed off for feed or another use."
+          amount:
+            expression: "measured useful screenings by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "conditioning batch; zero when no useful screenings are handed off"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_reject_waste_output
+          role: "Foreign matter and rejected grain"
+          name: "Grain-conditioning foreign matter and rejected grain"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record removed stones, soil, weed material, contaminated grain, and other rejects by material identity and destination."
+          amount:
+            expression: "measured reject mass by material class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "conditioning batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_by_subdivision
+    applies_to: "field production and conditioning"
+    rule: "Prefer separate records for field production and conditioning and separate measurement of grain, screenings, straw, and waste before allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_field_residue
+    applies_to: "residues retained, incorporated, or burned"
+    rule: "Do not treat retained residues as co-products; include their management and emissions in field production and prevent double counting with removed straw."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_removed_straw
+    applies_to: "marketable removed straw"
+    rule: "If subdivision cannot resolve shared burdens, apply economic allocation using contemporaneous farm-gate values; disclose moisture bases and test mass allocation as sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_conditioning_outputs
+    applies_to: "useful screenings or downgraded grain"
+    rule: "Treat an intended output with positive value as co-product and other rejects as waste; use economic allocation at conditioning hand-off only when subdivision is infeasible."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_activity_records
+      process_id: "triticale_field_production"
+      flow_role: "seed, nutrients, irrigation, fuel, crop protection"
+      record_type: "field log, invoice, application record, meter or contractor record"
+      raw_fields: "field_id; area; cultivar; input_product; amount; nutrient_content; date; operation; contractor_scope"
+      collection_method: "reconcile physical inputs and operations to each field and crop cycle"
+      unit: "kg; kg nutrient; L; m3; ha"
+      frequency: "each event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum by physical identity; calculate nutrients without merging products; normalize with same-cycle area and yield"
+      quality_evidence: "invoices; labels; calibrated meters; field logs"
+    - protocol_id: cp_harvest_output_records
+      process_id: "triticale_field_production"
+      flow_role: "grain, removed straw, residue fate"
+      record_type: "weighbridge, yield monitor, bale record, moisture test"
+      raw_fields: "field_id; harvest_date; grain_mass; grain_moisture; straw_mass; straw_moisture; residue_fate; destination"
+      collection_method: "reconcile harvest and removed masses to field area and crop cycle"
+      unit: "kg; percent; ha"
+      frequency: "each harvest"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum accepted grain and each residue destination separately"
+      quality_evidence: "scale or yield-monitor calibration; moisture records; destination evidence"
+    - protocol_id: cp_field_emission_activity
+      process_id: "triticale_field_production"
+      flow_role: "emissions to air and water"
+      record_type: "nutrient, soil, weather, residue, and emission-model records"
+      raw_fields: "fertilizer_N; organic_N; residue_N; application_method; soil; climate; drainage; factor_set; model_version"
+      collection_method: "calculate each emission with one declared geographically applicable method"
+      unit: "kg N; kg emission; ha"
+      frequency: "each event and crop-cycle calculation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "calculate per field, area-weight, then normalize by same-cycle yield"
+      quality_evidence: "source records; factor provenance; model file; nutrient-balance review"
+    - protocol_id: cp_conditioning_records
+      process_id: "farm_gate_grain_conditioning"
+      flow_role: "grain, energy, screenings, rejects"
+      record_type: "batch ticket, scale, moisture test, meter, fuel and destination records"
+      raw_fields: "batch_id; incoming_mass; incoming_moisture; electricity; heat; accepted_mass; accepted_moisture; screenings; rejects"
+      collection_method: "reconcile batches and meters to accepted output"
+      unit: "kg; percent; kWh; MJ"
+      frequency: "each batch or meter period"
+      temporal_coverage: "all pre-gate conditioning"
+      site_scope: "all included equipment and batches"
+      aggregation_rule: "sum matched batches; allocate shared meters by time or processed mass; close wet-mass balance"
+      quality_evidence: "calibrated scales and moisture meters; meter reconciliation"
+  calculation_rules:
+    - id: calc_area_to_reference_flow
+      applies_to: "field flows"
+      rule: "crop-cycle amount per hectare / marketable grain yield per hectare × 1,000 kg"
+      inputs:
+        - "flow amount"
+        - area
+        - "same-cycle grain mass"
+      output: "amount per 1,000 kg grain"
+      source_ids: []
+    - id: calc_nutrient_content
+      applies_to: "fertilizer and amendment inputs"
+      rule: "product mass × declared nutrient fraction; preserve elemental or oxide-equivalent basis"
+      inputs:
+        - "product identity"
+        - mass
+        - assay
+        - "reporting basis"
+      output: "kg N, kg P2O5, kg K2O by source"
+      source_ids: []
+    - id: calc_managed_soil_n2o
+      applies_to: "soil N2O"
+      rule: "apply selected IPCC tier or regional method to fertilizer N, organic N, returned-residue N, volatilization, and leaching pathways"
+      inputs:
+        - "nitrogen activity"
+        - "residue fate"
+        - "soil and climate"
+        - factors
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_ammonia_volatilization
+      applies_to: "ammonia to air"
+      rule: "calculate by fertilizer type, application method, timing, and applicable factor"
+      inputs:
+        - "nitrogen product records"
+        - "application details"
+        - factors
+      output: "kg NH3"
+      source_ids:
+        - emep-eea-2023-guidebook
+    - id: calc_conditioning_mass_balance
+      applies_to: "grain conditioning"
+      rule: "incoming wet grain = accepted grain + useful screenings + rejects + moisture and other measured losses within uncertainty"
+      inputs:
+        - masses
+        - moisture
+        - "loss records"
+      output: "reconciled outputs per accepted grain"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference product"
+      requirement: "Confirm triticale rather than wheat, rye, or mixed small grain; retain cultivar, intended use, state, and hand-off."
+      evidence: "crop, lot, and sales records"
+    - id: dq_temporal_alignment
+      applies_to: "all foreground rows"
+      requirement: "Use inputs, harvest, yield, emissions, and conditioning records from the same crop cycle; disclose proxy years."
+      evidence: "dated field and batch records"
+    - id: dq_mass_and_moisture
+      applies_to: "grain and straw"
+      requirement: "Retain scale or yield-monitor calibration and moisture measurements for every basis conversion."
+      evidence: "calibration and moisture-test records"
+    - id: dq_completeness
+      applies_to: "process map and flows"
+      requirement: "Reconcile every field and conditioning batch and distinguish zero, not applicable, proxy, and missing values."
+      evidence: "field roster; batch reconciliation"
+    - id: dq_identity_resolution
+      applies_to: "parameterized and unmapped flows"
+      requirement: "Resolve every Flow Set reference and unmapped physical exchange to a verified UUID before final TIDAS process publication."
+      evidence: "identity review record"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "terminal output"
+    rule: "Exactly one terminal triticale grain output equals 1,000 kg after scaling, uses the fixed reference UUID, and declares moisture and quality qualifiers."
+    source_ids: []
+  - rule_id: validation_process_route
+    applies_to: "process map"
+    rule: "Include field production once; include conditioning only before farm-gate hand-off and avoid double counting embedded energy or rejects."
+    source_ids: []
+  - rule_id: validation_crop_cycle_reconciliation
+    applies_to: "field inventory"
+    rule: "Area, inputs, harvest outputs, residue fates, and emissions refer to the same crop cycle and fields."
+    source_ids: []
+  - rule_id: validation_nitrogen_balance
+    applies_to: "nitrogen inventory"
+    rule: "Reconcile nutrient content, returned and removed residue nitrogen, and emission pathways with methods and factors disclosed."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_conditioning_balance
+    applies_to: "conditioning"
+    rule: "Reconcile incoming wet grain with accepted grain, screenings, rejects, moisture loss, and other measured loss within uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_flow_identity
+    applies_to: "every flow"
+    rule: "Accept only exact verified UUIDs as fixed and applicable existing Flow Sets as parameterized; otherwise retain unmapped coverage."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground triticale grain production dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "farm-gate LCA of triticale grain and downstream systems preserving declared geography, moisture, residue, allocation, and conditioning context"
+  excluded_use: "certified seed, whole-crop forage or silage, milling, feed manufacture, or another crop without reviewed proxy decision"
+  required_metadata: "geography; spring or winter type; cultivar; harvest year; area; yield; moisture; intended use; tillage; irrigation; residue fate; conditioning; allocation; identity resolution"
+  required_quality_disclosure: "foreground coverage; proxy inputs; missing records; range exceedances; emission methods; meter and mass-balance reconciliations"
+  update_trigger: "new reviewed triticale evidence, material route change, revised emission method, changed Flow Set or UUID identity, or representative data outside QA ranges"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "uga-small-grains-handbook"
+    type: "official_guidance"
+    reference: "University of Georgia Cooperative Extension, Southern Small Grains Resource Management Handbook, Bulletin 1190, https://extension.uga.edu/publications/detail.html?number=B1190"
+    used_for: "establishment, harvest, drying, and 13% grain-moisture guidance"
+  - id: "uw-triticale-production"
+    type: "extension_guidance"
+    reference: "University of Wisconsin-Madison Cooperative Extension, Triticale, https://corn.aae.wisc.edu/Crops/Triticale.aspx"
+    used_for: "grain route, harvest, yield context, drying, and storage moisture"
+  - id: "usda-nrcs-triticale-cover-crop"
+    type: "official_guidance"
+    reference: "USDA NRCS and Iowa State University Extension, Triticale Cover Crop Fact Sheet, CROP 3250, https://www.nrcs.usda.gov/sites/default/files/2024-04/Triticale%20Cover%20Crop%20Fact%20Sheet.pdf"
+    used_for: "seed identity and seeding-rate context"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "soil N2O, volatilization and leaching pathways, residue nitrogen, and double-counting controls"
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "European Environment Agency, EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, EEA Report 06/2023, https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023"
+    used_for: "agricultural ammonia method and QA context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy and disclosure"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to matched grain-conditioning batches"
+    used_for: "conditioning mass-balance calculation and validation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:fc747b89fb44d99180df06436452b41b498c3504d19646066836d1bd40aa6725"
+  generated_content_sha256: "sha256:bf688980beb563c76ee9c8804d2ecbac5083bb59b9e2c17612d8f7204440eca3"

@@ -1,10 +1,1070 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01691"
-  title: "Chicory roots"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.chicory-roots"
+  classification_refs: "CPC 3.0: 01691 Chicory roots"
+  covered_products: "Fresh cultivated chicory taproots after lifting, trimming, soil removal and grading"
+  excluded_products: "Forced chicons; leafy or forage chicory; seed; dried, sliced or roasted root; coffee substitute; inulin and other extracts"
+  representative_product: "Saleable fresh chicory roots in the declared grade and as-delivered moisture and cleanliness state"
+  production_route: "Managed field production, lifting, primary conditioning and grading; direct sowing/transplanting and manual/mechanical lifting are declared alternatives"
+  market_state: "Fresh, unprocessed produce at farm gate"
+functional_unit:
+  what: "Saleable fresh, unprocessed chicory roots delivered at farm gate"
+  how_much: "1 kg net mass"
+  how_well: "Accepted grade, with cultivar/use route, establishment route, lifting method, trimming convention, soil-cleanliness and moisture state declared"
+  how_long_or_cycle: "One crop cycle with no storage, including all attributable operations through farm-gate hand-off"
+  reference_flow_link: "accepted_chicory_roots from grading_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The foreground begins with planting material and crop-attributable field inputs and ends with accepted roots at the farm gate. Upstream datasets cover planting material, nutrient and crop-protection products, energy, water supply and external treatment. Forcing and later processing are excluded."
+      source_ids: []
+    - rule_id: boundary_field_cycle
+      applies_to: "field_production"
+      rule: "Include crop-attributable preparation, establishment, nutrient and crop-protection applications, irrigation and field operations through harvest readiness."
+      source_ids:
+        - umn-forcing-chicories-2023
+        - omafra-root-chicory
+    - rule_id: boundary_lifting
+      applies_to: "root_lifting"
+      rule: "Model lifting separately because it removes the biological root from the field and has distinct energy, loss and soil-carryover records."
+      source_ids:
+        - umn-forcing-chicories-2023
+    - rule_id: boundary_conditioning
+      applies_to: "primary_conditioning"
+      rule: "Include defoliation/trimming and farm-level soil removal; include washing only when performed before hand-off."
+      source_ids:
+        - umn-forcing-chicories-2023
+        - ucd-witloof-chicory
+    - rule_id: boundary_grading
+      applies_to: "grading_farm_gate"
+      rule: "Record accepted, downgraded and rejected states and a destination for each; only accepted roots are reference output."
+      source_ids:
+        - umn-forcing-chicories-2023
+    - rule_id: boundary_downstream
+      applies_to: "downstream"
+      rule: "Exclude forcing, storage for forcing, chicon production, slicing, drying, roasting and extraction."
+      source_ids:
+        - umn-forcing-chicories-2023
+        - ucd-witloof-chicory
+boundary_abstraction:
+  declared_starting_condition: "Prepared field receiving chicory seed or transplants for one crop cycle"
+  starting_condition_role: "Foreground entry; include crop-attributable preparation and disclose inherited soil condition"
+  product_classification_scope: "Fresh unprocessed chicory roots corresponding to CPC 3.0 01691"
+  recursive_input_rule: "Purchased chicory roots are upstream product inputs and are not recursively represented as production of this reference output"
+  upstream_dataset_requirement: "Representative upstream datasets for planting material, nutrients, crop protection, energy, water and external treatment"
+  disclosure: "Cultivar/use route, field and dates, prior crop, geography, establishment, irrigation, lifting, trimming, soil removal, grade destinations and farm-gate state"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Chicory roots"
+    uuid: "8691795b-78fb-4573-9e09-d4957c166bb4"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or commercial type"
+    - "intended root-use route"
+    - "establishment route"
+    - "harvest date and lifting method"
+    - grade
+    - "trimming and adhering-soil convention"
+    - "as-delivered moisture state"
+    - geography
+    - destination
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted roots"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure net as-delivered root mass after trimming, soil removal and grading; exclude containers, free soil, tops and rejects."
+  - id: area_to_mass
+    applies_to: "field records"
+    required_property_ref:
+      name: "Mass and area"
+      uuid: ""
+    required_unit: "kg and ha"
+    rule: "Normalize crop-cycle records with the same lot area and reconciled accepted yield; disclose moisture state and conversions."
+  - id: internal_mass_state
+    applies_to: "process transfers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile transfers on one declared wet-mass state and separately record tops, soil, downgraded roots, rejects and losses."
+process_map:
+  - id: field_production
+    name: "Managed biological field production"
+    inclusion: "required"
+    inclusion_condition: "One lot/cycle in batch production mode; direct sowing or transplanting route delta declared"
+    role: "Produce harvest-ready roots; classify all management inputs"
+    quantitative_reference: "ha and kg harvest-ready roots"
+  - id: root_lifting
+    name: "Root lifting and capture"
+    inclusion: "required"
+    inclusion_condition: "Manual or mechanical alternative technology route delta declared"
+    role: "Capture roots independently from production and transfer them to conditioning"
+    quantitative_reference: "kg roots entering lifting"
+  - id: primary_conditioning
+    name: "Primary conditioning: trimming and soil removal"
+    inclusion: "required"
+    inclusion_condition: "Washing only when performed on farm"
+    role: "Convert lifted roots to prepared roots; separate tops, soil and wastewater"
+    quantitative_reference: "kg lifted roots"
+  - id: grading_farm_gate
+    name: "Grading and hand-off"
+    inclusion: "required"
+    inclusion_condition: "Every grade/destination declared"
+    role: "Separate accepted, downgraded and rejected roots"
+    quantitative_reference: "kg prepared roots"
+process_inventory:
+  - id: field_production
+    label: "Managed biological field production"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Planting material"
+          name: "Chicory seed or transplants"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Record actual seed or transplant mass and establishment route."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - umn-forcing-chicories-2023
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "2000"
+                unit: "kg/ha"
+                basis: "per hectare; broad enough for seed and transplant routes"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "All mineral fertilizers, organic fertilizers and nutrient-bearing amendments"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Record every actual product separately by identity, nutrient content and wet/dry mass; this is the sole nutrient-supply card for this process."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - omafra-root-chicory
+                - cwalina-root-chicory-n-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg/ha"
+                basis: "sum of products as applied, including wet organic products"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection and field-treatment products"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Record each formulated product, active ingredient where known, purpose and treated area."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg/ha"
+                basis: "total formulated products applied per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Meter or calculate gross delivery and identify source and system."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids:
+                - omafra-root-chicory
+                - usu-chicory-garden
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3/ha"
+                basis: "gross crop-cycle irrigation per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy"
+          name: "Energy carriers for field machinery and pumps"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Record each carrier by operation; exclude lifting energy recorded downstream."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "MJ/ha"
+                basis: "purchased final energy per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvest_ready_roots
+          role: "Harvest-ready roots"
+          name: "Harvest-ready chicory roots in soil"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Calculate from lifted roots, sampled field losses and residues on one wet-mass basis."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mass_balance
+              source_ids:
+                - cwalina-root-chicory-n-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "5"
+                upper: "100"
+                unit: "Mg/ha"
+                basis: "harvest-ready fresh-root mass per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - cwalina-root-chicory-n-2022
+      waste:
+        - row_id: field_residues
+          role: "Field residues and losses"
+          name: "Tops, non-harvested biomass and roots left in field"
+          flow_type: "waste"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Estimate by representative sampling and declare retention, removal or treatment."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvest-ready roots"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg harvest-ready roots"
+                basis: "wet residue and loss per kg harvest-ready roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: direct_field_emissions
+          role: "Direct field emissions"
+          name: "Exact substances emitted to air, water or soil from field inputs"
+          flow_type: "elementary"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Calculate each substance and compartment separately with an identified method; never create an aggregate elementary exchange."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-refinement-volume4
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg/ha"
+                basis: "summed reported mass used only for screening; exchanges remain substance- and compartment-specific"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: root_lifting
+    label: "Root lifting and capture"
+    inputs:
+      product:
+        - row_id: roots_to_lifting
+          role: "Harvest-ready roots entering lifting"
+          name: "Harvest-ready chicory roots in soil"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Use the reconciled harvest_ready_roots output for the same lot."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg roots entering lifting"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mass_balance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg roots entering lifting"
+                basis: "same-lot upstream output to downstream input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: lifting_energy
+          role: "Lifting energy"
+          name: "Energy carriers for manual support or mechanical lifting and field transfer"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Record actual carriers by lifting event; exclude field energy already assigned."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg roots entering lifting"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - umn-forcing-chicories-2023
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "MJ/kg roots entering lifting"
+                basis: "purchased final energy for lifting and field transfer"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: lifted_roots
+          role: "Lifted roots"
+          name: "Lifted chicory roots with adhering soil and tops"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Weigh the stream received by conditioning."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg roots entering lifting"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_balance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg roots entering lifting"
+                basis: "lifted stream per kg harvest-ready roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: lifting_losses
+          role: "Lifting losses"
+          name: "Unrecovered or damaged roots and incidental material"
+          flow_type: "waste"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Estimate from field sampling and declare field retention or removal."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg roots entering lifting"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg roots entering lifting"
+                basis: "loss per kg roots entering lifting"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Primary conditioning: trimming and soil removal"
+    inputs:
+      product:
+        - row_id: roots_to_conditioning
+          role: "Lifted roots entering conditioning"
+          name: "Lifted chicory roots with adhering soil and tops"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Use measured lifted_roots from the same lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg lifted roots"
+                basis: "same-lot lifting output to conditioning input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: conditioning_water
+          role: "Conditioning water"
+          name: "Process water used for soil removal and optional washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Meter gross water input and reuse; the amount is zero when no washing occurs."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "L/kg lifted roots"
+                basis: "gross water input per kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditioning energy"
+          name: "Energy carriers used for trimming, soil removal and optional washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Record each actual carrier and its measured or allocated consumption for the indexed run."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "MJ/kg lifted roots"
+                basis: "purchased final energy per kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_roots
+          role: "Prepared roots"
+          name: "Trimmed and soil-removed fresh chicory roots"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Weigh at the grading hand-off."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg lifted roots"
+                basis: "prepared roots per kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: conditioning_residues
+          role: "Conditioning residues and wastewater"
+          name: "Tops, trimmings, soil, spoiled pieces and wastewater"
+          flow_type: "waste"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Measure each material separately, including water discharge, and declare return, use, treatment or disposal destination."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "21"
+                unit: "kg/kg lifted roots"
+                basis: "all separated solids plus discharged water per kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading_farm_gate
+    label: "Grading and hand-off"
+    inputs:
+      product:
+        - row_id: roots_to_grading
+          role: "Prepared roots entering grading"
+          name: "Trimmed and soil-removed fresh chicory roots"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Use prepared_roots from the same lot and run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg prepared roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg prepared roots"
+                basis: "same-lot conditioning output to grading input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_chicory_roots
+          role: "Accepted fresh chicory roots"
+          name: "Chicory roots"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8691795b-78fb-4573-9e09-d4957c166bb4"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Measure net mass meeting the declared grade at hand-off; this is the reference output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per 1 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-flow-identity
+        - row_id: downgraded_roots
+          role: "Downgraded roots"
+          name: "Fresh roots sent to a declared lower-grade or processing destination"
+          flow_type: "product"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Weigh roots that remain products but fail the reference grade; record destination and exclude from accepted output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg prepared roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg prepared roots"
+                basis: "downgraded product per kg prepared roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: grading_rejects
+          role: "Grading rejects"
+          name: "Off-spec, damaged or spoiled roots leaving product use"
+          flow_type: "waste"
+          property_unit: ""
+          description: "Record this flow at the declared process boundary for the indexed lot or run; quantify it with the stated protocol and keep its physical state and destination explicit."
+          amount:
+            expression: "Weigh and declare regrading, return to conditioning, recovery, feed, treatment or disposal; count each rework loop once."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg prepared roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg prepared roots"
+                basis: "rejects per kg prepared roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid
+    applies_to: "all nodes"
+    rule: "Prefer subdivision and direct measurement by lot and run."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_grades
+    applies_to: "accepted and downgraded roots"
+    rule: "Report masses separately; if both have value and subdivision is impossible, declare the study allocation method and provide unallocated inventory. Never count downgraded roots as accepted."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residues
+    applies_to: "tops, soil, losses and rejects"
+    rule: "Retain burdens with the producing node unless a documented product function and destination justify allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_runs_rework
+    applies_to: "shared runs and rework"
+    rule: "Assign shared burdens once by measured use, time, area or mass; returned material retains prior burdens and receives only incremental rework burdens."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "field_production"
+      flow_role: "planting, each nutrient and crop-protection product"
+      record_type: "invoice/application/field records"
+      raw_fields: "lot; route; product; nutrient/active content; wet/dry basis; quantity; area; date"
+      collection_method: "Reconcile stock and applications; generate concrete nutrient exchanges separately under the sole nutrient card"
+      unit: "kg, kg active, ha"
+      frequency: "each operation"
+      temporal_coverage: "full cycle"
+      site_scope: "field lot"
+      aggregation_rule: "Sum by product and normalize by area then accepted yield"
+      quality_evidence: "invoice; label; applicator record"
+    - protocol_id: cp_irrigation
+      process_id: "field_production"
+      flow_role: "irrigation"
+      record_type: "meter/pump records"
+      raw_fields: "source; readings or flow/runtime; area; reuse"
+      collection_method: "Meter or calibrated flow × runtime"
+      unit: "m3, ha"
+      frequency: "each event"
+      temporal_coverage: "full cycle"
+      site_scope: "field lot"
+      aggregation_rule: "Sum gross delivery; subtract only documented reuse"
+      quality_evidence: "calibration; irrigation log"
+    - protocol_id: cp_energy
+      process_id: "all_processes"
+      flow_role: "energy by operation"
+      record_type: "fuel/meter/machine logs"
+      raw_fields: "carrier; quantity; operation; runtime; area/mass; lot/run"
+      collection_method: "Meter or reconcile fuel; assign shared use once"
+      unit: "L, kg, kWh, MJ"
+      frequency: "each operation"
+      temporal_coverage: "full cycle through hand-off"
+      site_scope: "lot/run"
+      aggregation_rule: "Retain carrier exchange; normalize by causal driver"
+      quality_evidence: "invoice; meter; equipment log"
+    - protocol_id: cp_mass_balance
+      process_id: "field_and_lifting"
+      flow_role: "roots, residues, losses, transfers"
+      record_type: "scale/sampling records"
+      raw_fields: "lot; gross/tare/net; moisture; tops; soil; loss; time"
+      collection_method: "Calibrated weighing and representative sampling"
+      unit: "kg, ha"
+      frequency: "each lot/handoff"
+      temporal_coverage: "harvest through lifting"
+      site_scope: "field lot"
+      aggregation_rule: "Reconcile inputs, outputs, residues and losses"
+      quality_evidence: "calibration; sampling plan"
+    - protocol_id: cp_field_emissions
+      process_id: "field_production"
+      flow_role: "exact emissions"
+      record_type: "calculation record"
+      raw_fields: "nutrient form/N; application; soil/climate; substance; compartment; method"
+      collection_method: "Apply named method to collected records"
+      unit: "kg substance, kg N"
+      frequency: "each application/calculation"
+      temporal_coverage: "full cycle"
+      site_scope: "field lot"
+      aggregation_rule: "Sum by substance and compartment"
+      quality_evidence: "inputs; method; audit trail"
+    - protocol_id: cp_conditioning
+      process_id: "primary_conditioning"
+      flow_role: "utilities, roots, residues, wastewater"
+      record_type: "meter/scale/run log"
+      raw_fields: "run/lot; roots; water; energy; tops; soil; wastewater; destinations"
+      collection_method: "Meter utilities and weigh material states"
+      unit: "kg, L, kWh"
+      frequency: "each run"
+      temporal_coverage: "all included runs"
+      site_scope: "site/run"
+      aggregation_rule: "Reconcile solids and water separately"
+      quality_evidence: "calibration; run sheet; receipt"
+    - protocol_id: cp_grading
+      process_id: "grading_farm_gate"
+      flow_role: "accepted, downgraded, rejected, reworked"
+      record_type: "grade/dispatch log"
+      raw_fields: "run/lot; grade; each output mass; destination; rework; date"
+      collection_method: "Calibrated weighing by output state"
+      unit: "kg"
+      frequency: "each run/dispatch"
+      temporal_coverage: "all included runs"
+      site_scope: "site/run"
+      aggregation_rule: "Reconcile prepared input and outputs; count rework once"
+      quality_evidence: "calibration; grade; dispatch"
+  calculation_rules:
+    - id: calc_area_normalization
+      applies_to: "field flows"
+      rule: "amount per kg accepted roots = crop-cycle amount / accepted mass from the same area"
+      inputs:
+        - amount
+        - area
+        - "accepted mass"
+      output: "normalized exchange"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_process_balance
+      applies_to: "each hand-off"
+      rule: "input mass = products + residues/rejects + measured loss on one mass state"
+      inputs:
+        - "calibrated masses"
+        - samples
+      output: "closure difference"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_direct_emissions
+      applies_to: "field emissions"
+      rule: "Apply the declared current method separately by substance and compartment"
+      inputs:
+        - "input and field records"
+      output: "kg substance by compartment"
+      source_ids:
+        - ipcc-2019-refinement-volume4
+    - id: calc_shared_energy
+      applies_to: "shared equipment"
+      rule: "consumption × causal share; shares sum to 1"
+      inputs:
+        - energy
+        - "time/area/mass"
+      output: "assigned energy"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Link cultivar/use, grade, trimming, cleanliness and moisture state to each lot mass."
+      evidence: "grade, lot and dispatch records"
+    - id: dq_coverage
+      applies_to: "inventory"
+      requirement: "Cover one complete crop cycle and every contributing lifting, conditioning and grading run."
+      evidence: "dated field/run logs"
+    - id: dq_measurement
+      applies_to: "mass, water, energy"
+      requirement: "Use calibrated instruments or document calculation, sampling and uncertainty."
+      evidence: "calibration and sampling records"
+    - id: dq_route
+      applies_to: "alternatives"
+      requirement: "Keep establishment and lifting routes separate until route-specific input, yield and loss calculation."
+      evidence: "route-indexed records"
+    - id: dq_completeness
+      applies_to: "nutrients and outputs"
+      requirement: "Collect actual nutrient products under one card and account for accepted, downgraded, rejected, residue and loss states without duplication."
+      evidence: "input ledger; balance report"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "reference flow"
+    rule: "Confirm UUID, 1 kg net mass, fresh unprocessed root state and qualifiers; reject datasets for chicons, leaves, roasted root or extracts."
+    source_ids:
+      - ucd-witloof-chicory
+      - umn-forcing-chicories-2023
+  - rule_id: validate_topology
+    applies_to: "process graph"
+    rule: "Require field, lifting, conditioning and grading hand-offs; washing is conditional and forcing/later processing absent."
+    source_ids:
+      - umn-forcing-chicories-2023
+  - rule_id: validate_route_delta
+    applies_to: "alternatives"
+    rule: "Require parent process, lot-level route and evidence for changed planting, energy, loss or conditioning records; do not mix mutually exclusive routes within a lot."
+    source_ids:
+      - umn-forcing-chicories-2023
+  - rule_id: validate_nutrients
+    applies_to: "field inputs"
+    rule: "Require at most one nutrient Product card, bound only to flow-set.agricultural-nutrient-supply@0.3.0; generated exchanges preserve actual products."
+    source_ids:
+      - omafra-root-chicory
+  - rule_id: validate_mass_balance
+    applies_to: "hand-offs"
+    rule: "Reconcile each input with products, residues/rejects and loss on the same state; investigate unexplained closure."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_reject_routing
+    applies_to: "grade/rework"
+    rule: "Give every downgraded or rejected state a destination; returned material receives only incremental burden and cannot be accepted until it passes grade."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_run_attribution
+    applies_to: "shared operations"
+    rule: "Verify lot/run indexing and shares summing to one so cleaning, energy and rework are counted once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_ranges
+    applies_to: "inventory"
+    rule: "Require exactly one complete Range per flow card; review values outside it without replacing supported foreground values."
+    source_ids:
+      - mass-balance-identity
+published_dataset_profile:
+  dataset_role: "Foreground production dataset for fresh unprocessed chicory roots at farm gate"
+  downstream_use: "secondary_dataset; background_dataset when representative"
+  allowed_use: "LCA of fresh roots and downstream forcing, food, feed or ingredient systems that add their own post-farm processes"
+  excluded_use: "Direct representation of forced chicons, leafy chicory, roasted chicory, coffee substitute, extracts, seed or processed root"
+  required_metadata: "geography; lot/cycle; cultivar/use; establishment and lifting routes; yield; irrigation; nutrient ledger; conditioning; grade destinations; moisture state; year"
+  required_quality_disclosure: "primary-data share; representativeness; balance closure; route separation; uncertainty; treatment of range exceedances"
+  update_trigger: "material change in route, technology, irrigation/nutrients, yield, conditioning, grade, reject destination, geography or data age"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "umn-forcing-chicories-2023"
+    type: "extension_guidance"
+    reference: "University of Minnesota Extension (2023), “Forcing Chicories,” https://blog-fruit-vegetable-ipm.extension.umn.edu/2023/01/forcing-chicories-opportunity-for.html"
+    used_for: "Establishment, lifting, trimming and forcing distinction"
+  - id: "ucd-witloof-chicory"
+    type: "official_guidance"
+    reference: "USDA/UC Davis, “Chicory (Belgian Endive or Witloof Chicory),” https://www.govinfo.gov/content/pkg/GOVPUB-A-PURL-gpo87416/pdf/GOVPUB-A-PURL-gpo87416.pdf"
+    used_for: "Root/chicon identity and forcing exclusion"
+  - id: "omafra-root-chicory"
+    type: "official_guidance"
+    reference: "Ontario Ministry of Agriculture, “Specialty Cropportunities — Root Chicory,” https://www.omafra.gov.on.ca/CropOp/en/indus_misc/pharm/chic.html"
+    used_for: "Field, irrigation and nutrient context"
+  - id: "usu-chicory-garden"
+    type: "extension_guidance"
+    reference: "Utah State University Extension, “How to Grow Chicory in Your Garden,” https://extension.usu.edu/yardandgarden/research/chicory-in-the-garden"
+    used_for: "Irrigation and crop-management context"
+  - id: "cwalina-root-chicory-n-2022"
+    type: "literature"
+    reference: "Cwalina-Ambroziak et al. (2022), doi:10.24326/asphc.2022.5.8"
+    used_for: "Root-yield guardrail and N-response variability"
+  - id: "ipcc-2019-refinement-volume4"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4"
+    used_for: "Managed-soil emission method identity"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006"
+    used_for: "Allocation hierarchy"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass on declared states"
+    used_for: "Transfers, balances and shared attribution"
+  - id: "reference-flow-identity"
+    type: "method_factor"
+    reference: "PCR reference-flow normalization identity"
+    used_for: "Exact reference output"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:29db4a63a5465deebebe6beb7bf4c8672bb01b8f5d88fd86df6abd966d65d65d"
+  generated_content_sha256: "sha256:53003d8d04b125e345caa73563d1c7ae0f8c862689e112ae3e8cf12ab7e46b69"

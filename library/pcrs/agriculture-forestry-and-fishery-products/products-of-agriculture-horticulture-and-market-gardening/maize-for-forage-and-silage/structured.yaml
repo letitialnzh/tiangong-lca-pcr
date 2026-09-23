@@ -1,10 +1,908 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01911"
-  title: "Maize for forage and silage"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.maize-for-forage-and-silage"
+  classification_refs: "CPC 3.0: 0 > 01 > 019 > 0191 > 01911"
+  covered_products: "Fresh, unprocessed whole-crop maize harvested for forage use or subsequent silage manufacture"
+  excluded_products: "maize grain; sweet corn; maize seed; ensiled or fermented maize; hay or dried forage; formulated feed; cereal straw as a separate product"
+  representative_product: "Fresh whole-crop maize at farm gate before ensiling"
+  production_route: "Managed annual field production followed by cutting/chopping, loading and farm-gate hand-off; rainfed or irrigated field routes and the declared harvest technology coexist only as separately recorded strata"
+  market_state: "Fresh, unprocessed produce at Production mix, at farm gate"
+functional_unit:
+  what: "Accepted fresh whole-crop maize for forage or later silage manufacture"
+  how_much: "1,000 kg fresh matter"
+  how_well: "Declared whole-plant moisture or dry matter, hybrid/cultivar, maturity or harvest stage, foreign matter, damage and acceptance specification"
+  how_long_or_cycle: "One annual crop cycle and its linked harvest lot"
+  reference_flow_link: "fresh_forage_maize"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "managed field production"
+      rule: "Include crop-attributed soil preparation, sowing, nutrient and crop-protection management, irrigation, field energy, direct field emissions and standing-biomass transfer for one field-season."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - fao-crop-water-needs
+    - rule_id: boundary_harvest
+      applies_to: "harvest node"
+      rule: "Model cutting or chopping, loading, measured harvest losses and accepted, downgraded or discarded destinations as an independent node because its equipment, lot records, losses and hand-off differ from crop growth."
+      source_ids:
+        - fao-forage-maize-harvest-stage
+        - mass-balance-identity
+    - rule_id: boundary_fresh_gate
+      applies_to: "reference product"
+      rule: "Stop at fresh unprocessed farm-gate hand-off. Exclude ensiling, fermentation, storage, drying, baling, feed manufacture, downstream transport and feeding."
+      source_ids:
+        - fao-forage-maize-harvest-stage
+    - rule_id: boundary_route_strata
+      applies_to: "alternative routes"
+      rule: "Use managed field production as the parent. Irrigation adds delivered water, pumping energy and irrigation records; rainfed production omits those exchanges. Harvest technology changes machinery energy, cutting/chopping state and loss records. Keep mutually exclusive route strata separate until weighted aggregation."
+      source_ids:
+        - fao-crop-water-needs
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "Prepared agricultural field at the start of the maize crop cycle, before seed and current-cycle management inputs"
+  starting_condition_role: "foreground entry condition; prior-crop and soil preparation burdens are included when performed for this crop and otherwise disclosed"
+  product_classification_scope: "CPC 3.0 01911"
+  recursive_input_rule: "If fresh forage maize of the same category re-enters this boundary, record it as an external product input with its supplying dataset and do not recursively recreate its cultivation."
+  upstream_dataset_requirement: "Every purchased product or service input uses a geographically and technologically representative upstream dataset or is explicitly left unresolved for foreground selection."
+  disclosure: "Declare field preparation attribution, prior crop, tillage, rainfed/irrigated route, harvest technology, moisture basis, accepted and rejected destinations and any excluded operation."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Maize for forage and silage"
+    uuid: "719047d6-29cc-4b2c-b61e-0bb407d6eeaf"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Production mix"
+    - "at farm gate"
+    - Fresh
+    - "unprocessed produce"
+    - geography
+    - "crop year"
+    - "field/lot coverage"
+    - "hybrid or cultivar"
+    - "harvest stage"
+    - "whole-plant moisture or dry matter basis"
+    - "rainfed or irrigated route"
+    - "harvest technology"
+    - "accepted and alternate destinations"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_fresh_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure fresh mass at farm-gate hand-off; report representative whole-plant moisture or dry-matter fraction from the same lot."
+  - id: moisture_alignment
+    applies_to: "all crop biomass hand-offs"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg fresh matter; kg dry matter"
+    rule: "Do not compare or aggregate fresh-mass records until moisture basis is declared; convert dry matter as wet mass multiplied by dry-matter fraction."
+  - id: area_normalization
+    applies_to: "field and harvest records"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "ha"
+    rule: "Collect by field-season or harvest lot, then normalize once to accepted reference mass; preserve area-based values for audit."
+process_map:
+  - id: field_production
+    name: "Managed field production"
+    inclusion: "required"
+    inclusion_condition: "one actual field-season; rainfed or irrigated stratum declared"
+    role: "managed annual biological production with an alternative biological route delta for irrigation, from prepared field to standing harvestable crop"
+    quantitative_reference: "ha planted and linked standing fresh biomass"
+  - id: harvest_handoff
+    name: "Harvest and farm-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "one linked harvest lot and one declared harvest technology"
+    role: "independent cutting/chopping, loading, destination split and fresh farm-gate hand-off with an alternative technology route delta for the selected machinery"
+    quantitative_reference: "1,000 kg accepted fresh product"
+process_inventory:
+  - id: field_production
+    label: "Managed field production"
+    inputs:
+      product:
+        - row_id: maize_seed
+          role: "Maize seed for sowing"
+          name: "Corn Seeds"
+          flow_type: "product"
+          flow_ref:
+            uuid: "23f01fdc-33b5-4cc9-bd0f-b0cb39d7daa6"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained viable maize seed that crosses into the field-production node; preserve hybrid or cultivar, treatment, germination, seed mass and planted area."
+          amount:
+            expression: "measured seed mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha crop cycle"
+                basis: "seed mass per planted hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated agricultural nutrient and fertilizer supply"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5 and kg K2O as applicable"
+          description: "Record every mineral fertilizer, organic fertilizer, manure, compost, lime and nutrient-bearing amendment crossing the field boundary in this single card. Preserve each product identity, mass or volume, formulation and N/P/K or other nutrient analysis without double counting."
+          amount:
+            expression: "measure each supplied product once and calculate nutrient contents from its analysis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg product/ha crop cycle"
+                basis: "sum of supplied nutrient-product masses; liquid products remain separately reported in native volume"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop protection products"
+          name: "Crop protection products"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L product"
+          description: "Record actual herbicides, insecticides, fungicides and other crop-protection products applied to the field, retaining product identity, active ingredient and formulation."
+          amount:
+            expression: "measured formulated product and active ingredient applied"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha treated in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg or L product/ha crop cycle"
+                basis: "total formulated crop-protection product per treated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supply"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered irrigation water only for irrigated field strata; rainfed strata record zero and do not create an exchange."
+          amount:
+            expression: "metered or calculated water delivered to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha irrigated in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids:
+                - fao-crop-water-needs
+            ranges:
+              - role: typical_range
+                lower: "0"
+                upper: "8000"
+                unit: "m3/ha crop cycle"
+                basis: "zero for rainfed strata; upper screen corresponds to 800 mm seasonal maize crop-water need before local rainfall and efficiency adjustment"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-crop-water-needs
+        - row_id: field_machinery_energy
+          role: "Field machinery fuel or energy supply"
+          name: "Field machinery fuel or energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy / MJ or carrier-native unit"
+          description: "Record actual energy carriers used by tillage, planting, application, irrigation support and other field machinery; expand carriers from foreground records."
+          amount:
+            expression: "measured carrier purchase or machine consumption allocated to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_operations
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha crop cycle"
+                basis: "total carrier energy used by field machinery per planted hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_electricity
+          role: "Electricity for field and irrigation equipment"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record metered electricity used by pumps, controls or other field equipment when present; inactive routes create no exchange."
+          amount:
+            expression: "metered electricity attributed to the field and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_operations
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kWh/ha crop cycle"
+                basis: "field and irrigation electricity per planted hectare when electrically powered equipment is used"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Occupation of agricultural land"
+          name: "arable"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "b88d3b6d-229e-477e-bce1-e16376f75c7b"
+          binding: "fixed"
+          property_unit: "Area*time / ha*a"
+          description: "Record occupied agricultural area and duration for the maize crop cycle, excluding unrelated rotations outside the declared temporal boundary."
+          amount:
+            expression: "planted area multiplied by occupation duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_and_lot_trace
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "ha*a/ha crop cycle"
+                basis: "occupation duration per hectare of planted maize"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: standing_forage_crop
+          role: "Standing forage maize transferred to harvest"
+          name: "Standing forage maize biomass"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Record fresh standing crop biomass transferred internally from managed production to the independent harvest node, excluding unharvested residue and loss."
+          amount:
+            expression: "calculated from harvested output plus measured harvest losses and destination splits"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150000"
+                unit: "kg fresh matter/ha crop cycle"
+                basis: "standing fresh biomass transferred to harvest per planted hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_n2o
+          role: "Direct nitrous oxide to air from managed soil"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct N2O from managed soil using the disclosed IPCC tier and field-specific nitrogen activity data."
+          amount:
+            expression: "IPCC calculation from collected nitrogen activity data and selected emission factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg N2O/ha crop cycle"
+                basis: "direct N2O emitted from managed soil per planted hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ammonia_to_air
+          role: "Ammonia to air from field nitrogen"
+          name: "ammonia"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg NH3"
+          description: "Record or calculate ammonia volatilization by nitrogen source and application event; retain the reported nitrogen or substance basis."
+          amount:
+            expression: "site model or measured loss expressed as NH3; convert NH3-N to NH3 by 17/14 when required"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg NH3/ha crop cycle"
+                basis: "ammonia mass as NH3 per planted hectare after any disclosed nitrogen-basis conversion"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_to_water
+          role: "Nitrate to water from field nitrogen"
+          name: "Nitrate to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NO3 or kg NO3-N as reported"
+          description: "Record or calculate nitrate leaching or runoff by receiving water compartment and retain whether the amount is nitrate or nitrate-nitrogen."
+          amount:
+            expression: "site model or measurement with receiving compartment and basis retained"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg NO3 or NO3-N/ha crop cycle"
+                basis: "reported nitrate loss per planted hectare with substance basis disclosed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: phosphorus_to_water
+          role: "Phosphorus releases to water"
+          name: "Phosphorus to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg P or reported phosphate basis"
+          description: "Record measured or modelled dissolved and particulate phosphorus losses separately where available, with receiving compartment and chemical basis."
+          amount:
+            expression: "site model or measurement with species and compartment retained"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg P or reported phosphate/ha crop cycle"
+                basis: "reported phosphorus loss per planted hectare with chemical basis disclosed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_releases
+          role: "Reported crop-protection substances to environmental compartments"
+          name: "Identified crop-protection substance to air, soil or water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg active substance"
+          description: "Record each identified active substance released to air, soil or water as a separate concrete exchange during dataset generation; do not bind a generic pesticide UUID."
+          amount:
+            expression: "measured or fate-modelled mass by active substance and compartment"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha treated in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg active substance/ha crop cycle"
+                basis: "sum reported separately by substance and compartment per treated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_handoff
+    label: "Harvest and farm-gate hand-off"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Standing forage maize received for harvest"
+          name: "Standing forage maize biomass"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Receive the internal standing-crop transfer from field production on the same field and crop-cycle basis."
+          amount:
+            expression: "equal to the linked standing_forage_crop output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150000"
+                unit: "kg fresh matter/ha crop cycle"
+                basis: "internal standing biomass received per harvested hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_machinery_energy
+          role: "Harvest machinery fuel or energy supply"
+          name: "Harvest machinery fuel or energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy / MJ or carrier-native unit"
+          description: "Record actual energy carriers for cutting, chopping, loading and movement within the farm-gate harvest boundary; carrier selection follows the chosen harvest technology."
+          amount:
+            expression: "measured carrier use allocated to harvest lots"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per ha harvested in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_operations
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha crop cycle"
+                basis: "total carrier energy used for harvest per harvested hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fresh_forage_maize
+          role: "Fresh unprocessed forage maize at farm gate"
+          name: "Maize for forage and silage"
+          flow_type: "product"
+          flow_ref:
+            uuid: "719047d6-29cc-4b2c-b61e-0bb407d6eeaf"
+          binding: "fixed"
+          property_unit: "Mass / kg fresh matter"
+          description: "Record accepted fresh whole-crop maize after field harvest and loading, before ensiling, fermentation, storage, drying or feed manufacture. This is the quantitative reference output."
+          amount:
+            expression: "measured accepted fresh mass at the farm-gate hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested in one crop cycle; converted to 1,000 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - fao-forage-maize-harvest-stage
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150000"
+                unit: "kg fresh matter/ha crop cycle"
+                basis: "accepted fresh unprocessed forage maize at farm gate per harvested hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_biomass
+          role: "Downgraded harvested biomass sent to another declared use"
+          name: "Downgraded harvested maize biomass"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Record harvested biomass that fails the reference-product specification but leaves for an alternate declared use. It is excluded from accepted reference output and its destination is mandatory."
+          amount:
+            expression: "measured downgraded mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150000"
+                unit: "kg fresh matter/ha crop cycle"
+                basis: "downgraded harvested biomass per harvested hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_loss_residue
+          role: "Uncollected or discarded harvest biomass"
+          name: "Harvest biomass loss or residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh matter"
+          description: "Record cut or damaged biomass not accepted or routed to another product use, including its field retention, collection or disposal destination."
+          amount:
+            expression: "measured or sampled exclusive loss mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg fresh matter/ha crop cycle"
+                basis: "uncollected or discarded fresh biomass per harvested hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivision
+    applies_to: "field and harvest nodes"
+    rule: "Prefer subdivision by field-season, irrigation route and harvest technology; normalize measured burdens once to accepted fresh output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_output_destinations
+    applies_to: "accepted, downgraded and discarded biomass"
+    rule: "Treat accepted reference output, downgraded product and waste/loss as mutually exclusive destinations. If downgraded biomass is an independently intended co-product, apply a disclosed study-specific physical dry-mass allocation when causal; otherwise use and justify another method. Do not credit uncollected residue without a documented substitution claim."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_run_period
+    applies_to: "fields, runs and lots"
+    rule: "Use a single-period crop-cycle boundary. Link inputs, outputs, cleaning and changeover events to the field-season or harvest lot; allocate shared machinery burdens once by measured area, runtime or throughput and prevent double counting across strata."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rejects
+    applies_to: "off-spec and rejected biomass"
+    rule: "This fresh farm-gate route has no in-boundary rework loop. Route every off-spec mass to accepted after documented reassessment, downgraded alternate use, field retention or disposal; retain prior burdens and count mass only at its final destination."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "field_production"
+      flow_role: "seed, nutrient and crop-protection inputs"
+      record_type: "invoice, field log and product analysis"
+      raw_fields: "field; date; product; formulation; amount; area; nutrient or active content"
+      collection_method: "reconcile purchase and application records by field"
+      unit: "kg; L; m3; ha"
+      frequency: "each application"
+      temporal_coverage: "crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum each actual product once; retain composition"
+      quality_evidence: "invoice, label, analysis and signed log"
+    - protocol_id: cp_irrigation
+      process_id: "field_production"
+      flow_role: "delivered irrigation water"
+      record_type: "meter or pump log"
+      raw_fields: "field; event; volume; source; runtime; irrigated area"
+      collection_method: "meter preferred; otherwise documented pump-flow calculation"
+      unit: "m3; h; ha"
+      frequency: "each event"
+      temporal_coverage: "crop cycle"
+      site_scope: "each irrigated field"
+      aggregation_rule: "sum delivered volume; zero for rainfed strata"
+      quality_evidence: "meter calibration or pump curve"
+    - protocol_id: cp_energy_operations
+      process_id: "all"
+      flow_role: "field and harvest energy"
+      record_type: "fuel ticket, meter and machine log"
+      raw_fields: "process; field/lot; carrier; quantity; runtime; area or throughput"
+      collection_method: "reconcile purchases, meters and runtime"
+      unit: "L; kg; kWh; MJ; h"
+      frequency: "each operation"
+      temporal_coverage: "crop cycle through hand-off"
+      site_scope: "field and harvest lot"
+      aggregation_rule: "convert with documented factor and allocate once"
+      quality_evidence: "invoice, meter calibration and machine log"
+    - protocol_id: cp_field_and_lot_trace
+      process_id: "all"
+      flow_role: "area, route and lot linkage"
+      record_type: "field GIS/record and lot register"
+      raw_fields: "field; area; dates; crop; route; harvest lot; destination"
+      collection_method: "trace each harvest lot to field-season strata"
+      unit: "ha; date; id"
+      frequency: "field-season and lot"
+      temporal_coverage: "crop cycle through hand-off"
+      site_scope: "all represented fields"
+      aggregation_rule: "area-weight only after route stratification"
+      quality_evidence: "map, field register and lot ticket"
+    - protocol_id: cp_field_emissions
+      process_id: "field_production"
+      flow_role: "managed-soil and applied-substance releases"
+      record_type: "calculation sheet, model or measurement"
+      raw_fields: "N by source; residue N; fertilizer form; event; weather; soil; factors; active substance; compartment"
+      collection_method: "apply disclosed IPCC tier and documented site models or measurements"
+      unit: "kg N; kg substance; ha"
+      frequency: "each event and crop cycle"
+      temporal_coverage: "crop cycle"
+      site_scope: "each field stratum"
+      aggregation_rule: "calculate by field and substance before aggregation"
+      quality_evidence: "factor version, model inputs and calculation audit"
+    - protocol_id: cp_harvest_mass_balance
+      process_id: "harvest_handoff"
+      flow_role: "standing input, accepted, downgraded and loss outputs"
+      record_type: "scale, yield monitor, moisture sample and destination ticket"
+      raw_fields: "field; lot; technology; inlet estimate; accepted mass; downgrade mass; loss sample; moisture; destination"
+      collection_method: "weigh outputs and sample losses and whole-plant moisture representatively"
+      unit: "kg; %; ha"
+      frequency: "each field and lot"
+      temporal_coverage: "harvest to immediate farm-gate hand-off"
+      site_scope: "each harvest lot"
+      aggregation_rule: "moisture-align and reconcile exclusive destinations"
+      quality_evidence: "scale calibration, sample plan and closure worksheet"
+  calculation_rules:
+    - id: calc_normalization
+      applies_to: "all inventory rows"
+      rule: "normalized amount = stratum amount × 1,000 / accepted fresh mass"
+      inputs:
+        - "stratum amount"
+        - "accepted fresh mass"
+      output: "amount per 1,000 kg reference flow"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_dry_matter
+      applies_to: "biomass comparisons"
+      rule: "dry matter = fresh mass × (1 − moisture fraction)"
+      inputs:
+        - "fresh mass"
+        - "wet-basis moisture fraction"
+      output: "dry-matter mass"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_n2o
+      applies_to: "managed soil"
+      rule: "Apply the disclosed IPCC tier to collected N inputs and convert N2O-N to N2O by 44/28 when required."
+      inputs:
+        - "N activity data"
+        - "emission factors"
+        - "indirect-loss parameters"
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_mass_balance
+      applies_to: "harvest_handoff"
+      rule: "standing biomass = accepted + downgraded + discarded/uncollected + measured stock change, on one moisture basis and within declared uncertainty"
+      inputs:
+        - "linked masses"
+        - "moisture and destinations"
+      output: "mass closure"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Retain hybrid/cultivar, crop year, harvest stage, whole-plant moisture or dry matter, accepted specification and fresh unprocessed gate."
+      evidence: "field register, sample and lot ticket"
+    - id: dq_completeness
+      applies_to: "crop cycle and harvest"
+      requirement: "Cover every represented field operation, application, irrigation event, harvest operation and exclusive biomass destination."
+      evidence: "field-to-lot trace and completeness reconciliation"
+    - id: dq_representativeness
+      applies_to: "aggregated dataset"
+      requirement: "Report geography, crop year, fields, route shares, harvest technologies, moisture basis, accepted yield and aggregation weights."
+      evidence: "metadata and stratum index"
+    - id: dq_uncertainty
+      applies_to: "calculated and modelled rows"
+      requirement: "Retain factor versions, model inputs, measurement uncertainty, missing-data substitutions and reasons for any Range exception."
+      evidence: "calculation workbook and QA log"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "reference flow"
+    rule: "Require the fixed product, Mass and unit-group UUIDs, 1,000 kg reference amount and all required qualifiers."
+    source_ids: []
+  - rule_id: validate_gate
+    applies_to: "system boundary"
+    rule: "Reject any inventory that includes ensiling, fermentation, storage, drying, baling, feed manufacture, downstream transport or feeding inside the fresh farm-gate reference process."
+    source_ids:
+      - fao-forage-maize-harvest-stage
+  - rule_id: validate_routes
+    applies_to: "field and harvest strata"
+    rule: "Declare rainfed or irrigated status and one harvest technology per stratum; keep mutually exclusive alternatives separate and include their evidenced inventory and record deltas."
+    source_ids:
+      - fao-crop-water-needs
+      - mass-balance-identity
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "field_production"
+    rule: "Permit at most one consolidated nutrient Product-input card; bind it only to flow-set.agricultural-nutrient-supply version 0.3.0 at set level, with no group and no separate N, P, K, manure, organic-fertilizer, lime or amendment card."
+    source_ids: []
+  - rule_id: validate_batch_period
+    applies_to: "fields, operations and harvest lots"
+    rule: "Link inputs, outputs, cleaning and changeover to one field-season or harvest lot and assign shared burdens once by measured area, runtime or throughput."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_reject_routing
+    applies_to: "off-spec biomass"
+    rule: "Require one exclusive accepted, downgraded, field-retained or discarded destination; do not count an unresolved reject as accepted output and do not create an unrecorded rework loop."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_mass_balance
+    applies_to: "harvest_handoff"
+    rule: "Reconcile standing input, accepted product, downgraded product, waste/loss and stock change on a common moisture basis within declared uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_ranges
+    applies_to: "all flow cards"
+    rule: "Require exactly one complete Range per quantitative card, with role, bounds, unit, denominator/basis, basis kind, evidence kind and source ids aligned in English, Chinese and structured output."
+    source_ids:
+      - mass-balance-identity
+published_dataset_profile:
+  dataset_role: "Foreground fresh forage-maize production dataset at farm gate"
+  downstream_use: "secondary_dataset; background_dataset after representativeness review"
+  allowed_use: "LCA and footprints requiring fresh unprocessed whole-crop maize at farm gate as forage or input to a separately modelled silage process"
+  excluded_use: "maize grain, seed, sweet corn, ensiled/fermented material, dried forage, formulated feed or undisclosed downstream processing"
+  required_metadata: "geography; crop year; fields/lots; hybrid/cultivar; prior crop; tillage; rainfed/irrigated route; harvest technology and stage; moisture/dry matter; accepted specification; destinations; allocation"
+  required_quality_disclosure: "primary-data coverage; calibration; missing data; model and factor versions; route weights; mass balance; uncertainty; Range exceptions"
+  update_trigger: "changed geography, crop year, hybrid, management, irrigation share, harvest technology/stage, moisture specification, destination, allocation or emission method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-forage-maize-harvest-stage"
+    type: "official_guidance"
+    reference: "FAO, Silage from tropical cereals and forage crops, https://www.fao.org/4/x8486e/x8486e0q.htm"
+    used_for: "maize forage context and harvest-stage evidence; ensiling remains outside this PCR"
+  - id: "fao-crop-water-needs"
+    type: "official_guidance"
+    reference: "FAO, Crop Water Needs, Chapter 3, https://www.fao.org/4/s2022e/s2022e07.htm"
+    used_for: "maize seasonal crop-water range and local crop-factor context"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O calculation and nitrogen activity data"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to moisture-aligned standing biomass, accepted product, downgraded biomass, loss and stock change"
+    used_for: "hand-offs, mass closure, destination exclusivity, allocation and reject routing"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:ed9d13d6c84721effe58a6615868a049d1ee9eb9c2bd2e3329387f28e37fb65b"
+  generated_content_sha256: "sha256:ffa30b95cc5c050e03cd25b3079d83e33ded390971cdaee2de49b17a044df440"

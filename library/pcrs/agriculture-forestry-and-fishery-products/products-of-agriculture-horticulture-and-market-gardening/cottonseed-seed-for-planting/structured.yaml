@@ -1,10 +1,1513 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01431"
-  title: "Cottonseed, seed for planting"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cottonseed-seed-for-planting"
+  classification_refs: "CPC 3.0 01431 (mapping context only)"
+  covered_products: "Viable, cleaned cottonseed designated and graded for planting; cultivar and treatment status declared."
+  excluded_products: "Cotton lint; cottonseed sold for crushing, oil or feed; cotton oil and meal; seed cotton before ginning; seed sold without planting-grade evidence."
+  representative_product: "Cleaned planting cottonseed from cotton grown for seed propagation."
+  production_route: "Managed seed crop → harvest of seed cotton → gin separation → optional mechanical or acid delinting → seed cleaning/grading → optional stabilization/treatment → accepted seed hand-off. Irrigated and rainfed cultivation are alternate managed-production routes; mechanical and acid delinting are alternate treatment routes, while no delinting is allowed only when the declared market specification accepts it."
+  market_state: "Seed-grade, cleaned, viable cottonseed at the declared farm-gate transaction; package and treatment state disclosed."
+functional_unit:
+  what: "Accepted cottonseed grown and conditioned for planting"
+  how_much: "1 kg of accepted net seed mass"
+  how_well: "Declared cultivar, seed grade, purity/germination evidence, moisture, delinting and treatment state"
+  how_long_or_cycle: "One identified cotton growing season and linked conditioning lot"
+  reference_flow_link: "The accepted output of seed_release; rejected and non-planting seed are excluded from reference mass"
+system_boundary:
+  rules:
+    - rule_id: full_pre_gate_chain
+      applies_to: "reference product"
+      rule: "Include crop inputs, field operations, harvest, movement to gin/conditioner, ginning, cleaning, grading, conditional delinting/stabilization/treatment and linked waste handling through accepted seed hand-off, even when services occur off farm."
+      source_ids:
+        - usda-aphis-cotton-seed-2012
+        - usda-ars-ginning-2015
+    - rule_id: separate_output_states
+      applies_to: "gin and conditioner"
+      rule: "Record lint, seed for planting, non-planting seed, linters, gin trash, residues and waste by actual destination; no rejected mass in accepted seed."
+      source_ids:
+        - usda-ars-ginning-2015
+        - usda-ams-acid-delinting
+    - rule_id: route_condition
+      applies_to: "delinting"
+      rule: "Acid delinting is conditional; record acid, water, neutralizer, effluent and removed lint when used. Mechanical route records energy and removed material. Do not invent acid chemistry, conversion efficiency or universal yield."
+      source_ids:
+        - usda-ams-nop-5029
+        - usda-ams-acid-delinting
+    - rule_id: field_emissions
+      applies_to: "managed soil"
+      rule: "Calculate direct and indirect N2O from recorded N sources under a declared geographic method; do not apply a generic flow amount without a documented factor."
+      source_ids:
+        - ipcc-2019-soils-ch11
+    - rule_id: post_gate_exclusion
+      applies_to: "accepted seed"
+      rule: "Exclude distribution after the declared hand-off, sowing of sold seed, cotton oil milling, crushing and subsequent crop production."
+      source_ids:
+        - unsd-cpc-01431
+    - rule_id: shared_asset_boundary
+      applies_to: "shared gin and conditioner assets"
+      rule: "A shared asset such as a gin meter, seed cleaner or ventilation unit is attributed across the farm/lot nodes and actual service period that consume it; record the meter or machine-hour basis once."
+      source_ids:
+        - usda-ars-ginning-2015
+    - rule_id: reporting_period
+      applies_to: "production mix"
+      rule: "A single-period basis covers the identified crop season and linked conditioning campaign. If seed remains held after that period, collect and disclose the additional activity as a distinct case before aggregation."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Cultivated cotton field with disclosed planted seed provenance, management period and land history."
+  starting_condition_role: "Foreground managed biological production, then separately traced harvest and conditioning states."
+  product_classification_scope: "Planting-grade cottonseed only at final accepted hand-off; seed cotton and gin outputs remain intermediate or co-products."
+  recursive_input_rule: "Purchased cotton planting seed used to establish the next crop is an input with its own upstream dataset; do not recursively regenerate it using this same foreground lot."
+  upstream_dataset_requirement: "Attach provider datasets for purchased planting seed, fertilizers, crop protection, fuels, electricity, water service, delinting reagents and contracted conditioning where material."
+  disclosure: "Declare farm/ginning/conditioning sites, ownership of pre-handoff services, season, irrigation, harvest method, ginning method, delinting and treatment route, rejects and all intended sale outputs."
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Cottonseed, seed for planting"
+    uuid: "5ec327e3-1046-4478-9010-0733b798aa56"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar/seed class"
+    - "geography/season"
+    - "purity and germination test"
+    - moisture
+    - "delinting route"
+    - "seed-treatment status"
+    - "producer and conditioning sites"
+    - "hand-off ownership"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted reference seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net accepted seed mass; deduct packaging, residual lint/trash and rejected seed."
+  - id: mass_reconciliation
+    applies_to: "harvest, gin and conditioning"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record wet/as-received basis and moisture; compare all incoming and outgoing material states on compatible moisture bases."
+  - id: input_consistency
+    applies_to: "reagent, fertilizer, lint and rejected seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert supplier quantities to the same recorded mass basis before normalization; do not infer seed yield from a generic gin ratio."
+  - id: energy_consistency
+    applies_to: "machinery, gin and conditioning energy"
+    required_property_ref:
+      name: "Declared energy property"
+      uuid: ""
+    required_unit: "kWh or MJ"
+    rule: "Retain fuel and electricity separately and state conversion factors when units are changed."
+process_map:
+  - id: crop_management
+    name: "Cotton seed-crop management"
+    inclusion: "required"
+    inclusion_condition: "Every seed crop; irrigation subroute only if used"
+    role: "Managed biological production; irrigated versus rainfed alternative technology route changes water and pumping inventory; pre-harvest standing crop"
+    quantitative_reference: "area, season, input ledgers"
+  - id: seed_cotton_harvest
+    name: "Seed-cotton harvest"
+    inclusion: "required"
+    inclusion_condition: "Separate harvest operation and field-to-gin lot"
+    role: "Capture seed cotton distinct from field growth; record field loss"
+    quantitative_reference: "harvested kg and field area"
+  - id: gin_separation
+    name: "Ginning and primary conditioning"
+    inclusion: "required"
+    inclusion_condition: "On-farm or contracted gin before reference hand-off"
+    role: "Separate lint and fuzzy seed as intended outputs; remove gin trash; batch production with run and changeover indexing"
+    quantitative_reference: "seed-cotton input, lint, fuzzy seed, trash"
+  - id: seed_delinting
+    name: "Seed delinting / material treatment"
+    inclusion: "conditional"
+    inclusion_condition: "Mechanical, acid, or documented no-delinting route"
+    role: "Remove residual lint; conditional chemical reaction with acid reactants only for acid route; alternative technology route changes reagent and waste inventory"
+    quantitative_reference: "fuzzy seed, delinted seed, reagent and residues"
+  - id: seed_grading
+    name: "Cleaning and grading"
+    inclusion: "required"
+    inclusion_condition: "Seed-grade selection"
+    role: "Separate accepted grade, rework, downgraded seed and waste"
+    quantitative_reference: "incoming and outgoing grade masses"
+  - id: seed_stabilization
+    name: "Moisture stabilization and optional treatment"
+    inclusion: "conditional"
+    inclusion_condition: "Drying, cooling, storage or treatment before hand-off when performed"
+    role: "Preserve viable seed state; record treatment materials"
+    quantitative_reference: "incoming/outgoing seed, energy, treatment records"
+  - id: seed_release
+    name: "Accepted seed hand-off"
+    inclusion: "required"
+    inclusion_condition: "After testing and disposition"
+    role: "Declare released seed mass and final market state"
+    quantitative_reference: "accepted net kg and test results"
+process_inventory:
+  - id: crop_management
+    label: "Cotton seed-crop management"
+    inputs:
+      product:
+        - row_id: planting_seed_input
+          role: "Seed planting material"
+          name: "Cotton planting seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased seed mass placed on the seed field and link its own upstream dataset."
+          amount:
+            expression: "Record purchased seed mass placed on the seed field and link its own upstream dataset."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha"
+                basis: "seed planted per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg/ha"
+                basis: "sum of separately recorded fertilizer and manure product masses per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_crop_protection_products
+          role: "Crop-protection products"
+          name: "Named crop-protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg product and kg active substance as applicable"
+          description: "Record every crop-protection product separately with its formulation, active-substance content, application time, and field."
+          amount:
+            expression: "Record each actual product, formulation, amount, timing, and field; retain product and active-substance masses separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg/ha"
+                basis: "sum of separately recorded crop-protection product masses per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Declared property / m3"
+          description: "For irrigated fields record water withdrawn or delivered and pumping service; rainfed fields report no irrigation."
+          amount:
+            expression: "For irrigated fields record water withdrawn or delivered and pumping service; rainfed fields report no irrigation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "withdrawn or delivered irrigation water per cultivated hectare; conditional route; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_seed_cotton
+          role: "Standing seed cotton"
+          name: "Standing seed cotton"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure harvestable seed cotton as the crop-management hand-off to the separate harvest node, or reconcile from harvest records."
+          amount:
+            expression: "Measure harvestable seed cotton as the crop-management hand-off to the separate harvest node, or reconcile from harvest records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/ha"
+                basis: "harvestable seed cotton per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: soil_n2o
+          role: "Managed soil N2O"
+          name: "Dinitrogen monoxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate direct field N2O from recorded nitrogen inputs and declared geographic method; record indirect N2O separately where modelled."
+          amount:
+            expression: "Calculate direct field N2O from recorded nitrogen inputs and declared geographic method; record indirect N2O separately where modelled."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_soil_emissions
+              source_ids:
+                - ipcc-2019-soils-ch11
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha"
+                basis: "calculated direct soil N2O per cultivated hectare; retain factor-method audit; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: seed_cotton_harvest
+    label: "Seed-cotton harvest"
+    inputs:
+      product:
+        - row_id: harvest_energy
+          role: "Harvest energy"
+          name: "Harvest fuel or electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Declared property / MJ"
+          description: "Record fuel or electricity of the actual picking/stripping method by field and harvest event."
+          amount:
+            expression: "Record fuel or electricity of the actual picking/stripping method by field and harvest event."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "measured harvest fuel and electricity converted to energy per harvested hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_seed_cotton
+          role: "Collected seed cotton"
+          name: "Seed cotton, as harvested"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh collected seed cotton at field exit; link its lot to the gin intake without counting it as final planting seed."
+          amount:
+            expression: "Weigh collected seed cotton at field exit; link its lot to the gin intake without counting it as final planting seed."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - usda-ars-ginning-2015
+            ranges:
+              - role: typical_range
+                lower: "1128"
+                upper: "6002"
+                unit: "kg/ha"
+                basis: "Published field-study seed-cotton yield minimum and maximum; location, cultivar and year specific, not a universal production limit."
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - usda-ars-cotton-yield-2004
+      waste:
+        - row_id: field_residue_loss
+          role: "Field residues and loss"
+          name: "Cotton field residues and harvest loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record uncollected seed cotton and removed waste separately; residues left on the field remain a soil-return input and must not be treated as exported waste; state destinations."
+          amount:
+            expression: "Record uncollected seed cotton and removed waste separately; residues left on the field remain a soil-return input and must not be treated as exported waste; state destinations."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/ha"
+                basis: "measured uncollected seed cotton and removed residues per harvested hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: gin_separation
+    label: "Ginning and primary conditioning"
+    inputs:
+      product:
+        - row_id: gin_seed_cotton_input
+          role: "Harvested seed cotton intake"
+          name: "Seed cotton, as harvested"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record weighed seed-cotton lots and moisture at gin intake, including transfers from contracted sites."
+          amount:
+            expression: "Record weighed seed-cotton lots and moisture at gin intake, including transfers from contracted sites."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_balance
+              source_ids:
+                - usda-ars-ginning-2015
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference seed"
+                basis: "gin intake per kilogram final accepted planting seed; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: gin_energy
+          role: "Gin electricity and fuel"
+          name: "Gin electricity or fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Declared property / MJ"
+          description: "Record actual gin metered energy and assign shared meter periods to traced seed-cotton runs."
+          amount:
+            expression: "Record actual gin metered energy and assign shared meter periods to traced seed-cotton runs."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shared_services
+              source_ids:
+                - usda-ars-ginning-2015
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg gin intake"
+                basis: "fuel and electricity converted to energy per kilogram seed cotton entering gin; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: gin_lint_output
+          role: "Ginned lint"
+          name: "Cotton lint"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh saleable lint at gin hand-off; maintain it as an intended co-product distinct from planting seed."
+          amount:
+            expression: "Weigh saleable lint at gin hand-off; maintain it as an intended co-product distinct from planting seed."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_balance
+              source_ids:
+                - usda-ars-ginning-2015
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry gin intake"
+                basis: "dry lint per kilogram dry seed cotton entering gin"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: gin_fuzzy_seed
+          role: "Intended output: fuzzy cottonseed"
+          name: "Cottonseed, fuzzy after ginning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh separated fuzzy seed by lot before seed conditioning; distinguish planting candidate from non-planting destination."
+          amount:
+            expression: "Weigh separated fuzzy seed by lot before seed conditioning; distinguish planting candidate from non-planting destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_balance
+              source_ids:
+                - usda-ars-ginning-2015
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry gin intake"
+                basis: "dry fuzzy seed per kilogram dry seed cotton entering gin"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: gin_trash
+          role: "Gin trash"
+          name: "Gin trash"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Measure trash and classify sold by-product, recovered material or disposal according to documented destination."
+          amount:
+            expression: "Measure trash and classify sold by-product, recovered material or disposal according to documented destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gin_balance
+              source_ids:
+                - usda-ars-ginning-2015
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry gin intake"
+                basis: "dry trash per kilogram dry seed cotton entering gin"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+  - id: seed_delinting
+    label: "Seed delinting / material treatment"
+    inputs:
+      product:
+        - row_id: fuzzy_seed_for_delint
+          role: "Fuzzy seed for delinting"
+          name: "Cottonseed, fuzzy after ginning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Trace gin lots entering actual mechanical or acid delinting run; no-delinting route bypasses this node with justification."
+          amount:
+            expression: "Trace gin lots entering actual mechanical or acid delinting run; no-delinting route bypasses this node with justification."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg fuzzy seed available"
+                basis: "fuzzy seed routed to delinting per kilogram fuzzy seed separated"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: delint_acid
+          role: "Delinting acid input"
+          name: "Delinting acid"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "For the acid route, record the actual delinting-acid identity, concentration and mass separately for each run."
+          amount:
+            expression: "Record the actual quantity of this product separately for each run; no universal dose or reaction yield is assigned."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-nop-5029
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated fuzzy seed"
+                basis: "delinting-acid product mass per kilogram of fuzzy seed treated by the acid route; broad screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - usda-ams-nop-5029
+                  - usda-ams-acid-delinting
+        - row_id: delint_process_water
+          role: "Delinting process water"
+          name: "Delinting process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Mass / kg"
+          description: "For the acid route, record externally supplied process water separately for each run; report reused water as an internal flow without double counting."
+          amount:
+            expression: "Record the actual quantity of this product separately for each run; no universal dose or reaction yield is assigned."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-nop-5029
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated fuzzy seed"
+                basis: "externally supplied process-water mass per kilogram of fuzzy seed treated by the acid route; broad screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - usda-ams-nop-5029
+                  - usda-ams-acid-delinting
+        - row_id: delint_neutralizer
+          role: "Delinting neutralizer input"
+          name: "Delinting neutralizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "For the acid route, record the actual neutralizer identity, concentration and mass separately for each run."
+          amount:
+            expression: "Record the actual quantity of this product separately for each run; no universal dose or reaction yield is assigned."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-nop-5029
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated fuzzy seed"
+                basis: "neutralizer-product mass per kilogram of fuzzy seed treated by the acid route; broad screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - usda-ams-nop-5029
+                  - usda-ams-acid-delinting
+        - row_id: delint_energy
+          role: "Delinting energy"
+          name: "Delinting energy"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Declared property / MJ"
+          description: "Record mechanical or acid equipment energy by route and run, including drying and ventilation when used."
+          amount:
+            expression: "Record mechanical or acid equipment energy by route and run, including drying and ventilation when used."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_shared_services
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg treated fuzzy seed"
+                basis: "delinting energy per kilogram fuzzy seed treated; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: delinted_seed
+          role: "Delinted seed"
+          name: "Cottonseed, delinted"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh post-treatment seed and hand it to grading; record residual acid/neutralization status if acid route was used."
+          amount:
+            expression: "Weigh post-treatment seed and hand it to grading; record residual acid/neutralization status if acid route was used."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated fuzzy seed"
+                basis: "post-treatment seed per kilogram fuzzy seed entering treatment; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: removed_linters
+          role: "Removed linters"
+          name: "Cotton linters"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure removed linters and classify sale, recovery or waste by actual clean/contaminated state."
+          amount:
+            expression: "Measure removed linters and classify sale, recovery or waste by actual clean/contaminated state."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry fuzzy seed"
+                basis: "dry removed linters per kilogram dry fuzzy seed treated"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: acid_residue
+          role: "Acid effluent and contaminated residue"
+          name: "Acid delinting effluent and residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "For acid route record reacted lint, excess or unreacted acid solution, neutralization products, dust and wastewater by actual destination; recirculated reagent stays within the node, and untreated residue is not a product."
+          amount:
+            expression: "For acid route record reacted lint, excess or unreacted acid solution, neutralization products, dust and wastewater by actual destination; recirculated reagent stays within the node, and untreated residue is not a product."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delint_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated fuzzy seed"
+                basis: "acid-route effluent and contaminated residues per kilogram fuzzy seed treated; route conditional; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: seed_grading
+    label: "Cleaning and grading"
+    inputs:
+      product:
+        - row_id: grading_input
+          role: "Seed entering grading"
+          name: "Cottonseed entering grading"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record incoming lot mass and state from delinting or documented bypass."
+          amount:
+            expression: "Record incoming lot mass and state from delinting or documented bypass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference seed"
+                basis: "seed entering grading per kilogram final accepted planting seed; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_grade
+          role: "Accepted seed grade"
+          name: "Cottonseed, planting grade"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh seed passing the declared purity and viability specification, then hand it to stabilization or release."
+          amount:
+            expression: "Weigh seed passing the declared purity and viability specification, then hand it to stabilization or release."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_balance
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "accepted grade per kilogram seed entering grading"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: rework_downgrade
+          role: "Rework and downgraded seed"
+          name: "Cottonseed, off-grade"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate re-cleaning loops, sale as non-planting seed, and recovery destinations; do not count these as accepted until retested."
+          amount:
+            expression: "Separate re-cleaning loops, sale as non-planting seed, and recovery destinations; do not count these as accepted until retested."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "rework and downgraded lot per kilogram seed entering grading; count once"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: sorting_reject
+          role: "Sorting rejects"
+          name: "Seed cleaning rejects"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record waste material and its disposal; identify any viable seed downgraded to another use separately."
+          amount:
+            expression: "Record waste material and its disposal; identify any viable seed downgraded to another use separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_balance
+              source_ids:
+                - usda-ams-acid-delinting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "rejected material per kilogram seed entering grading"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+  - id: seed_stabilization
+    label: "Moisture stabilization and optional treatment"
+    inputs:
+      product:
+        - row_id: seed_pre_stabilize
+          role: "Seed before stabilization"
+          name: "Planting-grade cottonseed before stabilization"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record lot state and moisture before actual drying, cooling, storage or treatment."
+          amount:
+            expression: "Record lot state and moisture before actual drying, cooling, storage or treatment."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference seed"
+                basis: "seed entering stabilization per kilogram final accepted planting seed; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: seed_treatment_input
+          role: "Treatment material and service"
+          name: "Declared seed-treatment products"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "If applied, record each treatment formulation, amount and service by lot; mark untreated lots explicitly."
+          amount:
+            expression: "If applied, record each treatment formulation, amount and service by lot; mark untreated lots explicitly."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - usda-ams-nop-5029
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated seed"
+                basis: "treatment formulations per kilogram treated seed; conditional route and separate products; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_seed
+          role: "Stabilized seed"
+          name: "Planting-grade stabilized cottonseed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record seed mass and measured moisture/germination after intervention; hand off to release testing."
+          amount:
+            expression: "Record seed mass and measured moisture/germination after intervention; hand off to release testing."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg seed before treatment"
+                basis: "seed after stabilization per kilogram input seed; allow added treatment mass; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: stabilization_loss
+          role: "Storage or treatment loss"
+          name: "Off-grade seed and treatment residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged or nonviable seed and treatment residues with actual disposal or downgrade path."
+          amount:
+            expression: "Record damaged or nonviable seed and treatment residues with actual disposal or downgrade path."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization
+              source_ids:
+                - usda-ams-nop-5029
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg seed before treatment"
+                basis: "damaged or lost seed per kilogram input seed"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+  - id: seed_release
+    label: "Accepted seed hand-off"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_seed_output
+          role: "Released planting seed"
+          name: "Cottonseed, seed for planting"
+          flow_type: "product"
+          flow_ref:
+            uuid: "5ec327e3-1046-4478-9010-0733b798aa56"
+          property_unit: "Mass / kg"
+          description: "Weigh net accepted seed at final hand-off and attach lot quality and route evidence."
+          amount:
+            expression: "Weigh net accepted seed at final hand-off and attach lot quality and route evidence."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_release
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference seed"
+                basis: "released net seed is the declared 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: failed_release
+          role: "Failed release lot"
+          name: "Cottonseed failing release"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Rework, downgrade or dispose failed lots by documented path; exclude from reference mass."
+          amount:
+            expression: "Rework, downgrade or dispose failed lots by documented path; exclude from reference mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted planting cottonseed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_release
+              source_ids:
+                - usda-aphis-cotton-seed-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg release-lot input"
+                basis: "failed seed per kilogram lot entering release"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+allocation_rules:
+  - rule_id: joint_gin_output
+    applies_to: "gin separation"
+    rule: "First separate physical subprocesses where meters and mass records allow. For inseparable ginning burdens jointly generating lint and fuzzy seed, use lot-specific dry-mass allocation among intentionally sold outputs; show masses and calculated shares. Gin trash receives a share only when documented as a saleable intended product; disposal waste does not. Preserve a sensitivity result using economic allocation when value data exist, because lint and seed have different economic functions."
+    source_ids:
+      - usda-ars-ginning-2015
+  - rule_id: seed_grade_attr
+    applies_to: "grading and conditioning"
+    rule: "Keep planting seed, saleable non-planting cottonseed and saleable linters as distinct outputs. Attribute inseparable common conditioning burdens to saleable outputs by measured dry mass; direct delinting, grading, rework and treatment burdens to the lots that actually receive them. Disclose saleable output set and shares."
+    source_ids:
+      - usda-ams-acid-delinting
+  - rule_id: reject_loop
+    applies_to: "grading, stabilization and release"
+    rule: "Rework mass and repeated energy remain linked to the producing lot until final disposition. A failed lot that becomes non-planting seed is a downgraded co-product; disposed material is waste and receives no output allocation. Never count a returned lot twice as accepted seed."
+    source_ids:
+      - usda-ams-acid-delinting
+  - rule_id: shared_service
+    applies_to: "farm, gin and conditioner"
+    rule: "Attribute shared machinery, gin meters, ventilation, buildings and cleaning to documented consuming fields/lots and service periods; prefer measured machine hours or energy, then throughput only if operating conditions are comparable. Attribute each shared burden once."
+    source_ids:
+      - usda-ars-ginning-2015
+  - rule_id: production_mix
+    applies_to: "irrigated/rainfed fields and conditioning routes"
+    rule: "Calculate each route separately through its own accepted seed mass, then mass-weight final results across accepted seed only. Keep mutually exclusive delinting routes and treatment states separate in inventory disclosure."
+    source_ids:
+      - usda-aphis-cotton-seed-2012
+      - usda-ams-nop-5029
+  - rule_id: allocation_rule_6
+    applies_to: "foreground_burden_allocation"
+    rule: "The dry-mass rule is this PCR's attribution decision for a common material-separation service; it is a modelling convention requiring explicit disclosure, not a claim that mass and economic functions are equivalent. Record as-received moisture and conversion basis. If output ownership or measurement is incomplete, mark allocation inconclusive instead of assigning all gin burdens to seed. [Sources: usda-ars-ginning-2015, usda-ams-acid-delinting]"
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "crop_management"
+      flow_role: "planted seed, fertilizer, pesticides, irrigation and field fuel"
+      record_type: "field ledger and invoices"
+      raw_fields: "field ID; crop season; planted seed kg; product and nutrient kg; application dates; irrigation m3; pump energy; field area"
+      collection_method: "supplier records, meters and application logs"
+      unit: "kg, m3, MJ, ha"
+      frequency: "each application"
+      temporal_coverage: "one crop season"
+      site_scope: "each seed field"
+      aggregation_rule: "sum by field and allocate shared operation by actual area or machine time"
+      quality_evidence: "dated invoices, calibration and irrigation meter evidence"
+    - protocol_id: cp_soil_emissions
+      process_id: "crop_management"
+      flow_role: "managed-soil N inputs and emissions"
+      record_type: "calculation worksheet"
+      raw_fields: "mineral and organic N kg; crop residue N; soil/region; emission factors; irrigation status"
+      collection_method: "field N ledger and declared IPCC or national method"
+      unit: "kg N and kg N2O"
+      frequency: "each season"
+      temporal_coverage: "one crop season"
+      site_scope: "each seed field"
+      aggregation_rule: "calculate direct and indirect pathways separately; convert N2O-N to N2O once"
+      quality_evidence: "factor source, assumptions and worksheet"
+    - protocol_id: cp_harvest
+      process_id: "seed_cotton_harvest"
+      flow_role: "harvested seed cotton, losses and energy"
+      record_type: "harvest log"
+      raw_fields: "field ID; date; harvested seed-cotton kg; moisture; loss estimate; residue destination; fuel/energy"
+      collection_method: "weighbridge, harvest logs and field checks"
+      unit: "kg, MJ"
+      frequency: "each harvest"
+      temporal_coverage: "one crop season"
+      site_scope: "each seed field"
+      aggregation_rule: "sum matched harvested lots; reconcile to gin intake"
+      quality_evidence: "scale tickets and fuel records"
+    - protocol_id: cp_gin_balance
+      process_id: "gin_separation"
+      flow_role: "seed cotton, lint, fuzzy seed and trash"
+      record_type: "gin batch ledger"
+      raw_fields: "lot/run ID; source field; incoming kg/moisture; lint kg; fuzzy seed kg; trash kg; destinations"
+      collection_method: "gin scales and output sale/transfer tickets"
+      unit: "kg"
+      frequency: "each gin run"
+      temporal_coverage: "linked harvest/conditioning campaign"
+      site_scope: "each gin and lot"
+      aggregation_rule: "mass-balance each run, then aggregate traceable lots"
+      quality_evidence: "scale calibration and sale records"
+    - protocol_id: cp_delint_balance
+      process_id: "seed_delinting"
+      flow_role: "delinting route, reagents and residues"
+      record_type: "conditioning batch ledger"
+      raw_fields: "lot/run ID; mechanical/acid/bypass route; incoming fuzzy seed kg; acid/water/neutralizer kg; delinted seed kg; linters kg; effluent/waste kg"
+      collection_method: "batch meter, chemical inventory and waste manifest"
+      unit: "kg"
+      frequency: "each conditioning run"
+      temporal_coverage: "linked seed lot"
+      site_scope: "each conditioner and lot"
+      aggregation_rule: "reconcile dry-equivalent incoming/outgoing material and reagent inventory"
+      quality_evidence: "chemical invoices, meter and waste records"
+    - protocol_id: cp_shared_services
+      process_id: "gin_separation"
+      flow_role: "shared energy, cleaning and assets"
+      record_type: "service meter log"
+      raw_fields: "meter period; kWh/fuel; machine hours; active run IDs; changeover/cleaning; building use"
+      collection_method: "utility meters and maintenance logs"
+      unit: "kWh, MJ, h"
+      frequency: "each run or meter period"
+      temporal_coverage: "linked campaign"
+      site_scope: "gin and conditioner"
+      aggregation_rule: "assign each shared service once to observed consuming lots by energy or hours"
+      quality_evidence: "meter logs and allocation worksheet"
+    - protocol_id: cp_grade_balance
+      process_id: "seed_grading"
+      flow_role: "accepted, rework, downgraded and waste states"
+      record_type: "grading ledger"
+      raw_fields: "lot ID; incoming kg; purity; germination; accepted kg; rework kg; non-planting kg; waste kg; destinations"
+      collection_method: "scales, lab reports and disposition log"
+      unit: "kg, %"
+      frequency: "each lot and rework pass"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "each conditioner"
+      aggregation_rule: "track repeat passes and final disposition without duplicate accepted mass"
+      quality_evidence: "lab certificate and scale records"
+    - protocol_id: cp_stabilization
+      process_id: "seed_stabilization"
+      flow_role: "pre/post seed condition and treatment"
+      record_type: "storage or treatment log"
+      raw_fields: "lot ID; pre/post kg, moisture and germination; dates; energy; treatment product and kg; residue/damage kg"
+      collection_method: "lot scale, moisture and germination tests, treatment meters"
+      unit: "kg, %, MJ"
+      frequency: "each lot/event"
+      temporal_coverage: "pre-handoff interval"
+      site_scope: "each conditioning site"
+      aggregation_rule: "sum event inputs once and link to final lot"
+      quality_evidence: "test results, treatment label and meter logs"
+    - protocol_id: cp_release
+      process_id: "seed_release"
+      flow_role: "net accepted reference seed"
+      record_type: "release and shipment ledger"
+      raw_fields: "lot ID; accepted net kg; cultivar/class; purity; germination; moisture; delinting/treatment route; hand-off date; failed kg and disposition"
+      collection_method: "certification/test certificate and final scale ticket"
+      unit: "kg, %"
+      frequency: "each release lot"
+      temporal_coverage: "one marketing season"
+      site_scope: "each producer/conditioner"
+      aggregation_rule: "sum unique accepted lot IDs only"
+      quality_evidence: "signed test, release and transfer records"
+  calculation_rules:
+    - id: normalized_input
+      applies_to: "all foreground quantities"
+      rule: "Quantity per kg = lot-attributed quantity / unique accepted seed kg."
+      inputs:
+        - "process quantity"
+        - "accepted seed mass"
+      output: "normalized amount"
+      source_ids: []
+    - id: dry_mass
+      applies_to: "gin and conditioning outputs"
+      rule: "Dry mass = as-received mass × (1 − measured moisture fraction); use same moisture convention for compared streams."
+      inputs:
+        - "as-received kg"
+        - "measured moisture"
+      output: "dry kg"
+      source_ids: []
+    - id: joint_share
+      applies_to: "inseparable joint service"
+      rule: "Output share = saleable output dry kg / sum saleable intended output dry kg; apply once to joint burden."
+      inputs:
+        - "saleable output dry masses"
+        - "common service amount"
+      output: "allocated burden"
+      source_ids:
+        - usda-ars-ginning-2015
+    - id: field_n2o
+      applies_to: "managed soil"
+      rule: "Use selected regional IPCC/national direct and indirect pathway equations; store all N inputs, factors and units."
+      inputs:
+        - "N source inventory"
+        - region
+        - "selected factors"
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-soils-ch11
+    - id: mix_average
+      applies_to: "production mix"
+      rule: "Sum route burden / sum unique accepted seed mass after route allocation."
+      inputs:
+        - "route burdens"
+        - "accepted seed mass"
+      output: "production mix per kg"
+      source_ids: []
+  data_quality_requirements:
+    - id: identity
+      applies_to: "released seed"
+      requirement: "Match cultivar, seed class, planting purpose, lot tests and the verified reference-flow identity."
+      evidence: "release certificate and scale ticket"
+    - id: coverage
+      applies_to: "field through release"
+      requirement: "Link farm field, harvest, gin run, conditioning lot and accepted seed output; disclose missing subcontractor records."
+      evidence: "cross-site lot chain"
+    - id: balance
+      applies_to: "gin and conditioner"
+      requirement: "Reconcile input/output mass at measured moisture and explain differences; no silent zero for lint or rejects."
+      evidence: "balance worksheet and moisture tests"
+    - id: route_quality
+      applies_to: "conditional processes"
+      requirement: "Document irrigated/rainfed, acid/mechanical/no delinting and seed treatment status with associated inputs and waste."
+      evidence: "operation logs"
+    - id: temporal
+      applies_to: "production mix"
+      requirement: "Use one identified crop season and linked conditioning campaign; disclose older proxy data and changes."
+      evidence: "dated logs and meter periods"
+validation_rules:
+  - rule_id: seed_identity
+    applies_to: "reference output"
+    rule: "Require verified flow UUID, net accepted kg, sowing purpose, cultivar/class, germination/purity evidence and declared moisture; reject oilseed or lint substitution."
+    source_ids: []
+  - rule_id: gate_completeness
+    applies_to: "boundary"
+    rule: "Verify every pre-handoff farm, gin, transporter and conditioner node or contracted service is included once; disclose the actual gate and ownership."
+    source_ids: []
+  - rule_id: mass_and_outputs
+    applies_to: "gin and conditioner"
+    rule: "Check seed cotton, lint, fuzzy seed, linters, accepted and downgraded seed, trash and waste disposition with moisture-compatible balance; accepted mass is unique."
+    source_ids: []
+  - rule_id: route_exclusivity
+    applies_to: "production and treatment"
+    rule: "Require irrigated/rainfed field evidence and one evidenced delinting route per lot; acid route requires reactant, neutralization and residue records; treatment status is explicit."
+    source_ids: []
+  - rule_id: batch_trace
+    applies_to: "shared runs"
+    rule: "Match meters, changeovers, cleaning and shared infrastructure to consuming lots and periods; each shared burden is assigned once."
+    source_ids: []
+  - rule_id: reject_resolution
+    applies_to: "grading and release"
+    rule: "Every off-grade mass has a rework, downgrade, recovery or disposal path; repeated passes do not create extra accepted mass."
+    source_ids: []
+  - rule_id: allocation_audit
+    applies_to: "multi-output service"
+    rule: "Require measured saleable output masses, allocation shares summing to one, direct burdens assigned first and economic sensitivity when prices exist; mark incomplete evidence inconclusive."
+    source_ids: []
+  - rule_id: soil_n2o_basis
+    applies_to: "field emissions"
+    rule: "Verify source-specific N inputs, regional factor source, direct/indirect separation and N2O-N conversion."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground planting-cottonseed production-mix dataset"
+  downstream_use: "secondary_dataset; background_dataset for downstream seed supply, cotton farming process and lifecyclemodel projections"
+  allowed_use: "Sowing-grade cleaned cottonseed with matching route, seed grade and declared hand-off."
+  excluded_use: "Cotton lint, unprocessed seed cotton, oilseed cottonseed, cotton oil/meal, post-gate distribution or crop grown from released seed."
+  required_metadata: "reference flow UUID and mass; cultivar/seed class; region and season; farm/gin/conditioner chain; irrigation, harvest, gin and delinting routes; treatment; moisture, purity and germination; output destinations and allocation shares."
+  required_quality_disclosure: "Record coverage, subcontractor data gaps, tests and calibration, moisture correction, field-emission method, allocation and economic sensitivity, proxy data and uncertainty."
+  update_trigger: "New seed standard or flow identity; changed route/gate; improved gin or conditioner records; changed regional field emission factors."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.chemical-reaction-node
+      kind: "activity"
+      path: "library/modules/activities/chemical-reaction-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-01431"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/01431"
+    used_for: "Planting-seed product boundary."
+  - id: "usda-aphis-cotton-seed-2012"
+    type: "literature"
+    reference: "https://www.aphis.usda.gov/sites/default/files/12_18501p.pdf"
+    used_for: "Seed-cotton cultivation, ginning, delinting and certified planting-seed quality context."
+  - id: "usda-ars-ginning-2015"
+    type: "official_guidance"
+    reference: "https://www.ars.usda.gov/research/publications/publication/?seqNo115=309523"
+    used_for: "Gin material states, lint, seed and trash destinations."
+  - id: "usda-ams-nop-5029"
+    type: "official_guidance"
+    reference: "https://www.ams.usda.gov/rules-regulations/organic/handbook/5029"
+    used_for: "Conditional acid delinting and treatment disclosure; organic restrictions are applicable only to certified organic routes."
+  - id: "usda-ams-acid-delinting"
+    type: "literature"
+    reference: "https://www.ams.usda.gov/sites/default/files/media/Hydrogen%20Chloride%20Petition.pdf"
+    used_for: "Acid delinting reactor, neutralization, cleaning, grading and reject paths; process description only, not a universal reagent rate."
+  - id: "ipcc-2019-soils-ch11"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Nitrogen input basis for managed-soil direct and indirect N2O calculation."
+  - id: "usda-ars-gin-stand"
+    type: "official_guidance"
+    reference: "https://www.ars.usda.gov/southeast-area/stoneville-ms/cotton-ginning-research/docs/overview-of-a-cotton-gin/page-7/"
+    used_for: "Physical separation of cotton lint from seed during ginning."
+  - id: "iso-14044-lci"
+    type: "standard"
+    reference: "https://www.iso.org/standard/38498.html"
+    used_for: "Life-cycle inventory quantitative-reference and input/output accounting framework; the 0–1 material-fraction and 1 kg reference bounds here are algebraic checks, not empirical ISO rates."
+  - id: "usda-ars-cotton-yield-2004"
+    type: "literature"
+    reference: "https://www.ars.usda.gov/research/publications/publication/?seqNo115=138898"
+    used_for: "Published field-study seed-cotton yield minimum and maximum; location, cultivar and year specific, not a universal production limit."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:5194f2e93eace983d7b89100d1a5d1ec1ee5fbb005cad80ef5ca650029113c3d"
+  generated_content_sha256: "sha256:6c1615facfae4d67ab56be5d87b9ebd3cd61e9657c1317b61606859cd15190f7"

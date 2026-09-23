@@ -1,10 +1,786 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01352"
-  title: "Kiwi fruit"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.kiwi-fruit"
+  classification_refs: "CPC 3.0 01352 (Kiwi fruit)"
+  covered_products: "fresh whole kiwifruit at packhouse dispatch"
+  excluded_products: "processed fruit, juice, puree, retail food preparation"
+  representative_product: "fresh kiwifruit, market-grade, dispatched from packhouse"
+  production_route: "managed orchard production → harvest/capture → primary conditioning and grading → optional cold storage → packhouse dispatch"
+  market_state: "mature, market-grade fresh fruit; cultivar and grade disclosed"
+functional_unit:
+  what: "fresh whole kiwifruit dispatched from the packhouse"
+  how_much: "1 kg"
+  how_well: "cultivar, maturity or dry-matter criterion, grade, and declared dispatch state"
+  how_long_or_cycle: "one orchard production cycle and the declared postharvest storage period"
+  reference_flow_link: "Reference amount and product flow identity below"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The foreground boundary begins with the declared orchard production inputs and ends when market-grade whole fruit is dispatched from the packhouse. Orchard establishment and durable infrastructure are included only when the data provider reports their allocation period and basis. Retail distribution and consumer ripening are excluded."
+      source_ids: []
+    - rule_id: system_boundary_rule_2
+      applies_to: "foreground_system_boundary"
+      rule: "The data provider shall identify the orchard production starting condition, the independent harvest hand-off, the primary-conditioning/grading hand-off, and the declared packhouse dispatch point. Any deviation shall be disclosed."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "managed orchard production inputs and established crop system"
+  starting_condition_role: "disclosed foreground starting condition"
+  product_classification_scope: "fresh whole kiwifruit at packhouse dispatch"
+  recursive_input_rule: "same-category kiwifruit inputs remain explicit and require source-lot disclosure; do not recurse into another kiwifruit PCR"
+  upstream_dataset_requirement: "disclose purchased planting material, soil amendments, irrigation, crop-protection inputs, energy, and packaging inputs with their source dataset identities"
+  disclosure: "orchard location and system, cultivar, maturity criterion, harvest date, packhouse hand-off, grade, and storage route"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Kiwi fruit"
+    uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - cultivar
+    - "maturity or dry matter"
+    - "market grade"
+    - "dispatch state"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass (UUID to be resolved)"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Normalize the declared product output to 1 kg at packhouse dispatch."
+  - id: storage_duration
+    applies_to: "cold-storage process"
+    required_property_ref:
+      name: "time"
+      uuid: ""
+    required_unit: "days"
+    rule: "Record the actual storage duration and identify regular-air or controlled-atmosphere storage when used."
+  - id: maturity_measure
+    applies_to: "harvest output"
+    required_property_ref:
+      name: "soluble solids or dry matter"
+      uuid: ""
+    required_unit: "% or declared site unit"
+    rule: "Record the maturity criterion used to determine harvest readiness and retain the source method."
+process_map:
+  - id: orchard_production
+    name: "Managed orchard production"
+    inclusion: "required"
+    inclusion_condition: "orchard route is used"
+    role: "activity"
+    quantitative_reference: "per 1 kg dispatched fruit"
+  - id: harvest_capture
+    name: "Harvest and field handling"
+    inclusion: "required"
+    inclusion_condition: "fruit is removed from orchard and handed off"
+    role: "activity"
+    quantitative_reference: "per 1 kg harvested fruit"
+  - id: primary_conditioning
+    name: "Primary conditioning and grading"
+    inclusion: "required"
+    inclusion_condition: "fruit is conditioned, graded, or sorted before dispatch"
+    role: "activity"
+    quantitative_reference: "per 1 kg conditioned fruit"
+  - id: cold_storage
+    name: "Cold storage and stabilization"
+    inclusion: "conditional"
+    inclusion_condition: "fruit is stored before dispatch"
+    role: "activity"
+    quantitative_reference: "per 1 kg dispatched fruit and storage day"
+process_inventory:
+  - id: orchard_production
+    label: "Managed orchard production"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Kiwifruit planting material"
+          name: "Actual kiwifruit planting material"
+          flow_type: "product"
+          property_unit: "Count or mass / plant or kg"
+          description: "Record purchased vines, nursery plants, grafted material, or replacement plants by actual product identity. No reviewed Flow Set covers this exchange and no exact platform UUID is fixed by this PCR; retain the card as unmapped until the foreground planting material is known and an exact platform lookup is verified."
+          amount:
+            expression: "purchased or planted quantity by orchard block and establishment year"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_input_records
+              source_ids: []
+            ranges: []
+        - row_id: orchard_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_input_records
+              source_ids: []
+            ranges: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered orchard irrigation separately from environmental water withdrawal."
+          amount:
+            expression: "metered or calculated delivered irrigation by orchard block and production period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_input_records
+              source_ids: []
+            ranges: []
+        - row_id: orchard_electricity_input
+          role: "Electricity supplied to orchard operations"
+          name: "Orchard electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record purchased electricity used for irrigation, field services, and other included orchard operations."
+          amount:
+            expression: "metered or invoiced electricity allocated to the represented orchard output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_input_records
+              source_ids: []
+            ranges: []
+        - row_id: orchard_mobile_fuel_input
+          role: "Fuel supplied to mobile orchard machinery"
+          name: "Mobile orchard machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Fuel or energy / L, kg, or MJ"
+          description: "Record fuel used by tractors, sprayers, mowers, and other mobile orchard machinery."
+          amount:
+            expression: "measured, invoiced, or calculated fuel by operation and orchard block"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_input_records
+              source_ids: []
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection formulation supplied"
+          name: "Actual crop-protection formulation"
+          flow_type: "product"
+          property_unit: "Mass of formulation or active ingredient / kg"
+          description: "Record every herbicide, insecticide, fungicide, or other formulation as a separate foreground exchange. No reviewed Flow Set covers crop-protection products; retain this card as unmapped until the reported formulation supports an exact verified platform UUID."
+          amount:
+            expression: "measured formulation mass by product and application event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_input_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: orchard_fruit_output
+          role: "Orchard fruit output"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the intended kiwifruit output before harvest, including cultivar and maturity basis."
+          amount:
+            expression: "harvested mass reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_output_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: orchard_residues
+          role: "Orchard residues and losses"
+          name: "Actual orchard residue or loss stream"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet or dry material"
+          description: "Record prunings, dropped fruit, and other residues separately from intended fruit output, with their declared treatment. This card remains unmapped because it combines route-specific residue identities that have no applicable reviewed Flow Set and no single exact verified platform UUID. Dataset production shall split it by actual residue and fate."
+          amount:
+            expression: "measured residue or loss mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_output_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: harvest_capture
+    label: "Harvest and field handling"
+    inputs:
+      product:
+        - row_id: harvest_input
+          role: "Orchard fruit received for harvest"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the orchard output entering harvest, its maturity criterion, and the harvest date or campaign."
+          amount:
+            expression: "orchard output received for the harvest campaign"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_fruit
+          role: "Harvested fruit handed to packhouse"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the collected output state and the hand-off to primary conditioning. Field bins and reusable handling assets are reported when they cross the boundary."
+          amount:
+            expression: "weighed harvested fruit at packhouse receipt"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: harvest_losses
+          role: "Harvest losses"
+          name: "Actual kiwifruit harvest-loss stream"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record fruit damaged, dropped, or rejected during harvest separately from the intended harvested output. This card remains unmapped until the measured loss is classified by actual material state and destination."
+          amount:
+            expression: "measured harvest loss mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Primary conditioning and grading"
+    inputs:
+      product:
+        - row_id: conditioning_water_input
+          role: "Process water supplied for conditioning"
+          name: "Kiwifruit conditioning process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used for washing, sanitation, hydrocooling, or other primary conditioning separately from irrigation."
+          amount:
+            expression: "metered or batch-calculated delivered water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_electricity_input
+          role: "Electricity supplied to conditioning"
+          name: "Kiwifruit conditioning electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used for washing, drying, grading, conveyors, cooling, and other included packhouse operations."
+          amount:
+            expression: "metered or allocated electricity by lot, shift, throughput, or run time"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: flexible_packaging_input
+          role: "Flexible packaging supplied before dispatch"
+          name: "Kiwifruit flexible packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass or count / kg or item"
+          description: "Record liners, films, bags, or other flexible packaging only when used by the represented dispatched lot."
+          amount:
+            expression: "supplier specification and issued flexible-packaging quantity by dispatched lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: carton_box_packaging_input
+          role: "Carton or box packaging supplied before dispatch"
+          name: "Kiwifruit carton and box packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "carton-and-box-packaging"
+          property_unit: "Mass or count / kg or item"
+          description: "Record corrugated cartons, trays, or paperboard boxes used for the represented dispatched lot."
+          amount:
+            expression: "supplier specification and issued carton or box quantity by dispatched lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: pallet_crate_packaging_input
+          role: "Pallet or crate packaging supplied before dispatch"
+          name: "Kiwifruit pallet and crate packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "pallet-and-crate-packaging"
+          property_unit: "Mass or count / kg or item"
+          description: "Record pallets, field bins, and reusable or single-use crates with their reuse count and allocated share."
+          amount:
+            expression: "supplier or asset record and allocated packaging quantity by dispatched lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_input
+          role: "Fruit received for conditioning"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the raw harvested state entering conditioning and the receiving hand-off."
+          amount:
+            expression: "weighed receipt into conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: graded_fruit
+          role: "Market-grade kiwifruit"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record grade, size, maturity information, and the dispatch-ready output state."
+          amount:
+            expression: "weighed accepted market-grade output"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg dispatched fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: culls_and_downgrades
+          role: "Culls and downgraded fruit"
+          name: "Actual downgraded kiwifruit or cull stream"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record culls and downgraded fruit as separate output destinations, including recovery, processing, feed, or disposal. This card remains unmapped until each output destination and material state is known; dataset production shall split useful downgraded fruit from waste culls before choosing an exact platform UUID."
+          amount:
+            expression: "weighed cull and downgrade mass by destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: cold_storage
+    label: "Cold storage and stabilization"
+    inputs:
+      product:
+        - row_id: storage_electricity_input
+          role: "Electricity supplied to cold storage"
+          name: "Kiwifruit cold-storage electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used for refrigeration, controlled-atmosphere equipment, fans, monitoring, and included handling."
+          amount:
+            expression: "metered or allocated electricity by storage lot and duration"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg stored fruit and storage day"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_records
+              source_ids: []
+            ranges: []
+        - row_id: storage_input
+          role: "Conditioned fruit entering storage"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the fruit state, storage start date, storage mode, and storage destination."
+          amount:
+            expression: "weighed fruit entering storage"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg stored fruit"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: storage_output
+          role: "Stored fruit dispatched to market"
+          name: "Kiwi fruit"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a3b3a-a064-4afb-9c8f-bd584fa2f286"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record storage duration, dispatch state, and any declared ripening or quality-control treatment."
+          amount:
+            expression: "weighed fruit dispatched after storage"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg dispatched fruit"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: storage_losses
+          role: "Storage losses"
+          name: "Actual kiwifruit storage-loss stream"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record decay, shrinkage, and rejected fruit during storage separately from dispatched product. This card remains unmapped until the actual rejected material state and destination are known."
+          amount:
+            expression: "measured storage loss mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg stored fruit"
+              kind: "storage_duration"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "The PCR shall enumerate intended market-grade fruit, culls, downgraded fruit, residues, and waste. The current product study shall select and justify one allocation or treatment method for any co-products; the module does not prescribe the final method. No output may be counted at more than one hand-off."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_orchard_input_records
+      process_id: "orchard_production"
+      flow_role: "planting and crop inputs"
+      record_type: "purchase and field application record"
+      raw_fields: "input; quantity; nutrient or active ingredient; date; block; area"
+      collection_method: "invoices, labels, application logs"
+      unit: "kg, L, kWh, item"
+      frequency: "per event"
+      temporal_coverage: "complete production year"
+      site_scope: "orchard block"
+      aggregation_rule: "sum by input and normalize to dispatched mass"
+      quality_evidence: "invoice, label, field log"
+    - protocol_id: cp_orchard_output_records
+      process_id: "orchard_production"
+      flow_role: "orchard output and residues"
+      record_type: "harvest and fate record"
+      raw_fields: "gross fruit; accepted fruit; culls; residues; fate; date; block"
+      collection_method: "calibrated scale, harvest ticket, residue log"
+      unit: "kg"
+      frequency: "per harvest"
+      temporal_coverage: "complete harvest year"
+      site_scope: "orchard block"
+      aggregation_rule: "reconcile all outputs and normalize to dispatched mass"
+      quality_evidence: "scale calibration, tickets, fate record"
+    - protocol_id: cp_harvest_records
+      process_id: "harvest_capture"
+      flow_role: "harvested fruit and harvest losses"
+      record_type: "harvest operation record"
+      raw_fields: "date; block; cultivar; maturity; quantity; labor or fuel; loss"
+      collection_method: "harvest log, ticket, machine or fuel record"
+      unit: "kg, L, h"
+      frequency: "per harvest operation"
+      temporal_coverage: "harvest season"
+      site_scope: "orchard and harvest operation"
+      aggregation_rule: "aggregate by block and reconcile to orchard output"
+      quality_evidence: "dated logs, tickets, meter or invoice"
+    - protocol_id: cp_conditioning_records
+      process_id: "primary_conditioning"
+      flow_role: "conditioned, graded, cull, and waste fruit"
+      record_type: "packhouse intake and grading record"
+      raw_fields: "intake; grade; cull; waste; water; energy; packaging; date; lot"
+      collection_method: "packhouse ERP, scale, meter, packaging issue record"
+      unit: "kg, m3, kWh, item"
+      frequency: "per lot or shift"
+      temporal_coverage: "conditioning period"
+      site_scope: "packhouse line"
+      aggregation_rule: "reconcile intake to grades, culls, and waste"
+      quality_evidence: "lot records, scale and meter checks"
+    - protocol_id: cp_storage_records
+      process_id: "cold_storage"
+      flow_role: "storage input, dispatch, and loss"
+      record_type: "cold-room and dispatch record"
+      raw_fields: "lot; start; end; mode; temperature; input; dispatch; shrinkage; rejection"
+      collection_method: "cold-room log, inventory system, dispatch ticket"
+      unit: "kg, days, kWh"
+      frequency: "per lot and day"
+      temporal_coverage: "declared storage period"
+      site_scope: "cold room and dispatch gate"
+      aggregation_rule: "reconcile stored input to dispatch and losses"
+      quality_evidence: "logger, inventory record, dispatch ticket"
+  calculation_rules:
+    []
+  data_quality_requirements:
+    []
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "The dataset is valid only when orchard production, harvest hand-off, primary conditioning/grading, and the declared dispatch point are present; intended output, culls, residues, and losses are distinguished; cultivar and maturity or dry-matter basis are disclosed; and any storage duration and mode are recorded when storage occurs."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "secondary_dataset"
+  downstream_use: "fresh kiwifruit foreground production and linked process or lifecycle model construction"
+  allowed_use: "fresh whole kiwifruit with matching cultivar, maturity/grade, route, and packhouse dispatch boundary"
+  excluded_use: "processed kiwifruit products, retail preparation, or a different declared product gate"
+  required_metadata: "orchard system, cultivar, maturity criterion, harvest date, grade, storage mode/duration, output destinations"
+  required_quality_disclosure: "site and period coverage, measurement methods, completeness, and source-lot identity"
+  update_trigger: "material change in orchard route, conditioning technology, storage practice, product gate, or evidence basis"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "usda-ams-kiwifruit-grade-standards"
+    type: "official_guidance"
+    reference: "USDA Agricultural Marketing Service, Kiwifruit Grades and Standards, <https://www.ams.usda.gov/grades-standards/kiwifruit-grades-and-standards>"
+    used_for: "maturity, cleanliness, defect, grade, and packing quality dimensions"
+  - id: "uc-davis-kiwifruit-postharvest"
+    type: "official_guidance"
+    reference: "UC Davis Postharvest Research and Extension Center, Kiwifruit Produce Facts, <https://postharvest.ucdavis.edu/produce-facts-sheets/kiwifruit>"
+    used_for: "harvest maturity indicators, cold-storage conditions, ripening and quality risks"
+  - id: "nzkgi-kiwifruit-book-2024"
+    type: "handbook"
+    reference: "New Zealand Kiwifruit Growers Incorporated, The Kiwifruit Book 2024, <https://www.nzkgi.org.nz/resource/kiwifruit-book-2024/>"
+    used_for: "orchard management, harvest, packhouse grading, packaging, and storage route decomposition"
+  - id: "fao-kiwifruit-postharvest"
+    type: "extension_guidance"
+    reference: "FAO, Small-Scale Postharvest Handling Practices, <https://www.fao.org/4/ae075e/ae075e21.htm>"
+    used_for: "climacteric behavior, handling, ripening, and postharvest loss controls"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:9af0056b7ea9ccea61fabdaf275f60ec9427e5c3f78d0dfe1cc39dc5e1f2d8ad"
+  generated_content_sha256: "sha256:4acbcb4da29df3ed153463a86c81f50c7980caabd4a038ddaa412cef0946d6ed"

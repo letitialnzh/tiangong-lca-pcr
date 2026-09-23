@@ -1,10 +1,644 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01314"
-  title: "Dates"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.dates"
+  classification_refs: "CPC 3.0: 01314 Dates"
+  covered_products: "fresh date palm fruit transferred at the farm gate, including cultivar-specific fresh fruit sold for direct consumption or further processing"
+  excluded_products: "dried, frozen, preserved, pitted, syrup, paste, confectionery, packaged, stored, transported, or otherwise processed dates; date-palm planting material; leaves, fronds, offshoots, and other non-fruit products"
+  representative_product: "fresh, unprocessed date palm fruit at farm gate"
+  production_route: "perennial date palm orchard establishment or renewal, orchard cultivation, harvest, and basic farm-gate handling"
+  market_state: "as-received fresh fruit with cultivar, harvest maturity, quality grade, mass basis, and rejected-fruit destination declared"
+functional_unit:
+  what: "fresh, unprocessed date palm fruit at the farm gate"
+  how_much: "1,000 kg fresh fruit as received"
+  how_well: "harvested fresh fruit with cultivar, maturity, quality grade, moisture or dry-matter basis when measured, and accepted or rejected status declared"
+  how_long_or_cycle: "one declared orchard crop cycle or harvest campaign"
+  reference_flow_link: "terminal fresh-fruit output from date_harvest_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: boundary_orchard_cycle
+      applies_to: "date palm orchard production"
+      rule: "Include orchard establishment or renewal inputs assigned to the declared productive cycle, orchard management, harvest, and basic farm-gate handling up to the fresh-fruit hand-off."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_fresh_unprocessed_gate
+      applies_to: "reference product and farm-gate output"
+      rule: "Stop the foreground boundary at transfer of fresh, unprocessed date fruit. Exclude washing, drying, preservation, packaging, off-farm storage, transport, and downstream processing."
+      source_ids:
+        - codex-cxs-143-1985-dates
+        - iso-14044-2006
+    - rule_id: boundary_direct_environmental_exchanges
+      applies_to: "nutrient-related soil and air exchanges"
+      rule: "Include direct and applicable indirect nutrient-related environmental exchanges calculated from the same crop-cycle activity records used for nutrient and residue accounting, using a geographically applicable method."
+      source_ids:
+        - ipcc-2019-refinement-vol-4
+    - rule_id: boundary_recursive_product_inputs
+      applies_to: "same-category product inputs"
+      rule: "Do not loop a fresh date-fruit output back into the same date PCR. Use a distinct upstream identity for planting material or other purchased inputs and disclose retained material separately."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "established or newly established date palm orchard at the start of the declared productive crop cycle, with purchased planting material and management inputs crossing the foreground boundary"
+  starting_condition_role: "beginning of the declared date-palm orchard production cycle"
+  product_classification_scope: "cultivated fresh date palm fruit corresponding to CPC 3.0 code 01314, unprocessed at farm gate"
+  recursive_input_rule: "Date fruit must not be used as a recursive input to this same product category. Planting material is recorded as a nursery, seedling, or offshoot product with its own upstream dataset; retained fruit or culls are not counted as planting material."
+  upstream_dataset_requirement: "Compatible upstream datasets are required for planting material, fertilizer and soil-amendment products, crop-protection formulations, fuel, electricity, irrigation supply, and contracted services when those activities are not measured as foreground activity."
+  disclosure: "Disclose orchard location, cultivar, age, density, bearing area, crop cycle, irrigation source and volume, nutrient product and nutrient basis, crop protection, energy, harvest lots, accepted fruit, rejected fruit, farm-gate handling, and excluded post-farm-gate activities."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Dates"
+    uuid: "bf7ddd60-c5f1-4d21-9c85-b05b93972595"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or variety"
+    - "orchard geography"
+    - "harvest year"
+    - "declared crop cycle"
+    - "orchard age and bearing area"
+    - "harvest maturity"
+    - "accepted-fruit quality grade"
+    - "as-received mass basis"
+    - "irrigation source"
+    - "nutrient and soil-amendment basis"
+    - "rejected-fruit destination"
+    - "farm-gate boundary"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_fresh_mass
+    applies_to: "reference date fruit"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report accepted fresh fruit mass as received at the farm gate. If dry matter or moisture is measured, retain the as-received basis and measurement method; do not silently convert to a dry basis."
+  - id: crop_cycle_normalization
+    applies_to: "orchard inputs and emissions"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Normalize each crop-cycle total to 1,000 kg accepted fresh fruit using accepted fresh-fruit mass from the same orchard area and campaign."
+  - id: nutrient_product_and_basis
+    applies_to: "fertilizer and soil-amendment inputs"
+    required_property_ref:
+      name: "product mass and nutrient basis"
+      uuid: ""
+    required_unit: "kg product; kg N, kg P2O5, kg K2O, or declared organic nutrient basis"
+    rule: "Record actual product name and applied product mass, then record the declared nutrient basis used for calculation. Do not infer nutrient content from a generic fertilizer name."
+  - id: water_and_energy_consistency
+    applies_to: "irrigation, water withdrawal, pumping electricity, and fuel"
+    required_property_ref:
+      name: "volume, energy, or mass"
+      uuid: ""
+    required_unit: "m3, kWh, L, or kg"
+    rule: "Keep metered or invoiced activity units separate from calculated conversions and disclose the source, meter boundary, and conversion basis for every conversion."
+process_map:
+  - id: date_orchard_production
+    name: "Date palm orchard production"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "perennial orchard establishment, management, resource use, and environmental exchanges"
+    quantitative_reference: "orchard block area and crop-cycle activity totals divided by accepted fresh fruit mass"
+  - id: date_harvest_farm_gate
+    name: "Date harvest and farm-gate handling"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "harvest, basic lot handling, accepted product transfer, and rejected-fruit accounting"
+    quantitative_reference: "harvest-lot mass balance and accepted fresh-fruit output"
+process_inventory:
+  - id: date_orchard_production
+    label: "Date palm orchard production"
+    inputs:
+      product:
+        - row_id: date_palm_planting_material_input
+          role: "Date palm planting material"
+          name: "Date palm planting material"
+          flow_type: "product"
+          property_unit: "Count or mass / plants, offshoots, or kg as recorded"
+          description: "Record nursery plants, seedlings, or offshoots crossing into the orchard boundary. Retained date fruit and harvested fruit must not be substituted for planting-material identity."
+          amount:
+            expression: "measured planting-material quantity installed or replaced during the declared crop cycle"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+        - row_id: date_orchard_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water applied to the orchard from the declared irrigation source. Rainfed production records zero irrigation only when field records support that condition."
+          amount:
+            expression: "metered or reconciled irrigation volume by orchard block and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_and_withdrawal_records
+              source_ids:
+                - fao-56-crop-evapotranspiration-1998
+            ranges: []
+        - row_id: pumping_electricity_input
+          role: "Electricity for irrigation pumping"
+          name: "Electricity supply for irrigation pumping"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity consumed by pumps within the foreground boundary when pumping is operated or metered by the orchard."
+          amount:
+            expression: "pump meter, electricity invoice, or documented pump-energy calculation allocated to the orchard block and crop cycle"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_and_withdrawal_records
+              source_ids: []
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection formulation supplied"
+          name: "Crop-protection formulation for date palm production"
+          flow_type: "product"
+          property_unit: "Product mass / kg formulation"
+          description: "Record each actual crop-protection formulation applied, including product identity, application event, and applied mass. Do not force a formulation into a generic material identity."
+          amount:
+            expression: "sum measured formulation mass by product and application event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation_input
+          role: "Date palm orchard land occupied"
+          name: "Land occupation by date palm orchard"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a or site-supported equivalent"
+          description: "Record land occupation for orchard area and declared crop-cycle duration when land occupation is part of the study foreground."
+          amount:
+            expression: "orchard area multiplied by the declared crop-cycle or annualized occupation period"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - iso-14044-2006
+            ranges: []
+        - row_id: direct_water_withdrawal_input
+          role: "Direct irrigation water withdrawn from the environment"
+          name: "Water resource withdrawal for orchard irrigation"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Record direct environmental water withdrawal only when the orchard withdraws water itself and the water-supply activity is not already represented by an upstream irrigation-water dataset."
+          amount:
+            expression: "measured or reconciled environmental withdrawal volume by source and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_and_withdrawal_records
+              source_ids:
+                - fao-56-crop-evapotranspiration-1998
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: soil_nitrous_oxide_output
+          role: "Nitrous oxide released to ambient air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and applicable indirect nitrous oxide emissions from declared nitrogen inputs, residue or organic-amendment inputs, and the selected geographically applicable method."
+          amount:
+            expression: "method-calculated emission from crop-cycle nitrogen and residue activity data"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - ipcc-2019-refinement-vol-4
+            ranges: []
+        - row_id: soil_ammonia_output
+          role: "Ammonia released to ambient air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate ammonia emissions when the selected method requires them for declared nutrient and soil-amendment inputs."
+          amount:
+            expression: "method-calculated emission from declared nutrient products, application method, and crop-cycle records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - ipcc-2019-refinement-vol-4
+            ranges: []
+        - row_id: soil_nitrogen_oxides_output
+          role: "Nitrogen oxides released to ambient air"
+          name: "Nitrogen oxides emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NOx"
+          description: "Calculate nitrogen-oxide emissions when required by the selected nutrient-emission method and retain method tier and geography in dataset metadata."
+          amount:
+            expression: "method-calculated emission from declared nitrogen inputs and crop-cycle records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - ipcc-2019-refinement-vol-4
+            ranges: []
+        - row_id: soil_nitrate_output
+          role: "Nitrate released to soil"
+          name: "Nitrate emission to soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Record or calculate nitrate release to soil when supported by the selected regional method, soil balance, or measured evidence; do not infer it solely from fertilizer purchase records."
+          amount:
+            expression: "method-calculated or measured nitrate release linked to the declared crop-cycle nutrient balance"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - ipcc-2019-refinement-vol-4
+            ranges: []
+        - row_id: soil_phosphate_output
+          role: "Phosphate released to soil"
+          name: "Phosphate emission to soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg phosphate"
+          description: "Record or calculate phosphate release to soil when supported by the selected regional method, soil balance, or measured evidence; disclose the soil and erosion assumptions used."
+          amount:
+            expression: "method-calculated or measured phosphate release linked to the declared crop-cycle nutrient and soil balance"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted fresh fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_activity_records
+              source_ids:
+                - ipcc-2019-refinement-vol-4
+            ranges: []
+  - id: date_harvest_farm_gate
+    label: "Date harvest and farm-gate handling"
+    inputs:
+      product:
+        - row_id: orchard_mobile_fuel_input
+          role: "Mobile fuel for harvest and farm-gate handling"
+          name: "Mobile machinery fuel for date harvest and farm-gate handling"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Fuel mass, volume, or energy / kg, L, or MJ as recorded"
+          description: "Record fuel used by harvest and on-farm handling equipment up to the farm-gate transfer. If harvesting is fully manual and no fuel crosses the boundary, record zero with supporting activity records."
+          amount:
+            expression: "fuel invoice, tank record, contractor statement, or equipment calculation assigned to the declared harvest campaign"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign and per 1,000 kg accepted fresh fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: rejected_date_fruit_waste_output
+          role: "Rejected or unmarketable date fruit"
+          name: "Rejected or unmarketable fresh date fruit waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg fresh fruit"
+          description: "Record fruit rejected at harvest or farm-gate handling as waste when it is not transferred as a declared co-product. Report destination and whether it remains in the orchard, is composted, fed, or otherwise treated."
+          amount:
+            expression: "measured or reconciled rejected-fruit mass by harvest lot and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign and per 1,000 kg accepted fresh fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids:
+                - codex-cxs-143-1985-dates
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: date_fruit_farm_gate_output
+          role: "Fresh date palm fruit at farm gate"
+          name: "Fresh date palm fruit at farm gate, unprocessed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted fresh date fruit transferred at the farm gate as the terminal reference product. Retain as-received mass, harvest lot, maturity, quality grade, and destination without post-farm-gate processing."
+          amount:
+            expression: "measured accepted fresh-fruit mass at farm-gate transfer"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg accepted fresh fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids:
+                - codex-cxs-143-1985-dates
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_single_date_output
+    applies_to: "orchard and harvest processes with only fresh date fruit as product output"
+    rule: "Assign orchard and harvest burdens to accepted fresh date fruit when no deliberate co-product leaves the boundary. Do not treat culls or residues classified as waste as co-products."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_declared_coproducts
+    applies_to: "deliberate non-date product outputs"
+    rule: "If a deliberate co-product leaves the boundary, first test documented physical-causality allocation. If no defensible physical relationship exists, use documented economic allocation and report mass, revenue, reference period, and allocation factor."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_perennial_establishment
+    applies_to: "orchard establishment or renewal inputs"
+    rule: "Allocate establishment or renewal burdens over the declared productive period using the documented orchard-life or productive-period assumption, and disclose the assumption in dataset metadata."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_orchard_activity_records
+      process_id: "date_orchard_production"
+      flow_role: "planting material, nutrient products, soil amendments, crop protection, land, and orchard activity"
+      record_type: "supplier invoices, application logs, orchard register, field plan, and block records"
+      raw_fields: "block_id; cultivar; orchard_age; bearing_area_ha; planting_material_quantity; product_name; product_mass; nutrient_basis; application_date; fuel; electricity; area; crop_cycle"
+      collection_method: "collect event records from orchard operator and reconcile to supplier and block records"
+      unit: "mixed activity-specific units"
+      frequency: "each application or activity, reconciled each crop cycle"
+      temporal_coverage: "one declared crop cycle and harvest year"
+      site_scope: "each orchard block, with block aggregation retained"
+      aggregation_rule: "sum by block and crop cycle; preserve actual product and nutrient basis before normalization"
+      quality_evidence: "invoices, operator logs, agronomist or field-plan review, and completeness reconciliation"
+    - protocol_id: cp_irrigation_and_withdrawal_records
+      process_id: "date_orchard_production"
+      flow_role: "irrigation water, pumping electricity, and direct water withdrawal"
+      record_type: "meter logs, pump records, water bills, source permits, or documented water-balance calculations"
+      raw_fields: "block_id; source_type; meter_start; meter_end; irrigation_event_date; volume_m3; pump_kwh; withdrawal_m3; rainfed_flag"
+      collection_method: "read meters or reconcile invoices and source records to irrigation schedule and block area"
+      unit: "m3 and kWh"
+      frequency: "every irrigation event or billing period, reconciled each crop cycle"
+      temporal_coverage: "one declared crop cycle and irrigation season"
+      site_scope: "each water source and orchard block"
+      aggregation_rule: "sum by source, block, and crop cycle; prevent double counting supplied water and direct withdrawal"
+      quality_evidence: "meter calibration or reading evidence, invoice or permit checks, and source reconciliation"
+    - protocol_id: cp_harvest_output_records
+      process_id: "date_harvest_farm_gate"
+      flow_role: "fuel, accepted fruit, rejected fruit, and lot handling"
+      record_type: "harvest log, scale ticket, lot record, contractor statement, and destination record"
+      raw_fields: "block_id; harvest_date; lot_id; accepted_mass_kg; rejected_mass_kg; maturity; quality_grade; moisture_or_dry_matter; destination; fuel_quantity"
+      collection_method: "weigh each harvest lot and reconcile accepted, rejected, and destination masses to farm-gate transfer"
+      unit: "kg fresh fruit and activity-specific fuel unit"
+      frequency: "every harvest lot, reconciled each campaign"
+      temporal_coverage: "one harvest campaign and crop cycle"
+      site_scope: "each orchard block and receiving lot"
+      aggregation_rule: "sum accepted output and rejected output by campaign; normalize linked activity totals to accepted output"
+      quality_evidence: "calibrated scale or verified ticket, lot traceability, destination evidence, and mass-balance check"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all crop-cycle inventory rows"
+      rule: "reference-normalized amount = crop-cycle amount x 1,000 kg / accepted fresh-fruit mass in kg"
+      inputs:
+        - accepted_fresh_fruit_mass_kg
+        - crop_cycle_amount
+      output: "amount per 1,000 kg accepted fresh fruit"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_nutrient_basis
+      applies_to: "nutrient and soil-amendment inputs"
+      rule: "nutrient amount = actual product mass x declared nutrient fraction; retain product name, product mass, nutrient basis, and application event"
+      inputs:
+        - product_mass
+        - declared_nutrient_fraction
+        - nutrient_basis
+      output: "nutrient-basis input amount"
+      source_ids: []
+    - id: calc_water_energy_reconciliation
+      applies_to: "irrigation, water withdrawal, and pumping electricity"
+      rule: "reconcile meter, invoice, and pump-calculation values by block and crop cycle; do not add supplied water and direct withdrawal when they describe the same volume"
+      inputs:
+        - meter_records
+        - invoices
+        - source_records
+        - pump_calculation
+      output: "reconciled water and electricity totals"
+      source_ids:
+        - fao-56-crop-evapotranspiration-1998
+    - id: calc_soil_emissions
+      applies_to: "soil and air nutrient-related elementary outputs"
+      rule: "apply the selected geographically applicable method tier to declared nitrogen, organic-amendment, residue, soil, and climate activity data; disclose tier and factors"
+      inputs:
+        - nutrient_inputs
+        - organic_amendments
+        - residue_data
+        - soil_and_climate_parameters
+      output: "method-calculated emission amounts"
+      source_ids:
+        - ipcc-2019-refinement-vol-4
+  data_quality_requirements:
+    - id: dq_identity_and_qualifiers
+      applies_to: "reference flow, product outputs, planting material, and crop-protection inputs"
+      requirement: "Declare product identity, cultivar, geography, harvest campaign, maturity, quality grade, and identity evidence gap notes. Resolve all identities before creating a final TIDAS exchange."
+      evidence: "dataset metadata, product description, and identity review"
+    - id: dq_mass_reconciliation
+      applies_to: "harvest and farm-gate handling"
+      requirement: "Accepted fruit, rejected fruit, and other declared destinations must reconcile to recorded harvest-lot balance within documented measurement uncertainty."
+      evidence: "scale tickets, lot records, destination records, and reconciliation worksheet"
+    - id: dq_activity_completeness
+      applies_to: "orchard activity records"
+      requirement: "Cover every declared orchard block and crop-cycle activity, including zero-activity claims for rainfed irrigation or omitted nutrient inputs when supported by field evidence."
+      evidence: "block register, field plan, invoices, meters, and operator confirmation"
+    - id: dq_nutrient_basis_traceability
+      applies_to: "fertilizer and soil-amendment inputs"
+      requirement: "Reconcile product mass, nutrient fraction, application event, and nutrient-basis unit; do not replace missing product evidence with a generic default."
+      evidence: "supplier label or specification, invoice, application log, and calculation sheet"
+    - id: dq_boundary_disclosure
+      applies_to: "complete foreground dataset"
+      requirement: "Disclose that product is fresh and unprocessed at farm gate and identify excluded washing, drying, packing, storage, transport, or processing."
+      evidence: "process notes, boundary declaration, and downstream-use statement"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "reference flow and farm-gate output"
+    rule: "Confirm terminal output is accepted fresh date palm fruit, uses a mass basis in kg, and carries all required qualifiers; an evidence gap semantic identity must not be silently replaced by another fruit flow."
+    source_ids:
+      - codex-cxs-143-1985-dates
+  - rule_id: validation_process_coverage
+    applies_to: "process map and inventory"
+    rule: "Confirm orchard production and harvest/farm-gate handling are represented, and every included flow row has a process, direction, flow type, amount rule, basis, evidence kind, and collection protocol where collection or calculation is required."
+    source_ids: []
+  - rule_id: validation_input_output_balance
+    applies_to: "harvest process"
+    rule: "Confirm accepted fresh fruit, rejected fruit, and any declared co-product or waste destinations reconcile to harvest records and no post-farm-gate output is included."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_nutrient_and_emission_linkage
+    applies_to: "nutrient inputs and soil or air emissions"
+    rule: "Confirm calculated nutrient-related emissions link to declared nutrient, soil-amendment, residue, and method inputs, and disclose selected emission method and geography."
+    source_ids:
+      - ipcc-2019-refinement-vol-4
+  - rule_id: validation_flow_set_resolution
+    applies_to: "parameterized inventory rows"
+    rule: "Before final TIDAS process publication, resolve every parameterized Flow Set row to a compatible concrete identity with property, unit, direction, flow type, geography, and intended-use evidence."
+    source_ids: []
+  - rule_id: validation_farm_gate_exclusions
+    applies_to: "complete foreground dataset"
+    rule: "Reject datasets including washing, drying, preservation, packaging, off-farm storage, transport, or downstream date processing unless the study explicitly declares a boundary extension outside this PCR."
+    source_ids:
+      - iso-14044-2006
+published_dataset_profile:
+  dataset_role: "secondary_dataset"
+  downstream_use: "foreground date-palm orchard and farm-gate process data for downstream process and lifecyclemodel projections"
+  allowed_use: "modelling fresh, unprocessed date palm fruit at the declared farm-gate boundary when required qualifiers, crop-cycle records, and identity resolutions are present"
+  excluded_use: "modelling dried or preserved dates, date processing, packaging, storage, transport, or a different fruit category; evidence gap candidate identities are not final TIDAS exchanges"
+  required_metadata: "PCR id and version; CPC reference; cultivar; geography; orchard age and bearing area; crop cycle and harvest campaign; fresh-mass basis; maturity and quality grade; irrigation source; nutrient and soil-amendment basis; rejected-fruit destination; boundary declaration"
+  required_quality_disclosure: "temporal coverage, site coverage, block aggregation, measurement and calculation methods, missing-data treatment, parameterized Flow Set resolutions, identity evidence gap notes, and allocation assumptions"
+  update_trigger: "change in cultivar or route, irrigation source, nutrient or crop-protection practice, orchard age or productive-period assumption, farm-gate product state, applicable Flow Set version, or evidence and method rules"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "codex-cxs-143-1985-dates"
+    type: "standard"
+    reference: "Codex Alimentarius CXS 143-1985, Standard for Dates"
+    used_for: "fresh-date product state, quality qualifiers, and rejected-product distinction"
+  - id: "fao-56-crop-evapotranspiration-1998"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, Crop evapotranspiration"
+    used_for: "irrigation activity records, water-balance evidence, and irrigation disclosure"
+  - id: "ipcc-2019-refinement-vol-4"
+    type: "method_factor"
+    reference: "2019 Refinement to the 2006 IPCC Guidelines, Volume 4: Agriculture, Forestry and Other Land Use"
+    used_for: "nutrient-related soil and air emission calculation method selection"
+  - id: "iso-14040-2006"
+    type: "standard"
+    reference: "ISO 14040:2006, Environmental management — Life cycle assessment — Principles and framework"
+    used_for: "life-cycle boundary and data interpretation context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "normalization, allocation, co-product handling, and data-quality rules"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:fab138df62aa09f909f15ab35200be4b2fdcab2b7701ffb20fd5061caaec9fb9"
+  generated_content_sha256: "sha256:47369cdbf85ab01fe2c003e10bb4d9c88c0feedc1ecd25e2b11aaada352c1023"

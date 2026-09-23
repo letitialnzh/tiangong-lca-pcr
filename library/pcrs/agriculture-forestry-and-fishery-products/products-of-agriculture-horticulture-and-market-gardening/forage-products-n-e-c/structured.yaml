@@ -1,10 +1,1279 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01919"
-  title: "Forage products, n.e.c."
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.forage-products-n-e-c"
+  classification_refs: "CPC 3.0: 01919 (Forage products, n.e.c.)"
+  covered_products: "One explicitly named crop or product produced for forage at harvest or first-conditioning handoff"
+  excluded_products: "Maize forage; alfalfa; cereal straw and husks; non-forage crops; compound/formulated feed; grazing service; later feed manufacture"
+  representative_product: "One named forage product at declared moisture or dry-matter state"
+  production_route: "establishment and managed production → harvest/capture → optional first conditioning → handoff"
+  market_state: "fresh harvested forage or declared wilted, dried, chopped, baled, pelleted, cleaned or graded first-conditioned forage"
+functional_unit:
+  what: "One named forage product at the selected handoff gate"
+  how_much: "1 kg net product"
+  how_well: "Declare species/product, plant part, form, grade, moisture or dry matter, and conditioning state"
+  how_long_or_cycle: "Declared field and crop period; retain period linkage for perennial or multi-period inputs"
+  reference_flow_link: "Single reference-flow object below"
+system_boundary:
+  rules:
+    - rule_id: boundary_named_product
+      applies_to: "Product scope"
+      rule: "Model one named forage species/product and plant part at one declared state and gate. Exclude maize forage, alfalfa, cereal straw or husks, crops not grown for forage, compound feed and grazing services."
+      source_ids:
+        - unsd-cpc-01919
+    - rule_id: boundary_gate_choice
+      applies_to: "Reference gate"
+      rule: "Select either harvest handoff or the first declared conditioning handoff. If conditioning is selected, harvested forage is an intermediate and only the conditioned product is the reference output."
+      source_ids:
+        - fao-grassland-forage
+    - rule_id: boundary_conditional_conditioning
+      applies_to: "Primary conditioning"
+      rule: "Include only operations actually performed before the selected gate; identify the raw input state, conditioned output state, service inputs, residues and rejects."
+      source_ids:
+        - fao-grassland-forage
+    - rule_id: boundary_periods_assets
+      applies_to: "Periods and shared assets"
+      rule: "Retain establishment, annual or multi-year crop periods and shared machinery or facility use; attribute each burden once to its actual consuming node and period."
+      source_ids:
+        - iso-14044-allocation
+boundary_abstraction:
+  declared_starting_condition: "The named forage crop on a declared field at establishment or the beginning of the reporting crop period"
+  starting_condition_role: "Foreground start for crop production; upstream inputs use separate datasets"
+  product_classification_scope: "One named CPC 01919 forage product without crossing excluded neighbouring classes"
+  recursive_input_rule: "When same-category forage enters establishment or conditioning, record it as a delivered upstream product dataset distinguished by source, state and gate; do not recursively rebuild the same product system"
+  upstream_dataset_requirement: "Seed, fertilizer, crop protection, energy, water and service inputs use independent upstream datasets appropriate to their supply boundary"
+  disclosure: "Declare species/product, field, crop period, production system, harvest method, moisture, form, grade, first-conditioning operations and selected gate"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Named forage product (UUID unresolved)"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species/product"
+    - "plant part"
+    - "harvested form"
+    - "moisture or dry matter"
+    - grade
+    - "crop period"
+    - "production system"
+    - "conditioning state"
+    - "handoff gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass (UUID unresolved)"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use net mass after tare and declare the moisture or dry-matter basis."
+  - id: moisture_conversion
+    applies_to: "fresh, wilted and dried products"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert wet and dry basis only with paired moisture, test method and formula."
+  - id: area_time
+    applies_to: "land occupation"
+    required_property_ref:
+      name: "Area*time"
+      uuid: ""
+    required_unit: "m2·year"
+    rule: "Calculate from field area and actual occupation duration and normalize by output from the same crop period."
+  - id: transport_work
+    applies_to: "road freight"
+    required_property_ref:
+      name: "Transport work"
+      uuid: ""
+    required_unit: "t·km"
+    rule: "Multiply net transported tonnes by loaded kilometres and disclose empty-return treatment separately."
+process_map:
+  - id: forage_crop_production
+    name: "Managed forage crop establishment and production"
+    inclusion: "required"
+    inclusion_condition: "Always included for cultivated forage; field operations end at the harvest-ready crop handoff."
+    role: "Establish and manage the named forage crop and report the harvest-ready biomass."
+    quantitative_reference: "Measured harvest-ready forage mass by field and crop period."
+  - id: forage_harvest
+    name: "Forage harvest and field capture"
+    inclusion: "required"
+    inclusion_condition: "Included for mowing, cutting, lifting or other removal from the production context."
+    role: "Separate harvest responsibility and reconcile collected product, field residue and loss."
+    quantitative_reference: "Net named forage product leaving harvest."
+  - id: primary_forage_conditioning
+    name: "Optional first forage conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "Include only when wilting, drying, chopping, baling, pelleting, cleaning or grading occurs before the selected gate."
+    role: "Transform the harvested forage into one declared first-conditioned state without including feed formulation."
+    quantitative_reference: "Net conditioned forage at the declared moisture, form and grade."
+process_inventory:
+  - id: forage_crop_production
+    label: "Managed forage crop establishment and production"
+    inputs:
+      product:
+        - row_id: propagation_material
+          role: "Seed or propagation material"
+          name: "Named-crop propagation material; UUID unresolved until species and form are known"
+          flow_type: "product"
+          property_unit: "Mass / kg or verified count unit"
+          description: "Record seed, crowns, cuttings or other planting material transferred into the named forage crop."
+          amount:
+            expression: "Measured purchased or internally transferred planting material"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference forage, retaining field and crop-period linkage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_propagation
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg reference forage"
+                basis: "Broad screening interval for planting material normalized to reference forage"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_inputs
+          role: "Consolidated fertilizer and nutrient amendments"
+          name: "Actual fertilizer and nutrient-supply products expanded from field records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product-specific property and native unit"
+          description: "Use this single card for every mineral fertilizer, organic fertilizer and nutrient amendment applied in this process; retain each actual product and nutrient grade in foreground records."
+          amount:
+            expression: "Measured mass by actual product, composition, field, date and crop period"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per field and crop period, then normalized to 1 kg reference forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrients
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2"
+                unit: "kg product/kg reference forage"
+                basis: "Broad screening interval for total nutrient products"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop protection products"
+          name: "Actual crop-protection product; UUID unresolved until product identity is known"
+          flow_type: "product"
+          property_unit: "Product-specific property and native unit"
+          description: "Record only products actually applied, with trade product, active ingredient, treated area and date."
+          amount:
+            expression: "Applied amount reconciled to purchase and application logs"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per 1 kg reference forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.1"
+                unit: "kg product/kg reference forage"
+                basis: "Broad screening interval for applied crop-protection products"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water selected from the actual source record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3 preferred"
+          description: "Record water supplied for irrigation; rainfall is contextual information and is not a product-flow input."
+          amount:
+            expression: "Metered or supplier-recorded irrigation volume"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per hectare and crop period, normalized to reference forage output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "15000"
+                unit: "m3/ha·crop period"
+                basis: "Irrigation-volume screening interval"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: production_energy
+          role: "Field energy carriers and utilities"
+          name: "Energy carriers actually consumed in forage production"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific property and native unit"
+          description: "Record actual electricity and fuels used for cultivation, irrigation pumping and field operations."
+          amount:
+            expression: "Metered electricity and reconciled fuel consumption by operation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per crop period, normalized to 1 kg reference forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production_energy
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "3"
+                unit: "kWh-equivalent/kg reference forage"
+                basis: "Broad production-energy screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Agricultural land occupation"
+          name: "Agricultural land occupation elementary flow; UUID unresolved"
+          flow_type: "elementary"
+          property_unit: "Area*time / m2·year"
+          description: "Calculate occupied area and time for the declared crop period."
+          amount:
+            expression: "Field area multiplied by occupation duration"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per crop period and normalized reference output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_land_history
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0.01"
+                upper: "1000"
+                unit: "m2·year/kg reference forage"
+                basis: "Broad area-time screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: land_transformation
+          role: "Land transformation"
+          name: "Land transformation elementary flow by prior and new cover; UUID unresolved"
+          flow_type: "elementary"
+          property_unit: "Area / m2"
+          description: "Record only evidenced land-cover conversion attributable to the declared production system."
+          amount:
+            expression: "Mapped transformed area allocated once over the declared attribution period"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference forage over declared attribution period"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_land_history
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "m2/kg reference forage"
+                basis: "Broad land-transformation screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: harvest_ready_forage
+          role: "Harvest-ready forage biomass"
+          name: "Named harvest-ready forage biomass; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the named crop and plant part at the handoff to harvest, without also counting it as the final reference product."
+          amount:
+            expression: "Measured net harvest-ready mass at recorded moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per field and crop period"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0.01"
+                upper: "100"
+                unit: "kg/m2 crop area"
+                basis: "Broad route screen for harvest-ready biomass yield"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: production_residue_removed
+          role: "Removed weeds and non-target biomass"
+          name: "Removed non-target biomass; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter preferred"
+          description: "Record biomass removed from the field and classify its actual destination."
+          amount:
+            expression: "Measured or sampled removed biomass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg harvest-ready forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kg/kg harvest-ready forage"
+                basis: "Broad residue screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: soil_n2o
+          role: "Direct soil nitrous oxide"
+          name: "Nitrous oxide to air; UUID unresolved pending exact compartment verification"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct N2O only with the selected inventory method and documented nitrogen activity data."
+          amount:
+            expression: "Calculated from collected nitrogen inputs and the declared method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg reference forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrients
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.1"
+                unit: "kg N2O/kg reference forage"
+                basis: "Broad method-output QA screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: forage_harvest
+    label: "Forage harvest and field capture"
+    inputs:
+      product:
+        - row_id: harvest_ready_batch
+          role: "Harvest-ready forage batch"
+          name: "Named harvest-ready forage biomass; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer the production output into harvest under the same species, field, crop-period and lot identity."
+          amount:
+            expression: "Inter-process transferred net mass"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0.01"
+                upper: "1000000"
+                unit: "kg/harvest lot"
+                basis: "Lot-size screening interval"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest machinery energy"
+          name: "Energy carriers actually consumed by harvest equipment"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific property and native unit"
+          description: "Record electricity or fuel consumed by mowing, cutting, lifting, gathering or baling performed within harvest."
+          amount:
+            expression: "Metered or reconciled energy by harvest operation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg harvested forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "2"
+                unit: "kWh-equivalent/kg harvested forage"
+                basis: "Broad harvest-energy screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_forage
+          role: "Harvested named forage product"
+          name: "Named harvested forage product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this intended output as the accepted named forage at the harvest gate, or as an intermediate when primary conditioning is the selected gate."
+          amount:
+            expression: "Measured net accepted mass at declared moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1.5"
+                unit: "kg/kg harvest-ready batch"
+                basis: "Harvest mass-balance QA range"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: lower_grade_forage
+          role: "Lower-grade saleable forage"
+          name: "Named lower-grade forage product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this intended output separately only when the lower grade has an evidenced intended use and handoff."
+          amount:
+            expression: "Measured mass by grade and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_disposition
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg harvest-ready batch"
+                basis: "Mass-fraction QA guardrail"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_rejects
+          role: "Harvest rejects and field loss"
+          name: "Harvest reject or loss material; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter preferred"
+          description: "Record rejected, dropped or spoiled material and its retained, recovered or discarded destination."
+          amount:
+            expression: "Measured or sampled mass by exclusive destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg harvest-ready batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_disposition
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg harvest-ready batch"
+                basis: "Mass-fraction QA guardrail"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: residue_to_soil
+          role: "Forage crop residue returned to soil"
+          name: "Biogenic crop residue to soil; UUID unresolved"
+          flow_type: "elementary"
+          property_unit: "Mass / kg dry matter"
+          description: "Record crop biomass deliberately left or returned to the field, without treating it as a saleable product."
+          amount:
+            expression: "Sampled dry matter partitioned to the field destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg harvested forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg dry matter/kg harvested forage"
+                basis: "Broad residue-return screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: primary_forage_conditioning
+    label: "Optional first forage conditioning"
+    inputs:
+      product:
+        - row_id: raw_forage_batch
+          role: "Raw harvested forage batch"
+          name: "Named harvested forage product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the harvested product with species, plant part, moisture, form and lot identity preserved."
+          amount:
+            expression: "Measured receiving mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_batch
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0.01"
+                upper: "1000000"
+                unit: "kg/conditioning batch"
+                basis: "Batch-size screening interval"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Conditioning process water"
+          name: "Process water selected from the actual source record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3 preferred"
+          description: "Record fresh water used for cleaning, wetting or other declared conditioning; exclude recirculated water from fresh input."
+          amount:
+            expression: "Metered fresh water by conditioning batch"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg conditioned forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_water
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "m3/t conditioned forage"
+                basis: "Broad process-water screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditioning energy carriers and utilities"
+          name: "Energy carriers actually consumed in first conditioning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific property and native unit"
+          description: "Record energy for wilting support, drying, chopping, baling, pelleting, cleaning or grading that actually occurs."
+          amount:
+            expression: "Metered or reconciled consumption by equipment and batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg conditioned forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_energy
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "kWh-equivalent/kg conditioned forage"
+                basis: "Broad conditioning-energy screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_transport
+          role: "Field-to-conditioner road transport service"
+          name: "Road freight transport service resolved from route records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Transport work / t·km"
+          description: "Record purchased road freight only when field-to-conditioner transport is inside the selected boundary; avoid duplicate own-account fuel."
+          amount:
+            expression: "Net transported tonnes multiplied by loaded kilometres"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "Per raw forage lot"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_transport
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "t·km/t raw forage"
+                basis: "Loaded road-distance screen"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wastewater_treatment
+          role: "External wastewater treatment service"
+          name: "Wastewater treatment service resolved from provider and route records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.waste-treatment-service"
+            version: "0.2.0"
+            group: "wastewater-treatment-service"
+          property_unit: "Volume / m3 or provider-native service unit"
+          description: "Record an external treatment service only for wastewater transferred to a documented provider."
+          amount:
+            expression: "Treated quantity reconciled to generated wastewater and invoice"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "Per 1 kg conditioned forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wastewater
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "m3/t conditioned forage"
+                basis: "Treatment-service QA screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_forage
+          role: "First-conditioned reference forage"
+          name: "Named first-conditioned forage product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this intended output as one named forage product at the declared moisture, form, grade and primary-conditioning gate."
+          amount:
+            expression: "Measured net accepted mass at declared moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_batch
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1.5"
+                unit: "kg/kg raw forage input"
+                basis: "Conditioning mass-balance QA range"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioned_lower_grade
+          role: "Lower-grade conditioned forage"
+          name: "Named lower-grade conditioned forage; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Report this intended output as a lower grade separately from rejected or waste material."
+          amount:
+            expression: "Measured mass by grade and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "Per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_disposition
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg raw forage input"
+                basis: "Mass-fraction QA guardrail"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Conditioning rejects and losses"
+          name: "Conditioning reject material; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record contaminants, spoiled biomass, fines and off-spec material by exclusive destination."
+          amount:
+            expression: "Measured reject mass by batch and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg raw forage input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_disposition
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg raw forage input"
+                basis: "Mass-fraction QA guardrail"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wastewater
+          role: "Conditioning wastewater"
+          name: "Forage-conditioning wastewater; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Volume / m3 or Mass / kg"
+          description: "Record generated wastewater separately from the purchased treatment service and identify its destination."
+          amount:
+            expression: "Metered or calculated generated quantity by batch and route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "Per 1 kg conditioned forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wastewater
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "5"
+                unit: "m3/t conditioned forage"
+                basis: "Wastewater QA screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: conditioning_dust
+          role: "Conditioning dust to air"
+          name: "Particulate matter to air by verified size fraction; UUID unresolved"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record only measured or method-calculated particulate emissions, preserving size fraction and receiving compartment."
+          amount:
+            expression: "Measured or method-calculated emitted particulate mass"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "Per 1 kg conditioned forage"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_energy
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.1"
+                unit: "kg/kg conditioned forage"
+                basis: "Broad particulate-emission screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_outputs
+    applies_to: "Multiple intended outputs"
+    rule: "Use subdivision first. If shared burdens remain, use a documented causal physical relation where defensible; otherwise document the selected allocation basis and sensitivity. Waste and field residue without intended product function receive no co-product allocation."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: allocation_periods
+    applies_to: "Establishment and productive periods"
+    rule: "Attribute establishment or multi-year burdens across declared productive outputs using recorded production history or an explicit forecast, and prevent duplicate attribution to each year."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: allocation_rejects
+    applies_to: "Lower grades, rejects and rework"
+    rule: "Trace each lot to accepted product, lower grade, rework, recovery, soil return or discard. Count accepted material at its final handoff and include rework inputs once."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: allocation_shared_assets
+    applies_to: "Shared fields, machinery and conditioning assets"
+    rule: "Prefer metered use or operating time; otherwise use a documented physical driver. Enumerate consuming nodes and periods and prevent duplicate burdens."
+    source_ids:
+      - iso-14044-allocation
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_propagation
+      process_id: "forage_crop_production"
+      flow_role: "propagation_material"
+      record_type: "supplier or transfer record"
+      raw_fields: "species, variety, form, amount, date, field, source"
+      collection_method: "Reconcile invoices and internal transfers"
+      unit: "kg or count"
+      frequency: "each planting"
+      temporal_coverage: "all establishment events"
+      site_scope: "declared field"
+      aggregation_rule: "sum by product, field and crop period"
+      quality_evidence: "invoice, lot and unit checks"
+    - protocol_id: cp_nutrients
+      process_id: "forage_crop_production"
+      flow_role: "nutrient_inputs; soil_n2o"
+      record_type: "application log and invoice"
+      raw_fields: "product, mass, nutrient grade, N form, field, date, crop period"
+      collection_method: "Reconcile purchases, application logs and composition"
+      unit: "kg product and kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "all crop periods"
+      site_scope: "declared fields"
+      aggregation_rule: "retain each product under one consolidated card and calculate nutrients"
+      quality_evidence: "invoice, application calibration and method record"
+    - protocol_id: cp_crop_protection
+      process_id: "forage_crop_production"
+      flow_role: "crop_protection_inputs"
+      record_type: "application and supplier record"
+      raw_fields: "product, active ingredient, amount, area, date, target"
+      collection_method: "Reconcile applied quantity with purchases"
+      unit: "kg product"
+      frequency: "each application"
+      temporal_coverage: "all crop periods"
+      site_scope: "declared fields"
+      aggregation_rule: "sum actual applications by lot and period"
+      quality_evidence: "label, invoice and operator log"
+    - protocol_id: cp_irrigation
+      process_id: "forage_crop_production"
+      flow_role: "irrigation_water"
+      record_type: "meter or supplier record"
+      raw_fields: "source, volume, date, area, field, crop period"
+      collection_method: "Read calibrated meter or reconcile invoices"
+      unit: "m3"
+      frequency: "each event or billing period"
+      temporal_coverage: "each crop period"
+      site_scope: "field and water source"
+      aggregation_rule: "sum by field and period; normalize to output"
+      quality_evidence: "meter calibration and invoice"
+    - protocol_id: cp_production_energy
+      process_id: "forage_crop_production"
+      flow_role: "production_energy"
+      record_type: "meter, receipt and equipment log"
+      raw_fields: "carrier, amount, unit, operation, date, field, shared use"
+      collection_method: "Reconcile energy and operating records"
+      unit: "native carrier unit"
+      frequency: "each operation"
+      temporal_coverage: "each crop period"
+      site_scope: "site and equipment"
+      aggregation_rule: "sum by carrier; allocate shared use by measured operation"
+      quality_evidence: "meter, invoice and equipment log"
+    - protocol_id: cp_land_history
+      process_id: "forage_crop_production"
+      flow_role: "land_occupation; land_transformation"
+      record_type: "field and geospatial record"
+      raw_fields: "boundary, area, dates, prior cover, crop period"
+      collection_method: "Reconcile maps with dated land evidence"
+      unit: "ha, ha·year"
+      frequency: "each crop period and conversion"
+      temporal_coverage: "full attribution period"
+      site_scope: "declared fields"
+      aggregation_rule: "calculate area-time and allocate transformation once"
+      quality_evidence: "map, register and dated evidence"
+    - protocol_id: cp_harvest_lot
+      process_id: "forage_crop_production_forage_harvest"
+      flow_role: "harvest_ready_forage; harvest_ready_batch; harvested_forage"
+      record_type: "lot and scale record"
+      raw_fields: "species, plant part, field, dates, gross, tare, net, moisture, destination"
+      collection_method: "Weigh each lot and match handoffs"
+      unit: "kg and moisture"
+      frequency: "each lot"
+      temporal_coverage: "each harvest"
+      site_scope: "field and receiving node"
+      aggregation_rule: "reconcile inter-process transfers without duplicate final output"
+      quality_evidence: "scale calibration, lot and moisture record"
+    - protocol_id: cp_residues
+      process_id: "forage_crop_production_forage_harvest"
+      flow_role: "production_residue_removed; residue_to_soil"
+      record_type: "sample and disposition record"
+      raw_fields: "biomass type, wet/dry mass, field, period, destination"
+      collection_method: "Sample or weigh and document destination"
+      unit: "kg dry matter"
+      frequency: "each crop period"
+      temporal_coverage: "all included periods"
+      site_scope: "field and residue type"
+      aggregation_rule: "partition among soil return, intended output and removal"
+      quality_evidence: "sampling, dry-matter and destination evidence"
+    - protocol_id: cp_harvest_energy
+      process_id: "forage_harvest"
+      flow_role: "harvest_energy"
+      record_type: "fuel, meter and machinery log"
+      raw_fields: "carrier, amount, equipment, operation, field, lot"
+      collection_method: "Reconcile consumption to harvest lots"
+      unit: "native carrier unit"
+      frequency: "each operation"
+      temporal_coverage: "each harvest"
+      site_scope: "equipment and field"
+      aggregation_rule: "sum by carrier and normalize to accepted output"
+      quality_evidence: "invoice, meter and machinery log"
+    - protocol_id: cp_grade_disposition
+      process_id: "forage_harvest_primary_forage_conditioning"
+      flow_role: "lower_grade_forage; harvest_rejects; conditioned_lower_grade; conditioning_rejects"
+      record_type: "grade, scale and destination record"
+      raw_fields: "identity, grade, mass, moisture, intended use, destination, lot"
+      collection_method: "Inspect and weigh each grade and destination"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "each harvest or conditioning campaign"
+      site_scope: "lot and handoff"
+      aggregation_rule: "mutually exclusive accepted, lower grade, rework and waste partition"
+      quality_evidence: "grade sheet, scale and disposition evidence"
+    - protocol_id: cp_conditioning_batch
+      process_id: "primary_forage_conditioning"
+      flow_role: "raw_forage_batch; conditioned_forage"
+      record_type: "receiving and output lot record"
+      raw_fields: "input/output mass, moisture, species, form, grade, route, lot"
+      collection_method: "Match intake and output lots and measure moisture"
+      unit: "kg and moisture"
+      frequency: "each batch"
+      temporal_coverage: "included operations"
+      site_scope: "conditioning site"
+      aggregation_rule: "reconcile products, rejects, removed water and loss"
+      quality_evidence: "calibrated scale, moisture and lot balance"
+    - protocol_id: cp_conditioning_water
+      process_id: "primary_forage_conditioning"
+      flow_role: "conditioning_water"
+      record_type: "meter or batch record"
+      raw_fields: "source, fresh volume, recirculation, batch, date"
+      collection_method: "Meter or reconcile tank and supplier records"
+      unit: "m3"
+      frequency: "each batch"
+      temporal_coverage: "wet-conditioning periods"
+      site_scope: "conditioning site"
+      aggregation_rule: "separate fresh from recirculated water"
+      quality_evidence: "meter/tank calibration and batch log"
+    - protocol_id: cp_conditioning_energy
+      process_id: "primary_forage_conditioning"
+      flow_role: "conditioning_energy; conditioning_dust"
+      record_type: "meter, fuel and equipment log"
+      raw_fields: "carrier, amount, equipment, operation, batch, time, dust measurement"
+      collection_method: "Reconcile measured energy and any emission method to batch"
+      unit: "native carrier unit and kg dust"
+      frequency: "each batch"
+      temporal_coverage: "conditioning campaign"
+      site_scope: "site and equipment"
+      aggregation_rule: "sum by carrier and operation; preserve particulate fraction"
+      quality_evidence: "meter, invoice, equipment and sampling record"
+    - protocol_id: cp_transport
+      process_id: "primary_forage_conditioning"
+      flow_role: "field_transport"
+      record_type: "waybill and route record"
+      raw_fields: "mass, origin, destination, loaded distance, vehicle, return trip"
+      collection_method: "Reconcile route and mass to lot"
+      unit: "t, km and t·km"
+      frequency: "each transfer"
+      temporal_coverage: "included field-to-site routes"
+      site_scope: "route and lot"
+      aggregation_rule: "tonnes multiplied by loaded kilometres"
+      quality_evidence: "waybill, route and scale record"
+    - protocol_id: cp_wastewater
+      process_id: "primary_forage_conditioning"
+      flow_role: "wastewater_treatment; conditioning_wastewater"
+      record_type: "meter, discharge and provider record"
+      raw_fields: "volume, batch, operation, destination, provider, route"
+      collection_method: "Meter or reconcile generated and treated quantities"
+      unit: "m3"
+      frequency: "each batch or billing period"
+      temporal_coverage: "wet-conditioning periods"
+      site_scope: "site and provider"
+      aggregation_rule: "reconcile generation, reuse, discharge and treatment"
+      quality_evidence: "meter, invoice and treatment evidence"
+  calculation_rules:
+    - id: normalize_reference
+      applies_to: "All processes"
+      rule: "Divide each process exchange by net reference-product mass at the selected gate while retaining crop-period and lot linkage."
+      inputs:
+        - "Process amount"
+        - "net reference mass"
+        - gate
+        - "crop period and lot"
+      output: "Exchange per 1 kg reference forage"
+      source_ids:
+        - mass-balance-identity
+    - id: convert_dry_matter
+      applies_to: "Fresh, wilted and dried forage"
+      rule: "Dry matter = measured wet mass × (1 − moisture fraction on wet basis); inverse conversion requires the target moisture."
+      inputs:
+        - "Wet mass"
+        - "moisture test and basis"
+      output: "Dry mass or converted product mass"
+      source_ids:
+        - fao-grassland-forage
+    - id: calculate_n2o
+      applies_to: "Direct soil N2O"
+      rule: "Apply the declared IPCC managed-soils equation and factor to collected N activity data; convert N2O-N to N2O when required by the method."
+      inputs:
+        - "N inputs"
+        - factor
+        - tier
+        - "soil and climate fields"
+      output: "kg direct N2O per reference flow"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: reconcile_lot
+      applies_to: "Harvest and conditioning"
+      rule: "On one moisture basis, input equals intended outputs plus lower grades, rejects, residues, removed water and measured loss."
+      inputs:
+        - "Lot masses"
+        - grades
+        - "moisture and destinations"
+      output: "Reconciled mutually exclusive lot balance"
+      source_ids:
+        - mass-balance-identity
+    - id: road_transport_work
+      applies_to: "Field-to-conditioner transport"
+      rule: "Transport work = net transported tonnes × loaded route kilometres; apply return treatment only when evidenced."
+      inputs:
+        - "Net mass"
+        - "loaded distance and return record"
+      output: "t·km by lot"
+      source_ids:
+        - iso-14044-allocation
+  data_quality_requirements:
+    - id: identity_gate
+      applies_to: "Reference product"
+      requirement: "Record one species/product, plant part, form, moisture/dry matter, grade, crop period, production system and exclusive gate."
+      evidence: "Lot identity, product description and reviewed flow evidence"
+    - id: period_coverage
+      applies_to: "Production periods"
+      requirement: "Include establishment and productive periods when relevant and retain period-specific yield and attribution records."
+      evidence: "Field register, planting/harvest dates and yield history"
+    - id: input_completeness
+      applies_to: "All process inputs"
+      requirement: "Reconcile propagation material, one consolidated nutrient-card detail, protection products, water, energy, transport and treatment inputs to primary records."
+      evidence: "Invoices, logs, meters and Flow Set resolution evidence"
+    - id: output_reconciliation
+      applies_to: "All outputs"
+      requirement: "Partition accepted product, lower grades, rejects, residues, wastewater and losses into mutually exclusive destinations."
+      evidence: "Scale, grade, moisture and disposition records"
+    - id: range_replacement
+      applies_to: "Provisional ranges"
+      requirement: "Use reasoned ranges only for screening and replace them with product-, region-, technology- and gate-specific evidence before reviewed or active use."
+      evidence: "Reviewed records or external quantitative evidence"
+    - id: unresolved_identity
+      applies_to: "UUID-bearing flows"
+      requirement: "Retain blank UUIDs until one exact product, property, unit group and context are confirmed; do not substitute compound feed, alfalfa or grazing-service identities."
+      evidence: "Identity lookup and detail-read audit record"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "Reference product"
+    rule: "Require one named forage species/product, plant part or harvested portion, form, moisture or dry-matter state, crop period, grade and selected gate."
+    source_ids:
+      - unsd-cpc-01919
+  - rule_id: validate_exclusions
+    applies_to: "Category boundary"
+    rule: "Reject maize forage, alfalfa, cereal straw/husks, non-forage crops, compound feed, mixtures and grazing-service inventories."
+    source_ids:
+      - unsd-cpc-01919
+  - rule_id: validate_gate
+    applies_to: "Process graph"
+    rule: "Require one exclusive reference gate and reconcile every inter-process handoff without counting the same material as both intermediate and final product."
+    source_ids:
+      - fao-grassland-forage
+  - rule_id: validate_mass_moisture
+    applies_to: "Harvest and conditioning lots"
+    rule: "Reconcile inputs, products, lower grades, residues, wastewater, removed moisture and losses on a consistent moisture or dry-matter basis; investigate output above input."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_flow_sets
+    applies_to: "Product inputs"
+    rule: "Require one set-only agricultural nutrient card in the cultivation process with no group or fixed UUID. Validate water and transport groups and set-level energy against the registry version, then resolve final foreground exchanges from actual records."
+    source_ids: []
+  - rule_id: validate_periods
+    applies_to: "Crop periods"
+    rule: "Reconcile establishment and productive periods and ensure shared assets and multi-period burdens are attributed once."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: validate_destinations
+    applies_to: "Grades, rejects and residues"
+    rule: "Require mutually exclusive intended-product, lower-grade, rework, recovery, soil-return and waste destinations; do not count rejects as accepted product."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: validate_n2o
+    applies_to: "Direct soil N2O"
+    rule: "Require documented nitrogen activity data, selected IPCC equation, factor and tier; keep direct and indirect pathways separate and avoid double counting."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validate_conditioning
+    applies_to: "Conditional conditioning routes"
+    rule: "Confirm each declared wilting, drying, chopping, baling, pelleting, cleaning or grading operation occurred and has inputs, output state, losses and handoff recorded; omit inactive routes."
+    source_ids:
+      - fao-grassland-forage
+  - rule_id: validate_ranges
+    applies_to: "All inventory cards"
+    rule: "Check each Range against its amount rule, unit, denominator and route condition. Treat reasoned estimates as replaceable screening values before reviewed or active use."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Primary foreground production and first-handoff dataset for one named forage product"
+  downstream_use: "secondary_dataset for foreground process packages and lifecyclemodel projections; background_dataset only when boundary and representativeness are suitable"
+  allowed_use: "One named CPC 01919 forage at declared site, crop period, production system, moisture/dry matter, form and gate"
+  excluded_use: "Average of all forage; maize forage; alfalfa; straw/husks; compound feed; grazing service; later feed manufacture"
+  required_metadata: "species/product; plant part; variety when known; field and geography; crop period; production and harvest route; moisture/dry matter; form and grade; gate; input records; conditioning operations; attribution method"
+  required_quality_disclosure: "UUID gaps; measurement and source coverage; period attribution; Range evidence tier; moisture and mass balance; shared-asset allocation; emission method; site and year representativeness"
+  update_trigger: "New product or route; changed gate, form or moisture state; new verified reference identity; updated crop-period, attribution, emission or conditioning evidence; replacement of provisional Ranges with reviewed evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-01919"
+    type: "official_guidance"
+    reference: "UNSD, CPC Version 3.0 Explanatory Notes, code 01919, https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Classification scope and named examples"
+  - id: "fao-grassland-forage"
+    type: "handbook"
+    reference: "FAO, Grassland Index and forage conservation resources, https://www.fao.org/4/x7660e/x7660e00.htm"
+    used_for: "Forage production, harvest and first-conservation route structure; moisture and dry-matter reporting prompts"
+  - id: "ipcc-2019-managed-soils"
+    type: "official_guidance"
+    reference: "2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil direct N2O calculation and nitrogen activity data"
+  - id: "iso-14044-allocation"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html"
+    used_for: "Subdivision, co-product attribution and shared burden decisions"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Physical mass-balance identity on a consistent moisture basis"
+    used_for: "Lot reconciliation and QA; not a product-specific yield factor"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:0982aaba15bcdf341953b2c61f8f9b0112463b8b65aaa73a726f6a65d83813b9"
+  generated_content_sha256: "sha256:a6b758eabd95b5a01afd63944802f7aea5e55e3e02d2b8a1987608a0009485f8"

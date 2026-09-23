@@ -1,10 +1,824 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01192"
-  title: "Buckwheat"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.buckwheat"
+  classification_refs: "CPC 3.0: 01192 Buckwheat"
+  covered_products: "harvested buckwheat grain for food, feed, or further processing, at the farm gate"
+  excluded_products: "certified buckwheat seed; cover-crop, green-manure, forage, hay, silage, grazing, or pollination service; dehulled groats, flour, prepared foods, and downstream logistics"
+  representative_product: "unprocessed harvested buckwheat grain"
+  production_route: "managed buckwheat cultivation, harvest, and conditional on-farm grain conditioning"
+  market_state: "unprocessed grain at farm gate, with moisture, impurity, damage, and intended-use state declared"
+functional_unit:
+  what: "buckwheat grain at the farm gate"
+  how_much: "1,000 kg as-received grain"
+  how_well: "harvested, unprocessed grain meeting declared moisture, impurity, damage, and intended-use specifications"
+  how_long_or_cycle: "one declared crop cycle"
+  reference_flow_link: "terminal grain output from buckwheat_field_production when conditioning is absent, otherwise from farm_gate_buckwheat_conditioning"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include field preparation, sowing, crop management, harvest, and on-farm cleaning or drying performed before the farm-gate hand-off."
+      source_ids:
+        - cornell-buckwheat-production
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil emissions"
+      rule: "Include direct and indirect nitrogen-related emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - emep-eea-2023-guidebook
+    - rule_id: boundary_residue_fate
+      applies_to: "straw and crop residues"
+      rule: "Distinguish residues returned to soil, burned, removed as product, and removed as waste; prevent double counting residue nitrogen and exported straw."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_post_farm_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, storage, dehulling, milling, flour or groat production, feed manufacture, food processing, and use unless the study explicitly extends beyond this PCR."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "prepared field at the start of the buckwheat crop cycle, with seed and purchased management inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed buckwheat grain production"
+  product_classification_scope: "cultivated buckwheat grain corresponding to CPC 3.0 code 01192"
+  recursive_input_rule: "purchased or retained buckwheat for sowing is an explicit seed input linked to a distinct upstream seed-supply dataset and must not loop to this grain process"
+  upstream_dataset_requirement: "compatible upstream datasets for seed, fertilizers, crop-protection formulations, fuels, electricity, irrigation supply, and contracted services"
+  disclosure: "cultivar, crop season, geography, field area, crop dates, previous crop, tillage, irrigation, yield, moisture, residue fate, and conditioning boundary"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Buckwheat, production mix, at farm gate, harvested grain, unprocessed"
+    uuid: "7f337a9e-f24a-4d48-841e-0b5326d028d7"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or variety"
+    - "production geography"
+    - "harvest year"
+    - "crop season"
+    - "moisture at hand-off"
+    - "impurity and damage basis"
+    - "intended use"
+    - "conditioning included or excluded"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "reference buckwheat grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report as-received mass and measured moisture; retain the moisture basis for every dry-matter conversion."
+  - id: area_to_reference_conversion
+    applies_to: "area-based field flows"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Divide crop-cycle totals per hectare by marketable grain yield on the same area and cycle before scaling to 1,000 kg grain."
+  - id: nutrient_content_basis
+    applies_to: "nutrient applications"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, or kg K2O"
+    rule: "Preserve formulated product mass and declared nutrient-content basis as separate fields."
+process_map:
+  - id: buckwheat_field_production
+    name: "Buckwheat field production and harvest"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production and harvest"
+    quantitative_reference: "cultivated hectare and harvested grain mass for one crop cycle"
+  - id: farm_gate_buckwheat_conditioning
+    name: "On-farm buckwheat grain conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "cleaning, drying, sorting, or temporary handling occurs before farm-gate hand-off and is not embedded in field records"
+    role: "prepare harvested grain to declared market state"
+    quantitative_reference: "incoming and accepted grain mass"
+process_inventory:
+  - id: buckwheat_field_production
+    label: "Buckwheat field production and harvest"
+    inputs:
+      product:
+        - row_id: buckwheat_seed_input
+          role: "Buckwheat seed for sowing"
+          name: "Buckwheat seed for sowing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or retained buckwheat seed crossing into the crop cycle. Do not substitute the harvested-grain identity for seed identity."
+          amount:
+            expression: "measured seed mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted with same-cycle yield"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "45"
+                upper: "100"
+                unit: "kg seed/ha"
+                basis: "drilled or comparable establishment; document justified rates outside the range"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: buckwheat_field_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N/ha"
+                basis: "one crop cycle; replace with regional soil-test and agronomic evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg P2O5/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "160"
+                unit: "kg K2O/ha"
+                basis: "one crop cycle; replace with soil-test and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation only where water is applied to the buckwheat field; rainfed production records zero applied irrigation with supporting field evidence."
+          amount:
+            expression: "metered or calculated irrigation volume by field and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "m3/ha"
+                basis: "one crop cycle; replace with local water-balance evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_diesel_input
+          role: "Diesel for field machinery"
+          name: "Diesel fuel for mobile agricultural machinery"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy carrier or mass / L or kg"
+          description: "Record diesel consumed by field preparation, sowing, crop care, and harvest machinery when fuel use crosses the foreground boundary."
+          amount:
+            expression: "tank records, invoices, or contractor activity converted to fuel mass or energy with the carrier identity retained"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "140"
+                unit: "L/ha"
+                basis: "one crop cycle including harvest; replace with measured or contractor records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection formulation supplied"
+          name: "Crop-protection formulation for buckwheat production"
+          flow_type: "product"
+          property_unit: "Mass of formulation / kg"
+          description: "Record each herbicide, insecticide, fungicide, or other formulation separately when applied; do not aggregate distinct products into a generic crop-protection identity."
+          amount:
+            expression: "sum measured formulation mass by product and application event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12"
+                unit: "kg formulation/ha"
+                basis: "one crop cycle; record product identity and active ingredient for every application"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_buckwheat_grain_output
+          role: "Harvested buckwheat grain at farm gate"
+          name: "Buckwheat, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7f337a9e-f24a-4d48-841e-0b5326d028d7"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record saleable or transferred harvested grain at the declared farm-gate moisture and impurity state. This is the terminal reference output when no conditioning process is included."
+          amount:
+            expression: "measured harvested grain mass at declared moisture and quality state"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "3,000"
+                unit: "kg grain/ha"
+                basis: "one crop cycle; replace with regional yield records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: buckwheat_straw_output
+          role: "Buckwheat straw removed for declared use"
+          name: "Buckwheat straw for declared use"
+          flow_type: "product"
+          property_unit: "Mass / kg dry or as-received straw"
+          description: "Record straw as a product only when it is deliberately removed from the field and transferred to a named use; residues retained or incorporated in the field remain part of field management."
+          amount:
+            expression: "measured removed straw mass by destination and moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4,000"
+                unit: "kg straw/ha"
+                basis: "zero where all residues remain in the field; declare destination and moisture basis"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_loss_waste_output
+          role: "Harvest and field losses"
+          name: "Buckwheat harvest loss waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record grain and other harvest losses as waste when they are measured or estimated from a documented field or harvest balance and do not become a useful co-product."
+          amount:
+            expression: "measured or reconciled loss mass by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg/1,000 kg harvested grain"
+                basis: "field and harvest losses not transferred to a declared use"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: field_n2o_air_output
+          role: "Nitrous oxide released to ambient air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate soil nitrous oxide from collected nitrogen inputs and residue activity using an applicable IPCC tier or reviewed regional method."
+          amount:
+            expression: "calculated from collected activity data and declared factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+        - row_id: field_ammonia_air_output
+          role: "Ammonia released to ambient air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate ammonia volatilization by nutrient product, application method, timing, and applicable local method."
+          amount:
+            expression: "calculated from nitrogen application records and applicable factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - emep-eea-2023-guidebook
+            ranges: []
+        - row_id: field_nitrate_water_output
+          role: "Nitrate released to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Record nitrate leaching or runoff only when supported by a geographically applicable model, monitored balance, or reviewed inventory method."
+          amount:
+            expression: "calculated from nitrogen inputs, crop and soil conditions, drainage or runoff, and selected method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and converted to 1,000 kg grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+  - id: farm_gate_buckwheat_conditioning
+    label: "On-farm buckwheat grain conditioning"
+    inputs:
+      product:
+        - row_id: harvested_grain_conditioning_input
+          role: "Harvested grain entering conditioning"
+          name: "Buckwheat, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7f337a9e-f24a-4d48-841e-0b5326d028d7"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record measured grain transferred from field production into cleaning, drying, sorting, or temporary handling before the farm-gate hand-off."
+          amount:
+            expression: "measured incoming grain mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning batch and converted to 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_electricity_input
+          role: "Electricity supplied to conditioning"
+          name: "Electricity supply for grain conditioning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by cleaning, conveying, ventilation, and drying controls."
+          amount:
+            expression: "metered electricity or equipment power multiplied by verified operating time"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kWh/1,000 kg grain"
+                basis: "included conditioning before farm-gate hand-off"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_heat_input
+          role: "Thermal energy supplied to drying"
+          name: "Process heat for grain drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "purchased-process-heat"
+          property_unit: "Energy / MJ"
+          description: "Record supplied heat or fuel energy used to reduce grain moisture."
+          amount:
+            expression: "measured fuel or heat converted to delivered energy while retaining carrier identity"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1,200"
+                unit: "MJ/1,000 kg grain"
+                basis: "zero without active drying; broad candidate estimate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_buckwheat_grain_output
+          role: "Conditioned buckwheat grain at farm gate"
+          name: "Buckwheat, production mix, at farm gate, harvested grain, unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7f337a9e-f24a-4d48-841e-0b5326d028d7"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record accepted grain after included cleaning or drying at the declared farm-gate state."
+          amount:
+            expression: "measured accepted grain mass at declared moisture and impurity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference grain"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "14"
+                unit: "percent moisture, wet basis"
+                basis: "market state must be declared; replace this broad screen with buyer or storage specification"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: buckwheat_screenings_output
+          role: "Buckwheat screenings directed to use"
+          name: "Buckwheat grain screenings for declared use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record buckwheat-dominant screenings or broken kernels as a product only when measured and deliberately handed off for feed or another declared use."
+          amount:
+            expression: "measured useful screenings by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "conditioning batch; zero when no useful screenings are handed off"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_reject_waste_output
+          role: "Foreign matter and rejected grain"
+          name: "Grain-conditioning foreign matter and rejected grain"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record removed stones, soil, weed material, contaminated grain, and other rejects by material class and destination."
+          amount:
+            expression: "measured reject mass by material class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg/1,000 kg incoming grain"
+                basis: "conditioning batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_by_subdivision
+    applies_to: "field production and conditioning"
+    rule: "Prefer separate records for field production and conditioning and separate measurement of grain, screenings, straw, and waste before allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_field_residue
+    applies_to: "residues retained, incorporated, or burned"
+    rule: "Do not treat retained residues as co-products; include their management and emissions in field production and prevent double counting with removed straw."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_removed_straw
+    applies_to: "marketable removed straw"
+    rule: "If subdivision cannot resolve shared burdens, apply economic allocation using contemporaneous farm-gate values; disclose moisture bases and test mass allocation as sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_conditioning_outputs
+    applies_to: "useful screenings or downgraded grain"
+    rule: "Treat an intended output with positive value as co-product and other rejects as waste; use economic allocation at conditioning hand-off only when subdivision is infeasible."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_activity_records
+      process_id: "buckwheat_field_production"
+      flow_role: "seed, nutrients, irrigation, fuel, crop protection"
+      record_type: "field log, invoice, application record, meter, or contractor record"
+      raw_fields: "field_id; area; cultivar; input_product; amount; nutrient_content; date; operation; contractor_scope"
+      collection_method: "reconcile physical inputs and operations to each field and crop cycle"
+      unit: "kg; kg nutrient; L; m3; ha"
+      frequency: "each event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum by physical identity; calculate nutrients without merging products; normalize with same-cycle area and yield"
+      quality_evidence: "invoices; labels; calibrated meters; field logs"
+    - protocol_id: cp_harvest_output_records
+      process_id: "buckwheat_field_production"
+      flow_role: "grain, removed straw, harvest losses, residue fate"
+      record_type: "weighbridge, yield monitor, bale record, moisture test"
+      raw_fields: "field_id; harvest_date; grain_mass; grain_moisture; straw_mass; straw_moisture; loss_mass; residue_fate; destination"
+      collection_method: "reconcile harvest and removed masses to field area and crop cycle"
+      unit: "kg; percent; ha"
+      frequency: "each harvest"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "sum accepted grain, each residue destination, and losses separately"
+      quality_evidence: "scale or yield-monitor calibration; moisture records; destination evidence"
+    - protocol_id: cp_field_emission_activity
+      process_id: "buckwheat_field_production"
+      flow_role: "emissions to air and water"
+      record_type: "nutrient, soil, weather, residue, and emission-model records"
+      raw_fields: "fertilizer_N; organic_N; residue_N; application_method; soil; climate; drainage; factor_set; model_version"
+      collection_method: "calculate each emission with one declared geographically applicable method"
+      unit: "kg N; kg emission; ha"
+      frequency: "each event and crop-cycle calculation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "calculate per field, area-weight, then normalize by same-cycle yield"
+      quality_evidence: "source records; factor provenance; model file; nutrient-balance review"
+    - protocol_id: cp_conditioning_records
+      process_id: "farm_gate_buckwheat_conditioning"
+      flow_role: "grain, energy, screenings, rejects"
+      record_type: "batch ticket, scale, moisture test, meter, fuel, and destination record"
+      raw_fields: "batch_id; incoming_mass; incoming_moisture; electricity; heat; accepted_mass; accepted_moisture; screenings; rejects"
+      collection_method: "reconcile batches and meters to accepted output"
+      unit: "kg; percent; kWh; MJ"
+      frequency: "each batch or meter period"
+      temporal_coverage: "all pre-gate conditioning"
+      site_scope: "all included equipment and batches"
+      aggregation_rule: "sum matched batches; allocate shared meters by time or processed mass; close wet-mass balance"
+      quality_evidence: "calibrated scales and moisture meters; meter reconciliation"
+  calculation_rules:
+    - id: calc_area_to_reference_flow
+      applies_to: "field flows"
+      rule: "crop-cycle amount per hectare / marketable grain yield per hectare × 1,000 kg"
+      inputs:
+        - "flow amount"
+        - area
+        - "same-cycle grain mass"
+      output: "amount per 1,000 kg grain"
+      source_ids: []
+    - id: calc_nutrient_content
+      applies_to: "fertilizer and amendment inputs"
+      rule: "product mass × declared nutrient fraction; preserve elemental or oxide-equivalent basis"
+      inputs:
+        - "product identity"
+        - mass
+        - assay
+        - "reporting basis"
+      output: "kg N, kg P2O5, kg K2O by source"
+      source_ids: []
+    - id: calc_managed_soil_n2o
+      applies_to: "soil N2O"
+      rule: "apply selected IPCC tier or regional method to fertilizer N, organic N, returned-residue N, volatilization, and leaching pathways"
+      inputs:
+        - "nitrogen activity"
+        - "residue fate"
+        - "soil and climate"
+        - factors
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_ammonia_volatilization
+      applies_to: "ammonia to air"
+      rule: "calculate by nutrient product, application method, timing, and applicable factor"
+      inputs:
+        - "nitrogen product records"
+        - "application details"
+        - factors
+      output: "kg NH3"
+      source_ids:
+        - emep-eea-2023-guidebook
+    - id: calc_conditioning_mass_balance
+      applies_to: "grain conditioning"
+      rule: "incoming wet grain = accepted grain + useful screenings + rejects + moisture and other measured losses within uncertainty"
+      inputs:
+        - masses
+        - moisture
+        - "loss records"
+      output: "reconciled outputs per accepted grain"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference product"
+      requirement: "Confirm buckwheat rather than wheat, rye, quinoa, or mixed grain; retain cultivar, intended use, state, and hand-off."
+      evidence: "crop, lot, and sales records"
+    - id: dq_temporal_alignment
+      applies_to: "all foreground rows"
+      requirement: "Use inputs, harvest, yield, emissions, and conditioning records from the same crop cycle; disclose proxy years."
+      evidence: "dated field and batch records"
+    - id: dq_mass_and_moisture
+      applies_to: "grain and straw"
+      requirement: "Retain scale or yield-monitor calibration and moisture measurements for every basis conversion."
+      evidence: "calibration and moisture-test records"
+    - id: dq_completeness
+      applies_to: "process map and flows"
+      requirement: "Reconcile every field and conditioning batch and distinguish zero, not applicable, proxy, and missing values."
+      evidence: "field roster; batch reconciliation"
+    - id: dq_identity_resolution
+      applies_to: "parameterized and unmapped flows"
+      requirement: "Resolve every Flow Set reference and unmapped physical exchange to a verified UUID before final TIDAS process publication."
+      evidence: "identity review record"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "terminal output"
+    rule: "Exactly one terminal buckwheat grain output equals 1,000 kg after scaling and declares moisture and quality qualifiers."
+    source_ids: []
+  - rule_id: validation_process_route
+    applies_to: "process map"
+    rule: "Include field production once; include conditioning only before farm-gate hand-off and avoid double counting embedded energy or rejects."
+    source_ids: []
+  - rule_id: validation_crop_cycle_reconciliation
+    applies_to: "field inventory"
+    rule: "Area, inputs, harvest outputs, residue fates, and emissions refer to the same crop cycle and fields."
+    source_ids: []
+  - rule_id: validation_nitrogen_balance
+    applies_to: "nitrogen inventory"
+    rule: "Reconcile nutrient content, returned and removed residue nitrogen, and emission pathways with methods and factors disclosed."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_conditioning_balance
+    applies_to: "conditioning"
+    rule: "Reconcile incoming wet grain with accepted grain, screenings, rejects, moisture loss, and other measured loss within uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_flow_identity
+    applies_to: "every flow"
+    rule: "Accept only exact verified UUIDs as fixed and applicable existing Flow Sets as parameterized; otherwise retain unmapped coverage."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground buckwheat grain production dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "farm-gate LCA of buckwheat grain and downstream systems preserving declared geography, season, moisture, residue, allocation, and conditioning context"
+  excluded_use: "certified seed, cover-crop or green-manure service, forage, milling, dehulling, feed manufacture, food processing, or another crop without reviewed proxy decision"
+  required_metadata: "geography; cultivar; crop season; harvest year; area; yield; moisture; intended use; tillage; irrigation; residue fate; conditioning; allocation; identity resolution"
+  required_quality_disclosure: "foreground coverage; proxy inputs; missing records; range exceedances; emission methods; meter and mass-balance reconciliations"
+  update_trigger: "new reviewed buckwheat evidence, material route change, revised emission method, changed Flow Set or UUID identity, or representative data outside QA ranges"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "cornell-buckwheat-production"
+    type: "extension_guidance"
+    reference: "Cornell University Cooperative Extension, buckwheat production and cover-crop guidance"
+    used_for: "crop route, establishment, harvest, and boundary context"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "soil N2O, residue nitrogen, volatilization and leaching pathways, and double-counting controls"
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "European Environment Agency, EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023"
+    used_for: "agricultural ammonia method and QA context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy and disclosure"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to matched grain-conditioning batches"
+    used_for: "conditioning mass-balance calculation and validation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f205d8bd7ac046457b7178716fa0ef265b57ebf98e0f8793d704a97d8f2f5544"
+  generated_content_sha256: "sha256:b78fd047d5ce6c730e38dd0c3ab7200933a9986d85471b5c871337dfb460947d"

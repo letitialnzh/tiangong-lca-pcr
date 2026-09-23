@@ -1,10 +1,742 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01212"
-  title: "Cabbages"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cabbages"
+  classification_refs: "CPC 3.0: 01212 Cabbages"
+  covered_products: "Fresh headed cabbages harvested for food markets, including green, red, white, and savoy market forms when classified as CPC 01212"
+  excluded_products: "Cauliflower; broccoli; kohlrabi; non-headed leafy vegetables; cabbage seed; fermented, preserved, frozen, dried, or otherwise processed cabbage"
+  representative_product: "Fresh marketable cabbage head"
+  production_route: "Soil-based managed cultivation followed by harvest, trimming, and field sorting"
+  market_state: "Fresh, intact or minimally trimmed cabbage at farm gate; packaging and cooling state declared separately"
+functional_unit:
+  what: "Fresh marketable cabbage at the declared farm-gate hand-off"
+  how_much: "1 kg"
+  how_well: "Saleable heads meeting the producer's declared variety, maturity, trimming, defect, and packaging specification"
+  how_long_or_cycle: "One declared cabbage crop cycle, normalized to delivered saleable mass"
+  reference_flow_link: "fresh_cabbage_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_farm_gate
+      applies_to: "Default cabbage product system"
+      rule: "Include establishment, field management, irrigation, nutrient and crop-protection application, direct managed-soil emissions, harvest, trimming, field sorting, and internal movement up to the declared farm-gate hand-off."
+      source_ids:
+        - fao-postharvest-loss-manual
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_upstream_inputs
+      applies_to: "Purchased inputs and utilities"
+      rule: "Represent production of purchased planting material, fertilizers, crop-protection products, energy, and supplied water through linked upstream datasets; do not duplicate their production inside cultivation."
+      source_ids:
+        - codex-fresh-produce-hygiene
+    - rule_id: boundary_post_farm_gate
+      applies_to: "Cooling, packing, storage, and distribution after farm-gate hand-off"
+      rule: "Exclude by default and add as explicit downstream processes when the declared product hand-off includes them."
+      source_ids:
+        - fao-horticultural-marketing
+    - rule_id: boundary_residue_fate
+      applies_to: "Outer leaves, rejected heads, and other crop residues"
+      rule: "Record each physically distinct residue and its destination; include field-return effects in cultivation and link off-site treatment or use to a separate downstream dataset."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - fao-postharvest-loss-manual
+boundary_abstraction:
+  declared_starting_condition: "Purchased or internally supplied cabbage seed or transplant ready for establishment in the declared field"
+  starting_condition_role: "Biological planting input entering managed cultivation"
+  product_classification_scope: "Fresh headed cabbage products classified under CPC 3.0 01212"
+  recursive_input_rule: "Any cabbage product re-entering the system as planting or market input is recorded at its actual hand-off state and linked to a separate upstream dataset rather than recursively reproducing this PCR boundary."
+  upstream_dataset_requirement: "Use upstream datasets for planting material, nutrient products, crop-protection products, supplied water, energy carriers, packaging, and any contracted service crossing the boundary."
+  disclosure: "Declare geography, season, field area, crop duration, cabbage type or variety, planting route, irrigation regime, nutrient regime, harvest maturity, trimming and sorting practice, residue destinations, and farm-gate hand-off."
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Cabbage"
+    uuid: "aed02ce8-12e2-4410-be27-38b4abc01fc4"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cabbage type or variety"
+    - "production geography"
+    - "cultivation system"
+    - "harvest maturity"
+    - "trimming state"
+    - "moisture basis"
+    - "packaging state"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Fresh cabbage reference product and all cabbage product or residue mass rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report wet mass at the declared farm-gate state; disclose any dry-matter conversion and measured moisture basis."
+  - id: nutrient_mass_basis
+    applies_to: "Nitrogen, phosphorus, and potassium nutrient inputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg nutrient"
+    rule: "Convert formulated fertilizer quantities to kg N, kg P2O5, and kg K2O using documented composition; retain formulated-product quantities separately."
+  - id: water_volume_basis
+    applies_to: "Irrigation water supplied to cultivation"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record water delivered to the field and distinguish supplied water from natural precipitation."
+  - id: land_occupation_basis
+    applies_to: "Occupied agricultural land"
+    required_property_ref:
+      name: "Area-time"
+      uuid: ""
+    required_unit: "m2*a"
+    rule: "Calculate occupied area multiplied by occupation duration and normalize it to the declared crop cycle."
+  - id: nitrous_oxide_basis
+    applies_to: "Managed-soil nitrous oxide emission"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg N2O-N"
+    rule: "Calculate and report N2O on an N-mass basis; provide a transparent conversion when a downstream dataset requires kg N2O."
+process_map:
+  - id: field_cultivation
+    name: "Managed cabbage field cultivation"
+    inclusion: "required"
+    inclusion_condition: "Always included"
+    role: "Establish and manage the cabbage crop to harvestable maturity"
+    quantitative_reference: "One declared field and crop cycle"
+  - id: harvest_field_preparation
+    name: "Harvest, trimming, and field sorting"
+    inclusion: "required"
+    inclusion_condition: "Always included"
+    role: "Remove mature heads, trim and sort them, and establish the farm-gate product state"
+    quantitative_reference: "kg fresh cabbage entering harvest and field preparation"
+process_inventory:
+  - id: field_cultivation
+    label: "Managed cabbage field cultivation"
+    inputs:
+      product:
+        - row_id: cabbage_planting_material
+          role: "Cabbage planting material"
+          name: "Cabbage seed or transplant planting material"
+          flow_type: "product"
+          property_unit: "Number of items / item, or Mass / kg when seed is recorded by mass"
+          description: "Cabbage seed or transplant material crosses the cultivation boundary when the crop is established. The foreground record must identify the actual physical planting product rather than treating all seed and transplants as interchangeable."
+          amount:
+            expression: "Record purchased and internally supplied planting material by type and convert to established plants or seed mass without combining unlike units."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "10000"
+                upper: "120000"
+                unit: "established plants/ha"
+                basis: "broad screening interval per planted hectare; replace with variety- and system-specific foreground evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg N/ha"
+                basis: "broad screening interval per planted hectare; replace with local nutrient-plan evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "350"
+                unit: "kg P2O5/ha"
+                basis: "broad screening interval per planted hectare; replace with local nutrient-plan evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "600"
+                unit: "kg K2O/ha"
+                basis: "broad screening interval per planted hectare; replace with local nutrient-plan evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Supplied irrigation water is recorded at the field delivery point; natural precipitation is not recorded as this product input."
+          amount:
+            expression: "Record metered or calculated water delivered to the field, net of documented recirculation returned within the same system."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids:
+                - fao-irrigation-handbook
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15000"
+                unit: "m3/ha"
+                basis: "broad screening interval per planted hectare and crop cycle; zero is permitted for rainfed production"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_operation_energy
+          role: "Field-operation mechanical energy"
+          name: "Mechanical-power energy supply for field operations"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Energy delivered for tillage, planting, irrigation pumping, nutrient application, crop protection, and field movement is recorded by actual carrier or provider before final dataset publication."
+          amount:
+            expression: "Sum carrier-specific energy used by field operations and retain the carrier, equipment, and conversion basis."
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/ha"
+                basis: "broad first-pass interval for direct field-operation energy; replace with carrier-specific records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop-protection active ingredients"
+          name: "Crop-protection active ingredient, specified by foreground record"
+          flow_type: "product"
+          property_unit: "Mass / kg active ingredient"
+          description: "Crop-protection inputs cross the boundary as the actual herbicide, insecticide, fungicide, or other active ingredients applied. Foreground records must retain each physical identity and formulated product separately."
+          amount:
+            expression: "Calculate each active ingredient from formulated-product quantity and composition; do not aggregate unlike substances into one final exchange."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation_inputs
+              source_ids:
+                - codex-fresh-produce-hygiene
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg active ingredient/ha"
+                basis: "broad screening total across all applications; final exchanges remain substance-specific"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: agricultural_land_occupation
+          role: "Agricultural land occupation"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "The occupied field area crosses the environmental resource boundary for the duration of the cabbage crop cycle."
+          amount:
+            expression: "Calculate occupied area multiplied by the fraction of a year between field establishment and harvest completion."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_area_cycle
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        - row_id: mature_cabbage_crop_handoff
+          role: "Mature cabbage crop in the field"
+          name: "Mature cabbage crop in field before harvest"
+          flow_type: "product"
+          property_unit: "Mass / kg wet crop"
+          description: "This internal product hand-off represents physically mature cabbage heads before cutting, trimming, and field sorting. Its mass is reconciled with saleable heads and physically distinct residue streams."
+          amount:
+            expression: "Determine harvestable standing crop mass from harvest records and mass reconciliation."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_output
+              source_ids:
+                - fao-horticultural-marketing
+            ranges:
+              - role: qa_guardrail
+                lower: "5000"
+                upper: "150000"
+                unit: "kg wet crop/ha"
+                basis: "broad screening interval before harvest trimming and sorting"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: managed_soil_n2o
+          role: "Nitrous oxide from managed soil"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O-N"
+          description: "Direct and applicable indirect managed-soil nitrous oxide is calculated from collected nitrogen inputs, crop-residue nitrogen, and the selected IPCC or justified higher-tier method."
+          amount:
+            expression: "Calculate direct and applicable indirect N2O-N from collected nitrogen pathways without double counting residue nitrogen."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_soil_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "25"
+                unit: "kg N2O-N/ha"
+                basis: "broad first-pass interval per crop cycle; replace with calculated method output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_field_preparation
+    label: "Harvest, trimming, and field sorting"
+    inputs:
+      product:
+        - row_id: mature_cabbage_crop_input
+          role: "Mature cabbage crop received from field cultivation"
+          name: "Mature cabbage crop in field before harvest"
+          flow_type: "product"
+          property_unit: "Mass / kg wet crop"
+          description: "The mature standing crop hand-off enters harvest and field preparation with the same physical state and mass basis used by the cultivation output."
+          amount:
+            expression: "Equal the corresponding mature_cabbage_crop_handoff quantity for the same field and crop cycle."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_output
+              source_ids:
+                - fao-horticultural-marketing
+            ranges:
+              - role: qa_guardrail
+                lower: "5000"
+                upper: "150000"
+                unit: "kg wet crop/ha"
+                basis: "same mature-crop mass interval as the corresponding cultivation output before harvest trimming and sorting"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fresh_cabbage_output
+          role: "Fresh marketable cabbage"
+          name: "Cabbage"
+          flow_type: "product"
+          flow_ref:
+            uuid: "aed02ce8-12e2-4410-be27-38b4abc01fc4"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Saleable trimmed cabbage heads leave the foreground system at the declared farm-gate hand-off. The flow identity is fixed, while variety, maturity, trimming, moisture, packaging, and location qualifiers remain foreground facts."
+          amount:
+            expression: "Weigh or reconcile saleable cabbage mass at the declared farm-gate hand-off."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle and per 1 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_outputs
+              source_ids:
+                - fao-horticultural-marketing
+            ranges:
+              - role: qa_guardrail
+                lower: "5000"
+                upper: "120000"
+                unit: "kg fresh cabbage/ha"
+                basis: "broad screening interval after trimming and field sorting"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: outer_leaves_field_return
+          role: "Outer cabbage leaves returned to field"
+          name: "Fresh outer cabbage leaves returned to field"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet residue"
+          description: "Outer leaves removed during harvest and trimming are recorded separately when they remain on or are returned to the field; they are not combined with rejected whole heads sent elsewhere."
+          amount:
+            expression: "Weigh, estimate from sampled mass fractions, or reconcile wet outer-leaf mass returned to the field."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_outputs
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80000"
+                unit: "kg wet leaves/ha"
+                basis: "broad screening interval for leaves removed and returned to the field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rejected_heads_offsite
+          role: "Rejected cabbage heads sent off-site"
+          name: "Rejected fresh cabbage heads sent off-site, destination specified"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet heads"
+          description: "Whole or substantially intact heads rejected during field sorting are recorded separately by actual destination, because off-site animal feed, recovery, composting, treatment, and disposal are different hand-offs."
+          amount:
+            expression: "Weigh or reconcile rejected-head mass and record each off-site destination separately in the foreground package."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha planted cabbage crop per crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_outputs
+              source_ids:
+                - fao-postharvest-loss-manual
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg wet heads/ha"
+                basis: "broad screening interval for rejected heads leaving the field system"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_subdivide_first
+    applies_to: "Cultivation and harvest processes"
+    rule: "Use process subdivision and mass reconciliation before allocation; do not allocate between an internal standing-crop hand-off and the same crop after harvest."
+    source_ids:
+      - fao-horticultural-marketing
+  - rule_id: allocation_residue_classification
+    applies_to: "Outer leaves and rejected heads"
+    rule: "Classify field-returned leaves as residues and off-site rejected heads by actual destination; do not treat either as an intended co-product unless evidence shows a deliberate product function and market hand-off."
+    source_ids:
+      - ipcc-2019-managed-soils
+      - fao-postharvest-loss-manual
+  - rule_id: allocation_intended_coproduct
+    applies_to: "Any additional revenue-bearing intended output"
+    rule: "If subdivision cannot isolate an additional intended output, apply economic allocation using documented farm-gate revenues for the same reporting period and disclose prices, currency, period, and sensitivity."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation_inputs
+      process_id: "field_cultivation"
+      flow_role: "planting material, nutrient products, irrigation water, crop-protection products"
+      record_type: "purchase, application, meter, and field-operation records"
+      raw_fields: "product identity; lot; quantity; composition; active ingredient; application date; treated area; delivered water"
+      collection_method: "Reconcile invoices, application logs, composition labels, irrigation meters, and field logs"
+      unit: "item; kg product; kg nutrient; kg active ingredient; m3"
+      frequency: "Each delivery and application"
+      temporal_coverage: "Complete crop cycle"
+      site_scope: "Each field and crop cycle"
+      aggregation_rule: "Sum by physical identity and convert with documented composition; retain zero-use declarations"
+      quality_evidence: "invoices; labels; calibration records; application logs; meter readings"
+    - protocol_id: cp_field_energy
+      process_id: "field_cultivation"
+      flow_role: "field-operation energy"
+      record_type: "fuel, electricity, and equipment-hour records"
+      raw_fields: "carrier identity; quantity; unit; equipment; operation; meter or invoice period"
+      collection_method: "Reconcile carrier purchases and meters to equipment and field-operation logs"
+      unit: "L; kg; kWh; MJ; h"
+      frequency: "Each operation or billing period"
+      temporal_coverage: "Complete crop cycle"
+      site_scope: "Each field and equipment set"
+      aggregation_rule: "Convert each carrier to energy with documented factors and prevent double counting purchased energy and equipment estimates"
+      quality_evidence: "invoices; meters; equipment logs; conversion-factor source"
+    - protocol_id: cp_crop_area_cycle
+      process_id: "field_cultivation"
+      flow_role: "agricultural land occupation"
+      record_type: "cadastral, GIS, and crop-calendar records"
+      raw_fields: "planted area; establishment date; harvest-completion date; shared-area fraction"
+      collection_method: "Measure or verify field area and crop occupation dates"
+      unit: "ha; date"
+      frequency: "Once per field and crop cycle"
+      temporal_coverage: "Establishment through harvest completion"
+      site_scope: "Each field"
+      aggregation_rule: "Area multiplied by occupation duration; allocate shared field area by documented occupied fraction"
+      quality_evidence: "GIS or cadastral record; crop calendar"
+    - protocol_id: cp_crop_output
+      process_id: "field_cultivation"
+      flow_role: "mature cabbage crop hand-off"
+      record_type: "harvest and sample-mass records"
+      raw_fields: "harvested area; head count; sampled head mass; gross harvested mass; field identifier"
+      collection_method: "Weigh harvest lots or calculate from stratified head-count and mass samples"
+      unit: "kg wet crop"
+      frequency: "Each harvest event"
+      temporal_coverage: "Full harvest window"
+      site_scope: "Each field and crop cycle"
+      aggregation_rule: "Sum gross mature crop and reconcile with saleable and residue outputs"
+      quality_evidence: "calibrated scale records; sampling plan; harvest log"
+    - protocol_id: cp_soil_emissions
+      process_id: "field_cultivation"
+      flow_role: "managed-soil nitrous oxide"
+      record_type: "nutrient, residue, soil-amendment, volatilization, leaching, and field-management records"
+      raw_fields: "N inputs by pathway; residue dry matter and N content; removal fraction; emission factors; conversion basis"
+      collection_method: "Apply the declared IPCC tier or justified higher-tier model to collected field records"
+      unit: "kg N; kg dry matter; fraction; kg N2O-N"
+      frequency: "Each application and annual or crop-cycle calculation"
+      temporal_coverage: "Complete crop cycle with declared annualization"
+      site_scope: "Each field and emission stratum"
+      aggregation_rule: "Calculate pathway emissions separately, sum without double counting, and normalize to crop output"
+      quality_evidence: "source records; factor version; calculation workbook; independent formula check"
+    - protocol_id: cp_harvest_outputs
+      process_id: "harvest_field_preparation"
+      flow_role: "saleable heads, outer leaves, rejected heads"
+      record_type: "scale, lot, grading, and destination records"
+      raw_fields: "incoming crop mass; saleable mass; leaf residue mass; rejected-head mass; destination; variety; maturity; trimming and packaging state"
+      collection_method: "Weigh each output where practicable and use documented representative sampling for unweighed field residues"
+      unit: "kg wet mass"
+      frequency: "Each harvest or dispatch lot"
+      temporal_coverage: "Full harvest and field-dispatch window"
+      site_scope: "Each field, lot, and destination"
+      aggregation_rule: "Sum by output state and destination; reconcile all outputs to incoming mature crop within the declared tolerance"
+      quality_evidence: "calibrated scale; sample sheets; grade records; dispatch records; mass-balance check"
+  calculation_rules:
+    - id: calc_nutrient_mass
+      applies_to: "Nutrient inputs"
+      rule: "nutrient mass = formulated-product mass × declared nutrient mass fraction; retain N, P2O5, and K2O separately"
+      inputs:
+        - "product mass"
+        - composition
+      output: "kg N; kg P2O5; kg K2O"
+      source_ids: []
+    - id: calc_field_energy
+      applies_to: "Field-operation energy"
+      rule: "carrier energy = measured carrier quantity × documented lower-heating-value or electricity conversion; sum only after retaining carrier identities"
+      inputs:
+        - "carrier quantity"
+        - "conversion factor"
+      output: "MJ by carrier and total MJ"
+      source_ids: []
+    - id: calc_land_occupation
+      applies_to: "Agricultural land occupation"
+      rule: "occupied area-time = planted area × occupation days / 365.25"
+      inputs:
+        - "planted area"
+        - "establishment date"
+        - "harvest-completion date"
+      output: "m2*a"
+      source_ids: []
+    - id: calc_mature_crop
+      applies_to: "Mature cabbage crop hand-off"
+      rule: "gross mature crop = measured gross harvest or sampled mean head mass × harvested head count"
+      inputs:
+        - "gross mass or head-count sample records"
+      output: "kg wet mature crop"
+      source_ids:
+        - fao-horticultural-marketing
+    - id: calc_harvest_mass_balance
+      applies_to: "Harvest outputs"
+      rule: "incoming mature crop = saleable cabbage + outer leaves + rejected heads + documented uncollected loss, within declared uncertainty"
+      inputs:
+        - "all harvest output masses"
+        - "uncollected loss estimate"
+      output: "reconciled kg wet mass and closure ratio"
+      source_ids:
+        - fao-postharvest-loss-manual
+    - id: calc_managed_soil_n2o
+      applies_to: "Managed-soil nitrous oxide"
+      rule: "Apply the declared IPCC direct and applicable indirect N2O equations to collected N inputs and residue pathways; prevent double counting of removed, burned, or field-returned residues."
+      inputs:
+        - "N inputs"
+        - "residue N"
+        - "removal and burning fractions"
+        - "leaching and volatilization parameters"
+        - "selected factors"
+      output: "kg N2O-N per crop cycle"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "All inputs and outputs"
+      requirement: "Retain physical product or substance identity, supplier or source, state, and destination sufficient to resolve every final exchange to a concrete UUID."
+      evidence: "invoices; labels; specifications; dispatch and destination records"
+    - id: dq_temporal
+      applies_to: "Cultivation and harvest inventory"
+      requirement: "Cover one complete representative crop cycle and disclose multi-season aggregation, crop failure, and partial harvests."
+      evidence: "dated crop calendar; field and harvest logs"
+    - id: dq_mass_balance
+      applies_to: "Mature crop and harvest outputs"
+      requirement: "Reconcile saleable heads, outer leaves, rejected heads, and documented field loss to the mature crop input; investigate material closure gaps."
+      evidence: "calibrated scale records; sampling records; reconciliation worksheet"
+    - id: dq_nutrient_emissions
+      applies_to: "Nutrient inputs and managed-soil emissions"
+      requirement: "Preserve nutrient composition, residue fate, calculation tier, factor version, and pathway separation so emissions are reproducible."
+      evidence: "product labels; application logs; residue records; calculation workbook"
+    - id: dq_water_energy
+      applies_to: "Irrigation and field energy"
+      requirement: "Record meter coverage, estimation periods, allocation to the cabbage field, conversion factors, and any shared equipment or utility use."
+      evidence: "meter records; invoices; equipment logs; allocation worksheet"
+validation_rules:
+  - rule_id: validation_reference_identity
+    applies_to: "Reference flow"
+    rule: "Require the fixed cabbage UUID, mass property, mass unit group, kg reference unit, and all required foreground qualifiers."
+    source_ids: []
+  - rule_id: validation_process_completeness
+    applies_to: "Process map and inventory"
+    rule: "Require both declared processes and require every collected or calculated flow row to reference an existing collection protocol."
+    source_ids: []
+  - rule_id: validation_binding_specificity
+    applies_to: "All flow bindings"
+    rule: "Reject a broader Flow Set when a unique verified UUID or narrower justified group exists; require final process exchanges to resolve parameterized and unmapped rows to concrete UUIDs."
+    source_ids: []
+  - rule_id: validation_mass_balance
+    applies_to: "Harvest, trimming, and sorting"
+    rule: "Require reconciliation of incoming mature crop with saleable cabbage, outer leaves, rejected heads, and documented uncollected loss within a declared tolerance."
+    source_ids:
+      - fao-postharvest-loss-manual
+  - rule_id: validation_residue_destination
+    applies_to: "Crop residues"
+    rule: "Require separate identities and destinations for field-returned outer leaves and off-site rejected heads and prevent double counting in residue-N calculations."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_n2o_reproducibility
+    applies_to: "Managed-soil N2O"
+    rule: "Require declared method tier, factor source and version, all nitrogen pathways, conversion basis, and reproducible calculation."
+    source_ids:
+      - ipcc-2019-managed-soils
+published_dataset_profile:
+  dataset_role: "Foreground farm-gate cabbage production dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and identity resolution"
+  allowed_use: "Product carbon footprints, comparative LCA, supply-chain modelling, and agricultural inventory studies consistent with the declared cabbage type, geography, production system, and farm-gate boundary"
+  excluded_use: "Protected or soilless cultivation without added route processes; processed cabbage products; retail or consumption modelling; geographies or systems materially inconsistent with the declared dataset"
+  required_metadata: "cabbage type or variety; geography; field area; season and crop duration; planting material; irrigation; nutrient and crop-protection regimes; harvest maturity; trimming, sorting and packaging state; residue destinations; allocation method; reference-flow qualifiers"
+  required_quality_disclosure: "foreground coverage; measured versus estimated shares; mass-balance closure; meter and scale quality; source and factor versionss; reasoned-estimate replacements; uncertainty and representativeness"
+  update_trigger: "Change in cultivation system, geography, input regime, yield or rejection pattern, residue destination, harvest or farm-gate state, allocation method, platform identity, or material source evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-postharvest-loss-manual"
+    type: "official_guidance"
+    reference: "FAO, Prevention of post-harvest food losses: fruits, vegetables and root crops, https://www.fao.org/4/T0073E/T0073E01.htm"
+    used_for: "Post-harvest quality effects, sorting losses, residue separation, and mass-balance requirements"
+  - id: "fao-horticultural-marketing"
+    type: "official_guidance"
+    reference: "FAO, Horticultural marketing: a resource and training manual for extension officers, https://www.fao.org/4/a0185e/a0185e0c.htm"
+    used_for: "Cabbage harvest maturity, cutting and trimming, handling, sorting, and farm-gate product state"
+  - id: "fao-irrigation-handbook"
+    type: "handbook"
+    reference: "FAO, Technical handbook on pressurized irrigation techniques, https://www.fao.org/4/a1336e/a1336e.pdf"
+    used_for: "Cabbage crop-stage irrigation method context and separation of effective rainfall from irrigation supply"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil N2O calculation and crop-residue nitrogen treatment"
+  - id: "codex-fresh-produce-hygiene"
+    type: "official_guidance"
+    reference: "Codex/FAO, Code of Hygienic Practice for the Primary Production, Harvesting and Packing of Fresh Fruits and Vegetables, https://www.fao.org/4/x8735e/x8735e0n.htm"
+    used_for: "Input, application, harvest, lot, water-quality, and packing record requirements"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:cc9a9b95f4c6b2cd4a0279d47ee2b797ec99ee2269f8454dac30e1b00f2d9e86"
+  generated_content_sha256: "sha256:e103f6207e0f114dbea6cff09d860da153116b257627b111c8f4afdeabae809e"

@@ -325,7 +325,7 @@ test("resolve prints deterministic classification mapping as JSON", () => {
   assert.match(result.next_command, /--format json/);
 });
 
-test("resolve returns retired classification leaves as known unmapped coverage", () => {
+test("resolve returns the accepted wheat-other classification mapping", () => {
   const result = JSON.parse(runCli([
     "resolve",
     "--classification",
@@ -334,11 +334,10 @@ test("resolve returns retired classification leaves as known unmapped coverage",
     "json",
   ]));
 
-  assert.equal(result.resolution_status, "unmapped");
-  assert.equal(result.coverage_status, "unmapped");
-  assert.equal(result.mapping, null);
-  assert.equal(result.pcr, null);
-  assert.match(result.next_command, /coverage list/);
+  assert.equal(result.resolution_status, "mapped");
+  assert.equal(result.coverage_status, "mapped");
+  assert.equal(result.mapping.mapping_type, "exact");
+  assert.match(result.pcr.id, /wheat-other$/u);
 });
 
 test("resolve accepts exactly one selector and does not auto-follow retired PCR ids", () => {

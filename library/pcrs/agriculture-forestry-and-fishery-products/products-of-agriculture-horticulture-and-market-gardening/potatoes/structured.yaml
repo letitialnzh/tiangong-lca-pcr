@@ -1,10 +1,623 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01510"
-  title: "Potatoes"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.potatoes"
+  classification_refs: "CPC 3.0: 01510 Potatoes"
+  covered_products: "fresh, unprocessed potato tubers harvested for food, feed, or other non-seed use and handed off at the farm gate"
+  excluded_products: "certified or marketed seed potatoes; sweet potatoes; cassava; yams; taro; processed, preserved, frozen, dried, cooked, peeled, or retail-packed potatoes"
+  representative_product: "marketable fresh potato tubers"
+  production_route: "planting material receipt; soil and crop management; harvest; dry cleaning and sorting; farm-gate loading"
+  market_state: "fresh, unprocessed, as-received wet mass at farm gate"
+functional_unit:
+  what: "marketable fresh, unprocessed potato tubers at the farm gate"
+  how_much: "1,000 kg as-received wet mass"
+  how_well: "meets the producer's declared sale or transfer specification, with soil, culls, severe damage, and non-marketable material excluded from the reference amount"
+  how_long_or_cycle: "one declared potato crop cycle through farm-gate loading"
+  reference_flow_link: "terminal output of potato_cultivation_and_farm_gate_preparation"
+system_boundary:
+  rules:
+    - rule_id: boundary_start_end
+      applies_to: "foreground system"
+      rule: "Start when planting material and purchased inputs enter the represented crop cycle; end when accepted fresh tubers are dry-cleaned or field-sorted and loaded at the farm gate."
+      source_ids:
+        - fao-root-tuber-concepts-2003
+        - ilcd-handbook-2010
+    - rule_id: boundary_input_completeness
+      applies_to: "field management"
+      rule: "Include actual planting material, nutrient and soil-amendment products, crop-protection products, irrigation supply, and operational energy when used; report zero only from supporting records."
+      source_ids:
+        - fao-save-and-grow-2011
+    - rule_id: boundary_soil_emissions
+      applies_to: "managed soil"
+      rule: "Include applicable direct and indirect soil emissions caused by nitrogen inputs, crop residues, urea, and liming under one disclosed method; prevent double counting with upstream datasets."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_land_change
+      applies_to: "land transformation"
+      rule: "Land-use change is outside the default crop-cycle inventory unless a study rule requires it; if included, disclose method, time horizon, land history, and allocation separately."
+      source_ids:
+        - ilcd-handbook-2010
+    - rule_id: boundary_post_gate
+      applies_to: "downstream activities"
+      rule: "Exclude transport, storage, washing, packaging, and processing after the farm-gate hand-off unless a distinct extension is declared."
+      source_ids:
+        - ilcd-handbook-2010
+boundary_abstraction:
+  declared_starting_condition: "planting tubers and purchased inputs cross the farm production boundary before establishment of the declared crop"
+  starting_condition_role: "foreground crop-cycle start"
+  product_classification_scope: "CPC 3.0 01510 fresh potatoes; classification is mapping context and does not replace the semantic product boundary"
+  recursive_input_rule: "Potato tubers retained or purchased for planting are recorded as a separate planting-material input with seed-grade and origin qualifiers; do not count them as part of the current crop's reference output."
+  upstream_dataset_requirement: "use geographically and technologically representative upstream datasets for each concrete planting material, nutrient product, crop-protection product, water supply, and energy carrier"
+  disclosure: "declare crop cycle, geography, production system, seed-tuber origin, irrigation condition, field area, yield, residue and reject fate, and any post-harvest extension"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Potatoes; fresh, unprocessed produce; production mix, at farm gate"
+    uuid: "65443696-51af-4ba8-8f73-06d434a36605"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - geography
+    - "cultivar or declared variety group"
+    - "crop year and cycle"
+    - "intended use"
+    - "production system"
+    - "irrigation condition"
+    - "harvested area"
+    - yield
+    - "moisture or as-received basis"
+    - "farm-gate preparation"
+    - "product grade"
+    - "allocation treatment"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference potatoes"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Normalize all foreground exchanges to 1,000 kg accepted potatoes on the declared as-received basis; do not mix dry-matter and wet-mass bases without a documented conversion."
+  - id: area_and_yield
+    applies_to: "field activity and yield"
+    required_property_ref:
+      name: "area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Use the same harvested area and crop-cycle output to calculate yield and to normalize area-based inputs and emissions."
+  - id: nutrient_product_and_content
+    applies_to: "nutrient products"
+    required_property_ref:
+      name: "product mass and declared nutrient content"
+      uuid: ""
+    required_unit: "kg product and kg N, kg P2O5, kg K2O, or explicitly declared equivalent"
+    rule: "Preserve every actual fertilizer or amendment product mass; calculate nutrient contents separately and never replace product identity with nutrient mass."
+  - id: energy_carrier_preservation
+    applies_to: "electricity and fuels"
+    required_property_ref:
+      name: "carrier quantity and energy"
+      uuid: ""
+    required_unit: "kWh, L, kg, or MJ as applicable"
+    rule: "Retain the measured carrier unit and conversion factor; do not aggregate different carriers until each emitted exchange has been identified."
+process_map:
+  - id: potato_cultivation_and_farm_gate_preparation
+    name: "Potato cultivation and farm-gate preparation"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "foreground biological production and farm-gate hand-off"
+    quantitative_reference: "1,000 kg accepted fresh potatoes"
+process_inventory:
+  - id: potato_cultivation_and_farm_gate_preparation
+    label: "Potato cultivation and farm-gate preparation"
+    inputs:
+      product:
+        - row_id: planting_tubers_input
+          role: "Planting tubers supplied"
+          name: "Seed-grade potato planting tubers; foreground identity required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record purchased or farm-retained planting tubers as a separate physical input with origin, variety, quality status, and storage condition. The final data package must resolve the actual planting-material flow; a generic agricultural-input candidate is not an acceptable identity."
+          amount:
+            expression: "measured mass entering the declared crop cycle"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids:
+                - fao-save-and-grow-2011
+            ranges: []
+        - row_id: potato_cultivation_and_farm_gate_preparation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids:
+                - fao-save-and-grow-2011
+            ranges: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record supplied irrigation water only for irrigated production. Rainfed production records zero irrigation when field evidence confirms that no irrigation water crossed the product-input boundary."
+          amount:
+            expression: "metered, delivery-recorded, or reconciled volume applied to the represented fields"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_and_energy_records
+              source_ids:
+                - fao-save-and-grow-2011
+            ranges: []
+        - row_id: operational_energy_input
+          role: "Operational energy carriers supplied"
+          name: "Operational electricity and fuel carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier amount / kWh, MJ, L, or kg as recorded"
+          description: "Use one conditional card for electricity and fuels consumed by field operations, irrigation pumping, harvest, dry cleaning, sorting, and farm-gate loading. Foreground generation emits each actual carrier separately and then resolves its electricity, mobile-fuel, or stationary-fuel group and UUID."
+          amount:
+            expression: "reconcile meter, invoice, tank, machinery, and contractor records to the represented fields and crop cycle"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_and_energy_records
+              source_ids:
+                - fao-save-and-grow-2011
+            ranges: []
+        - row_id: crop_protection_products_input
+          role: "Crop-protection formulations supplied"
+          name: "Crop-protection formulations; foreground identity required"
+          flow_type: "product"
+          property_unit: "Product mass or volume / kg or L product"
+          description: "Record each actual formulation used with product identity, active ingredient when known, concentration, application amount, and event. No reviewed Flow Set covers this umbrella concept, and the current search did not support one exact generic UUID."
+          amount:
+            expression: "sum each actual formulation separately from application records"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids:
+                - fao-save-and-grow-2011
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation_input
+          role: "Land occupation"
+          name: "Land occupation for potato cultivation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a or site-supported equivalent"
+          description: "Record the net cultivated area and duration attributable to the represented crop cycle."
+          amount:
+            expression: "harvested field area multiplied by the declared occupation duration and normalized to accepted yield"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_and_harvest_records
+              source_ids:
+                - fao-root-tuber-concepts-2003
+            ranges: []
+    outputs:
+      product:
+        - row_id: reference_potatoes_output
+          role: "Marketable fresh potatoes"
+          name: "Potatoes; fresh, unprocessed produce; production mix, at farm gate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "65443696-51af-4ba8-8f73-06d434a36605"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is the single terminal quantitative reference. The amount excludes soil, field residues, culls, severe damage, and other material outside the declared sale or transfer specification."
+          amount:
+            expression: "exactly 1,000 kg after normalization"
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "PCR reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids: []
+            ranges: []
+        - row_id: secondary_potato_product_output
+          role: "Secondary usable potatoes transferred"
+          name: "Potatoes; fresh, unprocessed produce; production mix, at farm gate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "65443696-51af-4ba8-8f73-06d434a36605"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record off-grade or small tubers as a separate product output only when they have a documented beneficial destination or sale. Preserve grade, destination, and as-received mass; do not silently include them in the reference amount."
+          amount:
+            expression: "measured as-received mass by documented beneficial destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_and_harvest_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: removed_potato_biomass_waste
+          role: "Removed potato biomass sent as waste"
+          name: "Removed potato biomass waste; foreground identity and destination required"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record only haulm, damaged tubers, or rejected tubers that leave the foreground as waste. Keep material identity and destination separate. Current candidates describe food-plant trimming waste and are not exact identities for this farm-gate row."
+          amount:
+            expression: "measured or reconciled wet mass by material and destination"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_and_harvest_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+      elementary:
+        - row_id: soil_nitrous_oxide_output
+          role: "Nitrous oxide emitted to ambient air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and applicable indirect nitrous oxide emissions from collected nitrogen-input, residue, soil, climate, volatilization, and leaching activity data using one declared geographically applicable method."
+          amount:
+            expression: "apply calc_managed_soil_n2o"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_soil_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+        - row_id: soil_carbon_dioxide_output
+          role: "Carbon dioxide emitted from urea or liming"
+          name: "Carbon dioxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg CO2"
+          description: "Record this emission only when urea or carbonate liming materials are applied and the selected method requires the pathway."
+          amount:
+            expression: "apply the selected urea or liming carbon-content method to collected application records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_soil_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+        - row_id: nitrate_to_water_output
+          role: "Nitrate released to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate or declared nitrogen basis"
+          description: "Calculate nitrate loss only where the selected nutrient-loss method and site conditions support a water pathway; retain the receiving-water context."
+          amount:
+            expression: "apply the selected nutrient-loss method to collected nitrogen activity and site conditions"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_soil_emission_activity
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges: []
+        - row_id: phosphate_to_water_output
+          role: "Phosphate released to water"
+          name: "Phosphate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg phosphate or declared phosphorus basis"
+          description: "Calculate phosphate loss only where erosion, runoff, drainage, or another selected method supports the pathway; retain phosphorus basis and receiving-water context."
+          amount:
+            expression: "apply a declared geographically applicable phosphorus-loss method to collected activity and site conditions"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared crop cycle and per 1,000 kg accepted potatoes"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_soil_emission_activity
+              source_ids:
+                - fao-save-and-grow-2011
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_avoid
+    applies_to: "field and farm-gate operations"
+    rule: "Prefer subdivision and direct measurement of operations and outputs before applying allocation."
+    source_ids:
+      - iso-14044-2006
+      - ilcd-handbook-2010
+  - rule_id: allocation_reference_and_secondary
+    applies_to: "accepted and secondary usable potatoes"
+    rule: "If both outputs share inseparable burdens, apply economic allocation using contemporaneous farm-gate values; disclose grade, moisture basis, prices, and a mass-allocation sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residue_and_waste
+    applies_to: "retained residues and waste outputs"
+    rule: "Do not allocate burdens to material retained or incorporated in the field or sent as waste; include its management and applicable emissions in the foreground."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: allocation_seed_feedback
+    applies_to: "farm-retained planting tubers"
+    rule: "Record the retained seed-grade tubers as an input to the next crop cycle and an output or internal transfer of the producing cycle; prevent double counting across cycles."
+    source_ids:
+      - ilcd-handbook-2010
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_activity_records
+      process_id: "potato_cultivation_and_farm_gate_preparation"
+      flow_role: "planting material, nutrient products, crop protection"
+      record_type: "field log, invoice, application record, product label"
+      raw_fields: "field_id; crop_cycle; product_identity; amount; unit; nutrient_or_active_content; date; application_method"
+      collection_method: "reconcile physical products and application events to each represented field"
+      unit: "kg; L; kg nutrient"
+      frequency: "each receipt and application"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "retain each product identity, sum matched events, and normalize using same-cycle accepted yield"
+      quality_evidence: "invoices; labels; calibrated equipment; field logs"
+    - protocol_id: cp_water_and_energy_records
+      process_id: "potato_cultivation_and_farm_gate_preparation"
+      flow_role: "irrigation water and energy carriers"
+      record_type: "meter, delivery, invoice, tank, machinery, or contractor record"
+      raw_fields: "field_id; meter_or_equipment_id; carrier; amount; unit; date; operation; shared_use_basis"
+      collection_method: "reconcile direct and contractor use to fields and crop cycle"
+      unit: "m3; kWh; L; kg; MJ"
+      frequency: "each event or meter period"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all included equipment and fields"
+      aggregation_rule: "retain carriers separately; allocate shared records by documented operating time, area, or measured service"
+      quality_evidence: "meter calibration; invoices; tank reconciliation; contractor statement"
+    - protocol_id: cp_field_and_harvest_records
+      process_id: "potato_cultivation_and_farm_gate_preparation"
+      flow_role: "area, accepted potatoes, secondary output, waste, residue fate"
+      record_type: "field register, scale ticket, yield monitor, grade record, destination record"
+      raw_fields: "field_id; planted_area; harvested_area; harvest_date; gross_tuber_mass; accepted_mass; secondary_mass; waste_mass; residue_fate; destination; moisture_basis"
+      collection_method: "reconcile harvested area and all measured outputs to the same crop cycle"
+      unit: "ha; kg; percent"
+      frequency: "each field and harvest lot"
+      temporal_coverage: "complete crop cycle through farm-gate loading"
+      site_scope: "all represented fields and lots"
+      aggregation_rule: "sum by output class and destination; normalize to 1,000 kg accepted potatoes"
+      quality_evidence: "calibrated scales; area records; grade specification; transfer or waste receipt"
+    - protocol_id: cp_soil_emission_activity
+      process_id: "potato_cultivation_and_farm_gate_preparation"
+      flow_role: "managed-soil emissions"
+      record_type: "nutrient, residue, soil, weather, irrigation, and model records"
+      raw_fields: "fertilizer_N; organic_N; residue_N; urea; lime; soil; climate; drainage; factor_set; model_version"
+      collection_method: "calculate each pathway with one declared method from collected activity data"
+      unit: "kg N; kg material; kg emission; ha"
+      frequency: "each event and crop-cycle calculation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all represented fields"
+      aggregation_rule: "calculate per field, area-weight where justified, then normalize by same-cycle accepted yield"
+      quality_evidence: "source records; factor provenance; model file; independent unit check"
+  calculation_rules:
+    - id: calc_area_to_reference_flow
+      applies_to: "area-based flows"
+      rule: "crop-cycle amount per harvested hectare divided by accepted potato yield per harvested hectare, multiplied by 1,000 kg"
+      inputs:
+        - amount
+        - "harvested area"
+        - "accepted mass"
+      output: "amount per 1,000 kg accepted potatoes"
+      source_ids:
+        - fao-root-tuber-concepts-2003
+    - id: calc_nutrient_content
+      applies_to: "nutrient products"
+      rule: "actual product mass multiplied by declared nutrient fraction; preserve whether phosphorus and potassium are elemental or oxide-equivalent"
+      inputs:
+        - "product identity"
+        - "product mass"
+        - assay
+        - "reporting basis"
+      output: "product mass and nutrient mass by product"
+      source_ids: []
+    - id: calc_energy_carriers
+      applies_to: "operational energy"
+      rule: "retain actual carrier quantity; apply documented density or lower/heating-value conversion only when required"
+      inputs:
+        - "carrier identity"
+        - quantity
+        - unit
+        - "conversion factor"
+      output: "carrier amount and energy by identity"
+      source_ids: []
+    - id: calc_managed_soil_n2o
+      applies_to: "soil nitrous oxide"
+      rule: "apply the selected IPCC tier or geographically applicable method to fertilizer N, organic N, returned-residue N, volatilization, and leaching pathways"
+      inputs:
+        - "collected nitrogen activity"
+        - "residue fate"
+        - "soil and climate"
+        - "selected factors"
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_output_balance
+      applies_to: "harvest outputs"
+      rule: "gross harvested tuber mass equals accepted reference potatoes plus secondary usable potatoes plus waste and measured handling loss within declared uncertainty"
+      inputs:
+        - "matched scale and grade records"
+      output: "reconciled output classes"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_product_identity
+      applies_to: "reference and secondary outputs"
+      requirement: "Confirm potato tubers rather than sweet potatoes or another root crop; retain cultivar, intended use, grade, state, and farm-gate hand-off."
+      evidence: "crop, lot, and transfer records"
+    - id: dq_temporal_alignment
+      applies_to: "all foreground rows"
+      requirement: "Inputs, area, harvest output, residue fate, and emissions must refer to the same crop cycle; disclose proxy periods."
+      evidence: "dated field, meter, and harvest records"
+    - id: dq_mass_area_reconciliation
+      applies_to: "field and harvest data"
+      requirement: "Reconcile harvested area, gross yield, accepted output, secondary output, waste, and moisture basis before normalization."
+      evidence: "area register; calibrated scale or yield monitor; grade and moisture records"
+    - id: dq_conditional_cards
+      applies_to: "nutrient and energy umbrella cards"
+      requirement: "Expand only from actual foreground records; zero, one, or multiple exchanges are valid, but every emitted exchange must carry one exact Flow Set group and UUID."
+      evidence: "application, invoice, meter, and identity-resolution records"
+    - id: dq_identity_resolution
+      applies_to: "unmapped cards"
+      requirement: "Resolve planting material, crop-protection formulations, and removed waste to exact verified UUIDs after actual identity and destination are known; do not use broad proxy candidates."
+      evidence: "identity review record"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "terminal product output"
+    rule: "Exactly one terminal reference output equals 1,000 kg and uses UUID 65443696-51af-4ba8-8f73-06d434a36605 with the required qualifiers."
+    source_ids: []
+  - rule_id: validation_crop_cycle
+    applies_to: "all inventory rows"
+    rule: "Field area, inputs, output, residues, and emissions must describe the same declared crop cycle and geography."
+    source_ids: []
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and sorting"
+    rule: "Reconcile gross harvested tuber mass with accepted potatoes, secondary usable potatoes, waste, and measured handling loss within declared uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_nutrient_identity
+    applies_to: "soil nutrient inputs"
+    rule: "Preserve each product identity and product mass; nutrient-basis calculations must not replace or merge the concrete product exchanges."
+    source_ids: []
+  - rule_id: validation_flow_set_expansion
+    applies_to: "parameterized umbrella cards"
+    rule: "A set-only PCR card must be expanded from foreground records; each final TIDAS exchange must resolve to exactly one applicable group and exact UUID."
+    source_ids: []
+  - rule_id: validation_soil_emissions
+    applies_to: "managed-soil outputs"
+    rule: "Reconcile nitrogen inputs and residue fate with direct and indirect N2O pathways and disclose the selected method and factors."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validation_no_double_count
+    applies_to: "upstream and foreground inventory"
+    rule: "Do not count irrigation withdrawal, fuel combustion, fertilizer production, or soil emissions both in upstream datasets and as duplicate foreground burdens."
+    source_ids:
+      - ilcd-handbook-2010
+published_dataset_profile:
+  dataset_role: "foreground potato cultivation and farm-gate preparation dataset"
+  downstream_use: "secondary_dataset; background_dataset only after review and publication"
+  allowed_use: "farm-gate LCA of fresh unprocessed potatoes and downstream systems that preserve the declared geography, crop cycle, production route, grade, moisture basis, allocation, and identity resolution"
+  excluded_use: "seed-potato multiplication, sweet potatoes or other root crops, post-gate washing or storage, processing, retail, or consumer use without a reviewed extension"
+  required_metadata: "geography; cultivar; crop year and cycle; intended use; production system; irrigation condition; harvested area; yield; moisture basis; grade; residue and waste fate; allocation; flow-identity resolution"
+  required_quality_disclosure: "foreground coverage; proxy periods; missing records; meter and mass-balance reconciliation; nutrient bases; emission methods and factors; all set-only expansions"
+  update_trigger: "new reviewed potato evidence, material route or boundary change, revised soil-emission method, changed Flow Set taxonomy, changed Tiangong identity, or representative data outside accepted QA controls"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-root-tuber-concepts-2003"
+    type: "official_guidance"
+    reference: "FAO, Root and Tuber Crops: Concepts and Methods Recommended by FAO and Operational Issues, https://www.fao.org/4/Y9422E/y9422e0d.htm"
+    used_for: "potato identity; harvested area, production, and yield concepts; reference-flow boundary"
+  - id: "fao-save-and-grow-2011"
+    type: "official_guidance"
+    reference: "FAO, Save and Grow: A policymaker's guide to the sustainable intensification of smallholder crop production, https://www.fao.org/4/i2215e/i2215e.pdf"
+    used_for: "seed, soil management, nutrients, water, crop protection, and energy-related field activity coverage"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "direct and indirect managed-soil N2O, crop-residue nitrogen, urea, liming, volatilization, and leaching pathways"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy and disclosure"
+  - id: "ilcd-handbook-2010"
+    type: "official_guidance"
+    reference: "European Commission JRC, ILCD Handbook: General guide for Life Cycle Assessment — Detailed guidance, EUR 24708 EN, DOI 10.2788/38479, https://publications.jrc.ec.europa.eu/repository/handle/JRC48157"
+    used_for: "system boundary, subdivision, consistency, data quality, and double-counting controls"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to matched potato harvest and sorting records"
+    used_for: "harvest-output balance calculation and validation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7f421c47d65f5159af36c162f28d344111cc83e78f4a2d202ff1388c6aa13263"
+  generated_content_sha256: "sha256:479effaa1d7ec1915adfbf882f50609f63c3c69c5c04dd9f09b72131d1b83f68"

@@ -131,13 +131,16 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 肥料投入（`nitrogen_fertilizer_carrier`）
+###### 农业养分与肥料投入（`field_seed_multiplication_agricultural_nutrient_inputs`）
 
-肥料投入作为输入产品流记录。数量规则：measured product mass and kg N；归一化基准：per 1,000 kg harvested seed crop。
+本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 
-- 选定流：Urea `3f8850c0-f718-4c4b-8fcb-8fd42e03aa8e`
-- 流属性/单位：Mass / kg
-- 数量规则：measured product mass and kg N
+- 选定流：农业养分与肥料供应
+- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
+- 绑定模式：`parameterized`
+- Flow Set：`flow-set.agricultural-nutrient-supply`
+- Flow Set version：`0.3.0`
+- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：per 1,000 kg harvested seed crop
@@ -154,19 +157,6 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 肥料投入（`phosphate_fertilizer`）
-
-肥料投入作为输入产品流记录。数量规则：measured product mass；归一化基准：per 1,000 kg harvested seed crop。
-
-- 选定流：Phosphate fertilizer `9c196b01-6aad-4252-a6e8-f853853a830c`
-- 流属性/单位：Mass / kg
-- 数量规则：measured product mass
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：per 1,000 kg harvested seed crop
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_fertilizer_input_records`
 - 数量范围：暂定磷肥筛选估算
   - 范围角色：默认估算（`default_estimate`）
   - 下限：0
@@ -176,19 +166,6 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 肥料投入（`potassium_fertilizer`）
-
-肥料投入作为输入产品流记录。数量规则：measured product mass；归一化基准：per 1,000 kg harvested seed crop。
-
-- 选定流：Potassium fertilizer `dd008d87-16e4-4e85-a048-b9949f6fbca6`
-- 流属性/单位：Mass / kg
-- 数量规则：measured product mass
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：per 1,000 kg harvested seed crop
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_fertilizer_input_records`
 - 数量范围：暂定钾肥筛选估算
   - 范围角色：默认估算（`default_estimate`）
   - 下限：0

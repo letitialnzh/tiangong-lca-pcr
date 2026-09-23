@@ -1,10 +1,1014 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01443"
-  title: "Rape or colza seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.rape-or-colza-seed"
+  classification_refs: "CPC 3.0 01443, Rape or colza seed"
+  covered_products: "Whole unprocessed rape or colza seed on the oilseed-grain route, including canola-quality grain when applicable"
+  excluded_products: "Mustard seed; oil; meal; crushed or refined products. Planting-seed market lots require their own verified reference flow and additional route rules before this PCR can guide that branch."
+  representative_product: "Whole unprocessed canola seed delivered from a managed annual crop"
+  production_route: "Annual field production; swath then pick-up combine or direct combine; primary cleaning; conditional drying or aeration; grading. The two harvest routes are mutually exclusive within a field/run but may coexist on a farm with separate run records. The swath route adds cutting, field curing and pick-up operations; direct combining omits these and requires its own shatter-loss evidence. Both inherit the same crop-production and seed hand-off rules."
+  market_state: "Whole grain at farm gate, with actual moisture, grade, distinctly green seed, dockage and conditioning status declared"
+functional_unit:
+  what: "Whole, unprocessed rape or colza seed grain accepted at the declared farm-gate hand-off"
+  how_much: "1 kg net accepted seed, at the measured as-delivered wet-basis moisture"
+  how_well: "Species/market class, grade or contract specification, distinctly green seed and dockage declared; no oil extraction"
+  how_long_or_cycle: "One crop year or identified production season"
+  reference_flow_link: "accepted_seed"
+system_boundary:
+  rules:
+    - rule_id: field_to_gate
+      applies_to: "crop-year foreground"
+      rule: "Include sowing and management through harvest, cleaning, actual stabilization, grading and farm-gate hand-off; separately identify contracted operations needed for the stated product state."
+      source_ids:
+        - manitoba-canola-lca
+    - rule_id: straw_fate
+      applies_to: "harvest residues"
+      rule: "Record straw/chaff left on soil, removed for use or burned by measured fate; do not count retained residue as a marketed co-product; carry returned residue N into soil-emission calculation."
+      source_ids:
+        - manitoba-canola-management
+        - ipcc-2019-soils
+    - rule_id: grade_state
+      applies_to: "seed lot"
+      rule: "Cleaning screenings, accepted grade, downgraded usable seed and rejected material have separate destinations and must balance against incoming grain; a green-seed problem cannot be cured by merely relabelling drying."
+      source_ids:
+        - cgc-canola-grading
+    - rule_id: stabilization
+      applies_to: "damp or warm seed"
+      rule: "Include aeration, cooling or drying only when performed before the declared hand-off. Record pre- and post-intervention moisture/temperature and losses; drying is not assumed for every lot."
+      source_ids:
+        - manitoba-canola-management
+        - manitoba-canola-lca
+boundary_abstraction:
+  declared_starting_condition: "Prepared arable field and purchased or farm-saved planting seed at sowing; any prior crop residue/soil-carbon opening state must be declared."
+  starting_condition_role: "Crop-year field production starting state, not a free seed or free field preparation assumption."
+  product_classification_scope: "Oilseed-grain route within whole unprocessed rape/colza seed; other oilseeds, mustard and processed oil are outside scope. A planting-seed market branch needs additional rules and a distinct verified flow."
+  recursive_input_rule: "Any same-category harvested seed used as a production input retains its upstream dataset and is not recursively created as this crop year's output. Planting seed is an input with its own upstream supply."
+  upstream_dataset_requirement: "Include background datasets for planting seed, fertiliser, crop protection materials, energy and purchased services, with geography and time alignment."
+  disclosure: "Declare field area, crop year, land-management history, harvest route, conditioning location, grade system, moisture basis and residue fate."
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Rape or colza seed"
+    uuid: "be87e81e-303f-4607-a1f5-0cb5ef2d8f74"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "crop species and market class"
+    - "crop year"
+    - region
+    - "harvest route"
+    - "wet-basis moisture"
+    - "grade/contract specification"
+    - "distinctly green seed and dockage"
+    - "cleaning and drying/aeration state"
+    - "farm-gate hand-off location"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted_seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report net accepted seed mass at measured wet-basis moisture, excluding screenings, downgraded lots not in the chosen reference grade, and rejected seed."
+  - id: moisture_conversion
+    applies_to: "lot masses before and after conditioning"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "If a declared comparison moisture is needed, convert only from measured wet-basis moisture: corrected mass = as-weighed mass × (1 − measured moisture fraction) / (1 − comparison moisture fraction); retain the original as-weighed mass."
+  - id: field_normalization
+    applies_to: "field inputs and emissions"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Attribute crop-year field totals to accepted seed with measured lot yields; maintain the field area and season as separate audit bases."
+process_map:
+  - id: crop_management
+    name: "Managed field production"
+    inclusion: "required"
+    inclusion_condition: "Every annual crop lot"
+    role: "Sowing and managed biological growth; hand-off is standing mature crop, not grain"
+    quantitative_reference: "sown area, crop-year inputs and yield"
+  - id: harvest
+    name: "Harvest and capture"
+    inclusion: "required"
+    inclusion_condition: "Every crop lot"
+    role: "Independent swath/pick-up or direct-combine removal and threshing; hand-off is uncleaned harvested seed, with shatter and residue fate tracked"
+    quantitative_reference: "harvest run and raw-seed mass"
+  - id: conditioning
+    name: "Primary cleaning and conditional stabilization"
+    inclusion: "required"
+    inclusion_condition: "Cleaning always; aeration/drying only when performed"
+    role: "Raw grain becomes cleaned whole grain; damp/warm usable grain is stabilized, and screenings/losses exit"
+    quantitative_reference: "before/after lot mass and moisture"
+  - id: grading
+    name: "Quality grading and dispatch"
+    inclusion: "required"
+    inclusion_condition: "Every hand-off lot"
+    role: "Classify cleaned grain into accepted, downgraded and rejected destination states"
+    quantitative_reference: "grade-lot mass and sample results"
+process_inventory:
+  - id: crop_management
+    label: "Managed field production"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Planting seed"
+          name: "Rape/colza planting seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record certified or farm-saved sowing seed entering the crop; it is an input, not the harvested reference product."
+          amount:
+            expression: "weighed or invoice quantity for sown area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-canola-management
+            ranges:
+              - role: typical_range
+                lower: "4.3"
+                upper: "6.5"
+                unit: "kg/ha"
+                basis: "Illustrative 3.8–5.8 lb/acre sowing-rate examples converted to kg/ha; seed weight and emergence specific, not a universal limit."
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - canola-council-seeding-rate
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-canola-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg/ha"
+                basis: "separately recorded fertilizer product masses per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop protection products"
+          name: "Crop protection product"
+          flow_type: "product"
+          property_unit: "Mass or Volume / kg or L"
+          description: "Record applied seed, weed, disease and insect treatments by active product and dose."
+          amount:
+            expression: "application log quantity for sown area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-canola-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg or L/ha"
+                basis: "each separately recorded crop-protection formulation per treated hectare in its declared unit; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field operation energy"
+          name: "Diesel or electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Volume or Energy / L fuel or kWh electricity"
+          description: "Record fuel and purchased electricity for sowing, tillage, spraying and irrigation where used."
+          amount:
+            expression: "meter or machine-log use for crop field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operations
+              source_ids:
+                - manitoba-canola-lca
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "field fuel and electricity converted to energy per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: irrigation_water
+          role: "Irrigation water withdrawal"
+          name: "Water, unspecified natural source"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Where irrigation occurs, record the water withdrawn from the environment separately from supplied water products."
+          amount:
+            expression: "metered withdrawal for crop field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "irrigation withdrawal per cultivated hectare; conditional route; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: standing_crop
+          role: "Mature standing rape or colza crop"
+          name: "Standing rape/colza crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This intermediate crop state passes to harvest and must not be counted again as marketable seed."
+          amount:
+            expression: "field area and estimated biomass; reconcile to harvested grain and residues"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - manitoba-canola-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg biomass/ha"
+                basis: "standing crop biomass per cultivated hectare; do not equate with clean seed yield; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: field_n2o
+          role: "Managed-soil nitrous oxide"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and indirect N2O from nitrogen inputs and retained residue nitrogen using a declared regional method."
+          amount:
+            expression: "method-based estimate from recorded N inputs and residue fate"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emissions
+              source_ids:
+                - ipcc-2019-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha"
+                basis: "calculated managed-soil N2O per cultivated hectare; retain factor-method audit; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest
+    label: "Harvest and capture"
+    inputs:
+      product:
+        - row_id: harvest_fuel
+          role: "Swather and combine fuel"
+          name: "Mobile machinery fuel, diesel carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Link field fuel to the actual swath or direct-combine run, including pick-up and threshing."
+          amount:
+            expression: "run fuel or machine-hour conversion"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - canola-council-harvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/ha"
+                basis: "swather and combine fuel per harvested hectare; route specific; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_seed
+          role: "Uncleaned harvested seed"
+          name: "Rape/colza seed, raw"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh grain after combine unloading, before dockage removal or any farm drying."
+          amount:
+            expression: "weighbridge mass per harvest lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - manitoba-canola-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/ha"
+                basis: "raw harvested seed per harvested hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: removed_straw
+          role: "Removed straw sold or used elsewhere"
+          name: "Rape/colza straw"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Record a separate product output only when straw is physically removed and used; otherwise retain it in the field-residue account."
+          amount:
+            expression: "weighed or measured removed dry mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - ipcc-2019-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg dry/ha"
+                basis: "dry removed straw per harvested hectare; conditional sale or use; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_reject
+          role: "Shattered or spilled seed loss"
+          name: "Lost rape/colza seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record seed left in the field or spilled at harvest as loss, never as accepted farm-gate output."
+          amount:
+            expression: "field loss sampling or input-output reconciliation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - canola-council-harvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg raw harvested seed"
+                basis: "shattered or spilled seed per kilogram captured raw seed; severe losses need review; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: conditioning
+    label: "Primary cleaning and conditional stabilization"
+    inputs:
+      product:
+        - row_id: conditioning_energy
+          role: "Cleaning, drying and aeration energy"
+          name: "Electricity or fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Volume or Energy / L fuel or kWh electricity"
+          description: "Record electricity and fuel by actual conditioning lot; omit drying fuel when only ambient aeration occurs."
+          amount:
+            expression: "meter or equipment runtime with rated consumption"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - manitoba-canola-lca
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg raw seed"
+                basis: "cleaning, drying and aeration fuel and electricity converted to energy per kilogram raw seed; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_seed
+          role: "Prepared whole seed"
+          name: "Rape/colza seed, cleaned"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Pass cleaned and, if needed, stabilized whole seed to grading without oil extraction or crushing."
+          amount:
+            expression: "lot mass after cleaning and drying"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - manitoba-canola-lca
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry raw seed"
+                basis: "prepared dry seed per kilogram incoming dry raw seed"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: screenings
+          role: "Cleaning screenings and dockage"
+          name: "Canola screenings"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate recoverable downgrade streams from true waste and record the destination of each."
+          amount:
+            expression: "weighed screenings by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - cgc-canola-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry raw seed"
+                basis: "dry screenings per kilogram incoming dry raw seed"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        - row_id: drying_water
+          role: "Moisture evaporated during drying"
+          name: "Water to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate water removed from before and after lot mass and measured wet-basis moisture."
+          amount:
+            expression: "mass balance from lot moisture measurements"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - manitoba-canola-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg raw seed"
+                basis: "water evaporated per kilogram incoming wet raw seed"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+  - id: grading
+    label: "Quality grading and dispatch"
+    inputs:
+      product:
+        - row_id: grade_handling_energy
+          role: "Grading and handling energy"
+          name: "Electricity or fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Volume or Energy / L fuel or kWh electricity"
+          description: "Record electricity or fuel for sampling, transfer and grading when these are performed inside the farm-gate boundary."
+          amount:
+            expression: "meter or machine log per grade lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - cgc-canola-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg prepared seed"
+                basis: "grading and handling fuel and electricity converted to energy per kilogram prepared seed; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_seed
+          role: "Accepted unprocessed rape or colza seed"
+          name: "Rape or colza seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "be87e81e-303f-4607-a1f5-0cb5ef2d8f74"
+          property_unit: "Mass / kg"
+          description: "Weigh each accepted grade at hand-off and retain moisture, green-seed and dockage qualifiers."
+          amount:
+            expression: "accepted hand-off mass by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - cgc-canola-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference seed"
+                basis: "accepted grain is the declared 1 kg oilseed reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: downgraded_seed
+          role: "Downgraded seed lot"
+          name: "Rape/colza seed, downgraded"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Declare the destination and sale/use of a downgraded but usable lot separately from the chosen reference grade."
+          amount:
+            expression: "weighed downgraded mass by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - cgc-canola-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "downgraded seed per kilogram prepared seed entering grading"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: rejected_seed
+          role: "Rejected or contaminated seed"
+          name: "Rejected rape/colza seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "If a lot has no recoverable use, record disposal route and do not assign it reference output mass."
+          amount:
+            expression: "weighed reject mass and disposal record"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted seed at the declared gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - cgc-canola-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "rejected seed per kilogram prepared seed entering grading"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_seed_output
+    applies_to: "accepted and downgraded grain"
+    rule: "Use physical mass subdivision by grade lot for the same seed product. Do not allocate twice to the same grain mass; rejected grain has no accepted reference output."
+    source_ids:
+      - cgc-canola-grading
+  - rule_id: straw_decision
+    applies_to: "removed straw"
+    rule: "Treat removed straw as an independent co-product only when an evidenced sale or transfer for productive use occurs. Record separate seed and straw masses and hand-offs. Assign separable cutting, baling and removal burdens directly to straw; allocate inseparable field and harvest burdens between accepted seed and sold straw by their contemporaneous farm-gate economic values. Disclose prices, shares and a seed-only sensitivity result. Retained or chopped straw is a field residue, not a co-product, and waste has no allocation share. Each output and burden has one hand-off and one attribution."
+    source_ids:
+      - manitoba-canola-management
+      - ipcc-2019-soils
+  - rule_id: run_attribution
+    applies_to: "field, harvest, cleaning and grading runs"
+    rule: "Assign metered inputs, output and cleaning/changeover burdens to the fields or lots served using actual run records; document any shared-load allocation key and count each load once. Reprocessed grain keeps prior burdens and receives only incremental rework energy."
+    source_ids:
+      - manitoba-canola-lca
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "crop_management"
+      flow_role: "seed, fertiliser, protection, irrigation"
+      record_type: "invoice and field application log"
+      raw_fields: "field_id, date, product, mass, nutrient analysis, water source and volume"
+      collection_method: "reconcile purchases to field application"
+      unit: "kg; m3"
+      frequency: "each application"
+      temporal_coverage: "full crop year"
+      site_scope: "each field"
+      aggregation_rule: "sum by field and substance, then link to accepted seed"
+      quality_evidence: "invoices, calibration, soil test"
+    - protocol_id: cp_operations
+      process_id: "crop_management"
+      flow_role: "tillage, seeding, spraying energy"
+      record_type: "meter and machine log"
+      raw_fields: "field_id, operation, hours, fuel, electricity"
+      collection_method: "fuel issue and meter records"
+      unit: "L; kWh"
+      frequency: "each operation"
+      temporal_coverage: "full crop year"
+      site_scope: "each field"
+      aggregation_rule: "sum and allocate shared equipment by logged hours"
+      quality_evidence: "fuel slips and machine log"
+    - protocol_id: cp_harvest
+      process_id: "harvest"
+      flow_role: "route, raw grain, shatter loss"
+      record_type: "combine and weighbridge record"
+      raw_fields: "field_id, route, run_id, date, raw_mass, moisture, fuel, loss_sample"
+      collection_method: "separate swath and direct runs; weigh grain and sample losses"
+      unit: "kg; %; L"
+      frequency: "each run"
+      temporal_coverage: "harvest season"
+      site_scope: "each field/run"
+      aggregation_rule: "sum runs after removing duplicates"
+      quality_evidence: "calibrated scale, field loss sample"
+    - protocol_id: cp_residues
+      process_id: "harvest"
+      flow_role: "straw and chaff fate"
+      record_type: "field record and load ticket"
+      raw_fields: "field_id, retained_area, removed_dry_mass, destination, burn_event"
+      collection_method: "field inspection and load weighing"
+      unit: "ha; kg dry"
+      frequency: "each harvest"
+      temporal_coverage: "harvest season"
+      site_scope: "each field"
+      aggregation_rule: "reconcile removed and retained fractions"
+      quality_evidence: "load tickets, photographs"
+    - protocol_id: cp_conditioning
+      process_id: "conditioning"
+      flow_role: "cleaning, drying, aeration and screenings"
+      record_type: "lot operation record"
+      raw_fields: "lot_id, before_mass, after_mass, before_moisture, after_moisture, temperature, energy, screenings_mass, destination"
+      collection_method: "weigh and sample each intervention"
+      unit: "kg; %; °C; kWh; L"
+      frequency: "each lot/intervention"
+      temporal_coverage: "harvest to hand-off"
+      site_scope: "each lot"
+      aggregation_rule: "sum energy and retain lot mass balance"
+      quality_evidence: "scale, moisture meter, meter logs"
+    - protocol_id: cp_grading
+      process_id: "grading"
+      flow_role: "accepted, downgraded and rejected seed"
+      record_type: "grade certificate and dispatch ticket"
+      raw_fields: "lot_id, grade, green_seed, dockage, accepted_mass, downgraded_mass, reject_mass, destination"
+      collection_method: "representative sample and dispatch weighing"
+      unit: "kg; %"
+      frequency: "each dispatch lot"
+      temporal_coverage: "hand-off season"
+      site_scope: "each lot"
+      aggregation_rule: "sum by final destination once"
+      quality_evidence: "sample report, scale ticket"
+    - protocol_id: cp_emissions
+      process_id: "crop_management"
+      flow_role: "managed-soil emissions"
+      record_type: "calculation worksheet"
+      raw_fields: "field_id, N_inputs, returned_residue_N, method_version, factors, climate"
+      collection_method: "apply declared local factors or IPCC method to recorded activity"
+      unit: "kg N; kg N2O"
+      frequency: "annual"
+      temporal_coverage: "full crop year"
+      site_scope: "each field"
+      aggregation_rule: "sum direct and indirect results, avoiding duplicate N pools"
+      quality_evidence: "factor citation and calculation audit"
+  calculation_rules:
+    - id: net_grade_mass
+      applies_to: "dispatch lots"
+      rule: "accepted mass = sum of weighed accepted lots; separately sum downgraded and rejected mass; each lot has one final destination."
+      inputs:
+        - "lot tickets and grade results"
+      output: "kg accepted seed"
+      source_ids:
+        - cgc-canola-grading
+    - id: dry_matter_balance
+      applies_to: "conditioning"
+      rule: "conserved seed dry matter = lot mass × (1 − wet-basis moisture fraction), less measured screenings and physical loss; flag unexplained residual rather than force it into accepted output."
+      inputs:
+        - "before/after mass"
+        - moisture
+        - screenings
+      output: "kg seed dry matter and kg water removed"
+      source_ids:
+        - manitoba-canola-management
+    - id: soil_n2o
+      applies_to: "field N"
+      rule: "Calculate direct and indirect N2O with declared factors, separating fertiliser N and returned residue N; do not reuse one emission result in multiple nodes."
+      inputs:
+        - "N inputs"
+        - "residue fate"
+        - "local factors"
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-soils
+    - id: normalized_inventory
+      applies_to: "field and lot records"
+      rule: "Divide correctly attributed crop-year or lot totals by net accepted reference seed mass, retaining raw totals and area."
+      inputs:
+        - "reconciled records"
+        - "accepted mass"
+      output: "inventory per kg"
+      source_ids:
+        - manitoba-canola-lca
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "seed product"
+      requirement: "Verify crop identity and distinguish rape/colza from mustard, planting seed and processed oil."
+      evidence: "field records, delivery grade"
+    - id: dq_mass
+      applies_to: "seed lots"
+      requirement: "Use calibrated scales and wet-basis moisture readings; show raw, cleaned, accepted and loss mass balance."
+      evidence: "weighbridge and meter checks"
+    - id: dq_routes
+      applies_to: "harvest and conditioning"
+      requirement: "Preserve field/run and lot IDs so mutually exclusive harvest routes, actual aeration/drying and any rework cannot be counted twice."
+      evidence: "operation log and lot genealogy"
+    - id: dq_grade
+      applies_to: "grade states"
+      requirement: "Retain green-seed, dockage and rejection tests appropriate to the declared market; identify any downgrade destination."
+      evidence: "grade report and sales/return tickets"
+    - id: dq_emissions
+      applies_to: "field emissions"
+      requirement: "Identify factors, region, method version, N inputs and residue fate; report limitations if local data are absent."
+      evidence: "calculation worksheet and source record"
+validation_rules:
+  - rule_id: validate_product
+    applies_to: "reference flow"
+    rule: "Reject a data package that reports oil, meal, mustard or a planting-seed market lot under this verified oilseed-grain reference flow; require all reference qualifiers."
+    source_ids:
+      - unsd-cpc-01443
+  - rule_id: validate_routes
+    applies_to: "harvest"
+    rule: "Every harvest run chooses swath/pick-up or direct combining, never both for the same area; confirm corresponding cutting fuel, curing interval and route-specific loss records."
+    source_ids:
+      - canola-council-harvest
+  - rule_id: validate_mass_balance
+    applies_to: "seed chain"
+    rule: "Reconcile raw grain with cleaned, accepted, downgraded, rejected, screenings, water removal and loss states using measured moisture; do not add the same internal intermediate as another final output."
+    source_ids:
+      - manitoba-canola-management
+      - cgc-canola-grading
+  - rule_id: validate_rework
+    applies_to: "off-spec grain"
+    rule: "Trace any return to cleaning or drying to its original lot, add only incremental service, and verify its final downgrade, recovery or waste exit; a rejected lot cannot be accepted without a recorded successful intervention."
+    source_ids:
+      - cgc-canola-grading
+  - rule_id: validate_storage
+    applies_to: "conditioning"
+    rule: "If the delivered state is cooled or dried, require before/after moisture and temperature and actual energy records; if no intervention occurred, do not apply a generic drying load."
+    source_ids:
+      - manitoba-canola-lca
+  - rule_id: validate_shared_load
+    applies_to: "batch operations"
+    rule: "Match each energy, cleaning or changeover record to a run or period and an allocation key; check that totals equal metered input and are counted once."
+    source_ids:
+      - manitoba-canola-lca
+  - rule_id: validate_irrigation
+    applies_to: "field route"
+    rule: "Irrigated fields require measured water withdrawal, source and pumping energy; rainfed fields must not receive an assumed irrigation inventory."
+    source_ids:
+      - canola-council-establishment
+  - rule_id: validate_residue
+    applies_to: "straw and field emissions"
+    rule: "Confirm straw removal/retention fate and its consistency with residue-N emissions and any co-product allocation."
+    source_ids:
+      - ipcc-2019-soils
+published_dataset_profile:
+  dataset_role: "Farm-gate foreground production dataset for unprocessed whole rape or colza seed"
+  downstream_use: "secondary_dataset; background_dataset for food, feed, oil extraction or other later systems"
+  allowed_use: "Comparable whole-seed supply at a matching grade, moisture, geography, crop year and management route"
+  excluded_use: "Mustard seed, planting seed, rapeseed oil or meal, and systems with unreported off-farm conditioning"
+  required_metadata: "crop identity, field area, region, year, yield, route shares, grade specification, wet-basis moisture, green-seed and dockage, residue fate, conditioning location"
+  required_quality_disclosure: "primary-record coverage, lot mass balance, source/factor versions, unresolved flow UUID bindings, use of regional proxies and grade transfer limits"
+  update_trigger: "Change in crop or market class, route, grade basis, moisture management, regional emission factors or available primary records"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-01443"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/01443"
+    used_for: "Product category boundary"
+  - id: "manitoba-canola-management"
+    type: "extension_guidance"
+    reference: "https://www.gov.mb.ca/agriculture/crops/crop-management/canola.html"
+    used_for: "Cultivation, swathing, harvest, moisture and straw management"
+  - id: "manitoba-canola-lca"
+    type: "dataset"
+    reference: "https://www.gov.mb.ca/agriculture/environment/climate-change/life-cycle-assessment-of-agriculture-in-manitoba.html"
+    used_for: "Farm-gate cycle, grain handling and conditional aeration"
+  - id: "canola-council-harvest"
+    type: "extension_guidance"
+    reference: "https://www.canolacouncil.org/canola-encyclopedia/harvest-management/"
+    used_for: "Swath versus direct-combine route and shatter losses"
+  - id: "cgc-canola-grading"
+    type: "official_guidance"
+    reference: "https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/10-canola-rapeseed/grading-factors.html"
+    used_for: "Dockage and distinctly green seed classification"
+  - id: "ipcc-2019-soils"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Direct and indirect managed-soil N2O and residue-N accounting"
+  - id: "canola-council-establishment"
+    type: "extension_guidance"
+    reference: "https://www.canolacouncil.org/canola-encyclopedia/plant-establishment/environmental-effects/"
+    used_for: "Irrigation as a conditional managed-production route"
+  - id: "iso-14044-lci"
+    type: "standard"
+    reference: "https://www.iso.org/standard/38498.html"
+    used_for: "Life-cycle inventory quantitative-reference and input/output accounting framework; the 0–1 material-fraction and 1 kg reference bounds here are algebraic checks, not empirical ISO rates."
+  - id: "canola-council-seeding-rate"
+    type: "extension_guidance"
+    reference: "https://www.canolacouncil.org/canola-encyclopedia/plant-establishment/seeding-rate/"
+    used_for: "Illustrative 3.8–5.8 lb/acre sowing-rate examples converted to kg/ha; seed weight and emergence specific, not a universal limit."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:d6f7ec805d1db6b749c49aec3a94946bb0043b4bbce9fc0f039551e54812fe29"
+  generated_content_sha256: "sha256:efb0da618d21cc83679113cc3d1cd93b362b3d6240c7f6ed713d4ea9dd8abfa3"

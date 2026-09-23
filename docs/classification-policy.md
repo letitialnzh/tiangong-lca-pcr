@@ -68,9 +68,33 @@ Partial or divergent targets fail closed. The mode must not overwrite an accepte
 Mappings under `classifications/mappings/` are the maintained edge input from external codes to canonical PCR ids.
 Repository current mappings use `schema_version: 2` and `status: current`; they contain accepted positive edges only.
 Every edge points to a material PCR and carries `acceptance.status: accepted`, `decided_by`, a strict UTC
-`decided_at_utc`, and a durable `decision_ref`. CPC 3.0 contains exactly three accepted edges (`01111`, `04412`, and
-`04911`); CPC 2.1 is empty v2. Adding another classification system always adds source and coverage inputs; add
+`decided_at_utc`, and a durable `decision_ref`. Read the current CPC 3.0 accepted edges from its mapping; CPC 2.1
+is empty v2. Adding another classification system always adds source and coverage inputs; add
 mapping edges only for reviewed semantic matches, never by copying a PCR tree or manufacturing one edge per leaf.
+
+Acceptance does not require creating a new ADR. `decision_ref` only needs to point to applicable, readable, durable
+decision evidence; it may reuse an existing record or reference a non-ADR batch acceptance register, migration record,
+or other repository-local acceptance record. Create or update an ADR only when a batch introduces a new architecture or
+governance rule. A routine PCR batch must not be blocked merely because no new ADR exists.
+
+### Candidate Promotion Mapping
+
+Promoting a retained legacy scaffold from `scaffold/empty_scaffold` to `candidate` is the explicit maintainer
+acceptance event for every positive `manifest.classification_refs` entry on that scaffold. `pcr:lifecycle` therefore
+adds the corresponding accepted mapping edges automatically, using the lifecycle timestamp as the decision time and
+this section as the durable decision reference. The command refuses missing references, `manual_review` relations,
+unknown mapping coordinates, source-label mismatches, and any code already mapped differently; it never replaces an
+accepted edge.
+
+The CPC 3.0 `01352` Kiwi fruit edge is accepted as an `exact` match to the retained `kiwi-fruit` PCR. Both describe
+fresh whole kiwifruit from managed orchard production through packhouse dispatch, including harvest, primary
+conditioning, grading, and any declared cold-storage period. Processed products and retail preparation after dispatch
+are outside that PCR boundary. This decision retains the existing PCR identity and its recorded acceptance time.
+
+For CPC 3.0, the same operation regenerates the deterministic legacy-id registry. When the promoted scaffold keeps
+its leaf-derived PCR id, that id is no longer retired and its alias is removed. Catalog, material-index, and coverage
+artifacts are rebuilt before the lifecycle command reports success. This coupling applies only to the deliberate
+scaffold-to-candidate transition; later candidate or active lifecycle edits do not create mapping decisions.
 
 External classification codes must not become PCR directory names. If two classification leaves resolve to the same semantic PCR, map both leaves to that PCR id. If two different PCRs would otherwise share the same semantic slug, disambiguate with a short stable hash or a clearer semantic qualifier, not with the classification code.
 
@@ -92,7 +116,7 @@ Only `mapped` selects a canonical PCR, and it requires a schema-valid accepted v
 lifecycle pair. The coverage entry projects the acceptance decision, and runtime resolution compares that evidence
 with the canonical mapping before selection. Candidate suggestions and manual-review targets are evidence, not
 accepted identity edges, and must never be selected automatically. CPC 3.0 coverage remains complete at 2,877
-leaves: 3 mapped, 2,874 unmapped, and 0 unknown.
+leaves; the current mapped and unmapped counts are recorded in its generated coverage index.
 
 Use the public CLI to inspect coverage without loading the methodology catalog:
 
@@ -109,7 +133,8 @@ successful result with `mapping: null` and `pcr: null`; an unknown coordinate or
 ## Retired PCR Identity Aliases
 
 `classifications/aliases/pcr-id-aliases.yaml` is a deterministic generated registry, not a mapping file and not a PCR
-catalog. Its current 2,874 aliases preserve old CPC leaf-derived ids as terminal `classification_coverage` locators.
+catalog. Its aliases preserve retired CPC leaf-derived ids as terminal locators; a same-id promoted record is
+deliberately absent from the registry.
 Every source id and historical source path is unique; aliases may not collide with material ids, chain, cycle, or
 point at an unknown coverage leaf. Rebuild with `npm run aliases:build` and verify with `npm run aliases:check`; do not
 hand-edit the registry. `library/catalog.yaml` pins its canonical path, exact-byte SHA-256, and entry count; runtime
@@ -129,7 +154,7 @@ Explicit legacy/all catalog browsing can still inventory them, but an exact old 
 redirect locator; guidance and validation reject it.
 
 Phase 2 is complete: ordinary CPC imports create zero PCR records, current mapping v2 retains accepted material edges
-only, and the alias-first redirect contract preserves retired ids. The first Phase 3 pilot removes only CPC `99000`:
-that code is known-unmapped and the old PCR id redirects. The repository now contains 2,876 PCR directories—3
-material and 2,873 surviving legacy scaffolds—while the alias count remains 2,874. CPC `98000` and bulk physical
+only, and the alias-first redirect contract preserves retired ids. The first Phase 3 pilot removed CPC `99000`:
+that code is known-unmapped and the old PCR id redirects. The repository contains 2,876 PCR directories—160 material
+and 2,716 surviving legacy scaffolds—while the alias registry contains 2,717 entries. CPC `98000` and bulk physical
 migration are still pending; do not describe the pilot as completion of physical migration.

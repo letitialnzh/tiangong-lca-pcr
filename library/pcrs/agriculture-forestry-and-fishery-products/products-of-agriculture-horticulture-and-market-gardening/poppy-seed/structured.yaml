@@ -1,10 +1,1024 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01448"
-  title: "Poppy seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.poppy-seed"
+  classification_refs: "CPC 3.0 01448 (classification locator only)"
+  covered_products: "Harvested poppy seed separated from mature capsules and handed off unprocessed at farm gate; declare food or oil destination and measured moisture/impurity state"
+  excluded_products: "Capsule, poppy straw, opium latex, poppy seed oil, alkaloid-reduced food ingredient, certified planting seed"
+  representative_product: "Net weighed harvested seed"
+  production_route: "Managed direct-sown crop → distinct mature capsule harvest and seed separation → conditional farm conditioning only when performed; hand and combine harvest use separately recorded energy, loss and seed-damage fields"
+  market_state: "Production mix, at farm gate; Harvested grain, unprocessed"
+functional_unit:
+  what: "Unprocessed poppy seed at farm gate"
+  how_much: "1 kg net seed"
+  how_well: "Declare lot moisture, impurities, damage and intended market; no assumed food grade"
+  how_long_or_cycle: "One recorded annual crop cycle and linked harvest lot"
+  reference_flow_link: "Sole reference product flow below"
+system_boundary:
+  rules:
+    - rule_id: annual_crop_boundary
+      applies_to: "Sowing to farm gate"
+      rule: "Include sowing, field management, harvest, seed separation and any performed farm conditioning; separate harvest from cultivation to avoid mixing equipment fuel. This package is limited to its crop cycle without storage."
+      source_ids:
+        - usu-seed-poppy
+    - rule_id: food_route_condition
+      applies_to: "Food-destination lots"
+      rule: "Record operations limiting capsule-dust contamination and any needed later cleaning; European food-use advice is conditional, not a universal rule for unprocessed farm-gate seed."
+      source_ids:
+        - eu-poppy-2014
+    - rule_id: route_delta
+      applies_to: "Hand and combine harvest"
+      rule: "Parent activity is capsule harvest and seed separation; technology changes energy input, seed-damage and dropped-seed loss records. A lot may have successive operations, but throughput is counted once."
+      source_ids:
+        - eu-poppy-2014
+        - usu-seed-poppy
+    - rule_id: conditioning_only_if_used
+      applies_to: "Ventilation, drying, preliminary cleaning"
+      rule: "Every raw-seed lot passes through this hand-off node; record before/after moisture, energy, rejected seed, captured capsule dust and other foreign material only when treatment occurs; direct hand-off has zero additional conditioning exchanges."
+      source_ids:
+        - eu-poppy-2014
+boundary_abstraction:
+  declared_starting_condition: "Field ready for sowing with concrete planting seed, fertilizer and other product inputs entering this crop cycle"
+  starting_condition_role: "Link sowing seed and purchased inputs to upstream product exchanges; disclose prior rotation and land state separately"
+  product_classification_scope: "Harvested poppy seed, excluding capsule, straw, latex, oil and certified planting seed"
+  recursive_input_rule: "For retained poppy seed sown in this cycle, record real amount and preceding-cycle origin; do not recursively supply this cycle's reference output to itself"
+  upstream_dataset_requirement: "Each purchased input needs suitable upstream data; unresolved concrete flow identity remains explicit instead of a generic substitute"
+  disclosure: "Field, cycle, seed destination, harvest mode, capsule/straw fate, farm conditioning switch, moisture and impurities"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Poppy seed"
+    uuid: "c49b37e3-df47-4caf-9a6a-2df1a528800a"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Papaver somniferum seed"
+    - "farm gate"
+    - unprocessed
+    - lot
+    - moisture
+    - impurities
+    - "main destination"
+    - "harvest and conditioning route"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Net reference seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh at delivered moisture/impurity state; do not include capsule or oil."
+  - id: field_to_gate
+    applies_to: "Field and harvest inputs"
+    required_property_ref:
+      name: "Applicable mass, volume or energy"
+      uuid: ""
+    required_unit: "per hectare and per kg"
+    rule: "Divide crop-cycle totals by net seed delivered for that cycle; retain area, total yield and conversion factor."
+  - id: moisture_basis
+    applies_to: "Seed and straw"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "State wet/dry basis before mass comparison; if drying occurs, record before/after moisture and water loss."
+process_map:
+  - id: field
+    name: "Managed seed-poppy cultivation"
+    inclusion: "required"
+    inclusion_condition: "All included annual crop cycles"
+    role: "Establish and manage Papaver somniferum for seed, handing mature crop to harvest."
+    quantitative_reference: "per cultivated hectare and linked crop cycle"
+  - id: harvest
+    name: "Capsule harvest and seed release"
+    inclusion: "required"
+    inclusion_condition: "All represented seed harvests"
+    role: "Independently capture mature capsules and release raw seed; track collected straw, dropped seed and broken capsules as distinct physical outputs."
+    quantitative_reference: "per cultivated hectare and harvest lot"
+  - id: conditioning
+    name: "Farm-gate hand-off with conditional primary conditioning and preservation"
+    inclusion: "required"
+    inclusion_condition: "Every raw-seed lot is handed off; ventilation, drying or preliminary cleaning only when performed"
+    role: "Record pre/post moisture, energy, rejected seed, captured capsule dust, other impurities and moisture loss separately when conditioning occurs; no food processing."
+    quantitative_reference: "per linked raw-seed lot"
+process_inventory:
+  - id: field
+    label: "Managed seed-poppy cultivation"
+    inputs:
+      product:
+        - row_id: sowing_seed
+          role: "Poppy seed for sowing"
+          name: "Poppy seed for sowing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Purchased or retained sowing seed entering the crop cycle."
+          amount:
+            expression: "Mass actually sown, excluding unsown inventory."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "kg product/ha"
+                basis: "sum of separately recorded mineral fertilizer, organic fertilizer, lime and nutrient-bearing amendment product masses per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Applied irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Only supplied irrigation water crosses the foreground product boundary; rainfall is reported separately."
+          amount:
+            expression: "Metered or documented delivered irrigation volume; zero for rain-fed fields."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop protection product"
+          name: "Crop protection product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record applied active product and formulation without assuming every crop receives treatment."
+          amount:
+            expression: "Measured formulation mass applied; zero when absent."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_fuel
+          role: "Field machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Count combustion fuel used for soil preparation, sowing and crop management, not harvest fuel."
+          amount:
+            expression: "Fuel use from equipment logs or apportioned run records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_crop
+          role: "Mature seed-bearing poppy crop"
+          name: "Mature poppy crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Intermediate standing biomass handed from cultivation to harvest; not the reference seed."
+          amount:
+            expression: "Measured or mass-balanced harvestable crop biomass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residue
+          role: "Pre-harvest field vegetation residue"
+          name: "Field vegetation residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Leaves and stems left in the field before harvest are distinct from harvest-stage dropped seeds and broken capsules."
+          amount:
+            expression: "Estimated retained dry or fresh mass with moisture basis declared."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: soil_n2o
+          role: "Direct soil nitrous oxide"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Model direct N2O from managed soils using a documented method and recorded nitrogen inputs; resolve a species- and air-medium-specific flow before publishing exchanges."
+          amount:
+            expression: "Calculated direct N2O mass from a stated method, not a generic fertilizer factor."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest
+    label: "Capsule harvest and seed release"
+    inputs:
+      product:
+        - row_id: mature_crop_input
+          role: "Mature crop entering harvest"
+          name: "Mature poppy crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer the cultivation output into a distinct capsule and seed harvest boundary."
+          amount:
+            expression: "Same measured intermediate mass as field output; no second upstream burden."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_fuel
+          role: "Harvest machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Volume / L"
+          description: "Record combine or other harvest equipment fuel separately from cultivation fuel."
+          amount:
+            expression: "Run-linked fuel consumed in harvest and seed separation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_electricity
+          role: "Harvest separation electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "If electrically powered seed separation occurs at the farm, meter that input; otherwise record zero."
+          amount:
+            expression: "Metered or run-allocated electricity at harvest separation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kWh/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_seed
+          role: "Intended output of raw poppy seed"
+          name: "Raw poppy seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The intended seed output removed from mature capsules, before any optional farm-gate drying or cleaning."
+          amount:
+            expression: "Weighed raw seed by harvest lot at measured moisture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "200"
+                upper: "1700"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - agroscope-poppy-2005
+        - row_id: collected_straw
+          role: "Collected capsule and straw co-product"
+          name: "Collected poppy capsule and straw"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only if separately collected and sold or transferred for a declared use; otherwise classify as field residue or waste. Never count opium latex as seed."
+          amount:
+            expression: "Weighed collected dry or fresh biomass with moisture stated; zero when not collected."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: dropped_seed
+          role: "Seed dropped during harvest"
+          name: "Dropped poppy seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Poppy seed lost to the field during capsule capture or seed release; exclude capsule fragments and cleaning rejects. Record field retention as its destination."
+          amount:
+            expression: "Estimated dropped seed mass from harvest sampling or measured collection."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: broken_capsule
+          role: "Broken capsule fragments left at harvest"
+          name: "Broken poppy capsules"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Nonrecoverable capsule-wall material left in the field during harvest; exclude collected capsule/straw co-product and pre-harvest vegetation residue."
+          amount:
+            expression: "Measured or sampled capsule-fragment mass left on field, with moisture basis."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle, then convert to 1 kg net reference seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: conditioning
+    label: "Farm-gate hand-off with conditional primary conditioning and preservation"
+    inputs:
+      product:
+        - row_id: raw_seed_input
+          role: "Raw seed entering farm-gate hand-off"
+          name: "Raw poppy seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Every raw-seed lot enters the farm-gate hand-off; ventilation, drying or preliminary cleaning is recorded only if actually performed."
+          amount:
+            expression: "Linked weighed raw-seed harvest lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_electricity
+          role: "Drying or cleaning electricity"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record ventilation, drying fan or aspirator electricity only if used before farm-gate hand-off."
+          amount:
+            expression: "Metered conditioning-run electricity; zero for inactive node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg conditioned seed output"
+                basis: "per kg conditioned seed output in an active conditioning run"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_fuel
+          role: "Drying heat fuel"
+          name: "Stationary combustion fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "stationary-combustion-fuel"
+          property_unit: "Volume / L"
+          description: "Record a concrete liquid fuel only if thermal drying uses one; other heat carriers need their own specific exchange."
+          amount:
+            expression: "Measured liquid-fuel input per conditioned seed; zero if absent."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "L/kg conditioned seed output"
+                basis: "per kg conditioned seed output in an active conditioning run"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: farm_gate_seed
+          role: "Unprocessed poppy seed at farm gate"
+          name: "Poppy seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c49b37e3-df47-4caf-9a6a-2df1a528800a"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The reference seed leaves the farm after harvest, with only declared optional farm conditioning. It is not oil, food-ready cleaned seed or certified planting seed."
+          amount:
+            expression: "Net weighed delivered seed at declared moisture and impurity state."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_seed
+          role: "Seed rejected by farm cleaning"
+          name: "Rejected poppy seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only when preliminary cleaning occurs: off-grade poppy seed removed from the accepted lot. Record disposal or separate transfer; do not count it as accepted reference seed."
+          amount:
+            expression: "Weighed seed-only reject mass, not combined screenings mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captured_capsule_dust
+          role: "Captured capsule-wall dust"
+          name: "Captured poppy capsule dust"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only when farm cleaning captures capsule-derived dust: record the captured solid waste and its disposal. Fugitive air emissions require a separate substance- and medium-specific exchange."
+          amount:
+            expression: "Weighed captured dust from aspirator/filter or a documented solids balance."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: other_impurities
+          role: "Other removed foreign material"
+          name: "Foreign material removed from seed"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only when preliminary cleaning removes non-seed, non-capsule foreign solids such as soil or stones; keep identity and disposal separate from seed reject and capsule dust."
+          amount:
+            expression: "Weighed separately classified foreign solids."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: drying_water_vapour
+          role: "Water evaporated in drying"
+          name: "Water vapour to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Only when drying occurs; calculate mass of removed water from before/after seed mass and moisture measurements."
+          amount:
+            expression: "Water mass removed from the conditioned lot."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioned lot, then convert to 1 kg net reference seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg/ha"
+                basis: "per cultivated hectare in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: single_output_default
+    applies_to: "Seed-only field"
+    rule: "Capsule, straw and residues without separate collection or independent use remain field residue or waste, not invented co-products."
+    source_ids:
+      - eu-poppy-2014
+  - rule_id: straw_coproduct
+    applies_to: "Seed plus saleable capsule/straw"
+    rule: "If capsules or straw are separately collected and transferred, record both product masses, moisture, destinations and hand-off points. Assign dedicated operations directly; allocate shared cultivation/harvest burdens by consistent dry mass and disclose choice and sensitivity. Latex is not seed."
+    source_ids:
+      - eu-poppy-2014
+  - rule_id: run_linkage
+    applies_to: "Harvest lot or combined operation"
+    rule: "Link each input, output, cleaning and changeover event to a unique run; apportion cross-run shared fuel/electricity once by documented time or throughput, never twice."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "field"
+      flow_role: "sowing seed, N/P/K products, irrigation, crop protection"
+      record_type: "field operation ledger"
+      raw_fields: "field, date, area, product, formulation, net mass, water meter"
+      collection_method: "invoices, application logs, meters"
+      unit: "kg, m3, ha"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum physical products once; compound fertilizer not duplicated"
+      quality_evidence: "invoices, weighed/metered logs"
+    - protocol_id: cp_field_energy
+      process_id: "field"
+      flow_role: "field fuel"
+      record_type: "equipment log"
+      raw_fields: "operation, machine, date, fuel, field"
+      collection_method: "fuel slips and machinery logs"
+      unit: "L"
+      frequency: "each operation"
+      temporal_coverage: "sowing to pre-harvest"
+      site_scope: "each field"
+      aggregation_rule: "assign to actual field work"
+      quality_evidence: "slips, work hours"
+    - protocol_id: cp_field_emissions
+      process_id: "field"
+      flow_role: "soil N2O"
+      record_type: "nitrogen-balance worksheet"
+      raw_fields: "synthetic/organic N, residue N, soil/climate data, method factors"
+      collection_method: "declared IPCC or equivalent method"
+      unit: "kg N2O"
+      frequency: "each cycle"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "preserve source terms and unit conversions"
+      quality_evidence: "versioned method and input records"
+    - protocol_id: cp_crop_harvest
+      process_id: "field_harvest"
+      flow_role: "mature crop, raw seed, collected capsule/straw, pre-harvest residue, dropped seed, broken capsules"
+      record_type: "harvest lot ledger"
+      raw_fields: "area, lot, raw seed weight/moisture, collected straw weight, pre-harvest retained residue, sampled dropped-seed mass, broken-capsule mass and separate destinations"
+      collection_method: "scale, separate material samples and balance"
+      unit: "kg, ha, %"
+      frequency: "each lot"
+      temporal_coverage: "harvest period"
+      site_scope: "field/lot"
+      aggregation_rule: "reconcile mature-crop intermediate once; aggregate dropped seed and capsule fragments separately"
+      quality_evidence: "scale tickets, material samples, destinations"
+    - protocol_id: cp_harvest_energy
+      process_id: "harvest"
+      flow_role: "harvest fuel and electricity"
+      record_type: "equipment run log"
+      raw_fields: "run, fuel, metered power, machine"
+      collection_method: "equipment and energy log"
+      unit: "L, kWh"
+      frequency: "each run"
+      temporal_coverage: "harvest period"
+      site_scope: "equipment/run"
+      aggregation_rule: "apportion shared run only once by time/throughput"
+      quality_evidence: "fuel slip, meter, work hours"
+    - protocol_id: cp_conditioning
+      process_id: "conditioning"
+      flow_role: "raw seed, electricity, fuel, rejected seed, captured capsule dust, other foreign solids, evaporated water"
+      record_type: "farm conditioning run"
+      raw_fields: "route switch, before/after mass/moisture, electricity/fuel meters, separately weighed rejected seed/captured dust/other impurities and each destination"
+      collection_method: "weighing, moisture test, meters, separate solid collection"
+      unit: "kg, %, kWh, L"
+      frequency: "each conditioning lot"
+      temporal_coverage: "before farm gate"
+      site_scope: "each conditioning lot"
+      aggregation_rule: "reconcile materials by substance and link raw-seed lot; resolve fugitive dust separately"
+      quality_evidence: "classified scales, tests, energy receipts, destination tickets"
+    - protocol_id: cp_gate_lot
+      process_id: "conditioning"
+      flow_role: "net reference seed"
+      record_type: "transfer lot ticket"
+      raw_fields: "net mass, moisture, impurities, destination, time"
+      collection_method: "weighbridge/calibrated scale and lot testing"
+      unit: "kg, %"
+      frequency: "each delivery lot"
+      temporal_coverage: "farm-gate transfer"
+      site_scope: "each delivery lot"
+      aggregation_rule: "sum net delivered mass as reference denominator"
+      quality_evidence: "scale ticket, lot ID, test"
+  calculation_rules:
+    - id: per_kg_gate
+      applies_to: "all field, harvest and conditioning exchanges"
+      rule: "Assigned crop-cycle exchange total / net kg seed delivered from same cycle; reconcile intermediate transfers without another upstream burden."
+      inputs:
+        - "exchange total"
+        - "net delivery"
+        - "lot linkage"
+      output: "exchange per kg reference seed"
+      source_ids: []
+    - id: drying_loss
+      applies_to: "conditional drying"
+      rule: "Derive evaporated water from before/after net mass and wet-basis moisture; cross-check dry matter against separately removed seed, capsule dust and other solids."
+      inputs:
+        - "before/after mass"
+        - moisture
+        - "three separately recorded solid removals"
+      output: "kg water loss and balance gap"
+      source_ids: []
+    - id: soil_n2o_method
+      applies_to: "managed soils"
+      rule: "Apply declared regional/tier factors to all applicable N sources; state direct versus indirect boundary."
+      inputs:
+        - "N inputs"
+        - "residue N"
+        - "method factors"
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-soils
+  data_quality_requirements:
+    - id: lot_identity
+      applies_to: "all lots"
+      requirement: "Trace raw seed, conditioning and net-delivery lots; retain destination, moisture and impurities."
+      evidence: "lot IDs, scale and test records"
+    - id: mass_closure
+      applies_to: "harvest and conditioning"
+      requirement: "Reconcile crop, raw seed, collected straw, pre-harvest residue, dropped seed, broken capsules, rejected seed, captured capsule dust, other impurities and water loss item by item on stated moisture bases; never count a material twice across nodes."
+      evidence: "substance-specific material balance"
+    - id: conditional_zero
+      applies_to: "unused conditioning"
+      requirement: "No drying, cleaning or stabilization energy and reject exchanges."
+      evidence: "operations and transfer logs"
+    - id: source_limit
+      applies_to: "food destination"
+      requirement: "EU advice is conditional quality management for that market, not a reason to exclude other legitimate unprocessed seed."
+      evidence: "destination and compliance records"
+validation_rules:
+  - rule_id: gate_identity
+    applies_to: "reference flow"
+    rule: "Match UUID, Mass, kg, farm gate and unprocessed state; never replace with oil, capsule, straw or certified planting seed."
+    source_ids: []
+  - rule_id: route_and_runs
+    applies_to: "harvest technology and runs"
+    rule: "Declare hand, combine or sequential operations and throughput; link fuel, seed loss and changeover once."
+    source_ids:
+      - eu-poppy-2014
+      - usu-seed-poppy
+  - rule_id: coproduct_decision
+    applies_to: "capsule/straw"
+    rule: "Require independent transfer for co-product status and disclose actual allocation basis; otherwise use residue/waste."
+    source_ids:
+      - eu-poppy-2014
+  - rule_id: range_review
+    applies_to: "all flow cards"
+    rule: "Check bound, unit, denominator, evidence and conditional switch; investigate provisional outliers without replacing real data."
+    source_ids: []
+  - rule_id: moisture_and_contamination
+    applies_to: "food destination and drying"
+    rule: "Report actual lot moisture and capsule-dust risk; food-guidance numbers are not category-wide acceptance thresholds."
+    source_ids:
+      - eu-poppy-2014
+published_dataset_profile:
+  dataset_role: "Foreground package for unprocessed poppy seed at farm gate"
+  downstream_use: "secondary_dataset or background_dataset in process and lifecyclemodel construction"
+  allowed_use: "Upstream food or oil route modelling with matching seed state, farm-gate boundary and disclosures"
+  excluded_use: "Substitute for poppy oil, refined food ingredient, pharmaceutical extraction or certified planting seed"
+  required_metadata: "Region, season, field, cultivar/destination, harvest method, lot, net mass, moisture, impurity, conditioning and straw fate"
+  required_quality_disclosure: "Mass balance, operation/energy record coverage, conditioning switch, emission method, co-product allocation and uncertainty"
+  update_trigger: "Material change to production route, farm-gate seed state, destination, harvest technology or data year"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "eu-poppy-2014"
+    type: "official_guidance"
+    reference: "European Commission Recommendation 2014/662/EU, https://eur-lex.europa.eu/eli/reco/2014/662/oj/eng"
+    used_for: "Food-route harvest and cleaning risks; conditional quality and contamination disclosure, not universal farm-gate thresholds."
+  - id: "usu-seed-poppy"
+    type: "extension_guidance"
+    reference: "Utah State University, Seed Poppy in the Garden, https://extension.usu.edu/yardandgarden/research/seed-poppy-in-the-garden"
+    used_for: "Annual crop, mature capsule harvest, and separation route."
+  - id: "agroscope-poppy-2005"
+    type: "literature"
+    reference: "Frick and Hebeisen, Poppy, an alternative plant, Agroscope, 2005, https://www.agrarforschungschweiz.ch/en/2005/01/poppy-an-alternative-plant/"
+    used_for: "Regional field-trial seed-yield example of 2–17 dt/ha (200–1700 kg/ha)."
+  - id: "ipcc-2019-soils"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Managed-soil N2O method and input completeness."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:b72338beb3bf20e89a37d2fb317c6e21511d3f11bd4bebcbe9c8c493afb20660"
+  generated_content_sha256: "sha256:f9142e1f14d9011bbe864cf969f64796b76569c88b335e15bbffa84a270c35c8"

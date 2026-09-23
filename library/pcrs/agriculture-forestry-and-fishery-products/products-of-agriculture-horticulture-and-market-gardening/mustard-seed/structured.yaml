@@ -1,10 +1,1069 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01442"
-  title: "Mustard seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.mustard-seed"
+  classification_refs: "CPC 3.0 01442 (exact)"
+  covered_products: "Harvested and conditioned mustard seed, principally Brassica juncea, sold as an oilseed at producer/conditioner hand-off"
+  excluded_products: "Mustard oil, crude/refined oil, mustard meal/press cake, mustard flour, prepared mustard and other condiments, vegetative products"
+  representative_product: "Seed of B. juncea, clean and stabilized for hand-off"
+  production_route: "Managed cultivation → harvest and threshing → cleaning and drying/stabilization → grading; irrigation, mechanization and drying technology are parent-activity route deltas"
+  market_state: "Loose/bulk conditioned seed at producer/conditioner gate before oil, meal, flour or condiment manufacture"
+functional_unit:
+  what: "Conditioned mustard seed accepted at the declared producer or primary-conditioning hand-off"
+  how_much: "1 kg as-received seed at declared moisture"
+  how_well: "Species/cultivar, accepted grade, moisture and method, foreign-matter basis, intended market, geography, route and gate declared"
+  how_long_or_cycle: "One declared crop cycle with conditioning linked to its harvest lot"
+  reference_flow_link: "mustard_seed_accepted"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The boundary starts with prepared land and seed, nutrient, water, crop-protection and machinery-service inputs entering managed mustard production. It includes management, harvest/threshing, cleaning, drying/stabilization, grading, within-node rework and accepted-seed hand-off. Residues, field loss, removed foreign matter, downgraded seed and rejects are recorded. Oil/meal/condiment manufacture and downstream distribution are excluded."
+      source_ids: []
+    - rule_id: boundary_managed_crop
+      applies_to: "Cultivation through hand-off"
+      rule: "Include management, harvest, cleaning, stabilization and grading; exclude oil extraction, oil/meal and condiment manufacture."
+      source_ids:
+        - niphm-mustard-ipm
+        - agmarknet-mustard-postharvest
+    - rule_id: boundary_route_delta
+      applies_to: "Alternative routes"
+      rule: "Treat rainfed/irrigated, manual/mechanized and ambient/mechanical alternatives as parent-activity deltas; do not merge mutually exclusive routes for one lot."
+      source_ids:
+        - nfsm-oilseeds-practices-2018
+        - niphm-mustard-ipm
+    - rule_id: boundary_soil_emissions
+      applies_to: "Managed-soil emissions"
+      rule: "Calculate fertilizer-, residue-, urea- and lime-related elementary flows with the declared method and avoid double counting removed or burned residues."
+      source_ids:
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_conditioning_gate
+      applies_to: "Cleaning, drying, stabilization and grading"
+      rule: "Retain before/after mass and moisture, grade, downgrade, rejects, foreign matter and hand-off; model storage beyond stabilization separately."
+      source_ids:
+        - agmarknet-mustard-postharvest
+boundary_abstraction:
+  declared_starting_condition: "Prepared field at crop-cycle start, with prior crop/land state and seed source disclosed"
+  starting_condition_role: "Entry condition for managed biological production"
+  product_classification_scope: "Mustard seed in CPC 3.0 01442; classification does not replace species and market-state qualifiers"
+  recursive_input_rule: "Same-category sowing seed is an upstream input with a provider dataset or foreground source, not recursively recreated"
+  upstream_dataset_requirement: "Supplier-specific or regionally representative data for seed, nutrients, energy, irrigation, crop protection and purchased services"
+  disclosure: "Disclose prior crop/land state, species/cultivar, cycle, geography, irrigation, harvest, drying, moisture/grade gate, rework and upstream datasets"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Seed of B. juncea"
+    uuid: "d6490f83-abd7-47ff-990f-3cd7ae018dfa"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species and cultivar"
+    - "sowing or commodity use"
+    - "accepted grade"
+    - "as-received moisture and method"
+    - "foreign matter basis"
+    - "country/region"
+    - "rainfed or irrigated"
+    - "harvest method"
+    - "drying route"
+    - "producer/conditioner hand-off"
+    - "Production mix"
+    - "at plant"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference product and seed-state balances"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report as-received mass and measured moisture together; convert by dry_mass = wet_mass × (1 − moisture_fraction) and retain the original."
+  - id: area_yield
+    applies_to: "Cultivation and harvest normalization"
+    required_property_ref:
+      name: "Mass and area"
+      uuid: ""
+    required_unit: "kg/ha"
+    rule: "Record cultivated and harvested area separately; accepted yield uses accepted reference product only."
+  - id: energy_consistency
+    applies_to: "Machinery and conditioning energy"
+    required_property_ref:
+      name: "Energy or carrier property"
+      uuid: ""
+    required_unit: "MJ or kWh"
+    rule: "Retain carrier and quantity; do not merge fuel and electricity without an explicit conversion."
+process_map:
+  - id: managed_cultivation
+    name: "Managed mustard cultivation"
+    inclusion: "required"
+    inclusion_condition: "one declared crop cycle; field/operation records"
+    role: "produce mature crop and account management inputs"
+    quantitative_reference: "kg raw-seed equivalent; ha"
+  - id: harvest_capture
+    name: "Harvest, threshing and field capture"
+    inclusion: "required"
+    inclusion_condition: "separate captured seed, residue and loss hand-off"
+    role: "convert mature crop to raw seed"
+    quantitative_reference: "kg raw seed"
+  - id: clean_dry_stabilize
+    name: "Cleaning, drying and stabilization"
+    inclusion: "required"
+    inclusion_condition: "primary conditioning lot/period; drying route declared"
+    role: "primary conditioning raw-to-prepared route; drying is a technology delta"
+    quantitative_reference: "kg stabilized seed"
+  - id: grade_handoff
+    name: "Grading and producer/conditioner hand-off"
+    inclusion: "required"
+    inclusion_condition: "reconcile accepted, downgraded and rejected states"
+    role: "create reference product and destinations; grading mode is a route delta"
+    quantitative_reference: "kg accepted seed"
+process_inventory:
+  - id: managed_cultivation
+    label: "Managed mustard cultivation"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Mustard sowing seed"
+          name: "Seed of B. juncea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d6490f83-abd7-47ff-990f-3cd7ae018dfa"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Same-category upstream seed input; retain provider and sowing-use qualifier."
+          amount:
+            expression: "measured seed issued to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_records
+              source_ids:
+                - nfsm-oilseeds-practices-2018
+            ranges:
+              - role: typical_range
+                lower: "4"
+                upper: "5"
+                unit: "kg/ha"
+                basis: "per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - nfsm-oilseeds-practices-2018
+        - row_id: nutrient_supply
+          role: "Fertilizer and nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg product and kg nutrient"
+          description: "One consolidated card covers mineral and organic fertilizers and amendments; foreground composition expands concrete exchanges."
+          amount:
+            expression: "measured product mass multiplied by supplier nutrient composition"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare, then per kg accepted seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation_records
+              source_ids:
+                - nfsm-oilseeds-practices-2018
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: typical_range
+                lower: "0"
+                upper: "80"
+                unit: "kg N/ha"
+                basis: "per cultivated hectare; soil-test recommendation controls"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - nfsm-oilseeds-practices-2018
+        - row_id: irrigation_water
+          role: "Irrigation water supply"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Conditional on the irrigated route; rainfall is not this product input."
+          amount:
+            expression: "measured abstraction or delivery by event; zero for verified rainfed route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare, then per kg accepted seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_records
+              source_ids:
+                - nfsm-oilseeds-practices-2018
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "m3/ha"
+                basis: "per cultivated hectare; foreground records control"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_products
+          role: "Crop-protection products"
+          name: "Crop-protection product as recorded"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Expand each recorded active ingredient or formulation. The initial lookup found no single identity valid for all sites, so this card remains unresolved."
+          amount:
+            expression: "measured issued mass reconciled to application logs"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare, then per kg accepted seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_records
+              source_ids:
+                - niphm-mustard-ipm
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg product/ha"
+                basis: "per cultivated hectare; not a recommended rate"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_energy
+          role: "Field machinery energy"
+          name: "Energy supply for field machinery and pumping"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy / MJ or kWh"
+          description: "Expand actual fuels or electricity used for field operations and pumping."
+          amount:
+            expression: "measured carrier quantity by operation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per cultivated hectare, then per kg accepted seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_crop
+          role: "Mature mustard crop transferred to harvest"
+          name: "Mature standing mustard crop, internal foreground state"
+          flow_type: "product"
+          property_unit: "Mass / kg raw-seed equivalent"
+          description: "Internal foreground state linking cultivation to harvest; no external database identity is required."
+          amount:
+            expression: "calculated from captured seed plus measured field losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg raw-seed equivalent/kg captured seed"
+                basis: "per kg captured raw seed; provisional"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cultivation_residues
+          role: "Cultivation residues and crop loss"
+          name: "Cultivation residue and crop loss, internal/deferred disposition"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter"
+          description: "Internal/deferred until retention, removal, burning, recovery or disposal is declared."
+          amount:
+            expression: "measured or calculated dry matter by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and kg accepted seed"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg dry matter/kg accepted seed"
+                basis: "per kg accepted seed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: managed_soil_emissions
+          role: "Managed-soil elementary emissions"
+          name: "Managed-soil emission, species- and compartment-specific"
+          flow_type: "elementary"
+          property_unit: "Mass / kg emission"
+          description: "Species- and compartment-specific emissions from fertilizer, residues, urea and lime are calculated by the declared method. This umbrella card remains unresolved because one attempted initial lookup could not be completed and a concrete dataset must expand each species before publication."
+          amount:
+            expression: "calculated from collected nutrient, residue, urea and lime records with the declared method and factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted mustard seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation_records
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg emission/kg accepted seed"
+                basis: "per kg accepted seed; broad provisional screen, with method calculation controlling"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_capture
+    label: "Harvest, threshing and field capture"
+    inputs:
+      product:
+        - row_id: mature_crop_input
+          role: "Mature crop from cultivation"
+          name: "Mature standing mustard crop, internal foreground state"
+          flow_type: "product"
+          property_unit: "Mass / kg raw-seed equivalent"
+          description: "Internal transfer carrying field and crop-cycle identity."
+          amount:
+            expression: "equals linked mature_crop output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - iso-14044-2006
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg linked output"
+                basis: "per linked cultivation output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-2006
+        - row_id: harvest_energy
+          role: "Harvest machinery energy"
+          name: "Energy supply for harvest and threshing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy / MJ or kWh"
+          description: "Fuel or electricity for cutting, combining and threshing is recorded for the chosen route."
+          amount:
+            expression: "measured carrier quantity by operation and lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg raw seed captured"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "MJ/kg raw seed"
+                basis: "per kg raw seed captured"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_seed
+          role: "Raw collected mustard seed"
+          name: "Raw collected mustard seed, internal foreground state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal state passed to conditioning with lot and moisture retained."
+          amount:
+            expression: "measured lot mass at harvest hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.5"
+                upper: "1"
+                unit: "kg/kg mature-crop equivalent"
+                basis: "per kg mature-crop raw-seed equivalent; provisional"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_loss
+          role: "Field residue and shattering loss"
+          name: "Harvest residue and seed loss, internal/deferred disposition"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter or kg seed"
+          description: "Keep retained, removed and burned residues and seed loss distinct by destination."
+          amount:
+            expression: "mass-balance difference by material and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - niphm-mustard-ipm
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg seed equivalent/kg captured seed"
+                basis: "per kg captured raw seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: clean_dry_stabilize
+    label: "Cleaning, drying and stabilization"
+    inputs:
+      product:
+        - row_id: raw_seed_input
+          role: "Raw seed from harvest"
+          name: "Raw collected mustard seed, internal foreground state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal transfer retaining harvest lot, mass, moisture and impurity data."
+          amount:
+            expression: "equals linked raw_seed output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - iso-14044-2006
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg linked output"
+                basis: "per linked harvest output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-2006
+        - row_id: conditioning_energy
+          role: "Conditioning energy"
+          name: "Energy supply for cleaning and drying"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Expand actual electricity, fuel or heat; verified ambient drying has zero purchased drying energy."
+          amount:
+            expression: "measured carrier quantity by lot or continuous period"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg stabilized seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "MJ/kg stabilized seed"
+                basis: "per kg stabilized seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Process water for cleaning"
+          name: "Process water for seed cleaning"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Conditional on wet cleaning; verified dry cleaning has zero process-water input."
+          amount:
+            expression: "measured delivered water by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg stabilized seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "m3/kg stabilized seed"
+                basis: "per kg stabilized seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_seed
+          role: "Stabilized mustard seed"
+          name: "Stabilized mustard seed, internal foreground state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Clean seed at declared moisture handed to grading as an internal state."
+          amount:
+            expression: "measured output mass and moisture after conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids:
+                - agmarknet-mustard-postharvest
+            ranges:
+              - role: typical_range
+                lower: "0"
+                upper: "8"
+                unit: "percent wet basis"
+                basis: "at short-term storage or hand-off"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - agmarknet-mustard-postharvest
+      waste:
+        - row_id: conditioning_rejects
+          role: "Removed foreign matter and conditioning loss"
+          name: "Conditioning rejects, internal/deferred disposition"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Keep foreign matter, dust and off-spec seed separate; rework returns once to this node."
+          amount:
+            expression: "measured removals plus mass-balance loss excluding measured water removal"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.25"
+                unit: "kg/kg raw seed input"
+                basis: "per kg raw seed input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade_handoff
+    label: "Grading and producer/conditioner hand-off"
+    inputs:
+      product:
+        - row_id: stabilized_seed_input
+          role: "Stabilized seed for grading"
+          name: "Stabilized mustard seed, internal foreground state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal transfer retaining moisture, impurity and lot identity."
+          amount:
+            expression: "equals linked stabilized_seed output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per grading lot or run"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids:
+                - iso-14044-2006
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg linked output"
+                basis: "per linked conditioning output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-2006
+        - row_id: grading_energy
+          role: "Grading energy"
+          name: "Energy supply for grading"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Expand actual energy for screens, conveyors and changeover cleaning."
+          amount:
+            expression: "measured carrier quantity by grading run"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "MJ/kg accepted seed"
+                basis: "per kg accepted seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mustard_seed_accepted
+          role: "Accepted mustard seed"
+          name: "Seed of B. juncea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d6490f83-abd7-47ff-990f-3cd7ae018dfa"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Reference product at the producer or primary-conditioning hand-off; downgraded and rejected material is excluded."
+          amount:
+            expression: "measured accepted mass at declared moisture and grade"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "1 kg accepted mustard seed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids:
+                - agmarknet-mustard-postharvest
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-2006
+        - row_id: downgraded_seed
+          role: "Downgraded mustard seed"
+          name: "Downgraded mustard seed, internal/deferred destination"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal/deferred product state until an alternate destination dataset is established from foreground evidence."
+          amount:
+            expression: "measured downgraded mass by destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per grading lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg/kg stabilized input"
+                basis: "per kg stabilized seed input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Grading rejects"
+          name: "Grading reject, internal/deferred disposition"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Deferred waste state until composition and destination are known; rework returns to grading and retains its burden."
+          amount:
+            expression: "measured reject mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per grading lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.25"
+                unit: "kg/kg stabilized input"
+                basis: "per kg stabilized seed input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_single_product
+    applies_to: "Accepted seed route"
+    rule: "Use accepted seed as quantitative reference; residues, losses and rejects without demonstrated product function are not co-products."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_route_outputs
+    applies_to: "Downgraded or saleable output"
+    rule: "First subdivide by field, lot, operation and destination; then prefer physical causality, with another relationship disclosed and tested when necessary."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_rework
+    applies_to: "Rework and off-spec seed"
+    rule: "Keep burdens with the originating lot, return mass to the named node, count energy/loss once, and exclude it from accepted output until acceptance."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_run_period
+    applies_to: "Shared runs and changeovers"
+    rule: "Assign once using measured run time, throughput or another causal driver and prevent duplication."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation_records
+      process_id: "managed_cultivation"
+      flow_role: "seed; nutrients; water; crop protection; energy; residues"
+      record_type: "field and purchase records"
+      raw_fields: "field_id; cycle; area; species; product; mass; composition; water; carrier; energy; destination"
+      collection_method: "reconcile logs, invoices, meters and application records"
+      unit: "kg; m3; MJ; kWh; ha"
+      frequency: "each operation"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "all fields and providers"
+      aggregation_rule: "sum by field/route and divide by linked accepted seed"
+      quality_evidence: "invoices, calibration, logs, field map and reconciliation"
+    - protocol_id: cp_harvest_mass_balance
+      process_id: "harvest_capture"
+      flow_role: "crop; energy; raw seed; residues; loss"
+      record_type: "harvest lot records"
+      raw_fields: "field_id; lot_id; method; energy; seed_mass; moisture; residue; loss; destination"
+      collection_method: "scales, fuel logs and field-loss sampling"
+      unit: "kg; percent; MJ; kWh"
+      frequency: "each harvest lot"
+      temporal_coverage: "all cycle harvests"
+      site_scope: "all fields and contractors"
+      aggregation_rule: "reconcile seed, residue and loss"
+      quality_evidence: "calibration, sampling, invoices and lot linkage"
+    - protocol_id: cp_conditioning_records
+      process_id: "clean_dry_stabilize"
+      flow_role: "raw seed; energy; water; stabilized seed; rejects"
+      record_type: "lot/run records"
+      raw_fields: "lot_id; route; input/output mass; moisture; energy; water; foreign_matter; reject; destination"
+      collection_method: "scales, moisture tests, meters and operating logs"
+      unit: "kg; percent; MJ; kWh; m3"
+      frequency: "each lot or period"
+      temporal_coverage: "all linked lots"
+      site_scope: "each site"
+      aggregation_rule: "lot dry-matter and wet-mass balance"
+      quality_evidence: "calibration, method, meter logs and signed balance"
+    - protocol_id: cp_grading_handoff
+      process_id: "grade_handoff"
+      flow_role: "stabilized input; energy; accepted; downgrade; reject"
+      record_type: "grading/dispatch records"
+      raw_fields: "lot_id; run_id; input; moisture; grade; accepted; downgrade; reject; destination; energy"
+      collection_method: "scales, grader records, tests and dispatch documents"
+      unit: "kg; percent; MJ; kWh"
+      frequency: "each run and hand-off"
+      temporal_coverage: "all included lots"
+      site_scope: "each grading site"
+      aggregation_rule: "reconcile all states; accepted mass is denominator"
+      quality_evidence: "calibration, grade certificate, dispatch and destination"
+  calculation_rules:
+    - id: calc_moisture_conversion
+      applies_to: "seed mass"
+      rule: "dry_mass_kg = wet_mass_kg × (1 − moisture_percent/100); report original too"
+      inputs:
+        - "wet mass"
+        - moisture
+        - method
+      output: "dry and declared-basis mass"
+      source_ids:
+        - agmarknet-mustard-postharvest
+    - id: calc_accepted_yield
+      applies_to: "crop cycle"
+      rule: "accepted_yield = accepted_seed_mass / harvested_area; exclude downgrade/reject"
+      inputs:
+        - "accepted mass"
+        - area
+      output: "kg/ha"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_nutrient_inputs
+      applies_to: "nutrient card"
+      rule: "sum product mass × supplier nutrient fraction separately for N, P and K"
+      inputs:
+        - mass
+        - composition
+      output: "nutrient/field and /kg seed"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_mass_balance
+      applies_to: "harvest; conditioning; grading"
+      rule: "moisture-adjusted input = outputs + loss; investigate residual"
+      inputs:
+        - masses
+        - moisture
+        - destinations
+      output: "node balance"
+      source_ids:
+        - iso-14044-2006
+    - id: calc_managed_soil_emissions
+      applies_to: "cultivation"
+      rule: "apply declared method, preferring country factors, to synthetic/organic N, residues, urea and lime"
+      inputs:
+        - N
+        - residues
+        - urea
+        - lime
+        - factors
+      output: "species/compartment flows"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "seed states"
+      requirement: "Preserve species/cultivar, lot, moisture, grade, use, geography, route and hand-off."
+      evidence: "lot genealogy; tests; dispatch"
+    - id: dq_temporal
+      applies_to: "all data"
+      requirement: "Cover a full cycle and linked lots; disclose multi-year averaging and exceptional weather."
+      evidence: "dated records"
+    - id: dq_completeness
+      applies_to: "all cards"
+      requirement: "Reconcile accepted, downgraded, reworked, rejected, residue and loss paths; explain zero/missing values."
+      evidence: "signed balances"
+    - id: dq_measurement
+      applies_to: "mass; moisture; water; energy"
+      requirement: "Use calibrated instruments or documented estimates; retain units, conversions and uncertainty."
+      evidence: "calibration and methods"
+    - id: dq_route
+      applies_to: "alternatives"
+      requirement: "Store route shares and changed inventories; do not average mutually exclusive routes without weights."
+      evidence: "route evidence"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Require fixed UUID, Mass property/unit group, 1 kg, CPC context and all qualifiers; base name alone is insufficient."
+    source_ids: []
+  - rule_id: validate_route_boundary
+    applies_to: "process map"
+    rule: "Require four parent nodes and route deltas; reject oil extraction, meal, flour or condiment manufacture."
+    source_ids:
+      - niphm-mustard-ipm
+      - agmarknet-mustard-postharvest
+  - rule_id: validate_nutrient_card
+    applies_to: "cultivation"
+    rule: "At most one agricultural-nutrient-supply@0.3.0 card per process, set-level only and without group."
+    source_ids: []
+  - rule_id: validate_mass_balance
+    applies_to: "harvest; conditioning; grading"
+    rule: "Reconcile input, internal/accepted output, downgrade, rework, rejects, residues, moisture change and loss."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validate_rework_rejects
+    applies_to: "rejects"
+    rule: "Each reject needs rework, downgrade, recovery, treatment or discard; accepted output excludes unresolved rejects and duplicated loops."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validate_mode_attribution
+    applies_to: "batch/continuous"
+    rule: "Link inputs, outputs, cleaning and changeovers to runs or periods and prevent duplicate shared burdens."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validate_stabilization
+    applies_to: "conditioned seed"
+    rule: "Require before/after mass, moisture, drying route and hand-off; moisture above 8% for claimed short-term storage needs reviewed evidence."
+    source_ids:
+      - agmarknet-mustard-postharvest
+  - rule_id: validate_ranges
+    applies_to: "all cards"
+    rule: "Require exactly one Range per card in both languages and projection with matching fields."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground product-system package for mustard seed at producer/conditioner hand-off"
+  downstream_use: "secondary_dataset; background_dataset after compatibility review"
+  allowed_use: "Crop-production and downstream oilseed systems requiring the declared gate, moisture and grade"
+  excluded_use: "Treating oil, meal, flour or condiment manufacture as included; unadjusted different species, gate or route"
+  required_metadata: "species/cultivar; CPC context; geography; cycle; prior land state; irrigation; harvest; drying; lots; moisture; grade; providers; allocation; route shares"
+  required_quality_disclosure: "coverage; measured/estimated shares; missing flows; balance residuals; calibration; uncertainty; aggregation; source age; provisional ranges"
+  update_trigger: "Changed species, route, grade/moisture gate, topology, material input/yield, allocation, fixed identity or invalidated source"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "nfsm-oilseeds-practices-2018"
+    type: "official_guidance"
+    reference: "Government of India, National Food Security Mission, Package of Practices for Oilseeds (2018), https://www.nfsm.gov.in/ReadyReckoner/Oilseeds/PackagePractice_OS2018.pdf"
+    used_for: "route; sowing; nutrient; irrigation"
+  - id: "niphm-mustard-ipm"
+    type: "official_guidance"
+    reference: "National Institute of Plant Health Management, AESA Based IPM Package: Mustard/Rapeseed, https://www.niphm.gov.in/IPMPackages/Mustard.pdf"
+    used_for: "cultivation; harvest; crop protection; post-harvest"
+  - id: "agmarknet-mustard-postharvest"
+    type: "official_guidance"
+    reference: "Directorate of Marketing and Inspection, Post-Harvest Profile of Mustard-Rapeseed, https://www.agmarknet.gov.in/Others/mustard-rapeseed-profile.pdf"
+    used_for: "cleaning; drying; 8% moisture; hand-off"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "soil emissions; nutrient and residue accounting"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation; balances; calculations"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:ab882212f398713028ac31e497dca4de2329fb182f4f9f377545896c7de8065f"
+  generated_content_sha256: "sha256:d9bc0ec8d9cf4366ce216fb59637d84ef54ab3842fcc03ab805ac68ac70937ac"

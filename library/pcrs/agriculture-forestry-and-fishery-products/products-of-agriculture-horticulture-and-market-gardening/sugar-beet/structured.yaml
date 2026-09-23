@@ -1,10 +1,1107 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01801"
-  title: "Sugar beet"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.sugar-beet"
+  classification_refs: "CPC:3.0:01801 Sugar beet"
+  covered_products: "Fresh first-year Beta vulgaris storage roots intended for sugar manufacture"
+  excluded_products: "Seed, fodder/table beet, sliced roots, juice, sugar, pulp, molasses and factory-conditioned products"
+  representative_product: "Fresh topped root, substantially free of loose soil, accepted at farm gate"
+  production_route: "Managed annual field production → lifting → farm primary conditioning → grading"
+  market_state: "Fresh, unprocessed root; not sliced or diffused"
+functional_unit:
+  what: "Accepted fresh unprocessed sugar-beet roots at farm gate"
+  how_much: "1,000 kg fresh mass"
+  how_well: "Topped; loose soil/trash excluded; contract specification and measured sugar content declared"
+  how_long_or_cycle: "One annual crop cycle and delivery period"
+  reference_flow_link: "b48c1ece-b700-4491-86bb-ff46c0a4768b"
+system_boundary:
+  rules:
+    - rule_id: sb_01
+      applies_to: "full route"
+      rule: "Keep production, harvest, conditioning and grading independently reconcilable."
+      source_ids:
+        - fao-sugar-beet-white-sugar-2009
+    - rule_id: sb_02
+      applies_to: "exclusion"
+      rule: "Stop at farm gate; exclude every factory sugar-processing operation."
+      source_ids:
+        - us-epa-sugarbeet-processing-ap42
+    - rule_id: sb_03
+      applies_to: "harvest"
+      rule: "Separate standing, lifted, conditioned, accepted, downgraded, rejected, top and soil/trash states."
+      source_ids:
+        - fao-land-management-root-crops
+    - rule_id: sb_04
+      applies_to: "routes"
+      rule: "Mutually exclusive route deltas require separate records and transparent weighting."
+      source_ids:
+        - fao-crop-yield-water-2012
+    - rule_id: sb_05
+      applies_to: "residues"
+      rule: "Field-retained tops are residues; collected tops and marketed downgraded roots require hand-offs and allocation."
+      source_ids:
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "Prepared field and planting seed at crop-cycle start"
+  starting_condition_role: "Foreground annual crop-cycle start"
+  product_classification_scope: "CPC:3.0:01801 fresh unprocessed roots"
+  recursive_input_rule: "Any same-category purchased root is separately traced and cannot be counted again as field production."
+  upstream_dataset_requirement: "Seed, energy, irrigation, crop protection and every actual nutrient product require upstream datasets."
+  disclosure: "Geography, crop year, field area, cultivar, routes, inputs, yield, quality, losses, residues and hand-off."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Sugar beet"
+    uuid: "b48c1ece-b700-4491-86bb-ff46c0a4768b"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - cultivar
+    - "crop year"
+    - "geography/field"
+    - "rainfed or irrigated"
+    - tillage
+    - "harvest and conditioning technology"
+    - "fresh-mass and tare basis"
+    - "sugar content/method"
+    - "grade specification"
+    - "delivery period"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: mu_01
+    applies_to: "roots"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use calibrated scales; disclose tare and residual soil/foreign-matter correction."
+  - id: mu_02
+    applies_to: "area records"
+    required_property_ref:
+      name: "Mass, volume, energy"
+      uuid: ""
+    required_unit: "per ha"
+    rule: "Normalize with accepted yield from the same field/route stratum."
+  - id: mu_03
+    applies_to: "nutrient supply"
+    required_property_ref:
+      name: "Product mass and composition"
+      uuid: ""
+    required_unit: "kg product; kg nutrient/ha"
+    rule: "One consolidated card retains every actual product mass, dry matter where relevant, nutrient analysis and liming value."
+  - id: mu_04
+    applies_to: "irrigation"
+    required_property_ref:
+      name: "Volume or mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Meter delivery; rainfall is context, not product input."
+  - id: mu_05
+    applies_to: "sugar quality"
+    required_property_ref:
+      name: "Mass fraction"
+      uuid: ""
+    required_unit: "% fresh mass"
+    rule: "Declare sampling and laboratory method; sugar qualifies the root and is not the reference product."
+process_map:
+  - id: field_production
+    name: "Managed field production"
+    inclusion: "required"
+    inclusion_condition: "every route"
+    role: "Single-period batch production by field/crop cycle; no storage; no replacement"
+    quantitative_reference: "field, crop cycle, operating period or delivery batch"
+  - id: harvest_lifting
+    name: "Root lifting and harvest"
+    inclusion: "required"
+    inclusion_condition: "every route"
+    role: "Independent removal from soil and harvest-state accounting"
+    quantitative_reference: "field, crop cycle, operating period or delivery batch"
+  - id: farm_conditioning
+    name: "Farm primary conditioning"
+    inclusion: "required"
+    inclusion_condition: "every route"
+    role: "Alternative technology route delta: topping completion and dry excess-soil/trash removal"
+    quantitative_reference: "field, crop cycle, operating period or delivery batch"
+  - id: grading_handoff
+    name: "Grading and farm-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "every route"
+    role: "Accepted, downgraded and rejected destination states"
+    quantitative_reference: "field, crop cycle, operating period or delivery batch"
+process_inventory:
+  - id: field_production
+    label: "Managed field production"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Sugar-beet planting seed"
+          name: "Sugar-beet planting seed"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Issued seed minus documented returns"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare planted"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.5"
+                upper: "10"
+                unit: "kg/ha"
+                basis: "per hectare planted"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: agricultural_nutrient_supply
+          role: "Agricultural nutrient supply from actual foreground products"
+          name: "Agricultural nutrient supply from actual foreground products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Sum actual mineral fertilizer, organic fertilizer, lime and nutrient-bearing amendment product masses; retain composition"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare treated"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - uk-nvz-nitrogen-2026
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "600"
+                unit: "kg supplied products/ha"
+                basis: "per hectare treated"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water delivered to field"
+          name: "Irrigation water delivered to field"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Metered volume or verified pump flow × duration; rainfall excluded"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare in crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation
+              source_ids:
+                - fao-crop-yield-water-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8000000"
+                unit: "kg/ha"
+                basis: "per hectare in crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-crop-yield-water-2012
+        - row_id: crop_protection_products
+          role: "Actual crop-protection products"
+          name: "Actual crop-protection products"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Issued formulated products minus returns, reconciled with application logs"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare treated"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha"
+                basis: "per hectare treated"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Actual field fuel or electricity carrier"
+          name: "Actual field fuel or electricity carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Meter or issue records for establishment and crop care; harvest excluded"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare in crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/ha"
+                basis: "per hectare in crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_mature_roots
+          role: "Mature standing sugar-beet roots"
+          name: "Mature standing sugar-beet roots"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This independent product is an intended output quantified at the declared process boundary, has an explicit hand-off, and is reconciled with adjacent states."
+          amount:
+            expression: "Lifted roots plus sampled pre-lifting and unharvested loss; soil and tops excluded"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_yield
+              source_ids:
+                - fao-sugar-beet-white-sugar-2009
+                - uk-defra-sugar-beet-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "30000"
+                upper: "80000"
+                unit: "kg/ha"
+                basis: "per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-sugar-beet-white-sugar-2009
+                  - uk-defra-sugar-beet-2024
+      waste:
+        - row_id: field_root_loss
+          role: "Unharvested or pre-lifting lost roots"
+          name: "Unharvested or pre-lifting lost roots"
+          flow_type: "waste"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Representative field sampling scaled to the field"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg standing mature roots"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_loss
+              source_ids:
+                - usda-ers-sugarbeet-harvest-loss-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg/kg standing roots"
+                basis: "per kg standing mature roots"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - usda-ers-sugarbeet-harvest-loss-2019
+      elementary:
+        - row_id: direct_n2o_air
+          role: "Nitrous oxide to air"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Declared IPCC tier applied to collected nitrogen inputs and residue N"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare in crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg N2O/ha"
+                basis: "per hectare in crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_lifting
+    label: "Root lifting and harvest"
+    inputs:
+      product:
+        - row_id: harvest_root_input
+          role: "Standing mature roots transferred to harvest"
+          name: "Standing mature roots transferred to harvest"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Equal standing_mature_roots for the same field and cycle"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg standing roots"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg standing roots"
+                basis: "per kg standing roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: harvest_energy
+          role: "Actual harvest fuel or electricity carrier"
+          name: "Actual harvest fuel or electricity carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Metered energy assigned once to harvest operating periods"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per hectare harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "per hectare harvested"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: lifted_raw_roots
+          role: "Lifted raw sugar-beet roots"
+          name: "Lifted raw sugar-beet roots"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This independent product is an intended output quantified at the declared process boundary, has an explicit hand-off, and is reconciled with adjacent states."
+          amount:
+            expression: "Calibrated load mass corrected for tare and separately measured exported soil/trash"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_loads
+              source_ids:
+                - fao-sugar-beet-white-sugar-2009
+                - uk-defra-sugar-beet-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "28000"
+                upper: "80000"
+                unit: "kg/ha"
+                basis: "per hectare harvested"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-sugar-beet-white-sugar-2009
+                  - uk-defra-sugar-beet-2024
+        - row_id: collected_beet_tops
+          role: "Intentionally collected beet tops"
+          name: "Intentionally collected beet tops"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This independent product is an intended output quantified at the declared process boundary, has an explicit hand-off, and is reconciled with adjacent states."
+          amount:
+            expression: "Measured collected load; zero when retained on field"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per hectare harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg fresh tops/ha"
+                basis: "per hectare harvested"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_root_reject
+          role: "Roots lost or damaged during lifting"
+          name: "Roots lost or damaged during lifting"
+          flow_type: "waste"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Field sample or load-balance difference with destination recorded"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvest root input"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_loss
+              source_ids:
+                - usda-ers-sugarbeet-harvest-loss-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg/kg harvest input"
+                basis: "per kg harvest root input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: farm_conditioning
+    label: "Farm primary conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_root_input
+          role: "Lifted roots transferred to conditioning"
+          name: "Lifted roots transferred to conditioning"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Equal lifted_raw_roots for represented loads"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg lifted roots"
+                basis: "per kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: conditioning_energy
+          role: "Farm conditioning energy"
+          name: "Farm conditioning energy"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Metered or allocated energy for topping completion, dry soil/trash removal and conveying"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1000 kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "MJ/1000 kg lifted roots"
+                basis: "per 1000 kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_roots
+          role: "Farm-conditioned roots ready for grading"
+          name: "Farm-conditioned roots ready for grading"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This independent product is an intended output quantified at the declared process boundary, has an explicit hand-off, and is reconciled with adjacent states."
+          amount:
+            expression: "Input minus separated tops/trash, rejected roots and measured loss"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1000 kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "700"
+                upper: "1000"
+                unit: "kg/1000 kg lifted roots"
+                basis: "per 1000 kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Separated organic trash and rejected roots"
+          name: "Separated organic trash and rejected roots"
+          flow_type: "waste"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Measured batch mass with field-return, recovery or disposal destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1000 kg lifted roots"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1000 kg lifted roots"
+                basis: "per 1000 kg lifted roots"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading_handoff
+    label: "Grading and farm-gate hand-off"
+    inputs:
+      product:
+        - row_id: grading_root_input
+          role: "Conditioned roots transferred to grading"
+          name: "Conditioned roots transferred to grading"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Equal conditioned_roots assigned to the delivery batch"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg conditioned roots"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg conditioned roots"
+                basis: "per kg conditioned roots"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_sugar_beet_roots
+          role: "Sugar beet b48c1ece-b700-4491-86bb-ff46c0a4768b"
+          name: "Sugar beet"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b48c1ece-b700-4491-86bb-ff46c0a4768b"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          description: "This independent product is an intended output quantified at the declared process boundary, has an explicit hand-off, and is reconciled with adjacent states."
+          amount:
+            expression: "Calibrated accepted delivery mass after tare and foreign-material correction"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_roots
+          role: "Downgraded roots sent to declared use"
+          name: "Downgraded roots sent to declared use"
+          flow_type: "product"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This independent product is an intended output quantified at the declared process boundary, has an explicit hand-off, and is reconciled with adjacent states."
+          amount:
+            expression: "Measured downgraded mass by batch and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg grading input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "kg/kg grading input"
+                basis: "per kg grading input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Grading-rejected roots"
+          name: "Grading-rejected roots"
+          flow_type: "waste"
+          property_unit: "Mass or energy as stated / declared unit"
+          description: "This flow is quantified at the declared process boundary and reconciled with adjacent states."
+          amount:
+            expression: "Measured reject mass linked to recovery, field return, treatment or disposal"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg grading input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg/kg grading input"
+                basis: "per kg grading input"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: al_01
+    applies_to: "all nodes"
+    rule: "Prefer subdivision; assign each field, machine-period and batch burden once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: al_02
+    applies_to: "roots and tops"
+    rule: "Field-retained tops receive no product allocation. Intentionally collected tops use documented economic allocation with mass sensitivity."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: al_03
+    applies_to: "grade states"
+    rule: "Subdivide when possible; otherwise economically allocate accepted and marketed downgraded roots. Waste receives no product allocation."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: al_04
+    applies_to: "rejects"
+    rule: "Reworked material retains accumulated burden and is counted only at final hand-off."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "field_production"
+      flow_role: "seed, nutrient, protection"
+      record_type: "invoices/logs"
+      raw_fields: "identity; mass; composition; area; date"
+      collection_method: "issue-return/application reconciliation"
+      unit: "kg; ha"
+      frequency: "event"
+      temporal_coverage: "crop cycle"
+      site_scope: "field"
+      aggregation_rule: "sum by product and field"
+      quality_evidence: "invoices, composition, logs"
+    - protocol_id: cp_irrigation
+      process_id: "field_production"
+      flow_role: "water"
+      record_type: "meter/pump log"
+      raw_fields: "meter; flow; duration; area"
+      collection_method: "meter or flow×duration"
+      unit: "m3; kg"
+      frequency: "event"
+      temporal_coverage: "season"
+      site_scope: "field/source"
+      aggregation_rule: "sum events"
+      quality_evidence: "calibration/pump test"
+    - protocol_id: cp_energy
+      process_id: "all_operating_nodes"
+      flow_role: "energy"
+      record_type: "meter/fuel/machine log"
+      raw_fields: "carrier; quantity; period; field/load"
+      collection_method: "direct meter or documented allocation"
+      unit: "L; kWh; MJ"
+      frequency: "period"
+      temporal_coverage: "full cycle"
+      site_scope: "machine/site"
+      aggregation_rule: "assign once"
+      quality_evidence: "meter and invoice reconciliation"
+    - protocol_id: cp_field_yield
+      process_id: "field_production"
+      flow_role: "roots"
+      record_type: "load and survey"
+      raw_fields: "lifted mass; loss sample; area"
+      collection_method: "calibrated loads plus sampling"
+      unit: "kg; ha"
+      frequency: "field"
+      temporal_coverage: "harvest"
+      site_scope: "field"
+      aggregation_rule: "lifted + scaled loss"
+      quality_evidence: "scale and sampling plan"
+    - protocol_id: cp_harvest_loss
+      process_id: "field_production_harvest_lifting"
+      flow_role: "loss"
+      record_type: "survey/balance"
+      raw_fields: "mass; area; damage; destination"
+      collection_method: "pre/post harvest sampling"
+      unit: "kg; ha"
+      frequency: "field"
+      temporal_coverage: "harvest"
+      site_scope: "field"
+      aggregation_rule: "scale and reconcile"
+      quality_evidence: "sample evidence"
+    - protocol_id: cp_harvest_loads
+      process_id: "harvest_lifting"
+      flow_role: "lifted roots"
+      record_type: "load tickets"
+      raw_fields: "gross; tare; field; date; soil correction"
+      collection_method: "calibrated weighing"
+      unit: "kg"
+      frequency: "load"
+      temporal_coverage: "campaign"
+      site_scope: "field/load"
+      aggregation_rule: "corrected sum"
+      quality_evidence: "scale certificate"
+    - protocol_id: cp_residues
+      process_id: "harvest_lifting"
+      flow_role: "tops"
+      record_type: "load/destination"
+      raw_fields: "mass; basis; destination"
+      collection_method: "calibrated weighing"
+      unit: "kg"
+      frequency: "load"
+      temporal_coverage: "campaign"
+      site_scope: "field/destination"
+      aggregation_rule: "sum hand-offs"
+      quality_evidence: "ticket/receiver"
+    - protocol_id: cp_conditioning_balance
+      process_id: "farm_conditioning"
+      flow_role: "roots/rejects"
+      record_type: "batch record"
+      raw_fields: "input; output; rejects; destination"
+      collection_method: "calibrated mass balance"
+      unit: "kg"
+      frequency: "batch"
+      temporal_coverage: "campaign"
+      site_scope: "site/field"
+      aggregation_rule: "reconcile states"
+      quality_evidence: "scales and batch sheet"
+    - protocol_id: cp_grading
+      process_id: "grading_handoff"
+      flow_role: "grades"
+      record_type: "delivery record"
+      raw_fields: "input; accepted; downgraded; reject; sugar; tare"
+      collection_method: "scale and receiving test"
+      unit: "kg; %"
+      frequency: "batch"
+      temporal_coverage: "delivery"
+      site_scope: "batch"
+      aggregation_rule: "reconcile grades"
+      quality_evidence: "scale, lab, receiver"
+  calculation_rules:
+    - id: cr_01
+      applies_to: "normalization"
+      rule: "field amount / same-field accepted mass × 1000 kg"
+      inputs:
+        - "input/emission"
+        - "accepted mass"
+      output: "per reference flow"
+      source_ids:
+        - mass-balance-identity
+    - id: cr_02
+      applies_to: "water"
+      rule: "metered m3 × density; rainfall excluded"
+      inputs:
+        - "meter/flow"
+        - density
+      output: "kg irrigation"
+      source_ids:
+        - fao-crop-yield-water-2012
+    - id: cr_03
+      applies_to: "root balance"
+      rule: "standing = lifted + field loss; input = accepted + downgraded + rejected + measured loss"
+      inputs:
+        - "linked mass records"
+      output: "reconciled states"
+      source_ids:
+        - mass-balance-identity
+    - id: cr_04
+      applies_to: "N2O"
+      rule: "declared IPCC tier applied to collected N inputs"
+      inputs:
+        - "N records"
+        - factors
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: cr_05
+      applies_to: "route aggregation"
+      rule: "area-weight area intensities and accepted-mass-weight reference intensities"
+      inputs:
+        - "stratum records"
+      output: "production mix"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_01
+      applies_to: "traceability"
+      requirement: "Link field, load, batch and delivery identifiers."
+      evidence: "registers and tickets"
+    - id: dq_02
+      applies_to: "completeness"
+      requirement: "Cover the full cycle and reconcile all root/residue states."
+      evidence: "completeness and balance report"
+    - id: dq_03
+      applies_to: "measurement"
+      requirement: "Use calibrated instruments or disclose method and uncertainty."
+      evidence: "calibration and workbook"
+    - id: dq_04
+      applies_to: "route"
+      requirement: "Separate material route differences before weighting."
+      evidence: "route register"
+    - id: dq_05
+      applies_to: "range maturity"
+      requirement: "Replace reasoned screens with reviewed evidence before publication-critical use."
+      evidence: "review record"
+validation_rules:
+  - rule_id: vr_01
+    applies_to: "reference"
+    rule: "Verify UUIDs, 1000 kg accepted roots, qualifiers and exclusions."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: vr_02
+    applies_to: "boundary"
+    rule: "Reject factory slicing, diffusion, sugar, pulp or molasses within the farm system."
+    source_ids:
+      - us-epa-sugarbeet-processing-ap42
+  - rule_id: vr_03
+    applies_to: "nutrients"
+    rule: "At most one Product-input nutrient card per process, only set-level flow-set.agricultural-nutrient-supply v0.3.0, no group or separate N/P/K/manure/compost/lime cards."
+    source_ids: []
+  - rule_id: vr_04
+    applies_to: "routes"
+    rule: "Verify parent, evidenced deltas, strata and weighting."
+    source_ids:
+      - fao-crop-yield-water-2012
+  - rule_id: vr_05
+    applies_to: "periods"
+    rule: "Resolve each record to one field/period/load/batch and count once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: vr_06
+    applies_to: "outputs"
+    rule: "Verify every hand-off, residue/waste route and allocation decision."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: vr_07
+    applies_to: "rejects"
+    rule: "Rejected mass has a destination and never appears in accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: vr_08
+    applies_to: "ranges"
+    rule: "Investigate out-of-range values; ranges do not replace foreground records."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "secondary_dataset or background_dataset"
+  downstream_use: "Fresh sugar-beet farm supply and models adding post-gate transport/factory processing"
+  allowed_use: "Declared regions, crop years and route shares"
+  excluded_use: "Seed, fodder/table beet, factory gate, sugar, pulp or molasses"
+  required_metadata: "Reference qualifiers, routes, yield, quality, loss/residue destinations, allocation and evidence"
+  required_quality_disclosure: "Coverage, calibration, estimates, weighting, mass-balance difference and data gaps"
+  update_trigger: "Material change in region, route, inputs, yield/quality basis, allocation or representativeness period"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-crop-yield-water-2012"
+    type: "official_guidance"
+    reference: "FAO, *Crop yield response to water* (2012), https://www.fao.org/4/i2800e/i2800e.pdf"
+    used_for: "water and route"
+  - id: "fao-sugar-beet-white-sugar-2009"
+    type: "official_guidance"
+    reference: "FAO, *Sugar beet: white sugar* (2009), https://www.fao.org/fileadmin/user_upload/tci/docs/AH1-%28eng%29Sugar%20beet%20white%20sugar.pdf"
+    used_for: "identity, route, yield"
+  - id: "fao-land-management-root-crops"
+    type: "official_guidance"
+    reference: "FAO land-management/root-harvest guidance, https://www.fao.org/4/x5648e/x5648e0f.htm"
+    used_for: "harvest, soil, loss"
+  - id: "us-epa-sugarbeet-processing-ap42"
+    type: "official_guidance"
+    reference: "US EPA AP-42 9.10.1.2, https://www.ams.usda.gov/sites/default/files/media/Vinasse.pdf"
+    used_for: "factory exclusion"
+  - id: "usda-ers-sugarbeet-harvest-loss-2019"
+    type: "dataset"
+    reference: "USDA ERS sugarbeet harvest (2019), https://www.ers.usda.gov/data-products/chart-gallery/95396"
+    used_for: "loss context"
+  - id: "uk-defra-sugar-beet-2024"
+    type: "dataset"
+    reference: "UK Defra, Agriculture in the UK 2024, https://www.gov.uk/government/statistics/agriculture-in-the-united-kingdom-2024/chapter-7-crops"
+    used_for: "yield/sugar context"
+  - id: "uk-nvz-nitrogen-2026"
+    type: "official_guidance"
+    reference: "UK nitrogen fertiliser guidance, https://www.gov.uk/guidance/using-nitrogen-fertilisers-in-nitrate-vulnerable-zones"
+    used_for: "N check"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "managed-soil N2O"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass identity applied to linked foreground records"
+    used_for: "transfers, balance, allocation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:5f8265480acc871e3d7d1945ac5f8f078459998f3fb610800eb305ebcf0137c2"
+  generated_content_sha256: "sha256:7f4aa124d03cd93197b4508f05b5152bd0e65cd21a93dcba5e06216132f4f6ef"

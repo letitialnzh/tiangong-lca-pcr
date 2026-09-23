@@ -131,13 +131,16 @@ Source seed lot used for multiplication is recorded as an input product flow. Am
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Nitrogen fertilizer carrier (`nitrogen_fertilizer_carrier`)
+###### Agricultural nutrient and fertilizer inputs (`field_seed_multiplication_agricultural_nutrient_inputs`)
 
-Nitrogen fertilizer carrier is recorded as an input product flow. Amount rule: measured product mass and kg N; normalization basis: per 1,000 kg harvested seed crop.
+Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 
-- Selected flow: Urea `3f8850c0-f718-4c4b-8fcb-8fd42e03aa8e`
-- Flow property / unit: Mass / kg
-- Amount rule: measured product mass and kg N
+- Selected flow: Agricultural nutrient and fertilizer supply
+- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
+- Binding: `parameterized`
+- Flow Set: `flow-set.agricultural-nutrient-supply`
+- Flow Set version: `0.3.0`
+- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1,000 kg harvested seed crop
@@ -154,19 +157,6 @@ Nitrogen fertilizer carrier is recorded as an input product flow. Amount rule: m
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Phosphate fertilizer (`phosphate_fertilizer`)
-
-Phosphate fertilizer is recorded as an input product flow. Amount rule: measured product mass; normalization basis: per 1,000 kg harvested seed crop.
-
-- Selected flow: Phosphate fertilizer `9c196b01-6aad-4252-a6e8-f853853a830c`
-- Flow property / unit: Mass / kg
-- Amount rule: measured product mass
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg harvested seed crop
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_fertilizer_input_records`
 - Range: Provisional phosphate fertilizer screening estimate
   - Range role: Default estimate (`default_estimate`)
   - Lower: 0
@@ -176,19 +166,6 @@ Phosphate fertilizer is recorded as an input product flow. Amount rule: measured
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Potassium fertilizer (`potassium_fertilizer`)
-
-Potassium fertilizer is recorded as an input product flow. Amount rule: measured product mass; normalization basis: per 1,000 kg harvested seed crop.
-
-- Selected flow: Potassium fertilizer `dd008d87-16e4-4e85-a048-b9949f6fbca6`
-- Flow property / unit: Mass / kg
-- Amount rule: measured product mass
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg harvested seed crop
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_fertilizer_input_records`
 - Range: Provisional potassium fertilizer screening estimate
   - Range role: Default estimate (`default_estimate`)
   - Lower: 0
@@ -955,7 +932,7 @@ Before publishing a foreground data package using this PCR, check:
 | allowed_use | downstream wheat seed or wheat cultivation data construction where seed class, treatment status, geography, moisture basis, and declared gate match the dataset metadata |
 | excluded_use | commodity wheat grain, seed production outside the declared route, and studies requiring omitted breeding research or capital goods burdens |
 | required_metadata | reference flow; geography; crop cycle; seed class; treatment status; moisture basis; physical purity; germination rate; declared gate; collection protocol coverage; DQR |
-| required_quality_disclosure | record coverage, calculation rules, measurement devices or primary records, unresolved omissions, and data quality scores |
+| required_quality_disclosure | record coverage, calculation rules, measurement devices or primary records, evidence gap omissions, and data quality scores |
 | update_trigger | material change in production route, geography, seed treatment, conditioning technology, reference flow qualifiers, collection protocol coverage, or data quality score |
 
 ## 11. Data Sources

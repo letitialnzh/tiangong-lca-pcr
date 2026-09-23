@@ -1,10 +1,988 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01131"
-  title: "Rice, seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.rice-seed"
+  classification_refs: "CPC 3.0 01131, Rice, seed"
+  covered_products: "rice seed intended for sowing, including certified, foundation, registered, farmer-selected, or comparable seed lots"
+  excluded_products: "rice paddy for milling; husked or milled rice; rice for food or feed; rice straw sold as a separate product; seed-processing services without a rice-seed product output"
+  representative_product: "cleaned, graded, quality-tested rice seed at the declared moisture basis and seed gate"
+  production_route: "rice seed multiplication or controlled seed production followed by harvest, conditioning, optional treatment, packaging, storage, and delivery"
+  market_state: "sowing seed with declared seed class, moisture basis, physical purity, germination, treatment status, packaging state, geography, and gate"
+functional_unit:
+  what: "cleaned rice seed intended for sowing"
+  how_much: "1 kg"
+  how_well: "declared seed class, variety or hybrid, moisture basis, physical purity, germination, treatment status, and packaging state"
+  how_long_or_cycle: "one declared seed production crop cycle; storage duration is declared separately when inside the gate"
+  reference_flow_link: "Reference amount and verified platform product flow below"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The default foreground boundary runs from the declared source seed lot or production starting condition to rice seed at the declared seed gate. It includes land preparation, planting or transplanting, nutrient management, irrigation where applicable, crop protection, field operations, harvest, field-to-facility movement when inside the gate, drying, cleaning, grading, quality testing, treatment, packaging, storage, and delivery when the gate is delivered seed. Upstream production of purchased nutrient products, energy carriers, packaging, treatment materials, and treatment services is represented by linked background data. Rice paddy used as an input to seed conditioning is a product input and must be kept distinct from the final sowing-seed output. Rice milling, consumer use, downstream rice cultivation, retail, and food or feed processing are outside the default boundary."
+      source_ids: []
+    - rule_id: boundary_seed_production
+      applies_to: "field and seed-facility route"
+      rule: "Include source seed or declared starting condition, field production, harvest, conditioning, quality testing, treatment, packaging, storage, and delivery only to the declared gate."
+      source_ids:
+        - irri-rice-seed-quality
+        - fao-rice-postharvest
+    - rule_id: boundary_input_completeness
+      applies_to: "all foreground routes"
+      rule: "Address nutrient inputs, irrigation, crop protection, land, field energy, pumping, drying, conditioning energy, packaging, storage, and direct emissions with a collected value, justified zero, or documented exclusion."
+      source_ids:
+        - ipcc-2019-cropland
+        - ipcc-2019-managed-soils-n2o
+    - rule_id: boundary_quality_separation
+      applies_to: "rice seed outputs"
+      rule: "Separate accepted seed, usable co-product, screenings, rejected seed, broken kernels, dust, storage losses, and other residues by measured mass and declared fate."
+      source_ids:
+        - fao-rice-postharvest
+        - mass-balance-identity
+    - rule_id: boundary_moisture_reconciliation
+      applies_to: "harvest and conditioning"
+      rule: "Reconcile harvested input and conditioned outputs on one declared moisture basis and disclose drying water removal."
+      source_ids:
+        - fao-rice-postharvest
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "source_seed_lot_or_declared_seed_production_start"
+  starting_condition_role: "seed_identity_and_propagation_condition"
+  product_classification_scope: "current CPC 3.0 product category 01131, Rice, seed"
+  recursive_input_rule: "a same-category seed input that would cause recursive tracing is recorded as the declared source seed lot with lot identity, origin, and purpose rather than recursively expanding the seed PCR"
+  upstream_dataset_requirement: "use representative upstream datasets for purchased materials and disclose the selected Flow Set resolution in the foreground package"
+  disclosure: "record source seed lot, variety or hybrid, seed class, location, crop year, production system, irrigation status, moisture basis, quality tests, treatment, gate, packaging, outputs, residue fates, and reporting period"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Rice Seeds"
+    uuid: "14c42414-b19b-47c4-863f-1b86b50ff6bf"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200b9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "seed class or certification class"
+    - "rice variety or hybrid"
+    - "moisture basis"
+    - "physical purity"
+    - germination
+    - "treatment status"
+    - geography
+    - "crop season and year"
+    - "declared seed gate"
+    - "packaging state"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Express the reference flow as net kg of accepted rice seed for sowing at the declared gate."
+  - id: seed_count_conversion
+    applies_to: "seed-count records"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Seed count may be used only when thousand-seed mass or another transparent conversion to mass is recorded."
+  - id: moisture_basis
+    applies_to: "harvested and conditioned seed"
+    required_property_ref:
+      name: "Mass and declared moisture fraction"
+      uuid: ""
+    required_unit: "kg and percent"
+    rule: "Record the received and reference moisture basis and use an explicit water-mass conversion when normalizing between bases."
+  - id: nutrient_basis
+    applies_to: "nutrient inputs and soil emissions"
+    required_property_ref:
+      name: "Mass and nutrient content"
+      uuid: ""
+    required_unit: "kg product and kg nutrient"
+    rule: "Record formulated product mass and nutrient content separately; nitrogen calculations use kg N rather than fertilizer-product mass."
+  - id: water_basis
+    applies_to: "irrigation and withdrawal"
+    required_property_ref:
+      name: "Volume or Mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Distinguish source withdrawal, delivered irrigation, consumption, and any water-footprint result."
+  - id: energy_inventory
+    applies_to: "field, pumping, drying, conditioning, and storage energy"
+    required_property_ref:
+      name: "Energy or carrier mass"
+      uuid: ""
+    required_unit: "kWh, MJ, L, or kg"
+    rule: "Preserve energy carrier, unit, conversion basis, process operation, and geography."
+  - id: packaging_quantity
+    applies_to: "packaging inputs"
+    required_property_ref:
+      name: "Mass, area, or item count"
+      uuid: ""
+    required_unit: "kg, m2, or item"
+    rule: "Record the packaging material quantity and package capacity or item count needed to reconcile packaging with reference output."
+process_map:
+  - id: rice_seed_multiplication
+    name: "Rice Seed Multiplication"
+    inclusion: "required"
+    inclusion_condition: "include field or controlled production of the seed crop"
+    role: "foreground"
+    quantitative_reference: "harvested rice seed crop"
+  - id: rice_seed_conditioning
+    name: "Rice Seed Conditioning and Treatment"
+    inclusion: "required"
+    inclusion_condition: "include drying, cleaning, grading, testing, treatment, and packaging before the declared gate"
+    role: "foreground"
+    quantitative_reference: "accepted rice seed output"
+  - id: rice_seed_storage_and_delivery
+    name: "Rice Seed Storage and Delivery"
+    inclusion: "conditional"
+    inclusion_condition: "include when storage or delivery is part of the declared gate or materially changes the product state"
+    role: "foreground"
+    quantitative_reference: "delivered rice seed output"
+process_inventory:
+  - id: rice_seed_multiplication
+    label: "Rice Seed Multiplication"
+    inputs:
+      product:
+        - row_id: source_seed_lot
+          role: "Source seed lot used for multiplication"
+          name: "Rice Seeds"
+          flow_type: "product"
+          flow_ref:
+            uuid: "14c42414-b19b-47c4-863f-1b86b50ff6bf"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The declared source seed lot is recorded as the propagation input. It carries variety, class, origin, treatment status, and lot identity; it is not recursively expanded when it is the same product category."
+          amount:
+            expression: "measured source-lot mass or transparent seeding-rate conversion"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_seed_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0.001"
+                upper: "0.2"
+                unit: "kg/kg harvested rice seed crop"
+                basis: "first-pass source seed mass per harvested seed-crop output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rice_seed_multiplication_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "0.6"
+                unit: "kg product/kg harvested rice seed crop"
+                basis: "broad first-pass formulated nutrient product mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supplied"
+          name: "irrigation water supplied to the rice production field"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Delivered irrigation water is recorded separately from source withdrawal and consumption."
+          amount:
+            expression: "metered or calculated delivered irrigation volume"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges: []
+        - row_id: field_energy
+          role: "Field energy and machinery operation"
+          name: "field machinery energy supply"
+          flow_type: "product"
+          property_unit: "Energy or carrier mass / MJ, kWh, L, or kg"
+          description: "Fuel or measured mechanical energy used for land preparation, planting, crop care, harvest, and field movement is represented as an energy-supply function."
+          amount:
+            expression: "field fuel or mechanical-energy records by operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids: []
+            ranges: []
+        - row_id: crop_protection_material
+          role: "Crop-protection material"
+          name: "crop-protection material used in rice seed production"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Crop-protection products are material inputs only when the active ingredient or formulated product crosses the foreground boundary."
+          amount:
+            expression: "measured formulated-product or active-ingredient mass by application"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids: []
+            ranges: []
+        - row_id: irrigation_pumping_electricity
+          role: "Pumping electricity"
+          name: "purchased electricity for irrigation pumping"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh or MJ"
+          description: "Electricity used to pump or deliver irrigation water is recorded separately from the water flow."
+          amount:
+            expression: "metered pumping electricity or calculated electricity from pump records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Land occupation or transformation"
+          name: "land occupation or transformation supporting rice seed production"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha year or declared platform unit"
+          description: "Land occupation or transformation is recorded as a natural-resource interaction for the rice seed production area and duration."
+          amount:
+            expression: "measured field area and crop duration; land transformation is separated from occupation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per crop cycle and per kg reference output"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids: []
+            ranges: []
+        - row_id: water_withdrawal
+          role: "Water resource withdrawal"
+          name: "water resource withdrawn for rice seed irrigation"
+          flow_type: "elementary"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Source-specific water withdrawal is recorded as an elementary input and reconciled with delivered irrigation water."
+          amount:
+            expression: "source-metered withdrawal, without merging delivery losses or consumption"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges: []
+    outputs:
+      product:
+        - row_id: harvested_rice_seed_crop
+          role: "Harvested rice seed crop"
+          name: "harvested rice seed crop for conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Harvested rice seed crop leaving the field route is an intermediate product output to conditioning. It is not the final reference flow until it has passed the declared conditioning and quality boundary."
+          amount:
+            expression: "measured harvested mass at the declared received moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested rice seed crop"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_soil_n2o
+          role: "Direct soil nitrous oxide emission"
+          name: "nitrous oxide emission to air from managed rice soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Direct soil nitrous oxide is calculated from declared nitrogen inputs and the selected emissions method."
+          amount:
+            expression: "selected IPCC tier or site method applied to declared nitrogen inputs and conditions"
+            value_mode: "calculated_value"
+            specificity: "generic"
+            basis:
+              text: "per kg reference output"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges: []
+        - row_id: ammonia_emission
+          role: "Ammonia emission"
+          name: "ammonia emission to air from rice production"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Ammonia emissions are recorded when the selected nitrogen method and foreground evidence support them."
+          amount:
+            expression: "site or regional nitrogen-emission method using declared nitrogen inputs"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg reference output"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges: []
+        - row_id: nitrate_emission
+          role: "Nitrate emission to water"
+          name: "nitrate emission to water from rice production"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Nitrate loss to water is recorded when field evidence or the selected regional method supports a water emission route."
+          amount:
+            expression: "selected site or regional leaching method using declared nitrogen and water conditions"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg reference output"
+              kind: "n_input"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges: []
+  - id: rice_seed_conditioning
+    label: "Rice Seed Conditioning and Treatment"
+    inputs:
+      product:
+        - row_id: conditioning_seed_crop_input
+          role: "Harvested rice seed crop for conditioning"
+          name: "harvested rice seed crop for conditioning"
+          flow_type: "product"
+          flow_ref:
+            uuid: "14c42414-b19b-47c4-863f-1b86b50ff6bf"
+          property_unit: "Mass / kg"
+          description: "The conditioning input is the measured harvested rice seed crop received by the drying, cleaning, grading, testing, and treatment route."
+          amount:
+            expression: "measured received mass and moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted rice seed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_input
+              source_ids:
+                - fao-rice-postharvest
+            ranges: []
+        - row_id: conditioning_electricity
+          role: "Conditioning electricity"
+          name: "conditioning electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh or MJ"
+          description: "Electricity for drying fans, cleaning, grading, testing, treatment, and packaging is recorded by operation where metering permits."
+          amount:
+            expression: "metered electricity by conditioning operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted rice seed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_energy_records
+              source_ids: []
+            ranges: []
+        - row_id: drying_heat
+          role: "Drying heat or energy carrier"
+          name: "drying heat or process energy supply"
+          flow_type: "product"
+          property_unit: "Energy or carrier mass / MJ, kWh, L, or kg"
+          description: "Drying heat or the energy carrier used to provide it is recorded separately from electricity when the route uses direct heat."
+          amount:
+            expression: "measured drying energy or documented carrier conversion"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted rice seed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_energy_records
+              source_ids: []
+            ranges: []
+        - row_id: seed_treatment_material
+          role: "Seed treatment material"
+          name: "seed treatment material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Seed treatment material is recorded only when treatment is part of the declared market state and the product or active ingredient crosses the boundary."
+          amount:
+            expression: "measured formulated product or active ingredient loading per treated seed mass"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg treated rice seed output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_treatment_records
+              source_ids: []
+            ranges: []
+        - row_id: primary_packaging
+          role: "Primary packaging"
+          name: "primary packaging for rice seed"
+          flow_type: "product"
+          property_unit: "Mass, area, or item / kg, m2, or item"
+          description: "Packaging used to contain and protect the declared rice seed output is represented by the packaging function."
+          amount:
+            expression: "measured packaging material and package count or capacity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg packaged rice seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_rice_seed_output
+          role: "Accepted rice seed for sowing"
+          name: "Rice Seeds"
+          flow_type: "product"
+          flow_ref:
+            uuid: "14c42414-b19b-47c4-863f-1b86b50ff6bf"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Accepted rice seed is the sole reference-product role for this PCR when it satisfies the declared class and quality qualifiers."
+          amount:
+            expression: "measured net accepted seed mass on the declared moisture basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "PCR reference output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_accepted_seed_output
+              source_ids:
+                - irri-rice-seed-quality
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: conditioning_dust
+          role: "Conditioning dust emission"
+          name: "dust or particulate emission to air from rice seed conditioning"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Dust released to air from cleaning, grading, or handling is represented as an environmental emission function when it is material or required by the selected method."
+          amount:
+            expression: "measured or calculated dust release on the declared route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted rice seed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_emissions
+              source_ids: []
+            ranges: []
+  - id: rice_seed_storage_and_delivery
+    label: "Rice Seed Storage and Delivery"
+    inputs:
+      product:
+        - row_id: storage_electricity
+          role: "Storage electricity"
+          name: "storage electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh or MJ"
+          description: "Storage electricity is included when cooling, ventilation, drying maintenance, or other storage energy is inside the declared gate."
+          amount:
+            expression: "metered or allocated storage electricity over the declared storage period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg delivered rice seed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoidance
+    applies_to: "field, conditioning, and storage processes"
+    rule: "First avoid allocation by subdividing seed multiplication, conditioning, treatment, packaging, storage, rejected-lot handling, and residue management when records permit."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_output_completeness
+    applies_to: "rice seed and non-reference outputs"
+    rule: "Enumerate accepted seed, intentionally sold co-products, rejected seed, screenings, losses, residues, and waste fates before selecting an allocation method."
+    source_ids:
+      - iso-14044-2006
+      - mass-balance-identity
+  - rule_id: allocation_method_selection
+    applies_to: "shared burdens"
+    rule: "If allocation remains necessary, declare the selected physical or economic relationship, data period, and sensitivity; do not use a default product quantity from a module."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_seed_quality
+    applies_to: "seed classes and grades"
+    rule: "Do not allocate by seed quality claims alone unless a documented physical or economic relationship supports the choice; keep accepted seed and off-grade fate traceable."
+    source_ids:
+      - irri-rice-seed-quality
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_source_seed_lot
+      process_id: "rice_seed_multiplication"
+      flow_role: "source seed lot"
+      record_type: "lot and planting record"
+      raw_fields: "lot id; variety or hybrid; seed class; supplier; treatment; mass; seeding date; field"
+      collection_method: "lot certificate, invoice, and planting log"
+      unit: "kg and declared attributes"
+      frequency: "per lot and crop cycle"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "field or seed farm"
+      aggregation_rule: "sum by lot and link to planted area"
+      quality_evidence: "lot certificate and calibrated scale"
+    - protocol_id: cp_nutrient_records
+      process_id: "rice_seed_multiplication"
+      flow_role: "nutrient and soil amendment inputs"
+      record_type: "input ledger"
+      raw_fields: "product; nutrient content; mass; field; date; supplier; application method"
+      collection_method: "invoice, application log, and field record"
+      unit: "kg product and kg nutrient"
+      frequency: "per application"
+      temporal_coverage: "crop cycle"
+      site_scope: "field or block"
+      aggregation_rule: "sum by nutrient product and nutrient"
+      quality_evidence: "invoice and application record"
+    - protocol_id: cp_irrigation_records
+      process_id: "rice_seed_multiplication"
+      flow_role: "delivered irrigation and withdrawal"
+      record_type: "meter or pumping record"
+      raw_fields: "source; meter; readings; volume; pumping energy; date; field"
+      collection_method: "calibrated meter, pumping log, or invoice"
+      unit: "m3, kg, and energy unit"
+      frequency: "per event or period"
+      temporal_coverage: "irrigation season"
+      site_scope: "field and source"
+      aggregation_rule: "distinguish withdrawal, delivery, consumption, and losses"
+      quality_evidence: "meter calibration and readings"
+    - protocol_id: cp_field_energy_records
+      process_id: "rice_seed_multiplication"
+      flow_role: "field energy"
+      record_type: "machinery or fuel record"
+      raw_fields: "operation; carrier; quantity; equipment; field; date"
+      collection_method: "fuel ledger, machine record, or measured work"
+      unit: "L, kg, MJ, or kWh"
+      frequency: "per operation"
+      temporal_coverage: "crop cycle"
+      site_scope: "field and machinery set"
+      aggregation_rule: "sum by operation and carrier"
+      quality_evidence: "fuel invoice or machine record"
+    - protocol_id: cp_crop_protection_records
+      process_id: "rice_seed_multiplication"
+      flow_role: "crop protection"
+      record_type: "application record"
+      raw_fields: "product; active ingredient; rate; area; date; field; weather condition"
+      collection_method: "application log and product label"
+      unit: "kg product, kg active ingredient, or declared unit"
+      frequency: "per application"
+      temporal_coverage: "crop cycle"
+      site_scope: "field or block"
+      aggregation_rule: "sum by product and active ingredient"
+      quality_evidence: "application log and label"
+    - protocol_id: cp_land_and_output_records
+      process_id: "rice_seed_multiplication"
+      flow_role: "land, harvest, and field output"
+      record_type: "field and harvest record"
+      raw_fields: "area; duration; crop year; harvested mass; moisture; residue; fate"
+      collection_method: "field register, weighbridge, and moisture record"
+      unit: "ha, day, kg, and percent"
+      frequency: "per field and harvest event"
+      temporal_coverage: "crop cycle"
+      site_scope: "field or block"
+      aggregation_rule: "reconcile area, duration, harvest, and fates"
+      quality_evidence: "field register and scale record"
+    - protocol_id: cp_conditioning_input
+      process_id: "rice_seed_conditioning"
+      flow_role: "received seed crop"
+      record_type: "receiving record"
+      raw_fields: "lot; opening mass; moisture; source field; date; transfer"
+      collection_method: "receiving scale and moisture test"
+      unit: "kg and percent"
+      frequency: "per lot"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility and lot"
+      aggregation_rule: "sum by lot on common moisture basis"
+      quality_evidence: "scale and test record"
+    - protocol_id: cp_conditioning_energy_records
+      process_id: "rice_seed_conditioning"
+      flow_role: "electricity and drying heat"
+      record_type: "utility and fuel record"
+      raw_fields: "operation; carrier; meter; quantity; date; lot or batch"
+      collection_method: "meter, invoice, and batch log"
+      unit: "kWh, MJ, L, or kg"
+      frequency: "per batch or period"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility and line"
+      aggregation_rule: "allocate only with declared driver"
+      quality_evidence: "meter and invoice"
+    - protocol_id: cp_seed_treatment_records
+      process_id: "rice_seed_conditioning"
+      flow_role: "treatment material"
+      record_type: "treatment batch record"
+      raw_fields: "product; active ingredient; rate; treated mass; lot; date"
+      collection_method: "batch sheet and product record"
+      unit: "kg product and kg treated seed"
+      frequency: "per batch"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility and lot"
+      aggregation_rule: "sum by treatment product and treated output"
+      quality_evidence: "batch sheet and label"
+    - protocol_id: cp_packaging_records
+      process_id: "rice_seed_conditioning"
+      flow_role: "packaging"
+      record_type: "packaging ledger"
+      raw_fields: "material; specification; item count; mass; capacity; lot; date"
+      collection_method: "inventory issue record and scale"
+      unit: "kg, m2, or item"
+      frequency: "per batch or period"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility"
+      aggregation_rule: "sum by material and package state"
+      quality_evidence: "inventory record and scale"
+    - protocol_id: cp_accepted_seed_output
+      process_id: "rice_seed_conditioning"
+      flow_role: "reference output"
+      record_type: "quality and dispatch record"
+      raw_fields: "lot; accepted mass; moisture; purity; germination; treatment; package; gate"
+      collection_method: "quality certificate, scale, and dispatch record"
+      unit: "kg and declared quality units"
+      frequency: "per lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "facility and destination gate"
+      aggregation_rule: "sum accepted output after quality release"
+      quality_evidence: "certificate and calibrated scale"
+    - protocol_id: cp_reject_and_screening_records
+      process_id: "rice_seed_conditioning"
+      flow_role: "screenings and rejects"
+      record_type: "screening and disposition record"
+      raw_fields: "lot; material; mass; moisture; destination; fate"
+      collection_method: "screening log and disposition record"
+      unit: "kg and declared fate"
+      frequency: "per batch"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility"
+      aggregation_rule: "sum by fate and material"
+      quality_evidence: "scale and disposition record"
+    - protocol_id: cp_packaging_waste_records
+      process_id: "rice_seed_conditioning"
+      flow_role: "packaging waste"
+      record_type: "waste log"
+      raw_fields: "material; mass; source; destination; date"
+      collection_method: "waste log and transfer record"
+      unit: "kg"
+      frequency: "per batch or period"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility"
+      aggregation_rule: "sum by material and fate"
+      quality_evidence: "waste transfer record"
+    - protocol_id: cp_conditioning_emissions
+      process_id: "rice_seed_conditioning"
+      flow_role: "dust and direct emissions"
+      record_type: "emission record"
+      raw_fields: "source; substance; quantity; method; date; line"
+      collection_method: "measured emission or documented calculation"
+      unit: "kg"
+      frequency: "per batch or period"
+      temporal_coverage: "conditioning season"
+      site_scope: "facility"
+      aggregation_rule: "sum by emission route"
+      quality_evidence: "monitoring record or method sheet"
+    - protocol_id: cp_storage_records
+      process_id: "rice_seed_storage_and_delivery"
+      flow_role: "storage energy and losses"
+      record_type: "storage and dispatch record"
+      raw_fields: "opening mass; closing mass; moisture; storage days; energy; loss; gate"
+      collection_method: "inventory, meter, moisture, and dispatch record"
+      unit: "kg, percent, days, and kWh or MJ"
+      frequency: "per lot or period"
+      temporal_coverage: "declared storage period"
+      site_scope: "facility and destination gate"
+      aggregation_rule: "reconcile transfers, moisture, accepted output, and losses"
+      quality_evidence: "scale, meter, and dispatch record"
+  calculation_rules:
+    - id: calculate_reference_output
+      applies_to: "accepted rice seed"
+      rule: "accepted net mass at declared moisture and gate after quality release"
+      inputs:
+        - cp_accepted_seed_output
+      output: "kg reference output"
+      source_ids:
+        - mass-balance-identity
+    - id: convert_moisture_basis
+      applies_to: "harvest and conditioning"
+      rule: "dry matter = wet mass × (1 − moisture fraction); equivalent mass at target basis = dry matter / (1 − target moisture fraction)"
+      inputs:
+        - cp_conditioning_input
+        - cp_accepted_seed_output
+      output: "mass on common moisture basis"
+      source_ids:
+        - mass-balance-identity
+        - fao-rice-postharvest
+    - id: calculate_water_withdrawal
+      applies_to: "irrigation"
+      rule: "source-specific metered withdrawal normalized to reference output; report delivery and consumption separately"
+      inputs:
+        - cp_irrigation_records
+        - cp_accepted_seed_output
+      output: "kg or m3 water/kg reference output"
+      source_ids:
+        - fao-crop-evapotranspiration-56
+    - id: calculate_direct_soil_n2o
+      applies_to: "field nitrogen"
+      rule: "apply the selected IPCC or regional method and convert N2O-N to N2O where required"
+      inputs:
+        - cp_nutrient_records
+        - "declared method factors"
+      output: "kg N2O/kg reference output"
+      source_ids:
+        - ipcc-2019-managed-soils-n2o
+    - id: calculate_energy_normalization
+      applies_to: "field, conditioning, and storage energy"
+      rule: "sum carrier-specific energy records by process and normalize to accepted reference output without merging water or material quantities"
+      inputs:
+        - "energy protocols"
+        - cp_accepted_seed_output
+      output: "MJ or kWh/kg reference output"
+      source_ids:
+        - mass-balance-identity
+    - id: calculate_output_fates
+      applies_to: "field, conditioning, and storage"
+      rule: "accepted seed + intentional co-products + rejects + losses + declared residues = measured input on a common moisture basis within the declared tolerance"
+      inputs:
+        - "output and input protocols"
+      output: "output reconciliation and unexplained difference"
+      source_ids:
+        - mass-balance-identity
+        - fao-rice-postharvest
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference output and lots"
+      requirement: "Declare rice variety or hybrid, seed class, lot identity, geography, crop year, gate, moisture basis, treatment status, and quality-test basis."
+      evidence: "lot certificates, field records, quality certificates, dispatch records"
+    - id: dq_flow_resolution
+      applies_to: "all parameterized rows"
+      requirement: "Resolve every parameterized Flow Set row to a verified platform UUID before final TIDAS exchange publication and preserve the selected group and project context."
+      evidence: "final exchange records and Flow Set selection record"
+    - id: dq_input_completeness
+      applies_to: "field and conditioning inventory"
+      requirement: "Quantify or justify zero or exclusion for source seed, nutrients, irrigation, crop protection, land, field energy, pumping, drying, conditioning, packaging, storage, and direct emissions."
+      evidence: "ledgers, logs, meters, invoices, and method declaration"
+    - id: dq_moisture_and_mass
+      applies_to: "harvest and conditioning"
+      requirement: "Use calibrated mass and moisture records and reconcile received, dried, accepted, rejected, and lost material on a common basis."
+      evidence: "scale calibration, moisture tests, and reconciliation"
+    - id: dq_representativeness
+      applies_to: "dataset profile"
+      requirement: "Disclose temporal, geographic, varietal, production-system, technology, and facility coverage and explain deviations from the declared route."
+      evidence: "sampling plan and metadata"
+    - id: dq_quality_evidence
+      applies_to: "seed quality"
+      requirement: "Retain the test method, sample size, lot coverage, laboratory or inspector identity, and release decision for purity, germination, moisture, and treatment status."
+      evidence: "quality certificate and test record"
+validation_rules:
+  - rule_id: validation_reference_binding
+    applies_to: "reference product"
+    rule: "Confirm the reference product uses the verified platform UUID and declared seed-gate qualifiers; the final exchange must retain that UUID."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_binding_coordinates
+    applies_to: "all bound rows"
+    rule: "Confirm every bound row uses fixed or parameterized; every fixed row has a verified UUID and every parameterized row has an existing Flow Set id, version, and compatible group or coordinate."
+    source_ids: []
+  - rule_id: validation_flow_coordinates
+    applies_to: "all inventory rows"
+    rule: "Confirm direction and flow type match the structural coordinate: product inputs for material, nutrient, water, energy, and packaging; product outputs for product-output; elementary inputs for natural resource extraction; elementary outputs for direct releases."
+    source_ids: []
+  - rule_id: validation_quality_identity
+    applies_to: "reference output"
+    rule: "Confirm seed class, lot, variety or hybrid, moisture basis, purity, germination, treatment, geography, crop year, and gate are present."
+    source_ids:
+      - irri-rice-seed-quality
+  - rule_id: validation_moisture_and_mass_balance
+    applies_to: "harvest, conditioning, and storage"
+    rule: "Confirm common-basis mass reconciliation and declared fates for accepted seed, co-products, rejects, residues, dust, and storage losses."
+    source_ids:
+      - fao-rice-postharvest
+      - mass-balance-identity
+  - rule_id: validation_nutrient_and_emissions
+    applies_to: "nutrients and field emissions"
+    rule: "Confirm product nutrient mass is distinct from kg nutrient and that the selected nitrogen-emission method, unit conversion, and receiving compartment are declared."
+    source_ids:
+      - ipcc-2019-managed-soils-n2o
+  - rule_id: validation_water
+    applies_to: "irrigation and withdrawal"
+    rule: "Confirm withdrawal, delivered irrigation, consumption, and water-footprint indicators are distinguished and not double counted."
+    source_ids:
+      - fao-crop-evapotranspiration-56
+  - rule_id: validation_allocation
+    applies_to: "shared burdens and outputs"
+    rule: "Confirm subdivision was considered first, output fates are complete, any allocation method is declared, and sensitivity is reported when material."
+    source_ids:
+      - iso-14044-2006
+published_dataset_profile:
+  dataset_role: "foreground secondary dataset with background links for purchased inputs and services"
+  downstream_use: "construction of rice-seed supply processes and lifecycle models; comparison of declared rice seed routes at a common reference flow"
+  allowed_use: "rice seed for sowing matching the declared class, variety or hybrid, geography, crop cycle, quality basis, treatment status, gate, and packaging state"
+  excluded_use: "rice paddy for milling; husked or milled rice; food or feed grain; downstream rice cultivation; datasets with incompatible gate, moisture basis, quality state, or unexplained output loss"
+  required_metadata: "reference Flow Set resolution; seed class; lot and variety or hybrid; geography; crop year; production system; irrigation; nutrient and crop-protection records; land; energy; moisture basis; purity; germination; treatment; packaging; gate; output fates; allocation; data-quality disclosure"
+  required_quality_disclosure: "primary-record coverage; temporal and geographic representativeness; scale and moisture calibration; parameterized Flow Set resolutions; nutrient and emission methods; water source; energy carriers; gate; exclusions; allocation; sensitivity; module checklist result"
+  update_trigger: "material change in seed class, variety or hybrid, gate, moisture convention, quality standard, production route, irrigation, nutrient or crop-protection practice, conditioning technology, storage duration, packaging, output fate, Flow Set contract, or evidence status"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "irri-rice-seed-quality"
+    type: "official_guidance"
+    reference: "International Rice Research Institute, Rice Knowledge Bank, seed quality guidance, <https://www.knowledgebank.irri.org/step-by-step-production/pre-planting/seed-quality>"
+    used_for: "seed class, purity, germination, lot-quality, and release evidence"
+  - id: "fao-rice-postharvest"
+    type: "official_guidance"
+    reference: "FAO, Agricultural engineering in development: post-harvest systems, <https://www.fao.org/4/t0522e/T0522E03.htm>"
+    used_for: "drying, cleaning, handling, moisture, loss, and conditioning process decomposition"
+  - id: "fao-crop-evapotranspiration-56"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, *Crop evapotranspiration*, <https://www.fao.org/4/X0490E/X0490E00.htm>"
+    used_for: "irrigation data collection and distinctions among water quantities"
+  - id: "ipcc-2019-cropland"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 5 Cropland, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch05_Cropland.pdf>"
+    used_for: "cropland management, residue, land, and production-method context"
+  - id: "ipcc-2019-managed-soils-n2o"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 11, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf>"
+    used_for: "managed-soil nitrogen-emission method and factor selection"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy, data quality, and sensitivity expectations"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied as a PCR calculation identity"
+    used_for: "moisture conversion, output reconciliation, and QA guardrails"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7510787397ecbb9b85d2bdc1b4b8d75536a54e92ba30fda857e9fe39e99f673f"
+  generated_content_sha256: "sha256:34adb3d097f01b4db5d581eb1736023987e144deb0052b1dc61d7e94ca4a3609"

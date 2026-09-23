@@ -1,10 +1,1351 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01913"
-  title: "Cereal straw, husks, unprepared, ground, pressed, or in the form of pellets"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cereal-straw-husks-unprepared-ground-pressed-or-in-the-form-of-pellets"
+  classification_refs: "cpc:3.0:01913 (0 > 01 > 019 > 0191 > 01913)"
+  covered_products: "Cereal straw or husks, unprepared or physically chopped, ground, pressed, baled, wafered, or pelletized"
+  excluded_products: "Chemically treated straw; ensilage; complete feed; non-cereal residues; fuel-only products; undeclared mixtures"
+  representative_product: "Feed-grade cereal straw at plant gate"
+  production_route: "Source separation and collection, inbound movement, grading and stabilization, optional size reduction, optional forming"
+  market_state: "Loose, baled, chopped, ground, pressed, wafered, or pelletized; moisture and cereal source declared"
+functional_unit:
+  what: "Feed-grade cereal straw, or an explicitly declared covered cereal-husk variant"
+  how_much: "1,000 kg as received at the plant gate"
+  how_well: "Cereal source, straw/husk, form, moisture fraction and basis, grade, contamination status, and route recorded"
+  how_long_or_cycle: "One lot or continuous reporting period ending at plant hand-off"
+  reference_flow_link: "reference_straw_output"
+system_boundary:
+  rules:
+    - rule_id: secondary_origin
+      applies_to: "Source material"
+      rule: "Secondary status requires a documented grain-separation hand-off; it does not by itself authorize zero burden."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: physical_route
+      applies_to: "Covered product"
+      rule: "Include physical collection, drying or ventilation, chopping, grinding, pressing, pelletizing, cooling and storage when performed; exclude chemical upgrading and complete-feed blending."
+      source_ids:
+        - fao-crop-residue-machinery-2002
+        - fao-crop-residue-upgrading-2002
+    - rule_id: moisture_state
+      applies_to: "Every hand-off"
+      rule: "Record moisture on the same sampling basis as mass and separate water addition, evaporation and dry-matter loss."
+      source_ids:
+        - fao-feed-good-practices-2010
+    - rule_id: destinations
+      applies_to: "Outputs"
+      rule: "Keep accepted, downgraded, alternate-use, rework and waste states distinct."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "Grain and residue are separated and straw or husk is available at a documented source hand-off."
+  starting_condition_role: "Secondary co-product hand-off from cereal production"
+  product_classification_scope: "CPC 3.0 01913"
+  recursive_input_rule: "Record purchased CPC 01913 material once at its incoming state and obtain prior preparation burdens from its upstream dataset."
+  upstream_dataset_requirement: "Cereal, separation hand-off, grain/straw attribution, moisture basis and inherited burdens"
+  disclosure: "Burden inheritance or cut-off; origin; route; moisture change; grade; destinations"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Straw"
+    uuid: "b1dd1313-1bc0-4baf-8cfb-50e8ea2a307c"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "gate=Production mix"
+    - "at plant"
+    - "route=feed-grade"
+    - cereal
+    - "straw/husk"
+    - "physical form"
+    - "moisture fraction and basis"
+    - grade
+    - geography
+    - "preparation route"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report 1,000 kg as-received mass and measured moisture for the same lot."
+  - id: dry_matter
+    applies_to: "All material states"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg dry matter"
+    rule: "Dry matter = as-received mass × (1 − moisture mass fraction)."
+  - id: form_partition
+    applies_to: "Route outputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Partition unprepared, ground, pressed and pelletized states without overlap."
+  - id: lot_balance
+    applies_to: "Each node"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile input, accepted output, downgrade, rework, waste, dust and moisture change."
+process_map:
+  - id: source_collection
+    name: "Source hand-off, collection and inbound movement"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Capture secondary material after grain separation and deliver it to the receiving facility"
+    quantitative_reference: "kg source material received"
+  - id: grading_stabilization
+    name: "Receiving, grading and stabilization"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Primary conditioning separates accepted, downgraded and rejected states and stabilizes when needed"
+    quantitative_reference: "kg accepted material"
+  - id: size_reduction
+    name: "Chopping or grinding"
+    inclusion: "conditional"
+    inclusion_condition: "Chopped, ground, pressed or pelletized route when performed"
+    role: "Alternative technology route changes particle size and recovers fines"
+    quantitative_reference: "kg size-reduced output"
+  - id: forming
+    name: "Pressing, wafering or pelletizing"
+    inclusion: "conditional"
+    inclusion_condition: "Pressed, wafered or pelletized route"
+    role: "Batch mode or continuous production converts prepared material to the declared formed state"
+    quantitative_reference: "kg formed output"
+  - id: storage_loadout
+    name: "Storage and plant-gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "Always"
+    role: "Preserve the selected state and issue the reference product"
+    quantitative_reference: "1,000 kg reference product"
+process_inventory:
+  - id: source_collection
+    label: "Source hand-off, collection and inbound movement"
+    inputs:
+      product:
+        - row_id: source_residue_input
+          role: "Cereal straw or husk at source hand-off"
+          name: "Cereal straw or husk at grain-separation hand-off"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the cereal-specific secondary co-product after grain separation; it is not the confirmed at-plant reference flow."
+          amount:
+            expression: "Measured as-received source mass by cereal and lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2500"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: collection_energy
+          role: "Collection machinery energy supply"
+          name: "Collection machinery energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record fuel, electricity or contracted machinery energy used to gather, bale and load the residue."
+          amount:
+            expression: "Measured carrier quantity converted to delivered energy"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1500"
+                unit: "MJ/1,000 kg reference product"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: inbound_transport
+          role: "Road freight from source to plant"
+          name: "Road freight transport service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Mass*distance / t*km"
+          description: "Record loaded mass and actual source-to-plant distance."
+          amount:
+            expression: "Loaded tonnes multiplied by actual loaded-route kilometres"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_transport
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "t*km/1,000 kg reference product"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_raw_output
+          role: "Collected raw straw or husk"
+          name: "Collected raw cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Preserve cereal, straw/husk and moisture identity at receiving."
+          amount:
+            expression: "Plant receipt net of vehicle tare"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per collection lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "2500"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per collection lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: collection_loss
+          role: "Field and handling loss"
+          name: "Cereal-residue collection loss"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Count only loss after the declared source hand-off."
+          amount:
+            expression: "Source mass minus received mass on a common dry-matter basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_source_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg dry matter/1,000 kg reference product"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading_stabilization
+    label: "Receiving, grading and stabilization"
+    inputs:
+      product:
+        - row_id: raw_transfer_input
+          role: "Collected raw material transfer"
+          name: "Collected raw cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal transfer with no additional upstream burden."
+          amount:
+            expression: "Equal to linked collected output entering this lot"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per receiving lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_source_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "2500"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per receiving lot"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: receiving_energy
+          role: "Receiving and stabilization energy"
+          name: "Receiving and stabilization energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record conveying, screening, ventilation or drying energy by carrier."
+          amount:
+            expression: "Metered or invoiced energy assigned to the receiving lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted stabilized output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "MJ/kg accepted stabilized output"
+                basis: "per kg accepted stabilized output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: receiving_water
+          role: "Process water for stabilization or cleaning"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Separate supplied water from incoming moisture."
+          amount:
+            expression: "Metered supplied water; zero when inactive"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted stabilized output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_moisture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "m3/1,000 kg accepted stabilized output"
+                basis: "per 1,000 kg accepted stabilized output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_material_output
+          role: "Intended output: accepted stabilized material"
+          name: "Accepted cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This intended product output is the unprepared-route output or feed to further processing."
+          amount:
+            expression: "Weighed accepted output after grading"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per receiving lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "300"
+                upper: "2500"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per receiving lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_output
+          role: "Intended output: downgraded co-product"
+          name: "Downgraded cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Keep this intended co-product output separate from accepted feed-grade material."
+          amount:
+            expression: "Weighed quantity routed to a lower grade or alternate use"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per receiving lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per receiving lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: receiving_reject
+          role: "Receiving rejects"
+          name: "Rejected cereal residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Declare treatment or disposal destination."
+          amount:
+            expression: "Weighed unusable material leaving receiving"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per receiving lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per receiving lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: stabilization_water_loss
+          role: "Water evaporated during stabilization"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Use the verified water-vapour elementary flow in the unspecified-air compartment; do not report dry-matter loss as water."
+          amount:
+            expression: "Inlet moisture minus outlet moisture, net of supplied water and discharge"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_moisture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg water/kg accepted output"
+                basis: "per kg accepted output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: size_reduction
+    label: "Chopping or grinding"
+    inputs:
+      product:
+        - row_id: size_reduction_feed
+          role: "Accepted material transfer to size reduction"
+          name: "Accepted cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal transfer on the same moisture basis."
+          amount:
+            expression: "Linked accepted output entering the run"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per run"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_run_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "2500"
+                unit: "kg/run normalized to 1,000 kg reference product"
+                basis: "per run"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: size_reduction_energy
+          role: "Size-reduction energy"
+          name: "Size-reduction energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Retain actual energy carrier in foreground records."
+          amount:
+            expression: "Metered energy assigned to cutting, milling, conveying and dust collection"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg size-reduced output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "MJ/kg size-reduced output"
+                basis: "per kg size-reduced output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: size_reduced_output
+          role: "Chopped or ground material"
+          name: "Chopped or ground cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record particle-size method and post-treatment state."
+          amount:
+            expression: "Weighed conforming output"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg run feed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_run_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "1200"
+                unit: "kg/1,000 kg run feed"
+                basis: "per 1,000 kg run feed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: size_reduction_rework
+          role: "Captured fines returned to the run"
+          name: "Captured cereal-residue fines for rework"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Exclude returned fines from saleable output."
+          amount:
+            expression: "Weighed fines returned once to an identified run"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg run feed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rework
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg/1,000 kg run feed"
+                basis: "per 1,000 kg run feed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: size_reduction_dust
+          role: "Uncaptured particulate from size reduction"
+          name: "Particulate matter, particle size unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0ce3dedb-caca-407b-a856-a90470eb8ec0"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Use the verified unspecified-particle-size elementary flow in the unspecified-air compartment."
+          amount:
+            expression: "Measured uncaptured particulate; disclose any measured size fraction as supporting detail"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg size-reduced output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_run_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg/kg size-reduced output"
+                basis: "per kg size-reduced output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: forming
+    label: "Pressing, wafering or pelletizing"
+    inputs:
+      product:
+        - row_id: forming_feed
+          role: "Prepared material transfer to forming"
+          name: "Prepared cereal straw or husk for forming"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Declare pre-form state and moisture."
+          amount:
+            expression: "Linked size-reduced output entering the forming run"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per forming run"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_run_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1500"
+                unit: "kg/run normalized to 1,000 kg reference product"
+                basis: "per forming run"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: forming_energy
+          role: "Forming electricity and mechanical energy"
+          name: "Forming energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Assign by batch or continuous reporting period."
+          amount:
+            expression: "Metered energy for pressing, pelletizing, cooling and screening"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg formed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "MJ/kg formed output"
+                basis: "per kg formed output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: forming_heat
+          role: "Steam or purchased process heat for forming"
+          name: "Steam or purchased process heat"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Keep this independently measured conditioning service separate from mechanical energy."
+          amount:
+            expression: "Metered steam energy or purchased heat; zero when inactive"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg formed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "MJ/kg formed output"
+                basis: "per kg formed output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: forming_water
+          role: "Water added for forming"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Distinguish added water from incoming material moisture."
+          amount:
+            expression: "Metered water added for moisture conditioning"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg formed output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_moisture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "m3/1,000 kg formed output"
+                basis: "per 1,000 kg formed output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: formed_output
+          role: "Pressed, wafered or pelletized material"
+          name: "Pressed, wafered or pelletized cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record geometry, dimensions, cooling state and moisture."
+          amount:
+            expression: "Weighed conforming output after cooling and screening"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg forming feed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_run_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "1200"
+                unit: "kg/1,000 kg forming feed"
+                basis: "per 1,000 kg forming feed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: forming_rework
+          role: "Forming fines returned for rework"
+          name: "Cereal-residue forming fines for rework"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Count each return loop once."
+          amount:
+            expression: "Weighed fines returned to one named run"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg forming feed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rework
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg forming feed"
+                basis: "per 1,000 kg forming feed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: forming_reject
+          role: "Forming rejects"
+          name: "Rejected formed cereal residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Declare downgrade, recovery or disposal destination."
+          amount:
+            expression: "Weighed off-spec material leaving the rework loop"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg forming feed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rework
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg forming feed"
+                basis: "per 1,000 kg forming feed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: storage_loadout
+    label: "Storage and plant-gate hand-off"
+    inputs:
+      product:
+        - row_id: storage_feed
+          role: "Route-selected product transfer"
+          name: "Route-selected cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Choose accepted unprepared, size-reduced, or formed material without overlap."
+          amount:
+            expression: "Linked output of exactly one selected upstream route"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per storage lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1500"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per storage lot"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: storage_energy
+          role: "Storage and loadout energy"
+          name: "Storage and loadout energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Assign energy to the storage lot or period once."
+          amount:
+            expression: "Metered energy for ventilation, conveying, weighing and loadout"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3"
+                unit: "MJ/kg reference product"
+                basis: "per kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: packaging_input
+          role: "Flexible packaging for bagged product"
+          name: "Flexible packaging"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass / kg"
+          description: "Include bags, liners or film only when actually used."
+          amount:
+            expression: "Net packaging mass issued; zero for bulk or unpackaged bales"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/1,000 kg reference product"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_straw_output
+          role: "Feed-grade straw at plant gate"
+          name: "Straw"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b1dd1313-1bc0-4baf-8cfb-50e8ea2a307c"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Issue only product matching the declared cereal, material state, moisture and feed-grade route."
+          amount:
+            expression: "Fixed reference amount of accepted product"
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "one reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: storage_downgrade
+          role: "Downgraded stored material"
+          name: "Downgraded stored cereal straw or husk"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Keep its destination separate from reference output."
+          amount:
+            expression: "Weighed quantity routed out of reference-grade stock"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per storage lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per storage lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: storage_waste
+          role: "Storage and cleaning waste"
+          name: "Cereal-residue storage waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Declare treatment destination."
+          amount:
+            expression: "Weighed spoiled material and sweepings leaving storage"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per storage lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg/lot normalized to 1,000 kg reference product"
+                basis: "per storage lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: storage_dust
+          role: "Uncaptured storage particulate"
+          name: "Particulate matter, particle size unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0ce3dedb-caca-407b-a856-a90470eb8ec0"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Use the verified unspecified-particle-size elementary flow in the unspecified-air compartment."
+          amount:
+            expression: "Measured uncaptured particulate; disclose any measured size fraction as supporting detail"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "kg/kg reference product"
+                basis: "per kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "Enumerate grain, straw, husks and every other intended product at the upstream separation point. Use the upstream cereal PCR or supplier allocation when available. Otherwise test subdivision first; if shared cultivation burdens remain, apply and disclose one consistent physical or economic allocation in accordance with ISO 14044. Zero-burden cut-off is allowed only when an applicable study rule explicitly requires it. Within the foreground route, use measured lot balances for accepted, downgraded and waste states. Rework stays inside its producing node. Each reject has exactly one rework, downgrade, recovery or disposal path. Reconcile source, transfers and final hand-offs on a common dry-matter basis to prevent double counting."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_source_lot
+      process_id: "source_collection"
+      flow_role: "source and received mass"
+      record_type: "weighbridge and source record"
+      raw_fields: "cereal; straw/husk; mass; moisture; dates"
+      collection_method: "calibrated weighing and paired sampling"
+      unit: "kg; fraction"
+      frequency: "each load"
+      temporal_coverage: "full period"
+      site_scope: "all sources"
+      aggregation_rule: "sum after moisture reconciliation"
+      quality_evidence: "calibration and sample chain"
+    - protocol_id: cp_transport
+      process_id: "source_collection"
+      flow_role: "inbound transport"
+      record_type: "dispatch record"
+      raw_fields: "mass; origin; destination; distance; vehicle"
+      collection_method: "invoice and route log"
+      unit: "t; km; t*km"
+      frequency: "each load"
+      temporal_coverage: "full period"
+      site_scope: "all routes"
+      aggregation_rule: "sum loaded t*km"
+      quality_evidence: "dispatch record"
+    - protocol_id: cp_energy
+      process_id: "all_applicable_nodes"
+      flow_role: "energy inputs"
+      record_type: "meter, invoice and equipment log"
+      raw_fields: "carrier; quantity; node; run; allocation key"
+      collection_method: "direct metering preferred"
+      unit: "carrier unit; MJ"
+      frequency: "each run or monthly"
+      temporal_coverage: "representative year"
+      site_scope: "all nodes"
+      aggregation_rule: "convert and assign once"
+      quality_evidence: "meter or invoice"
+    - protocol_id: cp_water_moisture
+      process_id: "grading_and_forming"
+      flow_role: "water and moisture"
+      record_type: "meter and laboratory record"
+      raw_fields: "water; inlet/outlet mass; moisture method; time"
+      collection_method: "meter and paired samples"
+      unit: "m3; kg; fraction"
+      frequency: "each lot/run"
+      temporal_coverage: "full period"
+      site_scope: "applicable nodes"
+      aggregation_rule: "water addition and removal separately"
+      quality_evidence: "meter and test record"
+    - protocol_id: cp_grading
+      process_id: "grading_stabilization"
+      flow_role: "grade destinations"
+      record_type: "grade and dispatch record"
+      raw_fields: "criterion; mass; grade; destination; moisture"
+      collection_method: "lot grading and weighing"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "full period"
+      site_scope: "receiving site"
+      aggregation_rule: "sum mutually exclusive states"
+      quality_evidence: "signed grade record"
+    - protocol_id: cp_run_balance
+      process_id: "size_reduction_and_forming"
+      flow_role: "run balance"
+      record_type: "production log"
+      raw_fields: "run; input; output; fines; reject; dust; moisture"
+      collection_method: "linked reconciliation"
+      unit: "kg"
+      frequency: "each run/period"
+      temporal_coverage: "full period"
+      site_scope: "each line"
+      aggregation_rule: "cancel internal rework once"
+      quality_evidence: "production log"
+    - protocol_id: cp_rework
+      process_id: "size_reduction_and_forming"
+      flow_role: "rework and reject"
+      record_type: "movement ticket"
+      raw_fields: "producing run; receiving run; mass; state; route"
+      collection_method: "tagged movement record"
+      unit: "kg"
+      frequency: "each movement"
+      temporal_coverage: "full period"
+      site_scope: "each line"
+      aggregation_rule: "count return and exit once"
+      quality_evidence: "movement ticket"
+    - protocol_id: cp_storage
+      process_id: "storage_loadout"
+      flow_role: "storage and dispatch"
+      record_type: "stock and dispatch record"
+      raw_fields: "lot; state; input; outputs; packaging; dust"
+      collection_method: "stock reconciliation"
+      unit: "kg"
+      frequency: "each dispatch/monthly"
+      temporal_coverage: "full period"
+      site_scope: "all stores"
+      aggregation_rule: "reconcile by lot and route"
+      quality_evidence: "stock record"
+  calculation_rules:
+    - id: calc_dry_matter
+      applies_to: "Material states"
+      rule: "dry matter = as-received mass × (1 − moisture fraction)"
+      inputs:
+        - "paired mass and moisture"
+      output: "kg dry matter"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_transport
+      applies_to: "Inbound movement"
+      rule: "t*km = loaded tonnes × loaded-route kilometres"
+      inputs:
+        - "mass and distance"
+      output: "t*km"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_node_balance
+      applies_to: "Each node"
+      rule: "input dry matter = accepted + downgrade + reject + uncaptured loss; cancel internal rework"
+      inputs:
+        - "linked records"
+      output: "residual and completeness flag"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Each lot"
+      requirement: "Record cereal, straw/husk, form, grade and contamination decision."
+      evidence: "lot and grade record"
+    - id: dq_moisture
+      applies_to: "Each hand-off"
+      requirement: "State moisture method, sampling time and wet/dry basis."
+      evidence: "test record"
+    - id: dq_route
+      applies_to: "Optional nodes"
+      requirement: "Demonstrate active route; inactive nodes have zero inputs and outputs."
+      evidence: "production log"
+    - id: dq_mode
+      applies_to: "Batch/continuous period"
+      requirement: "Link meters, cleaning and changeover to one run or period."
+      evidence: "meter and run log"
+    - id: dq_completeness
+      applies_to: "Each node"
+      requirement: "Reconcile all output states without double counting."
+      evidence: "mass-balance result"
+    - id: dq_attribution
+      applies_to: "Secondary origin"
+      requirement: "Document upstream output set and allocation, inheritance or cut-off."
+      evidence: "supplier dataset"
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "Require cereal, straw/husk, form, moisture fraction and basis, grade, route and plant gate."
+    source_ids: []
+  - rule_id: validation_rule_2
+    applies_to: "foreground_dataset_conformance"
+    rule: "Use the fixed feed-grade Straw flow only for the declared at-plant product, never chemical treatment, complete feed or fuel-only dry matter."
+    source_ids: []
+  - rule_id: validation_rule_3
+    applies_to: "foreground_dataset_conformance"
+    rule: "Unprepared bypasses size reduction and forming; ground uses size reduction; pressed or pelletized uses forming; inactive nodes carry zero."
+    source_ids: []
+  - rule_id: validation_rule_4
+    applies_to: "foreground_dataset_conformance"
+    rule: "Every node declares before/after states, service roles, loss, reject and hand-off; every intended output has one destination."
+    source_ids: []
+  - rule_id: validation_rule_5
+    applies_to: "foreground_dataset_conformance"
+    rule: "Secondary origin requires evidence and an explicit inherited, allocated or cut-off burden decision with no duplication."
+    source_ids: []
+  - rule_id: validation_rule_6
+    applies_to: "foreground_dataset_conformance"
+    rule: "Rework links producing and receiving runs, and rejected material cannot be accepted output."
+    source_ids: []
+  - rule_id: validation_rule_7
+    applies_to: "foreground_dataset_conformance"
+    rule: "Shared batch or continuous-period inputs are assigned once."
+    source_ids: []
+  - rule_id: validation_rule_8
+    applies_to: "foreground_dataset_conformance"
+    rule: "Wet-mass and dry-matter balances separate water change from dry-matter loss."
+    source_ids: []
+  - rule_id: validation_rule_9
+    applies_to: "foreground_dataset_conformance"
+    rule: "Parameterized Product inputs resolve to verified UUIDs during foreground generation. Internal transfers, outputs, waste and elementary flows have no Flow Set."
+    source_ids: []
+  - rule_id: validation_rule_10
+    applies_to: "foreground_dataset_conformance"
+    rule: "The recovered-material set is inapplicable because its current groups cover recycled metal and paper fibre, not cereal residues. Nutrient, construction and waste-treatment sets are also inapplicable to this physical route."
+    source_ids: []
+  - rule_id: validation_rule_11
+    applies_to: "foreground_dataset_conformance"
+    rule: "Every quantitative card has exactly one Range and EN, ZH and structured fields agree."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground cereal-residue collection and physical-preparation dataset"
+  downstream_use: "Secondary or background supply dataset"
+  allowed_use: "Matching cereal, material identity, form, moisture, grade, route, geography and attribution"
+  excluded_use: "Chemical treatment, ensilage, complete feed, non-cereal residue, undeclared mixture or fuel-only product"
+  required_metadata: "Cereal; straw/husk; origin; hand-off; form; moisture; grade; route; mode; geography; allocation; destinations"
+  required_quality_disclosure: "Balance residual; coverage; methods; source attribution; allocation sensitivity; unresolved identities; provisional ranges"
+  update_trigger: "Change in cereal, grade, state, technology, moisture method, attribution, destination or Flow Set version"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.secondary-material-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/secondary-material-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-crop-residue-machinery-2002"
+    type: "official_guidance"
+    reference: "FAO, Chapter 6, machinery and equipment for utilization of crop residues as feed, https://www.fao.org/4/y1936e/y1936e0a.htm"
+    used_for: "Collection, transport, grinding and forming route decomposition"
+  - id: "fao-crop-residue-upgrading-2002"
+    type: "official_guidance"
+    reference: "FAO, Chapter 2, composition, nutritive value and upgrading of crop residues, https://www.fao.org/4/y1936e/y1936e06.htm"
+    used_for: "Physical route and complete-feed exclusion"
+  - id: "fao-feed-good-practices-2010"
+    type: "official_guidance"
+    reference: "FAO and IFIF, Manual of Good Practices for the Feed Industry, 2010, https://www.fao.org/4/i1379e/i1379e04.pdf"
+    used_for: "Moisture, handling and storage controls"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "Co-product attribution and disclosure"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied to paired mass and moisture records"
+    used_for: "Conversion and balance calculations"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e89d17d9b4ba49dfcc606925024c679977668bcd6192817b7cfbb24b53d9b6c2"
+  generated_content_sha256: "sha256:b0fb92c9ff5952f7f0c7ec11753dbabdde2e0e34c27390956d516e99e3f618dd"

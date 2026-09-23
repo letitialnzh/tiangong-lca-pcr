@@ -1,10 +1,1079 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01447"
-  title: "Castor oil seeds"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.castor-oil-seeds"
+  classification_refs: "CPC 3.0: 01447 (exact classification context)"
+  covered_products: "Harvested, unprocessed *Ricinus communis* seed after pod separation and required drying, cleaning, and grading"
+  excluded_products: "Planting seed; intact capsules; castor oil; press cake or meal; refined oil; derivatives; other oilseeds"
+  representative_product: "Cleaned and graded castor seed for oil extraction, before crushing"
+  production_route: "Managed annual crop or short-lived perennial stand; repeated picking or terminal harvest; pod/seed separation; drying; cleaning; grading; producer or primary-conditioning hand-off. Annual and perennial routes coexist as alternatives and shall not be combined before route-specific inventories are complete. Manual and mechanical routes are technology alternatives attached to the relevant parent activity."
+  market_state: "Harvested unprocessed seed, free of bulk pod material, at declared moisture and grade, before oil extraction"
+functional_unit:
+  what: "Castor seed delivered at the declared producer or primary-conditioning hand-off"
+  how_much: "1,000 kg net seed mass at declared moisture"
+  how_well: "Pod-separated, cleaned and graded; moisture, grade, impurity, route, harvest pattern, and hand-off declared"
+  how_long_or_cycle: "One annual crop cycle, or reporting year plus establishment/production phase for a perennial stand"
+  reference_flow_link: "Final accepted output of grading_handoff"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The foreground boundary starts with a declared managed field or perennial stand and ends at accepted seed hand-off. Cultivation, harvest, separation, drying/cleaning, and grading are distinct responsibilities with separate states, losses, inputs, and hand-offs. Repeated pickings link to field block and lot; terminal harvest closes the crop cycle. Oil extraction is outside the boundary."
+      source_ids: []
+    - rule_id: boundary_crop_to_seed
+      applies_to: "foreground system"
+      rule: "Include crop management, capsule capture, seed separation, drying, cleaning, grading, and internal transfers; exclude oil extraction."
+      source_ids:
+        - fao-ecocrop-ricinus-communis
+        - icar-castor-depodder-2009
+    - rule_id: route_separation
+      applies_to: "annual and perennial routes"
+      rule: "Model route-specific establishment, production, replacement, termination, and input profiles before any weighted mix."
+      source_ids:
+        - fao-ecocrop-ricinus-communis
+    - rule_id: conditioning_gate
+      applies_to: "post-harvest nodes"
+      rule: "Include producer conditioning; model an external primary conditioner as foreground or with a transparent upstream process when it supplies the reference product."
+      source_ids:
+        - icar-castor-depodder-2009
+    - rule_id: material_state_control
+      applies_to: "seed and residues"
+      rule: "Keep seed, pod residues, rejects, dust, and destinations separate; never presume castor residue is feed."
+      source_ids:
+        - fao-ecocrop-ricinus-communis
+boundary_abstraction:
+  declared_starting_condition: "Established field or stand with geography, area, cultivar, route, age or phase, prior land use, and soil-management context declared"
+  starting_condition_role: "Foreground managed-biological-production start; perennial establishment and termination remain visible through multi-period attribution"
+  product_classification_scope: "CPC 3.0 01447; classification does not define moisture, gate, route, or grade"
+  recursive_input_rule: "Purchased castor planting seed is an upstream input distinct from the reference product; purchased harvested seed blended into a lot requires a separate upstream dataset and mass disclosure"
+  upstream_dataset_requirement: "Purchased planting material, nutrients, water, protection products, energy, and external services require representative upstream datasets after concrete identity resolution"
+  disclosure: "Declare route, phase, harvest pattern, technology, moisture, internal hand-offs, rejected/reworked paths, and exact gate"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Castor Seed"
+    uuid: "d52055a9-c05b-4edd-ad58-f3271a360458"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "*Ricinus communis*"
+    - "harvested unprocessed seed"
+    - "net mass"
+    - "moisture and basis"
+    - "annual/perennial route"
+    - "repeated-picking/terminal-harvest pattern"
+    - grade
+    - impurity
+    - "producer/conditioning hand-off"
+    - geography
+    - period
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report net seed mass excluding packaging and bulk pod material."
+  - id: moisture_basis
+    applies_to: "capsules, seed, rejects, losses"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg plus % wet basis"
+    rule: "Measure moisture at each hand-off; dry matter = wet mass × (1 − moisture fraction), and disclose conversions."
+  - id: area_period
+    applies_to: "cultivation"
+    required_property_ref:
+      name: "area and time"
+      uuid: ""
+    required_unit: "ha and reporting period"
+    rule: "Distinguish establishment, productive-year, replacement, and termination records for perennial stands."
+  - id: energy_consistency
+    applies_to: "machinery and drying energy"
+    required_property_ref:
+      name: "carrier-appropriate"
+      uuid: ""
+    required_unit: "native unit and MJ"
+    rule: "Preserve measured carrier units and use documented conversions."
+process_map:
+  - id: cultivation
+    name: "Managed castor cultivation"
+    inclusion: "required"
+    inclusion_condition: "Annual crop cycle or declared productive period of a perennial stand"
+    role: "Manage Ricinus communis to harvestable capsule maturity"
+    quantitative_reference: "declared field area and period"
+  - id: harvest
+    name: "Repeated picking or terminal harvest"
+    inclusion: "required"
+    inclusion_condition: "Harvest pattern shall be declared"
+    role: "Capture mature capsules independently from cultivation and conditioning"
+    quantitative_reference: "kg mature capsules captured"
+  - id: pod_seed_separation
+    name: "Pod and seed separation"
+    inclusion: "required"
+    inclusion_condition: "Harvested capsules precede seed hand-off"
+    role: "Separate seed from capsules by the recorded route"
+    quantitative_reference: "kg capsules received"
+  - id: drying_cleaning
+    name: "Seed drying and cleaning"
+    inclusion: "required"
+    inclusion_condition: "Active drying may be zero only when incoming moisture meets specification"
+    role: "Stabilize moisture and remove foreign material"
+    quantitative_reference: "kg raw seed received"
+  - id: grading_handoff
+    name: "Grading and hand-off"
+    inclusion: "required"
+    inclusion_condition: "Every lot is classified as accepted, downgraded/rework, or rejected"
+    role: "Create the declared grade and final accepted state"
+    quantitative_reference: "kg dry cleaned seed received"
+process_inventory:
+  - id: cultivation
+    label: "Managed castor cultivation"
+    inputs:
+      product:
+        - row_id: nutrient_supply
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Foreground-selected nutrient materials"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record mineral fertilizer, organic fertilizer, lime, and nutrient amendments in one cultivation card; foreground records expand concrete exchanges."
+          amount:
+            expression: "measured supplied mass by product with nutrient composition retained"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per field area and crop cycle or productive period"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg/ha"
+                basis: "per hectare and declared period; actual products govern"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supply"
+          name: "Irrigation process water selected from foreground records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Mass / kg"
+          description: "Record supplied irrigation water; rainfall is not a product input."
+          amount:
+            expression: "metered or measured water delivered to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per field area and declared period"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000000"
+                unit: "kg/ha"
+                basis: "per hectare and period; zero is valid for rainfed production"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cultivation_energy
+          role: "Cultivation energy supply"
+          name: "Energy carrier selected from equipment and invoice records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-specific property / measured carrier unit"
+          description: "Record carriers for field preparation, sowing, irrigation, crop management, and perennial-stand maintenance."
+          amount:
+            expression: "measured fuel or electricity by field operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per field area and declared period"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "MJ/ha"
+                basis: "converted final energy per hectare and period"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_capsules
+          role: "Harvestable mature capsule crop"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal hand-off of mature capsules to harvest; it is not a market reference product."
+          amount:
+            expression: "calculated harvestable capsule mass from harvest records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per field block and period"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/ha"
+                basis: "wet capsule mass per hectare at measured moisture"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: field_emissions
+          role: "Reported field emissions"
+          name: "Unresolved per reported substance and compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg substance"
+          description: "Record each substance and receiving compartment separately; resolve both before final exchange creation."
+          amount:
+            expression: "measured release or method result from collected activity data"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per field area and period"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/ha"
+                basis: "each substance separately per hectare and period"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest
+    label: "Repeated picking or terminal harvest"
+    inputs:
+      product:
+        - row_id: harvest_capsule_input
+          role: "Mature capsule crop from cultivation"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal input linking each harvest event to its field block."
+          amount:
+            expression: "mass assigned to each picking or terminal-harvest event"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest event"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "percent of field-period mature capsule mass"
+                basis: "event shares reconcile to 100% less field loss"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest energy supply"
+          name: "Energy carrier selected from equipment records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-specific property / measured carrier unit"
+          description: "Record fuel or electricity for the declared manual-support or mechanical harvest route."
+          amount:
+            expression: "measured carrier consumption assigned to the harvest event"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg captured capsules"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "MJ/kg captured capsules"
+                basis: "converted final energy for the declared technology"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_capsules
+          role: "Harvested castor capsules"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal captured-capsule state transferred to separation with picking sequence and moisture retained."
+          amount:
+            expression: "measured net capsule mass leaving each event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest event"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "1000000"
+                unit: "kg/event"
+                basis: "wet capsule mass at measured moisture"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_loss
+          role: "Uncaptured or discarded harvest material"
+          name: "Unresolved waste identity and destination from foreground records"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Keep field loss and incidental material separate from captured capsules; identity and destination follow observed records."
+          amount:
+            expression: "measured, sampled, or mass-balance-derived loss"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg captured capsules"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg captured capsules"
+                basis: "loss at matched moisture basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: pod_seed_separation
+    label: "Pod and seed separation"
+    inputs:
+      product:
+        - row_id: separation_capsule_input
+          role: "Harvested capsule input"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal input linking separation runs to harvested lots."
+          amount:
+            expression: "measured capsule mass charged to the run"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per separation run"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "1000000"
+                unit: "kg/run"
+                basis: "capsule mass at measured moisture"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: separation_energy
+          role: "Separation energy supply"
+          name: "Energy carrier selected from equipment records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-specific property / measured carrier unit"
+          description: "Record energy for manual-support or mechanical depodding and separation."
+          amount:
+            expression: "measured carrier consumption by run"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg raw separated seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "MJ/kg raw seed"
+                basis: "converted final energy for the declared technology"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_separated_seed
+          role: "Raw separated castor seed"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal seed freed from bulk pods but not yet accepted at final moisture, cleanliness, or grade."
+          amount:
+            expression: "measured raw seed mass leaving separation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per separation run"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.05"
+                upper: "1"
+                unit: "kg/kg capsule input"
+                basis: "raw seed per kg capsule input at recorded moisture"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: pod_residues
+          role: "Pod and separation residues"
+          name: "Unresolved waste identity and destination from foreground records"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record pod hulls, fragments, and unrecovered material by state and destination; do not presume feed use."
+          amount:
+            expression: "measured residue or mass-balance remainder by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg raw separated seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg raw seed"
+                basis: "residue at matched moisture basis"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: drying_cleaning
+    label: "Seed drying and cleaning"
+    inputs:
+      product:
+        - row_id: drying_seed_input
+          role: "Raw separated seed input"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Link the conditioning lot to separation and retain incoming moisture and impurity."
+          amount:
+            expression: "measured raw seed mass received"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per drying and cleaning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "raw seed at measured moisture"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Drying and cleaning energy supply"
+          name: "Energy carrier selected from equipment records"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier-specific property / measured carrier unit"
+          description: "Record carriers for active drying, conveying, aspiration, cleaning, and changeover cleaning."
+          amount:
+            expression: "measured consumption assigned to lot or campaign"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg dry cleaned seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg output"
+                basis: "zero allowed for passive drying without purchased energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dry_clean_seed
+          role: "Dry cleaned castor seed"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal output with declared moisture and impurity, ready for grading but not yet accepted."
+          amount:
+            expression: "measured seed mass after drying and cleaning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "1"
+                unit: "kg/kg raw seed"
+                basis: "output per kg input with moisture conversion disclosed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cleaning_rejects
+          role: "Cleaning rejects and foreign material"
+          name: "Unresolved waste identity and destination from foreground records"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record pod fragments, stones, soil, dust, and damaged seeds separately where destinations differ."
+          amount:
+            expression: "measured reject mass excluding moisture removed"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry cleaned seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg output"
+                basis: "non-water rejects per kg output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: water_to_air
+          role: "Moisture removed to air"
+          name: "Unresolved water-to-air identity pending data-package convention"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate water removed from matched wet-basis moisture measurements when the data model requires this exchange."
+          amount:
+            expression: "incoming wet mass × incoming moisture fraction minus outgoing wet mass × outgoing moisture fraction"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry cleaned seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lots
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg water/kg output"
+                basis: "zero applies when no drying is required"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: grading_handoff
+    label: "Grading and hand-off"
+    inputs:
+      product:
+        - row_id: grading_seed_input
+          role: "Dry cleaned seed input"
+          name: "Internal foreground material state; no external UUID required"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal input linked to its conditioning lot with moisture and impurity retained."
+          amount:
+            expression: "measured seed mass charged to grading"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per grading lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "dry cleaned mass per lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_castor_seed
+          role: "Accepted castor seed at hand-off"
+          name: "Castor Seed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d52055a9-c05b-4edd-ad58-f3271a360458"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "The only reference product: harvested unprocessed seed after separation, drying as needed, cleaning, and grading, before oil extraction."
+          amount:
+            expression: "1,000 kg net accepted seed at declared moisture"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "one reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "net accepted seed per reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_rework_seed
+          role: "Downgraded or rework seed"
+          name: "Internal rework state or unresolved downgraded product identity"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Route off-spec seed to one declared internal rework return or external downgraded destination; concrete external identity is deferred."
+          amount:
+            expression: "measured mass outside the accepted grade"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg accepted seed"
+                basis: "off-spec mass per kg accepted output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Final grading rejects"
+          name: "Unresolved waste identity and destination from foreground records"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record discarded seed and foreign material by state and destination; exclude them from accepted output."
+          amount:
+            expression: "measured reject mass leaving grading"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg accepted seed"
+                basis: "rejects per kg accepted output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_mass_balance_first
+    applies_to: "all nodes"
+    rule: "Complete physical and dry-matter balances before allocation; keep moisture loss, residues, field loss, rework, downgrade, rejects, and accepted seed visible."
+    source_ids: []
+  - rule_id: allocation_single_intended_product
+    applies_to: "crop route"
+    rule: "Accepted seed is the sole intended product by default. Residues and rejects retain burdens to their destination; any claimed co-product requires disclosed function and goal-consistent allocation."
+    source_ids: []
+  - rule_id: allocation_rework
+    applies_to: "rework loop"
+    rule: "Retain burdens through return to separation, cleaning, drying, or grading; count returned mass once and exclude it from accepted output until it passes."
+    source_ids: []
+  - rule_id: allocation_run_period
+    applies_to: "shared runs"
+    rule: "Assign shared energy, cleaning, and changeover once with a disclosed causal driver; do not count run totals and lot shares together."
+    source_ids: []
+  - rule_id: allocation_multi_period
+    applies_to: "perennial route"
+    rule: "Separate establishment, production, replacement, and termination; attribute phases over evidenced productive output and prevent double attribution."
+    source_ids:
+      - fao-ecocrop-ricinus-communis
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "cultivation"
+      flow_role: "nutrients and irrigation"
+      record_type: "invoices, application logs, meters"
+      raw_fields: "field_id; route; phase; product; composition; quantity; unit; date"
+      collection_method: "reconcile purchase and field application"
+      unit: "native unit plus kg"
+      frequency: "every application"
+      temporal_coverage: "crop cycle or productive period"
+      site_scope: "every field"
+      aggregation_rule: "sum by field, material, period; retain zero-use"
+      quality_evidence: "invoice, meter, application, calibration"
+    - protocol_id: cp_energy_records
+      process_id: "all_nodes"
+      flow_role: "fuels and electricity"
+      record_type: "issues, meters, equipment logs"
+      raw_fields: "process_id; run_id; carrier; quantity; unit; equipment; hours; driver"
+      collection_method: "direct measurement or documented calculation"
+      unit: "native unit and MJ"
+      frequency: "each run or period"
+      temporal_coverage: "complete foreground period"
+      site_scope: "every field/facility"
+      aggregation_rule: "sum by carrier and node; allocate once"
+      quality_evidence: "invoice, meter, log, factor"
+    - protocol_id: cp_harvest_lots
+      process_id: "harvest"
+      flow_role: "capsules and field loss"
+      record_type: "tickets and samples"
+      raw_fields: "field_id; event_id; date; pattern; technology; mass; moisture; loss"
+      collection_method: "weigh every lot; document loss sampling"
+      unit: "kg and % wet basis"
+      frequency: "every event"
+      temporal_coverage: "all pickings or terminal harvest"
+      site_scope: "every field"
+      aggregation_rule: "sum events after moisture reconciliation"
+      quality_evidence: "calibration, sample, trace"
+    - protocol_id: cp_field_emissions
+      process_id: "cultivation"
+      flow_role: "substances"
+      record_type: "measurements and calculations"
+      raw_fields: "substance; compartment; activity; factor; result; unit; method"
+      collection_method: "measure or use declared method"
+      unit: "kg substance"
+      frequency: "event or period"
+      temporal_coverage: "full period"
+      site_scope: "every field"
+      aggregation_rule: "preserve identity and compartment"
+      quality_evidence: "method, raw data, calculation"
+    - protocol_id: cp_conditioning_lots
+      process_id: "pod_seed_separation_drying_cleaning"
+      flow_role: "seed, residues, moisture"
+      record_type: "batch sheets and tests"
+      raw_fields: "run_id; masses; moisture; residues; rejects; destination; technology"
+      collection_method: "weigh inputs/outputs and sample moisture"
+      unit: "kg and % wet basis"
+      frequency: "every run/lot"
+      temporal_coverage: "all supplying lots"
+      site_scope: "every site"
+      aggregation_rule: "reconcile wet and dry matter by run"
+      quality_evidence: "scale, moisture method, trace"
+    - protocol_id: cp_grading_handoff
+      process_id: "grading_handoff"
+      flow_role: "accepted, downgrade, rework, reject"
+      record_type: "grading and dispatch records"
+      raw_fields: "lot_id; masses; grade; impurity; moisture; destinations; gate"
+      collection_method: "weigh each state and link dispatch/rework"
+      unit: "kg and grade measure"
+      frequency: "every lot"
+      temporal_coverage: "all supplying lots"
+      site_scope: "every site"
+      aggregation_rule: "accepted only into reference output; rework once"
+      quality_evidence: "scale, specification, trace"
+  calculation_rules:
+    - id: calc_moisture_conversion
+      applies_to: "material hand-offs"
+      rule: "dry matter = wet mass × (1 − wet-basis moisture fraction); target wet mass = dry matter ÷ (1 − target fraction)"
+      inputs:
+        - mass
+        - "measured moisture"
+        - "target moisture"
+      output: "moisture-consistent mass"
+      source_ids: []
+    - id: calc_stage_yield
+      applies_to: "all nodes"
+      rule: "transferred-output dry matter ÷ input dry matter"
+      inputs:
+        - "linked masses and moisture"
+      output: "stage yield"
+      source_ids: []
+    - id: calc_field_yield
+      applies_to: "field route"
+      rule: "accepted-output dry matter ÷ occupied area, retaining route phase and harvest events"
+      inputs:
+        - output
+        - moisture
+        - area
+        - period
+      output: "kg dry matter/ha-period"
+      source_ids: []
+    - id: calc_shared_run
+      applies_to: "campaign/continuous run"
+      rule: "shared burden × lot driver ÷ total run driver"
+      inputs:
+        - "run burden and driver"
+      output: "once-allocated lot burden"
+      source_ids: []
+    - id: calc_perennial_attribution
+      applies_to: "perennial route"
+      rule: "attribute phase burden over evidenced productive output; disclose remaining-stand and termination treatment"
+      inputs:
+        - "phase records and outputs"
+      output: "period burden"
+      source_ids:
+        - fao-ecocrop-ricinus-communis
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Verify species, harvested-unprocessed state, CPC context, grade, moisture, and gate for every lot."
+      evidence: "specification, detail evidence, dispatch"
+    - id: dq_traceability
+      applies_to: "process graph"
+      requirement: "Link field, event, separation run, conditioning lot, grading/rework pass, and dispatch without duplicate mass."
+      evidence: "identifiers and reconciliation"
+    - id: dq_temporal
+      applies_to: "routes"
+      requirement: "Cover the annual cycle or reported perennial period and identify establishment, replacement, and termination outside it."
+      evidence: "dated records"
+    - id: dq_measurement
+      applies_to: "mass/moisture"
+      requirement: "Use calibrated scales and documented moisture method; disclose sampling and gaps."
+      evidence: "calibration and test records"
+    - id: dq_completeness
+      applies_to: "all cards"
+      requirement: "Record zero, value, or documented gap for each applicable card and destination."
+      evidence: "completed checklist and balance"
+    - id: dq_technology
+      applies_to: "alternatives"
+      requirement: "Identify manual/mechanical harvest and separation and passive/active drying before aggregation."
+      evidence: "equipment and run records"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Require fixed Castor Seed UUID, Mass property/unit group, and all PCR-supplied gate, route, state, and moisture qualifiers."
+    source_ids: []
+  - rule_id: validate_route
+    applies_to: "cultivation/harvest"
+    rule: "Require one annual or perennial route and one repeated-picking or terminal-harvest declaration per unsegmented record; events reconcile to field total."
+    source_ids:
+      - fao-ecocrop-ricinus-communis
+  - rule_id: validate_process_chain
+    applies_to: "graph"
+    rule: "Require cultivation, harvest, separation, drying/cleaning, and grading hand-offs; zero purchased drying energy requires moisture evidence."
+    source_ids:
+      - icar-castor-depodder-2009
+  - rule_id: validate_mass_moisture
+    applies_to: "material nodes"
+    rule: "Reconcile wet mass and dry matter and report moisture removed, residues, loss, rework, downgrade, and rejects separately."
+    source_ids: []
+  - rule_id: validate_flow_resolution
+    applies_to: "exchanges"
+    rule: "Resolve each Flow Set card to verified concrete UUIDs and each deferred identity by substance/material state, direction, destination, property, and unit before final TIDAS generation."
+    source_ids: []
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "cultivation"
+    rule: "Permit at most one consolidated flow-set.agricultural-nutrient-supply@0.3.0 card and no group."
+    source_ids: []
+  - rule_id: validate_period_attribution
+    applies_to: "perennial route"
+    rule: "Require establishment, production, replacement, termination, and remaining-stand treatment; prevent double attribution."
+    source_ids:
+      - fao-ecocrop-ricinus-communis
+  - rule_id: validate_rework_reject
+    applies_to: "post-harvest nodes"
+    rule: "Every off-spec state ends in rework, downgrade, recovery, or waste and is excluded from accepted output until passing."
+    source_ids: []
+  - rule_id: validate_run_attribution
+    applies_to: "runs"
+    rule: "Require run/period identifier and one allocation driver; reject duplicate run totals and lot shares."
+    source_ids: []
+  - rule_id: validate_extraction_exclusion
+    applies_to: "system"
+    rule: "Reject seed crushing, castor-oil extraction, refining, or derivative manufacture inside the boundary."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground dataset for harvested unprocessed castor seed at declared producer or primary-conditioning hand-off"
+  downstream_use: "secondary_dataset; background_dataset after representativeness review"
+  allowed_use: "Seed supply before oil extraction; comparisons aligned on moisture, gate, route, grade, and allocation"
+  excluded_use: "Oil extraction/refining; meal/derivatives; planting-seed certification; safety assessment; undisclosed route mixtures"
+  required_metadata: "geography; period; cultivar; route; stand phase; harvest pattern; area; technology; drying mode; moisture; grade; impurity; gate; allocation; rework; concrete identities"
+  required_quality_disclosure: "primary-data share; gaps; uncertainty; Range exceedances; balances; Flow Set expansion evidence; deferred identity decisions; perennial attribution"
+  update_trigger: "changed specification, gate, route, harvest pattern, technology, moisture, grade, supplier mix, allocation, Flow Set version, or UUID evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-ecocrop-ricinus-communis"
+    type: "official_guidance"
+    reference: "FAO EcoCrop, *Ricinus communis*, https://ecocrop.apps.fao.org/ecocrop/srv/en/cropView?id=1866"
+    used_for: "Species/seed identity; annual and short-lived perennial context; route and period declarations"
+  - id: "icar-castor-depodder-2009"
+    type: "official_guidance"
+    reference: "ICAR News, April–June 2009, “Castor depodder and decorticator”, https://icar.gov.in/sites/default/files/2022-04/ICAR-News-April-June-09.pdf"
+    used_for: "Pod/seed separation; cleaning/grading; moisture-sensitive mechanical route"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:cdb78adf90a543da42dc07cfa5daad9d8255d8a5f181b39ce904f13962bb3422"
+  generated_content_sha256: "sha256:7aa88979e8aa56386dc7069a9a921b4fcdfd6519620c9e60995d6025d370ba83"

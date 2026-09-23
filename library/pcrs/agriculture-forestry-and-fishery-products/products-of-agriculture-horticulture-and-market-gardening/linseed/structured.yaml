@@ -1,10 +1,1488 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01441"
-  title: "Linseed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.linseed"
+  classification_refs: "CPC 3.0 01441 Linseed; narrower material reference while generic planting-seed output identity remains unresolved"
+  covered_products: "Unprocessed harvested linseed or solin oilseed grain at farm gate. Planting-seed production is described as a conditional branch, but is unavailable as a validated reference until its own output flow is verified."
+  excluded_products: "Pressed linseed oil and cake; processed flax fibre or textiles; a straw-only crop system"
+  representative_product: "Bulk cleaned linseed grain from an annual flax crop"
+  production_route: "Parent module.activity.managed-biological-production: annual field cultivation. Harvest technology is direct combine or swath then combine; the latter adds a swathing pass and time in swath. The routes are mutually exclusive for a field portion and can coexist across separately indexed fields. Parent module.activity.primary-conditioning-node: initial cleaning; sorting is a separate quality-state hand-off. Conditional aeration or drying adds electricity or fuel and moisture-loss accounting. A planting-seed lot adds seed-grade cleaning, purity/germination testing and separate identity at gate. These technology deltas require field, equipment, and lot records. [manitoba-flax-management] [cfia-common-seed]"
+  market_state: "Unprocessed oilseed grain with actual moisture, grade, variety or solin designation and farm-gate hand-off declared; planting-seed lots must use a separately verified reference flow."
+functional_unit:
+  what: "Farm-gate unprocessed harvested linseed grain"
+  how_much: "1 kg net accepted grain"
+  how_well: "For the oilseed reference, declare variety/solin status, measured wet-basis moisture, impurity grade, and whether cleaning and drying occurred; do not substitute a fixed 10% moisture mass for actual delivered mass. A planting-seed output needs a separate reference and verified seed-lot identity. [manitoba-flax-management] [cfia-common-seed]"
+  how_long_or_cycle: "One documented annual crop cycle and its resulting grain lots"
+  reference_flow_link: "Net accepted output of linseed_grading; reconcile to harvested grain and any downgrade or reject"
+system_boundary:
+  rules:
+    - rule_id: boundary_field_gate
+      applies_to: "Crop cycle"
+      rule: "Include seeding through field management and harvest, plus on-farm first cleaning, sorting and required stabilization until the declared farm-gate lot is handed over. Include distinct seed-grade conditioning and testing when a planting-seed lot is sold. Exclude oil crushing, fibre processing and post-gate transport."
+      source_ids:
+        - manitoba-flax-management
+        - cfia-common-seed
+    - rule_id: boundary_route
+      applies_to: "Harvest"
+      rule: "Assign either direct combine or swath-and-combine to each field portion; log desiccation if applied after physiological maturity. Do not charge both harvest alternatives to the same grain."
+      source_ids:
+        - manitoba-flax-management
+    - rule_id: boundary_straw
+      applies_to: "Harvested biomass"
+      rule: "Record straw left, removed for sale, or burnt and the associated operations and field-emission treatment; never assume a sale from the mere presence of straw."
+      source_ids:
+        - manitoba-flax-management
+        - ipcc-2019-managed-soils
+    - rule_id: boundary_conditioning
+      applies_to: "Grain"
+      rule: "Include drying or aeration only if performed; identify pre- and post-intervention moisture, energy, and lot hand-off. Manitoba guidance distinguishes combining at about 10% moisture from safer long storage near 8–9%; use measured lot requirements, not a universal target."
+      source_ids:
+        - manitoba-growing-flax
+boundary_abstraction:
+  declared_starting_condition: "Prepared agricultural field at the start of the flax crop cycle, with previous crop and residue condition disclosed"
+  starting_condition_role: "The field is a receiving context; purchased seed, fertilizers, chemicals, energy, and water enter as product inputs with their upstream burdens."
+  product_classification_scope: "Harvested oilseed linseed grain at farm gate; a qualified planting-seed lot requires a separate verified output flow and cannot use the fixed grain reference. Later oil or fibre conversion is excluded."
+  recursive_input_rule: "Purchased or retained linseed used for sowing is an input to this crop cycle, not a zero-burden copy of the output; identify its distinct sowing-seed or grain source and prevent self-reference."
+  upstream_dataset_requirement: "Link external inputs to representative upstream datasets with geography and time; separately report direct field emissions and land or residue assumptions."
+  disclosure: "Disclose preceding crop, soil and irrigation context, tillage and harvest route, field area, crop year, actual grade/moisture, straw disposition, conditioning and any co-product allocation."
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Linseed"
+    uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "flax variety or solin designation"
+    - "crop year and region"
+    - "farm and field scope"
+    - "measured wet-basis moisture"
+    - "impurity or downgrade grade"
+    - "oilseed market use"
+    - "direct-combine or swath route"
+    - "conditioning performed"
+    - "farm-gate hand-off"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: linseed_net_mass
+    applies_to: "Reference and intermediate grain"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Record measured wet mass at each hand-off; deduct tare and segregated impurities."
+  - id: linseed_moisture
+    applies_to: "Grain before/after conditioning"
+    required_property_ref:
+      name: "moisture fraction, wet basis"
+      uuid: ""
+    required_unit: "%"
+    rule: "Record measured lot moisture and measurement method; if masses are compared across moisture states, convert with dry-matter conservation and disclose shrink and non-water losses."
+  - id: area_normalization
+    applies_to: "Field inputs and emissions"
+    required_property_ref:
+      name: "area"
+      uuid: ""
+    required_unit: "ha"
+    rule: "Convert field totals to kg accepted grain with harvested area and reconciled lot mass; never use a regional default yield as a measured foreground yield."
+process_map:
+  - id: flax_cultivation
+    name: "Managed annual flax cultivation"
+    inclusion: "required"
+    inclusion_condition: "Each crop field"
+    role: "Prepared standing flax crop; managed inputs and field exchanges"
+    quantitative_reference: "Field and crop cycle"
+  - id: flax_harvest
+    name: "Swath or direct combine and thresh"
+    inclusion: "required"
+    inclusion_condition: "One route per field portion"
+    role: "Separates grain from standing crop; straw and field loss recorded"
+    quantitative_reference: "Field harvest run"
+  - id: linseed_cleaning
+    name: "First grain cleaning"
+    inclusion: "required"
+    inclusion_condition: "Record zero treatment when delivered directly as combine-cleaned grain"
+    role: "Separates chaff and foreign matter from raw harvested grain"
+    quantitative_reference: "Incoming grain lot"
+  - id: linseed_stabilization
+    name: "Aeration or drying"
+    inclusion: "conditional"
+    inclusion_condition: "Performed to reach declared usable moisture"
+    role: "Converts damp grain to stable grain; moisture and energy accounted"
+    quantitative_reference: "Conditioning lot"
+  - id: linseed_grading
+    name: "Lot grading and gate hand-off"
+    inclusion: "required"
+    inclusion_condition: "Every delivered lot"
+    role: "Separates accepted, downgraded, rejected and waste states"
+    quantitative_reference: "Gate lot"
+  - id: linseed_seed_grade
+    name: "Planting-seed lot conditioning and gate hand-off"
+    inclusion: "conditional"
+    inclusion_condition: "A lot is sold for sowing"
+    role: "Additional seed-lot cleaning, testing and distinct hand-off"
+    quantitative_reference: "Seed lot"
+process_inventory:
+  - id: flax_cultivation
+    label: "Managed annual flax cultivation"
+    inputs:
+      product:
+        - row_id: linseed_sowing_input
+          role: "Sowing material"
+          name: "Flax sowing seed, identity to be resolved for the actual purchased material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Purchased or retained flax seed enters the field; identify its source separately from the output grain."
+          amount:
+            expression: "recorded sowing mass for the field and crop cycle"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: typical_range
+                lower: "39"
+                upper: "63"
+                unit: "kg/ha"
+                basis: "35–56 lb/acre flax seeding rate converted to kilograms per hectare; Manitoba conditions"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - manitoba-growing-flax
+        - row_id: flax_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg/ha"
+                basis: "separately recorded fertilizer or manure product mass per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_crop_protection
+          role: "Applied crop-care product"
+          name: "Actual crop-protection product, one product per inventory instance; identity pending application record"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each actual herbicide, fungicide or insecticide separately, with active ingredient and field; absent application is zero. [manitoba-flax-management]"
+          amount:
+            expression: "recorded product mass per field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha"
+                basis: "separately recorded crop-care formulation mass per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_field_fuel
+          role: "Field machine fuel"
+          name: "Actual mobile machinery fuel product, identity pending equipment record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy / MJ"
+          description: "Record diesel or another actual fuel consumed by field preparation, sowing and management equipment."
+          amount:
+            expression: "metered or documented field fuel energy"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "field-machine fuel energy per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_field_electricity
+          role: "Field electricity"
+          name: "Electricity product, identity pending meter record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used by pumps or other field management equipment separately from fuel."
+          amount:
+            expression: "metered field electricity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kWh/ha"
+                basis: "field electricity per cultivated hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_irrigation_water
+          role: "Delivered irrigation water"
+          name: "Irrigation water product, identity pending supply record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record delivered water as a product input only where supplied across the process boundary; direct environmental withdrawal is separate."
+          amount:
+            expression: "metered delivered irrigation water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "irrigation delivered per cultivated hectare; conditional route; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: linseed_water_withdrawal
+          role: "Irrigation water withdrawal"
+          name: "Water withdrawal from environment, compartment and identity pending site records"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Where irrigation withdraws from the environment within the foreground boundary, record the source and volume separately from delivered water product purchases."
+          amount:
+            expression: "metered withdrawal when applicable"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "water withdrawn per cultivated hectare; conditional route and separately reconciled with delivery; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: linseed_soil_n2o
+          role: "Managed-soil nitrogen emissions"
+          name: "Nitrous oxide to air, elementary identity pending method/compartment binding"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Calculate direct and indirect N2O from recorded fertilizer, manure and returned crop-residue N with the selected region-specific method or IPCC 2019 method, avoiding duplicate residue N. [ipcc-2019-managed-soils]"
+          amount:
+            expression: "calc_soil_n2o"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "field and crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_soil_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha"
+                basis: "calculated managed-soil N2O per cultivated hectare; retain factor-method audit; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: flax_harvest
+    label: "Swath or direct combine and thresh"
+    inputs:
+      product:
+        - row_id: linseed_harvest_fuel
+          role: "Harvest machine fuel"
+          name: "Actual mobile machinery fuel product for harvesting, identity pending run record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy / MJ"
+          description: "Record fuel for combine and, if selected, swathing passes by field run. [manitoba-flax-management]"
+          amount:
+            expression: "recorded fuel use per harvest run"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "harvest run"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "harvest fuel energy per harvested hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_desiccant
+          role: "Preharvest desiccant"
+          name: "Actual desiccant product, identity pending application record"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only an actual desiccant application after physiological maturity; it is not a compulsory harvest input. [manitoba-flax-management]"
+          amount:
+            expression: "recorded application mass per field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "harvest run"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha"
+                basis: "preharvest desiccant formulation per treated hectare; conditional route; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: linseed_raw_grain
+          role: "Raw harvested linseed grain"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "Threshed grain passes to first cleaning, with measured wet mass and moisture; seed coat damage and field loss are recorded. [manitoba-flax-management]"
+          amount:
+            expression: "measured combine grain mass, corrected for tare"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "harvest run"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/ha"
+                basis: "raw harvested linseed grain per harvested hectare; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_sold_straw
+          role: "Removed flax straw for sale"
+          name: "Flax straw, identity pending actual sale specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only a measured and actually sold straw lot is an intended co-product; record its mass and customer hand-off. Otherwise classify field-retained, burnt or discarded straw by actual fate. [manitoba-flax-management]"
+          amount:
+            expression: "measured sold mass, zero absent sale"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "harvest run"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_straw_fate
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg dry/ha"
+                basis: "dry removed straw sold per harvested hectare; zero without sale; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: linseed_straw_waste
+          role: "Unusable removed straw"
+          name: "Flax straw to disposal, identity pending local route"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record only straw removed for disposal without a product use; field-retained biomass is a residue, not this waste flow."
+          amount:
+            expression: "measured removed disposal mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "harvest run"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_straw_fate
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg dry/ha"
+                basis: "dry removed straw discarded per harvested hectare; exclude field-retained residue; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: linseed_cleaning
+    label: "First grain cleaning"
+    inputs:
+      product:
+        - row_id: linseed_cleaning_input
+          role: "Raw harvested grain to cleaning"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "Link the weighed raw grain lot from harvest to this cleaning node."
+          amount:
+            expression: "measured incoming raw grain mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "incoming grain lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg reference grain"
+                basis: "raw grain entering cleaning per kilogram accepted oilseed reference; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_cleaning_electricity
+          role: "Cleaning electricity"
+          name: "Electricity product, identity pending meter record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Meter electricity for an actual powered cleaning pass; zero if combine-cleaned grain is delivered without another pass."
+          amount:
+            expression: "metered cleaner electricity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "incoming grain lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kWh/kg raw grain"
+                basis: "cleaning electricity per kilogram raw grain treated; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: linseed_cleaned_grain
+          role: "First-cleaned grain"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "Cleaned grain passes to moisture stabilization if needed and then grading. [manitoba-flax-management]"
+          amount:
+            expression: "measured cleaned grain mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "cleaning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry raw grain"
+                basis: "first-cleaned dry grain per kilogram dry raw grain"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: linseed_cleaning_reject
+          role: "Removed foreign matter"
+          name: "Cleaning reject, identity pending measured composition and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Weed seed, chaff and debris removed by cleaning leave as waste unless a documented product destination exists; do not count as accepted grain. [manitoba-flax-management]"
+          amount:
+            expression: "incoming wet mass minus cleaned wet mass, adjusted for moisture or measured directly"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "cleaning lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry raw grain"
+                basis: "removed dry matter per kilogram dry raw grain"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+  - id: linseed_stabilization
+    label: "Aeration or drying"
+    inputs:
+      product:
+        - row_id: linseed_damp_grain
+          role: "Cleaned damp grain"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "A measured damp lot enters only when aeration or drying is performed; otherwise bypass this node."
+          amount:
+            expression: "measured incoming wet mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg reference grain"
+                basis: "damp grain entering stabilization per kilogram accepted oilseed reference; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_drying_electricity
+          role: "Aeration or dryer electricity"
+          name: "Electricity product, identity pending meter record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record actual fan and dryer electricity by conditioning lot. [manitoba-growing-flax]"
+          amount:
+            expression: "metered lot electricity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - manitoba-growing-flax
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kWh/kg damp grain"
+                basis: "aeration or drying electricity per kilogram damp grain treated; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_drying_fuel
+          role: "Dryer fuel"
+          name: "Actual stationary combustion fuel product for the dryer, identity pending equipment record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "stationary-combustion-fuel"
+          property_unit: "Energy / MJ"
+          description: "Record actual dryer fuel by carrier and lot if a fuelled dryer is used. [manitoba-growing-flax]"
+          amount:
+            expression: "recorded lot fuel energy"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - manitoba-growing-flax
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg damp grain"
+                basis: "dryer fuel energy per kilogram damp grain treated; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: linseed_stable_grain
+          role: "Stabilized grain"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "The grain exits at measured moisture for the declared hand-off; cooling and temporary on-farm holding associated with this operation are recorded. [manitoba-growing-flax]"
+          amount:
+            expression: "measured post-intervention wet mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry/kg dry damp grain"
+                basis: "stabilized dry grain per kilogram incoming dry grain"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: linseed_conditioning_reject
+          role: "Spoiled or spilled conditioning reject"
+          name: "Linseed grain reject, identity pending actual route"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Any unusable grain is segregated and routed to a documented disposal or recovery pathway, not retained in accepted yield."
+          amount:
+            expression: "measured rejected mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg conditioning input"
+                basis: "spoiled or spilled grain per kilogram conditioning input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        - row_id: linseed_evaporated_water
+          role: "Evaporated moisture"
+          name: "Water vapour, elementary identity pending local flow convention"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate water removed from measured before and after mass/moisture, separate from dry-grain or spill losses."
+          amount:
+            expression: "calc_moisture_balance"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg damp grain"
+                basis: "evaporated water per kilogram incoming damp grain"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+  - id: linseed_grading
+    label: "Lot grading and gate hand-off"
+    inputs:
+      product:
+        - row_id: linseed_grading_input
+          role: "Grain to grading"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "The measured cleaned and, if needed, stabilized lot enters grading; do not re-count its upstream intermediate as an external purchase."
+          amount:
+            expression: "measured grading input mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "grading lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg reference grain"
+                basis: "grain entering grading per kilogram accepted oilseed reference; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: linseed_accepted
+          role: "Accepted farm-gate linseed"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "This is the sole reference output of accepted unprocessed grain at the declared grade, moisture and sale gate."
+          amount:
+            expression: "net weighed mass accepted at gate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "gate lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference grain"
+                basis: "accepted grain is the declared 1 kg oilseed reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: linseed_downgraded
+          role: "Downgraded sale grain"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "Grain sold at a lower grade remains an intended product only if there is a measured separate sale and destination; declare its grade and prevent it entering accepted reference mass. [manitoba-flax-management]"
+          amount:
+            expression: "separately weighed sold downgraded mass, zero absent sale"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "gate lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - manitoba-flax-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "downgraded sold grain per kilogram grading input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: linseed_grade_reject
+          role: "Rejected unsaleable grain"
+          name: "Unsaleable linseed reject, identity pending actual destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Declare re-cleaning return, recovery destination or disposal. A returned lot links back to linseed_cleaning once; its rejected pass is not an additional accepted output."
+          amount:
+            expression: "measured reject mass and each re-cleaning loop"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "gate lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg grading input"
+                basis: "unsaleable grain per kilogram grading input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+  - id: linseed_seed_grade
+    label: "Planting-seed lot conditioning and gate hand-off"
+    inputs:
+      product:
+        - row_id: linseed_seed_grade_input
+          role: "Grain diverted for sowing-seed qualification"
+          name: "Linseed as incoming unqualified grain"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "A separately identified harvested lot enters additional seed-grade cleaning and purity/germination testing. Keep its mass out of oilseed accepted and downgraded outputs. [cfia-common-seed]"
+          amount:
+            expression: "weighed diverted lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg harvested grain"
+                basis: "grain diverted to conditional seed-grade route per kilogram harvested grain"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: linseed_seed_cleaning_energy
+          role: "Seed-grade cleaner energy"
+          name: "Actual electricity or fuel energy carrier, one carrier per inventory instance; identity pending meter record"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh or MJ"
+          description: "Record energy for additional seed-grade cleaning by lot. [cfia-common-seed]"
+          amount:
+            expression: "recorded cleaner energy by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids:
+                - cfia-common-seed
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ/kg seed-grade input"
+                basis: "seed-cleaner energy per kilogram seed-grade input after electricity and fuel conversion; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_seed_treatment
+          role: "Seed treatment product"
+          name: "Actual seed treatment product, identity pending treatment record"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record treatment material only when applied to the seed lot. [cfia-common-seed]"
+          amount:
+            expression: "recorded product mass by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids:
+                - cfia-common-seed
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg/kg treated seed"
+                basis: "seed treatment formulation per kilogram treated seed; conditional route; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: linseed_seed_testing
+          role: "Seed purity and germination test service"
+          name: "Seed testing service, identity pending supplier record"
+          flow_type: "product"
+          property_unit: "Service / test"
+          description: "Record tests used to determine the sale grade, including sampling and laboratory service. [cfia-common-seed]"
+          amount:
+            expression: "recorded number of tests by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids:
+                - cfia-common-seed
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "tests/lot"
+                basis: "purity and germination tests per declared seed-grade lot; screen only, not a default, mandatory limit, or substitute for measured records"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: linseed_planting_seed
+          role: "Qualified planting-seed linseed"
+          name: "Linseed for sowing; distinct platform flow UUID pending confirmation"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only a lot with documented intended sowing use, purity and germination result, seed-grade decision and distinct sale hand-off is a planting-seed product. Its platform UUID must be confirmed before this branch is used as a reference. [cfia-common-seed]"
+          amount:
+            expression: "weighed accepted seed-grade mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids:
+                - cfia-common-seed
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg seed-grade input"
+                basis: "qualified seed per kilogram grain entering seed-grade route; output UUID unresolved"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+        - row_id: linseed_seed_downgrade
+          role: "Non-qualifying grain sold as oilseed"
+          name: "Linseed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
+          property_unit: "Mass / kg"
+          description: "If it fails seed grade but remains salable as oilseed, route it once to the oilseed grading hand-off with its own grade and mass. [cfia-common-seed]"
+          amount:
+            expression: "weighed downgraded grain"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg seed-grade input"
+                basis: "non-qualifying grain sold as oilseed per kilogram seed-grade input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      waste:
+        - row_id: linseed_seed_reject
+          role: "Seed cleaning rejects"
+          name: "Seed cleaning reject, identity pending composition and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record removed foreign material or unsalable seed to a documented recovery or disposal destination, excluding it from both accepted outputs."
+          amount:
+            expression: "weighed reject mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "seed lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_seed_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg seed-grade input"
+                basis: "seed cleaning rejects per kilogram seed-grade input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-lci
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_single_grain
+    applies_to: "Grain and straw"
+    rule: "First document whether sold straw or separately sold downgraded grain exists. Retained straw and field losses are residues, not co-products. Keep accepted and downgraded grain masses distinct."
+    source_ids:
+      - manitoba-flax-management
+  - rule_id: allocation_biophysical
+    applies_to: "Multiple sold outputs"
+    rule: "Where a process has independent sold grain and straw, first divide separable collection, baling and handling directly. For inseparable field and harvest burdens, use a documented physically causal relationship if one is justified; otherwise use a crop-year revenue share based on actual gate prices and masses, report the shares, and test sensitivity to a mass share. Do not allocate residue returned to soil as a sold output."
+    source_ids:
+      - manitoba-flax-management
+      - eu-pef-allocation
+  - rule_id: allocation_batch
+    applies_to: "Shared runs"
+    rule: "Index field portions, harvest runs and conditioning lots. Attribute common cleaning, dryer startup and changeover energy once using measured run time or throughput; reconcile totals before allocating to accepted, downgraded and rejected outputs."
+    source_ids:
+      - manitoba-growing-flax
+  - rule_id: allocation_rework
+    applies_to: "Re-cleaned or downgraded grain"
+    rule: "Re-cleaning adds its actual energy and losses to the linked lot; do not create extra primary grain production. Recovered sale grain is counted once at its final hand-off and discarded reject carries no product credit."
+    source_ids:
+      - manitoba-flax-management
+  - rule_id: allocation_seed
+    applies_to: "Seed and oilseed outputs"
+    rule: "Assign additional seed-grade cleaning, treatment and tests directly to seed lots. Share inseparable cultivation and harvest burdens only between the final sold seed, oilseed and straw outputs under the declared joint-burden method; a downgraded seed lot becomes oilseed only at its final hand-off."
+    source_ids:
+      - cfia-common-seed
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_area
+      process_id: "flax_cultivation"
+      flow_role: "field and crop"
+      record_type: "field log"
+      raw_fields: "field id, crop year, variety, preceding crop, sown and harvested area, soil, irrigation"
+      collection_method: "farm field records and GIS"
+      unit: "ha"
+      frequency: "each crop cycle"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum only non-overlapping harvested area"
+      quality_evidence: "field map, planting record"
+    - protocol_id: cp_field_inputs
+      process_id: "flax_cultivation"
+      flow_role: "seed, nutrients, chemicals, fuel, water"
+      record_type: "purchase and operation logs"
+      raw_fields: "material identity, quantity, nutrient or active content, application date, field, machine fuel, water source"
+      collection_method: "invoices, application and meter logs"
+      unit: "kg, L, kWh, m3"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum by material and field, then reconcile inventory"
+      quality_evidence: "invoices, calibrations"
+    - protocol_id: cp_soil_emissions
+      process_id: "flax_cultivation"
+      flow_role: "managed-soil emissions"
+      record_type: "field and method record"
+      raw_fields: "N inputs, manure N, residue mass and N, soil, climate, emission method and factors"
+      collection_method: "field logs and stated method"
+      unit: "kg N, kg N2O"
+      frequency: "each crop cycle"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "apply selected method once per N pool"
+      quality_evidence: "factor version, calculations"
+    - protocol_id: cp_harvest
+      process_id: "flax_harvest"
+      flow_role: "grain, route, fuel, field loss"
+      record_type: "harvest log"
+      raw_fields: "field id, run id, direct or swath route, area, wet grain mass, moisture, fuel, desiccant, estimated losses"
+      collection_method: "weighbridge, combine and operation logs"
+      unit: "ha, kg, %, L"
+      frequency: "each run"
+      temporal_coverage: "harvest season"
+      site_scope: "each field/run"
+      aggregation_rule: "link non-overlapping portions to lots"
+      quality_evidence: "tickets, machine logs"
+    - protocol_id: cp_straw_fate
+      process_id: "flax_harvest"
+      flow_role: "straw and residues"
+      record_type: "residue and sales log"
+      raw_fields: "straw mass, dry matter, sale ticket, field retention, burn or disposal, baling fuel"
+      collection_method: "weighbridge, field log and invoice"
+      unit: "kg dry matter, L"
+      frequency: "each field/run"
+      temporal_coverage: "harvest season"
+      site_scope: "each field"
+      aggregation_rule: "reconcile harvested, removed and retained fractions"
+      quality_evidence: "buyer ticket, field photos"
+    - protocol_id: cp_conditioning
+      process_id: "linseed_cleaning"
+      flow_role: "cleaning and stabilization"
+      record_type: "lot operation log"
+      raw_fields: "lot id, before and after mass and moisture, debris, spoilage, power and fuel, run time"
+      collection_method: "weighbridge, moisture meter, equipment meter"
+      unit: "kg, %, kWh, L"
+      frequency: "each lot and run"
+      temporal_coverage: "harvest-to-gate interval"
+      site_scope: "each lot"
+      aggregation_rule: "link passes without duplicating mass or energy"
+      quality_evidence: "scale and meter calibration"
+    - protocol_id: cp_grading
+      process_id: "linseed_grading"
+      flow_role: "accepted, downgraded, rejected"
+      record_type: "gate and grade tickets"
+      raw_fields: "lot id, net mass, grade, moisture, buyer, downgrade, reject and rework destination"
+      collection_method: "gate scale, grade assay and sales tickets"
+      unit: "kg, %"
+      frequency: "each gate lot"
+      temporal_coverage: "harvest-to-gate interval"
+      site_scope: "each lot"
+      aggregation_rule: "sum final mutually exclusive output states"
+      quality_evidence: "signed sale and grade tickets"
+    - protocol_id: cp_seed_grade
+      process_id: "linseed_seed_grade"
+      flow_role: "planting seed, downgraded grain, reject"
+      record_type: "seed-lot and test records"
+      raw_fields: "lot id, diverted mass, extra cleaning and treatment, purity, germination, seed grade, buyer, accepted and rejected mass"
+      collection_method: "gate scale, seed test certificate, operation log"
+      unit: "kg, %, kWh"
+      frequency: "each seed lot"
+      temporal_coverage: "harvest-to-gate interval"
+      site_scope: "each seed lot"
+      aggregation_rule: "reconcile seed, oilseed downgrade and reject without double counting"
+      quality_evidence: "signed seed test and sale records"
+  calculation_rules:
+    - id: calc_lot_yield
+      applies_to: "Each field"
+      rule: "final grain output kg / harvested ha, retaining accepted, downgraded and reject states separately"
+      inputs:
+        - "gate masses"
+        - "field links"
+        - area
+      output: "yield by grade and field"
+      source_ids:
+        - manitoba-flax-management
+    - id: calc_moisture_balance
+      applies_to: "Aerated or dried lot"
+      rule: "dry matter = incoming wet mass × (1 − incoming wet-basis moisture); expected outgoing wet mass = conserved dry matter / (1 − outgoing wet-basis moisture), adjusted for measured dry-matter reject"
+      inputs:
+        - "paired masses and moisture"
+        - reject
+      output: "water removal and mass-balance residual"
+      source_ids:
+        - manitoba-growing-flax
+    - id: calc_soil_n2o
+      applies_to: "Managed field soil"
+      rule: "apply declared region-specific or IPCC 2019 direct and indirect N2O method to documented synthetic, organic and residue N; subtract sold or burnt residue from returned residue pool"
+      inputs:
+        - "field N and residue records"
+        - "method factors"
+      output: "kg N2O by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_allocation
+      applies_to: "Co-product crop year"
+      rule: "directly assign separable operations; allocate only remaining joint burdens by justified causal basis or actual sold value shares, with mass-share sensitivity"
+      inputs:
+        - "sold masses"
+        - prices
+        - "joint burdens"
+      output: "burden share per sold output"
+      source_ids:
+        - eu-pef-allocation
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Reference product"
+      requirement: "Verify unprocessed linseed identity, variety, moisture and grade; oil, fibre or sowing-seed datasets cannot substitute."
+      evidence: "gate ticket, lot assay"
+    - id: dq_seed_identity
+      applies_to: "Planting-seed branch"
+      requirement: "A planting-seed dataset requires its distinct platform flow identity, intended-use record, purity/germination tests and seed-grade hand-off; the oilseed reference UUID alone is insufficient."
+      evidence: "seed certificate, sale ticket, flow-identity check"
+    - id: dq_completeness
+      applies_to: "Field-to-gate chain"
+      requirement: "Reconcile field area and grain lots, cleaning and moisture losses, accepted/downgraded/rejected outputs, straw and residues, and all significant applied products and energy."
+      evidence: "field and lot balance"
+    - id: dq_time
+      applies_to: "Foreground"
+      requirement: "Use one documented crop year or disclose pooling years; each operation and output must link to a field, run or lot without shared-burden duplication."
+      evidence: "dated logs and tickets"
+    - id: dq_method
+      applies_to: "Emissions and allocation"
+      requirement: "State factors, regional applicability, uncertainty and actual co-product prices or causal basis; do not silently mix residue return and burning assumptions."
+      evidence: "method worksheet and sources"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "Gate lot"
+    rule: "Require linseed grain, actual moisture and grade, crop year and farm-gate hand-off; reject oil and fibre identities. Require a separate flow and test-backed grade for a planting-seed reference."
+    source_ids:
+      - manitoba-flax-management
+      - cfia-common-seed
+  - rule_id: validate_routes
+    applies_to: "Field and lot"
+    rule: "Exactly one direct-combine or swath route per field portion; a drying or aeration node appears only when logged and must contain pre/post moisture, energy and hand-off."
+    source_ids:
+      - manitoba-flax-management
+      - manitoba-growing-flax
+  - rule_id: validate_outputs
+    applies_to: "Grain and straw"
+    rule: "Reconcile accepted, downgraded, rejected, reworked and moisture-loss states to incoming lot; record each straw fate and any sale hand-off; do not count retained or burnt straw as a sold co-product."
+    source_ids:
+      - manitoba-flax-management
+  - rule_id: validate_runs
+    applies_to: "Field, machine and lot"
+    rule: "Link shared inputs, cleaning/changeover, outputs and rework to one run or period; assign each shared burden and final product once."
+    source_ids:
+      - manitoba-growing-flax
+  - rule_id: validate_residue_n
+    applies_to: "Soil emissions"
+    rule: "Show residue N returned, removed and burnt separately and avoid double-counting in N2O calculations."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validate_seed_branch
+    applies_to: "Planting-seed lot"
+    rule: "Reconcile diverted grain into qualified seed, oilseed downgrade and reject; require purity/germination evidence, additional conditioning records and a verified seed UUID before a planting-seed dataset is validated."
+    source_ids:
+      - cfia-common-seed
+published_dataset_profile:
+  dataset_role: "Foreground farm-gate linseed production dataset"
+  downstream_use: "secondary_dataset; background_dataset when region, crop year, gate and quality are representative"
+  allowed_use: "Modelling unprocessed oilseed linseed grain at the declared moisture and grade, with explicit co-product treatment; the conditional planting-seed branch requires separately verified output flow and seed-grade evidence"
+  excluded_use: "Oil crushing, fibre processing, or farm-independent post-gate storage and transport; planting-seed use is allowed only under the distinct seed branch and verified seed flow"
+  required_metadata: "Farm region; field and crop year; variety or solin designation; intended oilseed or sowing use; area and yield; moisture and impurity grade; harvest route; conditioning and seed tests where applicable; straw fate; allocation method; upstream input geography and year"
+  required_quality_disclosure: "Missing input records, measurement and grade uncertainty, shared-equipment apportionment, soil-emission method, co-product price and sensitivity, site and temporal representativeness"
+  update_trigger: "Change in crop-management or harvest route, gate quality, straw market, emission method, or data vintage that materially alters inventory"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "manitoba-flax-management"
+    type: "extension_guidance"
+    reference: "Manitoba Agriculture, [Flax: Production and Management](https://www.gov.mb.ca/agriculture/crops/crop-management/flax-and-solin/index.html)"
+    used_for: "Annual crop operations, harvest alternatives, grade downgrading, straw dispositions, and moisture context"
+  - id: "manitoba-growing-flax"
+    type: "extension_guidance"
+    reference: "Manitoba Agriculture, [Growing Flax factsheet](https://www.gov.mb.ca/agriculture/crops/seasonal-reports/pubs/growing-flax.pdf)"
+    used_for: "Cleaning, harvest, grain moisture, storage aeration and straw handling"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, [2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils and CO2 Emissions from Lime and Urea Application](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf)"
+    used_for: "N-input and crop-residue accounting, direct and indirect soil N2O methods"
+  - id: "cfia-common-seed"
+    type: "official_guidance"
+    reference: "Canadian Food Inspection Agency, [Requirements for Sales of Common Seed](https://inspection.canada.ca/en/plant-health/seeds/seed-industry-advisories/common-seed)"
+    used_for: "Seed-sale purity/germination testing, grade decision, labelling and lot hand-off"
+  - id: "eu-pef-allocation"
+    type: "official_guidance"
+    reference: "European Commission, [Commission Recommendation 2013/179/EU, Product Environmental Footprint multi-functionality hierarchy](https://eur-lex.europa.eu/eli/reco/2013/179/oj/eng)"
+    used_for: "Subdivision, physical relationship and economic-allocation hierarchy"
+  - id: "iso-14044-lci"
+    type: "standard"
+    reference: "https://www.iso.org/standard/38498.html"
+    used_for: "Life-cycle inventory quantitative-reference and input/output accounting framework; the 0–1 material-fraction and 1 kg reference bounds here are algebraic checks, not empirical ISO rates."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7a7f38d99f931f8b3f235ab278a50855ccdbdb9fe7f8561bfc04c7d2531f609a"
+  generated_content_sha256: "sha256:7c77caa578e38d9d1e48e33699dd60af12f071668e32137afa7cfd23641125c8"

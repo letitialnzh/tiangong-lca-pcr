@@ -1,10 +1,943 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01354"
-  title: "Strawberries"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.strawberries"
+  classification_refs: "CPC 3.0 / 01354"
+  covered_products: "Cultivated fresh strawberries"
+  excluded_products: "Nursery material, processed products, retail and consumer use"
+  representative_product: "Marketable fresh strawberries at the declared hand-off"
+functional_unit:
+  what: "Marketable strawberries at the declared hand-off"
+  how_much: "1 kg fresh strawberries"
+  how_well: "Grade, maturity, moisture condition, and marketability state"
+  how_long_or_cycle: "One crop year or production cycle"
+  reference_flow_link: "One declared marketable strawberry product flow; identity unresolved"
+system_boundary:
+  rules:
+    - rule_id: boundary_01
+      applies_to: "foreground system"
+      rule: "Start at the managed strawberry site and crop cycle, including attributable establishment inputs."
+      source_ids:
+        - source-02
+    - rule_id: boundary_02
+      applies_to: "foreground system"
+      rule: "Include planting material, soil/substrate preparation, fertilizer/amendments, crop protection, irrigation, field/greenhouse energy, attributable infrastructure services, harvest, grading, and primary conditioning to hand-off."
+      source_ids:
+        - source-02
+    - rule_id: boundary_03
+      applies_to: "purchased inputs and waste"
+      rule: "Use suitable background datasets for purchased inputs; disclose unresolved identity. Keep residues, losses, rejects, and waste in-boundary until their declared destination."
+      source_ids:
+        - source-02
+boundary_abstraction:
+  declared_starting_condition: "Managed strawberry site and crop cycle with attributable establishment inputs"
+  starting_condition_role: "Start of managed strawberry production"
+  product_classification_scope: "Cultivated fresh strawberry fruit corresponding to CPC 3.0 code 01354"
+  recursive_input_rule: "Stop same-category recursion at a declared purchased input and link its upstream dataset"
+  upstream_dataset_requirement: "Provide suitable background datasets for purchased inputs and services crossing the boundary"
+  disclosure: "Declare system, site, cycle, hand-off, yields, losses, inputs, destinations, allocation and unresolved identity"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Marketable fresh strawberries at the declared hand-off (UUID unresolved; intentionally blank)"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "production system"
+    - "site/region"
+    - "crop year"
+    - "cultivar/group"
+    - "harvested and marketable mass"
+    - "reject/loss/rework/recovery destinations"
+    - "irrigation and energy"
+    - "fertilizer product and nutrient basis"
+    - conditioning
+    - hand-off
+    - "allocation basis"
+    - "reporting period and asset attribution"
+reference_flows:
+  []
+measurement_rules:
+  - id: measurement_01
+    applies_to: "all product and waste masses"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use one declared hand-off basis and reconcile harvested, marketable, downgraded, rejected and discarded quantities."
+  - id: measurement_02
+    applies_to: "fertilizer and amendments"
+    required_property_ref:
+      name: "Product and nutrient mass"
+      uuid: ""
+    required_unit: "kg product; kg N/P/K"
+    rule: "Record actual product mass and declared nutrient basis; nutrient mass does not replace product mass."
+  - id: measurement_03
+    applies_to: "area, time, water and energy"
+    required_property_ref:
+      name: "Activity-specific property"
+      uuid: ""
+    required_unit: "declared activity unit"
+    rule: "Preserve original units and document conversions, irrigation source and energy carrier."
+process_map:
+  - id: process_01
+    name: "Managed cultivation"
+    inclusion: "required"
+    inclusion_condition: "All crop-cycle operations"
+    role: "managed biological production"
+    quantitative_reference: "crop cycle and saleable kg"
+  - id: process_02
+    name: "Harvest and capture"
+    inclusion: "required"
+    inclusion_condition: "All harvest operations"
+    role: "harvest capture"
+    quantitative_reference: "harvested and saleable kg"
+  - id: process_03
+    name: "Grading and hand-off"
+    inclusion: "required"
+    inclusion_condition: "When grading or hand-off occurs"
+    role: "grading and sorting"
+    quantitative_reference: "delivered kg"
+  - id: process_04
+    name: "Primary conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "When washing, cooling or packing occurs before hand-off"
+    role: "primary conditioning"
+    quantitative_reference: "conditioned kg"
+process_inventory:
+  - id: process_01
+    label: "Managed cultivation"
+    inputs:
+      product:
+        - row_id: row_01
+          role: "Planting material"
+          name: "Strawberry planting material (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record planting material, cultivar or cultivar group, propagation form, quantity and supplier for each site or plot."
+          amount:
+            expression: "supplier, invoice and planting records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: process_01_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_03
+          role: "Crop-protection product"
+          name: "Crop-protection product (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record actual crop-protection products, active ingredient or formulation, application event and destination."
+          amount:
+            expression: "application log, supplier record and invoice"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_04
+          role: "Irrigation water"
+          name: "Irrigation water supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation water source, volume and the field or production-unit application basis."
+          amount:
+            expression: "meter, delivery, invoice or operation log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_18
+          role: "Energy carriers"
+          name: "Electricity, fuel or energy carrier (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or mass / kWh, MJ or kg"
+          description: "Record electricity, fuel and other energy carriers used by the cultivation operation."
+          amount:
+            expression: "meter, delivery, invoice or operation log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: row_05
+          role: "Crop output"
+          name: "Strawberry crop output (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Calculate crop output from harvested-lot records before grading."
+          amount:
+            expression: "crop and harvest mass records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: row_06
+          role: "Residues and field losses"
+          name: "Crop residues and field losses (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record crop residues and field losses with quantity, destination and treatment or recovery route."
+          amount:
+            expression: "field record, loss estimate and mass balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg marketable strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_cultivation
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: process_02
+    label: "Harvest and capture"
+    inputs:
+      product:
+        - row_id: row_07
+          role: "Fruit available for harvest"
+          name: "Fruit available for harvest (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Calculate fruit available for harvest from crop records before removal and grading."
+          amount:
+            expression: "crop estimate reconciled to harvest records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: row_08
+          role: "Harvested strawberries"
+          name: "Harvested strawberries (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use calibrated scale or harvest-log records for fruit sent to grading or hand-off."
+          amount:
+            expression: "weigh ticket or harvest log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: row_09
+          role: "Harvest loss"
+          name: "Harvest loss (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record field loss or incidental material with destination."
+          amount:
+            expression: "loss record and mass balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg harvested strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: process_03
+    label: "Grading and hand-off"
+    inputs:
+      product:
+        - row_id: row_10
+          role: "Fruit entering grading"
+          name: "Strawberries entering grading (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Reconcile incoming grading mass to the harvested-lot records."
+          amount:
+            expression: "receiving record and harvest reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: row_11
+          role: "Marketable grades"
+          name: "Fresh marketable strawberries (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted marketable grades and dispatch weight."
+          amount:
+            expression: "grading and dispatch record"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_12
+          role: "Downgraded or alternate-use fruit"
+          name: "Downgraded or alternate-use strawberries (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record downgraded or alternate-use fruit separately from accepted marketable grades and disclose its destination."
+          amount:
+            expression: "grading record and destination reconciliation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: row_13
+          role: "Rejected or discarded fruit"
+          name: "Strawberry reject or waste (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected fruit, loss and treatment route."
+          amount:
+            expression: "reject record and mass balance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: process_04
+    label: "Primary conditioning"
+    inputs:
+      product:
+        - row_id: row_14
+          role: "Raw fruit entering conditioning"
+          name: "Raw strawberries entering conditioning (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record raw fruit received by conditioning and link it to the incoming grading or dispatch lot when conditioning applies."
+          amount:
+            expression: "intake record and lot reconciliation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_15
+          role: "Conditioning water"
+          name: "Conditioning water supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used for washing or other conditioning operations when it crosses the foreground boundary."
+          amount:
+            expression: "meter, invoice and run log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_19
+          role: "Conditioning packaging materials"
+          name: "Conditioning packaging material (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass / kg"
+          description: "Record packaging or presentation materials consumed by the conditioning run when they cross the foreground boundary."
+          amount:
+            expression: "invoice, issue record and run log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: row_20
+          role: "Conditioning energy"
+          name: "Conditioning energy supply (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or mass / kWh, MJ or kg"
+          description: "Record electricity, fuel or other energy used by washing, cooling, stabilization or packing equipment."
+          amount:
+            expression: "meter, invoice and run log"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: row_16
+          role: "Prepared strawberries at hand-off"
+          name: "Fresh strawberries at hand-off (UUID unresolved; intentionally blank)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record final prepared strawberries at the declared hand-off."
+          amount:
+            expression: "dispatch record"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: row_17
+          role: "Conditioning losses and rejects"
+          name: "Conditioning loss or reject (UUID unresolved; intentionally blank)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record conditioning losses, rejects and destinations."
+          amount:
+            expression: "run mass balance and waste record"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg delivered strawberries"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids:
+                - source-01
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared flow unit per kg product"
+                basis: "one declared crop cycle; values outside require documented explanation"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_01
+    applies_to: "plots, systems, runs, grades and conditioning lines"
+    rule: "Separate units where records support it; otherwise disclose the aggregation basis."
+    source_ids:
+      - source-03
+  - rule_id: allocation_02
+    applies_to: "shared burdens and co-products"
+    rule: "Enumerate intended outputs and use one documented physical or economic basis; residues and waste are not intended products unless explicitly declared."
+    source_ids:
+      - source-03
+  - rule_id: allocation_03
+    applies_to: "crop-year and multi-period assets"
+    rule: "Link establishment and multi-period assets to crop year, phase, replacement and termination; unresolved events block finalization."
+    source_ids:
+      - source-03
+  - rule_id: allocation_04
+    applies_to: "downgrade, recovery and disposal"
+    rule: "Declare rework, recovery, downgrade and disposal paths; rejected fruit is excluded from accepted output and cannot be double-counted."
+    source_ids:
+      - source-03
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_cultivation
+      process_id: "process_01"
+      flow_role: "inputs and outputs"
+      record_type: "invoices, logs, meters, field book"
+      raw_fields: "product, nutrient, amount, water, energy, crop output"
+      collection_method: "reconcile supplier and field records"
+      unit: "kg, kg nutrient, m3, kWh"
+      frequency: "operation/monthly"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each site/plot"
+      aggregation_rule: "sum by site and cycle"
+      quality_evidence: "invoices, meters and review"
+    - protocol_id: cp_harvest
+      process_id: "process_02"
+      flow_role: "harvested fruit and loss"
+      record_type: "weigh tickets and harvest logs"
+      raw_fields: "lot, date, mass, block, destination"
+      collection_method: "weigh each lot and reconcile"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "harvest season"
+      site_scope: "each block"
+      aggregation_rule: "sum lots"
+      quality_evidence: "calibrated scale and logs"
+    - protocol_id: cp_grading
+      process_id: "process_03"
+      flow_role: "incoming, accepted and rejected fruit"
+      record_type: "grading and dispatch records"
+      raw_fields: "incoming, grade, mass, destination"
+      collection_method: "lot mass balance"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "grading period"
+      site_scope: "each line/site"
+      aggregation_rule: "reconcile all states"
+      quality_evidence: "dispatch and destination records"
+    - protocol_id: cp_conditioning
+      process_id: "process_04"
+      flow_role: "conditioning input, output and waste"
+      record_type: "run log, meter, invoice"
+      raw_fields: "lot, input, utility, output, waste"
+      collection_method: "lot-linked reconciliation"
+      unit: "kg, m3, kWh"
+      frequency: "each run"
+      temporal_coverage: "conditioning period"
+      site_scope: "conditioning unit"
+      aggregation_rule: "allocate by lot mass"
+      quality_evidence: "meters and run records"
+  calculation_rules:
+    - id: calculation_01
+      applies_to: "all normalized rows"
+      rule: "Inventory amount / accepted strawberry mass at the declared hand-off."
+      inputs:
+        - "row amount"
+        - "accepted mass"
+      output: "amount per kg accepted strawberries"
+      source_ids:
+        - source-03
+    - id: calculation_02
+      applies_to: "site or period aggregation"
+      rule: "Aggregate by quantity-weighted results and disclose the denominator; do not average intensities unweighted."
+      inputs:
+        - "site/period amounts"
+        - denominators
+      output: "weighted intensity"
+      source_ids:
+        - source-03
+    - id: calculation_03
+      applies_to: "fertilizer and amendments"
+      rule: "Product mass × declared nutrient fraction; retain product mass and nutrient mass separately."
+      inputs:
+        - "product mass"
+        - "nutrient fraction"
+      output: "product and nutrient amounts"
+      source_ids:
+        - source-02
+    - id: calculation_04
+      applies_to: "harvest, grading and conditioning"
+      rule: "Reconcile incoming mass to accepted, downgraded, recovered, reworked, rejected and discarded states within documented tolerance."
+      inputs:
+        - "all mass records"
+      output: "mass-balance result"
+      source_ids:
+        - source-03
+  data_quality_requirements:
+    - id: quality_01
+      applies_to: "all foreground records"
+      requirement: "Record temporal, geographical and technological representativeness, completeness, measurement or estimation method, uncertainty and data-quality notes."
+      evidence: "field records, logs and review"
+    - id: quality_02
+      applies_to: "identity and qualifiers"
+      requirement: "Record production system, site/region, crop year, cultivar/group, hand-off and unresolved identity status."
+      evidence: "dataset metadata and source records"
+    - id: quality_03
+      applies_to: "mass and allocation"
+      requirement: "Use calibrated weighing or documented estimates, reconcile lots, and retain allocation and destination evidence."
+      evidence: "weigh records, mass balance and destination records"
+validation_rules:
+  - rule_id: validation_01
+    applies_to: "reference flow"
+    rule: "Confirm the 1 kg reference basis, mass property and kg unit; unresolved reference identity remains an explicit review gap."
+    source_ids:
+      - source-03
+  - rule_id: validation_02
+    applies_to: "process sequence"
+    rule: "Confirm cultivation-to-harvest-to-grading-to-conditioning/hand-off ordering and a destination for every output, loss, reject and waste state."
+    source_ids:
+      - source-03
+  - rule_id: validation_03
+    applies_to: "mass balance"
+    rule: "Confirm incoming mass equals accepted, downgraded, recovered, reworked and discarded states within documented tolerance."
+    source_ids:
+      - source-03
+  - rule_id: validation_04
+    applies_to: "products, nutrients and allocation"
+    rule: "Confirm product/nutrient bases, units, crop-year attribution, allocation, period and rework treatment without double counting."
+    source_ids:
+      - source-02
+      - source-03
+  - rule_id: validation_05
+    applies_to: "dataset completeness"
+    rule: "Missing qualifiers, identities, evidence, destinations or allocation decisions make the dataset review-required."
+    source_ids:
+      - source-03
+published_dataset_profile:
+  dataset_role: "secondary foreground dataset for farm-gate strawberry LCA"
+  downstream_use: "Foreground process and lifecycle-model construction"
+  allowed_use: "Declared strawberry system, hand-off, geography and reporting cycle"
+  excluded_use: "Processed, retail, consumer-use or materially different systems"
+  required_metadata: "site, system, cultivar/group, cycle, yields, inputs, losses, destinations, allocation and identity status"
+  required_quality_disclosure: "completeness, representativeness, measurement, estimates, uncertainty and unresolved UUIDs"
+  update_trigger: "material change in technology, boundary, inputs, allocation or reporting basis"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "source-01"
+    type: "dataset"
+    reference: "Current-product route evidence and foreground records"
+    used_for: "identity, quantities, boundaries, output states and collection completeness"
+  - id: "source-02"
+    type: "official_guidance"
+    reference: "Official agronomic guidance selected during review"
+    used_for: "contextual practices, not site-specific quantities"
+  - id: "source-03"
+    type: "standard"
+    reference: "ISO 14040/14044-aligned LCA principles and program instructions"
+    used_for: "boundary, allocation, documentation and data quality"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:51af528dc9a58b775e4d48252ec6aef81f69d0b25761788f8b64aa84709437ca"
+  generated_content_sha256: "sha256:821dcc8b3911f26798c092f7be5c5f4a5e3e6515e2f6fc35a956a64d6b6a4580"

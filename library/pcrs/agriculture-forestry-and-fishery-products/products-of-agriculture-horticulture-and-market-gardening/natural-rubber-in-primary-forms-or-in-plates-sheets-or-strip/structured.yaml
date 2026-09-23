@@ -1,10 +1,1289 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01950"
-  title: "Natural rubber in primary forms or in plates, sheets or strip"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.natural-rubber-in-primary-forms-or-in-plates-sheets-or-strip"
+  classification_refs: "CPC 3.0: 01950 Natural rubber in primary forms or in plates, sheets or strip"
+  covered_products: "Declared natural-rubber latex concentrate, RSS or other sheet grade, crepe rubber, TSR/block/granular rubber at primary-processing hand-off"
+  excluded_products: "Synthetic rubber; natural/synthetic mixtures; compounded or vulcanized rubber; reclaimed rubber; adhesives; tyres, gloves and other finished articles"
+  representative_product: "One declared commercial natural-rubber form produced through one traceable route"
+  production_route: "Managed perennial rubber-tree production and tapping followed by exactly one of latex concentration, sheet/RSS, crepe, or TSR/block processing"
+  market_state: "Declared liquid or dry primary form, grade, dry-rubber-content or as-received basis, preservation state and primary-processing gate"
+functional_unit:
+  what: "One declared natural-rubber primary form meeting its stated commercial grade at primary-processing hand-off"
+  how_much: "1 kg on the declared dry-rubber or as-received mass basis"
+  how_well: "Route, form, grade, dry-rubber content or moisture, preservative/coagulant state, accepted-lot status and gate are declared"
+  how_long_or_cycle: "Declared reporting period covering plantation attribution, tapping rounds and the processing batch or campaign producing the reference amount"
+  reference_flow_link: "Exactly one terminal output: latex_concentrate_reference, sheet_rss_reference, crepe_reference, or tsr_block_reference"
+system_boundary:
+  rules:
+    - rule_id: boundary_plantation
+      applies_to: "plantation_management"
+      rule: "Include managed tree establishment attribution, maintenance, nutrient and water supply, energy, pest/weed management and productive latex formation."
+      source_ids:
+        - fao-rubber-products-classification
+    - rule_id: boundary_tapping
+      applies_to: "latex_tapping_collection"
+      rule: "Include tapping, cup collection, field preservation when used, collection losses and delivery of measured field latex to primary processing."
+      source_ids:
+        - rubber-board-natural-rubber-forms
+    - rule_id: boundary_single_route
+      applies_to: "terminal processing"
+      rule: "Include exactly one terminal route for the reference product. Other route nodes are inactive and contribute zero burden."
+      source_ids:
+        - rubber-board-natural-rubber-forms
+    - rule_id: boundary_latex_concentrate
+      applies_to: "latex_concentration"
+      rule: "Include preservation, separation/concentration, stabilization, storage and accepted concentrate hand-off; do not include downstream compounding or product manufacture."
+      source_ids:
+        - rubber-board-natural-rubber-forms
+    - rule_id: boundary_sheet_rss
+      applies_to: "sheet_rss_processing"
+      rule: "Include straining, controlled coagulation, rolling/forming, drying or smoking, grading and sheet hand-off."
+      source_ids:
+        - rubber-board-natural-rubber-forms
+    - rule_id: boundary_crepe
+      applies_to: "crepe_processing"
+      rule: "Include coagulum preparation, washing, repeated milling/creping, drying, grading and crepe hand-off."
+      source_ids:
+        - rubber-board-natural-rubber-forms
+    - rule_id: boundary_tsr_block
+      applies_to: "tsr_block_processing"
+      rule: "Include feedstock sorting, size reduction, washing, drying, baling/block forming, grading and block hand-off."
+      source_ids:
+        - rubber-board-natural-rubber-forms
+    - rule_id: boundary_exclusions
+      applies_to: "downstream system"
+      rule: "Exclude synthetic polymer manufacture, natural/synthetic blending, compounding, vulcanization, conversion into finished articles and use/end-of-life."
+      source_ids:
+        - fao-rubber-products-classification
+boundary_abstraction:
+  declared_starting_condition: "Managed rubber-tree stand with clone/species, age or productive phase, establishment carry-in and land-management history declared"
+  starting_condition_role: "Perennial biological production stock; establishment and replacement burdens are included or linked and attributed over the productive period"
+  product_classification_scope: "Natural rubber at primary-processing hand-off in one declared latex concentrate, sheet/RSS, crepe or TSR/block form"
+  recursive_input_rule: "Internally transferred field latex, coagulum or off-grade rubber retains upstream burdens and is not represented by a zero-burden loop; purchased same-category material requires a compatible upstream dataset"
+  upstream_dataset_requirement: "Purchased nutrients, water, energy, chemicals, packaging and transport services require compatible upstream datasets; Flow Sets expand to verified UUIDs from foreground records"
+  disclosure: "Declare plantation phase, tapping system and rounds, route, terminal form, grade, dry-rubber/moisture basis, chemistry, energy source, batch/campaign, reject/rework destination and gate"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Natural Rubber"
+    uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "natural-rubber species or clone where known"
+    - "terminal form and route"
+    - "commercial grade"
+    - "liquid/dry state"
+    - "dry-rubber-content or moisture basis"
+    - "preservation or coagulation chemistry"
+    - "batch/campaign"
+    - geography
+    - "hand-off gate"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_basis
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "State whether the 1 kg reference is dry-rubber mass or as-received mass. Do not combine the two bases without recorded dry-rubber content and an explicit conversion."
+  - id: dry_rubber_conversion
+    applies_to: "field latex, concentrate and wet coagulum"
+    required_property_ref:
+      name: "Mass and measured dry-rubber content"
+      uuid: ""
+    required_unit: "kg"
+    rule: "dry-rubber mass = as-received mass × dry-rubber mass fraction; retain test method, sampling time and batch."
+  - id: route_mass_balance
+    applies_to: "every tapping and processing batch"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile accepted rubber, water, removed serum or moisture, off-grade rubber, retained rework and losses on one consistent basis."
+  - id: period_attribution
+    applies_to: "establishment and productive years"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Attribute establishment, immature years, replacement and end-of-life burdens once over accepted output of the declared productive period."
+process_map:
+  - id: plantation_management
+    name: "Managed perennial rubber-tree production"
+    inclusion: "required"
+    inclusion_condition: "Always; declare any alternative technology or biological production route delta"
+    role: "Managed biological production and multi-period attribution"
+    quantitative_reference: "kg dry rubber in collected field latex"
+  - id: latex_tapping_collection
+    name: "Latex tapping, preservation and collection"
+    inclusion: "required"
+    inclusion_condition: "Always; record tapping rounds in batch mode"
+    role: "Harvest/capture and primary conditioning"
+    quantitative_reference: "kg dry rubber in field latex delivered to processing"
+  - id: latex_concentration
+    name: "Latex concentration and stabilization"
+    inclusion: "conditional"
+    inclusion_condition: "Batch mode; only for latex-concentrate reference form"
+    role: "Material treatment and stabilization"
+    quantitative_reference: "1 kg declared latex concentrate"
+  - id: sheet_rss_processing
+    name: "Sheet forming, drying or smoking and grading"
+    inclusion: "conditional"
+    inclusion_condition: "Batch mode; only for RSS or another declared sheet reference form"
+    role: "Coagulation, forming, preservation and grading"
+    quantitative_reference: "1 kg accepted sheet/RSS"
+  - id: crepe_processing
+    name: "Crepe preparation, milling, drying and grading"
+    inclusion: "conditional"
+    inclusion_condition: "Batch mode; only for crepe reference form"
+    role: "Treatment, forming and grading"
+    quantitative_reference: "1 kg accepted crepe rubber"
+  - id: tsr_block_processing
+    name: "TSR/block preparation, drying, baling and grading"
+    inclusion: "conditional"
+    inclusion_condition: "Batch mode; only for TSR/block/granular reference form"
+    role: "Treatment, forming and grading"
+    quantitative_reference: "1 kg accepted TSR/block rubber"
+process_inventory:
+  - id: plantation_management
+    label: "Managed perennial rubber-tree production"
+    inputs:
+      product:
+        - row_id: plantation_nutrients
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Actual fertilizer and nutrient products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg or compatible nutrient property/unit"
+          description: "Record all mineral fertilizers, organic fertilizers and nutrient amendments in this one process-level card; retain product and nutrient composition in foreground records."
+          amount:
+            expression: "Measured quantities attributed to the productive period"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry rubber delivered in field latex"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_plantation_period
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg product/kg dry rubber"
+                basis: "total fertilizer and amendment products attributed per kg dry rubber"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: plantation_water
+          role: "Plantation water supply"
+          name: "Actual supplied water product"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+          property_unit: "Volume / m3 or Mass / kg"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Measured supplied irrigation or nursery water; rainfall is not a product input"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry rubber delivered in field latex"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_plantation_period
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/kg dry rubber"
+                basis: "supplied water only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: plantation_energy
+          role: "Plantation energy supply"
+          name: "Actual energy carriers and utilities"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-appropriate energy or mass unit"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered or invoiced energy attributed to plantation operations"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry rubber delivered in field latex"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_plantation_period
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg dry rubber"
+                basis: "purchased energy attributed to plantation operations"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: plantation_latex_output
+          role: "Dry rubber contained in harvest-ready latex"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Calculated from latex mass and tested dry-rubber content"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "process output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_latex_batches
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg dry rubber"
+                basis: "per kg dry rubber process output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        []
+      elementary:
+        []
+  - id: latex_tapping_collection
+    label: "Latex tapping, preservation and collection"
+    inputs:
+      product:
+        - row_id: field_latex_input
+          role: "Plantation latex transfer"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Burden-carrying internal transfer from plantation production"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry rubber delivered to primary processing"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_latex_batches
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.2"
+                unit: "kg dry rubber/kg delivered dry rubber"
+                basis: "collected dry rubber before documented collection loss"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_latex_ammonia
+          role: "Aqueous ammonia for field-latex preservation"
+          name: "Aqueous ammonia"
+          flow_type: "product"
+          flow_ref:
+            uuid: "058124f8-5e84-4070-b6c0-4bacac3a0024"
+          binding: "fixed"
+          property_unit: "Mass / kg solution"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Measured solution mass and concentration; zero when the declared route does not use ammonia"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per kg dry rubber delivered to primary processing"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_latex_batches
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg solution/kg dry rubber"
+                basis: "applies only when aqueous ammonia is used"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: latex_collection_transport
+          role: "Latex collection transport service"
+          name: "Actual transport service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+          property_unit: "Transport work / tkm or compatible service unit"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Wet latex mass × measured route distance by mode"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg dry rubber delivered"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_latex_batches
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "tkm/kg dry rubber"
+                basis: "wet-latex transport work normalized to dry rubber"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_field_latex
+          role: "Collected field latex delivered to processing"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Wet latex mass × batch dry-rubber mass fraction"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg dry rubber delivered"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_latex_batches
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg dry rubber"
+                basis: "per kg dry rubber delivered to the selected terminal route"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        []
+      elementary:
+        []
+  - id: latex_concentration
+    label: "Latex concentration and stabilization"
+    inputs:
+      product:
+        - row_id: latex_concentrate_feed
+          role: "Field latex for concentration"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Burden-carrying dry-rubber mass in accepted field latex"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg dry rubber in accepted concentrate"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.15"
+                unit: "kg feed dry rubber/kg accepted dry rubber"
+                basis: "excludes serum water mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: concentrate_ammonia
+          role: "Aqueous ammonia for concentrate stabilization"
+          name: "Aqueous ammonia"
+          flow_type: "product"
+          flow_ref:
+            uuid: "058124f8-5e84-4070-b6c0-4bacac3a0024"
+          binding: "fixed"
+          property_unit: "Mass / kg solution"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Measured solution mass and concentration in the concentrate batch"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg accepted concentrate on declared basis"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg solution/kg dry rubber"
+                basis: "actual solution concentration must be retained"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: concentrate_water
+          role: "Concentration water supply"
+          name: "Actual process-water product"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+          property_unit: "Volume / m3"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered water crossing the process boundary"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted concentrate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "m3/kg dry rubber"
+                basis: "supplied process water"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: concentrate_energy
+          role: "Concentration energy supply"
+          name: "Actual energy carriers and utilities"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-appropriate unit"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered energy for concentration, pumping and storage"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted concentrate"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "MJ/kg dry rubber"
+                basis: "total purchased energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: latex_concentrate_reference
+          role: "Accepted latex concentrate"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Exactly 1 kg accepted concentrate on the declared dry-rubber or as-received basis"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - reference-normalization-definition
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "declared latex-concentrate reference basis"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        []
+      elementary:
+        []
+  - id: sheet_rss_processing
+    label: "Sheet forming, drying or smoking and grading"
+    inputs:
+      product:
+        - row_id: sheet_latex_feed
+          role: "Field latex for sheet production"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Dry-rubber mass in field latex entering coagulation"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg accepted dry sheet"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.2"
+                unit: "kg feed dry rubber/kg accepted sheet"
+                basis: "dry-rubber mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sheet_formic_acid
+          role: "Formic acid coagulant"
+          name: "Formic acid"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b2fe4c3e-d4e6-40be-93ee-e47d512b8309"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Measured acid product mass and concentration; zero when another verified coagulant is declared"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per kg accepted dry sheet"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg product/kg dry sheet"
+                basis: "actual acid concentration must be retained"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sheet_water
+          role: "Sheet-route water supply"
+          name: "Actual process-water product"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+          property_unit: "Volume / m3"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered dilution, washing and cleaning water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted dry sheet"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "m3/kg dry sheet"
+                basis: "supplied process water"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sheet_energy
+          role: "Sheet drying or smoking energy"
+          name: "Actual energy carriers and utilities"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-appropriate unit"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered or calculated energy by declared air-dried, smoke-dried or other route"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted dry sheet"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "MJ/kg dry sheet"
+                basis: "purchased or produced energy used for drying/smoking"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: sheet_rss_reference
+          role: "Accepted sheet or RSS"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Exactly 1 kg accepted sheet of the declared grade and moisture basis"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - reference-normalization-definition
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "declared sheet/RSS form and grade"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        []
+      elementary:
+        []
+  - id: crepe_processing
+    label: "Crepe preparation, milling, drying and grading"
+    inputs:
+      product:
+        - row_id: crepe_feed
+          role: "Natural-rubber feedstock for crepe route"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Dry-rubber mass in declared latex or coagulum feedstock"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg accepted dry crepe"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.25"
+                unit: "kg feed dry rubber/kg accepted crepe"
+                basis: "dry-rubber mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crepe_water
+          role: "Crepe-route water supply"
+          name: "Actual process-water product"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+          property_unit: "Volume / m3"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered washing and milling water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted dry crepe"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "m3/kg dry crepe"
+                basis: "supplied process water"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crepe_energy
+          role: "Crepe milling and drying energy"
+          name: "Actual energy carriers and utilities"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-appropriate unit"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered energy for milling and drying"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted dry crepe"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "MJ/kg dry crepe"
+                basis: "total purchased energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: crepe_reference
+          role: "Accepted crepe rubber"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Exactly 1 kg accepted crepe rubber of declared grade and moisture basis"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - reference-normalization-definition
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "declared crepe form and grade"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        []
+      elementary:
+        []
+  - id: tsr_block_processing
+    label: "TSR/block preparation, drying, baling and grading"
+    inputs:
+      product:
+        - row_id: tsr_feed
+          role: "Natural-rubber feedstock for TSR/block route"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg dry rubber"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Dry-rubber mass of separately recorded latex, cup lump or coagulum feedstock"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per kg accepted TSR/block rubber"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.3"
+                unit: "kg feed dry rubber/kg accepted TSR"
+                basis: "dry-rubber mass balance"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tsr_water
+          role: "TSR-route water supply"
+          name: "Actual process-water product"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+          property_unit: "Volume / m3"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered feedstock washing and cleaning water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted TSR/block rubber"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "m3/kg dry rubber"
+                basis: "supplied process water"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tsr_energy
+          role: "TSR size-reduction and drying energy"
+          name: "Actual energy carriers and utilities"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-appropriate unit"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Metered energy for size reduction, washing, drying, pressing and baling"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg accepted TSR/block rubber"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "MJ/kg dry rubber"
+                basis: "total purchased energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tsr_packaging
+          role: "Primary packaging for TSR/block rubber"
+          name: "Actual packaging products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass / kg or item count"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Measured packaging supplied with accepted blocks; exclude reusable packaging returned outside the product system after recording its reuse rule"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg accepted TSR/block rubber"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg packaging/kg dry rubber"
+                basis: "packaging crossing the hand-off gate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: tsr_block_reference
+          role: "Accepted TSR/block rubber"
+          name: "Natural Rubber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f9f06554-cdcb-422f-b7be-598fdd6cda53"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record this item when the foreground process actually uses, produces or transfers it, retaining the declared route, state, batch and hand-off."
+          amount:
+            expression: "Exactly 1 kg accepted TSR/block/granular rubber of declared grade and moisture basis"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - reference-normalization-definition
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "declared TSR/block form and grade"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-definition
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_perennial_period
+    applies_to: "plantation establishment and replacement"
+    rule: "Attribute establishment, immature years, replacements and terminal operations over the declared productive period and accepted dry-rubber output; disclose lifetime and yield basis and prevent double annualization."
+    source_ids: []
+  - rule_id: allocation_route_separation
+    applies_to: "alternative terminal routes"
+    rule: "Keep latex concentrate, sheet/RSS, crepe and TSR/block inventories separate. Do not allocate or average across forms merely because they share CPC 01950."
+    source_ids:
+      - rubber-board-natural-rubber-forms
+  - rule_id: allocation_internal_rubber
+    applies_to: "field latex, coagulum, off-grade and rework"
+    rule: "Carry prior burdens with all internal rubber transfers. Reworked material returns to the consuming batch once; downgraded sold rubber is a separately quantified product and never accepted reference output."
+    source_ids: []
+  - rule_id: allocation_serum_residues
+    applies_to: "serum, wastewater and separated non-rubber material"
+    rule: "Treat as residue or waste unless evidence establishes an intended co-product with a distinct function and measurable quantity; document any allocation driver before use."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_plantation_period
+      process_id: "plantation_management"
+      flow_role: "perennial inputs and accepted latex output"
+      record_type: "farm log, invoice, asset and yield record"
+      raw_fields: "stand area; clone/species; phase; establishment inputs; nutrient products; supplied water; energy; replacements; dry-rubber output"
+      collection_method: "reconcile farm records and calibrated meters/scales"
+      unit: "native units and kg dry rubber"
+      frequency: "monthly and annual"
+      temporal_coverage: "complete declared productive period"
+      site_scope: "each plantation and route"
+      aggregation_rule: "attribute period burdens once to dry-rubber output"
+      quality_evidence: "record completeness, calibration and period reconciliation"
+    - protocol_id: cp_latex_batches
+      process_id: "latex_tapping_collection"
+      flow_role: "tapping, preservation, collection and latex transfer"
+      record_type: "tapping-round and batch log"
+      raw_fields: "date; plot; wet latex mass; dry-rubber test; preservative product/concentration; coagulum; loss; distance and mode"
+      collection_method: "batch weighing, sampling and route log"
+      unit: "kg, fraction, km, tkm"
+      frequency: "every tapping round/batch"
+      temporal_coverage: "all rounds supplying reported output"
+      site_scope: "plot and collection route"
+      aggregation_rule: "aggregate dry-rubber mass without losing batch identity"
+      quality_evidence: "scale/test calibration and signed transfer record"
+    - protocol_id: cp_processing_batch
+      process_id: "conditional_terminal_route"
+      flow_role: "feedstock, chemicals, water, energy, outputs and rejects"
+      record_type: "batch sheet, meter, invoice and laboratory certificate"
+      raw_fields: "route; feedstock state; wet/dry mass; DRC/moisture; chemicals/concentrations; water; energy; grade; accepted/rework/reject mass; packaging"
+      collection_method: "direct measurement and batch mass balance"
+      unit: "native units and kg"
+      frequency: "every batch/campaign"
+      temporal_coverage: "all batches producing reference output"
+      site_scope: "each processing facility and technology"
+      aggregation_rule: "aggregate only identical terminal form, grade and basis"
+      quality_evidence: "meter calibration, laboratory method and closed batch balance"
+  calculation_rules:
+    - id: calc_dry_rubber
+      applies_to: "latex and wet coagulum"
+      rule: "dry-rubber mass = as-received mass × dry-rubber mass fraction"
+      inputs:
+        - "measured mass"
+        - "representative DRC test"
+      output: "kg dry rubber"
+      source_ids:
+        - reference-normalization-definition
+    - id: calc_reference_normalization
+      applies_to: "all inventory rows"
+      rule: "normalized amount = attributed amount ÷ accepted reference-product mass on the same basis"
+      inputs:
+        - "attributed amount"
+        - "accepted mass"
+        - "basis conversion"
+      output: "amount per kg reference flow"
+      source_ids:
+        - reference-normalization-definition
+    - id: calc_transport
+      applies_to: "collection transport"
+      rule: "tkm = transported wet mass in tonnes × actual distance in km; normalize by accepted reference mass"
+      inputs:
+        - "wet mass"
+        - distance
+        - mode
+        - "accepted output"
+      output: "tkm/kg reference flow"
+      source_ids: []
+    - id: calc_period_burden
+      applies_to: "plantation multi-period inputs"
+      rule: "sum phase-specific burden × attribution share ÷ accepted output over corresponding productive period"
+      inputs:
+        - "phase records"
+        - "service life"
+        - output
+        - "attribution driver"
+      output: "burden/kg dry rubber"
+      source_ids: []
+    - id: calc_batch_balance
+      applies_to: "each processing batch"
+      rule: "input dry rubber = accepted dry rubber + off-grade/rework dry rubber + measured dry-rubber loss"
+      inputs:
+        - "feed and output mass/DRC"
+      output: "reconciled batch balance"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference flow and every rubber transfer"
+      requirement: "Declare form, route, grade, basis, chemistry, gate and UUID compatibility; never substitute synthetic or compounded rubber."
+      evidence: "product certificate, batch record and identity audit"
+    - id: dq_route_completeness
+      applies_to: "process map"
+      requirement: "Exactly one terminal route is active; inactive routes have no exchanges or burden."
+      evidence: "route declaration and process graph"
+    - id: dq_mass_basis
+      applies_to: "liquid and wet materials"
+      requirement: "Retain as-received mass, DRC/moisture, test method and sampling time; conversions are reproducible."
+      evidence: "laboratory certificate and calculation record"
+    - id: dq_temporal
+      applies_to: "plantation and processing"
+      requirement: "Cover establishment attribution, all tapping rounds and every processing batch contributing to output."
+      evidence: "period and batch completeness report"
+    - id: dq_mass_balance
+      applies_to: "tapping and processing"
+      requirement: "Reconcile rubber mass by batch; investigate differences beyond the declared site tolerance."
+      evidence: "signed mass-balance record"
+    - id: dq_binding
+      applies_to: "all inventory cards"
+      requirement: "Parameterized cards resolve to verified concrete UUIDs at foreground generation; fixed UUIDs retain detail-read evidence and matching role/property."
+      evidence: "Flow Set expansion record or detail audit"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference product"
+    rule: "Require Natural Rubber UUID, Mass property/unit group and every required qualifier; reject synthetic, blended, compounded, vulcanized, reclaimed or finished-rubber products."
+    source_ids:
+      - fao-rubber-products-classification
+  - rule_id: validate_one_terminal_form
+    applies_to: "process map and reference link"
+    rule: "Exactly one of latex concentrate, sheet/RSS, crepe or TSR/block terminal nodes supplies the reference flow."
+    source_ids:
+      - rubber-board-natural-rubber-forms
+  - rule_id: validate_basis_conversion
+    applies_to: "wet and dry states"
+    rule: "Require measured DRC/moisture and explicit conversion before combining or comparing mass bases."
+    source_ids:
+      - reference-normalization-definition
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "plantation inputs"
+    rule: "At most one fertilizer/nutrient Product-input card is present in the process and it binds set-level flow-set.agricultural-nutrient-supply version 0.3.0 without group."
+    source_ids: []
+  - rule_id: validate_fixed_bindings
+    applies_to: "fixed cards"
+    rule: "Natural Rubber, Formic acid and Aqueous ammonia use only their detail-confirmed UUIDs and compatible Mass property; do not infer quantity evidence from identity verification."
+    source_ids: []
+  - rule_id: validate_rework_reject
+    applies_to: "off-grade or rejected rubber"
+    rule: "Declare rework, downgrade/recovery or discard destination; count retained rework once and exclude all nonaccepted rubber from reference output."
+    source_ids: []
+  - rule_id: validate_period_attribution
+    applies_to: "plantation burdens"
+    rule: "Require phase, productive life, accepted yield and attribution evidence; fail omitted or duplicated establishment burden."
+    source_ids: []
+  - rule_id: validate_batch_balance
+    applies_to: "each terminal route"
+    rule: "Reconcile feed dry rubber to accepted, rework/off-grade and loss; keep batches and routes traceable."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground production package for one declared natural-rubber primary form at primary-processing hand-off"
+  downstream_use: "secondary_dataset; background_dataset after independent review and geography, time, grade and technology matching"
+  allowed_use: "Upstream natural-rubber supply for LCA where terminal form, grade, mass basis and gate match"
+  excluded_use: "Generic mixture of forms; synthetic/blended/compounded/vulcanized/reclaimed rubber; finished rubber articles; downstream conversion without added processes"
+  required_metadata: "species/clone where known; plantation phase; tapping system; route; form; grade; DRC/moisture; chemistry; batch/campaign; geography; gate; reject/rework destination"
+  required_quality_disclosure: "route and period coverage; mass-basis conversion; provisional ranges; meter/test quality; mass-balance closure; Flow Set expansion; fixed-identity evidence"
+  update_trigger: "Change in product form, grade, mass basis, route topology, preservation/coagulation technology, gate, reference UUID, Flow Set version or classification scope"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-rubber-products-classification"
+    type: "official_guidance"
+    reference: "Food and Agriculture Organization of the United Nations, rubber-products classification material, https://www.fao.org/4/x2613e/x2613e2w.htm"
+    used_for: "Category boundary including natural latex, sheets/crepes and technically specified primary forms; exclusion of downstream rubber products"
+  - id: "rubber-board-natural-rubber-forms"
+    type: "official_guidance"
+    reference: "Rubber Board, natural-rubber grades and forms guidance, https://www.rubberboard.gov.in/rbfilereader?fileid=1013"
+    used_for: "Distinct latex concentrate, RSS, TSR and related market forms; route and grade declaration"
+  - id: "reference-normalization-definition"
+    type: "method_factor"
+    reference: "This PCR's 1 kg declared-form normalization, DRC conversion and rubber-mass balance"
+    used_for: "Reference amount, exact-output ranges and calculation formulas"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:2eb881b4cb5a23f780c9649ad919f9de91fbc2162f8d4a6aa17373eb07c07112"
+  generated_content_sha256: "sha256:49a9ee7db6ed5f8f8cdbf73bd232202dfc0045ce6b8f4405e5841db6599154ae"

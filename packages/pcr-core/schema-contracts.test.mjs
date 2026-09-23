@@ -109,6 +109,28 @@ test("material structured contract accepts a minimal valid F3 projection", () =>
   assert.equal(validateStructured(minimalStructuredProjection()).valid, true);
 });
 
+test("candidate reference UUID gaps remain reviewable while active PCRs require them", () => {
+  const projection = minimalStructuredProjection();
+  projection.reference_flow_definition.product_flow_ref.uuid = "";
+  projection.reference_flow_definition.flow_property_ref.uuid = "";
+  projection.reference_flow_definition.unit_group_ref.uuid = "";
+
+  const candidateIssues = materialProjectionCompletenessIssues(projection, {
+    expectedPcrId: "pcr.example",
+    lifecycleStatus: "candidate",
+  });
+  const activeIssues = materialProjectionCompletenessIssues(projection, {
+    expectedPcrId: "pcr.example",
+    lifecycleStatus: "active",
+  });
+  const referenceUuidIssues = (issues) => issues.filter((issue) =>
+    issue.code.startsWith("material_projection.reference_flow_definition.")
+    && issue.code.endsWith(".uuid"));
+
+  assert.deepEqual(referenceUuidIssues(candidateIssues), []);
+  assert.equal(referenceUuidIssues(activeIssues).length, 3);
+});
+
 test("material structured contract accepts a generated repository projection", () => {
   const structured = parseYaml(readFileSync(wheatSeedStructured, "utf8"));
   const result = validateStructured(structured);

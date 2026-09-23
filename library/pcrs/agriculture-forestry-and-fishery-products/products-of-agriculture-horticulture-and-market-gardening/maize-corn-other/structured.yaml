@@ -1,10 +1,1085 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01122"
-  title: "Maize (corn), other"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.maize-corn-other"
+  classification_refs: "CPC 3.0 01122, Maize (corn), other"
+  covered_products: "Non-seed maize grain from a declared crop route, at the farm gate or declared primary processing gate"
+  excluded_products: "maize seed; forage or silage maize; sweet or baby corn sold as a vegetable; milled, cooked, fermented, formulated, starch, ethanol, feed, or other downstream maize products"
+  representative_product: "Marketable non-seed maize grain, bulk, with moisture basis, grade, end-use route, and gate declared"
+  production_route: "Managed annual maize cultivation, harvest and collection, with optional primary conditioning before the declared gate"
+  market_state: "Food, feed, or industrial grain route declared as received at the gate; no downstream food or feed processing"
+functional_unit:
+  what: "Non-seed maize grain at the declared farm gate or primary processing gate"
+  how_much: "1 kg net accepted grain"
+  how_well: "Variety or hybrid, end-use route, moisture basis, grade, foreign material or dockage rule, production system, geography, irrigation status, and gate declared"
+  how_long_or_cycle: "One declared crop season and harvest year"
+  reference_flow_link: "Reference amount and product flow below"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The default foreground boundary includes source planting material as an identified input, field preparation and sowing, fertilization and soil amendments, irrigation where applicable, crop protection, field machinery and energy, managed-soil emissions, harvest, shelling or collection when part of the declared route, and field-to-gate handling. Optional primary conditioning is included only when the declared gate is after that operation. Upstream production of seed, fertilizers, crop-protection products, water supply, fuels, electricity, machinery services, and treatment services uses representative background datasets. Food, feed, industrial conversion, and downstream distribution are outside the default boundary."
+      source_ids: []
+    - rule_id: boundary_field_to_gate
+      applies_to: "foreground system"
+      rule: "Include field production, harvest, collection, and gate-delivery handling required to provide the declared non-seed maize grain; treat purchased inputs as upstream datasets unless they are explicitly inside the foreground package."
+      source_ids:
+        - fao-maize-harvest-postharvest-2023
+        - ipcc-2019-cropland
+    - rule_id: boundary_gate_definition
+      applies_to: "reference product"
+      rule: "Use farm gate by default. A primary processing gate is allowed only when shelling, drying, cleaning, grading, and their losses are explicitly recorded and no later food, feed, starch, ethanol, or other manufacturing is included."
+      source_ids:
+        - fao-maize-drying-handling
+        - mass-balance-identity
+    - rule_id: boundary_primary_conditioning
+      applies_to: "optional conditioning"
+      rule: "Treat first conditioning as a separate conditional node with its own energy, water, rejects, moisture change, and hand-off; do not infer a conditioning route from the CPC title."
+      source_ids:
+        - fao-maize-drying-handling
+    - rule_id: boundary_input_completeness
+      applies_to: "crop production"
+      rule: "Provide a value, justified zero, or documented exclusion for planting material, nutrient inputs, crop protection, irrigation, field energy, land, managed-soil emissions, and residue fate."
+      source_ids:
+        - ipcc-2019-cropland
+        - ipcc-2019-managed-soils-n2o
+    - rule_id: boundary_output_separation
+      applies_to: "all outputs"
+      rule: "Separate accepted grain, non-marketable grain, intentionally recovered co-products, field residues, conditioning rejects, moisture removed, and unexplained loss by measured mass and fate."
+      source_ids:
+        - mass-balance-identity
+        - fao-maize-drying-handling
+boundary_abstraction:
+  declared_starting_condition: "source planting-seed lot for an annual non-seed maize crop"
+  starting_condition_role: "crop production input and identity condition"
+  product_classification_scope: "Non-seed maize grain corresponding to CPC 3.0 01122; maize seed 01121 and forage or silage maize 01911 are excluded"
+  recursive_input_rule: "Planting seed is recorded as a separate declared input and is not counted as reference grain. Any same-category maize grain entering the foreground route is separately identified by origin and purpose and is not merged with current-crop output."
+  upstream_dataset_requirement: "Seed, fertilizers, amendments, crop-protection products, irrigation-water supply, fuel, electricity, machinery services, packaging when applicable, and waste-treatment services require representative upstream datasets or a documented exclusion."
+  disclosure: "variety or hybrid, end-use route, field and geography, crop season, production system, irrigation, planting material, gate, grain state, moisture basis, grade, foreign material rule, accepted output, residue and reject fate, and allocation decision"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Corn"
+    uuid: "f6cb6f61-5681-4f57-a44a-785ff0336a9b"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "end-use route"
+    - "variety or hybrid"
+    - "grain state"
+    - "moisture basis"
+    - "grade and foreign-material rule"
+    - geography
+    - "crop season and harvest year"
+    - "irrigated or rain-fed status"
+    - "production system"
+    - "declared gate"
+    - "packaging or bulk state"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Express the reference flow as net accepted non-seed maize grain at the declared gate and exclude container tare."
+  - id: moisture_basis
+    applies_to: "grain output and moisture removal"
+    required_property_ref:
+      name: "Mass and moisture content"
+      uuid: ""
+    required_unit: "kg and declared mass fraction"
+    rule: "Record as-received mass and moisture basis. Any conversion to another moisture basis must use measured or declared moisture and an explicit calculation; no universal moisture factor is supplied here."
+  - id: yield_basis
+    applies_to: "harvest and normalized inputs"
+    required_property_ref:
+      name: "Mass and area"
+      uuid: ""
+    required_unit: "kg and ha"
+    rule: "Record harvested grain, accepted grain, non-marketable grain, residues, losses, and cultivated area for the same crop season before normalization."
+  - id: fertilizer_n_basis
+    applies_to: "fertilizer and soil emissions"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg product and kg N"
+    rule: "Record formulated product mass and nutrient content separately; nitrogen emission calculations use the declared kg N input."
+  - id: water_basis
+    applies_to: "irrigation and withdrawal"
+    required_property_ref:
+      name: "Volume or Mass"
+      uuid: ""
+    required_unit: "m3 or kg"
+    rule: "Declare water source and distinguish withdrawal, delivered irrigation, consumption, and any separately reported water indicator."
+  - id: energy_inventory
+    applies_to: "fuel, electricity, and drying"
+    required_property_ref:
+      name: "Mass, Volume, or Energy"
+      uuid: ""
+    required_unit: "L, kg, MJ, or kWh"
+    rule: "Preserve energy carrier, measurement unit, conversion basis, operation, and whether the value belongs to field or conditioning work."
+  - id: land_basis
+    applies_to: "land occupation and crop production"
+    required_property_ref:
+      name: "Area-time"
+      uuid: ""
+    required_unit: "ha·season or declared area-time unit"
+    rule: "Record cultivated area and the declared crop-season occupation basis; do not use land occupation as a proxy for land transformation."
+process_map:
+  - id: field_maize_production
+    name: "Field Maize Production"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "crop-season production normalized to accepted grain output"
+  - id: maize_harvest_and_collection
+    name: "Maize Harvest and Collection"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "harvested and collected grain before the declared gate"
+  - id: primary_maize_conditioning
+    name: "Primary Maize Conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "include when shelling, drying, cleaning, grading, or equivalent first conditioning occurs before the declared gate"
+    role: "foreground"
+    quantitative_reference: "accepted grain after the declared conditioning hand-off"
+process_inventory:
+  - id: field_maize_production
+    label: "Field Maize Production"
+    inputs:
+      product:
+        - row_id: source_planting_seed_lot
+          role: "Source planting-seed lot"
+          name: "Corn Seeds"
+          flow_type: "product"
+          flow_ref:
+            uuid: "23f01fdc-33b5-4cc9-bd0f-b0cb39d7daa6"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The planting-seed lot is a declared crop input, not the reference product. Record its identity, treatment status, mass basis, and source without treating it as maize seed output for CPC 01121."
+          amount:
+            expression: "measured mass of the planting-seed lot used for the declared crop area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_seed_lot_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "200"
+                unit: "kg planting seed/1,000 kg accepted grain"
+                basis: "broad first-pass screening interval; not a default crop rate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_maize_production_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - ipcc-2019-cropland
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "500"
+                unit: "kg formulated input/1,000 kg accepted grain"
+                basis: "broad first-pass screening interval; product and nutrient records remain mandatory"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_supplied
+          role: "Irrigation water supplied"
+          name: "irrigation water supplied to field"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume or Mass / m3 or kg"
+          description: "Record metered or otherwise evidenced irrigation delivered to the crop. Verified rain-fed routes may record zero with supporting evidence."
+          amount:
+            expression: "source-specific metered or evidenced delivered irrigation; zero only for verified rain-fed production"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "m3/1,000 kg accepted grain"
+                basis: "broad first-pass screening interval; not a geographic or crop default"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop-protection inputs"
+          name: "named crop-protection product or active substance"
+          flow_type: "product"
+          property_unit: "Mass / kg product or active substance"
+          description: "Record named formulated products and active substances used for weeds, pests, or diseases, with application date, field, and product identity."
+          amount:
+            expression: "measured application by named product and active substance"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "20"
+                unit: "kg product/1,000 kg accepted grain"
+                basis: "broad first-pass screening interval; actual applications are required"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy_and_machinery_services
+          role: "Field energy and machinery services"
+          name: "field fuel, electricity, and machinery service inputs"
+          flow_type: "product"
+          property_unit: "Mass, Volume, or Energy / L, kg, MJ, or kWh"
+          description: "Record fuel, electricity, contracted machinery, and other energy carriers used by field operations and irrigation pumping."
+          amount:
+            expression: "measured or supplier-recorded energy by field operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "L diesel-equivalent/1,000 kg accepted grain"
+                basis: "broad first-pass screening interval; not a fuel factor"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: cultivated_land_occupation
+          role: "Cultivated land occupation"
+          name: "applicable cultivated land occupation elementary flow"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha·season"
+          description: "Record cultivated area and crop-season occupation as an elementary land-use flow when required by the study scope."
+          amount:
+            expression: "cultivated area multiplied by the declared crop-season occupation basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "ha·season/1,000 kg accepted grain"
+                basis: "non-negative area-time normalized to accepted output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: managed_soil_water_withdrawal
+          role: "Managed-soil water withdrawal"
+          name: "water withdrawn from declared source"
+          flow_type: "elementary"
+          property_unit: "Volume or Mass / m3 or kg"
+          description: "Record elementary water withdrawal by source where irrigation is included, without double counting delivered irrigation as an environmental withdrawal."
+          amount:
+            expression: "calculate source-specific withdrawal from irrigation records and declared system losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - ipcc-2019-cropland
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/1,000 kg accepted grain"
+                basis: "non-negative source-specific withdrawal screen; not a water-footprint default"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: harvested_maize_grain
+          role: "Harvested maize grain"
+          name: "Corn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f6cb6f61-5681-4f57-a44a-785ff0336a9b"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Harvested maize grain is the collected crop output entering the gate or the optional conditioning process. Its as-received mass, moisture, foreign material, and grade state are measured."
+          amount:
+            expression: "measured harvested grain mass before any included primary conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg harvested grain"
+                basis: "quantitative process reference output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: intentionally_recovered_corn_straw
+          role: "Intentionally recovered corn straw"
+          name: "Corn straw"
+          flow_type: "product"
+          flow_ref:
+            uuid: "10041d22-3cea-4f73-b597-3c75f8bf3883"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200c9a66 / kg as received and dry matter when required"
+          description: "Record the non-cob straw or stover fraction as a product output only when it is intentionally collected or transferred with a declared destination. The fixed flow below applies only when the recovered material is the explicitly identified corn-straw fraction; corn cobs and other biomass are recorded separately."
+          amount:
+            expression: "measured corn-straw mass by destination; zero when no intentional recovery occurs"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg corn straw/kg accepted grain"
+                basis: "broad first-pass fraction screen; actual destination evidence is required"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: intentionally_recovered_corn_cobs
+          role: "Intentionally recovered corn cobs"
+          name: "Corn cobs / maize cobs"
+          flow_type: "product"
+          property_unit: "Mass / kg as received and dry matter when required"
+          description: "Record corn cobs as a separate product output when they are intentionally collected or transferred with a declared destination. Do not use the corn-straw identity for cobs; declare the concrete cob identity and gate before constructing the final exchange."
+          amount:
+            expression: "measured corn-cob mass by destination; zero when no intentional recovery occurs"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1"
+                unit: "kg corn cobs/kg accepted grain"
+                basis: "broad first-pass fraction screen; actual destination evidence is required"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: direct_managed_soil_nitrogen_emissions
+          role: "Direct managed-soil nitrogen emissions"
+          name: "one measured or method-calculated nitrogen species to one declared receiving medium; create separate foreground exchanges for N2O, NH3, nitrate, and any other supported species"
+          flow_type: "elementary"
+          property_unit: "Mass / kg emitted substance; record kg N only as the calculation basis and convert to species mass"
+          description: "Calculate direct nitrogen emissions from declared nutrient inputs and the selected IPCC method tier. Keep the nitrogen input, emission species, factor source, and conversion visible."
+          amount:
+            expression: "calculate from collected nutrient inputs, declared soil and climate context, and the selected method tier"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_nutrient_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg emitted-N/kg applied N"
+                basis: "broad reconciliation screen; selected factors and species remain method-specific"
+                basis_kind: "n_input"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2019-managed-soils-n2o
+                  - mass-balance-identity
+        - row_id: fossil_carbon_dioxide_from_field_fuel
+          role: "Fossil carbon dioxide from field fuel"
+          name: "fossil carbon dioxide to air from field fuel"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate direct fossil carbon dioxide from recorded field fuel using a declared fuel identity and factor source."
+          amount:
+            expression: "recorded fuel by operation multiplied by the declared combustion factor"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg CO2/kg fuel-carbon inventory"
+                basis: "declared-fuel calculation reconciliation; not an emission factor"
+                basis_kind: "fuel_inventory"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+  - id: maize_harvest_and_collection
+    label: "Maize Harvest and Collection"
+    inputs:
+      product:
+        - row_id: harvested_grain_received
+          role: "Harvested grain received"
+          name: "Corn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f6cb6f61-5681-4f57-a44a-785ff0336a9b"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The harvest node receives measured grain from field production, including the declared harvested state and any attached foreign material or moisture information."
+          amount:
+            expression: "measured mass received by the harvest or collection operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg received/kg harvested grain"
+                basis: "receipt mass must reconcile to the field harvest record"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: grain_delivered_to_gate_or_conditioning
+          role: "Grain delivered to gate or conditioning"
+          name: "Corn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f6cb6f61-5681-4f57-a44a-785ff0336a9b"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This is the collected grain hand-off. It is the reference output when no primary conditioning is included and is the input to the conditional conditioning node otherwise."
+          amount:
+            expression: "measured net grain transferred to the declared gate or conditioning operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_land_and_output_records
+              source_ids:
+                - fao-maize-harvest-postharvest-2023
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg hand-off/kg harvested grain"
+                basis: "hand-off mass reconciled to received harvest and fates"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        []
+  - id: primary_maize_conditioning
+    label: "Primary Maize Conditioning"
+    inputs:
+      product:
+        - row_id: grain_entering_primary_conditioning
+          role: "Grain entering primary conditioning"
+          name: "Corn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f6cb6f61-5681-4f57-a44a-785ff0336a9b"
+          binding: "fixed"
+          property_unit: "Mass / kg with declared moisture basis"
+          description: "This conditional node receives grain when the declared gate is after first conditioning. The data package states whether shelling, drying, cleaning, or grading is included."
+          amount:
+            expression: "measured received grain mass and moisture at the conditioning boundary"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_input_records
+              source_ids:
+                - fao-maize-drying-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg received grain/kg accepted conditioned grain"
+                basis: "input and output must be reconciled with moisture and rejects"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: conditioning_energy
+          role: "Conditioning energy"
+          name: "drying fuel, electricity, and conditioning energy inputs"
+          flow_type: "product"
+          property_unit: "Mass, Volume, or Energy / kg, L, MJ, or kWh"
+          description: "Record drying fuel, electricity, and other energy carriers only when the operation is inside the declared gate."
+          amount:
+            expression: "measured conditioning input by batch or reporting record"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_input_records
+              source_ids:
+                - fao-maize-drying-handling
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "declared input unit/1,000 kg accepted conditioned grain"
+                basis: "broad first-pass screening interval; no default energy factor is supplied"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Conditioning water"
+          name: "cleaning and conditioning water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume or Mass / m3 or kg"
+          description: "Record cleaning and conditioning water only when the operation is inside the declared gate, keeping supplied water distinct from source withdrawal."
+          amount:
+            expression: "measured conditioning water by batch or reporting record"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned maize grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_input_records
+              source_ids:
+                - fao-maize-drying-handling
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "declared water unit/1,000 kg accepted conditioned grain"
+                basis: "broad first-pass screening interval; no default water factor is supplied"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_maize_grain_at_declared_gate
+          role: "Accepted maize grain at declared gate"
+          name: "Corn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f6cb6f61-5681-4f57-a44a-785ff0336a9b"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Accepted maize grain is the reference output after the optional conditioning node. It is reported with moisture, grade, foreign-material rule, and gate metadata."
+          amount:
+            expression: "measured net accepted grain after included conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "quantitative reference"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_output_records
+              source_ids:
+                - fao-maize-drying-handling
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference product"
+                basis: "quantitative reference output after declared gate conditioning"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        - row_id: conditioning_dust_and_direct_fuel_emissions
+          role: "Conditioning dust and direct fuel emissions"
+          name: "conditioning dust and fossil combustion emissions by receiving compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record dust or direct combustion emissions only when supported by the conditioning operation records and selected receiving-compartment identities."
+          amount:
+            expression: "measured, supplier-recorded, or calculated from included conditioning records and declared factors"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned maize grain"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_input_records
+              source_ids:
+                - fao-maize-drying-handling
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg emission/kg relevant input"
+                basis: "reconciliation screen; no universal emission factor is supplied"
+                basis_kind: "fuel_inventory"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_avoidance
+    applies_to: "field and conditioning processes"
+    rule: "First avoid allocation by subdividing operations or collecting separate records for grain, intentionally recovered residue, rejects, and fate-specific treatment."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_grain_and_recovered_residue
+    applies_to: "grain and intentional residue co-products"
+    rule: "When subdivision is not possible, use a declared allocation method supported by representative product properties or values, document the choice, and provide a sensitivity to a materially different defensible method."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residue_fate
+    applies_to: "field residue and rejects"
+    rule: "Keep residue collection, incorporation, grazing, burning, disposal, and transfer distinct. Do not credit a displaced product unless the destination, function, market, and substitution evidence are declared."
+    source_ids:
+      - ipcc-2019-cropland
+      - iso-14044-2006
+  - rule_id: allocation_moisture_conditioning
+    applies_to: "primary conditioning"
+    rule: "Allocate conditioning burdens using the measured mass and moisture transformation of each output; do not allocate removed moisture as accepted grain."
+    source_ids:
+      - fao-maize-drying-handling
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_source_seed_lot_records
+      process_id: "field_maize_production"
+      flow_role: "source planting-seed lot"
+      record_type: "seed and input record"
+      raw_fields: "variety or hybrid; lot; treatment; supplier; mass; planting date; field; source status"
+      collection_method: "invoice, seed tag, field log"
+      unit: "kg, date, field"
+      frequency: "per planting event"
+      temporal_coverage: "complete crop season"
+      site_scope: "field or production unit"
+      aggregation_rule: "sum by field and normalize to accepted grain"
+      quality_evidence: "lot label, invoice, field log"
+    - protocol_id: cp_nutrient_input_records
+      process_id: "field_maize_production"
+      flow_role: "fertilizer and soil amendments"
+      record_type: "purchase and application record"
+      raw_fields: "product; formulation; nutrient content; mass; date; field; application method"
+      collection_method: "invoice, label, application log"
+      unit: "kg product, kg nutrient, date"
+      frequency: "per application"
+      temporal_coverage: "complete crop season"
+      site_scope: "field and production unit"
+      aggregation_rule: "sum by input and field; retain nutrient mass"
+      quality_evidence: "invoice, label, application record"
+    - protocol_id: cp_irrigation_records
+      process_id: "field_maize_production"
+      flow_role: "irrigation and withdrawal"
+      record_type: "meter or source record"
+      raw_fields: "source; meter; readings; volume; date; field; pumping energy"
+      collection_method: "calibrated meter, pump log, supplier record"
+      unit: "m3, kg, kWh"
+      frequency: "event or month"
+      temporal_coverage: "irrigation portion of crop season"
+      site_scope: "field and source"
+      aggregation_rule: "sum by source and normalize to accepted grain"
+      quality_evidence: "calibration, readings, source record"
+    - protocol_id: cp_crop_protection_records
+      process_id: "field_maize_production"
+      flow_role: "crop protection"
+      record_type: "application record"
+      raw_fields: "product; active substance; dose; area; date; field; target"
+      collection_method: "label and application log"
+      unit: "kg product, kg active substance, ha"
+      frequency: "per application"
+      temporal_coverage: "complete crop season"
+      site_scope: "field"
+      aggregation_rule: "sum by product and active substance"
+      quality_evidence: "label, applicator log"
+    - protocol_id: cp_field_energy_records
+      process_id: "field_maize_production"
+      flow_role: "field energy and machinery"
+      record_type: "fuel, electricity, or service record"
+      raw_fields: "operation; carrier; quantity; machine or supplier; date; field"
+      collection_method: "fuel log, meter, invoice, contractor record"
+      unit: "L, kg, MJ, kWh, service unit"
+      frequency: "operation or billing interval"
+      temporal_coverage: "complete crop season"
+      site_scope: "field or production unit"
+      aggregation_rule: "attribute to field operations without double counting"
+      quality_evidence: "meter, invoice, log"
+    - protocol_id: cp_land_and_output_records
+      process_id: "field_maize_production"
+      flow_role: "land, harvest, grain, residue, and loss"
+      record_type: "field and harvest record"
+      raw_fields: "area; dates; harvested grain; accepted grain; moisture; grade; residues; rejects; losses; fate"
+      collection_method: "calibrated scale, field map, dispatch and fate records"
+      unit: "ha, kg, moisture fraction, date"
+      frequency: "harvest and reconciliation"
+      temporal_coverage: "complete crop season"
+      site_scope: "field and gate"
+      aggregation_rule: "reconcile all outputs before normalization"
+      quality_evidence: "scale calibration, field map, tickets, fate records"
+    - protocol_id: cp_conditioning_input_records
+      process_id: "primary_maize_conditioning"
+      flow_role: "conditioning energy and water"
+      record_type: "batch and utility record"
+      raw_fields: "batch; received mass; moisture; operation; carrier; quantity; water; date"
+      collection_method: "batch sheet, meter, invoice"
+      unit: "kg, moisture fraction, L, m3, MJ, kWh"
+      frequency: "batch or utility interval"
+      temporal_coverage: "declared conditioning coverage"
+      site_scope: "conditioning facility"
+      aggregation_rule: "sum by batch and normalize to accepted grain"
+      quality_evidence: "batch sheet, meter, invoice"
+    - protocol_id: cp_conditioning_output_records
+      process_id: "primary_maize_conditioning"
+      flow_role: "accepted grain and rejects"
+      record_type: "batch output and quality record"
+      raw_fields: "input mass; output mass; moisture; grade; dockage; screening; removed moisture; fate; gate"
+      collection_method: "calibrated scale, moisture test, quality record"
+      unit: "kg, moisture fraction, date"
+      frequency: "batch"
+      temporal_coverage: "declared conditioning coverage"
+      site_scope: "conditioning facility and gate"
+      aggregation_rule: "reconcile input, accepted output, rejects, and moisture"
+      quality_evidence: "calibration, moisture test, dispatch and fate records"
+  calculation_rules:
+    - id: normalize_to_accepted_grain
+      applies_to: "all foreground rows"
+      rule: "divide the measured or calculated row amount by net accepted grain at the same declared gate and basis"
+      inputs:
+        - "output and input records"
+      output: "amount per 1 kg reference product"
+      source_ids:
+        - mass-balance-identity
+    - id: convert_moisture_basis
+      applies_to: "grain and conditioning rows"
+      rule: "convert only from measured as-received mass and declared moisture using an explicit mass-and-water equation; retain both original and converted values"
+      inputs:
+        - cp_land_and_output_records
+        - cp_conditioning_output_records
+      output: "declared moisture-basis mass"
+      source_ids:
+        - mass-balance-identity
+        - fao-maize-drying-handling
+    - id: calculate_managed_soil_emissions
+      applies_to: "nitrogen emissions"
+      rule: "apply the selected IPCC method tier to collected nutrient inputs and declared soil, climate, and management context; disclose factors and species conversions"
+      inputs:
+        - cp_nutrient_input_records
+        - "declared method factors"
+      output: "species-specific emissions"
+      source_ids:
+        - ipcc-2019-managed-soils-n2o
+    - id: calculate_land_occupation
+      applies_to: "land occupation"
+      rule: "cultivated area multiplied by the declared crop-season occupation basis and normalized to accepted grain"
+      inputs:
+        - cp_land_and_output_records
+      output: "area-time per reference product"
+      source_ids:
+        - ipcc-2019-cropland
+        - mass-balance-identity
+    - id: reconcile_field_outputs
+      applies_to: "field production"
+      rule: "accepted grain plus recovered residue, rejects, field residue, and unexplained loss must reconcile to the harvested record within a declared tolerance"
+      inputs:
+        - cp_land_and_output_records
+      output: "output mass balance and unexplained fraction"
+      source_ids:
+        - mass-balance-identity
+    - id: reconcile_conditioning_outputs
+      applies_to: "primary conditioning"
+      rule: "received grain mass and water content must reconcile to accepted grain, rejects, removed moisture, and documented loss"
+      inputs:
+        - cp_conditioning_input_records
+        - cp_conditioning_output_records
+      output: "conditioning mass-and-moisture balance"
+      source_ids:
+        - mass-balance-identity
+        - fao-maize-drying-handling
+    - id: apply_co_product_allocation
+      applies_to: "grain and intentionally recovered residue"
+      rule: "apply the declared subdivision, mass, economic, or other defensible method only after output identities and destinations are documented; run a sensitivity"
+      inputs:
+        - "output records"
+        - "allocation decision"
+      output: "allocated burdens by output"
+      source_ids:
+        - iso-14044-2006
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product and field"
+      requirement: "Declare variety or hybrid, end-use route, geography, crop season, production system, irrigation, gate, grain state, moisture basis, grade, foreign-material rule, and packaging or bulk state."
+      evidence: "dataset metadata, field records, quality and gate records"
+    - id: dq_temporal_coverage
+      applies_to: "crop production"
+      requirement: "Cover the complete declared crop season and harvest year; if an aggregated dataset is used, disclose the contributing seasons and weighting."
+      evidence: "dated field, input, harvest, and dispatch records"
+    - id: dq_input_completeness
+      applies_to: "crop and conditioning inputs"
+      requirement: "Quantify or justify zero or exclusion for seed, nutrient inputs, crop protection, irrigation, field energy, conditioning energy and water, land, and treatment."
+      evidence: "ledgers, labels, meters, logs, invoices, process records"
+    - id: dq_moisture_and_grade
+      applies_to: "grain output"
+      requirement: "Retain sampling method, moisture result, grade, dockage or foreign material, rejected mass, and the conversion basis used for normalization."
+      evidence: "calibrated scale, moisture test, quality record"
+    - id: dq_mass_balance
+      applies_to: "all outputs"
+      requirement: "Reconcile field and conditioning outputs, including accepted grain, residues, rejects, removed moisture, and unexplained loss; document tolerance and calibration."
+      evidence: "scale records, batch sheets, calculation workbook"
+    - id: dq_method_identity
+      applies_to: "UUID-bearing rows and factors"
+      requirement: "Verify each Tiangong flow, property, and unit-group identity and keep external factors separate from identity evidence."
+      evidence: "reviewed identity record, source factor, method note"
+    - id: dq_allocation_and_fate
+      applies_to: "co-products and residues"
+      requirement: "Record the output destination, burden treatment, allocation method, substitution evidence, and sensitivity whenever multiple intended outputs are reported."
+      evidence: "dispatch, fate, allocation, and sensitivity records"
+validation_rules:
+  - rule_id: validation_reference_flow
+    applies_to: "reference product"
+    rule: "Confirm one 1 kg net accepted non-seed maize grain reference flow, all required qualifiers, and a reviewed Tiangong product, property, and unit-group identity before publication."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_scope
+    applies_to: "boundary"
+    rule: "Confirm maize seed, forage or silage routes, and downstream food, feed, starch, ethanol, milling, and distribution activities are excluded unless a separate declared dataset boundary is used."
+    source_ids:
+      - fao-maize-harvest-postharvest-2023
+      - fao-maize-drying-handling
+  - rule_id: validation_process_map
+    applies_to: "process inventory"
+    rule: "Confirm field production and harvest are present and that primary conditioning is included only when its condition, hand-off, inputs, outputs, and gate are explicit."
+    source_ids:
+      - fao-maize-drying-handling
+  - rule_id: validation_mass_balance
+    applies_to: "outputs"
+    rule: "Confirm harvested grain, accepted grain, residues, rejects, removed moisture, and losses reconcile within the declared tolerance, with every non-reference output assigned a fate."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_moisture
+    applies_to: "grain and conditioning"
+    rule: "Confirm as-received mass, moisture basis, grade, dockage, and any conversion equation are retained; do not apply an undocumented default moisture factor."
+    source_ids:
+      - fao-maize-drying-handling
+      - mass-balance-identity
+  - rule_id: validation_nitrogen
+    applies_to: "fertilizer and emissions"
+    rule: "Confirm product mass, nutrient mass, selected IPCC tier, factor source, species, unit, and conversion are declared and not supplied by a module."
+    source_ids:
+      - ipcc-2019-managed-soils-n2o
+  - rule_id: validation_water_and_energy
+    applies_to: "water and energy"
+    rule: "Confirm source, carrier, unit, operation, meter or record, and upstream versus foreground treatment are explicit and no supplied water or fuel is counted twice."
+    source_ids:
+      - ipcc-2019-cropland
+      - mass-balance-identity
+  - rule_id: validation_allocation
+    applies_to: "multiple outputs"
+    rule: "Confirm intentional residue co-products are distinguished from waste, the allocation decision is explicit, and an alternative defensible method is tested when allocation is material."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_identity_review
+    applies_to: "all bound flow rows"
+    rule: "Reject finalization when a flow binding is absent or does not match direction, flow type, property, unit group, geography, or gate."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_data_quality
+    applies_to: "data package"
+    rule: "Confirm every required category has a collected value, calculated value with inputs, justified zero, or documented exclusion, and disclose open review items."
+    source_ids:
+      - fao-maize-harvest-postharvest-2023
+      - ipcc-2019-cropland
+published_dataset_profile:
+  dataset_role: "unit_process"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Non-seed maize grain matching the declared variety or hybrid, end-use route, geography, production system, irrigation, crop season, moisture basis, grade, and farm or primary processing gate"
+  excluded_use: "maize seed; forage or silage maize; sweet or baby corn as a vegetable; food, feed, starch, ethanol, milling, formulation, retail, distribution, consumption, or unqualified storage datasets"
+  required_metadata: "reviewed reference-flow identity; variety or hybrid; end-use route; geography; field and season; seed input status; production system; irrigation; gate; grain state; moisture and grade; accepted output; residue and reject fate; allocation; source and protocol coverage"
+  required_quality_disclosure: "crop seasons; field and supplier coverage; primary-record coverage; mass-balance tolerance; scale and moisture calibration; nutrient and emission methods; water source; energy carriers; gate; exclusions; allocation and sensitivity; identity coverage and unmapped-flow disclosure"
+  update_trigger: "material change in gate, grain state, moisture convention, grade rule, production route, irrigation, nutrient or crop-protection practice, conditioning technology, output fate, allocation method, or representativeness"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-maize-harvest-postharvest-2023"
+    type: "official_guidance"
+    reference: "FAO, Maize harvesting and post-harvesting handling, <https://www.fao.org/family-farming/detail/en/c/1619514/>"
+    used_for: "field-to-harvest and first post-harvest process decomposition, handling and loss questions"
+  - id: "fao-maize-drying-handling"
+    type: "official_guidance"
+    reference: "FAO, Agricultural engineering in development: Grain and post-harvest systems, <https://www.fao.org/4/t0522e/T0522E03.htm>"
+    used_for: "primary drying, moisture, shelling, conditioning, and gate distinctions"
+  - id: "ipcc-2019-cropland"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 5 Cropland, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch05_Cropland.pdf>"
+    used_for: "cropland management, residue treatment, land and crop-management method context"
+  - id: "ipcc-2019-managed-soils-n2o"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 11, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf>"
+    used_for: "managed-soil nitrogen-emission calculation and factor selection"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy, data quality, and sensitivity expectations"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass applied as a PCR calculation identity for crop harvest, conditioning, reject, moisture, and reference-flow reconciliation."
+    used_for: "output reconciliation, normalization, and QA guardrails"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e851a125522fdd97a63f7cfce78c532139cb556475ab7c62014c00055d24c3a1"
+  generated_content_sha256: "sha256:36f1a7074c1088c1cc0cec69017f103127720a8313bc1f8d80d7686fd76401b3"

@@ -1,10 +1,1047 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01970"
-  title: "Unmanufactured tobacco"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.unmanufactured-tobacco"
+  classification_refs: "CPC 3.0: 01970 Unmanufactured tobacco"
+  covered_products: "fresh harvested tobacco leaf; air-, fire-, flue-, or sun-cured leaf remaining unmanufactured"
+  excluded_products: "manufactured tobacco and nicotine products, including cut, blended, reconstituted, extracted, smoking, oral, and heated products"
+  representative_product: "tobacco leaf in one declared green or cured market state"
+  production_route: "managed cultivation and harvest, followed conditionally by exactly one curing route and grading/packing"
+  market_state: "green leaf at field/farm gate or cured graded leaf at curing/farm hand-off; state, curing method, moisture, grade, variety, crop year, geography, and package form declared"
+functional_unit:
+  what: "unmanufactured tobacco leaf at the selected terminal gate"
+  how_much: "1,000 kg as-received tobacco leaf"
+  how_well: "declared green or cured state, curing method where applicable, moisture, grade, variety, origin, crop year, and acceptance specification"
+  how_long_or_cycle: "one crop cycle and, for cured leaf, its matched curing and grading batches"
+  reference_flow_link: "green_leaf_output for green leaf or graded_cured_leaf_output for cured leaf"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "all routes"
+      rule: "Include nursery or purchased transplant input, field preparation, transplanting, management, harvest, and direct field emissions through green-leaf hand-off."
+      source_ids:
+        - who-tobacco-environment-2017
+    - rule_id: boundary_curing_route
+      applies_to: "cured route"
+      rule: "Include exactly the declared air, fire, flue, or sun curing route, barn/structure service, energy, drying loss, combustion emissions, handling, and conditioning."
+      source_ids:
+        - who-tobacco-environment-2017
+    - rule_id: boundary_grading_packing
+      applies_to: "cured route"
+      rule: "Include pre-gate grading and packing; distinguish accepted grades, downgraded useful leaf, rework, rejects, and waste."
+      source_ids:
+        - who-tobacco-environment-2017
+    - rule_id: boundary_manufacturing_exclusion
+      applies_to: "all routes"
+      rule: "Stop before product manufacture, extraction, cutting, blending, reconstitution, distribution, retail, and use."
+      source_ids: []
+    - rule_id: boundary_direct_emissions
+      applies_to: "soil and curing combustion"
+      rule: "Include managed-soil and foreground combustion emissions from the same activity records used for nutrients and fuels."
+      source_ids:
+        - ipcc-2019-managed-soils
+        - emep-eea-2023-guidebook
+        - ipcc-2006-stationary-combustion
+boundary_abstraction:
+  declared_starting_condition: "prepared field or transplant bed at crop-cycle start, with planting material and purchased inputs crossing the foreground boundary"
+  starting_condition_role: "start of managed tobacco leaf production"
+  product_classification_scope: "fresh and cured unmanufactured tobacco leaf corresponding to CPC 01970"
+  recursive_input_rule: "tobacco seed/seedlings link to distinct propagation datasets and shall not recurse to this harvested-leaf PCR"
+  upstream_dataset_requirement: "compatible datasets for planting material, nutrients, crop protection, irrigation, fuels, electricity, curing energy, and packaging"
+  disclosure: "variety; nursery boundary; crop dates; geography; area; irrigation; yield; residue fate; terminal state/gate; curing method/fuel; barn; batches; moisture; grade; rejects; packaging; allocation"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed for green leaf only; cured-leaf identity unresolved"
+    uuid: "e903dd1d-1d82-41e7-9526-2ae250746688"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "terminal leaf state"
+    - "curing method or not applicable"
+    - "variety/market class"
+    - geography
+    - "crop year"
+    - "moisture basis"
+    - grade
+    - "package form"
+    - gate
+    - "included operations"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "terminal leaf"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report as-received mass and measured moisture; retain moisture basis for dry-matter comparisons."
+  - id: area_to_reference_conversion
+    applies_to: "field flows"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Normalize same-cycle field totals first to harvested green leaf, then use matched curing and grading balances for cured leaf."
+  - id: nutrient_content_basis
+    applies_to: "nutrient inputs"
+    required_property_ref:
+      name: "nutrient mass"
+      uuid: ""
+    required_unit: "kg N, kg P2O5, kg K2O"
+    rule: "Preserve product mass, formulation, assay, and elemental/oxide basis separately."
+  - id: curing_energy_basis
+    applies_to: "curing energy"
+    required_property_ref:
+      name: "energy or carrier mass"
+      uuid: ""
+    required_unit: "MJ, kWh, kg, m3"
+    rule: "Preserve carrier and measured amount; document every conversion to delivered energy."
+process_map:
+  - id: tobacco_field_production
+    name: "Tobacco field production and harvest"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "managed biological production and separate leaf harvest"
+    quantitative_reference: "hectare and harvested green-leaf mass for one crop cycle"
+  - id: tobacco_leaf_curing
+    name: "Tobacco leaf curing"
+    inclusion: "conditional"
+    inclusion_condition: "terminal product is cured leaf"
+    role: "stabilize leaf by one declared curing technology"
+    quantitative_reference: "incoming green leaf and accepted cured leaf per batch"
+  - id: cured_leaf_grading_packing
+    name: "Cured-leaf grading and packing"
+    inclusion: "conditional"
+    inclusion_condition: "cured leaf is graded, reworked, or packed before hand-off"
+    role: "grade and present cured leaf"
+    quantitative_reference: "incoming and accepted packed-leaf mass"
+process_inventory:
+  - id: tobacco_field_production
+    label: "Tobacco field production and harvest"
+    inputs:
+      product:
+        - row_id: tobacco_planting_material_input
+          role: "Tobacco seed or seedlings"
+          name: "Tobacco seed or seedlings"
+          flow_type: "product"
+          property_unit: "Mass or number of items / kg or item"
+          description: "The platform returned only a generic CPC 01990 seedling identity, so this tobacco-specific identity remains unresolved."
+          amount:
+            expression: "measured seed mass or counted transplanted seedlings"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare and converted with same-cycle yield"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "8,000"
+                upper: "40,000"
+                unit: "seedlings/ha"
+                basis: "one transplanted crop cycle; direct-seeded systems use actual seed basis"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tobacco_field_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments in this one consolidated card. Preserve each actual product, formulation, assay, event, and amount without double counting compounds."
+          amount:
+            expression: "collect each product once and calculate declared nutrients; foreground generation expands products to verified exchanges"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and converted to 1,000 kg terminal leaf"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg N/ha"
+                basis: "one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg P2O5/ha"
+                basis: "one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg K2O/ha"
+                basis: "one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tobacco_irrigation_water_input
+          role: "Irrigation water"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water applied to the tobacco field and distinguish irrigation from rainfall."
+          amount:
+            expression: "metered or calculated applied water; rainfed fields record zero with evidence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and converted to terminal leaf"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8,000"
+                unit: "m3/ha"
+                basis: "one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tobacco_field_energy_input
+          role: "Field machinery energy"
+          name: "Energy supply for mobile field machinery"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Carrier quantity or energy / kg, L, or MJ"
+          description: "Record energy consumed by mobile machinery used for field preparation, transplanting, crop care, and harvest."
+          amount:
+            expression: "measured fuel or contractor activity with carrier retained"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and converted to terminal leaf"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "L diesel-equivalent/ha"
+                basis: "one crop cycle; actual carrier remains explicit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tobacco_crop_protection_input
+          role: "Crop-protection formulations"
+          name: "Crop-protection formulation used in tobacco production"
+          flow_type: "product"
+          property_unit: "Mass of formulation / kg"
+          description: "Record actual products separately. Search returned generic or route-specific aggregates only, so no fixed UUID is assigned."
+          amount:
+            expression: "measured formulation by product/event, preserving active ingredient and concentration"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per hectare and converted to terminal leaf"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg formulation/ha"
+                basis: "one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: green_leaf_output
+          role: "Harvested green tobacco leaf"
+          name: "Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e903dd1d-1d82-41e7-9526-2ae250746688"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record accepted harvested green leaf as the terminal product or the measured intermediate transferred to curing."
+          amount:
+            expression: "measured accepted green-leaf mass at declared moisture, grade, and gate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare; scale to 1,000 kg only when green leaf is terminal"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "8,000"
+                unit: "kg/ha"
+                basis: "one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residue_waste_output
+          role: "Field residues and rejected leaves"
+          name: "Tobacco field residues and rejected green leaves"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record non-product stalks, roots, rejected leaves, and harvest losses by destination."
+          amount:
+            expression: "measured or reconciled mass by residue class and fate"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvested green leaf"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1,500"
+                unit: "kg/1,000 kg harvested green leaf"
+                basis: "all non-product biomass and rejected leaf by fate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: field_n2o_air_output
+          role: "Nitrous oxide to air"
+          name: "Nitrous oxide, emissions to air, unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg N2O"
+          description: "Record calculated managed-soil nitrous oxide in the confirmed unspecified-air compartment."
+          amount:
+            expression: "calculate from collected N inputs and residues with an applicable method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and converted to terminal leaf"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha"
+                basis: "one crop cycle; method calculation governs"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_ammonia_air_output
+          role: "Ammonia to air"
+          name: "Ammonia, emissions to air, unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg NH3"
+          description: "Record calculated fertilizer-related ammonia volatilization in the confirmed unspecified-air compartment."
+          amount:
+            expression: "calculate by nutrient product, method, timing, weather, and factor"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and converted to terminal leaf"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - emep-eea-2023-guidebook
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg NH3/ha"
+                basis: "one crop cycle; method calculation governs"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_nitrate_water_output
+          role: "Nitrate to water"
+          name: "Nitrate, emissions to water, unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa31-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg nitrate"
+          description: "Record calculated or monitored nitrate loss in the confirmed unspecified-water compartment."
+          amount:
+            expression: "calculate only with applicable leaching/runoff method or monitored balance"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per hectare and converted to terminal leaf"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1,000"
+                unit: "kg nitrate/ha"
+                basis: "one crop cycle; selected method governs"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: tobacco_leaf_curing
+    label: "Tobacco leaf curing"
+    inputs:
+      product:
+        - row_id: curing_green_leaf_input
+          role: "Green leaf entering curing"
+          name: "Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e903dd1d-1d82-41e7-9526-2ae250746688"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the measured harvested green-leaf batch transferred into the selected curing route."
+          amount:
+            expression: "measured green-leaf batch mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per batch and converted to 1,000 kg cured leaf"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_curing_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "2"
+                upper: "12"
+                unit: "kg green leaf/kg accepted cured leaf"
+                basis: "matched batch with moisture states declared"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: curing_energy_input
+          role: "Curing energy carriers and utilities"
+          name: "Energy supply for tobacco curing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier quantity or energy / kg, m3, kWh, or MJ"
+          description: "Record actual electricity, purchased heat, or fuel. Air/sun curing may be zero-energy; fire/flue curing retain actual carrier. This parameterized set-level card has no fixed UUID."
+          amount:
+            expression: "measured carrier/electricity by batch, expanded to verified exchanges in foreground generation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted cured leaf"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_curing_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "40,000"
+                unit: "MJ/1,000 kg accepted cured leaf"
+                basis: "zero may apply to passive routes; actual energy replaces screen"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cured_leaf_output
+          role: "Cured tobacco leaf"
+          name: "Cured unmanufactured tobacco leaf"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The fresh-leaf UUID shall not be reused."
+          amount:
+            expression: "measured cured-leaf mass at declared moisture and curing method"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per batch and converted to 1,000 kg accepted cured leaf"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_curing_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.08"
+                upper: "0.50"
+                unit: "kg cured leaf/kg incoming green leaf"
+                basis: "matched batch with moisture states declared"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: curing_reject_waste_output
+          role: "Curing rejects"
+          name: "Tobacco curing rejects and non-useful leaf"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record leaf rejected during curing and every non-useful destination separately from evaporated water."
+          amount:
+            expression: "measured rejects plus reconciled non-water loss by fate; evaporated water is not waste"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted cured leaf"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_curing_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg incoming green leaf"
+                basis: "matched batch, excluding evaporated water"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: curing_fossil_co2_air_output
+          role: "Fossil carbon dioxide from curing"
+          name: "Carbon dioxide (fossil), emissions to air, unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          binding: "fixed"
+          property_unit: "Mass / kg CO2"
+          description: "Record fossil carbon dioxide from on-site curing combustion only."
+          amount:
+            expression: "fuel quantity × carrier-specific carbon and oxidation factors; zero without on-site fossil combustion"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted cured leaf"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_curing_records
+              source_ids:
+                - ipcc-2006-stationary-combustion
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5,000"
+                unit: "kg fossil CO2/1,000 kg accepted cured leaf"
+                basis: "zero without fossil combustion"
+                basis_kind: "fuel_inventory"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: cured_leaf_grading_packing
+    label: "Cured-leaf grading and packing"
+    inputs:
+      product:
+        - row_id: grading_cured_leaf_input
+          role: "Cured leaf entering grading"
+          name: "Cured unmanufactured tobacco leaf"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the measured cured-leaf batch transferred to grading and packing."
+          amount:
+            expression: "measured incoming batch mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per batch and converted to 1,000 kg packed leaf"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg incoming/kg accepted packed leaf"
+                basis: "matched grading batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cured_leaf_packaging_input
+          role: "Packaging materials"
+          name: "Packaging functions for cured tobacco leaf"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass or number of items / kg or item"
+          description: "Record actual wrap, carton, sack, liner, pallet, crate, strap, and reusable packaging separately. This parameterized set-level card has no fixed UUID."
+          amount:
+            expression: "measured packaging by material/reuse status, expanded to verified exchanges"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted packed leaf"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "150"
+                unit: "kg packaging/1,000 kg packed leaf"
+                basis: "account for reuse over declared cycles"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: graded_cured_leaf_output
+          role: "Graded cured tobacco leaf"
+          name: "Graded cured unmanufactured tobacco leaf"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted terminal cured-leaf grade or explicitly declared grade mix."
+          amount:
+            expression: "measured accepted mass by grade at declared moisture and package form"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1,000"
+                upper: "1,000"
+                unit: "kg"
+                basis: "terminal cured-leaf reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-normalization-rule
+        - row_id: downgraded_leaf_output
+          role: "Downgraded cured leaf"
+          name: "Downgraded cured tobacco leaf for declared use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record downgraded leaf only when it leaves the process for a named useful destination."
+          amount:
+            expression: "measured leaf transferred to named useful destination; exclude internal rework"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted packed leaf"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg incoming cured leaf"
+                basis: "useful destination documented"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_reject_waste_output
+          role: "Grading and packing rejects"
+          name: "Tobacco grading rejects and packaging waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record non-useful leaf and packaging waste by material class and final destination."
+          amount:
+            expression: "measured non-useful leaf and packaging waste by class and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted packed leaf"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg/1,000 kg incoming cured leaf"
+                basis: "matched grading batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_by_subdivision
+    applies_to: "all nodes"
+    rule: "Separate field, curing, grading, and batch records; attribute shared meters/equipment by operating time, throughput, or occupied capacity before allocation."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_leaf_grades
+    applies_to: "useful grades"
+    rule: "Preserve grades and direct burdens; if subdivision is infeasible, use contemporaneous hand-off economic allocation and disclose mass sensitivity."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_residue_reject
+    applies_to: "residues, rework, rejects"
+    rule: "Do not allocate to internal rework or waste; prevent reworked leaf from becoming a second output."
+    source_ids: []
+  - rule_id: allocation_shared_infrastructure
+    applies_to: "shared barns/assets"
+    rule: "Attribute each shared asset once across batches/periods with documented use; prevent cross-node double counting."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_records
+      process_id: "tobacco_field_production"
+      flow_role: "planting, nutrients, water, energy, protection"
+      record_type: "log, invoice, meter, contractor record"
+      raw_fields: "field; area; variety; product; formulation; amount; assay; date; operation"
+      collection_method: "reconcile inputs to field/cycle"
+      unit: "item; kg; L; m3; MJ; ha"
+      frequency: "each event"
+      temporal_coverage: "full cycle"
+      site_scope: "all fields"
+      aggregation_rule: "sum by identity/field; normalize with matched yield"
+      quality_evidence: "invoices; labels; calibrated meters; logs"
+    - protocol_id: cp_harvest_records
+      process_id: "tobacco_field_production"
+      flow_role: "green leaf, residue, reject"
+      record_type: "harvest ticket, scale, moisture, destination"
+      raw_fields: "field; date; mass; moisture; grade; residue; fate"
+      collection_method: "weigh/reconcile each picking"
+      unit: "kg; percent; ha"
+      frequency: "each picking"
+      temporal_coverage: "full cycle"
+      site_scope: "all fields"
+      aggregation_rule: "separate accepted leaf and every residue fate"
+      quality_evidence: "calibration; lot trace; moisture test"
+    - protocol_id: cp_field_emissions
+      process_id: "tobacco_field_production"
+      flow_role: "emissions"
+      record_type: "nutrient, soil, weather, residue, model"
+      raw_fields: "N; residue N; soil; climate; application; drainage; factors; model"
+      collection_method: "declared applicable calculation method"
+      unit: "kg N; kg emission; ha"
+      frequency: "each event/cycle"
+      temporal_coverage: "full cycle"
+      site_scope: "all fields"
+      aggregation_rule: "calculate per field, area-weight, normalize"
+      quality_evidence: "activity and factor provenance; model file"
+    - protocol_id: cp_curing_records
+      process_id: "tobacco_leaf_curing"
+      flow_role: "leaf, energy, rejects, emissions"
+      record_type: "batch, scale, moisture, meter, barn log"
+      raw_fields: "batch; method; barn; input mass/moisture; carrier; energy; time; outputs"
+      collection_method: "match each run to inputs/outputs/meters"
+      unit: "kg; percent; kWh; MJ; h"
+      frequency: "each batch/period"
+      temporal_coverage: "full curing period"
+      site_scope: "all barns and curing sites"
+      aggregation_rule: "reconcile mass; allocate shared services by measured driver"
+      quality_evidence: "calibrated scale/meter; invoice; barn log"
+    - protocol_id: cp_grading_records
+      process_id: "cured_leaf_grading_packing"
+      flow_role: "grades, packaging, rework, rejects"
+      record_type: "batch, scale, grade, issue, destination"
+      raw_fields: "batch; input; moisture; accepted; downgrade; rework; reject; packaging"
+      collection_method: "reconcile grades/destinations"
+      unit: "kg; item; percent"
+      frequency: "each batch"
+      temporal_coverage: "full grading period"
+      site_scope: "all grading and packing sites"
+      aggregation_rule: "count rework once and close mass balance"
+      quality_evidence: "calibration; grade sheet; package record"
+  calculation_rules:
+    - id: calc_field_to_green_leaf
+      applies_to: "field flows"
+      rule: "crop-cycle amount / matched green-leaf mass"
+      inputs:
+        - amount
+        - area
+        - "green leaf"
+      output: "amount/kg green leaf"
+      source_ids: []
+    - id: calc_green_to_cured_leaf
+      applies_to: "cured route"
+      rule: "green-leaf-normalized amount × green-leaf input / cured output"
+      inputs:
+        - masses
+        - moisture
+        - rejects
+      output: "amount/kg cured leaf"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_nutrient_content
+      applies_to: "nutrient supply"
+      rule: "product amount × declared nutrient fraction"
+      inputs:
+        - identity
+        - amount
+        - assay
+      output: "nutrient by product"
+      source_ids: []
+    - id: calc_managed_soil_emissions
+      applies_to: "field emissions"
+      rule: "applicable IPCC/regional method using inputs, residues, volatilization, and leaching"
+      inputs:
+        - activity
+        - soil
+        - climate
+        - factors
+      output: "emissions by pathway"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_curing_combustion
+      applies_to: "curing"
+      rule: "fuel quantity × carrier-specific factor; purchased electricity is not on-site combustion"
+      inputs:
+        - carrier
+        - amount
+        - factor
+      output: "pollutant/batch"
+      source_ids:
+        - ipcc-2006-stationary-combustion
+    - id: calc_curing_mass_balance
+      applies_to: "curing"
+      rule: "green wet mass = cured leaf + rejects + water/other loss within uncertainty"
+      inputs:
+        - masses
+        - moisture
+      output: "reconciled outputs"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_grading_mass_balance
+      applies_to: "grading"
+      rule: "input = accepted + downgraded + rejects + loss; count rework once"
+      inputs:
+        - "batch masses"
+        - routes
+      output: "reconciled grades"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_route_identity
+      applies_to: "reference"
+      requirement: "Distinguish green/cured and air/fire/flue/sun route; retain variety, grade, moisture, crop year, gate."
+      evidence: "crop, curing, grade, sales records"
+    - id: dq_temporal_alignment
+      applies_to: "all rows"
+      requirement: "Match field, harvest, curing, grading, energy, and outputs to the same crop/batches; disclose proxies."
+      evidence: "dated records"
+    - id: dq_mass_moisture
+      applies_to: "transformations"
+      requirement: "Use calibrated masses and paired moisture at green, cured, and packed states."
+      evidence: "calibration; moisture records"
+    - id: dq_route_completeness
+      applies_to: "curing"
+      requirement: "Record energy carrier and combustion location; zero energy requires passive-route evidence."
+      evidence: "barn log; invoice; meter"
+    - id: dq_identity_resolution
+      applies_to: "parameterized/unresolved"
+      requirement: "Resolve every emitted exchange to one verified UUID before process publication."
+      evidence: "identity review record"
+validation_rules:
+  - rule_id: validation_terminal_route
+    applies_to: "reference"
+    rule: "Select exactly one terminal route: 1,000 kg green or 1,000 kg cured graded leaf; forbid fresh UUID for cured leaf."
+    source_ids: []
+  - rule_id: validation_curing_method
+    applies_to: "cured route"
+    rule: "Declare one primary curing method per batch and include its energy, barn service, emissions, rejects, and hand-off."
+    source_ids:
+      - who-tobacco-environment-2017
+  - rule_id: validation_mass_balance
+    applies_to: "harvest/curing/grading"
+    rule: "Reconcile mass, moisture, grades, rework, rejects, and losses within documented uncertainty."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_nutrient_emissions
+    applies_to: "field"
+    rule: "Reconcile nutrient/residue N with N2O, NH3, and nitrate methods without duplicate pathways."
+    source_ids:
+      - ipcc-2019-managed-soils
+      - emep-eea-2023-guidebook
+  - rule_id: validation_rework
+    applies_to: "curing/grading"
+    rule: "Link rework to origin and count once; rejected material cannot be accepted reference product."
+    source_ids: []
+  - rule_id: validation_shared_assets
+    applies_to: "barns/meters/equipment"
+    rule: "Apply one attribution driver per period and prevent double counting."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_flow_identity
+    applies_to: "every flow"
+    rule: "Use detail-confirmed exact UUIDs as fixed, current Flow Sets as parameterized, and otherwise unresolved identities."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground unmanufactured tobacco leaf production dataset"
+  downstream_use: "secondary_dataset; background_dataset after review and publication"
+  allowed_use: "LCA of green or cured unmanufactured tobacco preserving geography, crop year, state, curing technology, grade, moisture, gate, and allocation"
+  excluded_use: "manufactured tobacco/nicotine products or a different curing route, grade, geography, or gate without reviewed proxy decision"
+  required_metadata: "variety/market class; geography; crop year; area; yield; terminal state/gate; curing method; barn/energy; moisture; grade; packaging; residue/reject fate; allocation; identity resolution"
+  required_quality_disclosure: "foreground coverage; proxy periods; missing records; range exceedances; emission methods; meter/fuel reconciliation; mass/moisture balance; unresolved identities"
+  update_trigger: "reviewed route evidence, technology or emission-method change, Flow Set/UUID change, or representative data outside QA ranges"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.packaging-presentation-node
+      kind: "activity"
+      path: "library/modules/activities/packaging-presentation-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "who-tobacco-environment-2017"
+    type: "official_guidance"
+    reference: "WHO, Tobacco and its environmental impact: an overview, 2017, https://iris.who.int/bitstream/handle/10665/255574/9789241512497-eng.pdf"
+    used_for: "cultivation and air/fire/flue/sun curing routes"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement, Volume 4, Chapter 11"
+    used_for: "managed-soil nitrogen pathways"
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "EEA, EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023"
+    used_for: "agricultural ammonia context"
+  - id: "ipcc-2006-stationary-combustion"
+    type: "method_factor"
+    reference: "IPCC 2006 Guidelines, Volume 2, Chapter 2"
+    used_for: "curing combustion calculations"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006"
+    used_for: "allocation and disclosure"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass for matched harvest, curing, and grading batches"
+    used_for: "batch calculations and validation"
+  - id: "reference-normalization-rule"
+    type: "method_factor"
+    reference: "PCR normalization: terminal reference output equals 1,000 kg"
+    used_for: "exact terminal range"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:48763d2884de445a047f4a42509fa06d815240546c68bc608a2a6bdcf7f7fc6d"
+  generated_content_sha256: "sha256:ec05f12e3e74d17362920b63bce2ab187e754caa501a3af6366302885b573618"

@@ -1,10 +1,840 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01343"
-  title: "Apricots"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.apricots"
+  classification_refs: "CPC 3.0: 01343 Apricots"
+  covered_products: "fresh, unprocessed apricot fruit transferred at the declared farm-gate condition"
+  excluded_products: "nursery planting-stock production; dried, canned, frozen, juiced, puréed, or preserved apricots; off-farm logistics and downstream use"
+  representative_product: "harvested fresh apricots at farm gate"
+  production_route: "perennial orchard establishment, orchard management, harvest, and conditional farm-gate primary handling"
+  market_state: "fresh fruit with cultivar, maturity, quality grade, accepted/rejected basis, and handling status disclosed"
+functional_unit:
+  what: "fresh, unprocessed apricot fruit at the farm gate"
+  how_much: "1,000 kg as-received accepted apricot fruit"
+  how_well: "fruit meeting the declared cultivar or cultivar group, maturity, quality grade, defect basis, moisture convention, and hand-off condition; no transformation into a processed apricot product"
+  how_long_or_cycle: "one declared production year within the orchard productive life, with establishment and replacement inputs allocated over the declared orchard life"
+  reference_flow_link: "accepted output from apricot_harvest_and_farm_gate_handling, or from apricot_primary_handling when handling is included"
+system_boundary:
+  rules:
+    - rule_id: boundary_establishment_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include site preparation, planting, orchard establishment, immature years, productive orchard management, harvest, and primary handling performed before the declared farm-gate hand-off."
+      source_ids:
+        - fao-crop-production-methodology
+        - fao-stone-fruit-production-guide
+    - rule_id: boundary_perennial_orchard_disclosure
+      applies_to: "establishment and replacement trees"
+      rule: "Include establishment and replacement-tree inputs only after assigning them to the declared orchard life or accepted fruit output basis; disclose the allocation horizon and non-bearing years."
+      source_ids:
+        - fao-stone-fruit-production-guide
+        - iso-14067
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil, crop residues, and nutrient application"
+      rule: "Include direct and indirect nutrient- and residue-related emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting."
+      source_ids:
+        - ipcc-2019-refinement
+        - emep-eea-2023-guidebook
+    - rule_id: boundary_farm_gate_handling
+      applies_to: "optional primary handling"
+      rule: "Include washing, sorting, grading, packing, or short holding only when performed before hand-off and not already embedded in the harvest record; identify rejected fruit and its destination."
+      source_ids:
+        - fao-crop-production-methodology
+    - rule_id: boundary_post_farm_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, storage, distribution, retail, consumer use, processing, and packaging end-of-life unless the study explicitly extends beyond this PCR."
+      source_ids:
+        - iso-14044
+boundary_abstraction:
+  declared_starting_condition: "orchard site before or at establishment, with planting material and purchased management inputs crossing the foreground boundary; prior land condition and existing orchard history are disclosed"
+  starting_condition_role: "start of managed perennial apricot production and orchard asset accounting"
+  product_classification_scope: "fresh apricot fruit corresponding to CPC 3.0 code 01343"
+  recursive_input_rule: "apricot planting material and retained fruit are upstream inputs only when crossing the boundary; they must not be recursively represented as the same farm-gate apricot output"
+  upstream_dataset_requirement: "compatible upstream datasets for planting material, nutrient and soil-amendment products, crop protection, energy, irrigation supply, machinery services, packaging used before hand-off, and applicable waste treatment"
+  disclosure: "cultivar, orchard age, establishment year, productive life, replacement trees, orchard area, previous land use, soil and climate context, irrigation, nutrient basis, crop protection, yield, harvest losses, handling, co-products, and residue or waste destination"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fresh apricot fruit at farm gate"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or cultivar group"
+    - "production country"
+    - region
+    - "and climate"
+    - "orchard age and productive status"
+    - "crop year"
+    - "orchard area"
+    - "irrigation status and water source"
+    - "maturity and quality convention"
+    - "accepted and rejected fruit basis"
+    - "primary handling included or excluded"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "accepted apricot output"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report accepted fruit on the declared as-received farm-gate basis. Retain measured maturity, moisture, and defect adjustments before normalization."
+  - id: orchard_life_allocation_basis
+    applies_to: "establishment, replacement, and immature-orchard inputs"
+    required_property_ref:
+      name: "area, time, or mass activity property"
+      uuid: ""
+    required_unit: "ha, orchard-year, or kg fruit"
+    rule: "Allocate perennial establishment and replacement inputs across the declared orchard life and productive output basis; disclose orchard replacement, abandonment, and non-bearing years."
+  - id: area_to_reference_conversion
+    applies_to: "area-based orchard inputs and emissions"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Divide orchard-year totals by accepted farm-gate fruit mass from the same orchard-year or declared multi-year average before scaling to 1,000 kg."
+  - id: nutrient_product_and_basis
+    applies_to: "fertilizer and soil-amendment input"
+    required_property_ref:
+      name: "product mass and nutrient mass"
+      uuid: ""
+    required_unit: "kg product; kg N, kg P2O5, or kg K2O"
+    rule: "Record the actual product and application quantity together with the declared nutrient basis. One conditional total card may contain the products and nutrients actually used."
+process_map:
+  - id: apricot_orchard_establishment_and_management
+    name: "Apricot orchard establishment and management"
+    inclusion: "required"
+    inclusion_condition: "always; include establishment, replacement, immature years, and productive-year management with declared orchard-life allocation"
+    role: "managed perennial biological production and orchard asset formation"
+    quantitative_reference: "orchard area, orchard-years, establishment period, and annual accepted fruit output"
+  - id: apricot_harvest_and_farm_gate_handling
+    name: "Apricot harvest and farm-gate handling"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "harvest capture, field handling, and farm-gate transfer"
+    quantitative_reference: "harvested, accepted, downgraded, and lost fruit mass for one production year"
+  - id: apricot_primary_handling
+    name: "Apricot primary handling"
+    inclusion: "conditional"
+    inclusion_condition: "washing, sorting, grading, packing, or short farm holding occurs before hand-off and is not included in the harvest record"
+    role: "prepare fruit for the declared hand-off condition"
+    quantitative_reference: "incoming fruit mass and accepted handled fruit mass"
+process_inventory:
+  - id: apricot_orchard_establishment_and_management
+    label: "Apricot orchard establishment and management"
+    inputs:
+      product:
+        - row_id: apricot_planting_material_input
+          role: "Apricot planting material"
+          name: "Apricot planting material for orchard establishment"
+          flow_type: "product"
+          property_unit: "Item count or mass / item or kg"
+          description: "Record nursery trees, grafted plants, or other planting material crossing into orchard establishment. State origin and allocation when material is self-propagated or retained."
+          amount:
+            expression: "measured planting-material quantity by orchard block and establishment year; retain any count-to-mass conversion"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_establishment_records
+              source_ids:
+                - fao-stone-fruit-production-guide
+            ranges: []
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - fao-fertilizer-code
+                - fao-stone-fruit-production-guide
+            ranges: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation only when water is applied to the orchard. Rainfed production records zero applied irrigation with a documented water-balance or management basis."
+          amount:
+            expression: "metered or calculated irrigation volume by orchard block and production year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_irrigation_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+        - row_id: farm_energy_input
+          role: "Farm machinery fuel or service supplied"
+          name: "Farm machinery fuel or energy service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or mass / MJ or kg fuel"
+          description: "Record diesel, electricity, or contracted machinery service used for tillage, mowing, spraying, pruning, and orchard maintenance when it crosses the foreground boundary."
+          amount:
+            expression: "fuel invoices, equipment logs, or supplier service records allocated to the orchard block and reporting year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_energy_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products supplied"
+          name: "Crop-protection product supply"
+          flow_type: "product"
+          property_unit: "Product mass or volume / kg product or L product"
+          description: "Record the actual crop-protection products and application quantities used for orchard protection, retaining active ingredient, product formulation, and application event where available."
+          amount:
+            expression: "measured product amount per application event and orchard block; preserve active-ingredient information"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_crop_protection_records
+              source_ids:
+                - fao-crop-production-methodology
+                - fao-stone-fruit-production-guide
+            ranges: []
+      waste:
+        - row_id: orchard_residue_output
+          role: "Orchard pruning and replacement residues"
+          name: "Orchard pruning and replacement residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry or as-received material"
+          description: "Record prunings, removed trees, and other orchard residues leaving the managed orchard. The destination determines whether the material is retained, composted, burned, or treated as waste."
+          amount:
+            expression: "measured or calculated residue mass by orchard block and year, with moisture basis and destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_apricot_residue_records
+              source_ids:
+                - fao-crop-production-methodology
+                - ipcc-2019-refinement
+            ranges: []
+      elementary:
+        - row_id: orchard_land_occupation
+          role: "Managed orchard land occupation"
+          name: "Managed agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a"
+          description: "Record the land occupation associated with the declared orchard area and reporting period. Retain prior land use and any transformation event separately."
+          amount:
+            expression: "declared orchard area multiplied by the time occupied in the reporting period"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_apricot_land_records
+              source_ids:
+                - fao-crop-production-methodology
+                - iso-14067
+            ranges: []
+    outputs:
+      product:
+        - row_id: orchard_production_output
+          role: "Orchard production hand-off"
+          name: "Apricot fruit from managed orchard"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This internal product hand-off carries the managed orchard output into harvest and handling. It is measured as harvested fruit before final acceptance or rejection."
+          amount:
+            expression: "measured harvested fruit mass by orchard block and crop year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_harvest_records
+              source_ids:
+                - fao-stone-fruit-production-guide
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: field_emissions_output
+          role: "Field emissions from nutrient and residue management"
+          name: "Field emissions from nutrient and residue management"
+          flow_type: "elementary"
+          property_unit: "Substance mass / kg substance"
+          description: "Record direct and indirect soil or air emissions calculated from the actual nutrient and residue activity data and the selected geographic method."
+          amount:
+            expression: "calculate emissions from declared nutrient, residue, climate, and soil activity data using the selected method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - ipcc-2019-refinement
+                - emep-eea-2023-guidebook
+            ranges: []
+  - id: apricot_harvest_and_farm_gate_handling
+    label: "Apricot harvest and farm-gate handling"
+    inputs:
+      product:
+        - row_id: harvested_apricot_input
+          role: "Harvested apricot fruit received"
+          name: "Apricot fruit from managed orchard"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record harvested fruit entering harvest accounting before sorting, grading, or other optional primary handling."
+          amount:
+            expression: "reconcile orchard output with harvest tickets and receiving records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_harvest_records
+              source_ids:
+                - fao-stone-fruit-production-guide
+            ranges: []
+      waste:
+        - row_id: harvest_loss_output
+          role: "Harvest and field losses"
+          name: "Apricot harvest and field losses"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record fruit left unharvested, damaged, or discarded during harvest, keeping the destination and treatment route explicit."
+          amount:
+            expression: "harvested-mass reconciliation: received fruit plus documented losses minus transfers to other declared outputs"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_apricot_harvest_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fresh_apricot_farm_gate_output
+          role: "Fresh apricots at farm gate"
+          name: "Fresh apricot fruit at farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted, fresh, unprocessed apricots transferred at the declared farm-gate hand-off. This is the PCR reference output when primary handling is excluded."
+          amount:
+            expression: "weighed accepted fruit at the declared hand-off, reconciled to harvested input and rejected fruit"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_harvest_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+      waste:
+        - row_id: rejected_apricot_output
+          role: "Rejected or downgraded apricot fruit"
+          name: "Rejected or downgraded apricot fruit"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record fruit rejected at farm gate or downgraded from the reference quality, including compost, animal feed, processing, or disposal destination."
+          amount:
+            expression: "measured rejected mass by grade and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_harvest_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+      elementary:
+        []
+  - id: apricot_primary_handling
+    label: "Apricot primary handling"
+    inputs:
+      product:
+        - row_id: primary_handling_water_input
+          role: "Primary handling water"
+          name: "Process water for apricot primary handling"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water that crosses the boundary for washing or other primary handling when the activity is included in the declared farm-gate condition."
+          amount:
+            expression: "meter or batch record for water entering the handling operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg handled fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+        - row_id: primary_handling_energy_input
+          role: "Primary handling energy"
+          name: "Primary handling electricity or fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh or MJ"
+          description: "Record electricity or fuel used for washing, sorting, grading, packing, or short holding included before farm-gate hand-off."
+          amount:
+            expression: "meter, invoice, or equipment log allocated to the handled apricot batches"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg handled fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+        - row_id: packing_material_input
+          role: "Packing materials"
+          name: "Packaging material for fresh apricots"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+          property_unit: "Mass / kg packaging"
+          description: "Record packing material only when packing is part of the declared farm-gate hand-off, retaining material type, mass, reuse cycles, and loss."
+          amount:
+            expression: "purchased packaging mass adjusted for reuse and allocated to accepted handled fruit"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted handled fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+      waste:
+        - row_id: handling_reject_output
+          role: "Handling rejects and wash residues"
+          name: "Primary handling rejects and residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected fruit, sediment, and other residues leaving primary handling, with destination and treatment route."
+          amount:
+            expression: "batch mass balance for incoming fruit, accepted fruit, rejects, and residues"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted handled fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: handled_apricot_output
+          role: "Accepted handled apricots"
+          name: "Fresh apricot fruit at farm gate after primary handling"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record fresh apricots after the included washing, sorting, grading, packing, or short holding step at the declared farm-gate hand-off."
+          amount:
+            expression: "weighed accepted handled fruit output by batch and quality grade"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted handled fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "Allocate orchard establishment, replacement trees, shared machinery, irrigation infrastructure, and other multi-period inputs across the declared orchard life and reporting periods using orchard area, productive years, and accepted fruit output. Do not silently annualize non-bearing years; disclose the selected productive-life horizon and replacement events. Where apricot fruit is split among fresh, processing, feed, compost, or disposal destinations, retain separate masses. Use physical mass allocation when products have comparable moisture and function; otherwise use a documented economic or quality-based allocation and report the selected basis. Avoid allocation by treating rejected fruit as a co-product unless it has a declared market or service; otherwise record it as a waste or residue flow with its destination. Do not double count orchard inputs embedded in an upstream planting-material dataset."
+    source_ids: []
+  - rule_id: allocation_orchard_life_and_period
+    applies_to: "establishment, replacement, and shared orchard assets"
+    rule: "Allocate multi-period inputs to the declared orchard-year and accepted fruit output using the declared orchard life, productive years, area, and yield records."
+    source_ids:
+      - fao-stone-fruit-production-guide
+      - iso-14067
+  - rule_id: allocation_apricot_destinations
+    applies_to: "fresh, processing, feed, compost, and disposal destinations"
+    rule: "Keep destination masses separate; use documented physical or economic allocation only when more than one declared product or service shares a process."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_rejects_and_residues
+    applies_to: "rejected fruit and orchard residues"
+    rule: "Treat material without a declared product or service as waste or residue and model its destination; do not grant a co-product credit solely because it has a possible downstream use."
+    source_ids:
+      - iso-14044
+      - ipcc-2019-refinement
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_apricot_establishment_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "planting material"
+      record_type: "nursery invoices, planting maps, and establishment logs"
+      raw_fields: "block; cultivar; tree count; material type; establishment year; source"
+      collection_method: "invoice review and block reconciliation"
+      unit: "item, kg"
+      frequency: "each establishment or replacement event"
+      temporal_coverage: "full orchard establishment and replacement period"
+      site_scope: "each orchard block"
+      aggregation_rule: "aggregate by block and orchard-year"
+      quality_evidence: "invoice, planting map, and supervisor sign-off"
+    - protocol_id: cp_apricot_orchard_management_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "nutrient, amendment, and field-emission activity"
+      record_type: "input invoices, application logs, soil records, and method inputs"
+      raw_fields: "product; amount; nutrient analysis; date; block; soil/climate method inputs"
+      collection_method: "invoice, application-log, and method-data reconciliation"
+      unit: "kg product; kg nutrient"
+      frequency: "each application; annual roll-up"
+      temporal_coverage: "crop year and declared orchard life"
+      site_scope: "each orchard block"
+      aggregation_rule: "sum by product, nutrient, block, and year"
+      quality_evidence: "invoice, application record, and agronomist review"
+    - protocol_id: cp_apricot_irrigation_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "irrigation water"
+      record_type: "meter records or irrigation schedules"
+      raw_fields: "block; source; volume; date; meter basis; rainfed flag"
+      collection_method: "meter read or documented calculation"
+      unit: "m3"
+      frequency: "each irrigation event or monthly"
+      temporal_coverage: "crop year"
+      site_scope: "each irrigated block"
+      aggregation_rule: "sum by block and crop year"
+      quality_evidence: "meter calibration, water bill, or water-balance check"
+    - protocol_id: cp_apricot_energy_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "machinery and handling energy"
+      record_type: "fuel invoices, equipment logs, electricity bills"
+      raw_fields: "equipment; fuel or electricity; amount; date; block; task"
+      collection_method: "invoice and log reconciliation"
+      unit: "L, kg, kWh, or MJ"
+      frequency: "each delivery or operating period"
+      temporal_coverage: "crop year"
+      site_scope: "orchard and handling facility"
+      aggregation_rule: "allocate to orchard block or handled batch by activity record"
+      quality_evidence: "invoice, meter, or equipment log"
+    - protocol_id: cp_apricot_crop_protection_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "crop protection"
+      record_type: "application records and product labels"
+      raw_fields: "product; formulation; active ingredient; amount; date; block; application purpose"
+      collection_method: "application-log and label review"
+      unit: "kg or L product"
+      frequency: "each application"
+      temporal_coverage: "crop year"
+      site_scope: "each orchard block"
+      aggregation_rule: "sum by product and active ingredient"
+      quality_evidence: "signed application record and label"
+    - protocol_id: cp_apricot_land_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "land occupation and transformation"
+      record_type: "cadastral, GIS, and orchard maps"
+      raw_fields: "block area; prior land use; establishment date; replacement date"
+      collection_method: "map and record reconciliation"
+      unit: "ha or m2"
+      frequency: "establishment and annual update"
+      temporal_coverage: "orchard life and crop year"
+      site_scope: "each orchard block"
+      aggregation_rule: "aggregate area-time by block and period"
+      quality_evidence: "map, lease, and land-history evidence"
+    - protocol_id: cp_apricot_residue_records
+      process_id: "apricot_orchard_establishment_and_management"
+      flow_role: "pruning and replacement residues"
+      record_type: "residue logs and destination receipts"
+      raw_fields: "residue type; mass; moisture; date; block; destination"
+      collection_method: "weighing or documented estimation"
+      unit: "kg"
+      frequency: "each removal or annual roll-up"
+      temporal_coverage: "crop year"
+      site_scope: "each orchard block"
+      aggregation_rule: "sum by residue type and destination"
+      quality_evidence: "scale ticket, receipt, or supervisor estimate"
+    - protocol_id: cp_apricot_harvest_records
+      process_id: "apricot_harvest_and_farm_gate_handling"
+      flow_role: "harvested, accepted, rejected, and lost fruit"
+      record_type: "harvest tickets, weighbridge records, and grade records"
+      raw_fields: "block; cultivar; date; harvested mass; accepted mass; rejected mass; destination"
+      collection_method: "batch weighing and mass-balance reconciliation"
+      unit: "kg"
+      frequency: "each harvest batch"
+      temporal_coverage: "crop year"
+      site_scope: "each orchard block and receiving point"
+      aggregation_rule: "aggregate by block, grade, and destination"
+      quality_evidence: "calibrated scale, ticket, and grade record"
+    - protocol_id: cp_apricot_handling_records
+      process_id: "apricot_primary_handling"
+      flow_role: "water, energy, packing, rejects, and accepted output"
+      record_type: "facility meters, invoices, batch records, and packing logs"
+      raw_fields: "batch; incoming mass; water; energy; material; accepted mass; rejects; destination"
+      collection_method: "batch mass balance and utility allocation"
+      unit: "kg, m3, kWh, or MJ"
+      frequency: "each batch or operating period"
+      temporal_coverage: "handling period within crop year"
+      site_scope: "declared handling facility"
+      aggregation_rule: "allocate shared utilities and materials by handled mass"
+      quality_evidence: "meter, invoice, batch record, and scale ticket"
+  calculation_rules:
+    - id: calc_apricot_reference_normalization
+      applies_to: "all process outputs"
+      rule: "normalized amount = declared flow amount / accepted farm-gate fruit mass × 1,000 kg"
+      inputs:
+        - "flow amount"
+        - "accepted fruit mass"
+      output: "amount per 1,000 kg accepted fruit"
+      source_ids:
+        - iso-14067
+    - id: calc_apricot_orchard_life_allocation
+      applies_to: "establishment and replacement inputs"
+      rule: "allocated orchard-year amount = total declared asset input × reporting orchard-year share over declared orchard life"
+      inputs:
+        - "asset input"
+        - "orchard life"
+        - "reporting period"
+      output: "orchard-year input"
+      source_ids:
+        - fao-stone-fruit-production-guide
+        - iso-14067
+    - id: calc_apricot_nutrient_basis
+      applies_to: "nutrient and amendment card"
+      rule: "nutrient mass = product mass × declared nutrient fraction; retain product mass and nutrient basis separately"
+      inputs:
+        - "product mass"
+        - "label or analysis fraction"
+      output: "kg product and kg nutrient"
+      source_ids:
+        - fao-fertilizer-code
+    - id: calc_apricot_mass_balance
+      applies_to: "harvest and primary handling"
+      rule: "incoming mass = accepted output + rejected output + measured loss, with unexplained residual investigated"
+      inputs:
+        - incoming
+        - accepted
+        - rejected
+        - "and loss records"
+      output: "reconciled batch flows"
+      source_ids:
+        - fao-crop-production-methodology
+    - id: calc_apricot_field_emissions
+      applies_to: "soil and residue emissions"
+      rule: "apply the selected geographic method to collected nutrient, residue, soil, and climate inputs; do not reuse a default factor without recording its applicability"
+      inputs:
+        - nutrient
+        - residue
+        - soil
+        - climate
+        - "and method inputs"
+      output: "elementary emission flows"
+      source_ids:
+        - ipcc-2019-refinement
+        - emep-eea-2023-guidebook
+  data_quality_requirements:
+    - id: dqr_apricot_identity
+      applies_to: "all product and input rows"
+      requirement: "Declare cultivar, product state, source, destination, and whether primary handling is includeds remain explicit until verified."
+      evidence: "product records, invoices, labels, and dataset metadata"
+    - id: dqr_apricot_measurement
+      applies_to: "mass, water, energy, and area rows"
+      requirement: "Use calibrated weighing or metering where available; document conversion, moisture basis, and estimation method otherwise."
+      evidence: "scale, meter, invoice, map, or signed estimate"
+    - id: dqr_apricot_temporal_coverage
+      applies_to: "orchard and crop-year rows"
+      requirement: "Cover the complete crop year and declare orchard establishment, replacement, productive status, and reporting period."
+      evidence: "orchard register, crop calendar, and annual records"
+    - id: dqr_apricot_completeness
+      applies_to: "all process inputs and outputs"
+      requirement: "Reconcile orchard inputs, harvested fruit, accepted output, rejects, residues, and losses; investigate unexplained residuals."
+      evidence: "batch and annual mass balance"
+    - id: dqr_apricot_transparency
+      applies_to: "allocation, factors, and boundaries"
+      requirement: "Disclose allocation basis, primary handling inclusion, upstream dataset links, emission method, and identity evidence gap or evidence gaps."
+      evidence: "review record and dataset disclosure"
+validation_rules:
+  - rule_id: validation_apricot_reference_definition
+    applies_to: "reference flow"
+    rule: "Require 1,000 kg accepted fresh apricot fruit, declared hand-off condition, required qualifiers, and later-resolved reference identity before publication."
+    source_ids:
+      - iso-14067
+  - rule_id: validation_apricot_orchard_periods
+    applies_to: "establishment and management"
+    rule: "Check that orchard establishment, non-bearing periods, replacement events, productive years, and annualization basis are declared and not double counted."
+    source_ids:
+      - fao-stone-fruit-production-guide
+      - iso-14067
+  - rule_id: validation_apricot_mass_balance
+    applies_to: "harvest and primary handling"
+    rule: "Check incoming fruit = accepted fruit + rejects + measured losses within the declared tolerance and trace every rejected destination."
+    source_ids:
+      - fao-crop-production-methodology
+  - rule_id: validation_apricot_flow_bindings
+    applies_to: "all flow cards"
+    rule: "Use the narrowest applicable Flow Set group first; use a fixed UUID only after exact verification for an uncovered flow; otherwise preserve unmapped coverage without changing true semantics."
+    source_ids:
+      - iso-14044
+  - rule_id: validation_apricot_evidence
+    applies_to: "all constrained ranges and factors"
+    rule: "Require source-backed evidence or a declared foreground collection protocol for constrained values; mark provisional guardrails as replaceable estimates."
+    source_ids:
+      - iso-14044
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset when the completed dataset has compatible identity, geography, time, and quality metadata"
+  downstream_use: "foreground data package construction for fresh apricots at farm gate and background substitution where the published profile permits"
+  allowed_use: "attributional agricultural LCA, farm-gate footprinting, crop-year comparison, and documented scenario analysis within the declared orchard and handling boundary"
+  excluded_use: "direct substitution for processed apricot products, universal regional averages without disclosed representativeness, consequential claims without additional system modelling, and downstream logistics or retail claims outside the boundary"
+  required_metadata: "cultivar; geography; crop year; orchard age and status; area; yield; irrigation; nutrient basis; crop protection; energy; harvest and reject basis; handling inclusion; allocation; flow identity; and coverage finding"
+  required_quality_disclosure: "measurement sources, estimation and conversion rules, temporal and geographic coverage, completeness checks, allocation basis, method factors, uncertainty or guardrails, and identity evidence gaps"
+  update_trigger: "new crop year, cultivar or production-route change, orchard replacement or land-history change, material handling change, revised emission method, or verified identity and evidence resolution"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-crop-production-methodology"
+    type: "official_guidance"
+    reference: "FAO crop production and farm data collection guidance"
+    used_for: ""
+  - id: "fao-stone-fruit-production-guide"
+    type: "extension_guidance"
+    reference: "FAO or equivalent official stone-fruit orchard production guidance"
+    used_for: ""
+  - id: "fao-fertilizer-code"
+    type: "official_guidance"
+    reference: "FAO fertilizer best-management code"
+    used_for: ""
+  - id: "ipcc-2019-refinement"
+    type: "method_factor"
+    reference: "2019 IPCC Refinement to the 2006 IPCC Guidelines"
+    used_for: ""
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "EMEP/EEA air pollutant emission inventory guidebook"
+    used_for: ""
+  - id: "iso-14044"
+    type: "standard"
+    reference: "ISO 14044 environmental management—life cycle assessment—requirements and guidelines"
+    used_for: ""
+  - id: "iso-14067"
+    type: "standard"
+    reference: "ISO 14067 greenhouse gases—carbon footprint of products"
+    used_for: ""
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:deeaebde2337b966a7c8c0f816507900c64a0c43d3d0be0d2545a1c01c744ac7"
+  generated_content_sha256: "sha256:9ff177e9a8222f10d935d02f9805b1a571de14bbcd60398db58b2be6e64412ac"

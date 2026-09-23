@@ -121,7 +121,7 @@ export function flowBindingIssues(projection) {
  * Checks content that must be present before a material projection can guide data production.
  * JSON Schema owns stable shape; this function owns state-sensitive methodology completeness.
  */
-export function materialProjectionCompletenessIssues(projection, { expectedPcrId } = {}) {
+export function materialProjectionCompletenessIssues(projection, { expectedPcrId, lifecycleStatus } = {}) {
   const issues = [];
   issues.push(...flowBindingIssues(projection));
   const canonicalPcrId = projection?.product_category_identity?.canonical_pcr_id;
@@ -153,6 +153,7 @@ export function materialProjectionCompletenessIssues(projection, { expectedPcrId
   }
 
   for (const segments of REFERENCE_FLOW_FIELDS) {
+    if (lifecycleStatus === "candidate" && segments.at(-1) === "uuid") continue;
     if (!meaningfulScalar(valueAtPath(projection?.reference_flow_definition, segments))) {
       const field = segments.join(".");
       issues.push(

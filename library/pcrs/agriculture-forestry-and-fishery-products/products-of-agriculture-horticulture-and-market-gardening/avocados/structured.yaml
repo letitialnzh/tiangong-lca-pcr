@@ -1,10 +1,788 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01311"
-  title: "Avocados"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.avocados"
+  classification_refs: "CPC 3.0: 01311 Avocados"
+  covered_products: "fresh, unprocessed avocado fruit transferred at the farm gate, including fruit for fresh-market or processing destinations"
+  excluded_products: "nursery planting-stock production; avocado oil, pulp, purée, frozen or dried products; prepared foods; off-farm logistics and downstream use"
+  representative_product: "harvested avocado fruit, unprocessed, at farm gate"
+  production_route: "perennial orchard establishment, orchard management, harvest, and conditional farm-gate conditioning"
+  market_state: "fresh fruit at declared hand-off condition, with cultivar, maturity, quality grade, moisture or dry-matter convention, and conditioning status disclosed"
+functional_unit:
+  what: "fresh, unprocessed avocado fruit at the farm gate"
+  how_much: "1,000 kg as-received marketable avocado fruit"
+  how_well: "harvested fruit meeting declared cultivar, maturity, quality grade, defect, and hand-off condition; no transformation into oil, pulp, purée, frozen, or dried product"
+  how_long_or_cycle: "one declared production year within the orchard's productive life, with establishment impacts allocated across the declared orchard life"
+  reference_flow_link: "terminal accepted avocado output from avocado_harvest_and_farm_gate_handling when no conditioning is included, otherwise from farm_gate_avocado_conditioning"
+system_boundary:
+  rules:
+    - rule_id: boundary_orchard_establishment_to_farm_gate
+      applies_to: "all conforming datasets"
+      rule: "Include site preparation, planting, orchard establishment, immature years, productive orchard management, harvest, and conditioning performed before the declared farm-gate hand-off."
+      source_ids:
+        - fao-crop-production-methodology
+        - fao-avocado-production-guide
+    - rule_id: boundary_perennial_orchard_disclosure
+      applies_to: "establishment and replacement trees"
+      rule: "Include establishment and replacement-tree inputs only after assigning them to the declared orchard life or accepted fruit output basis; disclose the allocation horizon and non-bearing years."
+      source_ids:
+        - fao-avocado-production-guide
+        - iso-14067
+    - rule_id: boundary_direct_field_emissions
+      applies_to: "managed soil and crop residues"
+      rule: "Include direct and indirect nutrient- and residue-related emissions using a geographically applicable method and the same activity data used for nutrient, irrigation, and residue accounting."
+      source_ids:
+        - ipcc-2019-refinement
+        - emep-eea-2023-guidebook
+    - rule_id: boundary_farm_gate_conditioning
+      applies_to: "optional conditioning"
+      rule: "Include washing, sorting, grading, trimming, or short-term farm handling only when performed before hand-off and not already embedded in the harvest record; identify rejected fruit and destination."
+      source_ids:
+        - fao-crop-production-methodology
+    - rule_id: boundary_post_farm_gate_exclusion
+      applies_to: "downstream activities"
+      rule: "Exclude off-farm transport, storage, distribution, retail, consumer use, food processing, oil or purée manufacture, and packaging end-of-life unless the study explicitly extends beyond this PCR."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "orchard site before or at establishment, with planting material and purchased management inputs crossing the foreground boundary; existing land history and prior crop condition are disclosed"
+  starting_condition_role: "start of managed perennial avocado production and orchard asset accounting"
+  product_classification_scope: "fresh avocado fruit corresponding to CPC 3.0 code 01311"
+  recursive_input_rule: "avocado planting material and retained fruit are upstream inputs only when crossing the boundary; they must not be recursively represented as this same farm-gate fruit output"
+  upstream_dataset_requirement: "compatible upstream datasets for planting material, nutrient or soil-amendment products, crop protection, energy, irrigation supply, machinery services, packaging used before hand-off, and applicable waste treatment"
+  disclosure: "cultivar, orchard age, establishment year, productive life, replacement trees, orchard area, previous land use, soil and climate context, irrigation, nutrient basis, crop protection, yield, harvest losses, conditioning, co-products, and residue or waste destination"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Fresh avocado fruit, production mix, at farm gate, unprocessed"
+    uuid: "30de963a-f2a7-42d4-9a56-7993627510b4"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "cultivar or cultivar group"
+    - "production country"
+    - region
+    - "and climate"
+    - "orchard age and productive status"
+    - "crop year"
+    - "orchard area"
+    - "irrigation status and water source"
+    - "maturity or dry-matter convention"
+    - "accepted and rejected fruit basis"
+    - "conditioning included or excluded"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass_as_received
+    applies_to: "reference avocado output"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report accepted fruit on the declared as-received hand-off basis. If dry matter, maturity, or defect adjustments are used, retain the measured basis and conversion before normalization."
+  - id: orchard_life_allocation_basis
+    applies_to: "establishment and immature-orchard inputs"
+    required_property_ref:
+      name: "area, time, or mass activity property"
+      uuid: ""
+    required_unit: "ha, orchard-year, or kg fruit"
+    rule: "Allocate establishment and non-bearing orchard inputs over the declared productive orchard life using the same orchard area, production years, and accepted fruit output basis; disclose exceptional replacement or abandonment."
+  - id: area_to_reference_conversion
+    applies_to: "area-based orchard flows"
+    required_property_ref:
+      name: "activity-specific property"
+      uuid: ""
+    required_unit: "activity-specific unit"
+    rule: "Divide orchard-year totals by accepted farm-gate fruit mass from the same orchard-year or declared multi-year average before scaling to 1,000 kg."
+  - id: nutrient_product_and_basis
+    applies_to: "fertilizer or soil-amendment input"
+    required_property_ref:
+      name: "nutrient mass and product mass"
+      uuid: ""
+    required_unit: "kg product; kg N, kg P2O5, or kg K2O"
+    rule: "Record the actual product and application quantity together with the declared nutrient basis. The single nutrient/amendment card may contain multiple products and nutrients without requiring a row for every fertilizer class."
+process_map:
+  - id: avocado_orchard_establishment_and_management
+    name: "Avocado orchard establishment and management"
+    inclusion: "required"
+    inclusion_condition: "always; include establishment and productive-year management with declared orchard-life allocation"
+    role: "managed perennial biological production and orchard asset formation"
+    quantitative_reference: "orchard area, orchard-years, establishment period, and annual accepted fruit output"
+  - id: avocado_harvest_and_farm_gate_handling
+    name: "Avocado harvest and farm-gate handling"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "harvest capture, field handling, and farm-gate transfer"
+    quantitative_reference: "harvested, accepted, downgraded, and lost fruit mass for one production year"
+  - id: farm_gate_avocado_conditioning
+    name: "Farm-gate avocado conditioning"
+    inclusion: "conditional"
+    inclusion_condition: "washing, sorting, grading, trimming, or other conditioning occurs before hand-off and is not included in harvest records"
+    role: "prepare fruit for the declared hand-off state"
+    quantitative_reference: "incoming fruit mass and accepted conditioned fruit mass"
+process_inventory:
+  - id: avocado_orchard_establishment_and_management
+    label: "Avocado orchard establishment and management"
+    inputs:
+      product:
+        - row_id: avocado_planting_material_input
+          role: "Avocado planting material"
+          name: "Avocado planting material for orchard establishment"
+          flow_type: "product"
+          property_unit: "Mass or item count / kg or item"
+          description: "Record nursery trees, grafted plants, or other planting material crossing into orchard establishment. Retained or self-propagated material must state its origin and allocation treatment."
+          amount:
+            expression: "measured planting-material quantity by orchard block and establishment year; retain count-to-mass conversion when used"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "100"
+                upper: "400"
+                unit: "trees/ha"
+                basis: "established orchard blocks; replace with nursery and planting records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: avocado_orchard_establishment_and_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_management_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg product/ha/year"
+                basis: "all nutrient and soil-amendment products combined; replace with product records and nutrient analysis"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water_input
+          role: "Irrigation water supplied"
+          name: "Irrigation water supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation only when water is applied to the orchard. Rainfed production records zero applied irrigation with a documented water-balance or farm-management basis."
+          amount:
+            expression: "metered or calculated irrigation volume by orchard block and production year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_management_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "12,000"
+                unit: "m3/ha/year"
+                basis: "one production year; replace with metered records or a local water balance"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: orchard_energy_input
+          role: "Energy and mobile machinery fuel supplied"
+          name: "Electricity supply and mobile agricultural machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or carrier mass / kWh, L, or kg"
+          description: "Record electricity, diesel, gasoline, or other purchased energy used for pumping, orchard operations, and contracted machinery when the service is not already represented by an upstream process."
+          amount:
+            expression: "meter, invoice, fuel log, or contractor activity converted to the declared carrier basis without double counting embedded services"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_management_records
+              source_ids: []
+            ranges: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products supplied"
+          name: "Crop-protection formulation for avocado orchard management"
+          flow_type: "product"
+          property_unit: "Mass of formulation / kg"
+          description: "Record each pesticide or other crop-protection formulation by product, active ingredient, application event, and treated area. Distinct formulations must remain identifiable."
+          amount:
+            expression: "sum measured formulation mass by product and application event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_orchard_management_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: orchard_tree_replacement_waste
+          role: "Replaced or dead orchard trees sent to waste"
+          name: "Removed avocado orchard trees to waste treatment or unmanaged residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry or as-received biomass"
+          description: "Record trees removed during establishment or productive replacement as waste when they do not become a declared co-product. Trees retained as mulch or biomass transfer require a destination and allocation treatment."
+          amount:
+            expression: "measured or calculated removed-tree biomass by orchard block and year"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: orchard_land_occupation
+          role: "Land occupation by avocado orchard"
+          name: "Land occupation, orchard area"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2*a or ha*year"
+          description: "Record orchard area and occupation duration, including non-bearing establishment years when they are part of the declared orchard life."
+          amount:
+            expression: "orchard area multiplied by declared occupation time, allocated to accepted fruit output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_establishment_records
+              source_ids:
+                - fao-crop-production-methodology
+            ranges: []
+    outputs:
+      product:
+        - row_id: orchard_managed_production_output
+          role: "Orchard management output to harvest"
+          name: "Managed avocado orchard production output"
+          flow_type: "product"
+          property_unit: "Area or mass / ha or kg accepted fruit basis"
+          description: "Pass the managed orchard-year production basis to the harvest process as an internal process link. It must not be counted as an additional marketable avocado flow."
+          amount:
+            expression: "declared orchard-year area and associated accepted fruit output basis"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_management_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: orchard_emissions
+          role: "Nutrient-related and residue-related emissions to air, water, and soil"
+          name: "Managed-soil and crop-production emissions to air, water, or soil"
+          flow_type: "elementary"
+          property_unit: "Mass of emitted substance / kg substance"
+          description: "Calculate relevant emissions from collected nutrient, crop-protection, residue, and irrigation activity data using the selected geographically applicable method. Do not infer a specific elementary-flow identity until final flow binding is reviewed."
+          amount:
+            expression: "calculate emissions using collected activity data and the declared method; keep each substance and receiving compartment distinct where supported"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per orchard-year and converted to 1,000 kg accepted fruit"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_orchard_management_records
+              source_ids:
+                - ipcc-2019-refinement
+                - emep-eea-2023-guidebook
+            ranges: []
+  - id: avocado_harvest_and_farm_gate_handling
+    label: "Avocado harvest and farm-gate handling"
+    inputs:
+      product:
+        - row_id: managed_orchard_output_input
+          role: "Managed orchard output entering harvest"
+          name: "Managed avocado orchard production output"
+          flow_type: "product"
+          property_unit: "Area or mass / ha or kg accepted fruit basis"
+          description: "Receive the managed orchard-year production context from orchard management. This row supports process linkage and must not duplicate the upstream orchard inventory."
+          amount:
+            expression: "linked orchard-year harvested volume before grading or conditioning"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+        - row_id: harvest_energy_input
+          role: "Harvest energy and contracted harvest service"
+          name: "Harvest energy supply or contracted harvest service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy, carrier mass, or service / kWh, L, kg, or activity unit"
+          description: "Record fuel, electricity, or contractor activity used for picking, collection, field bins, and farm-gate handling when not already included in orchard management records."
+          amount:
+            expression: "measured carrier use or documented contractor activity assigned to accepted harvest output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per harvest campaign and converted to 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_avocado_output
+          role: "Harvested avocado fruit at farm gate"
+          name: "Fresh avocado fruit, production mix, at farm gate, unprocessed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record fruit transferred at the declared farm-gate condition. This is the terminal reference output when conditioning is absent."
+          amount:
+            expression: "measured accepted fruit mass at the declared hand-off condition"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "2,000"
+                upper: "25,000"
+                unit: "kg accepted fruit/ha/year"
+                basis: "productive orchard-year; replace with orchard records and regional evidence"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_reject_and_loss_waste
+          role: "Harvested fruit rejected or lost before hand-off"
+          name: "Avocado harvest reject or loss to waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record fruit left in the field, damaged during picking, downgraded without a declared co-product use, or otherwise rejected before hand-off. Fruit sent to a named destination is recorded separately as a co-product where justified."
+          amount:
+            expression: "measured or reconciled difference between harvested, accepted, and declared destination masses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+  - id: farm_gate_avocado_conditioning
+    label: "Farm-gate avocado conditioning"
+    inputs:
+      product:
+        - row_id: conditioning_avocado_input
+          role: "Harvested fruit entering conditioning"
+          name: "Fresh avocado fruit entering farm-gate conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record harvested fruit entering a separate on-farm washing, sorting, grading, or handling step when that activity occurs before hand-off."
+          amount:
+            expression: "measured incoming fruit mass before conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+        - row_id: conditioning_inputs
+          role: "Conditioning water, electricity, and packaging aids"
+          name: "Conditioning water, electricity, cleaning agent, or packaging aid"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume, energy, or mass / m3, kWh, or kg"
+          description: "Record water, electricity, cleaning agents, and packaging aids used before hand-off. Packaging that remains with the product must disclose its material and mass; internal handling packaging is recorded when it crosses the boundary."
+          amount:
+            expression: "meter, invoice, batch log, or measured packaging mass assigned to accepted conditioned fruit"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_avocado_output
+          role: "Conditioned avocado fruit at farm gate"
+          name: "Fresh avocado fruit, conditioned at farm gate, unprocessed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted conditioned fruit as the terminal reference output when conditioning is included in the declared boundary."
+          amount:
+            expression: "measured accepted fruit mass after conditioning and before off-farm transport"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "terminal output scaled to 1,000 kg reference fruit"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: conditioning_reject_waste
+          role: "Conditioning rejects and removed material"
+          name: "Conditioning rejects and removed material to waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record fruit and material removed by washing, sorting, grading, or trimming when it is not transferred to a declared co-product destination."
+          amount:
+            expression: "measured or reconciled incoming mass minus accepted output and named destinations"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted conditioned fruit"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_records
+              source_ids: []
+            ranges: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_orchard_establishment_over_productive_life
+    applies_to: "orchard establishment, immature years, and replacement trees"
+    rule: "Allocate establishment and non-bearing orchard inputs over the declared productive orchard life using orchard area and accepted fruit output. Report orchard life, establishment years, replacement events, and allocation basis."
+    source_ids:
+      - fao-avocado-production-guide
+      - iso-14067
+  - rule_id: allocation_accepted_and_named_destinations
+    applies_to: "accepted fruit, downgraded fruit, and residues"
+    rule: "Assign mass to accepted avocado and a named co-product only when the destination is evidenced and physically or economically distinguishable. Do not treat unmarketable losses as a co-product without a declared use."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_no_double_counting_internal_links
+    applies_to: "process links between orchard, harvest, and conditioning"
+    rule: "Use internal process links for mass balance only; do not count the same orchard output or fruit mass as an additional market product."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_mass_default_for_shared_fruit_output
+    applies_to: "multiple avocado grades or destinations"
+    rule: "Use mass allocation for shared production when no stronger causal partition is documented, and disclose grade definitions, moisture or dry-matter basis, and rejected-fruit treatment."
+    source_ids:
+      - iso-14044
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "If a study reports avocado fruit and a documented co-product from the same orchard or conditioning operation, the data package shall state the partitioning rule, common process inventory, and destination evidence. Economic allocation is not a default substitute for missing mass or causal data."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_orchard_establishment_records
+      process_id: "avocado_orchard_establishment_and_management"
+      flow_role: "planting material; replacement trees; land occupation"
+      record_type: "orchard register, nursery invoice, planting map, removal log"
+      raw_fields: "block_id; cultivar; tree count; planting year; replacement count; area; previous land use; removed biomass; destination"
+      collection_method: "reconcile orchard register, maps, invoices, and field records"
+      unit: "trees, ha, kg, orchard-year"
+      frequency: "establishment and each replacement event; annual update"
+      temporal_coverage: "full establishment period and declared productive life"
+      site_scope: "each orchard block"
+      aggregation_rule: "aggregate by block, establishment year, and declared allocation horizon"
+      quality_evidence: "signed farm register, planting map, supplier record, or auditable field log"
+    - protocol_id: cp_orchard_management_records
+      process_id: "avocado_orchard_establishment_and_management"
+      flow_role: "nutrients; irrigation; energy; crop protection; emissions"
+      record_type: "input ledger, water meter, energy meter, spray record, contractor invoice"
+      raw_fields: "block_id; product; formulation; nutrient analysis; amount; date; area; water volume; energy carrier; fuel; treatment; soil or residue event"
+      collection_method: "collect primary records and reconcile invoices, meters, and application logs"
+      unit: "kg product, kg nutrient, m3, kWh, L, ha"
+      frequency: "each application or operation; annual aggregation"
+      temporal_coverage: "one production year plus establishment records where applicable"
+      site_scope: "each orchard block and shared facility"
+      aggregation_rule: "sum by block and year, then allocate shared inputs by documented area or activity"
+      quality_evidence: "invoices, meter readings, product labels, application logs, method calculation record"
+    - protocol_id: cp_harvest_output_records
+      process_id: "avocado_harvest_and_farm_gate_handling"
+      flow_role: "orchard output; harvest energy; accepted fruit; rejects and losses"
+      record_type: "harvest tickets, weighbridge record, bin log, contractor record, grading log"
+      raw_fields: "block_id; harvest date; cultivar; harvested mass; accepted mass; rejected mass; destination; carrier use; contractor activity; maturity or grade"
+      collection_method: "reconcile field, bin, scale, grading, and destination records"
+      unit: "kg, L, kWh, activity unit"
+      frequency: "each harvest lot; annual closure"
+      temporal_coverage: "one production year"
+      site_scope: "each orchard block and harvest facility"
+      aggregation_rule: "aggregate by block, lot, and destination; retain mass balance"
+      quality_evidence: "weighbridge or scale record, lot traceability, grading report, contractor invoice"
+    - protocol_id: cp_conditioning_records
+      process_id: "farm_gate_avocado_conditioning"
+      flow_role: "incoming fruit; water; energy; packaging; accepted output; rejects"
+      record_type: "batch sheet, meter record, packaging ledger, waste log"
+      raw_fields: "batch_id; incoming mass; accepted mass; reject mass; water; electricity; cleaning agent; packaging material and mass; destination"
+      collection_method: "batch reconciliation with meter and material records"
+      unit: "kg, m3, kWh, kg packaging"
+      frequency: "each conditioning batch"
+      temporal_coverage: "declared production year"
+      site_scope: "farm conditioning site"
+      aggregation_rule: "reconcile inputs, accepted output, rejects, and named destinations by batch"
+      quality_evidence: "batch sheet, scale record, meter reading, packaging invoice, waste receipt"
+  calculation_rules:
+    - id: calc_area_to_reference_mass
+      applies_to: "all orchard-year flows"
+      rule: "normalized amount = orchard-year activity total / accepted farm-gate fruit mass × 1,000 kg"
+      inputs:
+        - "activity total"
+        - "accepted fruit mass"
+        - "reference amount"
+      output: "amount per 1,000 kg accepted fruit"
+      source_ids: []
+    - id: calc_orchard_life_allocation
+      applies_to: "establishment and replacement inputs"
+      rule: "allocate establishment or replacement total to each declared production year using the documented productive-life horizon and accepted fruit output basis; retain non-bearing years in the denominator when specified"
+      inputs:
+        - "establishment total"
+        - "replacement events"
+        - "orchard life"
+        - "annual accepted output"
+      output: "allocated orchard input per production year and reference flow"
+      source_ids:
+        - fao-avocado-production-guide
+        - iso-14067
+    - id: calc_nutrient_basis
+      applies_to: "nutrient and amendment input"
+      rule: "nutrient mass = product mass × declared nutrient fraction; report product mass and nutrient mass separately"
+      inputs:
+        - "product quantity"
+        - "label or supplier nutrient analysis"
+      output: "kg product and kg N, kg P2O5, or kg K2O"
+      source_ids:
+        - fao-crop-production-methodology
+    - id: calc_mass_balance_harvest
+      applies_to: "harvest output and rejects"
+      rule: "harvested mass = accepted fruit + named co-products + rejects/losses, with documented stock change and measurement basis"
+      inputs:
+        - "harvest tickets"
+        - "accepted mass"
+        - "co-product destinations"
+        - "reject and loss mass"
+        - "stock change"
+      output: "reconciled harvest balance"
+      source_ids: []
+    - id: calc_conditioning_balance
+      applies_to: "conditioning output and waste"
+      rule: "incoming fruit + conditioning inputs crossing as product or material = accepted conditioned fruit + named destinations + waste, after documenting moisture or handling adjustments"
+      inputs:
+        - "batch inputs"
+        - "accepted output"
+        - destinations
+        - waste
+        - "adjustment basis"
+      output: "reconciled batch balance"
+      source_ids: []
+    - id: calc_direct_field_emissions
+      applies_to: "soil, residue, and crop-protection emissions"
+      rule: "apply the selected geographically applicable method to collected nutrient, residue, and activity data; do not apply a generic factor without recording tier, geography, and activity basis"
+      inputs:
+        - "nutrient inputs"
+        - "residue fate"
+        - "soil or climate context"
+        - "method parameters"
+      output: "substance-specific elementary flows by compartment"
+      source_ids:
+        - ipcc-2019-refinement
+        - emep-eea-2023-guidebook
+  data_quality_requirements:
+    - id: dq_orchard_identity
+      applies_to: "all processes"
+      requirement: "Identify orchard block, cultivar or cultivar group, country and region, crop year, orchard age, productive status, and conditioning boundary."
+      evidence: "orchard register; farm map; dataset metadata"
+    - id: dq_perennial_time_basis
+      applies_to: "establishment and management"
+      requirement: "State establishment year, non-bearing period, productive-life horizon, replacement events, and allocation basis used for orchard assets."
+      evidence: "orchard history; allocation worksheet"
+    - id: dq_input_traceability
+      applies_to: "nutrients, irrigation, energy, crop protection, and planting material"
+      requirement: "Trace each material or energy input to an invoice, meter, product label, contractor record, or justified field record; retain product and nutrient identities separately."
+      evidence: "primary farm records; supplier records"
+    - id: dq_mass_balance
+      applies_to: "harvest and conditioning"
+      requirement: "Reconcile harvested, accepted, rejected, co-product, stock-change, and waste masses within a documented tolerance and explain moisture or grading adjustments."
+      evidence: "weighbridge, lot, grading, batch, and destination records"
+    - id: dq_temporal_coverage
+      applies_to: "all processes"
+      requirement: "Cover the full declared production year and include establishment or replacement records needed by orchard-life allocation."
+      evidence: "annual production ledger; orchard history"
+    - id: dq_emission_method
+      applies_to: "elementary flows"
+      requirement: "Record method name, tier, geography, activity data, and assumptions for each calculated emission; keep evidence gap flow identity separate from amount evidence."
+      evidence: "calculation worksheet; method reference"
+validation_rules:
+  - rule_id: validation_reference_output
+    applies_to: "reference flow and terminal process"
+    rule: "Exactly one terminal accepted avocado output shall be linked to the declared reference flow, with no fixed identity assumed until verified; the binding remains parameterized in this candidate."
+    source_ids: []
+  - rule_id: validation_orchard_life_disclosure
+    applies_to: "orchard establishment and management"
+    rule: "Reject or flag a dataset that includes perennial orchard production but omits orchard age, establishment period, productive-life horizon, replacement events, or allocation basis."
+    source_ids:
+      - fao-avocado-production-guide
+      - iso-14067
+  - rule_id: validation_irrigation_and_nutrients
+    applies_to: "irrigation and nutrient inputs"
+    rule: "Check that zero irrigation or zero nutrient input is supported by farm records or documented production rationale, and that product mass is not confused with nutrient mass."
+    source_ids:
+      - fao-crop-production-methodology
+  - rule_id: validation_mass_balance
+    applies_to: "harvest and conditioning"
+    rule: "Check mass balance for each harvest or conditioning boundary and require explanation for evidence gap differences, reject destinations, stock changes, or moisture conversions."
+    source_ids: []
+  - rule_id: validation_boundary_exclusions
+    applies_to: "downstream activities"
+    rule: "Reject unreported inclusion of off-farm transport, storage, processing into oil or purée, retail, consumer use, or packaging end-of-life unless the study declares a boundary extension."
+    source_ids: []
+  - rule_id: validation_bilingual_alignment
+    applies_to: "English and Chinese renderings"
+    rule: "Require identical machine identifiers, controlled tokens, process ids, row ids, rule ids, protocol ids, requirement ids, and source ids in both language files."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "secondary_dataset for a reviewed farm-gate avocado production dataset; background_dataset only when compatible upstream inputs and elementary flows are explicitly published"
+  downstream_use: "foreground data package construction, process projection, lifecycle model aggregation, and comparison of fresh avocado supply scenarios"
+  allowed_use: "fresh, unprocessed avocado fruit at a declared farm gate and conditioning state, with orchard-life allocation and quality metadata preserved"
+  excluded_use: "direct substitution for avocado oil, pulp, purée, frozen or dried products; direct use without regional, orchard-age, irrigation, cultivar, or market-state review; downstream logistics or consumer studies outside the declared boundary"
+  required_metadata: "canonical PCR id; CPC reference; orchard block or aggregation scope; cultivar; geography; crop year; orchard age; productive-life and allocation basis; irrigation; nutrient and crop-protection product basis; yield; accepted and rejected fruit; conditioning status; flow binding status"
+  required_quality_disclosure: "primary-record coverage, temporal coverage, mass-balance result, identity evidence gaps, parameterized Flow Set use, emission method and tier, assumptions, and regional representativeness"
+  update_trigger: "change in orchard-life or allocation method, product identity taxonomy, Flow Set taxonomy, emission method, production route, conditioning boundary, or evidence that materially changes category guidance"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-crop-production-methodology"
+    type: "official_guidance"
+    reference: "FAO crop production and farm-data methodology guidance"
+    used_for: "crop-cycle decomposition, field records, farm-gate boundary, and input data collection"
+  - id: "fao-avocado-production-guide"
+    type: "extension_guidance"
+    reference: "FAO or national agricultural extension guidance for avocado orchard establishment and management"
+    used_for: "perennial orchard establishment, productive life, orchard management, and harvest context"
+  - id: "ipcc-2019-refinement"
+    type: "method_factor"
+    reference: "2019 IPCC Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories"
+    used_for: "managed-soil and residue emission calculation methods"
+  - id: "emep-eea-2023-guidebook"
+    type: "method_factor"
+    reference: "EMEP/EEA air pollutant emission inventory guidebook, current agricultural chapters"
+    used_for: "agricultural emission method selection and receiving-compartment treatment"
+  - id: "iso-14044"
+    type: "standard"
+    reference: "ISO 14044, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "allocation hierarchy, co-product treatment, and validation expectations"
+  - id: "iso-14067"
+    type: "standard"
+    reference: "ISO 14067, Greenhouse gases — Carbon footprint of products"
+    used_for: "product-level boundary disclosure and perennial production allocation context"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:30c38bb21eff4d72063374845ec0b35781cd7db5cb82546c8cb4ed974ac1cbdc"
+  generated_content_sha256: "sha256:f0d49b0bd158d5491d2230344ad9f30fc3f6f00d2b83671e9f4ee1115dcc1cf0"

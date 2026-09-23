@@ -1,10 +1,1442 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01620"
-  title: "Tea leaves"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.tea-leaves"
+  classification_refs: "CPC 3.0: 01620 Tea leaves"
+  covered_products: "Named dry tea products made only from *Camellia sinensis*: green, black, oolong, white, yellow, and dark tea, with the selected primary-processing route disclosed"
+  excluded_products: "Herbal or fruit infusions; tea beverages; extracts; concentrates; instant tea; scented or flavoured tea; decaffeinated tea; consumer-prepared tea; packaged retail presentation"
+  representative_product: "Dry made tea from plucked *Camellia sinensis* shoots and leaves"
+  production_route: "Managed perennial tea plantation, plucking, green-leaf handling, route-specific primary processing, drying, grading, storage, and primary-processing gate hand-off"
+  market_state: "Dry, graded tea at the declared primary-processing gate, with tea type, moisture, grade, lot, route, and storage condition disclosed"
+functional_unit:
+  what: "Dry made tea delivered at the declared primary-processing gate"
+  how_much: "1 kg"
+  how_well: "Named tea type; moisture and grade declared; produced only from *Camellia sinensis* leaves, buds, and shoots"
+  how_long_or_cycle: "One complete tea production cycle and the reporting period covering plantation management, plucking, processing, grading, and gate storage"
+  reference_flow_link: "Tea d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The foreground boundary starts with the managed tea plantation and its establishment or replacement records for the reporting period. It includes field inputs, land occupation, plantation maintenance, plucking, collection, green-leaf handling, selected primary-processing route, drying, grading, storage to the declared gate, process rejects, residues, direct emissions, wastewater where generated, and all allocation decisions required to reconcile the lot."
+      source_ids: []
+    - rule_id: system_boundary_rule_2
+      applies_to: "foreground_system_boundary"
+      rule: "The boundary ends when dry, graded tea crosses the declared primary-processing gate before packaging presentation, retail, downstream distribution, consumer brewing, or beverage preparation. Background datasets for electricity, fuels, fertilizer products, crop-protection products, water supply, and treatment services are outside the foreground PCR boundary but are required when the foreground package uses them."
+      source_ids: []
+    - rule_id: boundary_01
+      applies_to: "plantation_to_gate"
+      rule: "Include the managed plantation, plucking, selected primary-processing route, drying, grading, and gate storage needed to produce the declared dry tea reference flow."
+      source_ids:
+        - iso-20715-2023-tea-classification
+        - iso-14044-2006
+    - rule_id: boundary_02
+      applies_to: "route_selection"
+      rule: "Select one named tea route per lot and include only the route states that occur; do not count withering, oxidation, rolling, or yellowing when the selected route does not use that state."
+      source_ids:
+        - iso-20715-2023-tea-classification
+        - fao-tea-processing-manual
+    - rule_id: boundary_03
+      applies_to: "gate_definition"
+      rule: "The declared gate is after primary processing, drying, grading, and included storage, and before packaging presentation, retail, downstream distribution, consumer brewing, or beverage preparation."
+      source_ids:
+        - iso-14044-2006
+    - rule_id: boundary_04
+      applies_to: "recursive_same_category_input"
+      rule: "Same-category upstream tea input is a declared dataset input and must not be expanded recursively inside the receiving tea process."
+      source_ids:
+        - mass-balance-identity
+    - rule_id: boundary_05
+      applies_to: "direct_emissions_and_residues"
+      rule: "Record direct field and processing emissions, wastewater, dust, residues, rejects, and their destinations when they cross the foreground boundary or are required for mass reconciliation."
+      source_ids:
+        - fao-tea-processing-manual
+        - ipcc-2019-refinement-afolu
+boundary_abstraction:
+  declared_starting_condition: "Managed *Camellia sinensis* plantation and the reported reporting-period inputs, land occupation, harvest records, or a documented upstream plantation dataset"
+  starting_condition_role: "The production context that supplies fresh tea shoots and leaves to the independent plucking and collection node"
+  product_classification_scope: "CPC 3.0: 01620 Tea leaves; named tea products from *Camellia sinensis* only"
+  recursive_input_rule: "If a same-category tea product is supplied as an input to a later tea route, record it as an upstream tea dataset with its gate and quality state; do not recursively include its plantation or primary-processing burdens inside the receiving lot"
+  upstream_dataset_requirement: "Use an upstream dataset when plantation, fresh-leaf supply, or a pre-processed tea intermediate is outside the foreground operator's reporting boundary; disclose UUID, route, gate, geography, period, and quality state"
+  disclosure: "Declare tea type, route, plantation phase, fresh-leaf or dry-tea basis, grade, moisture, rejected fraction, residue destination, storage duration, and whether packaging is excluded"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Tea"
+    uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200b9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "*Camellia sinensis*"
+    - "named tea type"
+    - "dry made-tea condition"
+    - grade
+    - moisture
+    - "lot or campaign"
+    - "declared primary-processing gate"
+    - "packaging excluded"
+reference_flows:
+  []
+measurement_rules:
+  - id: measurement_01
+    applies_to: "reference product and all dry-tea product states"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report the reference flow and product-state amounts on a mass basis; retain wet-basis or dry-basis moisture records separately."
+  - id: measurement_02
+    applies_to: "fresh leaf, withered leaf, and dried tea conversion"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg fresh material and kg dry material"
+    rule: "Record the actual state before conversion and calculate state-to-state yields from lot mass and moisture rather than applying an unreferenced universal factor."
+  - id: measurement_03
+    applies_to: "fertilizer and crop-protection inputs"
+    required_property_ref:
+      name: "Mass of nutrient or formulated product"
+      uuid: ""
+    required_unit: "kg nutrient or kg product"
+    rule: "Keep nutrient mass separate from formulated product mass and keep active ingredient or product identity in the foreground record."
+  - id: measurement_04
+    applies_to: "water, fuel, and electricity"
+    required_property_ref:
+      name: "Volume, energy, or mass as supplied"
+      uuid: ""
+    required_unit: "L, m3, MJ, kWh, or kg"
+    rule: "Preserve the supplied unit and convert only through a declared density, heating value, meter conversion, or supplier factor."
+  - id: measurement_05
+    applies_to: "perennial plantation attribution"
+    required_property_ref:
+      name: "Mass and area-time"
+      uuid: ""
+    required_unit: "kg, m2, and m2·year"
+    rule: "Link establishment, replacement, pruning, land occupation, and termination records to the production period and allocate them only once to the tea output."
+process_map:
+  - id: tea_plantation_management
+    name: "Managed tea plantation management"
+    inclusion: "required"
+    inclusion_condition: "Every tea lot requires a declared plantation source or upstream plantation dataset."
+    role: "perennial biological production"
+    quantitative_reference: "per reporting period and 1 kg dry tea"
+  - id: tea_plucking_collection
+    name: "Plucking and green-leaf collection"
+    inclusion: "required"
+    inclusion_condition: "Every lot requires a harvest or plucking record and a green-leaf hand-off."
+    role: "independent harvest and capture"
+    quantitative_reference: "kg fresh leaf collected"
+  - id: tea_green_leaf_handling
+    name: "Green-leaf reception and primary conditioning"
+    inclusion: "required"
+    inclusion_condition: "Include reception, temporary holding, cooling or ventilation, and the first raw-to-prepared hand-off."
+    role: "primary conditioning"
+    quantitative_reference: "kg fresh leaf received and kg conditioned leaf"
+  - id: tea_route_processing
+    name: "Route-specific tea processing and drying"
+    inclusion: "required"
+    inclusion_condition: "Select exactly one named route: green, black, oolong, white, yellow, or dark tea."
+    role: "material treatment and stabilization"
+    quantitative_reference: "kg dry tea output"
+  - id: tea_grading_storage_gate
+    name: "Grading, storage, and primary-processing gate"
+    inclusion: "required"
+    inclusion_condition: "Include grading and storage until the declared dry-tea gate; exclude packaging presentation."
+    role: "grading, storage, and hand-off"
+    quantitative_reference: "1 kg dry tea reference flow"
+process_inventory:
+  - id: tea_plantation_management
+    label: "Managed tea plantation management"
+    inputs:
+      product:
+        - row_id: tea_planting_material
+          role: "Tea planting material and replacement stock"
+          name: "Tea planting material (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record seed, cuttings, nursery plants, or replacement planting stock used to establish or replace the managed tea plantation. Do not apply this input to mature plantation periods unless a replacement event is recorded."
+          amount:
+            expression: "measured planting material by establishment or replacement event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reporting period and converted to 1 kg dry tea"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg planting material/kg dry tea"
+                basis: "reporting-period replacement and establishment burden normalized to dry tea"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_plantation_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reporting period and converted to 1 kg dry tea"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.40"
+                unit: "kg N/kg dry tea"
+                basis: "broad plantation nutrient input screen; replace with field records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.60"
+                unit: "kg combined P and K nutrient/kg dry tea"
+                basis: "broad plantation nutrient input screen; retain separate P and K records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_crop_protection_input
+          role: "Crop-protection formulation"
+          name: "Named crop-protection formulation (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass of formulated product / kg"
+          description: "Record each named crop-protection product, active ingredient where available, application event, and treated area."
+          amount:
+            expression: "measured product mass by application event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per treated area and converted to 1 kg dry tea"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.03"
+                unit: "kg formulated product/kg dry tea"
+                basis: "broad first-pass screen; preserve named product identity for background linking"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_field_water_input
+          role: "Irrigation and field water"
+          name: "Irrigation water (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Record irrigation, fertigation carrier water, and other field water supplied within the plantation boundary. Rainfall is recorded as a site descriptor when relevant but is not treated as a purchased product input."
+          amount:
+            expression: "metered or estimated field water by block and period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reporting period and converted to 1 kg dry tea"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1,500"
+                unit: "L/kg dry tea"
+                basis: "irrigation and fertigation carrier water; replace with meter or irrigation records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_plantation_energy_input
+          role: "Plantation fuel and electricity"
+          name: "Plantation fuel and electricity (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record diesel, petrol, electricity, and other energy carriers used for irrigation, pruning, spraying, mowing, and field access."
+          amount:
+            expression: "measured fuel and electricity by field activity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reporting period and converted to 1 kg dry tea"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4.0"
+                unit: "MJ/kg dry tea"
+                basis: "field operation and irrigation energy before plucking"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: tea_land_occupation
+          role: "Agricultural land occupation"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / m2·year"
+          description: "Record land area, plantation phase, reporting period, and productive tea output used to allocate land occupation to the reference flow."
+          amount:
+            expression: "measured managed area multiplied by the reporting period and allocated by declared tea output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "20"
+                unit: "m2·year/kg dry tea"
+                basis: "productive plantation area and reporting-period yield"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: tea_shoots_on_bush
+          role: "Managed tea shoots available for plucking"
+          name: "Tender tea shoots and leaves (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the intended tender-shoot and leaf output from the managed plantation before the independent plucking node. The collected hand-off must be reconciled to harvested fresh leaf."
+          amount:
+            expression: "measured or calculated shoot output available to the plucking campaign"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "3.0"
+                upper: "12.0"
+                unit: "kg fresh shoots/kg dry tea"
+                basis: "plantation output reconciled to the selected dry-tea route"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: tea_plantation_residue
+          role: "Pruned or removed plantation biomass"
+          name: "Tea plantation biomass residue (route-specific UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record prunings, removed branches, weeds, and non-product biomass separately from harvested tea shoots, including destination and any recovered use."
+          amount:
+            expression: "measured or estimated residue mass by operation and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reporting period and converted to 1 kg dry tea"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_destination_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3.0"
+                unit: "kg residue/kg dry tea"
+                basis: "pruning and removed biomass; record composting, field return, combustion, or disposal destination"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: tea_plucking_collection
+    label: "Plucking and green-leaf collection"
+    inputs:
+      product:
+        - row_id: tea_plucking_source
+          role: "Tender tea shoots available for plucking"
+          name: "Tender tea shoots and leaves (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The plucking node receives the intended shoot state from the managed plantation and must record the collection campaign and hand-off to green-leaf handling."
+          amount:
+            expression: "mass of source shoots assigned to the plucking campaign"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "3.0"
+                upper: "12.0"
+                unit: "kg fresh shoots/kg dry tea"
+                basis: "source-shoot mass reconciled to the dry-tea output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: tea_plucking_energy
+          role: "Plucking and collection energy"
+          name: "Plucking and collection energy (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record hand-plucking services as foreground labour or equipment activity where material, and record machine fuel or electricity as supplied energy."
+          amount:
+            expression: "measured fuel or electricity for plucking, bins, and collection equipment"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg fresh leaf collected and converted to 1 kg dry tea"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1.5"
+                unit: "MJ/kg dry tea"
+                basis: "plucking, loading, and field collection equipment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: tea_fresh_leaf_collected
+          role: "Fresh tea leaves collected for processing"
+          name: "Fresh tea leaves collected (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The collected output is fresh *Camellia sinensis* leaf, bud, and shoot material transferred to green-leaf handling. It is not the finished Tea reference flow."
+          amount:
+            expression: "weighed fresh leaf at the receiving or collection hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "3.0"
+                upper: "8.0"
+                unit: "kg fresh leaf/kg dry tea"
+                basis: "fresh leaf moisture and route yield; replace with lot mass balance"
+                basis_kind: "reference_flow"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-tea-processing-manual
+                  - mass-balance-identity
+      waste:
+        - row_id: tea_plucking_loss
+          role: "Plucking loss and non-tea material"
+          name: "Plucking loss and non-tea material (route-specific UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record dropped leaves, unsuitable shoots, foreign material, and field loss separately from the intended collected output and state the destination."
+          amount:
+            expression: "measured or reconciled loss by plucking campaign"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_output_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.8"
+                unit: "kg loss/kg dry tea"
+                basis: "dropped, rejected, or non-tea material at harvest"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: tea_green_leaf_handling
+    label: "Green-leaf reception and primary conditioning"
+    inputs:
+      product:
+        - row_id: tea_green_leaf_input
+          role: "Fresh tea leaves received"
+          name: "Fresh tea leaves collected (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The primary-conditioning node receives the raw collected state, confirms lot identity, records time from plucking to reception, and creates a prepared leaf state for the selected route."
+          amount:
+            expression: "weighed fresh leaf received by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "3.0"
+                upper: "8.0"
+                unit: "kg fresh leaf/kg dry tea"
+                basis: "lot-level mass balance to dry made tea"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: tea_green_leaf_water
+          role: "Green-leaf handling water"
+          name: "Green-leaf handling water (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Record water used for cleaning, dust suppression, or conditioning only when it crosses the boundary. Dry handling with no water is a valid zero record."
+          amount:
+            expression: "metered or batch-estimated water use"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "L/kg dry tea"
+                basis: "water crossing the handling boundary; dry handling may be zero"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: tea_prepared_leaf
+          role: "Prepared green leaf for route processing"
+          name: "Prepared green tea leaf (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This prepared intermediate is an intended process output state and is handed to the selected route. It must not be counted again as finished tea."
+          amount:
+            expression: "weighed conditioned leaf after reception, cooling, ventilation, or temporary holding"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "2.8"
+                upper: "8.0"
+                unit: "kg prepared leaf/kg dry tea"
+                basis: "post-reception state before route-specific treatment"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: tea_green_leaf_reject
+          role: "Green-leaf reception reject and handling loss"
+          name: "Green-leaf reception reject (route-specific UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged, overheated, contaminated, or otherwise rejected green leaf. State whether it is returned to field composting, routed to recovery, downgraded, or discarded."
+          amount:
+            expression: "weighed or reconciled reject mass by lot"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_destination_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg reject/kg dry tea"
+                basis: "incoming-lot rejection and handling loss"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: tea_route_processing
+    label: "Route-specific tea processing and drying"
+    inputs:
+      product:
+        - row_id: tea_route_leaf_input
+          role: "Prepared green leaf entering the selected route"
+          name: "Prepared green tea leaf (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the prepared leaf state entering one and only one named route. The route is indexed by lot or campaign and the input must reconcile to the preceding hand-off."
+          amount:
+            expression: "weighed route input by batch or campaign"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "2.8"
+                upper: "8.0"
+                unit: "kg prepared leaf/kg dry tea"
+                basis: "selected route input reconciled to dry tea"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: tea_processing_residue
+          role: "Route-specific tea processing residue and dust"
+          name: "Tea processing residue and dust (route-specific UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record leaf fragments, stems, dust, sweepings, sludge, and other residual states separately. A sold tea-grade fraction is an intended output, not waste; a discarded fraction requires a destination."
+          amount:
+            expression: "measured residue mass by batch and destination"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_destination_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.50"
+                unit: "kg residue/kg dry tea"
+                basis: "leaf fragments, stems, dust, and treatment residuals"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_drying_direct_emissions
+          role: "Direct air emissions from thermal drying"
+          name: "Reported drying emissions by substance and receiving medium (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg substance"
+          description: "Record reported pollutants and receiving media from fuel combustion or process drying. Do not replace a named pollutant with a broad unqualified emission category."
+          amount:
+            expression: "measured stack or calculated emissions from fuel and process records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg reported substance/kg dry tea"
+                basis: "substance-specific result or factor-based estimate; not a universal pollutant identity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: tea_withered_leaf
+          role: "Withered leaf intermediate"
+          name: "Withered tea leaf (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only for black, oolong, and white routes where withering is documented. Withered leaf is a prepared intermediate and is not an additional final product."
+          amount:
+            expression: "weighed post-withering intermediate by batch"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "2.0"
+                upper: "6.5"
+                unit: "kg withered leaf/kg dry tea"
+                basis: "route-specific moisture loss and handling loss"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_fixed_leaf
+          role: "Enzyme-inactivated or fixed leaf intermediate"
+          name: "Enzyme-inactivated tea leaf (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only for green, yellow, or dark routes where heat treatment or enzyme inactivation is documented. This is a route state, not the finished reference flow."
+          amount:
+            expression: "weighed post-fixation intermediate by batch"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1.5"
+                upper: "6.5"
+                unit: "kg fixed leaf/kg dry tea"
+                basis: "route-specific moisture and handling loss"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_rolled_leaf
+          role: "Rolled, macerated, or shaped leaf intermediate"
+          name: "Rolled, macerated, or shaped tea leaf (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only when the selected named route includes rolling, maceration, shaping, or equivalent cell-disruption treatment. Do not add it to white tea unless the lot record documents a permitted additional treatment."
+          amount:
+            expression: "weighed post-rolling or post-shaping intermediate by batch"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1.3"
+                upper: "5.5"
+                unit: "kg rolled or shaped leaf/kg dry tea"
+                basis: "route-specific pre-drying intermediate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_oxidized_leaf
+          role: "Oxidized or partially oxidized leaf intermediate"
+          name: "Oxidized or partially oxidized tea leaf (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only for black and oolong routes where aeration or enzymatic oxidation is documented. Record the oxidation state and duration as batch metadata; do not call it fermentation unless the operational process is reported as such."
+          amount:
+            expression: "weighed post-oxidation intermediate by batch"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1.2"
+                upper: "5.0"
+                unit: "kg oxidized leaf/kg dry tea"
+                basis: "route-specific pre-drying intermediate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_dried_made_tea
+          role: "Dry made tea before grading"
+          name: "Tea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The drying output is the stabilized usable state handed to grading. The fixed platform Tea identity is applied only to this dry product state and later gate output."
+          amount:
+            expression: "weighed dry made tea after the final drying step"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids:
+                - iso-20715-2023-tea-classification
+            ranges:
+              - role: typical_range
+                lower: "0.15"
+                upper: "0.40"
+                unit: "kg dry made tea/kg fresh leaf"
+                basis: "lot-level dry output yield; moisture recorded separately"
+                basis_kind: "reference_flow"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-tea-processing-manual
+      waste:
+        - row_id: tea_processing_loss
+          role: "Processing and drying loss"
+          name: "Tea processing and drying loss (route-specific UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record mass lost through handling, dust, trim, evaporation beyond the measured moisture change, or rejected material, and link each fraction to rework, recovery, composting, energy recovery, or disposal."
+          amount:
+            expression: "mass balance difference after accounting for intermediates, product outputs, and residues"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_processing_batch_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1.5"
+                unit: "kg loss/kg dry tea"
+                basis: "mass balance after measured moisture and declared residues"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: tea_grading_storage_gate
+    label: "Grading, storage, and primary-processing gate"
+    inputs:
+      product:
+        - row_id: tea_grading_input
+          role: "Dry made tea received for grading"
+          name: "Tea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "The grading node receives the stabilized dry product and classifies it into declared grade or destination states. It is separate from primary processing because the grade states and hand-offs are independent outputs."
+          amount:
+            expression: "weighed dry tea received by lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quality_and_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.98"
+                upper: "1.02"
+                unit: "kg graded input/kg dry tea reference flow"
+                basis: "receiving-to-grade mass reconciliation"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: tea_grading_energy
+          role: "Grading electricity and screening energy"
+          name: "Grading and screening energy (route-specific UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record electricity or fuel used for screening, sorting, sieving, and quality classification."
+          amount:
+            expression: "meter or batch allocation to the graded tea lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg dry tea"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_activity_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1.5"
+                unit: "MJ/kg dry tea"
+                basis: "screening, sorting, and grading services"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: tea_primary_grade_output
+          role: "Accepted primary tea grade at gate"
+          name: "Tea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This is an intended output state. The final gate output must carry the selected tea type, grade, moisture, lot, route, and storage condition."
+          amount:
+            expression: "weighed accepted grade output"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg dry tea reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quality_and_storage_records
+              source_ids:
+                - iso-20715-2023-tea-classification
+            ranges:
+              - role: qa_guardrail
+                lower: "0.60"
+                upper: "1.00"
+                unit: "kg accepted tea/kg graded input"
+                basis: "grade-dependent accepted fraction"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_secondary_grade_output
+          role: "Marketable secondary tea grade"
+          name: "Tea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This is an intended output state when it is sold or transferred as tea. Record the second tea-grade or destination state with its own hand-off; it must not be silently treated as waste."
+          amount:
+            expression: "weighed secondary marketable tea output by grade"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg dry tea reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_quality_and_storage_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.40"
+                unit: "kg secondary tea/kg graded input"
+                basis: "independently weighed marketable secondary grade"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_recovered_fraction_output
+          role: "Recovered tea dust or small-particle tea product"
+          name: "Tea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This is an intended output state only when it is sold or transferred as tea. Otherwise route it through the residue or reject card with its destination and burden treatment."
+          amount:
+            expression: "weighed recovered tea fraction by destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg dry tea reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_destination_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg recovered tea product/kg graded input"
+                basis: "only the fraction with a declared tea-product hand-off"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: tea_gate_output
+          role: "Dry tea gate output"
+          name: "Tea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d16090ca-ddbe-4fd4-a498-fe4cab8bb525"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "This is the single reference-flow hand-off used for downstream LCA modelling. It is the post-grading dry tea amount after accounting for any declared secondary grades, recovered tea product, rejects, and storage losses."
+          amount:
+            expression: "accepted dry tea crossing the declared gate, normalized to 1 kg"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg dry tea reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quality_and_storage_records
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0.98"
+                upper: "1.02"
+                unit: "kg gate output/kg reference flow"
+                basis: "final normalized reference-flow reconciliation"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: tea_reject_or_storage_loss
+          role: "Off-spec tea, rejects, and storage loss"
+          name: "Off-spec tea and storage loss (route-specific UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identify every rejected or off-spec state and declare whether it is reworked, downgraded, recovered, returned to an upstream route, composted, used for energy recovery, or discarded. Do not count unresolved rejects as accepted tea output."
+          amount:
+            expression: "weighed rejected, downgraded, damaged, or lost material by lot and storage period"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg dry tea reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_destination_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.30"
+                unit: "kg rejected or lost tea/kg graded input"
+                basis: "grading rejects, handling loss, and storage loss before gate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: tea_storage_emissions
+          role: "Storage dust and reported warehouse emissions"
+          name: "Reported storage dust or emission by substance and medium (UUID unresolved)"
+          flow_type: "elementary"
+          property_unit: "Mass / kg substance"
+          description: "Record dust, ventilation, and any reported emissions caused by dry-tea storage. Use named substances and receiving media when a measurement or factor is available."
+          amount:
+            expression: "measured or calculated emissions allocated to storage duration and lot"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg dry tea reference flow"
+              kind: "storage_duration"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_records
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "kg reported substance/kg dry tea"
+                basis: "storage ventilation and dust records; substance-specific reporting required"
+                basis_kind: "storage_duration"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_01
+    applies_to: "plantation_phase"
+    rule: "Attribute perennial establishment, replacement, land occupation, and plantation management to the reporting-period tea output using the declared period and output basis; do not allocate the same phase burden again at processing."
+    source_ids:
+      - iso-14044-2006
+      - ipcc-2019-refinement-afolu
+  - rule_id: allocation_02
+    applies_to: "route_batch"
+    rule: "Index inputs, outputs, cleaning, drying, changeover, and rejects by route, batch, campaign, or reporting period so shared runs cannot be counted twice."
+    source_ids:
+      - iso-14044-2006
+      - mass-balance-identity
+  - rule_id: allocation_03
+    applies_to: "marketable_tea_outputs"
+    rule: "Enumerate the accepted primary grade, marketable secondary grade, and recovered tea fraction when each is an intended tea output. Decision: use subdivision and direct measurement first; when outputs are physically inseparable, use allocation by measured dry tea mass as the default fallback, and disclose any economic allocation only as a documented sensitivity. Apply one method consistently to the affected process."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_04
+    applies_to: "residues_and_rejects"
+    rule: "A residue is not a co-product merely because it has a possible use. Treat it as an intended output only when there is a declared hand-off, destination, and product-quality record; otherwise retain the producing process burden and route it as residue or waste."
+    source_ids:
+      - iso-14044-2006
+      - mass-balance-identity
+  - rule_id: allocation_05
+    applies_to: "route_alternatives"
+    rule: "Green, black, oolong, white, yellow, and dark routes are mutually exclusive per lot. Do not combine route burdens or assign oxidation, rolling, withering, fixation, or piling to a lot without route evidence."
+    source_ids:
+      - iso-20715-2023-tea-classification
+  - rule_id: allocation_06
+    applies_to: "multi_period_attribution"
+    rule: "Link establishment, replacement, pruning, termination, inputs, outputs, and storage events to a reporting period or phase and prevent double attribution across periods."
+    source_ids:
+      - iso-14044-2006
+      - ipcc-2019-refinement-afolu
+  - rule_id: allocation_07
+    applies_to: "rework_and_rejects"
+    rule: "Rework loops, downgrades, recovery, and boundary exits must link back to the producing node; accepted tea output excludes unresolved rejects and rejected material cannot be counted at two hand-offs."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_activity_records
+      process_id: "tea_plantation_management_tea_plucking_collection_tea_green_leaf_handling_tea_grading_storage_gate"
+      flow_role: "plantation area and phase; field inputs; water; energy; land occupation"
+      record_type: "field register, invoice, application record, meter, GIS, and activity log"
+      raw_fields: "area; phase; cultivar; input_product; amount; nutrient_content; water; fuel; electricity; date; operation; reporting_period"
+      collection_method: "reconcile physical inputs and operations to each block, activity, and crop cycle"
+      unit: "m2; m2·year; kg; L; MJ; kWh; date"
+      frequency: "each event and annual reporting period"
+      temporal_coverage: "establishment, replacement, productive crop cycle, harvest campaign, and reporting period"
+      site_scope: "all included plantation blocks and associated pre-gate activities"
+      aggregation_rule: "sum by physical identity, block, activity, and period; calculate nutrient mass without merging products"
+      quality_evidence: "invoices; labels; calibrated meters; field logs; GIS or block register"
+    - protocol_id: cp_harvest_output_records
+      process_id: "tea_plantation_management_tea_plucking_collection"
+      flow_role: "shoots; fresh leaf; harvested mass; harvest loss; receiving hand-off"
+      record_type: "weigh ticket, plucking register, yield record, and green-leaf receiving log"
+      raw_fields: "block; cultivar; plucking_date; shoot_standard; fresh_mass; harvest_loss; receiving_time; lot_id"
+      collection_method: "reconcile harvested and received mass to the plucking lot and dry-tea route"
+      unit: "kg; date-time; lot identifier"
+      frequency: "every plucking lot and hand-off"
+      temporal_coverage: "complete crop cycle and harvest campaign"
+      site_scope: "all harvested lots entering a selected route"
+      aggregation_rule: "preserve one-to-one plantation-to-green-leaf linkage and close harvested mass = received mass + loss"
+      quality_evidence: "calibrated scale; lot log; receiving record; moisture or quality record"
+    - protocol_id: cp_processing_batch_records
+      process_id: "tea_green_leaf_handling_tea_route_processing"
+      flow_role: "green leaf; route intermediates; dry made tea; processing residues; utility inputs"
+      record_type: "batch sheet, scale, moisture test, process log, utility meter, and fuel record"
+      raw_fields: "route; batch_id; input_state; intermediate_state; process_step; moisture; output; loss; fuel; electricity; water; operating_condition"
+      collection_method: "reconcile each batch, route state, utility reading, moisture result, and mass balance"
+      unit: "kg; %; h; °C; L; MJ; kWh"
+      frequency: "every batch or campaign"
+      temporal_coverage: "reception through selected primary-processing route and drying"
+      site_scope: "every selected route, batch, and processing facility within the gate"
+      aggregation_rule: "aggregate only after route, batch, utility, and mass reconciliation"
+      quality_evidence: "calibrated scale and moisture meter; batch sheet; meter reconciliation; route log"
+    - protocol_id: cp_quality_and_storage_records
+      process_id: "tea_grading_storage_gate"
+      flow_role: "accepted grade; secondary grade; recovered tea product; rejects; storage; gate output"
+      record_type: "grading log, sieve record, scale, warehouse log, and quality record"
+      raw_fields: "grade; destination; accepted_mass; secondary_mass; recovered_mass; reject_mass; storage_start; storage_end; condition; loss; gate_date"
+      collection_method: "enumerate every grade and destination, then reconcile storage duration, loss, and gate hand-off"
+      unit: "kg; grade; day; temperature; humidity; date"
+      frequency: "every graded or stored lot"
+      temporal_coverage: "post-drying grading through the declared gate"
+      site_scope: "all output destinations and storage included before the declared gate"
+      aggregation_rule: "enumerate intended outputs and rejects; aggregate duration and quality by lot; exclude downstream logistics"
+      quality_evidence: "calibrated scale; sieve or grading record; warehouse log; gate release record"
+    - protocol_id: cp_residue_destination_records
+      process_id: "tea_plantation_management_tea_plucking_collection_tea_green_leaf_handling_tea_route_processing_tea_grading_storage_gate"
+      flow_role: "pruning residue; harvest loss; process residue; reject; rework; recovery; disposal"
+      record_type: "residue log, waste transfer record, recovery invoice, and rework log"
+      raw_fields: "residue_state; amount; destination; recovery; rework; compost; disposal; producing_process; lot_id"
+      collection_method: "link every residue or reject to its producing process and final destination"
+      unit: "kg; destination; lot identifier"
+      frequency: "every batch, operation, or disposition event"
+      temporal_coverage: "crop cycle, harvest campaign, route batch, grading, and storage periods"
+      site_scope: "all residue, reject, rework, and recovered-fraction destinations within the gate"
+      aggregation_rule: "retain producing process and final disposition; do not double-count material returned or recovered"
+      quality_evidence: "residue ledger; transfer note; recovery invoice; rework record; destination evidence"
+    - protocol_id: cp_emission_records
+      process_id: "tea_plantation_management_tea_green_leaf_handling_tea_route_processing_tea_grading_storage_gate"
+      flow_role: "named emissions to air, water, or soil; storage dust; treatment outputs"
+      record_type: "measurement record, factor calculation, treatment log, and emission record"
+      raw_fields: "substance; medium; source; factor; measurement; treatment; reporting_period; lot_id"
+      collection_method: "report measured or calculated emissions with the named substance, medium, source, and method"
+      unit: "kg substance"
+      frequency: "each event or reporting-period calculation"
+      temporal_coverage: "field operations, processing, drying, grading, and included storage"
+      site_scope: "all field and processing emission sources within the declared boundary"
+      aggregation_rule: "aggregate by substance, medium, source, lot, and period; do not use broad unspecified categories"
+      quality_evidence: "measurement record; factor provenance; treatment log; model version; QA review"
+  calculation_rules:
+    - id: calc_01
+      applies_to: ""
+      rule: ""
+      inputs:
+        - "fresh leaf mass"
+        - moisture
+        - "dry tea mass"
+      output: ""
+      source_ids: []
+    - id: calc_02
+      applies_to: ""
+      rule: ""
+      inputs:
+        - area
+        - period
+        - "plantation phase"
+        - output
+      output: ""
+      source_ids: []
+    - id: calc_03
+      applies_to: ""
+      rule: ""
+      inputs:
+        - "nutrient product records and nutrient content"
+      output: ""
+      source_ids: []
+    - id: calc_04
+      applies_to: ""
+      rule: ""
+      inputs:
+        - "batch inputs"
+        - intermediates
+        - outputs
+        - residues
+        - losses
+      output: ""
+      source_ids: []
+    - id: calc_05
+      applies_to: ""
+      rule: ""
+      inputs:
+        - "grade outputs and destinations"
+      output: ""
+      source_ids: []
+    - id: calc_06
+      applies_to: ""
+      rule: ""
+      inputs:
+        - route
+        - batch
+        - energy
+        - changeover
+        - "storage period"
+      output: ""
+      source_ids: []
+  data_quality_requirements:
+    []
+validation_rules:
+  - rule_id: validation_01
+    applies_to: "identity"
+    rule: "The dataset must identify *Camellia sinensis*, one named tea type, one route, the dry-tea state, and the declared primary-processing gate."
+    source_ids:
+      - iso-20715-2023-tea-classification
+  - rule_id: validation_02
+    applies_to: "reference_flow"
+    rule: "The reference output must use Tea d16090ca-ddbe-4fd4-a498-fe4cab8bb525, Mass 93a60a56-a3c8-11da-a746-0800200b9a66, Units of mass 93a60a57-a4c8-11da-a746-0800200b9a66, and 1 kg unless a reviewed identity correction is issued."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_03
+    applies_to: "route_completeness"
+    rule: "Exactly one named route must be selected. Every included route state must have a preceding input, a following hand-off, and a recorded output or loss; inapplicable states must not be counted."
+    source_ids:
+      - iso-20715-2023-tea-classification
+      - fao-tea-chain-processing
+  - rule_id: validation_04
+    applies_to: "plantation_and_harvest"
+    rule: "Plantation phase, management inputs, plucking source, fresh-leaf output, and harvest loss must be linked to the same reporting period and lot or an identified upstream dataset."
+    source_ids:
+      - ipcc-2019-refinement-afolu
+  - rule_id: validation_05
+    applies_to: "batch_and_changeover"
+    rule: "Batch, campaign, or continuous-run boundaries must link inputs, outputs, cleaning, changeover, yield, and shared services; no shared-run burden may be counted twice."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_06
+    applies_to: "outputs_and_allocation"
+    rule: "Every intended output and hand-off must be enumerated. Marketable secondary tea is separated from residue; one output cannot be counted at two hand-offs."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_07
+    applies_to: "rejects_and_rework"
+    rule: "Every rejected or off-spec state must have a rework, downgrade, recovery, disposal, or boundary-exit path. Accepted output excludes unresolved rejects."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_08
+    applies_to: "mass_balance"
+    rule: "Fresh leaf, route intermediates, dry tea, grade outputs, residues, rejects, storage losses, and declared evaporation or moisture changes must reconcile within the documented tolerance."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_09
+    applies_to: "data_quality"
+    rule: "Missing material records, unresolved route selection, missing gate qualifiers, unsupported range substitutions, and unexplained mass-balance differences are findings that block reviewed or published use."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: validation_10
+    applies_to: "period_attribution"
+    rule: "Establishment, replacement, productive phase, termination, inputs, outputs, and storage events must be linked to periods and must not be attributed twice."
+    source_ids:
+      - ipcc-2019-refinement-afolu
+      - iso-14044-2006
+published_dataset_profile:
+  dataset_role: "secondary_dataset for a foreground tea production package that has passed identity, route, mass-balance, and data-quality validation"
+  downstream_use: "Construction of tea-related LCA process and lifecyclemodel projections at the declared primary-processing gate"
+  allowed_use: "Named tea type and route matching the declared gate, geography, reporting period, grade, moisture basis, and included plantation-to-gate scope"
+  excluded_use: "Herbal or fruit infusions, tea beverages, extracts, concentrates, instant tea, scented or flavoured tea, decaffeination, consumer brewing, packaging presentation, retail, or downstream logistics"
+  required_metadata: "Reference flow UUIDs; tea type; route; gate; geography; plantation phase; period; lot or campaign; fresh-leaf and dry-tea basis; moisture; grade; residue destinations; reject treatment; storage duration; background dataset links"
+  required_quality_disclosure: "Measured versus calculated values; provisional ranges; route coverage; plantation and harvest coverage; mass-balance tolerance; unresolved identities; exclusions; allocation method"
+  update_trigger: "Change in route, grade system, gate, plantation phase, input formulation, processing technology, storage practice, background identity, or evidence-backed range"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "iso-20715-2023-tea-classification"
+    type: "standard"
+    reference: "https://www.iso.org/standard/75419.html"
+    used_for: "named tea types, route states, and product identity"
+  - id: "iso-11287-2011-green-tea"
+    type: "standard"
+    reference: "https://www.iso.org/standard/51540.html"
+    used_for: "green-tea route and scope exclusion for further processing"
+  - id: "iso-3720-2011-black-tea"
+    type: "standard"
+    reference: "https://www.iso.org/standard/51541.html"
+    used_for: "black-tea route and product identity"
+  - id: "fao-tea-processing-manual"
+    type: "handbook"
+    reference: "https://www.fao.org/fileadmin/templates/agphome/documents/Pests_Pesticides/JMPR/Manual/FAO_manual_3rd_edition_Final.pdf"
+    used_for: "fresh-leaf moisture, dry-tea state, and processing sequence evidence"
+  - id: "fao-tea-chain-processing"
+    type: "official_guidance"
+    reference: "https://www.fao.org/fileadmin/templates/est/meetings/IGGtea21/Presentation-MarketReportArgentina.pdf"
+    used_for: "harvest, withering, rolling, oxidation, drying, classification, and packing decomposition"
+  - id: "agris-black-tea-processing-2017"
+    type: "literature"
+    reference: "https://doi.org/10.1002/ffj.3385"
+    used_for: "black-tea processing sequence and storage relevance"
+  - id: "ipcc-2019-refinement-afolu"
+    type: "method_factor"
+    reference: "https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/index.html"
+    used_for: "perennial production phase, direct emissions, and attribution context"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "https://committee.iso.org/standard/38498.html"
+    used_for: "boundary, allocation, data quality, and validation rules"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Method identity: incoming mass = intended outputs + residues + rejects + declared losses"
+    used_for: "mass-balance calculations and validation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:ea1b6ef6ef7954865c651939f2f8cdc0331466d703b6a44ec4f8f0ce01a2f84f"
+  generated_content_sha256: "sha256:100d06b369888a35e26517787d4ce99d2f6cdb2b0aa5b54029f9f4cecc193110"

@@ -1,10 +1,1273 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01703"
-  title: "Chick peas, dry"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.chick-peas-dry"
+  classification_refs: "CPC 3.0 01703 Chick peas, dry"
+  covered_products: "Mature dry desi and kabuli chickpea grain at farm gate, unprocessed beyond farm cleaning, grading and necessary stabilization"
+  excluded_products: "Green chickpeas; planting seed sold as seed; sprouts; flour; splits; dehulled fractions; canned or cooked products; downstream industrial cleaning, sizing or processing"
+  representative_product: "Mature dry chickpea grain, desi or kabuli, meeting a declared farm-gate moisture and grade or destination specification"
+  production_route: "Managed field production followed by distinct harvest/threshing and farm conditioning; rainfed and irrigated production may coexist across fields, while straight cutting and swathing are mutually exclusive for the same harvest event; ambient aeration and supplemental low-temperature drying may coexist sequentially for a lot"
+  market_state: "Harvested grain, unprocessed; accepted at farm gate after declared cleaning, grading and any required stabilization"
+functional_unit:
+  what: "Mature dry chickpea grain at the farm gate"
+  how_much: "1,000 kg as-received mass at the declared moisture content"
+  how_well: "Desi or kabuli class; declared grade or destination specification; declared moisture; accepted grain excludes unresolved rework, foreign material, unrecovered loss and downgraded output"
+  how_long_or_cycle: "One crop cycle, with post-harvest operations linked to the harvested field and lot"
+  reference_flow_link: "chick_peas_dry_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: boundary_field_to_gate
+      applies_to: "all foreground nodes"
+      rule: "Include crop establishment and management, independent harvest/threshing, farm cleaning and grading, and conditional stabilization through the accepted farm-gate hand-off."
+      source_ids:
+        - ndsu-pulse-field-guide-2025
+        - saskatchewan-chickpea-harvest
+        - fao-postharvest-system
+    - rule_id: boundary_output_states
+      applies_to: "harvest, conditioning and stabilization"
+      rule: "Distinguish accepted grain, downgraded grain, rework, collected straw or pods, field-returned residue, shatter or dropped loss, foreign-material rejects and discarded material; record one hand-off and destination for each state."
+      source_ids:
+        - saskatchewan-chickpea-harvest
+        - cgc-chickpea-grading
+    - rule_id: boundary_route_delta
+      applies_to: "alternative routes"
+      rule: "Rainfed and irrigated fields, straight cutting and swathing, and ambient aeration and heated drying must carry the route-specific records described in section 2; resolve mutually exclusive choices per field, harvest event or lot."
+      source_ids:
+        - saskatchewan-chickpea-harvest
+        - ndsu-pulse-field-guide-2025
+    - rule_id: boundary_exclusions
+      applies_to: "downstream activities"
+      rule: "Exclude transport beyond the farm gate and industrial sizing, dehulling, splitting, milling, canning, cooking and food manufacture."
+      source_ids:
+        - fao-postharvest-system
+boundary_abstraction:
+  declared_starting_condition: "A declared field prepared for the chickpea crop cycle, with prior land use, soil condition, preceding crop and seed origin identified"
+  starting_condition_role: "Starting condition for managed biological production; burdens of purchased seed, products, energy and services enter through upstream datasets"
+  product_classification_scope: "Mature dry chickpea grain represented by CPC 3.0 01703; green chickpeas, seed commodities and processed fractions remain outside this product category"
+  recursive_input_rule: "Chickpea grain retained as planting seed is recorded as a seed input from a preceding crop or external supplier and is not recursively modelled as the current crop's reference output"
+  upstream_dataset_requirement: "Use geographically and technologically appropriate upstream datasets for concrete seed, nutrient products, crop-protection products, water supply, energy carriers and contracted services"
+  disclosure: "Declare prior crop and land-use context, field and crop year, market class, rainfed or irrigated route, establishment and management operations, harvest route, conditioning sequence, stabilization route, lot hand-offs and all output destinations"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Chick peas, dry"
+    uuid: "c509fe95-d4ab-4db9-b593-f6329aef8dbd"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "desi or kabuli class"
+    - "cultivar where material"
+    - geography
+    - "crop year"
+    - "rainfed or irrigated route"
+    - "straight-cut or swathed harvest"
+    - "moisture percentage and wet or dry basis"
+    - "grade or destination specification"
+    - "farm-gate hand-off"
+    - "drying or aeration route"
+    - "allocation choice"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure as-received mass and state moisture percentage and basis; any conversion to a common moisture uses recorded inlet and outlet moisture and conserves dry matter."
+  - id: nutrient_products
+    applies_to: "consolidated agricultural nutrient input"
+    required_property_ref:
+      name: "Product quantity and nutrient composition"
+      uuid: ""
+    required_unit: "kg or m3 product and kg N, P or P2O5, K or K2O as applicable"
+    rule: "Record every actual product once; retain formulation and nutrient analysis so compound and organic products are not duplicated across product-mass and nutrient-mass reports."
+  - id: grade_fraction
+    applies_to: "damage, green seed, foreign material, rework and rejects"
+    required_property_ref:
+      name: "Mass fraction"
+      uuid: ""
+    required_unit: "kg/kg or % by mass"
+    rule: "Use a representative lot sample and state whether the denominator is incoming bulk grain or cleaned sample."
+  - id: moisture_balance
+    applies_to: "drying and aeration"
+    required_property_ref:
+      name: "Mass and moisture fraction"
+      uuid: ""
+    required_unit: "kg and % wet basis unless declared otherwise"
+    rule: "Reconcile inlet dry matter, outlet dry matter, water removed, downgraded grain and rejects for each lot."
+process_map:
+  - id: field_production
+    name: "Managed chickpea field production"
+    inclusion: "required"
+    inclusion_condition: "Always included for cultivated dry chickpeas."
+    role: "foreground biological production with documented technology delta"
+    quantitative_reference: "1 ha crop cycle"
+  - id: harvest_threshing
+    name: "Harvest, threshing and field capture"
+    inclusion: "required"
+    inclusion_condition: "Included as a distinct hand-off from standing mature crop to harvested bulk grain."
+    role: "foreground harvest capture with alternative technology route delta"
+    quantitative_reference: "harvested bulk grain leaving the node"
+  - id: cleaning_grading
+    name: "Farm cleaning, grading and routing"
+    inclusion: "required"
+    inclusion_condition: "Included before the farm-gate product hand-off."
+    role: "primary conditioning and grading"
+    quantitative_reference: "accepted plus downgraded and rejected incoming grain"
+  - id: drying_stabilization
+    name: "Conditional aeration or low-temperature drying"
+    inclusion: "conditional"
+    inclusion_condition: "Include when accepted grain is above the declared safe hand-off moisture or requires cooling or aeration."
+    role: "preservation and stabilization"
+    quantitative_reference: "stabilized dry chickpea grain leaving the node"
+process_inventory:
+  - id: field_production
+    label: "Managed chickpea field production"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Chickpea planting seed"
+          name: "Chickpea planting seed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Seed retained or purchased for crop establishment; treated seed identity is retained and is never counted as the farm-gate food product."
+          amount:
+            expression: "measured seed delivered to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of planted chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "20"
+                upper: "350"
+                unit: "kg/ha planted crop"
+                basis: "per ha of planted chickpea in one crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: agricultural_nutrients
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5 and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers and nutrient-bearing amendments in this one card. Preserve each actual product identity, quantity, formulation, nutrient composition and application event; do not count compound or organic products twice."
+          amount:
+            expression: "collect each actual product once and calculate nutrient quantities without duplication; expand to concrete verified product UUIDs during dataset generation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of planted chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_inputs
+              source_ids:
+                - saskatchewan-chickpea-fertilization
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg product/ha crop cycle"
+                basis: "sum of actual nutrient-product masses per ha of planted chickpea; liquid products remain separately reported in native volume"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop protection and inoculation products"
+          name: "Crop protection and inoculation products"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or L formulated product"
+          description: "Record formulated pesticides, seed treatments, desiccants and rhizobial inoculants actually applied, preserving product identity, active ingredient and treated area."
+          amount:
+            expression: "measured formulated product applied"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of treated chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_materials
+              source_ids:
+                - ndsu-pulse-field-guide-2025
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg or L formulated product/ha crop cycle"
+                basis: "sum of formulated products per treated ha; actual products remain separately reported"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water supplied"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record only water deliberately supplied to the crop; rainfall and residual soil moisture are disclosed but are not technosphere inputs."
+          amount:
+            expression: "metered or calculated irrigation water delivered to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of planted chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "m3/ha crop cycle"
+                basis: "deliberately supplied irrigation water per planted ha; zero applies to rainfed fields"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field machinery energy carriers"
+          name: "Field machinery energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific unit / L, kg, kWh or MJ"
+          description: "Record each actual fuel, electricity or contracted energy service used for tillage, sowing, spraying, irrigation and other field operations; avoid double counting contractor fuel and service records."
+          amount:
+            expression: "measured purchases, meter readings or contractor records allocated to the field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of planted chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "MJ/ha crop cycle"
+                basis: "sum of carrier energy converted to MJ per planted ha; zero is allowed for a carrier not used"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Managed cropland occupation"
+          name: "Cropland occupation by location and land-use class"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha crop cycle"
+          description: "Record the occupied field area and crop-cycle duration for the managed chickpea crop; land transformation is reported separately when it occurs."
+          amount:
+            expression: "occupied planted area multiplied by the declared crop-cycle fraction"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of planted chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_area
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "ha crop cycle/ha crop cycle"
+                basis: "one occupied hectare-cycle per hectare-cycle used as the process quantitative reference"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+    outputs:
+      product:
+        - row_id: mature_standing_crop
+          role: "Mature standing chickpea crop ready for harvest"
+          name: "Mature standing chickpea crop"
+          flow_type: "product"
+          property_unit: "Recoverable grain mass / kg"
+          description: "Record mature desi or kabuli crop at the field-production hand-off before cutting or combining, with expected recoverable grain distinguished from vegetative biomass."
+          amount:
+            expression: "measured harvested grain plus measured or estimated harvest losses, reconciled to field area"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+                - fao-ecocrop-chickpea
+            ranges:
+              - role: typical_range
+                lower: "350"
+                upper: "2690"
+                unit: "kg recoverable grain/ha harvested crop"
+                basis: "recoverable mature grain per harvested ha; regional examples are a QA prior, not a universal conformity limit"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - saskatchewan-chickpea-harvest
+                  - fao-ecocrop-chickpea
+      waste:
+        []
+      elementary:
+        - row_id: direct_field_emissions
+          role: "Direct field emissions by substance and receiving medium"
+          name: "Reported substance to air, water or soil"
+          flow_type: "elementary"
+          property_unit: "Substance-specific mass / kg"
+          description: "Report each measured or calculated emission as a separate concrete elementary exchange, including managed-soil nitrogen emissions and emissions from fuel use when they fall inside the foreground boundary."
+          amount:
+            expression: "calculate from collected activity data using the declared method and factors"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha of planted chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg reported substance/ha crop cycle"
+                basis: "each substance and receiving medium is screened separately; the interval is provisional"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_threshing
+    label: "Harvest, threshing and field capture"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Mature standing crop received for harvest"
+          name: "Mature standing chickpea crop"
+          flow_type: "product"
+          property_unit: "Recoverable grain mass / kg"
+          description: "Receive the field-production hand-off once; link the same field and crop cycle so the biological production output is not duplicated."
+          amount:
+            expression: "linked output from field production"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+            ranges:
+              - role: qa_guardrail
+                lower: "350"
+                upper: "2690"
+                unit: "kg recoverable grain/ha harvested crop"
+                basis: "same regional recoverable-grain envelope as the linked field-production output"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - saskatchewan-chickpea-harvest
+                  - fao-ecocrop-chickpea
+        - row_id: harvest_energy
+          role: "Harvest and threshing energy carriers"
+          name: "Harvest and threshing energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific unit / L, kg, kWh or MJ"
+          description: "Record actual energy carriers used by straight cutting, swathing, combining and threshing, assigning each event to the field, run or campaign."
+          amount:
+            expression: "measured carrier use or contractor records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha harvested crop"
+                basis: "sum of carrier energy converted to MJ per harvested ha"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_bulk_grain
+          role: "Harvested and threshed bulk chickpea grain"
+          name: "Harvested bulk chickpea grain, uncleaned"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this intended output as uncleaned bulk grain at the combine or threshing hand-off, including declared moisture, foreign material, cracked seed and immature green seed before farm cleaning."
+          amount:
+            expression: "weighed harvested bulk grain corrected only when a declared moisture conversion is applied"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg recoverable mature grain entering harvest"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0.80"
+                upper: "1.00"
+                unit: "kg harvested bulk grain/kg recoverable mature grain"
+                basis: "harvested bulk output divided by recoverable mature grain entering harvest"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_residue_route
+          role: "Collected straw and pod residue with declared destination"
+          name: "Collected chickpea straw and pod residues"
+          flow_type: "product"
+          property_unit: "Dry mass / kg"
+          description: "Record straw and pod material as an intended co-product output only when it is deliberately collected for a declared use or sale; otherwise retain it as field residue or loss without assigning co-product status."
+          amount:
+            expression: "measured collected dry matter by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested chickpea in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg dry matter/ha harvested crop"
+                basis: "collected straw and pod dry matter per harvested ha; zero applies when residues remain on the field"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_losses
+          role: "Shatter, dropped pods and unrecovered grain"
+          name: "Unrecovered chickpea grain and pods"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record unrecovered grain and pods by field and harvest event. Material returned to the field is not accepted product and its nutrient return remains linked to the field-emission calculation."
+          amount:
+            expression: "difference between recoverable mature grain and harvested bulk grain after reconciling measurement uncertainty"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg recoverable mature grain entering harvest"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg loss/kg recoverable mature grain"
+                basis: "unrecovered grain and pods divided by recoverable mature grain entering harvest"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: cleaning_grading
+    label: "Farm cleaning, grading and routing"
+    inputs:
+      product:
+        - row_id: bulk_grain_input
+          role: "Harvested bulk grain received for conditioning"
+          name: "Harvested bulk chickpea grain, uncleaned"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the uncleaned harvest output by lot, preserving moisture, foreign material, damage, green-seed and class observations."
+          amount:
+            expression: "weighed incoming lot mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg incoming harvested bulk grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_mass_balance
+              source_ids:
+                - cgc-chickpea-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg incoming grain/kg reported incoming grain"
+                basis: "measured incoming mass divided by the same reported lot mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: conditioning_energy
+          role: "Cleaning and grading energy carriers"
+          name: "Cleaning and grading energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific unit / kWh, L, kg or MJ"
+          description: "Record electricity, fuel or contracted service used for farm cleaning, sieving, aspiration, grading and handling, linked to each lot or operating period."
+          amount:
+            expression: "metered energy or allocated operating records"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg incoming harvested bulk grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_energy
+              source_ids:
+                - fao-grain-cleaning
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kWh-equivalent/1,000 kg incoming grain"
+                basis: "sum of converted energy carriers per 1,000 kg incoming grain"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_dry_chickpeas
+          role: "Accepted dry chickpea grain at farm gate"
+          name: "Chick peas, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c509fe95-d4ab-4db9-b593-f6329aef8dbd"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record mature unprocessed desi or kabuli grain meeting the declared moisture, grade, damage, foreign-material and destination specification. This is the reference product when no drying node follows."
+          amount:
+            expression: "weighed accepted output at declared moisture and grade"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted dry chickpeas at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_mass_balance
+              source_ids:
+                - cgc-chickpea-grading
+                - cgc-chickpea-moisture
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg accepted dry chickpeas/1,000 kg reference product"
+                basis: "accepted product mass at the declared farm-gate hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_grain
+          role: "Downgraded broken, green, damaged or off-grade grain"
+          name: "Downgraded chickpea grain by declared state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each downgraded state separately by reason and destination. Material sold into another market is an intended output only when that destination and price are documented."
+          amount:
+            expression: "weighed downgraded output by state and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg incoming harvested bulk grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_mass_balance
+              source_ids:
+                - cgc-chickpea-grade-tables
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg downgraded grain/kg incoming grain"
+                basis: "sum of downgraded grain states divided by incoming grain mass; actual grade tolerances remain separately declared"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rework_return
+          role: "Grain returned for re-cleaning or re-grading"
+          name: "Chickpea grain routed to rework"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Link returned material to the producing lot and the specific rework pass. Count it once in the lot mass balance and exclude it from accepted output until the rework decision is complete."
+          amount:
+            expression: "weighed mass entering each rework loop"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg incoming harvested bulk grain per conditioning pass"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_mass_balance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.30"
+                unit: "kg rework/kg incoming grain per pass"
+                basis: "grain returned to rework divided by incoming mass for that pass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cleaning_rejects
+          role: "Foreign material and non-recoverable cleaning rejects"
+          name: "Cleaning rejects by physical identity and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record soil, stones, plant debris and non-recoverable grain material removed during cleaning, with its actual treatment or disposal destination."
+          amount:
+            expression: "weighed reject output by category and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg incoming harvested bulk grain"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_mass_balance
+              source_ids:
+                - fao-grain-cleaning
+                - cgc-chickpea-grading
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg rejects/kg incoming grain"
+                basis: "sum of non-recoverable rejects divided by incoming grain mass"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: drying_stabilization
+    label: "Conditional aeration or low-temperature drying"
+    inputs:
+      product:
+        - row_id: moist_grain_input
+          role: "Accepted grain requiring stabilization"
+          name: "Accepted chickpea grain before stabilization"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive only lots whose declared moisture or temperature requires aeration, cooling or drying; retain the upstream grade and lot identity."
+          amount:
+            expression: "weighed incoming lot at measured moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg stabilized dry chickpeas output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+                - cgc-chickpea-moisture
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1054"
+                unit: "kg incoming grain/1,000 kg stabilized output"
+                basis: "incoming grain at up to 18% moisture corrected to 14% moisture, before dry-matter rejects"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - saskatchewan-chickpea-harvest
+                  - mass-balance-identity
+        - row_id: drying_energy
+          role: "Aeration, cooling and drying energy carriers"
+          name: "Drying and aeration energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific unit / kWh, L, kg or MJ"
+          description: "Record each actual electricity, fuel or heat carrier used for the lot and distinguish ambient aeration from supplemental heated drying."
+          amount:
+            expression: "metered carrier use assigned to the stabilized lot"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg stabilized dry chickpeas output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_energy
+              source_ids:
+                - saskatchewan-chickpea-harvest
+                - fao-grain-drying
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kWh-equivalent/1,000 kg stabilized output"
+                basis: "sum of converted energy carriers; zero applies when no stabilization node is active"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_dry_chickpeas
+          role: "Stabilized dry chickpea grain at farm gate"
+          name: "Chick peas, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c509fe95-d4ab-4db9-b593-f6329aef8dbd"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record cooled or dried mature desi or kabuli grain at the final farm-gate hand-off, retaining moisture, grade, size class where relevant and drying temperature history."
+          amount:
+            expression: "weighed stabilized output at declared moisture and grade"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg stabilized dry chickpeas at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+                - cgc-chickpea-moisture
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg stabilized dry chickpeas/1,000 kg reference product"
+                basis: "stabilized product mass at the declared farm-gate hand-off"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: drying_downgrade
+          role: "Heat-damaged, cracked or otherwise downgraded grain"
+          name: "Downgraded chickpea grain after stabilization"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record any product retained for a lower-value destination after stabilization by defect and destination; exclude it from the accepted reference output."
+          amount:
+            expression: "weighed downgraded output by defect and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg grain entering stabilization"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying_mass_balance
+              source_ids:
+                - saskatchewan-chickpea-harvest
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.10"
+                unit: "kg downgraded grain/kg incoming grain"
+                basis: "downgraded output divided by grain entering stabilization"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: removed_moisture
+          role: "Water removed from grain to air"
+          name: "Water to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Calculate water removed from measured inlet and outlet masses and moisture fractions. Do not treat this water as product yield or unexplained mass loss."
+          amount:
+            expression: "inlet water mass minus outlet water mass after dry-matter reconciliation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg stabilized dry chickpeas output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "54"
+                unit: "kg water/1,000 kg stabilized output"
+                basis: "water removed when grain enters at 14% to 18% moisture and leaves at 14% moisture, before dry-matter rejects"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - saskatchewan-chickpea-harvest
+                  - mass-balance-identity
+allocation_rules:
+  - rule_id: allocation_subdivision_first
+    applies_to: "all multi-output nodes"
+    rule: "Subdivide directly measured field, harvest, conditioning and stabilization operations before allocation. Assign lot-specific rework and reject burdens to the producing lot."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: allocation_residue_status
+    applies_to: "straw, pods and downgraded grain"
+    rule: "Classify a flow as an intended co-product only when deliberate collection, a documented destination and an economic or physical function are demonstrated. Field-returned biomass, shatter and discarded rejects are residues or losses and receive no product credit."
+    source_ids:
+      - iso-14044-allocation
+      - saskatchewan-chickpea-harvest
+  - rule_id: allocation_remaining_burdens
+    applies_to: "chickpea grain and intended co-products"
+    rule: "When subdivision cannot resolve shared burdens, apply one declared allocation method consistently to all intended outputs. Prefer documented economic allocation at the first independent hand-off; report quantities, prices, reference period and sensitivity to a mass allocation."
+    source_ids:
+      - iso-14044-allocation
+  - rule_id: allocation_run_integrity
+    applies_to: "batches, campaigns and rework loops"
+    rule: "Assign shared cleaning, start-up and changeover burdens once across affected lots; a rework pass retains its burdens and material linkage, and rejected material is never counted as accepted output. This is single-period attribution and shared burdens do not cross the crop-cycle boundary."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_materials
+      process_id: "field_production"
+      flow_role: "seed and crop-protection products"
+      record_type: "invoices, application logs and field records"
+      raw_fields: "product identity; formulation; active ingredient; quantity; treated area; date; field"
+      collection_method: "reconcile purchase, stock and application records"
+      unit: "native product unit and ha"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "every included field"
+      aggregation_rule: "sum by product and field, then normalize to planted area"
+      quality_evidence: "invoice, calibration and application log"
+    - protocol_id: cp_nutrient_inputs
+      process_id: "field_production"
+      flow_role: "all mineral, organic and amendment nutrient products"
+      record_type: "application and composition records"
+      raw_fields: "product identity; mass or volume; density; N, P or P2O5, K or K2O content; organic matter; field; date"
+      collection_method: "record each product once and retain laboratory or supplier composition"
+      unit: "kg or m3 product and kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "every included field"
+      aggregation_rule: "aggregate actual products without double counting; derive nutrient masses from retained composition"
+      quality_evidence: "supplier analysis, laboratory result and application log"
+    - protocol_id: cp_irrigation
+      process_id: "field_production"
+      flow_role: "deliberately supplied water"
+      record_type: "meter, pump or scheduling record"
+      raw_fields: "delivered volume; field; source; pumping energy; date"
+      collection_method: "meter preferred; otherwise documented flow-rate-times-duration calculation"
+      unit: "m3"
+      frequency: "each event"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each irrigated field"
+      aggregation_rule: "sum delivered water by field"
+      quality_evidence: "meter record or pump calculation"
+    - protocol_id: cp_field_energy
+      process_id: "field_production"
+      flow_role: "field energy carriers"
+      record_type: "fuel, meter and contractor records"
+      raw_fields: "carrier; quantity; operation; field; date; contractor inclusion"
+      collection_method: "reconcile on-farm and contractor records"
+      unit: "carrier native unit"
+      frequency: "each operation"
+      temporal_coverage: "full crop cycle"
+      site_scope: "every included field"
+      aggregation_rule: "sum once by carrier and allocate to fields using operation records"
+      quality_evidence: "invoice, meter, machine or contractor log"
+    - protocol_id: cp_field_area
+      process_id: "field_production"
+      flow_role: "land occupation"
+      record_type: "geospatial and field records"
+      raw_fields: "planted area; crop dates; land-use class; prior crop"
+      collection_method: "verified field boundary and crop record"
+      unit: "ha and days"
+      frequency: "once per crop cycle"
+      temporal_coverage: "full crop cycle"
+      site_scope: "every included field"
+      aggregation_rule: "area multiplied by occupied fraction of crop cycle"
+      quality_evidence: "map and field register"
+    - protocol_id: cp_field_emissions
+      process_id: "field_production"
+      flow_role: "direct elementary emissions"
+      record_type: "activity data and calculation workbook"
+      raw_fields: "nutrient quantities; residue N; lime; urea; fuel; irrigation; soil and climate parameters; factor source"
+      collection_method: "apply declared method to collected activity data"
+      unit: "kg substance"
+      frequency: "each relevant event and annual calculation"
+      temporal_coverage: "full crop cycle"
+      site_scope: "every included field"
+      aggregation_rule: "calculate by substance and receiving medium; preserve factor version"
+      quality_evidence: "calculation workbook and factor citation"
+    - protocol_id: cp_harvest_energy
+      process_id: "harvest_threshing"
+      flow_role: "harvest energy carriers"
+      record_type: "machine, fuel and contractor records"
+      raw_fields: "route; carrier; quantity; field; date; run"
+      collection_method: "reconcile machine or contractor record to harvest event"
+      unit: "carrier native unit"
+      frequency: "each event"
+      temporal_coverage: "harvest period"
+      site_scope: "every included field"
+      aggregation_rule: "sum once by field and harvest route"
+      quality_evidence: "machine or contractor log"
+    - protocol_id: cp_harvest_mass_balance
+      process_id: "field_production_harvest_threshing"
+      flow_role: "recoverable crop, harvested bulk, residues and loss"
+      record_type: "weighbridge, yield monitor and field-loss observations"
+      raw_fields: "field; area; bulk mass; moisture; collected residue; pre- and post-harvest loss estimate"
+      collection_method: "calibrated weighing plus documented field sampling"
+      unit: "kg and kg/ha"
+      frequency: "each field and harvest event"
+      temporal_coverage: "harvest period"
+      site_scope: "every included field"
+      aggregation_rule: "reconcile recoverable grain to harvested bulk and losses"
+      quality_evidence: "calibration, sample record and reconciliation"
+    - protocol_id: cp_conditioning_energy
+      process_id: "cleaning_grading"
+      flow_role: "cleaning and grading energy"
+      record_type: "meter, runtime and fuel records"
+      raw_fields: "carrier; meter values; runtime; lot; shared period"
+      collection_method: "meter preferred; allocate shared period by documented driver"
+      unit: "carrier native unit"
+      frequency: "each lot or operating period"
+      temporal_coverage: "conditioning period"
+      site_scope: "every included facility"
+      aggregation_rule: "assign shared energy once across lots"
+      quality_evidence: "meter and allocation record"
+    - protocol_id: cp_grade_mass_balance
+      process_id: "cleaning_grading"
+      flow_role: "incoming, accepted, downgraded, rework and rejects"
+      record_type: "lot weights and representative grade samples"
+      raw_fields: "lot; inlet mass; moisture; class; damage; green; foreign material; size; each output mass and destination"
+      collection_method: "calibrated weighing and representative sampling"
+      unit: "kg and % by mass"
+      frequency: "each lot and rework pass"
+      temporal_coverage: "conditioning period"
+      site_scope: "every included facility"
+      aggregation_rule: "inlet equals accepted, downgraded, rejects and reconciled loss; rework counted once per pass"
+      quality_evidence: "scale calibration, sample chain and balance closure"
+    - protocol_id: cp_drying_energy
+      process_id: "drying_stabilization"
+      flow_role: "aeration and drying energy"
+      record_type: "meter, fuel and dryer logs"
+      raw_fields: "carrier; quantity; inlet and outlet time; temperature; airflow; lot"
+      collection_method: "meter or reconciled fuel delivery"
+      unit: "carrier native unit"
+      frequency: "each lot or drying period"
+      temporal_coverage: "stabilization period"
+      site_scope: "every active facility"
+      aggregation_rule: "assign energy to lot or documented shared period"
+      quality_evidence: "meter, fuel and dryer log"
+    - protocol_id: cp_drying_mass_balance
+      process_id: "drying_stabilization"
+      flow_role: "moist inlet, stabilized output, removed water and downgrade"
+      record_type: "lot weights and moisture tests"
+      raw_fields: "inlet and outlet mass; inlet and outlet moisture; temperature; downgrade mass; destination"
+      collection_method: "calibrated scales and representative moisture tests"
+      unit: "kg and % wet basis"
+      frequency: "each lot"
+      temporal_coverage: "stabilization period"
+      site_scope: "every active facility"
+      aggregation_rule: "conserve dry matter and calculate removed water"
+      quality_evidence: "scale and moisture-meter calibration plus reconciliation"
+  calculation_rules:
+    - id: calc_dry_matter
+      applies_to: "moisture conversion"
+      rule: "dry matter = as-received mass × (1 − moisture fraction); converted mass = dry matter ÷ (1 − target moisture fraction)"
+      inputs:
+        - "inlet mass"
+        - "inlet moisture"
+        - "target moisture"
+      output: "moisture-corrected mass and water removed"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_field_yield
+      applies_to: "field and harvest nodes"
+      rule: "harvested and lost recoverable grain divided by harvested field area; retain measured moisture"
+      inputs:
+        - "harvested bulk"
+        - "measured losses"
+        - "field area"
+      output: "kg recoverable grain/ha"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_grade_balance
+      applies_to: "conditioning node"
+      rule: "incoming mass = accepted + downgraded + non-recoverable rejects + unresolved measurement difference; rework is an internal loop and is not added as a second final output"
+      inputs:
+        - "lot input and all output-state weights"
+      output: "closed lot balance and unexplained difference"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_managed_soil_emissions
+      applies_to: "field emissions"
+      rule: "calculate direct and relevant indirect managed-soil emissions from collected nutrient and residue activity data using the declared IPCC tier or justified regional method"
+      inputs:
+        - "applied N"
+        - "residue N"
+        - "volatilization or leaching activity data"
+        - factors
+      output: "substance-specific elementary emissions"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_allocation
+      applies_to: "intended multi-output nodes"
+      rule: "allocate only residual shared burdens after subdivision using the declared method and one complete output set"
+      inputs:
+        - "output quantities"
+        - "prices or physical driver"
+        - "shared burden"
+      output: "attributed burden by intended output"
+      source_ids:
+        - iso-14044-allocation
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product and lots"
+      requirement: "Preserve desi or kabuli class, cultivar where material, crop year, origin field, lot, moisture basis, grade or destination and final hand-off."
+      evidence: "lot register, sample and delivery record"
+    - id: dq_completeness
+      applies_to: "all nodes"
+      requirement: "Cover all included fields and lots and reconcile at least 95% of material and energy records by the declared collection method; disclose exclusions and unresolved differences."
+      evidence: "completeness matrix and reconciliation workbook"
+    - id: dq_temporal
+      applies_to: "foreground package"
+      requirement: "Use records from the represented crop cycle and associated post-harvest period; disclose any proxy year and reason."
+      evidence: "dated field, harvest and lot records"
+    - id: dq_route
+      applies_to: "alternative routes"
+      requirement: "Record rainfed or irrigated, direct-cut or swathed, conditioning equipment, and aeration or heated-drying route for every affected field or lot."
+      evidence: "operation and equipment logs"
+    - id: dq_grade_moisture
+      applies_to: "accepted and downgraded outputs"
+      requirement: "Use representative sampling and calibrated moisture and mass measurements; preserve the denominator used for defect fractions."
+      evidence: "calibration, sample chain and test result"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Require the verified product, Mass property and Mass unit-group UUIDs, plus every required qualifier."
+    source_ids:
+      - cgc-chickpea-grading
+      - cgc-chickpea-moisture
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "each process"
+    rule: "Permit at most one consolidated mineral-fertilizer, organic-fertilizer and nutrient-amendment Product-input card per process; it must bind only to flow-set.agricultural-nutrient-supply version 0.3.0 without a group."
+    source_ids: []
+  - rule_id: validate_route_resolution
+    applies_to: "field, harvest and stabilization routes"
+    rule: "Resolve rainfed versus irrigated per field, straight-cut versus swathed per harvest event, and inactive versus aerated or heated-dried per lot; collect every claimed route delta."
+    source_ids:
+      - saskatchewan-chickpea-harvest
+      - ndsu-pulse-field-guide-2025
+  - rule_id: validate_output_handoffs
+    applies_to: "all product and reject states"
+    rule: "Require one physical state, classification and destination for accepted, downgraded, rework, collected residue, field loss and waste outputs; no output may be counted at two hand-offs."
+    source_ids:
+      - cgc-chickpea-grading
+      - mass-balance-identity
+  - rule_id: validate_rework
+    applies_to: "conditioning and stabilization"
+    rule: "Link every rework pass to its source lot, retain its added burdens, and exclude unresolved rework or rejects from accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_batch_attribution
+    applies_to: "conditioning and stabilization"
+    rule: "Index inputs, outputs, cleaning and changeover by lot or operating period and assign shared-run burdens once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_mass_balance
+    applies_to: "harvest, conditioning and drying"
+    rule: "Reconcile measured inputs to accepted, downgraded, residue, reject, water-removal and loss outputs; investigate and disclose any difference above 5% of the node input."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_moisture_temperature
+    applies_to: "accepted and stabilized grain"
+    rule: "Declare moisture; flag lots above the declared safe hand-off specification; for supplemental heated drying, require recorded grain temperature and flag values at or above 45 °C for review."
+    source_ids:
+      - saskatchewan-chickpea-harvest
+      - cgc-chickpea-moisture
+  - rule_id: validate_range_completeness
+    applies_to: "every flow card"
+    rule: "Require exactly one complete range with role, bounds, unit, denominator or basis, basis kind, evidence kind and source-id list; provisional screens do not replace foreground records."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground dry-chickpea production data package and farm-gate process dataset"
+  downstream_use: "secondary_dataset; background_dataset after independent review and UUID resolution"
+  allowed_use: "Crop-production inventories and lifecycle models requiring mature dry unprocessed chickpeas at the farm gate within the declared geography, year, route, class, moisture and grade"
+  excluded_use: "Green chickpeas, planting seed commodities, processed chickpea fractions or foods, and industrial post-farm-gate operations"
+  required_metadata: "PCR id and version; geography; crop year; desi or kabuli; cultivar where material; field area; prior crop; rainfed or irrigated; harvest route; lot and grade; moisture basis; conditioning and stabilization route; allocation method; concrete exchange UUIDs"
+  required_quality_disclosure: "Coverage and completeness; measurement and sampling methods; calibration; route-specific proxies; mass-balance closure; range-screen exceptions; unresolved flow identities; source and factor versions; allocation sensitivity"
+  update_trigger: "Material change in product boundary, platform UUID identity, flow-set contract, agronomic or post-harvest route, grade or moisture specification, emission method, allocation evidence, or representative foreground records"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "saskatchewan-chickpea-harvest"
+    type: "official_guidance"
+    reference: "Government of Saskatchewan, Chickpea Harvesting Considerations, https://www.saskatchewan.ca/business/agriculture-natural-resources-and-industry/agribusiness-farmers-and-ranchers/crops-and-irrigation/field-crops/pulse-crop-bean-chickpea-faba-bean-lentils/chickpea/harvesting, retrieved 2026-09-20"
+    used_for: "desi and kabuli yield examples; straight cutting and swathing; harvest moisture; shatter and green-seed risks; safe moisture; grading and drying-temperature guidance"
+  - id: "saskatchewan-chickpea-fertilization"
+    type: "official_guidance"
+    reference: "Government of Saskatchewan, Chickpea Fertilizer Considerations, https://www.saskatchewan.ca/business/agriculture-natural-resources-and-industry/agribusiness-farmers-and-ranchers/crops-and-irrigation/field-crops/pulse-crop-bean-chickpea-faba-bean-lentils/chickpea/fertilizer-considerations, retrieved 2026-09-20"
+    used_for: "chickpea nutrient-management roles and product-composition records"
+  - id: "ndsu-pulse-field-guide-2025"
+    type: "extension_guidance"
+    reference: "NDSU Extension, Pulse Crop Production Field Guide for North Dakota, A1922, https://www.ndsu.edu/agriculture/sites/default/files/2025-09/a1922.pdf, retrieved 2026-09-20"
+    used_for: "chickpea production, harvest, damage, moisture, handling and storage route evidence"
+  - id: "cgc-chickpea-grading"
+    type: "standard"
+    reference: "Canadian Grain Commission, Official Grain Grading Guide, Chapter 22: Chickpeas, https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/22-chickpeas/grading.html, retrieved 2026-09-20"
+    used_for: "classes, representative samples, grading states and defect definitions"
+  - id: "cgc-chickpea-grade-tables"
+    type: "standard"
+    reference: "Canadian Grain Commission, Chickpeas primary and export grade determination tables, https://www.grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/22-chickpeas/primary-export-grade-determination-tables.html, retrieved 2026-09-20"
+    used_for: "damage, mechanical damage, green seed and foreign-material grade thresholds"
+  - id: "cgc-chickpea-moisture"
+    type: "standard"
+    reference: "Canadian Grain Commission, Moisture specifications, https://grainscanada.gc.ca/en/grain-quality/official-grain-grading-guide/02-moisture-testing/moisture-specifications.html, retrieved 2026-09-20"
+    used_for: "straight, tough and damp chickpea moisture states"
+  - id: "fao-ecocrop-chickpea"
+    type: "dataset"
+    reference: "FAO EcoCrop, Cicer arietinum crop record, https://ecocrop.apps.fao.org/ecocrop/srv/en/cropView?id=2479, retrieved 2026-09-20"
+    used_for: "rainfed African yield example and product biology context"
+  - id: "fao-postharvest-system"
+    type: "handbook"
+    reference: "FAO, Post-harvest system and food losses, https://www.fao.org/4/ac301e/AC301e03.htm, retrieved 2026-09-20"
+    used_for: "separation of harvesting, threshing, cleaning, drying and storage responsibilities"
+  - id: "fao-grain-cleaning"
+    type: "handbook"
+    reference: "FAO, Agricultural engineering in development: Grain cleaning and insecticide treatments, https://www.fao.org/4/t0522e/t0522e0b.htm, retrieved 2026-09-20"
+    used_for: "cleaning inputs, impurity separation and prepared output state"
+  - id: "fao-grain-drying"
+    type: "handbook"
+    reference: "FAO, Agricultural engineering in development: Drying, https://www.fao.org/4/t0522e/T0522E08.htm, retrieved 2026-09-20"
+    used_for: "drying as a bounded stabilization responsibility"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil N2O and lime or urea CO2 calculation scope and factors"
+  - id: "iso-14044-allocation"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, including current amendments"
+    used_for: "subdivision and allocation hierarchy"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass identity applied to measured process inputs, outputs, moisture and losses"
+    used_for: "deterministic mass, moisture, yield, rework and hand-off reconciliation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:449d43f71fd76af993734a7a03ea5d788ff06210ff4d0f032a984b1b69b5d840"
+  generated_content_sha256: "sha256:54ebbe289e63dd499f794c3674a80bc2ef3736095194ddc25c0fe974580358a0"

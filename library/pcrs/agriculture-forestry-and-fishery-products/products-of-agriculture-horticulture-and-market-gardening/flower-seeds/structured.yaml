@@ -1,10 +1,1018 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01963"
-  title: "Flower seeds"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.flower-seeds"
+  classification_refs: "CPC 3.0 01963 (exact)"
+  covered_products: "Conditioned seed of declared flowering-plant species intended for sowing"
+  excluded_products: "Cut flowers; vegetative propagules; seed sold for food, feed or oil; unidentified mixtures; unmanaged wild collection"
+  representative_product: "One accepted lot of a declared flower species and cultivar"
+  production_route: "Parent stock → managed seed crop → harvest/extraction → drying/cleaning/grading → testing, optional treatment and packaging"
+  market_state: "Conditioned sowing seed with lot, species/cultivar, purity, germination or viability, moisture, treatment and certification status declared"
+functional_unit:
+  what: "Conditioned flower seed released for sowing at producer or conditioner hand-off"
+  how_much: "1 kg"
+  how_well: "Species, cultivar, lot, purity, germination/viability, moisture, treatment and certification status declared"
+  how_long_or_cycle: "One traceable multiplication and conditioning lot; multi-period burdens cover the declared productive period"
+  reference_flow_link: "released_flower_seed"
+system_boundary:
+  rules:
+    - rule_id: boundary_seed_route
+      applies_to: "all datasets"
+      rule: "Include evidenced multiplication, harvest/extraction, drying, cleaning, testing and pre-hand-off treatment, packaging and storage."
+      source_ids:
+        - fao-seed-handling
+        - fao-seed-portal
+    - rule_id: boundary_parent_stock
+      applies_to: "parent seed"
+      rule: "Represent parent seed as a separate upstream exchange with lot identity and stop recursion there."
+      source_ids: []
+    - rule_id: boundary_market_state
+      applies_to: "reference product"
+      rule: "Release only seed intended for sowing and distinguish treated, coated, pelleted and untreated states."
+      source_ids: []
+    - rule_id: boundary_reject_route
+      applies_to: "rejected material"
+      rule: "Report off-spec seed, screenings and foreign matter by recovery, downgraded use or disposal destination."
+      source_ids:
+        - fao-seed-handling
+    - rule_id: boundary_multi_period
+      applies_to: "perennial crops and shared assets"
+      rule: "Attribute establishment and shared assets over documented productive output without double charging."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Parent-stock identity, multiplication class, field or protected-production state, and perennial stand age when applicable"
+  starting_condition_role: "Traceable starting condition for the multiplication lot"
+  product_classification_scope: "One flower-seed product within CPC 3.0 01963"
+  recursive_input_rule: "Parent flower seed is a linked upstream product input and is not recursively produced inside the current lot"
+  upstream_dataset_requirement: "Match species/cultivar, class, treatment, geography and supplier gate of received parent seed"
+  disclosure: "Declare production system, crop cycle, pollination management, sites, conditioning route, storage, treatment and reject destinations"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Flower seed for sowing; UUID unresolved for the full category"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - cultivar
+    - lot
+    - "multiplication route"
+    - purity
+    - "germination or viability"
+    - moisture
+    - treatment
+    - certification
+    - geography
+    - "hand-off gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference and intermediate seed"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net seed mass at the moisture value reported for the same lot; exclude packaging mass."
+  - id: quality_alignment
+    applies_to: "released seed"
+    required_property_ref:
+      name: "lot-specific test result"
+      uuid: ""
+    required_unit: "declared test unit"
+    rule: "Purity, germination/viability and moisture shall refer to the same sampled lot."
+process_map:
+  - id: seed_crop_production
+    name: "Parent-stock establishment and seed-crop production"
+    inclusion: "required"
+    inclusion_condition: "Managed production of the declared flowering plant for seed"
+    role: "biological production"
+    quantitative_reference: "1 kg harvested seed-bearing material"
+  - id: harvest_extraction
+    name: "Harvest and seed extraction"
+    inclusion: "required"
+    inclusion_condition: "Collection and separation of seed from heads, capsules, pods or fruit"
+    role: "harvest/capture"
+    quantitative_reference: "1 kg raw extracted seed"
+  - id: dry_clean
+    name: "Drying, cleaning and grading"
+    inclusion: "required"
+    inclusion_condition: "Moisture stabilization and separation of accepted seed"
+    role: "conditioning/grading"
+    quantitative_reference: "1 kg conditioned seed"
+  - id: release_pack
+    name: "Testing, optional treatment, packaging and hand-off"
+    inclusion: "required"
+    inclusion_condition: "Lot testing, release, presentation and pre-dispatch storage"
+    role: "material treatment/presentation"
+    quantitative_reference: "1 kg released flower seed"
+process_inventory:
+  - id: seed_crop_production
+    label: "Parent-stock establishment and seed-crop production"
+    inputs:
+      product:
+        - row_id: parent_seed
+          role: "Parent flower seed"
+          name: "Parent flower seed for sowing; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Declared parent seed enters the managed multiplication lot."
+          amount:
+            expression: "measured mass assigned to the production lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg harvested seed-bearing material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parent_stock
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.0001"
+                upper: "0.5"
+                unit: "kg"
+                basis: "per kg harvested seed-bearing material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Consolidated fertilizer and nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "All mineral fertilizers, organic fertilizers and nutrient amendments are combined in this single card while actual product identity and nutrient analysis remain in records."
+          amount:
+            expression: "measured mass by nutrient product, retaining composition"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested seed-bearing material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3"
+                unit: "kg product"
+                basis: "per kg harvested seed-bearing material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Water delivered for irrigation is recorded when that route is active."
+          amount:
+            expression: "metered delivery or verified pump-flow calculation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested seed-bearing material"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "m3"
+                basis: "per kg harvested seed-bearing material; zero only for documented rainfed production"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Applied products remain differentiated by formulation and active substance; a rice-farm aggregate is not compatible with this route."
+          amount:
+            expression: "measured formulated-product mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg harvested seed-bearing material"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg formulated product"
+                basis: "per kg harvested seed-bearing material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: production_energy
+          role: "Production energy"
+          name: "Energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Fuel, electricity and supplied heat used for field or protected production are expanded from records."
+          amount:
+            expression: "energy-equivalent sum by carrier and use node"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg harvested seed-bearing material"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "500"
+                unit: "MJ"
+                basis: "per kg harvested seed-bearing material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_seed_material
+          role: "Harvested seed-bearing material"
+          name: "Harvested flower seed-bearing material; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Mature heads, capsules, pods, fruit or other declared material transferred to extraction."
+          amount:
+            expression: "measured net mass with material form and moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per crop lot"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stage_mass_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg"
+                basis: "per kg raw extracted seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: harvest_extraction
+    label: "Harvest and seed extraction"
+    inputs:
+      product:
+        - row_id: harvested_material_input
+          role: "Harvested material received"
+          name: "Harvested flower seed-bearing material; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The traceable harvested lot enters separation without substitution by another crop."
+          amount:
+            expression: "linked measured mass from production"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg raw extracted seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stage_mass_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg"
+                basis: "per kg raw extracted seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: extraction_energy
+          role: "Harvest and extraction energy"
+          name: "Energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Energy used by harvest and extraction equipment is assigned to the traceable lot."
+          amount:
+            expression: "converted carrier and meter records assigned by equipment time or throughput"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg raw extracted seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "MJ"
+                basis: "per kg raw extracted seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_seed
+          role: "Raw extracted flower seed"
+          name: "Raw extracted flower seed; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separated unconditioned seed is transferred to drying and cleaning."
+          amount:
+            expression: "measured output mass and moisture by lot"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per extraction lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stage_mass_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg"
+                basis: "per kg conditioned seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: extraction_residue
+          role: "Extraction residues"
+          name: "Flower-seed extraction residue; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Non-seed crop material and unrecovered fractions leave by a documented destination."
+          amount:
+            expression: "measured residue mass or moisture-corrected mass balance"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg raw extracted seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_reject
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg"
+                basis: "per kg raw extracted seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: dry_clean
+    label: "Drying, cleaning and grading"
+    inputs:
+      product:
+        - row_id: raw_seed_input
+          role: "Raw flower seed received"
+          name: "Raw extracted flower seed; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The linked raw-seed lot enters moisture stabilization and cleaning."
+          amount:
+            expression: "linked measured input mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg conditioned seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stage_mass_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg"
+                basis: "per kg conditioned seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Drying and cleaning energy"
+          name: "Energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Energy used for drying, aeration, cleaning and grading is assigned to the batch."
+          amount:
+            expression: "recorded energy assigned to the batch"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg conditioned seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.01"
+                upper: "100"
+                unit: "MJ"
+                basis: "per kg conditioned seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_seed
+          role: "Conditioned flower seed"
+          name: "Conditioned flower seed for sowing; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Moisture-stable cleaned seed transfers to release testing."
+          amount:
+            expression: "measured conditioned mass at declared moisture"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per conditioning batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stage_mass_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg"
+                basis: "per kg released flower seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: cleaning_rejects
+          role: "Cleaning and grading rejects"
+          name: "Flower-seed cleaning rejects; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-spec seed, chaff and inert matter are excluded from accepted seed."
+          amount:
+            expression: "measured reject mass by reason and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg conditioned seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_reject
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg"
+                basis: "per kg conditioned seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: release_pack
+    label: "Testing, optional treatment, packaging and hand-off"
+    inputs:
+      product:
+        - row_id: conditioned_seed_input
+          role: "Conditioned seed received"
+          name: "Conditioned flower seed for sowing; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The linked conditioned lot enters sampling, testing and final preparation."
+          amount:
+            expression: "linked measured mass from conditioning"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg released flower seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stage_mass_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg"
+                basis: "per kg released flower seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: seed_treatment
+          role: "Seed treatment material"
+          name: "Seed treatment material; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Treatment, coating or pelleting material is recorded only when applied before hand-off."
+          amount:
+            expression: "measured material applied net of returned stock"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg released treated seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_treatment_packaging
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg"
+                basis: "per kg released seed; zero for an untreated lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: seed_packaging
+          role: "Seed packaging"
+          name: "Flexible packaging for flower seed"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass / kg"
+          description: "Actual packaging components used for the released lot are recorded."
+          amount:
+            expression: "measured packaging mass by component; use another permitted group when the actual package is not flexible"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg released flower seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_treatment_packaging
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.001"
+                upper: "2"
+                unit: "kg"
+                basis: "per kg released flower seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: final_energy
+          role: "Final-stage energy"
+          name: "Energy supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Energy for testing support, treatment equipment, packaging and controlled storage is assigned to the lot."
+          amount:
+            expression: "energy assigned by run time, storage duration or throughput"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per kg released flower seed"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0.01"
+                upper: "100"
+                unit: "MJ"
+                basis: "per kg released flower seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: released_flower_seed
+          role: "Released flower seed"
+          name: "Flower seed for sowing; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only net seed mass covered by the release decision becomes the reference output."
+          amount:
+            expression: "measured net mass covered by the release decision"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per released lot"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_release_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: release_rejects
+          role: "Failed-test or treatment rejects"
+          name: "Rejected flower seed; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Material failing release or treatment controls remains outside the reference output."
+          amount:
+            expression: "measured rejected mass by failure reason and destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg released flower seed"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_reject
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg"
+                basis: "per kg released flower seed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_mass_reconciliation
+    applies_to: "each process"
+    rule: "Reconcile opening stock, inputs, outputs, moisture change, residues, rejects and closing stock on one basis."
+    source_ids: []
+  - rule_id: allocation_secondary_outputs
+    applies_to: "saleable plant material or downgraded seed"
+    rule: "Prefer subdivision or direct physical attribution; if allocation remains, disclose outputs, causal basis, formula and sensitivity."
+    source_ids: []
+  - rule_id: allocation_rejects
+    applies_to: "all rejects"
+    rule: "Do not include rejected seed in released output or credit a destination before routing is evidenced."
+    source_ids: []
+  - rule_id: allocation_periods
+    applies_to: "perennial crops and shared assets"
+    rule: "Attribute establishment and infrastructure over documented productive output using one consistent period rule."
+    source_ids: []
+  - rule_id: allocation_batches
+    applies_to: "shared processing, storage and changeovers"
+    rule: "Assign shared burdens by measured time, occupied storage, throughput or another causal driver without double counting."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_parent_stock
+      process_id: "seed_crop_production"
+      flow_role: "parent seed"
+      record_type: "supplier/sowing record"
+      raw_fields: "species, cultivar, class, lot, treatment, mass, date, plot"
+      collection_method: "invoice, label and calibrated scale"
+      unit: "kg"
+      frequency: "each sowing"
+      temporal_coverage: "crop cycle"
+      site_scope: "production lot"
+      aggregation_rule: "sum traceable parent stock"
+      quality_evidence: "label, invoice, scale check"
+    - protocol_id: cp_crop_inputs
+      process_id: "seed_crop_production"
+      flow_role: "nutrients and crop protection"
+      record_type: "purchase/application record"
+      raw_fields: "product, composition or active, mass, date, plot, purpose"
+      collection_method: "invoice plus application log"
+      unit: "kg"
+      frequency: "each application"
+      temporal_coverage: "crop cycle"
+      site_scope: "plot/lot"
+      aggregation_rule: "retain actual products and composition"
+      quality_evidence: "invoice and log"
+    - protocol_id: cp_irrigation
+      process_id: "seed_crop_production"
+      flow_role: "irrigation"
+      record_type: "meter/pump record"
+      raw_fields: "volume, source, meter, runtime, plot, date"
+      collection_method: "meter or documented pump calculation"
+      unit: "m3"
+      frequency: "each event"
+      temporal_coverage: "crop cycle"
+      site_scope: "plot/lot"
+      aggregation_rule: "sum delivered volume"
+      quality_evidence: "calibration or pump specification"
+    - protocol_id: cp_energy
+      process_id: "all_processes"
+      flow_role: "energy"
+      record_type: "meter, fuel and run record"
+      raw_fields: "carrier, quantity, equipment, node, lot, runtime"
+      collection_method: "invoices, meters and equipment logs"
+      unit: "MJ; kWh"
+      frequency: "each run/interval"
+      temporal_coverage: "complete route"
+      site_scope: "site/process"
+      aggregation_rule: "convert and allocate by causal driver"
+      quality_evidence: "invoice, reading, run log"
+    - protocol_id: cp_stage_mass_quality
+      process_id: "all_processes"
+      flow_role: "product/intermediate mass"
+      record_type: "batch/lot record"
+      raw_fields: "lot, stage, input, output, tare, moisture, form, time"
+      collection_method: "weighing and moisture test"
+      unit: "kg; %"
+      frequency: "each transfer/batch"
+      temporal_coverage: "complete route"
+      site_scope: "lot/node"
+      aggregation_rule: "preserve stage mass and moisture"
+      quality_evidence: "ticket, calibration, sample id"
+    - protocol_id: cp_residue_reject
+      process_id: "harvest_extraction_dry_clean_release_pack"
+      flow_role: "residues/rejects"
+      record_type: "disposition record"
+      raw_fields: "type, mass, reason, destination, date, lot"
+      collection_method: "scale plus dispatch/receiver record"
+      unit: "kg"
+      frequency: "each removal/lot"
+      temporal_coverage: "complete route"
+      site_scope: "node/lot"
+      aggregation_rule: "sum by material and destination"
+      quality_evidence: "scale, dispatch, mass balance"
+    - protocol_id: cp_treatment_packaging
+      process_id: "release_pack"
+      flow_role: "treatment/packaging"
+      record_type: "batch/stock record"
+      raw_fields: "formulation, applied mass, package type, component mass, count, returns, lot"
+      collection_method: "equipment record and stock reconciliation"
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "final preparation"
+      site_scope: "line/lot"
+      aggregation_rule: "net consumed by component"
+      quality_evidence: "stock and equipment check"
+    - protocol_id: cp_release_quality
+      process_id: "release_pack"
+      flow_role: "released seed"
+      record_type: "sampling/test/release record"
+      raw_fields: "identity, lot, purity, germination/viability, moisture, treatment, certification, mass"
+      collection_method: "representative sampling and recognized test method"
+      unit: "kg; %"
+      frequency: "each lot"
+      temporal_coverage: "hand-off"
+      site_scope: "lot"
+      aggregation_rule: "include only released mass"
+      quality_evidence: "test, certificate, chain of custody"
+  calculation_rules:
+    - id: calc_reference_normalization
+      applies_to: "all rows"
+      rule: "normalized amount = lot-attributed amount / net released seed mass"
+      inputs:
+        - "attributed amount"
+        - "released mass"
+      output: "amount per kg reference seed"
+      source_ids: []
+    - id: calc_irrigation
+      applies_to: "irrigation"
+      rule: "delivered volume = meter difference, or verified pump rate × runtime"
+      inputs:
+        - "meter or pump data"
+      output: "m3 delivered"
+      source_ids: []
+    - id: calc_energy
+      applies_to: "energy"
+      rule: "convert carriers to declared energy and assign by evidenced driver"
+      inputs:
+        - quantity
+        - conversion
+        - driver
+      output: "MJ per process output"
+      source_ids: []
+    - id: calc_stage_balance
+      applies_to: "each process"
+      rule: "loss = opening stock + inputs − intended outputs − closing stock, adjusted for moisture"
+      inputs:
+        - mass
+        - stock
+        - moisture
+      output: "reconciled loss/residue"
+      source_ids: []
+    - id: calc_multi_period
+      applies_to: "perennial/shared production"
+      rule: "attributed burden = total burden × lot output / documented productive output"
+      inputs:
+        - burden
+        - outputs
+      output: "lot burden"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference lot"
+      requirement: "Species, cultivar, lot, sowing use and state shall be explicit; a species UUID represents only that species."
+      evidence: "label, release record, binding review"
+    - id: dq_quality_tests
+      applies_to: "released seed"
+      requirement: "Purity, germination/viability and moisture shall cover the released lot and state method/date."
+      evidence: "laboratory record and sample chain"
+    - id: dq_completeness
+      applies_to: "foreground route"
+      requirement: "Include all released/rejected lots and at least 95% of operating days; quantify gaps."
+      evidence: "coverage reconciliation"
+    - id: dq_mass_balance
+      applies_to: "each node"
+      requirement: "Reconcile material on a consistent moisture basis and disclose tolerance."
+      evidence: "stage balance and calibration"
+    - id: dq_binding
+      applies_to: "emitted exchanges"
+      requirement: "Resolve parameterized and unmapped cards to verified UUIDs before final TIDAS publication."
+      evidence: "expansion and identity review"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "reference product"
+    rule: "Reject non-sowing seed, vegetative propagules, cut flowers and records without species, cultivar and lot."
+    source_ids: []
+  - rule_id: validate_reference
+    applies_to: "reference flow"
+    rule: "Require exactly 1 kg net released seed and the required quality qualifiers."
+    source_ids: []
+  - rule_id: validate_species_uuid
+    applies_to: "reference identity"
+    rule: "Keep the category UUID blank unless compatible; use 50835e31-8359-4b7c-a818-81ef48e5ed42 only for explicitly declared H. annuus after detail compatibility is rechecked."
+    source_ids: []
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "seed_crop_production"
+    rule: "Permit at most one nutrient Product-input card, bound only to flow-set.agricultural-nutrient-supply 0.3.0 at set level without a group."
+    source_ids: []
+  - rule_id: validate_lot_chain
+    applies_to: "all processes"
+    rule: "Require an unbroken parent-stock, production, extraction, conditioning and release lot chain."
+    source_ids: []
+  - rule_id: validate_rework_rejects
+    applies_to: "rework/rejects"
+    rule: "Rework re-enters through a recorded node; rejected mass cannot also be released output."
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "all flow cards"
+    rule: "Require ordered bounds, unit, basis, basis kind and evidence kind; foreground records determine amounts."
+    source_ids: []
+  - rule_id: validate_binding
+    applies_to: "all cards"
+    rule: "Accept fixed UUIDs only after detail confirmation and parameterized bindings only under compatible Flow Sets."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground flower-seed data package and process projection"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Studies matching species/cultivar, route, geography, quality state and conditioner hand-off"
+  excluded_use: "Proxy for another species, cut flowers, food/oil seed, vegetative propagules or an unqualified species average"
+  required_metadata: "species; cultivar; lot; parent class; field/protected route; crop period; sites; purity; germination/viability; moisture; treatment; certification; storage; gate"
+  required_quality_disclosure: "record coverage; gaps; range exceedances; unresolved UUIDs; mass-balance tolerance; allocation; reject/rework destinations"
+  update_trigger: "new reviewed route evidence, compatible category UUID, changed Flow Set, quality rule, treatment route or repeated range exceedance"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.packaging-presentation-node
+      kind: "activity"
+      path: "library/modules/activities/packaging-presentation-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-seed-portal"
+    type: "official_guidance"
+    reference: "FAO, Seeds portal, https://www.fao.org/seeds/en"
+    used_for: "conditioning, packaging, storage, sampling and testing stages"
+  - id: "fao-seed-handling"
+    type: "handbook"
+    reference: "FAO, *A Guide to Forest Seed Handling*, https://www.fao.org/4/ad232e/ad232e00.htm"
+    used_for: "collection, extraction, drying, cleaning, storage and seed-quality testing"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:1b38e9a70fcbe0a9b4513c87b16e137fccb4f6ef887536dcbbf90905ccede9d2"
+  generated_content_sha256: "sha256:ad3ca67ef760a5ddf547a66371a26c33deec7c62dfc83b17515b31872d25de58"

@@ -1,10 +1,1153 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01802"
-  title: "Sugar cane"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.sugar-cane"
+  classification_refs: "CPC 3.0: 01802 Sugar cane"
+  covered_products: "Mature harvested sugarcane stalks of Saccharum officinarum or declared commercial sugarcane hybrids, accepted at the agricultural-field hand-off"
+  excluded_products: "Sucrose or processed sugar; juice; syrup; molasses; ethanol; bagasse; planting material sold as seed cane; transport and processing after the field hand-off"
+  representative_product: "Accepted mature harvested cane stalk, not processed sucrose"
+  production_route: "The platform flow declares no route. The PCR requires managed plant-cane and/or ratoon production plus manual or mechanical harvest; green-cane and pre-harvest-burn routes are mutually exclusive for one field-lot event."
+  market_state: "Fresh mature stalks, topped and stripped of excessive leaf/trash and gross adhering soil, at the exact platform gate Natural mix, at agricultural fields; moisture, variety, burn status, harvest method and acceptance condition declared"
+functional_unit:
+  what: "Accepted mature harvested sugarcane stalks at the exact platform gate Natural mix, at agricultural fields"
+  how_much: "1 kg"
+  how_well: "Meets declared lot acceptance for variety or hybrid, maturity, moisture, burn status, harvest method, tops/leaves, foreign matter, damage and gross adhering soil"
+  how_long_or_cycle: "One identified plant-cane or ratoon harvest period within a declared complete crop series; shared establishment burdens attributed across actual accepted outputs"
+  reference_flow_link: "accepted_sugarcane_stalks"
+system_boundary:
+  rules:
+    - rule_id: boundary_field_handoff
+      applies_to: "whole route"
+      rule: "End at accepted harvested stalks at the agricultural-field hand-off; exclude all post-hand-off transport and factory conversion."
+      source_ids:
+        - fao-sugarcane-water-2012
+    - rule_id: boundary_period_series
+      applies_to: "plant cane and ratoons"
+      rule: "Enumerate plant establishment, every represented ratoon and final termination; link stubble and shared burdens once across periods."
+      source_ids:
+        - fao-sugarcane-water-2012
+    - rule_id: boundary_harvest_routes
+      applies_to: "harvest"
+      rule: "Declare manual or mechanical technology and exactly one green-cane or pre-harvest-burn state for each field-lot event; report changed energy, emissions, loss, trash and stubble effects."
+      source_ids:
+        - sra-harvest-manual-2014
+        - fao-cane-environment-1997
+    - rule_id: boundary_residue_exclusivity
+      applies_to: "tops, leaves, trash and stubble"
+      rule: "Assign each residue fraction once to retention, intended removal, burning, recovery, disposal or cross-period stubble; preserve dry matter and nitrogen bases."
+      source_ids:
+        - ipcc-managed-soils-2019
+    - rule_id: boundary_conditioning
+      applies_to: "field conditioning"
+      rule: "Include topping, leaf/trash separation, gross-soil removal and loading needed for the field hand-off; exclude crushing and juice or sugar processing."
+      source_ids:
+        - sra-harvest-manual-2014
+boundary_abstraction:
+  declared_starting_condition: "Plant-cane field before establishment, or viable ratoon stubble carried from the identified preceding harvest period"
+  starting_condition_role: "Initial field condition or cross-period intermediate; never a burden-free untracked input"
+  product_classification_scope: "CPC 3.0: 01802 Sugar cane"
+  recursive_input_rule: "Purchased cane used as planting material is an input with an upstream dataset; retained stubble is linked once from the preceding harvest and is not recursively represented as accepted market cane"
+  upstream_dataset_requirement: "Require upstream datasets for purchased planting cane, products and energy; require origin, quantity, quality and hand-off consistency"
+  disclosure: "Declare geography, field, crop-series and period ids, plant/ratoon status, establishment and termination, irrigation, nutrient and protection management, harvest technology, green/pre-burn status, residue routes, hand-off, output set and allocation"
+reference_flow_definition:
+  reference_amount: "1 kg"
+  product_flow_ref:
+    name: "Saccharum officinarum"
+    uuid: "d56c6f6a-8f2e-4351-8362-18a710ac31f0"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "exact gate Natural mix"
+    - "at agricultural fields"
+    - "no platform treatment route declared"
+    - "fresh mature stalk"
+    - "species or hybrid"
+    - "plant-cane or ratoon period"
+    - "crop-series identifier"
+    - "green or pre-burn harvest"
+    - "manual or mechanical harvest"
+    - "moisture basis"
+    - "tops/leaves and foreign matter condition"
+    - "acceptance grade"
+    - "geography and harvest date"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted reference stalks"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net fresh mass at the declared field hand-off; do not substitute sucrose, dry matter or factory-received mass."
+  - id: moisture_alignment
+    applies_to: "stalk, tops, trash and loss mass balance"
+    required_property_ref:
+      name: "Mass with moisture basis"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Declare wet or dry basis and convert compared masses to a common basis using paired samples."
+  - id: nutrient_product_basis
+    applies_to: "consolidated nutrient supply"
+    required_property_ref:
+      name: "Actual product mass and nutrient analysis"
+      uuid: ""
+    required_unit: "kg product; kg nutrient"
+    rule: "Collect every actual product once; calculate nutrient inputs from retained analyses without separate PCR fertilizer cards."
+  - id: period_normalization
+    applies_to: "plant and ratoon periods"
+    required_property_ref:
+      name: "Mass, area and period identifiers"
+      uuid: ""
+    required_unit: "kg; ha; period"
+    rule: "Normalize period-specific records to accepted output and amortize shared establishment only across the actual declared harvest series."
+process_map:
+  - id: field_production
+    name: "Plant-cane establishment and ratoon field production"
+    inclusion: "required"
+    inclusion_condition: "from field preparation or declared carry-in stubble through mature standing cane"
+    role: "managed biological production parent; period-indexed plant/ratoon route"
+    quantitative_reference: "1 kg accepted reference product"
+  - id: harvest
+    name: "Sugarcane harvest"
+    inclusion: "required"
+    inclusion_condition: "manual or mechanical; exactly one of green-cane or pre-harvest-burn route per field-lot"
+    role: "harvest/capture parent with alternative technology and biological route delta for stalks, trash, stubble and loss"
+    quantitative_reference: "1 kg accepted reference product"
+  - id: field_conditioning
+    name: "Primary field conditioning and agricultural-field hand-off"
+    inclusion: "required"
+    inclusion_condition: "topping, leaf/trash removal, gross-soil removal and loading before the declared hand-off"
+    role: "primary conditioning from raw collected stalks to accepted prepared stalks; factory processing excluded"
+    quantitative_reference: "1 kg accepted reference product"
+process_inventory:
+  - id: field_production
+    label: "Plant-cane establishment and ratoon field production"
+    inputs:
+      product:
+        - row_id: planting_cane
+          role: "Planting cane for plant-cane establishment"
+          name: "Planting cane setts or billets"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measured fresh mass of viable planting material entering the plant-cane field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - fao-sugarcane-water-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.20"
+                unit: "kg"
+                basis: "planting material per kg accepted cane over the declared crop series"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: agricultural_nutrient_supply
+          role: "Consolidated agricultural nutrient supply"
+          name: "Actual mineral fertilizers, organic fertilizers, lime and nutrient-bearing amendments"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "sum measured actual product masses while retaining product identity, nutrient analysis, application date and field"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - ipcc-managed-soils-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.05"
+                unit: "kg"
+                basis: "total nutrient-supplying products per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_inputs
+          role: "Crop-protection products"
+          name: "Crop-protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measured formulated product applied to the represented field and crop period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - sra-weed-manual-2021
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.005"
+                unit: "kg"
+                basis: "formulated product per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy_supply
+          role: "Field-operation energy carriers"
+          name: "Actual fuel or electricity used by field operations"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "metered or invoiced carrier use allocated once to the field and crop period"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "MJ"
+                basis: "broad screening energy per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: irrigation_water_withdrawal
+          role: "Irrigation water withdrawal"
+          name: "Water withdrawal by declared source compartment"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measured delivered irrigation water, corrected for documented conveyance boundary"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation
+              source_ids:
+                - fao-sugarcane-water-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "m3"
+                basis: "irrigation withdrawal per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: land_occupation
+          role: "Agricultural land occupation"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area*time / m2*a"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "cultivated area multiplied by the represented plant-cane or ratoon period and normalized to accepted output"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - fao-sugarcane-water-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0.0001"
+                upper: "0.02"
+                unit: "m2*a"
+                basis: "occupied land per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: mature_standing_cane
+          role: "Mature standing cane transferred to harvest"
+          name: "Mature standing sugarcane crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "estimated or measured mature stalk mass available to the linked harvest event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - fao-sugarcane-water-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg"
+                basis: "standing stalk mass per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_growth_loss
+          role: "Field growth loss and failed biomass"
+          name: "Failed or unharvestable cane biomass"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measured or sampled biomass not transferred to harvest, with destination recorded"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg"
+                basis: "broad failed-biomass screen per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: managed_soil_n2o
+          role: "Direct managed-soil nitrous oxide"
+          name: "Nitrous oxide to air from managed soil"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "calculate from field-specific nitrogen inputs and the declared IPCC tier without embedding a default factor in this PCR"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-managed-soils-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.001"
+                unit: "kg"
+                basis: "direct N2O screening range per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrogen_leaching_runoff
+          role: "Nitrogen loss by leaching and runoff"
+          name: "Reported nitrogen substance to water or off-field compartment"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "calculate from measured nitrogen sources, site conditions and the declared method while preserving substance and compartment"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-managed-soils-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.01"
+                unit: "kg N"
+                basis: "nitrogen-loss screening range per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest
+    label: "Sugarcane harvest"
+    inputs:
+      product:
+        - row_id: standing_cane_input
+          role: "Mature standing cane entering harvest"
+          name: "Mature standing sugarcane crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "linked output mass from field production for the same field, crop period and harvest event"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "2"
+                unit: "kg"
+                basis: "standing stalk input per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy_supply
+          role: "Harvest energy carriers"
+          name: "Actual fuel or electricity used in manual-support or mechanical harvest"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "metered or invoiced energy linked to the field-lot and harvest route"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_energy
+              source_ids:
+                - sra-harvest-manual-2014
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "MJ"
+                basis: "harvest energy per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_cane_stalks
+          role: "Intended output: collected cane stalks"
+          name: "Harvested cane stalks before field conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "weighed collected stalk mass transferred to field conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - sra-harvest-manual-2014
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg"
+                basis: "collected stalks per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: intended_harvest_residue_output
+          role: "Intended tops or trash output"
+          name: "Separated sugarcane tops or trash with an intended use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measured dry- or wet-basis mass leaving the field as an independently intended output"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_routes
+              source_ids:
+                - fao-cane-environment-1997
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg"
+                basis: "intended residue output per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ratoon_stubble_carry_forward
+          role: "Intended output: cross-period ratoon stubble"
+          name: "Viable sugarcane stubble retained for ratoon regrowth"
+          flow_type: "product"
+          property_unit: "Area / ha"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "record the field area whose viable stubble is deliberately retained after harvest"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_cycle
+              source_ids:
+                - fao-sugarcane-water-2012
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.02"
+                unit: "ha"
+                basis: "retained ratoon area per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: harvest_field_loss
+          role: "Harvest field loss and damaged cane"
+          name: "Cane left, lost or damaged during harvest"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "sample or reconcile material not entering collected stalk output and record its destination"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_lot
+              source_ids:
+                - sra-harvest-manual-2014
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg"
+                basis: "harvest loss per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: retained_or_discarded_trash
+          role: "Retained or discarded tops and trash"
+          name: "Sugarcane tops and trash without an independently intended use"
+          flow_type: "waste"
+          property_unit: "Mass / kg dry matter"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measure or estimate dry matter and assign exactly one route: soil return, removal, burning, recovery or disposal"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_routes
+              source_ids:
+                - ipcc-managed-soils-2019
+                - fao-cane-environment-1997
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg dry matter"
+                basis: "non-product trash per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: preharvest_burn_emissions
+          role: "Pre-harvest burn emissions"
+          name: "Declared pollutant species to air from pre-harvest burning"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "zero for green-cane harvest; otherwise calculate each reported species from burned dry matter and the declared method"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_routes
+              source_ids:
+                - ipcc-managed-soils-2019
+                - fao-cane-environment-1997
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.1"
+                unit: "kg"
+                basis: "all-species screening amount per kg accepted cane; each exchange remains species-specific"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: field_conditioning
+    label: "Primary field conditioning and agricultural-field hand-off"
+    inputs:
+      product:
+        - row_id: collected_cane_input
+          role: "Collected cane entering field conditioning"
+          name: "Harvested cane stalks before field conditioning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "linked collected-stalk mass for the same field-lot and harvest event"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1.5"
+                unit: "kg"
+                basis: "conditioning inlet per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy_supply
+          role: "Field-conditioning energy carriers"
+          name: "Actual fuel or electricity used for topping, leaf removal and loading"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "metered or invoiced energy linked to the conditioning lot and pass"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_energy
+              source_ids:
+                - sra-harvest-manual-2014
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "MJ"
+                basis: "conditioning energy per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_sugarcane_stalks
+          role: "Accepted mature sugarcane stalks at agricultural fields"
+          name: "Saccharum officinarum"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d56c6f6a-8f2e-4351-8362-18a710ac31f0"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "exactly 1 kg accepted mature cane stalk meeting the declared lot qualifiers"
+            value_mode: "fixed_value"
+            specificity: "generic"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "reference-flow identity"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: conditioned_residue_coproduct
+          role: "Conditioning residue with an intended use"
+          name: "Separated tops, leaves or cane pieces with an independently intended destination"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "weighed mass leaving conditioning as a declared co-product"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - fao-cane-environment-1997
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg"
+                basis: "conditioning co-product per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: offspec_cane
+          role: "Off-spec or rejected cane"
+          name: "Damaged, contaminated or otherwise rejected cane"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "weighed rejected mass assigned to rework, downgrade, recovery or disposal without accepted-output duplication"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg"
+                basis: "rejected cane per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: removed_soil_and_trash
+          role: "Removed soil and non-product trash"
+          name: "Excess adhering soil and trash removed before hand-off"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "weighed or sampled removed material with its destination recorded"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg"
+                basis: "removed soil and trash per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: conditioning_dust
+          role: "Conditioning dust to air"
+          name: "Reported particulate matter to air by measured size fraction"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record this flow for the linked field, crop period, harvest event or lot and retain its state and destination."
+          amount:
+            expression: "measured or calculated fugitive particulate mass, retaining particle-size identity"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg accepted mature sugarcane stalk at the agricultural-field hand-off"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.01"
+                unit: "kg"
+                basis: "broad dust screening range per kg accepted cane"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: allocation_period_series
+    applies_to: "plant cane and ratoons"
+    rule: "Assign period-specific inputs directly. Amortize establishment, long-lived field preparation and termination across actual accepted output of the declared crop series; do not apply a universal ratoon count and do not allocate shared burdens again within each period."
+    source_ids:
+      - fao-sugarcane-water-2012
+  - rule_id: allocation_outputs
+    applies_to: "stalks and intended residue outputs"
+    rule: "Enumerate every independently intended output and its hand-off. Use a documented physical relation when causal; otherwise use disclosed economic allocation. Residues without intended product status remain residue or waste and receive no avoided-burden credit by default."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_routes
+    applies_to: "field-lots and harvest events"
+    rule: "Link inputs, outputs, cleaning, changeover and shared machine operation to one field-lot event and allocate shared burdens once by measured operating time, area or throughput."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rework_reject
+    applies_to: "off-spec cane and returned material"
+    rule: "Retain prior burdens on reworked or downgraded cane, add only incremental operations, and count it once at its final exclusive destination; rejects cannot also be accepted output."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_cycle
+      process_id: "field_production"
+      flow_role: "crop series, land, planting, standing cane, failed biomass and stubble"
+      record_type: "field register; scale; survey"
+      raw_fields: "field; crop_series; period; plant_or_ratoon; area; establishment; termination; input_mass; output_mass; moisture"
+      collection_method: "reconcile field register, harvest scale and area survey"
+      unit: "ha; kg; %"
+      frequency: "each event and period"
+      temporal_coverage: "complete declared crop series"
+      site_scope: "each field"
+      aggregation_rule: "retain period records; aggregate accepted outputs only after shared-burden attribution"
+      quality_evidence: "field map; dated register; calibrated scale; crop-series linkage"
+    - protocol_id: cp_field_inputs
+      process_id: "field_production"
+      flow_role: "nutrient and crop-protection products"
+      record_type: "invoice; application log; analysis"
+      raw_fields: "field; period; product; amount; formulation; nutrient_analysis; date; treated_area"
+      collection_method: "reconcile invoices and application records; retain every product once"
+      unit: "kg; L; kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "each plant or ratoon period"
+      site_scope: "each field"
+      aggregation_rule: "sum by actual product and period; normalize after period attribution"
+      quality_evidence: "invoice; label; analysis; applicator log"
+    - protocol_id: cp_irrigation
+      process_id: "field_production"
+      flow_role: "irrigation withdrawal"
+      record_type: "meter; pump log"
+      raw_fields: "source_compartment; delivered_volume; conveyance_boundary; field; period"
+      collection_method: "calibrated meter or documented pump calculation"
+      unit: "m3"
+      frequency: "each irrigation"
+      temporal_coverage: "each represented period"
+      site_scope: "each field and source"
+      aggregation_rule: "sum delivered water by source and period"
+      quality_evidence: "meter calibration; pump curve; log"
+    - protocol_id: cp_operation_energy
+      process_id: "all"
+      flow_role: "fuel and electricity"
+      record_type: "invoice; meter; machine log"
+      raw_fields: "process; field_lot; period; route; carrier; amount; runtime; shared_operation"
+      collection_method: "reconcile meter or invoice with machine hours"
+      unit: "L; kg; kWh; MJ"
+      frequency: "each operation"
+      temporal_coverage: "establishment through hand-off"
+      site_scope: "each field-lot and machine"
+      aggregation_rule: "convert with documented factor and allocate shared use once"
+      quality_evidence: "invoice; meter calibration; hour log"
+    - protocol_id: cp_field_emissions
+      process_id: "field_production"
+      flow_role: "managed-soil and nitrogen losses"
+      record_type: "calculation record"
+      raw_fields: "N_by_source; residue_N; lime; urea; field_conditions; tier; factors; compartments"
+      collection_method: "apply declared current method to collected field inputs"
+      unit: "kg N; kg emission"
+      frequency: "each period"
+      temporal_coverage: "each plant or ratoon period"
+      site_scope: "each field"
+      aggregation_rule: "calculate by field-period before aggregation"
+      quality_evidence: "method version; factor provenance; calculation sheet"
+    - protocol_id: cp_harvest_lot
+      process_id: "harvest"
+      flow_role: "stalks, loss, technology and burn state"
+      record_type: "scale; harvester monitor; sampling log"
+      raw_fields: "field_lot; date; manual_or_mechanical; green_or_burnt; standing_mass; collected_mass; loss_mass; moisture; damage"
+      collection_method: "weigh collected cane and use representative before/after or field-loss sampling"
+      unit: "kg; %"
+      frequency: "each field-lot event"
+      temporal_coverage: "each harvest period"
+      site_scope: "each field-lot"
+      aggregation_rule: "moisture-align and close inputs and outputs"
+      quality_evidence: "scale calibration; sampling plan; route declaration"
+    - protocol_id: cp_residue_routes
+      process_id: "harvest"
+      flow_role: "tops, trash, burn and stubble"
+      record_type: "quadrant sample; scale; route log"
+      raw_fields: "field_lot; fraction; wet_mass; dry_matter; N_content; retained; removed; burned; intended_use; disposal; stubble_area"
+      collection_method: "representative sampling and exclusive destination reconciliation"
+      unit: "kg; kg dry matter; ha"
+      frequency: "each harvest event"
+      temporal_coverage: "each harvest period"
+      site_scope: "each field-lot"
+      aggregation_rule: "assign every fraction to exactly one destination"
+      quality_evidence: "sampling plan; laboratory result; destination receipt; burn record"
+    - protocol_id: cp_conditioning_lot
+      process_id: "field_conditioning"
+      flow_role: "inlet, accepted stalks, co-products, rejects, removed material and dust"
+      record_type: "scale; lot log; sample"
+      raw_fields: "lot; pass; inlet_mass; accepted_mass; coproduct_mass; reject_mass; removed_mass; moisture; destination; dust_measurement"
+      collection_method: "weigh each inlet and outlet; sample moisture and foreign matter"
+      unit: "kg; %"
+      frequency: "each lot and pass"
+      temporal_coverage: "harvest to field hand-off"
+      site_scope: "each lot"
+      aggregation_rule: "sum passes without duplicating returned material; moisture-align mass balance"
+      quality_evidence: "scale calibration; lot identity; acceptance record; destination evidence"
+  calculation_rules:
+    - id: calc_period_attribution
+      applies_to: "shared establishment and termination"
+      rule: "burden_to_period = shared_burden × accepted_period_mass / total_accepted_mass_in_declared_series; use another causal relation only when documented"
+      inputs:
+        - "shared burdens"
+        - "accepted mass by period"
+      output: "period-attributed burden"
+      source_ids:
+        - fao-sugarcane-water-2012
+    - id: calc_mass_closure
+      applies_to: "harvest and conditioning"
+      rule: "moisture-aligned inputs = accepted output + intended outputs + retained material + losses + rejects + other exits ± measured stock change"
+      inputs:
+        - "all inlet and outlet masses"
+        - moisture
+      output: "mass-closure residual"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_residue_exclusivity
+      applies_to: "tops, trash and stubble"
+      rule: "total sampled residue = retained + intended removal + burned + recovered/disposed + stubble category, with mutually exclusive fractions"
+      inputs:
+        - "residue dry matter"
+        - destinations
+        - "N content"
+      output: "residue mass and N by route"
+      source_ids:
+        - ipcc-managed-soils-2019
+    - id: calc_soil_emissions
+      applies_to: "managed-soil emissions"
+      rule: "apply the declared current IPCC or accepted regional tier to collected nutrient products, crop-residue routes, lime, urea and site conditions; preserve gas and compartment identity"
+      inputs:
+        - "field input and residue records"
+        - factors
+      output: "species-specific emissions"
+      source_ids:
+        - ipcc-managed-soils-2019
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Retain platform UUID, species or hybrid, agricultural-field hand-off, maturity, moisture, burn state, harvest method and acceptance condition."
+      evidence: "flow record; lot acceptance"
+    - id: dq_periods
+      applies_to: "crop series"
+      requirement: "Cover establishment, every included ratoon, final termination and every accepted harvest; identify missing or partial periods."
+      evidence: "field register; crop-series reconciliation"
+    - id: dq_routes
+      applies_to: "harvest and residues"
+      requirement: "Require mutually exclusive green/pre-burn state and exclusive residue destinations with mass and dry-matter evidence."
+      evidence: "harvest log; sampling; destination records"
+    - id: dq_completeness
+      applies_to: "all processes"
+      requirement: "Report primary-data coverage, missing data, provisional estimates, scale and meter calibration, mass closure and Range exceptions."
+      evidence: "coverage table; calibration; QA report"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "Require the stated product, Mass-property and Mass-unit-group UUIDs, 1 kg amount and all required qualifiers; reject a sucrose or processed-sugar interpretation."
+    source_ids: []
+  - rule_id: validate_period_series
+    applies_to: "plant and ratoon periods"
+    rule: "Require crop-series and period ids, establishment and termination boundaries, accepted output by period and one disclosed attribution of every shared burden; block missing or double-attributed periods."
+    source_ids:
+      - fao-sugarcane-water-2012
+  - rule_id: validate_route_delta
+    applies_to: "harvest alternatives"
+    rule: "Require parent harvest activity, manual/mechanical state and exactly one green/pre-burn state for each event, plus current evidence for changed inputs, emissions, loss, residue and stubble requirements."
+    source_ids:
+      - sra-harvest-manual-2014
+      - fao-cane-environment-1997
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "each process"
+    rule: "Allow at most one consolidated mineral-fertilizer, organic-fertilizer, lime and nutrient-bearing-amendment Product-input card per process; it must bind only to flow-set.agricultural-nutrient-supply version 0.3.0 without a group. Separate N, P, K, manure, compost, lime or amendment cards are prohibited."
+    source_ids: []
+  - rule_id: validate_output_routes
+    applies_to: "stalks, residue, stubble, loss and rejects"
+    rule: "Require one exclusive hand-off or destination for every state and an explicit allocation decision for every independently intended output; prevent the same residue or cane from occupying two states."
+    source_ids:
+      - ipcc-managed-soils-2019
+      - mass-balance-identity
+  - rule_id: validate_rework
+    applies_to: "off-spec material"
+    rule: "Link every rejected state to rework, downgrade, recovery or disposal; retain prior burdens, add incremental work once and exclude it from accepted output until resolved."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_runs
+    applies_to: "field-lots, events and passes"
+    rule: "Link inputs, outputs, cleaning, changeover and shared operations to one period, event or pass and assign shared burdens once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_ranges
+    applies_to: "all Flow Cards"
+    rule: "Require exactly one complete Range for every quantitative Flow Card, with lower, upper, unit, basis, basis kind, evidence kind and Sources field aligned in English, Chinese and structured output."
+    source_ids:
+      - mass-balance-identity
+published_dataset_profile:
+  dataset_role: "foreground production dataset for accepted mature harvested sugarcane stalks at the agricultural-field hand-off"
+  downstream_use: "secondary_dataset; background_dataset after representativeness review"
+  allowed_use: "LCA and footprint studies requiring fresh mature cane stalks at the declared agricultural-field hand-off"
+  excluded_use: "sucrose, processed sugar, juice, syrup, molasses, ethanol, bagasse, seed cane, post-field transport or undisclosed factory processing"
+  required_metadata: "geography; crop year; field and crop-series ids; plant/ratoon period; species or hybrid; establishment and termination; irrigation; management; green/pre-burn and manual/mechanical harvest; moisture; acceptance; residues; stubble; output destinations; allocation"
+  required_quality_disclosure: "primary-data coverage by period; calibration; sampling; missing data; provisional ranges; route evidence; moisture-aligned mass closure; factor versions; period and output attribution; Range exceptions"
+  update_trigger: "material change in platform identity, field hand-off, crop-series design, plant/ratoon mix, establishment, irrigation, nutrient Flow Set, harvest/burn technology, conditioning, residue destination, output status, allocation or emission method"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-sugarcane-water-2012"
+    type: "official_guidance"
+    reference: "FAO, Crop yield response to water, Chapter 3.4 Herbaceous crops, https://www.fao.org/4/i2800e/i2800e07.pdf"
+    used_for: "plant cane, ratoons, crop duration, harvest route, stalk state and field production boundary"
+  - id: "fao-cane-environment-1997"
+    type: "official_guidance"
+    reference: "FAO, Cane, sugar and the environment, https://www.fao.org/4/x4988e/x4988e01.htm"
+    used_for: "green-cane harvest, burning distinction and residue destinations"
+  - id: "sra-harvest-manual-2014"
+    type: "extension_guidance"
+    reference: "Sugar Research Australia, Harvesting Best Practice Manual, https://sugarresearch.com.au/wp-content/uploads/2017/02/Harvesting-Best-Practice-Manual-FINAL-LR.pdf"
+    used_for: "manual/mechanical operation records, green/burnt route deltas, loss, trash, quality and ratoon effects"
+  - id: "sra-weed-manual-2021"
+    type: "extension_guidance"
+    reference: "Sugar Research Australia, Weed Management Manual, https://sugarresearch.com.au/wp-content/uploads/2024/08/Weed-Management-Manual_2021_Web_F.pdf"
+    used_for: "plant/ratoon weed-management route and crop-protection record requirements"
+  - id: "ipcc-managed-soils-2019"
+    type: "method_factor"
+    reference: "IPCC 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil emissions; fertilizer, lime, urea and mutually exclusive residue route calculations"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Mass-conservation and single-counting identity"
+    used_for: "process linkage, closure, co-product, period and rework checks"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:1fde5b1ebbba294d98b31aea21e3a77ae0c4be93b5764579624ae90a34d02439"
+  generated_content_sha256: "sha256:ca468ce67e5af82770ef28995bb9cad2bd6e538ad9e40f199a1afe5229e953ef"

@@ -1,10 +1,1292 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01241"
-  title: "Beans, green"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.beans-green"
+  classification_refs: "CPC 3.0 01241, Beans, green"
+  covered_products: "Fresh whole green beans, including snap beans and other immature edible bean pods, from open-field or protected cultivation in the declared maturity, size, colour, grade, washing, cooling, and packaging state"
+  excluded_products: "Dry or mature beans, bean seed, sprouts, processed, canned, frozen, pickled, fermented, dried, cooked, cut, prepared, retail, and consumer products; capital goods; land-use change; and post-gate services"
+  representative_product: "Marketable fresh green bean pods meeting the declared variety group, maturity, pod size, colour, tenderness, defect tolerance, and grade"
+  production_route: "Direct-seeded or otherwise declared green-bean cultivation, bed preparation, irrigation, nutrient and crop-protection management, repeated immature-pod harvests, sorting, optional washing and cooling, and primary packing"
+  market_state: "Fresh, whole, unprocessed green beans at the declared farm-gate or pack-house gate, loose or in declared primary packaging"
+functional_unit:
+  what: "Marketable fresh whole green beans at the declared farm-gate or pack-house hand-off"
+  how_much: "1,000 kg"
+  how_well: "Fresh, whole, immature edible pods with declared variety group, maturity, pod size, colour, tenderness, cleanliness, grade, defect tolerance, moisture state, and packaging state"
+  how_long_or_cycle: "One declared crop cycle and complete harvest campaign; all picking rounds attributable to the same planting are reconciled before normalization"
+  reference_flow_link: "green_bean_farm_gate_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_crop_cycle
+      applies_to: "establishment and cultivation"
+      rule: "Include bed preparation attributable to the declared crop cycle, planting, crop management, irrigation, nutrient and crop protection, and direct crop emissions; disclose prior land use and exclude unrelated infrastructure construction."
+      source_ids:
+        - fao-good-agricultural-practices
+    - rule_id: boundary_repeated_picking
+      applies_to: "harvest rounds"
+      rule: "Attribute every picking round from one planting to the same crop cycle and reconcile marketable pods, downgraded pods, rejects, field losses, and residues before normalization."
+      source_ids:
+        - usda-snap-bean-standard
+        - mass-balance-identity
+    - rule_id: boundary_gate_conditioning
+      applies_to: "sorting, washing, cooling, and packing"
+      rule: "End the default foreground boundary at the declared farm-gate or pack-house gate. Include sorting, washing, cooling, primary packaging, and pre-gate transport only when they occur before that gate."
+      source_ids:
+        - usda-snap-bean-standard
+        - codex-fresh-produce-hygiene
+    - rule_id: boundary_residue_fate
+      applies_to: "crop residues, pod culls, and packaging waste"
+      rule: "Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. Do not assign a co-product credit without a documented recipient, intended use, quality, and hand-off."
+      source_ids:
+        - iso-14044-2006
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "Prepared field bed or protected cultivation unit receiving green-bean seed or planting material, with prior land use and excluded infrastructure work disclosed"
+  starting_condition_role: "Start of the declared green-bean crop cycle and foreground input accounting"
+  product_classification_scope: "CPC 3.0 01241, Beans, green, through the declared farm-gate or pack-house hand-off"
+  recursive_input_rule: "Green-bean seed or other planting material is recorded at its received hand-off state and linked to an upstream dataset; its own production is not recreated inside this PCR."
+  upstream_dataset_requirement: "Use upstream datasets for planting material, nutrient products, crop-protection products, supplied water, fuels, electricity, packaging, purchased transport, and waste-treatment services when those inputs cross the boundary."
+  disclosure: "Declare variety group, geography, route, planting density, crop-cycle dates, irrigation source and method, nutrient product and nutrient basis, crop-protection program, picking rounds, marketable yield, downgraded and rejected pods, residues, washing and cooling, packaging, fate of wastes, and declared gate."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Beans, green; production mix, at farm gate; fresh, unprocessed"
+    uuid: "ddf54bf7-5413-49f1-bf1c-2f3cc2724695"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "variety or cultivar group"
+    - "production geography"
+    - "open-field or protected route"
+    - "direct-seeded or other planting route"
+    - "planting date"
+    - "harvest dates and picking rounds"
+    - "pod maturity"
+    - size
+    - colour
+    - tenderness
+    - grade
+    - "and defect criteria"
+    - "irrigated or rain-fed status"
+    - "nutrient product and nutrient basis"
+    - "crop-protection program"
+    - "washing and cooling state"
+    - "packaging state"
+    - residue
+    - cull
+    - "and reject fate"
+    - "and declared gate"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_green_bean_mass
+    applies_to: "marketable pods, downgraded pods, rejects, residues, and losses"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh marketable, downgraded, rejected, field-loss, handling-loss, and residue streams separately and reconcile them before conversion to the 1,000 kg reference output."
+  - id: crop_cycle_normalization
+    applies_to: "field and protected-cultivation records"
+    required_property_ref:
+      name: "Area and mass"
+      uuid: ""
+    required_unit: "ha and kg"
+    rule: "Record inputs and picking rounds by field, bed, or protected unit and normalize them to marketable output attributed to the same declared crop cycle."
+  - id: nutrient_product_and_n_basis
+    applies_to: "mineral and organic nutrient inputs"
+    required_property_ref:
+      name: "Product and nutrient mass"
+      uuid: ""
+    required_unit: "kg product, kg N, kg P2O5, kg K2O"
+    rule: "Record formulated product mass and documented nutrient concentration separately. Convert nutrient equivalents only from a supplier specification, nutrient plan, or laboratory result. A compound product may supply more than one nutrient role and must not be double counted."
+  - id: water_delivery_basis
+    applies_to: "irrigation, fertigation, washing, and source withdrawal"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record crop irrigation, fertigation carrier water, post-harvest washing water, and natural-resource withdrawal as distinct quantities and disclose the meter or water-balance basis."
+  - id: area_time_basis
+    applies_to: "open-field beds and protected units"
+    required_property_ref:
+      name: "Area-time"
+      uuid: ""
+    required_unit: "ha*a"
+    rule: "Record occupied production area and crop occupation period; durable structures and equipment require separate attribution if included."
+  - id: harvest_grade_reconciliation
+    applies_to: "repeated picking, grading, and packing"
+    required_property_ref:
+      name: "Mass and declared grade"
+      uuid: ""
+    required_unit: "kg and declared fraction"
+    rule: "Retain each picking round, gross harvested mass, accepted mass, downgraded pods, rejects, and losses so the declared grade and marketable output are reproducible."
+  - id: postharvest_mass_change
+    applies_to: "washing, cooling, grading, and packing"
+    required_property_ref:
+      name: "Mass and moisture"
+      uuid: ""
+    required_unit: "kg and declared fraction"
+    rule: "Retain measured soil removal, water uptake, cooling loss, tare, and packing loss separately from harvested crop mass and disclose the mass reconciliation."
+process_map:
+  - id: crop_establishment
+    name: "Green-bean crop establishment"
+    inclusion: "required"
+    inclusion_condition: "every represented sowing, planting, bed, or protected-cultivation unit"
+    role: "foreground crop establishment"
+    quantitative_reference: "planted area, planting material, and crop-cycle dates"
+  - id: crop_management
+    name: "Green-bean crop management"
+    inclusion: "required"
+    inclusion_condition: "each represented crop cycle"
+    role: "foreground managed biological production"
+    quantitative_reference: "managed area, irrigation, nutrient and protection applications, and complete picking campaign"
+  - id: harvest_and_gate_preparation
+    name: "Green-bean harvest and gate preparation"
+    inclusion: "required"
+    inclusion_condition: "each represented harvest campaign and declared pre-gate handling route"
+    role: "foreground harvest, grading, conditioning, packing, and hand-off"
+    quantitative_reference: "1,000 kg marketable fresh green-bean output"
+process_inventory:
+  - id: crop_establishment
+    label: "Green-bean crop establishment"
+    inputs:
+      product:
+        - row_id: planting_material_input
+          role: "Seed or planting material"
+          name: "Green-bean seed or planting material"
+          flow_type: "product"
+          property_unit: "Mass or viable count / kg, seed, or plant"
+          description: "Record green-bean seed or other planting material entering each declared field bed or protected unit, distinguishing purchased seed from any other planting route and preserving the supplier lot and planting date."
+          amount:
+            expression: "Record supplier lot quantity and planted viable seed or planting-material quantity by field, bed, or protected unit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0.1"
+                upper: "20"
+                unit: "kg seed or declared planting material per 1,000 kg output"
+                basis: "declared planted area and crop-cycle output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: establishment_irrigation_water
+          role: "Establishment irrigation water"
+          name: "Irrigation water supplied to the crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record water applied for bed preparation, seed emergence, or establishment by source and production unit, excluding rainfall unless a water-balance method explicitly includes it."
+          amount:
+            expression: "Sum metered or documented water-balance deliveries during establishment and retain the source and application method."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "m3/ha"
+                basis: "establishment period from planting to uniform stand"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: crop_land_occupation
+          role: "Occupied green-bean production area"
+          name: "Agricultural land occupation"
+          flow_type: "elementary"
+          property_unit: "Area-time / ha*a"
+          description: "Record the production area and time occupied by the field bed or protected cultivation unit for the declared planting campaign."
+          amount:
+            expression: "Multiply declared production area by crop occupation time and state whether protected structures are excluded or separately attributed."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_area_cycle_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0.01"
+                upper: "0.8"
+                unit: "ha per 1,000 kg output"
+                basis: "declared crop area and marketable crop-cycle output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: crop_management
+    label: "Green-bean crop management"
+    inputs:
+      product:
+        - row_id: production_irrigation_water
+          role: "Production irrigation water"
+          name: "Irrigation water supplied to the crop"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record irrigation and fertigation water delivered to the green-bean crop after establishment, separating source, application method, and any recirculated carrier water."
+          amount:
+            expression: "Sum field, bed, or protected-unit meter readings and documented water-balance estimates from establishment through final picking."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "4,000"
+                unit: "m3/ha"
+                basis: "complete green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_management_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg N/ha"
+                basis: "complete green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "120"
+                unit: "kg P2O5/ha"
+                basis: "complete green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg K2O/ha"
+                basis: "complete green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8,000"
+                unit: "kg product/ha"
+                basis: "complete green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection_input
+          role: "Crop-protection products"
+          name: "Crop-protection product as applied"
+          flow_type: "product"
+          property_unit: "Product or active-ingredient mass / kg"
+          description: "Record each crop-protection product applied to the represented green-bean crop, retaining product name, active ingredient, formulation, rate, application method, date, and treated area. Use integrated pest management records to show when a treatment was unnecessary or omitted."
+          amount:
+            expression: "Reconcile application logs, product labels, stock movement, and treated area for the complete crop cycle."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_protection_records
+              source_ids:
+                - fao-good-agricultural-practices
+                - fao-fresh-produce-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kg product/ha"
+                basis: "complete green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: mobile_machinery_fuel
+          role: "Mobile machinery fuel"
+          name: "Mobile machinery fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "Energy or fuel mass / MJ or kg"
+          description: "Record diesel, gasoline, or another fuel used by tractors and mobile machinery for bed preparation, cultivation, spraying, irrigation support, and harvest operations."
+          amount:
+            expression: "Sum fuel receipts, tank records, or machine-hour calculations assigned to the represented crop cycle."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1,500"
+                unit: "MJ/ha"
+                basis: "field machinery operations for the crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: management_electricity_input
+          role: "Electricity for irrigation and crop management"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity used for pumping, fertigation, protected-unit operation, lighting, and other crop-management equipment when it occurs before the declared gate."
+          amount:
+            expression: "Sum equipment meter or invoice records and allocate shared services by area-time, operating time, water delivered, or another declared physical basis."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kWh per 1,000 kg output"
+                basis: "irrigation pumping and in-scope crop-management equipment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: crop_residue_output
+          role: "Crop residues returned or removed"
+          name: "Green-bean crop residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet residue"
+          description: "Record leaves, stems, roots, pods left after final picking, and other crop residues leaving the crop-cycle process, with separate quantities and fates for field return, composting, feed use, treatment, or disposal."
+          amount:
+            expression: "Weigh or calculate residues by field or protected unit and document the receiving fate; retain uncollected field residue as a declared residue or loss stream."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue_fate_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "10,000"
+                unit: "kg wet residue/ha"
+                basis: "crop-cycle residue mass before declared fate"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: water_resource_withdrawal
+          role: "Water resource withdrawal"
+          name: "Water resource withdrawal"
+          flow_type: "elementary"
+          property_unit: "Volume / m3"
+          description: "Record natural-resource water withdrawn for irrigation or fertigation separately from supplied irrigation water and report the source and return or consumption basis."
+          amount:
+            expression: "Reconcile source-meter or permit records to water delivered to the crop and disclose any return flow or consumption calculation."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_irrigation_records
+              source_ids:
+                - fao-crop-evapotranspiration-56
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "6,000"
+                unit: "m3/ha"
+                basis: "crop-cycle natural-resource withdrawal"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: nitrous_oxide_emission
+          role: "Nitrous oxide to air"
+          name: "Nitrous oxide emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg N2O"
+          description: "Record or calculate direct and indirect nitrous oxide emissions attributable to managed nitrogen input and relevant crop residues; retain the declared calculation method and receiving medium."
+          amount:
+            expression: "Apply one declared emissions method to documented nitrogen input, residue fate, and relevant environmental factors without double counting."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "35"
+                unit: "kg N2O/ha"
+                basis: "nitrogen-managed green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ammonia_emission
+          role: "Ammonia to air"
+          name: "Ammonia emission to ambient air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg NH3"
+          description: "Record or calculate ammonia emissions from nitrogen applications when the declared method and application records support the pathway."
+          amount:
+            expression: "Apply the declared nitrogen-emission method to documented nitrogen forms, application timing, and environmental conditions."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "40"
+                unit: "kg NH3/ha"
+                basis: "nitrogen-managed green-bean crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrate_to_water
+          role: "Nitrate to water"
+          name: "Nitrate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg nitrate"
+          description: "Record or calculate nitrate loss to water when nutrient, soil, drainage, and receiving-medium information supports the pathway."
+          amount:
+            expression: "Apply the declared nitrogen-loss method to recorded nutrient input, drainage or leaching evidence, and the receiving medium."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg nitrate/ha"
+                basis: "nitrogen-managed crop cycle and documented drainage pathway"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: phosphate_to_water
+          role: "Phosphate to water"
+          name: "Phosphate emission to water"
+          flow_type: "elementary"
+          property_unit: "Mass / kg phosphate"
+          description: "Record or calculate phosphate loss to water when nutrient application, runoff or drainage, soil conditions, and receiving-medium information support the pathway."
+          amount:
+            expression: "Apply the declared phosphorus-loss method to recorded nutrient input and documented runoff, drainage, or erosion pathway without assigning an unsupported default emission."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "25"
+                unit: "kg phosphate/ha"
+                basis: "phosphorus-managed crop cycle and documented runoff or drainage pathway"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest_and_gate_preparation
+    label: "Green-bean harvest and gate preparation"
+    inputs:
+      product:
+        - row_id: washing_water_input
+          role: "Washing water"
+          name: "Process water for washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water used to remove soil and foreign material when washing occurs before the declared gate; keep it separate from irrigation and source withdrawal."
+          amount:
+            expression: "Sum wash-water meter or batch records and disclose recirculation, treatment, and discharge handling."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_records
+              source_ids:
+                - codex-fresh-produce-hygiene
+                - fao-fresh-produce-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8"
+                unit: "m3 per 1,000 kg output"
+                basis: "pre-gate washing of fresh whole green beans"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: postharvest_electricity_input
+          role: "Electricity for cooling, sorting, and packing"
+          name: "Electricity supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "Energy / kWh"
+          description: "Record electricity for forced-air cooling, cold rooms, sorting lines, lighting, and packing equipment when those activities occur before the declared gate."
+          amount:
+            expression: "Sum equipment meter or invoice records and allocate shared services by mass, operating time, or another declared basis."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_records
+              source_ids:
+                - fao-fresh-produce-handling
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "300"
+                unit: "kWh per 1,000 kg output"
+                basis: "pre-gate cooling, sorting, and packing"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: flexible_packaging_input
+          role: "Flexible primary packaging"
+          name: "Flexible packaging function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "flexible-packaging"
+          property_unit: "Mass or packaging service / kg or item"
+          description: "Record flexible bags, films, liners, or other flexible primary packaging that crosses the foreground boundary before the declared gate, including material, tare, reuse, and loss information."
+          amount:
+            expression: "Record package mass or item count, capacity, tare, reuse cycles, and loss rate for the represented harvest campaign."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_transport_records
+              source_ids:
+                - codex-fresh-produce-hygiene
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "40"
+                unit: "kg packaging per 1,000 kg output"
+                basis: "declared primary packaging at the gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: carton_packaging_input
+          role: "Carton or box packaging"
+          name: "Carton and box packaging function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "carton-and-box-packaging"
+          property_unit: "Mass or packaging service / kg or item"
+          description: "Record carton, box, tray, or other paper-based primary packaging that crosses the foreground boundary before the declared gate, including material grade, tare, reuse, and loss information."
+          amount:
+            expression: "Record package mass or item count, capacity, tare, reuse cycles, and loss rate for the represented harvest campaign."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_transport_records
+              source_ids:
+                - codex-fresh-produce-hygiene
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg packaging per 1,000 kg output"
+                basis: "declared primary packaging at the gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crate_pallet_packaging_input
+          role: "Reusable crate or pallet packaging"
+          name: "Pallet and crate packaging function"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.packaging-function"
+            version: "0.2.0"
+            group: "pallet-and-crate-packaging"
+          property_unit: "Mass or packaging service / kg or item"
+          description: "Record reusable crates, pallets, bins, or other rigid handling packaging used before the declared gate, including material, tare, number of uses, return route, and loss rate."
+          amount:
+            expression: "Record package mass or item count, capacity, tare, reuse cycles, return route, and loss rate for the represented campaign."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_transport_records
+              source_ids:
+                - codex-fresh-produce-hygiene
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "80"
+                unit: "kg packaging per 1,000 kg output"
+                basis: "declared primary handling packaging at the gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: pre_gate_road_transport
+          role: "Pre-gate road freight"
+          name: "Road freight transport service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Transport service / t*km"
+          description: "Record purchased transport from field to pack-house or another declared pre-gate hand-off when it occurs within the foreground boundary."
+          amount:
+            expression: "Calculate transported mass times documented distance and state whether return or empty-leg burden is included."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_transport_records
+              source_ids:
+                - fao-good-agricultural-practices
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "t*km per 1,000 kg output"
+                basis: "declared field-to-pack-house or pre-gate route"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_green_bean_output
+          role: "Marketable fresh green-bean output"
+          name: "Fresh whole green beans at the declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted fresh whole green-bean pods delivered at the declared farm-gate or pack-house hand-off. The reference amount is normalized to 1,000 kg after all picking rounds and grade decisions are reconciled."
+          amount:
+            expression: "Sum accepted marketable pods across all picking rounds and normalize the accepted output to the declared 1,000 kg reference flow."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_grade_records
+              source_ids:
+                - mass-balance-identity
+                - usda-snap-bean-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "20,000"
+                unit: "kg marketable pods/ha"
+                basis: "complete green-bean crop cycle and harvest campaign"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_green_bean_output
+          role: "Downgraded green-bean pods for a declared secondary use"
+          name: "Downgraded green-bean pods for documented secondary use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record edible or potentially usable pods that fail the declared primary grade but leave the process for a documented secondary use. Keep the recipient, quality, intended use, and hand-off distinct from waste or field loss."
+          amount:
+            expression: "Weigh downgraded pods by picking or grading batch and record the recipient and intended use before assigning any co-product treatment."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_grade_records
+              source_ids:
+                - usda-snap-bean-standard
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg downgraded pods per 1,000 kg marketable output"
+                basis: "picking and grade reconciliation"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: sorting_rejects_output
+          role: "Sorting rejects and trimmings"
+          name: "Green-bean sorting rejects and trimmings"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet waste"
+          description: "Record pods rejected during sorting, trimming, or quality inspection when they do not leave as a documented secondary product. Record their treatment, feed, compost, disposal, or other fate."
+          amount:
+            expression: "Weigh or calculate rejects by batch and retain the treatment or recipient record."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_grade_records
+              source_ids:
+                - mass-balance-identity
+                - usda-snap-bean-standard
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "400"
+                unit: "kg wet waste per 1,000 kg output"
+                basis: "harvest and pack-house grade reconciliation"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: packaging_waste_output
+          role: "Packaging waste"
+          name: "Packaging waste from pre-gate handling"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record damaged, discarded, or unrecovered packaging generated before the declared gate, separating reusable packaging returned to service from packaging that becomes waste."
+          amount:
+            expression: "Reconcile packaging issued, returned, reused, and discarded for the represented campaign."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_transport_records
+              source_ids:
+                - mass-balance-identity
+                - codex-fresh-produce-hygiene
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg packaging waste per 1,000 kg output"
+                basis: "pre-gate packing-material reconciliation"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_water_wastewater_output
+          role: "Wash-water and wash-solids wastewater"
+          name: "Wastewater and wash solids from green-bean washing"
+          flow_type: "waste"
+          property_unit: "Volume and mass / m3 and kg"
+          description: "Record wastewater or wash solids discharged or sent to treatment when washing occurs before the declared gate, retaining the water volume, solids mass, treatment route, and receiving hand-off."
+          amount:
+            expression: "Reconcile wash-water input, recirculation, evaporation, retained solids, and discharged or treated output; record treatment separately when it crosses the boundary."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg marketable fresh green-bean output"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_postharvest_records
+              source_ids:
+                - codex-fresh-produce-hygiene
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "8"
+                unit: "m3 wastewater per 1,000 kg output"
+                basis: "pre-gate washing water balance"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_shared_crop_inputs
+    applies_to: "multiple crops or products sharing a field, bed, meter, facility, or transport"
+    rule: "Allocate shared inputs using measured crop-specific records where available. If a shared record cannot be separated, use a documented physical basis such as area-time, operating time, water delivered, or mass, and disclose the basis."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: allocation_downgraded_pods
+    applies_to: "downgraded pods and other secondary outputs"
+    rule: "Treat downgraded pods as waste or residue unless a recipient, intended use, quality, and hand-off are documented. Apply co-product allocation only when the secondary output has a defined function and the allocation basis is stated."
+    source_ids:
+      - iso-14044-2006
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_establishment_records
+      process_id: "crop_establishment"
+      flow_role: "planting material"
+      record_type: "supplier lot and planting log"
+      raw_fields: "lot, seed or planting-material form, quantity, variety, date, field or bed"
+      collection_method: "transcribe invoices and planting logs; verify lot against planting record"
+      unit: "kg, seed, or plant"
+      frequency: "each planting event"
+      temporal_coverage: "complete crop cycle"
+      site_scope: "each represented field, bed, or protected unit"
+      aggregation_rule: "sum planted viable quantity by crop-cycle unit"
+      quality_evidence: "lot invoice, planting log, and supervisor check"
+    - protocol_id: cp_area_cycle_records
+      process_id: "crop_establishment"
+      flow_role: "land occupation"
+      record_type: "field or facility register"
+      raw_fields: "area, unit, crop dates, protected status, prior use"
+      collection_method: "map or register production unit and verify start and end dates"
+      unit: "ha and date"
+      frequency: "each crop cycle"
+      temporal_coverage: "full crop occupation period"
+      site_scope: "each field, bed, or protected unit"
+      aggregation_rule: "multiply area by declared occupation period"
+      quality_evidence: "field map, lease or facility record, date record"
+    - protocol_id: cp_irrigation_records
+      process_id: "crop_management"
+      flow_role: "irrigation and withdrawal"
+      record_type: "meter, permit, or water-balance record"
+      raw_fields: "source, meter, application, date, volume, return flow"
+      collection_method: "read meter or reconstruct documented water balance"
+      unit: "m3"
+      frequency: "each application or daily total"
+      temporal_coverage: "establishment to final picking"
+      site_scope: "each water source and crop unit"
+      aggregation_rule: "sum by crop cycle and separate source withdrawal from delivery"
+      quality_evidence: "meter calibration, permit, or water-balance check"
+    - protocol_id: cp_nutrient_records
+      process_id: "crop_management"
+      flow_role: "nutrient inputs and soil emissions"
+      record_type: "invoice, label, nutrient plan, and application log"
+      raw_fields: "product, mass, nutrient fraction, date, method, area, residue fate"
+      collection_method: "reconcile purchases to application records and calculate nutrient equivalents"
+      unit: "kg product and kg nutrient"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each crop unit"
+      aggregation_rule: "sum applications assigned to the crop cycle"
+      quality_evidence: "supplier label, nutrient plan, laboratory, or log review"
+    - protocol_id: cp_crop_protection_records
+      process_id: "crop_management"
+      flow_role: "crop-protection products"
+      record_type: "spray and stock record"
+      raw_fields: "product, active ingredient, dose, date, area, method"
+      collection_method: "reconcile spray logs with invoices and stock movement"
+      unit: "kg product or active ingredient"
+      frequency: "each application"
+      temporal_coverage: "full crop cycle"
+      site_scope: "each crop unit"
+      aggregation_rule: "sum by product and active ingredient"
+      quality_evidence: "product label, application log, trained-operator check"
+    - protocol_id: cp_energy_records
+      process_id: "crop_management"
+      flow_role: "field and post-harvest energy"
+      record_type: "meter, fuel, or invoice record"
+      raw_fields: "carrier, quantity, operation, equipment, date, crop or batch assignment"
+      collection_method: "read meter or reconcile fuel receipts and operating records"
+      unit: "kWh, MJ, L, or kg"
+      frequency: "each operation or billing period"
+      temporal_coverage: "full crop cycle and pre-gate handling"
+      site_scope: "field, facility, and shared equipment"
+      aggregation_rule: "allocate shared use by declared physical basis"
+      quality_evidence: "meter, receipt, machine-hour, or allocation record"
+    - protocol_id: cp_residue_fate_records
+      process_id: "crop_management"
+      flow_role: "crop residues"
+      record_type: "residue and recipient record"
+      raw_fields: "stream, wet mass, fate, recipient, date, field"
+      collection_method: "weigh or estimate residue and retain fate evidence"
+      unit: "kg wet residue"
+      frequency: "each removal or crop-cycle close"
+      temporal_coverage: "crop-cycle close and post-harvest cleanup"
+      site_scope: "each crop unit"
+      aggregation_rule: "sum by residue stream and fate"
+      quality_evidence: "weigh ticket, recipient record, or treatment receipt"
+    - protocol_id: cp_harvest_grade_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "marketable output, downgraded pods, and rejects"
+      record_type: "harvest and grading record"
+      raw_fields: "date, picking round, gross harvest, accepted mass, downgraded mass, rejects, grade, gate"
+      collection_method: "weigh each picking round and reconcile grade outcomes"
+      unit: "kg"
+      frequency: "each picking round"
+      temporal_coverage: "entire harvest campaign"
+      site_scope: "each field, bed, or campaign"
+      aggregation_rule: "sum by crop cycle and declared gate"
+      quality_evidence: "scale record, grade sheet, and mass-balance check"
+    - protocol_id: cp_postharvest_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "washing, cooling, and wastewater"
+      record_type: "batch, meter, or equipment record"
+      raw_fields: "batch, water, recirculation, cooling time, loss, solids, discharge"
+      collection_method: "read batch or meter record and link to harvest lot"
+      unit: "m3, kWh, kg, and h"
+      frequency: "each batch"
+      temporal_coverage: "all pre-gate handling"
+      site_scope: "pack-house or declared handling site"
+      aggregation_rule: "aggregate by accepted output batch"
+      quality_evidence: "batch sheet, meter, sanitation, and treatment record"
+    - protocol_id: cp_packaging_transport_records
+      process_id: "harvest_and_gate_preparation"
+      flow_role: "packaging, packaging waste, and pre-gate transport"
+      record_type: "packaging issue and dispatch record"
+      raw_fields: "material, tare, reuse, item count, mass, distance, vehicle, load"
+      collection_method: "reconcile packaging and dispatch records to accepted harvest lots"
+      unit: "kg, item, km, or t*km"
+      frequency: "each campaign or dispatch"
+      temporal_coverage: "all in-scope pre-gate movements"
+      site_scope: "field, pack-house, and route"
+      aggregation_rule: "sum packaging and transport by declared gate output"
+      quality_evidence: "package specification, dispatch note, route record"
+  calculation_rules:
+    - id: calc_area_occupation
+      applies_to: "crop establishment"
+      rule: "area-time = declared production area × crop occupation period; keep protected structures separate when separately attributed"
+      inputs:
+        - area
+        - "start date"
+        - "end date"
+        - "protected status"
+      output: "ha*a or declared area-time"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_nutrient_equivalents
+      applies_to: "nutrient inputs"
+      rule: "nutrient mass = formulated product mass × documented nutrient fraction; retain product and nutrient bases separately and de-duplicate compound products"
+      inputs:
+        - "product mass"
+        - "label or plan concentration"
+      output: "kg N, kg P2O5, and kg K2O"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_managed_soil_emissions
+      applies_to: "nitrogen-related elementary outputs"
+      rule: "apply one declared nitrogen-emission method to nutrient inputs, crop residues, and environmental factors; do not duplicate pathways"
+      inputs:
+        - "nutrient input"
+        - "residue fate"
+        - "method factors"
+      output: "declared nitrogen emission flows"
+      source_ids:
+        - ipcc-2019-managed-soils-n2o
+    - id: calc_water_balance
+      applies_to: "irrigation, withdrawal, washing, and wastewater"
+      rule: "reconcile source withdrawal, delivered water, recirculation, evaporation, retained solids, and discharged water; keep irrigation and washing systems separate"
+      inputs:
+        - "meter readings"
+        - "batch records"
+        - "return flow"
+        - "and solids"
+      output: "water-delivery and wastewater values"
+      source_ids:
+        - fao-crop-evapotranspiration-56
+        - mass-balance-identity
+    - id: calc_transport_service
+      applies_to: "pre-gate road freight"
+      rule: "transport service = transported mass (t) × documented distance (km); state whether return or empty-leg burden is included"
+      inputs:
+        - mass
+        - distance
+        - load
+        - "and route record"
+      output: "t*km"
+      source_ids:
+        - fao-good-agricultural-practices
+    - id: calc_reference_normalization
+      applies_to: "all inventory rows"
+      rule: "normalized value = crop-cycle quantity × 1,000 kg / accepted marketable output at the declared gate"
+      inputs:
+        - "crop-cycle quantity and accepted output mass"
+      output: "quantity per 1,000 kg reference flow"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_mass_reconciliation
+      applies_to: "harvest, downgraded pods, rejects, residues, losses, and packaging"
+      rule: "gross harvested mass = accepted output + downgraded pods + rejects + field or handling losses + declared residue streams, with measured moisture and tare treatment disclosed"
+      inputs:
+        - picking
+        - grade
+        - residue
+        - packaging
+        - "and loss records"
+      output: "reconciled crop-cycle mass balance"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "all flows and product qualifiers"
+      requirement: "Record semantic identity, physical state, direction, process role, and evidence gap or verified status for every flow; resolve the reference identity before final dataset publication."
+      evidence: "flow description, qualifier record, and foreground review"
+    - id: dq_measurement
+      applies_to: "quantities and conversions"
+      requirement: "Use calibrated scales, meters, invoices, logs, or transparent calculations; retain raw values and conversion factors with units."
+      evidence: "measurement record and calculation worksheet"
+    - id: dq_temporal
+      applies_to: "crop cycle and harvest campaign"
+      requirement: "Cover the complete declared planting-to-gate period and identify missing picking rounds, exceptional weather, or substituted records."
+      evidence: "planting, application, picking, and gate dates"
+    - id: dq_completeness
+      applies_to: "boundary inputs and outputs"
+      requirement: "Provide a value, justified zero, or documented exclusion for planting material, land, water, nutrients, protection, energy, emissions, yield, downgraded pods, rejects, residues, packaging, wastewater, and pre-gate transport when applicable."
+      evidence: "completeness checklist and mass-balance review"
+    - id: dq_allocation
+      applies_to: "shared meters, fields, facilities, packaging, or transport"
+      requirement: "State the allocation basis and test its effect when records serve multiple crops, products, or campaigns."
+      evidence: "allocation record and sensitivity note"
+    - id: dq_disclosure
+      applies_to: "final dataset metadata"
+      requirement: "Declare variety group, geography, route, planting and picking dates, crop cycle, gate, yield and grade, irrigation and nutrient bases, crop protection, residue and reject fates, packaging, washing, wastewater, pre-gate transport, and any identity evidence gap."
+      evidence: "dataset metadata and reference-flow comment"
+validation_rules:
+  - rule_id: validation_reference_definition
+    applies_to: "reference flow"
+    rule: "Confirm the 1,000 kg functional unit, all required qualifiers, and the verified reference product, mass property, and unit-group identities before foreground generation."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_flow_set_binding
+    applies_to: "parameterized product inputs"
+    rule: "Resolve each parameterized row during foreground data generation using the cited Flow Set id, version, group, structural coordinate, property, unit, geography, and intended-use evidence; do not treat a Flow Set as a final UUID."
+    source_ids: []
+  - rule_id: validation_mass_reconciliation
+    applies_to: "harvest and gate preparation"
+    rule: "Check accepted output, downgraded pods, rejects, residues, field losses, handling losses, wastewater, and packaging waste against the declared mass and water bases, with container tare and moisture treatment explicit."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validation_boundary_disclosure
+    applies_to: "system boundary"
+    rule: "Reject a dataset that omits the declared gate, crop cycle, route, irrigation source, nutrient basis, residue and reject fate, or pre-gate handling included by the scope."
+    source_ids:
+      - fao-good-agricultural-practices
+      - codex-fresh-produce-hygiene
+  - rule_id: validation_soil_emissions
+    applies_to: "managed nutrients and residues"
+    rule: "Verify that one declared emissions method is used and that direct and indirect nitrogen pathways are not double counted."
+    source_ids:
+      - ipcc-2019-managed-soils-n2o
+  - rule_id: validation_data_quality
+    applies_to: "all foreground records"
+    rule: "Report identity, measurement, temporal coverage, completeness, allocation, and disclosure findings separately; inconclusive or error findings fail validation by default."
+    source_ids:
+      - iso-14044-2006
+published_dataset_profile:
+  dataset_role: "Foreground primary dataset for fresh whole green-bean production at the declared farm-gate or pack-house gate; usable downstream as secondary_dataset after review"
+  downstream_use: "Build process and lifecycle-model foreground inventories for fresh green beans and compare declared crop-cycle routes with disclosed qualifiers"
+  allowed_use: "Product-category studies that preserve the declared crop cycle, route, gate, maturity and grade state, input bases, emission method, and mass and water reconciliation"
+  excluded_use: "Direct substitution for dry beans, seed or sprout production, processed green beans, retail or consumer stages, undisclosed protected infrastructure, or crops with materially different product and gate conditions"
+  required_metadata: "PCR id and version; variety group; geography; route; planting and picking dates; crop cycle; declared gate; yield and grade; irrigation and nutrient basis; crop protection; residue, downgraded, and reject fates; washing and wastewater; packaging; pre-gate transport; reference product qualifiers"
+  required_quality_disclosure: "Measurement sources, missing or estimated fields, allocation basis, crop-cycle completeness, mass-balance result, water balance, emission method, Flow Set resolutions, and identity evidence gap findings"
+  update_trigger: "New cultivation or protected-production route, material change in gate conditioning or packaging, revised emission method, changed product qualifiers, or evidence that alters the default collection and validation rules"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-crop-evapotranspiration-56"
+    type: "official_guidance"
+    reference: "FAO Irrigation and drainage paper 56, Crop evapotranspiration — https://www.fao.org/4/X0490E/X0490E00.htm"
+    used_for: "irrigation scheduling, water-balance context, and water-withdrawal records"
+  - id: "fao-good-agricultural-practices"
+    type: "official_guidance"
+    reference: "FAO, Production practices to increase yield, quality and safety of fruits and vegetables — https://www.fao.org/family-farming/detail/en/c/1682483/"
+    used_for: "crop-cycle decomposition, nutrient and crop-protection records, field operations, and boundary context"
+  - id: "fao-fresh-produce-handling"
+    type: "official_guidance"
+    reference: "FAO, Manual for the preparation and sale of fruits and vegetables — https://www.fao.org/4/y4893e/y4893e0a.htm"
+    used_for: "agricultural water, harvest, handling, sanitation, and post-harvest process context"
+  - id: "usda-snap-bean-standard"
+    type: "official_guidance"
+    reference: "USDA Agricultural Marketing Service, Snap Beans for Processing Grades and Standards — https://www.ams.usda.gov/grades-standards/snap-beans-processing-grades-and-standards"
+    used_for: "green-bean product identity, maturity, tenderness, defect, grade, and harvest-quality qualifiers"
+  - id: "codex-fresh-produce-hygiene"
+    type: "standard"
+    reference: "Codex Alimentarius, Code of Hygienic Practice for Fresh Fruits and Vegetables (CXC 53-2003) — https://www.fao.org/fao-who-codexalimentarius/sh-proxy/en/?lnk=1&url=https%3A%2F%2Fworkspace.fao.org%2Fsites%2Fcodex%2FStandards%2FCXC+53-2003%2FCXC_053e.pdf"
+    used_for: "water quality, washing, packing, hygiene, and pre-gate handling requirements"
+  - id: "ipcc-2019-managed-soils-n2o"
+    type: "method_factor"
+    reference: "2019 IPCC Refinement, Chapter 11: N2O Emissions from Managed Soils, and CO2 Emissions from Lime and Urea Application — https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "managed-soil nitrogen-emission calculation and validation"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044, Environmental management — Life cycle assessment — Requirements and guidelines — https://www.iso.org/standard/38498.html"
+    used_for: "allocation and data-quality validation rules"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Declared crop-cycle, grade, water, residue, and packaging mass-balance reconciliation method"
+    used_for: "normalization, loss, cull, reject, residue, wastewater, and packaging checks"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f9b9ba8fbe011b217cb1363b05d16e231ce6e7ea014e76d302b164faaae382b6"
+  generated_content_sha256: "sha256:78e54cf6104e5a18f7b29cfe46cd872780b3cf4f8f562a870a21592d882e1f66"

@@ -1,10 +1,922 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01520"
-  title: "Cassava"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.cassava"
+  classification_refs: "CPC 3.0 01520 Cassava; classification is a mapping context, not the PCR identity"
+  covered_products: "Whole fresh cassava storage roots produced by field cultivation"
+  excluded_products: "Cassava chips, flour, starch, peeled, fermented, waxed or dried roots; stems and leaves as reference product"
+  representative_product: "Whole fresh cassava roots in the declared farm-gate market class"
+  production_route: "Vegetative stem-cutting establishment → field growth → root lifting → farm-gate fresh-root grading"
+  market_state: "Fresh, unprocessed produce; Production mix, at farm gate"
+functional_unit:
+  what: "Whole fresh cassava storage roots accepted at farm gate"
+  how_much: "1 kg net fresh mass"
+  how_well: "Declared cultivar and fresh-root market class, with damaged/rejected roots excluded"
+  how_long_or_cycle: "Observed planting-to-lifting crop cycle and harvest-to-gate interval; attribute inputs from every calendar period crossed by that cycle once"
+  reference_flow_link: "marketable_roots output of gate"
+system_boundary:
+  rules:
+    - rule_id: fresh_root_gate
+      applies_to: "output boundary"
+      rule: "Stop at whole fresh accepted roots weighed at farm gate. Include only measured in-boundary short holding and sorting. Exclude industrial drying, starch extraction, chipping, waxing and downstream transport."
+      source_ids:
+        - fao-fresh-root-handling
+    - rule_id: cutting_origin
+      applies_to: "crop establishment"
+      rule: "Treat vegetative stem pieces as planting material, track purchased versus retained supply and avoid duplicating upstream stem-production burdens."
+      source_ids:
+        - iita-cassava-agronomy
+    - rule_id: harvest_separation
+      applies_to: "root lifting"
+      rule: "Keep the lifting event separate from field management to reconcile lifted roots, unlifted losses, leaves and stems."
+      source_ids:
+        - fao-cassava-cultivation
+    - rule_id: grade_states
+      applies_to: "farm-gate sorting"
+      rule: "Distinguish accepted reference roots, downgraded usable roots and discarded roots; record each destination and harvest-to-grade delay."
+      source_ids:
+        - fao-fresh-root-handling
+    - rule_id: period_link
+      applies_to: "multi-period cycle"
+      rule: "Attribute each input and output to its crop cycle and calendar reporting period once; carry field establishment across year boundaries when needed."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Land and a declared purchased or retained healthy stem-cutting stock at planting; record previous crop, retained-stem source and field age."
+  starting_condition_role: "The crop cycle begins at material establishment; upstream production of purchased cuttings and other products is linked as background."
+  product_classification_scope: "Whole fresh cassava roots, independent of CPC code."
+  recursive_input_rule: "Retained stems from this or a prior cassava cycle are a documented internal transfer; link the producing cycle once, with no self-referential product loop."
+  upstream_dataset_requirement: "Link purchased cuttings, fertilizers, crop protection, energy and supplied water to suitable upstream datasets; disclose unresolved identity."
+  disclosure: "Declare crop cycle, land/irrigation regime, stem source, harvest and grade states, time to gate, and any intentional stem co-product."
+reference_flow_definition:
+  reference_amount: "1 kg net accepted fresh roots"
+  product_flow_ref:
+    name: "Cassava"
+    uuid: "98eeec70-fa0d-41c5-967f-6b6dd000b5f7"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - cultivar
+    - geography
+    - "planting and lifting dates"
+    - "crop-cycle duration"
+    - "fresh-root use/market class"
+    - "harvest-to-gate elapsed time"
+    - "acceptance and reject criteria"
+    - "moisture or water status where measured"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_fresh_mass
+    applies_to: "reference and all root streams"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh whole roots on a consistent fresh-mass basis; exclude soil and containers, and disclose tare and moisture observations."
+  - id: area_to_reference
+    applies_to: "field and harvest activities"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "ha"
+    rule: "Divide cycle totals by accepted farm-gate fresh-root mass; do not equate gross lifted yield to reference yield."
+  - id: lot_balance
+    applies_to: "gate sorting"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Reconcile received = accepted + downgraded + rejected + measured mass discrepancy; record every category at one lot gate."
+  - id: cutting_count
+    applies_to: "planting material"
+    required_property_ref:
+      name: "Count"
+      uuid: ""
+    required_unit: "pieces"
+    rule: "Count live stem pieces; retain piece mass only as a separate measured conversion if used in LCA exchanges."
+process_map:
+  - id: field
+    name: "Cassava establishment and field growth"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "vegetative establishment, management and standing crop hand-off"
+    quantitative_reference: "per ha crop cycle"
+  - id: harvest
+    name: "Root lifting and stem disposition"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "remove roots from standing crop and separate stems/residues"
+    quantitative_reference: "per ha harvested crop"
+  - id: gate
+    name: "Fresh-root grading and farm-gate transfer"
+    inclusion: "required"
+    inclusion_condition: "always"
+    role: "separate accepted, downgraded and rejected fresh roots"
+    quantitative_reference: "per tonne received roots"
+process_inventory:
+  - id: field
+    label: "Cassava establishment and field growth"
+    inputs:
+      product:
+        - row_id: stem_cuttings
+          role: "Planting stem cuttings"
+          name: "Cassava stem cuttings"
+          flow_type: "product"
+          property_unit: "pieces"
+          description: "Count sound planted stem pieces from purchased or retained material."
+          amount:
+            expression: "Count sound planted stem pieces from purchased or retained material"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha established crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: typical_range
+                lower: "10000"
+                upper: "15000"
+                unit: "pieces/ha"
+                basis: "per ha established crop; regional 10,000–15,000 plants/ha example converted at one cutting per plant; replace with field records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-cassava-cultivation
+        - row_id: field_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg product/ha"
+                basis: "sum of separately recorded mineral fertilizer, organic fertilizer, lime and nutrient-bearing amendment product masses per hectare crop cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection product"
+          name: "Crop protection product"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "Record formulation and applied product mass by operation."
+          amount:
+            expression: "Record formulation and applied product mass by operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg/ha"
+                basis: "per ha crop cycle; Provisional QA screen for product mass, not active ingredient"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Supplied irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "m3"
+          description: "Record metered or documented supplied irrigation volume; do not count rainfall as a purchased product."
+          amount:
+            expression: "Record metered or documented supplied irrigation volume; do not count rainfall as a purchased product"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "per ha crop cycle; Provisional QA screen; zero applies when no irrigation occurs"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_fuel
+          role: "Field machinery liquid fuel"
+          name: "Mobile machinery fuel, actual liquid carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "L"
+          description: "Record actual fuel volume for land preparation, planting and field management."
+          amount:
+            expression: "Record actual fuel volume for land preparation, planting and field management"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1500"
+                unit: "L/ha"
+                basis: "per ha crop cycle; Provisional QA screen for liquid fuels only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_electricity
+          role: "Field electricity"
+          name: "Electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "kWh"
+          description: "Record metered electricity for irrigation or field operation, excluding downstream processing."
+          amount:
+            expression: "Record metered electricity for irrigation or field operation, excluding downstream processing"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kWh/ha"
+                basis: "per ha crop cycle; Provisional QA screen; zero where no powered equipment is used"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_crop
+          role: "Standing cassava crop handed to harvest"
+          name: "Standing cassava crop"
+          flow_type: "product"
+          property_unit: "ha"
+          description: "Record the cultivated area and maturity/harvest event; do not count this internal hand-off as an extra market product."
+          amount:
+            expression: "Record the cultivated area and maturity/harvest event; do not count this internal hand-off as an extra market product"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "ha/ha"
+                basis: "per ha harvested crop; Identity of area transfer from field to harvest"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: soil_n2o
+          role: "Direct soil nitrous oxide"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "kg"
+          description: "Measure or calculate direct soil N2O from recorded N inputs and crop residues with an explicitly selected local or IPCC method."
+          amount:
+            expression: "Measure or calculate direct soil N2O from recorded N inputs and crop residues with an explicitly selected local or IPCC method"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_register
+              source_ids:
+                - ipcc-2019-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg N2O/ha"
+                basis: "per ha crop cycle; Provisional screening only; not an IPCC emission factor"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: harvest
+    label: "Root lifting and stem disposition"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Standing crop received"
+          name: "Standing cassava crop"
+          flow_type: "product"
+          property_unit: "ha"
+          description: "Link to the same area and harvest event transferred by field production."
+          amount:
+            expression: "Link to the same area and harvest event transferred by field production"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "ha/ha"
+                basis: "per ha harvested crop; Identity of area transfer to harvest"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_fuel
+          role: "Root lifting fuel"
+          name: "Mobile machinery fuel, actual liquid carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "mobile-machinery-fuel"
+          property_unit: "L"
+          description: "Record actual liquid fuel used for mechanical lifting and loading when used."
+          amount:
+            expression: "Record actual liquid fuel used for mechanical lifting and loading when used"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/ha"
+                basis: "per ha harvested crop; Provisional QA screen, conditional on mechanized route"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: lifted_roots
+          role: "Lifted fresh cassava roots"
+          name: "Fresh cassava roots after lifting"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "Weigh all lifted fresh roots as an intended output before gate sorting, including roots later rejected."
+          amount:
+            expression: "Weigh all lifted fresh roots as an intended output before gate sorting, including roots later rejected"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; Broad provisional harvest QA screen; marketable yield is separately reconciled"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: retained_stems
+          role: "Retained planting stems"
+          name: "Cassava planting stems"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "Record weighed stems intentionally retained for the next crop as an internal transfer; marketed stems become a separate intended co-product."
+          amount:
+            expression: "Record weighed stems intentionally retained for the next crop as an internal transfer; marketed stems become a separate intended co-product"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; Provisional QA screen; conditional on stem retention"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: marketed_stems
+          role: "Marketed planting stems as co-product"
+          name: "Cassava planting stems"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "Weigh stems intentionally marketed as a co-product and record separate purchaser and price."
+          amount:
+            expression: "Weigh stems intentionally marketed as a co-product and record separate purchaser and price"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; Provisional QA screen; applies only where stems are marketed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: field_residue
+          role: "Leaves and uncollected stems left in field"
+          name: "Cassava field residues"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "Estimate or weigh nonmarket leaves and stems returned to field; do not count retained planting stems twice."
+          amount:
+            expression: "Estimate or weigh nonmarket leaves and stems returned to field; do not count retained planting stems twice"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; Provisional QA screen for wet field residue"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: unlifted_loss
+          role: "Unlifted or broken roots left in field"
+          name: "Uncollected cassava root loss"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "Estimate root loss in sampling plots separately from weighed lifted roots."
+          amount:
+            expression: "Estimate root loss in sampling plots separately from weighed lifted roots"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_register
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; Provisional QA screen for uncollected fresh root loss"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: gate
+    label: "Fresh-root grading and farm-gate transfer"
+    inputs:
+      product:
+        - row_id: received_roots
+          role: "Fresh lifted roots received for gate grading"
+          name: "Fresh cassava roots after lifting"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "Link measured mass to lifted_roots in the same lot; log lifting and grading times."
+          amount:
+            expression: "Link measured mass to lifted_roots in the same lot; log lifting and grading times"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; Provisional QA screen; must reconcile with harvest transfer"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: gate_electricity
+          role: "Farm-gate grading electricity"
+          name: "Electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+            group: "electricity-supply"
+          property_unit: "kWh"
+          description: "Record metered electricity only where sorting, weighing or short holding uses power."
+          amount:
+            expression: "Record metered electricity only where sorting, weighing or short holding uses power"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per tonne fresh roots received"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kWh/t"
+                basis: "per tonne fresh roots received; Provisional QA screen conditional on powered handling"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: marketable_roots
+          role: "Marketable fresh cassava roots at farm gate"
+          name: "Cassava"
+          flow_type: "product"
+          flow_ref:
+            uuid: "98eeec70-fa0d-41c5-967f-6b6dd000b5f7"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh accepted whole fresh roots at farm gate, with stated cultivar, use class, condition and time since lifting."
+          amount:
+            expression: "Weigh accepted whole fresh roots at farm gate, with stated cultivar, use class, condition and time since lifting"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per ha harvested crop"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/ha"
+                basis: "per ha harvested crop; broad provisional yield QA screen; actual accepted fresh-root mass governs"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_roots
+          role: "Downgraded but usable fresh roots"
+          name: "Fresh cassava roots, downgraded"
+          flow_type: "product"
+          property_unit: "kg"
+          description: "Weigh downgraded roots separately only when sold or handed off as an intended usable fresh-root class."
+          amount:
+            expression: "Weigh downgraded roots separately only when sold or handed off as an intended usable fresh-root class"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per tonne fresh roots received"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/t"
+                basis: "per tonne fresh roots received; Physical partition QA screen; conditional on a downgraded market route"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_roots
+          role: "Rejected damaged or deteriorated roots"
+          name: "Rejected cassava roots"
+          flow_type: "waste"
+          property_unit: "kg"
+          description: "Weigh broken, spoiled or otherwise rejected roots and document destination; never relabel as marketable reference product."
+          amount:
+            expression: "Weigh broken, spoiled or otherwise rejected roots and document destination; never relabel as marketable reference product"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per tonne fresh roots received"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_gate_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/t"
+                basis: "per tonne fresh roots received; Physical partition QA screen; not a permitted rejection rate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_root_output
+    applies_to: "accepted and downgraded fresh-root grades"
+    rule: "Where both grades are sold as fresh cassava, retain their masses and values separately. Subdivide grade-specific sorting burdens first; shared upstream burdens follow the declared study allocation method."
+    source_ids:
+      - iso-14044
+  - rule_id: stem_coproduct
+    applies_to: "intentionally marketed stems or leaves"
+    rule: "Treat sold planting stems or leaves as separate intended outputs, not as root yield or waste. Avoid allocation through process subdivision where possible; otherwise use a documented causal physical relationship or, where none is defensible, farm-gate economic shares from contemporaneous quantity and price records. Run a sensitivity check."
+    source_ids:
+      - iso-14044
+  - rule_id: residue_burden
+    applies_to: "discarded roots and field residues"
+    rule: "Keep cultivation and harvest burdens with the crop system; document field return, disposal and any later recovery separately. Do not give an unverified avoided-product credit."
+    source_ids:
+      - iso-14044
+  - rule_id: period_attribution
+    applies_to: "crop cycles crossing reporting years"
+    rule: "Assign planting and management inputs to the identified harvest cycle once, track date and phase, and never allocate the same retained stem stock or asset burden to two cycles."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_register
+      process_id: "field"
+      flow_role: "planting and management exchanges, standing area, direct soil N2O"
+      record_type: "field register, invoices, meter logs"
+      raw_fields: "field_id, cycle_id, planting_date, stem_origin, planted_pieces, material_product, product_mass, water_m3, fuel_L, electricity_kWh, N_input, residue_return, area_ha"
+      collection_method: "reconcile invoices, application logs and meters with field operations; record selected N2O method"
+      unit: "mixed"
+      frequency: "each operation"
+      temporal_coverage: "full planting-to-lifting cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum by field-cycle, divide by accepted root kg only after lot linkage"
+      quality_evidence: "purchase invoices, field log, meter readings, method worksheet"
+    - protocol_id: cp_harvest_register
+      process_id: "harvest"
+      flow_role: "lifted roots, stems, residues and root loss"
+      record_type: "harvest and sample-plot logs"
+      raw_fields: "field_id, cycle_id, lifting_time, lifted_root_kg, retained_stem_kg, marketed_stem_kg, residue_kg, unlifted_sample_kg, fuel_L"
+      collection_method: "calibrated scale and representative loss plots"
+      unit: "kg, L, ha"
+      frequency: "each lifting event"
+      temporal_coverage: "all harvest lots"
+      site_scope: "each field/harvest"
+      aggregation_rule: "reconcile harvested and unharvested fractions; avoid stem double count"
+      quality_evidence: "scale tickets, plot design, machine log"
+    - protocol_id: cp_gate_lot
+      process_id: "gate"
+      flow_role: "fresh-root grade and elapsed time"
+      record_type: "receiving, grade and dispatch tickets"
+      raw_fields: "lot_id, harvest_time, receipt_time, dispatch_time, received_kg, accepted_kg, downgraded_kg, rejected_kg, grade, destination, electricity_kWh"
+      collection_method: "calibrated in/out scales, visible quality checks and timestamped tickets"
+      unit: "kg, h, kWh"
+      frequency: "each gate lot"
+      temporal_coverage: "harvest-to-dispatch"
+      site_scope: "each farm gate"
+      aggregation_rule: "reconcile received and all departures by lot; combine only like market classes"
+      quality_evidence: "scale calibration, tickets, reject reason and photos"
+  calculation_rules:
+    - id: reference_normalization
+      applies_to: "all exchanges"
+      rule: "Exchange per kg reference = allocated cycle/lot exchange ÷ accepted fresh-root kg; use a documented allocation share when intended co-products exist."
+      inputs:
+        - "linked cycle"
+        - "lot masses and allocation share"
+      output: "kg-reference-normalized exchange"
+      source_ids: []
+    - id: gate_mass_reconciliation
+      applies_to: "gate"
+      rule: "discrepancy = received fresh-root kg − accepted kg − downgraded kg − rejected kg; investigate unmeasured loss or scale mismatch."
+      inputs:
+        - "gate ticket masses"
+      output: "mass discrepancy"
+      source_ids: []
+    - id: cycle_period_linkage
+      applies_to: "all processes"
+      rule: "Join operation and harvest records by field/cycle and classify each by calendar period; do not duplicate a record in combined reporting."
+      inputs:
+        - field_id
+        - cycle_id
+        - dates
+      output: "one cycle inventory and period trace"
+      source_ids: []
+    - id: soil_n2o_method
+      applies_to: "soil emission"
+      rule: "Select documented jurisdictional or IPCC 2019 managed-soils method and recorded nitrogen inputs; disclose factor, unit and direct/indirect scope."
+      inputs:
+        - "fertilizer N"
+        - "residue N"
+        - "soil and method data"
+      output: "kg N2O by route"
+      source_ids:
+        - ipcc-2019-soils
+  data_quality_requirements:
+    - id: lot_identity
+      applies_to: "all root streams"
+      requirement: "Use stable field, crop-cycle and lot ids across lifting, sorting and dispatch."
+      evidence: "linked tickets"
+    - id: root_condition
+      applies_to: "reference product"
+      requirement: "Report cultivar, use class, damage/rejection rules, and measured time from lifting to gate."
+      evidence: "grade sheets and timestamps"
+    - id: mass_completeness
+      applies_to: "harvest and gate"
+      requirement: "Explain nonzero gate discrepancy, unlifted losses and destinations of rejected roots; quantify missing observations."
+      evidence: "weighbridge and sampling records"
+    - id: temporal_completeness
+      applies_to: "crop cycle"
+      requirement: "Include establishment across reporting periods and any retained-stem transfer exactly once."
+      evidence: "dated field register"
+    - id: source_compatibility
+      applies_to: "upstream flows"
+      requirement: "Record region, technology and unit compatibility of linked backgrounds; list unresolved identities."
+      evidence: "data package metadata"
+validation_rules:
+  - rule_id: reference_identity
+    applies_to: "reference flow"
+    rule: "Require the verified cassava Product flow, Mass property and kg at the specified farm gate; reject chips, flour, starch and waxed roots as reference substitutes."
+    source_ids: []
+  - rule_id: range_review
+    applies_to: "all flow cards"
+    rule: "Verify each range's basis, units and evidence; treat reasoned bounds as provisional QA prompts, not hard inventory defaults."
+    source_ids: []
+  - rule_id: balance_check
+    applies_to: "root streams"
+    rule: "Match lifted and gate-received lots; reconcile accepted, downgraded, rejected and recorded discrepancy without double counting."
+    source_ids: []
+  - rule_id: time_to_gate
+    applies_to: "quality"
+    rule: "Require lifting and gate times and reject/damage criteria for each lot because fresh roots deteriorate quickly."
+    source_ids:
+      - fao-fresh-root-handling
+  - rule_id: coproduct_check
+    applies_to: "stems and grades"
+    rule: "Require intentional-output identity, hand-off, allocation shares and no double credit or double burden."
+    source_ids:
+      - iso-14044
+  - rule_id: period_check
+    applies_to: "multi-period crops"
+    rule: "Verify every planting, management, harvest and retained-stem record is assigned to one cycle and attributed once."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground production dataset for whole fresh cassava roots at farm gate"
+  downstream_use: "secondary_dataset, background_dataset in process or lifecyclemodel assembly after review"
+  allowed_use: "Declared cultivar/market class, geography and crop/handling regime with compatible farm-gate boundary"
+  excluded_use: "Processed cassava, default planting stems, storage beyond measured farm-gate handling, unspecified fresh-root quality"
+  required_metadata: "crop cycle, location, cultivar, stem source, planting and harvest dates, lot grade, fresh-root use class, accepted mass and co-product method"
+  required_quality_disclosure: "metering and sampling coverage, gate mass balance, damage/reject fraction, time to gate, ranges used only for QA, source and allocation uncertainty"
+  update_trigger: "material change in cultivar, route, market class, handling time, input regime, allocation practice or source evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-cassava-cultivation"
+    type: "official_guidance"
+    reference: "https://www.fao.org/4/x5032e/x5032e01.htm"
+    used_for: "Vegetative propagation, regional planting population and harvesting"
+  - id: "iita-cassava-agronomy"
+    type: "literature"
+    reference: "https://cgspace.cgiar.org/items/e78b8dc2-da35-4306-9eeb-bae56727242a"
+    used_for: "Stem-cutting health, field management and root production"
+  - id: "fao-fresh-root-handling"
+    type: "official_guidance"
+    reference: "https://www.fao.org/4/x5415e/x5415e04.htm"
+    used_for: "Root damage and rapid physiological deterioration after harvest"
+  - id: "fao-global-cassava-strategy"
+    type: "official_guidance"
+    reference: "https://www.fao.org/4/j1255e/j1255e04.htm"
+    used_for: "Context-specific fresh-root yield examples"
+  - id: "ipcc-2019-soils"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "Selection and disclosure of soil N2O calculation method"
+  - id: "iso-14044"
+    type: "standard"
+    reference: "ISO 14044:2006, https://www.iso.org/standard/38498.html"
+    used_for: "Allocation hierarchy and study disclosure"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:db856c583d17871dd3b0d6221b274608768ad1980281f639016a59ffdbe3570d"
+  generated_content_sha256: "sha256:0235e93b2bd45221add12eea5c860865f553456cde2ea78788c104b21589d2a8"

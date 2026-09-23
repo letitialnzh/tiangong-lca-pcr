@@ -1,10 +1,1075 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01922"
-  title: "Jute, kenaf, and other textile bast fibres, raw or retted, except flax, true hemp and ramie"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.jute-kenaf-and-other-textile-bast-fibres-raw-or-retted-except-flax-true-hemp-and-ramie"
+  classification_refs: "CPC 3.0 01922, exact path 0 > 01 > 019 > 0192 > 01922"
+  covered_products: "raw or retted jute, kenaf and other eligible textile bast fibres at producer gate"
+  excluded_products: "flax; true hemp; ramie; cotton; coir; sisal; abaca; yarn; fabric; pulp; chemically modified or finished fibre"
+  representative_product: "accepted raw or retted jute or kenaf bast fibre"
+  production_route: "managed crop production and harvest followed by declared raw mechanical extraction or retting, extraction, washing, drying and grading"
+  market_state: "dry or otherwise stabilized raw or retted fibre, graded and ready for producer hand-off"
+functional_unit:
+  what: "accepted raw or retted jute, kenaf or other eligible textile bast fibre at producer hand-off"
+  how_much: "1,000 kg mass at declared moisture basis"
+  how_well: "declared species, raw or retted state, extraction route, moisture content, grade and foreign-matter basis; rejected and downgraded fibre excluded"
+  how_long_or_cycle: "one declared crop cycle and the identified retting, extraction and conditioning batches attributed to the delivered lot"
+  reference_flow_link: "output reference_fibre of washing_drying_grading"
+system_boundary:
+  rules:
+    - rule_id: boundary_producer_gate
+      applies_to: "all routes"
+      rule: "Include cultivation, harvest and the declared extraction, retting, washing, drying and grading needed to reach the raw or retted producer-gate state; exclude spinning and later manufacture. Use single-period accounting with no storage."
+      source_ids:
+        - fao-ijo-jute-retting-1998
+    - rule_id: boundary_route_separation
+      applies_to: "alternative routes"
+      rule: "Keep whole-stem, ribbon, microbial-assisted and mechanical routes as separate measured strata until production-weighted aggregation."
+      source_ids:
+        - fao-ijo-jute-retting-1998
+    - rule_id: boundary_batch_events
+      applies_to: "treatment and conditioning"
+      rule: "Attribute inputs, outputs, cleaning, rework and rejects to the responsible batch or production period and prevent shared burdens from being counted twice."
+      source_ids:
+        - fao-ijo-jute-retting-1998
+    - rule_id: boundary_destination
+      applies_to: "residues and rejects"
+      rule: "Record each output hand-off as intended product, downgraded product, recovered material, returned biomass, waste or emission according to actual destination."
+      source_ids:
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "prepared agricultural field before sowing the declared bast-fibre crop"
+  starting_condition_role: "foreground start for managed cultivation; previous crop and soil condition are disclosed context"
+  product_classification_scope: "raw or retted eligible textile bast fibres under CPC 3.0 01922"
+  recursive_input_rule: "purchased fibre of the same category shall be traced as a separate upstream product and excluded from foreground crop yield"
+  upstream_dataset_requirement: "use supplier-specific or representative datasets for seed, nutrient and crop-protection products, water, energy carriers, treatment aids and transport selected from foreground records"
+  disclosure: "species, cultivar, location, crop cycle, yield, harvest state, extraction/retting route, batch mode, water source, drying route, moisture basis, grades, residues, wastewater and hand-off; single-period accounting with no storage"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Jute, kenaf, and other textile bast fibres, raw or retted"
+    uuid: "bcf2ea60-81e8-43cb-879f-ac473e43f521"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - "raw or retted"
+    - whole-stem
+    - "ribbon or mechanical extraction route"
+    - "producer gate"
+    - "moisture content"
+    - grade
+    - "foreign matter"
+    - "geography and production period"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted reference fibre"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure accepted fibre at hand-off and report moisture content; do not substitute stem mass or oven-dry mass without an explicit conversion."
+  - id: moisture_conversion
+    applies_to: "all fibre and biomass transfers"
+    required_property_ref:
+      name: "mass fraction"
+      uuid: ""
+    required_unit: "kg water/kg wet material"
+    rule: "Retain sampled moisture basis and use lot-specific wet-to-declared-basis conversion."
+  - id: batch_linkage
+    applies_to: "retting, extraction, washing, drying and grading"
+    required_property_ref:
+      name: "batch and lot identity"
+      uuid: ""
+    required_unit: "batch, lot"
+    rule: "Link inputs, outputs, cleaning, rework and rejects to the producing batch or period."
+  - id: water_balance
+    applies_to: "retting and washing"
+    required_property_ref:
+      name: "volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Distinguish gross withdrawal, recirculation, evaporation and discharge."
+process_map:
+  - id: crop_production
+    name: "Managed bast-fibre crop production and harvest"
+    inclusion: "required"
+    inclusion_condition: "all managed-crop routes"
+    role: "managed biological production and independent harvest node"
+    quantitative_reference: "one crop hectare-cycle and harvested stem mass"
+  - id: retting_extraction
+    name: "Optional retting and fibre extraction"
+    inclusion: "conditional"
+    inclusion_condition: "reference product is retted or mechanically extracted fibre"
+    role: "batch mode material treatment and primary conditioning node with an alternative technology route delta"
+    quantitative_reference: "one declared retting or extraction batch"
+  - id: washing_drying_grading
+    name: "Washing, drying, stabilization and grading"
+    inclusion: "required"
+    inclusion_condition: "extracted fibre is delivered as the reference product"
+    role: "preservation, stabilization, grading and hand-off node"
+    quantitative_reference: "1,000 kg accepted reference fibre"
+process_inventory:
+  - id: crop_production
+    label: "Managed bast-fibre crop production and harvest"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Planting seed for the declared bast crop"
+          name: "Jute seed, unspecified"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d33e2a9b-1868-4489-a4f9-24d6d8cb9052"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record species, cultivar, germination basis and seed actually sown."
+          amount:
+            expression: "measured seed mass corrected to the declared viable-seed basis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/ha"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_nutrients
+          role: "Consolidated agricultural nutrient supply"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record all mineral and organic fertilizers, lime and nutrient amendments in one card, then expand actual products and nutrient composition."
+          amount:
+            expression: "measured applied product mass and composition by event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg products/ha"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_irrigation
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record supplied irrigation by source and event; record zero for rainfed production."
+          amount:
+            expression: "metered delivery or flow-rate times operating time"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "15000"
+                unit: "m3/ha"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_energy
+          role: "Field-operation energy"
+          name: "Field-operation energy carriers and services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record actual fuel, electricity and qualifying energy services for land preparation, sowing, management, irrigation and harvest."
+          amount:
+            expression: "energy converted from carrier and meter records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "MJ/ha"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection products as applied"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record every formulated product actually applied; no default treatment is imposed."
+          amount:
+            expression: "measured formulated-product mass by event"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg formulated product/ha"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Agricultural land occupation"
+          name: "Agriculture land occupation"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "e1d56d4e-afe3-4b92-bd51-0a21f75e50a8"
+          binding: "fixed"
+          property_unit: "Area*time 93a60a56-a3c8-21da-a746-0800200c9a66 / ha*a"
+          description: "Record occupied agricultural land for the crop cycle."
+          amount:
+            expression: "cultivated area multiplied by occupied-year fraction"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids:
+                - area-time-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "2"
+                unit: "ha*a/ha crop"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - area-time-identity
+    outputs:
+      product:
+        - row_id: harvested_stems
+          role: "Harvested bast-crop stems or bark ribbons"
+          name: "Harvested bast-crop stems or bark ribbons, internal transfer"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Transfer harvested whole stems or mechanically separated bark ribbons to the selected raw-fibre or retting route."
+          amount:
+            expression: "measured harvested mass by species, field and lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_crop_cycle
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg fresh stems/ha"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-ijo-jute-retting-1998
+      waste:
+        - row_id: field_rejects
+          role: "Field rejects and uncollected crop material"
+          name: "Field-rejected bast-crop biomass"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record crop material rejected, left in field, burned, recovered or removed, with destination."
+          amount:
+            expression: "measured or mass-balance-estimated rejected biomass by destination"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg harvested stems"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        - row_id: soil_n_emissions
+          role: "Managed-soil nitrogen emissions"
+          name: "Managed-soil nitrogen emission species"
+          flow_type: "elementary"
+          property_unit: "Mass / kg species"
+          description: "Calculate actual nitrogen species and receiving compartments separately; this umbrella is not a final exchange."
+          amount:
+            expression: "method calculation from recorded nitrogen inputs and crop residues"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare-cycle"
+              kind: "n_input"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg species/kg relevant N input"
+                basis: "per cultivated hectare-cycle"
+                basis_kind: "n_input"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2019-managed-soils
+        - row_id: direct_combustion_emissions
+          role: "Direct combustion emissions from foreground fuel use"
+          name: "Foreground fuel-combustion emission species"
+          flow_type: "elementary"
+          property_unit: "Mass / kg species"
+          description: "Calculate emitted substances and receiving compartments separately whenever fuel is combusted in foreground machinery, pumps or dryers; this umbrella is not a final exchange."
+          amount:
+            expression: "calculate separate emitted substances from actual fuel use, equipment and declared inventory method"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per cultivated hectare-cycle before accepted-fibre normalization"
+              kind: "fuel_inventory"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_crop_cycle
+              source_ids:
+                - ipcc-2006-mobile-combustion
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "10"
+                unit: "kg species/kg fuel"
+                basis: "per kilogram of recorded foreground fuel"
+                basis_kind: "fuel_inventory"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2006-mobile-combustion
+  - id: retting_extraction
+    label: "Optional retting and fibre extraction"
+    inputs:
+      product:
+        - row_id: retting_feed
+          role: "Harvested stems or bark ribbons received"
+          name: "Harvested bast-crop stems or bark ribbons, internal transfer"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter"
+          description: "Receive the internal lot with species, fresh mass, moisture and route retained."
+          amount:
+            expression: "measured batch input mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_retting_batch
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kg/batch"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-ijo-jute-retting-1998
+        - row_id: retting_water
+          role: "Retting and washing process water"
+          name: "Process water for retting and washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record water added or withdrawn by source, batch and reuse loop."
+          amount:
+            expression: "metered or calculated gross make-up water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_retting_batch
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "m3/t feed"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-ijo-jute-retting-1998
+        - row_id: retting_energy
+          role: "Retting and extraction energy"
+          name: "Retting and extraction energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record carriers and electricity for ribboning, decortication, pumping, agitation and extraction."
+          amount:
+            expression: "energy converted from carrier and meter records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_retting_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/t feed"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: retting_aids
+          role: "Retting inoculants or treatment aids"
+          name: "Retting inoculants or treatment aids as applied"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each microbial culture, enzyme, alkali or bleaching aid actually used; zero is valid for unaided water retting."
+          amount:
+            expression: "measured product mass by batch"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_retting_batch
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/t feed"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-ijo-jute-retting-1998
+        - row_id: inter_node_transport
+          role: "Inter-node freight transport"
+          name: "Freight transport service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+          property_unit: "Transport service / t*km"
+          description: "Record only transport between included foreground sites."
+          amount:
+            expression: "loaded mass times route distance by mode"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per transferred batch"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_retting_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "t*km/t feed"
+                basis: "per transferred batch"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: extracted_fibre
+          role: "Extracted raw or retted bast fibre"
+          name: "Extracted bast fibre, internal transfer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer extracted fibre to washing, drying and grading with moisture and retting state retained."
+          amount:
+            expression: "measured wet fibre mass by batch"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_retting_batch
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg feed"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - fao-ijo-jute-retting-1998
+      waste:
+        - row_id: retting_wastewater
+          role: "Retting wastewater"
+          name: "Retting wastewater"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Record wastewater volume and destination; characterize relevant oxygen demand, solids, nutrients and treatment."
+          amount:
+            expression: "measured discharge less documented reuse and evaporation"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_retting_batch
+              source_ids:
+                - water-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "100"
+                unit: "m3/t feed"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - water-balance-identity
+        - row_id: retting_residues
+          role: "Woody core, bark and extraction residues"
+          name: "Jute or kenaf extraction residues"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record each residue as intended co-product, recovered material, returned biomass or waste according to actual destination."
+          amount:
+            expression: "measured residue mass by destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per retting or extraction batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_retting_batch
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg feed"
+                basis: "per retting or extraction batch"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: washing_drying_grading
+    label: "Washing, drying, stabilization and grading"
+    inputs:
+      product:
+        - row_id: conditioning_feed
+          role: "Extracted fibre received for conditioning"
+          name: "Extracted bast fibre, internal transfer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the internal fibre lot; for a raw, unretted route, receive mechanically separated fibre with route declared."
+          amount:
+            expression: "measured incoming fibre mass and moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg/t accepted fibre"
+                basis: "per conditioning lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: final_wash_water
+          role: "Final washing water"
+          name: "Process water for final washing"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record clean water used after fibre extraction and any reuse loop."
+          amount:
+            expression: "metered or calculated make-up water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - fao-ijo-jute-retting-1998
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "m3/t accepted fibre"
+                basis: "per conditioning lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids:
+                  - fao-ijo-jute-retting-1998
+        - row_id: conditioning_energy
+          role: "Drying and conditioning energy"
+          name: "Drying and conditioning energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record energy for mechanical handling, forced drying or moisture conditioning; solar drying records no purchased heat."
+          amount:
+            expression: "energy converted from actual carrier and meter records"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "MJ/t accepted fibre"
+                basis: "per conditioning lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_fibre
+          role: "Accepted raw or retted bast fibre"
+          name: "Jute, kenaf, and other textile bast fibres, raw or retted"
+          flow_type: "product"
+          flow_ref:
+            uuid: "bcf2ea60-81e8-43cb-879f-ac473e43f521"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record accepted jute, kenaf or eligible other bast fibre as an intended output at producer hand-off."
+          amount:
+            expression: "measured accepted mass at declared moisture and grade"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: downgraded_fibre
+          role: "Downgraded fibre sent to a declared market"
+          name: "Downgraded bast fibre, internal grade output"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this saleable downgraded grade as an intended output separately from accepted reference fibre and waste."
+          amount:
+            expression: "measured downgraded mass by grade and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg incoming fibre"
+                basis: "per conditioning lot"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: grading_rejects
+          role: "Rejected fibre and grading debris"
+          name: "Rejected bast fibre and grading debris"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected or off-spec material by rework, recovery, discard or treatment destination."
+          amount:
+            expression: "measured reject mass by disposition"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per conditioning lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: allowed_range
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg incoming fibre"
+                basis: "per conditioning lot"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_mass_first
+    applies_to: "fibre and intended co-products"
+    rule: "First preserve physical mass and moisture balances by batch. Where fibre, sticks, seeds or other outputs are intended products, avoid allocation by subdivision when separately metered; otherwise report and justify the selected physical or economic relation."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_residue_destination
+    applies_to: "sticks, bark, fines and crop residues"
+    rule: "Do not assign avoided burdens without a declared substitution model. Returned biomass, sold co-product and waste treatment are distinct destinations."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rework
+    applies_to: "rework and rejected material"
+    rule: "Return reworked material and its additional burdens to the producing batch; exclude downgraded and rejected mass from accepted reference output and prevent double counting."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_crop_cycle
+      process_id: "crop_production"
+      flow_role: "crop inputs, harvested stems, rejects and soil emissions"
+      record_type: "field log, invoice, meter, harvest record"
+      raw_fields: "field, species, cultivar, area, dates, seed, nutrient products and composition, irrigation, energy, crop protection, harvest and residues"
+      collection_method: "reconcile invoices, application logs, meters and harvest weights"
+      unit: "native units plus kg, m3, MJ and ha"
+      frequency: "each operation and harvest lot"
+      temporal_coverage: "complete declared crop cycle"
+      site_scope: "every included field"
+      aggregation_rule: "sum by field and route, then normalize through accepted fibre yield"
+      quality_evidence: "invoices, calibrated scales/meters, application and harvest logs"
+    - protocol_id: cp_retting_batch
+      process_id: "retting_extraction"
+      flow_role: "retting/extraction batch inputs and outputs"
+      record_type: "batch sheet, meter, weigh ticket, laboratory result"
+      raw_fields: "feed mass/moisture, route, time, water, energy, aids, fibre, wastewater, residues and destinations"
+      collection_method: "batch-level readings and mass/water reconciliation"
+      unit: "kg, m3, MJ, t*km"
+      frequency: "each batch"
+      temporal_coverage: "all batches supplying the reference lot"
+      site_scope: "every included retting/extraction site"
+      aggregation_rule: "sum compatible route batches; production-weight aggregation only"
+      quality_evidence: "batch identifiers, meter/scale checks, water-quality and destination evidence"
+    - protocol_id: cp_conditioning_lot
+      process_id: "washing_drying_grading"
+      flow_role: "washing, drying, grade and hand-off"
+      record_type: "lot sheet, meter, weigh ticket, grade test"
+      raw_fields: "incoming mass/moisture, water, energy, drying route, accepted grade, downgraded grade, rejects and destination"
+      collection_method: "lot-level measurement and reconciliation"
+      unit: "kg, m3, MJ"
+      frequency: "each lot"
+      temporal_coverage: "all lots in reporting period"
+      site_scope: "every included conditioning site"
+      aggregation_rule: "normalize accepted output to 1,000 kg at declared moisture"
+      quality_evidence: "scale/meter calibration, moisture and grade test, dispatch record"
+  calculation_rules:
+    - id: calc_moisture_basis
+      applies_to: "material transfers"
+      rule: "declared-basis mass = wet mass × (1 − measured moisture fraction)/(1 − declared moisture fraction)"
+      inputs:
+        - "wet mass"
+        - "measured moisture"
+        - "declared moisture"
+      output: "comparable material mass"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_route_yield
+      applies_to: "crop through accepted fibre"
+      rule: "accepted fibre yield = accepted declared-basis fibre mass / cultivated area; retain intermediate stem and extraction yields"
+      inputs:
+        - "accepted fibre"
+        - "harvested stems"
+        - area
+      output: "kg accepted fibre/ha and process yields"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_water_balance
+      applies_to: "retting and washing"
+      rule: "discharge = withdrawal + incoming-water − evaporation − retained-water − reuse ending inventory"
+      inputs:
+        - "water and moisture records"
+      output: "wastewater volume"
+      source_ids:
+        - water-balance-identity
+    - id: calc_n_emissions
+      applies_to: "managed soil"
+      rule: "calculate species and compartments from recorded nitrogen activity data using the declared inventory method"
+      inputs:
+        - "nitrogen products"
+        - residues
+        - "method factors"
+      output: "separate nitrogen exchanges"
+      source_ids:
+        - ipcc-2019-managed-soils
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference lot"
+      requirement: "Species, raw/retted state, route, moisture basis and grade shall be traceable from field and batch to dispatch."
+      evidence: "field, batch, lot and dispatch identifiers"
+    - id: dq_completeness
+      applies_to: "all nodes"
+      requirement: "Reconcile accepted fibre, co-products, downgraded material, rejects, wastewater and residues; explain every material gap."
+      evidence: "signed mass and water balances"
+    - id: dq_temporal
+      applies_to: "reporting period"
+      requirement: "Cover one complete crop cycle and every treatment batch supplying the output; disclose any proxy period."
+      evidence: "dated logs and coverage statement"
+    - id: dq_route
+      applies_to: "alternative routes"
+      requirement: "Report route-specific sample count, mass and burdens before aggregation."
+      evidence: "route-stratified records"
+validation_rules:
+  - rule_id: validate_reference_identity
+    applies_to: "reference flow"
+    rule: "UUID, Mass property, mass unit group, product state and required qualifiers shall match the declared accepted fibre."
+    source_ids: []
+  - rule_id: validate_flow_bindings
+    applies_to: "all cards"
+    rule: "Resolve every parameterized card to a concrete compatible UUID from actual foreground identity, and retain unresolved or internal status exactly as audited."
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "all cards"
+    rule: "Every English, Chinese and structured card shall contain exactly one complete range with matching role, bounds, unit, basis, basis kind and evidence kind."
+    source_ids: []
+  - rule_id: validate_route_balance
+    applies_to: "every route and batch"
+    rule: "Input mass shall reconcile with accepted, downgraded, co-product, residue, reject and measured loss outputs after moisture conversion."
+    source_ids: []
+  - rule_id: validate_rework
+    applies_to: "rejects and rework"
+    rule: "Rework shall remain linked to its producing node and shall not be counted both as new input and accepted output."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground production dataset for raw or retted eligible bast fibre"
+  downstream_use: "secondary_dataset; background_dataset after review"
+  allowed_use: "fibre-product systems matching species, route, state, moisture, grade, geography and period"
+  excluded_use: "flax, true hemp, ramie, cotton, coir, sisal, abaca, yarn, fabric, pulp or chemically modified fibre without a separate model"
+  required_metadata: "species; cultivar; field and sites; crop cycle; raw/retted and extraction route; batch mode; moisture; grade; water and energy route; co-product and waste destinations"
+  required_quality_disclosure: "temporal, geographic and technological representativeness; route coverage; measured versus estimated shares; mass/water closure; unresolved identities"
+  update_trigger: "material change in cultivar, route, water source, retting aid, extraction/drying technology, grade specification, yield, allocation or background identity"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.material-treatment-node
+      kind: "activity"
+      path: "library/modules/activities/material-treatment-node.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "fao-ijo-jute-retting-1998"
+    type: "official_guidance"
+    reference: "FAO and International Jute Organisation, *Improved Retting and Extraction of Jute: Project Findings and Recommendations*, Rome, 1998, https://www.fao.org/fishery/docs/CDrom/aquaculture/a0845t/volume2/docrep/field/381307.htm"
+    used_for: "route decomposition, harvesting, sorting, retting, extraction, washing and immediate drying"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11"
+    used_for: "managed-soil nitrogen-emission calculation"
+  - id: "ipcc-2006-mobile-combustion"
+    type: "method_factor"
+    reference: "IPCC, 2006 Guidelines for National Greenhouse Gas Inventories, Volume 2, Chapter 3"
+    used_for: "direct combustion-emission calculation from foreground fuel use"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "conservation-of-mass identity"
+    used_for: "mass balance, yield, allocation and reject validation"
+  - id: "water-balance-identity"
+    type: "method_factor"
+    reference: "process water-balance identity"
+    used_for: "retting and washing water reconciliation"
+  - id: "area-time-identity"
+    type: "method_factor"
+    reference: "occupied area multiplied by time"
+    used_for: "land-occupation calculation"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:67f5b1a64b8d2f11e766e21e6cec2c6ba09e9c8e40a78ff83620bdc3410f72db"
+  generated_content_sha256: "sha256:e663caa3a1c7c6799d5fa30dc401e62e0b776b601751611cd473155397d11d8d"

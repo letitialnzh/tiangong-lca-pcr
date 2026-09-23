@@ -1,10 +1,1237 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01654"
-  title: "Anise, badian, coriander, cumin, caraway, fennel and juniper berries, raw"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.anise-badian-coriander-cumin-caraway-fennel-and-juniper-berries-raw"
+  classification_refs: "CPC 3.0: 01654"
+  covered_products: "Whole raw anise fruit/seed, star anise fruit, coriander seed, cumin fruit/seed, caraway fruit/seed, fennel fruit/seed, or edible juniper berry-like cones, declared by species and organ"
+  excluded_products: "Coriander/fennel leaf herbs; undisclosed mixed-species lots; ground/blended spice; essential oil or oleoresin; sterilized or retail-packed product"
+  representative_product: "One declared species and harvested organ, cleaned and graded as a whole raw spice lot at farm gate"
+  production_route: "Parent: managed biological production. Mutually exclusive deltas: annual/biennial field seed-spice crop, cultivated perennial tree/shrub, or managed collection from an existing juniper stand. Manual/mechanical harvest and ambient/heated drying are route-specific technology deltas. Lots may be aggregated only after separate modelling."
+  market_state: "Whole, unground raw seed, fruit, or berry/cone; moisture and drying status declared"
+functional_unit:
+  what: "Declared whole raw spice seed, fruit, or berry/cone at farm gate"
+  how_much: "1,000 kg net product at declared moisture"
+  how_well: "Species, organ, route, geography, harvest year, grade, moisture/basis, and drying status declared; unrelated species are not blended into one reference flow"
+  how_long_or_cycle: "One annual/biennial crop cycle or one perennial harvest year/cohort; establishment and multi-year maintenance annualized where applicable"
+  reference_flow_link: "rf_raw_spice_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The foreground begins with seed/planting stock and prepared land, a cultivated perennial stand, or a documented managed juniper collection area. Managed production ends at the harvest-ready organ. Harvest is separate because removal and field losses have their own records. Primary conditioning converts collected material to a cleaned lot; stabilization converts a moisture-unstable usable lot to a stable state; grading creates accepted, downgraded, and rejected destinations."
+      source_ids: []
+    - rule_id: boundary_route_choice
+      applies_to: "All lots"
+      rule: "Select exactly one production delta for each lot and collect its route-specific inputs and periods. Do not substitute annual and perennial inventories."
+      source_ids:
+        - icar-rabi-coriander-2021
+        - ncsu-common-juniper
+    - rule_id: boundary_postharvest
+      applies_to: "Farm-gate route"
+      rule: "Include harvest/collection, threshing/separation, cleaning, grading, and any drying before the gate. Distinguish accepted, downgraded, rejected, and lost material."
+      source_ids:
+        - codex-spice-hygiene
+        - fssai-star-anise-2023
+    - rule_id: boundary_exclusions
+      applies_to: "Downstream manufacture"
+      rule: "Exclude grinding, blending, extraction, sterilization, and retail packing; meter on-site excluded operations in a separate dataset."
+      source_ids:
+        - codex-spice-hygiene
+    - rule_id: boundary_periods
+      applies_to: "Perennial route"
+      rule: "Distinguish establishment, immature, productive maintenance, harvest year/cohort, replacement, and termination; link each burden once."
+      source_ids:
+        - ncsu-common-juniper
+boundary_abstraction:
+  declared_starting_condition: "Seed/planting material and prepared field; established/new perennial stand; or managed collection area with origin and management declared"
+  starting_condition_role: "Foreground production start; operator-established perennial burdens are annualized, while burdens for naturally established stands are not invented"
+  product_classification_scope: "One declared species, crop, and harvested organ within the category"
+  recursive_input_rule: "Purchased raw spice of this category entering conditioning requires a separate upstream dataset and input row; it is not folded into the foreground harvest."
+  upstream_dataset_requirement: "Supplier or representative datasets for planting stock, every actual nutrient product, water, crop protection, energy, machinery, and purchased raw spice"
+  disclosure: "Species, organ, route, stand origin/age where relevant, period, area, yield, harvest method, conditioning/drying sequence, moisture, grades, rejects, residues, and output destinations"
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Anise, badian, coriander, cumin, caraway, fennel and juniper berries, raw"
+    uuid: "bd08a9d0-d397-4471-8b53-5071717b049d"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "botanical species"
+    - crop
+    - "harvested organ"
+    - "production route"
+    - geography
+    - "harvest year"
+    - grade
+    - "moisture content and basis"
+    - "drying method or not dried"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Reference product and solid hand-offs"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Record net mass and measured moisture; use calc_moisture_conversion before comparing different moisture states."
+  - id: moisture_basis
+    applies_to: "Harvested, dried, and graded lots"
+    required_property_ref:
+      name: "Mass fraction"
+      uuid: ""
+    required_unit: "%"
+    rule: "State wet or dry basis and test method. Never aggregate unlike bases without conversion."
+  - id: area_time
+    applies_to: "Managed land occupation"
+    required_property_ref:
+      name: "Area × time"
+      uuid: ""
+    required_unit: "ha·year"
+    rule: "Record area and represented time; annualize perennial establishment over recorded productive life."
+  - id: nutrient_mass
+    applies_to: "Nutrient products and nutrient emissions"
+    required_property_ref:
+      name: "Element mass"
+      uuid: ""
+    required_unit: "kg N, kg P, kg K"
+    rule: "Retain every product record and composition; never add unlike nutrient elements."
+process_map:
+  - id: managed_production
+    name: "Managed field crop, perennial stand, or collection area"
+    inclusion: "required"
+    inclusion_condition: "Exactly one route delta per lot"
+    role: "Produces harvest-ready organ; records management, periods, residues, and other outputs"
+    quantitative_reference: "Per crop cycle or harvest year"
+  - id: harvest_capture
+    name: "Harvest, collection, and threshing/separation"
+    inclusion: "required"
+    inclusion_condition: "Threshing only where used"
+    role: "Removes intended organ; records loss and incidental biomass"
+    quantitative_reference: "Per 1,000 kg collected organ"
+  - id: primary_conditioning
+    name: "Cleaning and primary separation"
+    inclusion: "required"
+    inclusion_condition: "All lots"
+    role: "Removes soil, chaff, stalks, and foreign matter"
+    quantitative_reference: "Per 1,000 kg cleaned lot"
+  - id: stabilization_drying
+    name: "Ambient or heated drying"
+    inclusion: "conditional"
+    inclusion_condition: "Only when moisture is reduced before gate"
+    role: "Produces stable declared moisture state; ambient/heated modes are mutually exclusive per batch"
+    quantitative_reference: "Per 1,000 kg dried lot"
+  - id: grading_sorting
+    name: "Farm-gate grading and routing"
+    inclusion: "required"
+    inclusion_condition: "All lots"
+    role: "Produces accepted, downgraded, and rejected destinations"
+    quantitative_reference: "Per 1,000 kg accepted product"
+process_inventory:
+  - id: managed_production
+    label: "Managed field crop, perennial stand, or collection area"
+    inputs:
+      product:
+        - row_id: planting_material
+          role: "Planting material or establishment stock"
+          name: "Species-specific planting material, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record seed, seedlings, or cuttings only when they enter the foreground. A naturally established managed juniper stand records zero and discloses that condition."
+          amount:
+            expression: "Foreground quantity; perennial establishment is annualized over recorded productive life"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per cultivated hectare per establishment or crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg/ha"
+                basis: "per cultivated hectare per establishment or crop cycle; zero allowed for existing managed stands"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_supply
+          role: "Agricultural nutrient supply"
+          name: "Agricultural nutrient supply set"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Product-specific mass / kg"
+          description: "This is the only nutrient Product-input card in this process. Aggregate mineral fertilizer, organic fertilizer, manure, compost, and nutrient amendments here, while collecting every actual product and resolving its UUID separately during foreground data generation."
+          amount:
+            expression: "Sum product application records while retaining identity, composition, and date; do not sum unlike nutrient elements"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle or harvest year"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids:
+                - icar-rabi-coriander-2021
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "kg products/ha"
+                basis: "per cultivated hectare per crop cycle or harvest year; includes the cited 25 t/ha farmyard-manure example"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - icar-rabi-coriander-2021
+        - row_id: field_irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record supplied irrigation water; exclude rainfall."
+          amount:
+            expression: "metered or calibrated field delivery"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle or harvest year"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "30000"
+                unit: "m3/ha"
+                basis: "per cultivated hectare per crop cycle or harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_crop_protection
+          role: "Crop-protection products"
+          name: "Crop-protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Record each actual formulation separately."
+          amount:
+            expression: "measured formulation mass by application and treated area"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle or harvest year"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg product/ha"
+                basis: "per cultivated hectare per crop cycle or harvest year"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_energy
+          role: "Field energy supply"
+          name: "Field energy carriers and services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record fuels, electricity, draft power and machinery services separately."
+          amount:
+            expression: "metered, invoiced or calibrated carrier quantity with identity retained"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated hectare per crop cycle or harvest year"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "MJ/ha"
+                basis: "per cultivated hectare after documented conversion"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_soil_emissions
+          role: "Managed land and direct soil N2O"
+          name: "Managed land occupation and dinitrogen monoxide to air, unresolved"
+          flow_type: "elementary"
+          property_unit: "Area × time and mass / ha·year and kg N2O"
+          description: "Keep land occupation and N2O as separate calculated elementary-flow records even though they share this card."
+          amount:
+            expression: "Apply calc_land and calc_soil_n2o from mapped area, dates, and nitrogen records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg harvest-ready organ"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_production
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0.02"
+                upper: "5"
+                unit: "ha·year"
+                basis: "per 1,000 kg harvest-ready organ; N2O is validated separately against the formula"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: production_outputs
+          role: "Harvest-ready intended output"
+          name: "Species-specific harvest-ready biological product, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the intended harvest-ready seed/fruit/berry at the production-to-harvest hand-off."
+          amount:
+            expression: "Measured mass at declared moisture handed to harvest"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg harvest-ready organ"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg harvest-ready organ"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+        - row_id: other_intended_outputs
+          role: "Other intended co-products"
+          name: "Species- and destination-specific co-product, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record any separately marketed leaf, stem, straw, planting seed, wood, or other intended product by identity and hand-off; use zero when no such co-product receives an economic function."
+          amount:
+            expression: "Measured mass at declared moisture by output identity and destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg harvest-ready organ"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_production
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg co-product"
+                basis: "per 1,000 kg harvest-ready organ"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: harvest_capture
+    label: "Harvest, collection, and threshing/separation"
+    inputs:
+      product:
+        - row_id: harvest_ready_organ
+          role: "Harvest-ready organ"
+          name: "Species-specific harvest-ready organ"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the production hand-off by species, organ and batch."
+          amount:
+            expression: "measured organ mass assigned to the harvest batch"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg collected raw organ"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "2000"
+                unit: "kg"
+                basis: "per 1,000 kg collected raw organ"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Harvest energy supply"
+          name: "Harvest energy carriers and services"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record fuel, electricity and machinery services attributable to the batch."
+          amount:
+            expression: "metered or invoiced quantity assigned to the batch"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per 1,000 kg collected raw organ"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ"
+                basis: "per 1,000 kg collected raw organ"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_raw_organ
+          role: "Collected raw spice organ"
+          name: "Species-specific whole seed/fruit/berry organ, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The measured collected organ is handed from harvest to primary conditioning at the declared moisture."
+          amount:
+            expression: "Measured batch mass and moisture handed to conditioning"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg collected raw organ"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg collected raw organ"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: harvest_residue
+          role: "Removed harvest residues and losses"
+          name: "Species- and destination-specific biomass residue, unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record residue leaving the area by destination. Residue retained on land is included in soil calculations and is not also waste."
+          amount:
+            expression: "Measured or mass-balanced mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg collected raw organ"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kg"
+                basis: "per 1,000 kg collected raw organ"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Cleaning and primary separation"
+    inputs:
+      product:
+        - row_id: conditioning_material
+          role: "Collected lot entering cleaning"
+          name: "Collected species-specific lot"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the physical lot entering this process."
+          amount:
+            expression: "weighed batch input"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg cleaned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1400"
+                unit: "kg"
+                basis: "per 1,000 kg cleaned output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Process water"
+          name: "Process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Record supplied washing or cleaning water only when used."
+          amount:
+            expression: "metered water supplied to the batch"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg cleaned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "m3"
+                basis: "per 1,000 kg cleaned output; zero when no water is used"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Process energy supply"
+          name: "Process energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record purchased fuel, electricity and compressed-air energy by batch; passive operations may record zero."
+          amount:
+            expression: "metered carrier quantity with identity retained"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg cleaned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "MJ"
+                basis: "per 1,000 kg cleaned output; zero purchased energy when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cleaned_lot
+          role: "Cleaned whole spice lot"
+          name: "Species-specific cleaned whole spice lot, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The cleaned lot is handed to conditional drying or directly to grading with its measured moisture."
+          amount:
+            expression: "Measured output and moisture handed to drying or grading"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg cleaned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg cleaned output"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Conditioning rejects"
+          name: "Destination-specific conditioning reject, unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record soil, chaff, stalks, foreign matter, and off-spec material by rework, return, recovery, or disposal destination."
+          amount:
+            expression: "Measured reject mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg cleaned output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "400"
+                unit: "kg"
+                basis: "per 1,000 kg cleaned output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: stabilization_drying
+    label: "Ambient or heated drying"
+    inputs:
+      product:
+        - row_id: drying_material
+          role: "Moisture-unstable lot entering drying"
+          name: "Species-specific cleaned lot"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the physical lot entering this process."
+          amount:
+            expression: "weighed batch input"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg dried output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1600"
+                unit: "kg"
+                basis: "per 1,000 kg dried output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: drying_energy
+          role: "Process energy supply"
+          name: "Process energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record purchased fuel, electricity and compressed-air energy by batch; passive operations may record zero."
+          amount:
+            expression: "metered carrier quantity with identity retained"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg dried output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "MJ"
+                basis: "per 1,000 kg dried output; zero purchased energy when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dried_lot
+          role: "Stabilized dried whole spice lot"
+          name: "Species-specific stabilized whole spice lot, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The stabilized lot is the usable post-drying state handed to grading."
+          amount:
+            expression: "Measured output at declared moisture; verify dry-matter conservation"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg dried output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying
+              source_ids:
+                - fssai-star-anise-2023
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per 1,000 kg dried output"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: drying_rejects
+          role: "Drying rejects"
+          name: "Destination-specific damaged spice material, unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Mould-damaged or otherwise rejected material leaves drying by a declared rework, downgrade, recovery, or disposal path."
+          amount:
+            expression: "Measured mass by rework, downgrade, recovery, or disposal path"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg dried output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_drying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg"
+                basis: "per 1,000 kg dried output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: evaporated_water
+          role: "Water evaporated"
+          name: "Water to air, unresolved"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "This row represents moisture removed from the product and released to air during drying."
+          amount:
+            expression: "Apply calc_drying_water"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg dried output"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_drying
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "600"
+                unit: "kg"
+                basis: "per 1,000 kg dried output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: grading_sorting
+    label: "Farm-gate grading and routing"
+    inputs:
+      product:
+        - row_id: grading_material
+          role: "Prepared lot entering grading"
+          name: "Prepared species-specific lot"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the physical lot entering this process."
+          amount:
+            expression: "weighed batch input"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1400"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grading_energy
+          role: "Process energy supply"
+          name: "Process energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Record purchased fuel, electricity and compressed-air energy by batch; passive operations may record zero."
+          amount:
+            expression: "metered carrier quantity with identity retained"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50000"
+                unit: "MJ"
+                basis: "per 1,000 kg accepted reference product; zero purchased energy when inactive"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_reference_product
+          role: "Accepted raw spice at farm gate"
+          name: "Anise, badian, coriander, cumin, caraway, fennel and juniper berries, raw"
+          flow_type: "product"
+          flow_ref:
+            uuid: "bd08a9d0-d397-4471-8b53-5071717b049d"
+          binding: "fixed"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "This is the sole accepted reference-product hand-off at the declared farm gate."
+          amount:
+            expression: "Net accepted mass at declared moisture, excluding downgraded and rejected material"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1000"
+                upper: "1000"
+                unit: "kg"
+                basis: "per reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "identity_reference"
+                source_ids: []
+        - row_id: downgraded_product
+          role: "Downgraded product"
+          name: "Species- and destination-specific downgraded spice, unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record every separately marketed off-grade lot by grade and hand-off. It is a co-output only when it receives an economic function and is never accepted reference product."
+          amount:
+            expression: "Measured net mass by destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "400"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Final grading rejects"
+          name: "Destination-specific rejected spice material, unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Material failing all accepted or downgraded grades leaves by one declared destination."
+          amount:
+            expression: "Measured mass by rework, recovery, field return, or disposal path"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg accepted reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "400"
+                unit: "kg"
+                basis: "per 1,000 kg accepted reference product"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_avoid_first
+    applies_to: "All multi-output nodes"
+    rule: "Subdivide by species lot, field/stand, crop cycle or harvest year, operation, and batch; directly assign causal burdens."
+    source_ids: []
+  - rule_id: allocation_co_outputs
+    applies_to: "Marketed leaves, stems, straw, planting seed, wood, or downgraded spice"
+    rule: "After subdivision, use physical dry mass when outputs have comparable biological function; otherwise use documented economic allocation with contemporaneous prices and a physical-mass sensitivity. Residues without economic function receive no upstream burden, but handling remains included."
+    source_ids: []
+  - rule_id: allocation_periods
+    applies_to: "Perennial stands"
+    rule: "Annualize operator-incurred establishment/termination over recorded productive life. Assign annual maintenance and harvest burdens to their year/cohort. Do not invent establishment for naturally established collection stands."
+    source_ids:
+      - ncsu-common-juniper
+  - rule_id: allocation_batches
+    applies_to: "Conditioning, drying, grading"
+    rule: "Assign metered batch burdens directly; allocate shared cleaning/changeover once by processed mass or run time. Rework retains previous and incremental burdens."
+    source_ids: []
+  - rule_id: allocation_rejects
+    applies_to: "Rework and rejects"
+    rule: "Link each rejected state to exactly one rework, downgrade, recovery, return, or disposal path; never count it as accepted output."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_production
+      process_id: "managed_production"
+      flow_role: "Establishment, inputs, area, periods, outputs, soil emissions"
+      record_type: "Field/stand log, invoice, meter, map, yield ticket"
+      raw_fields: "species; organ; route; field/stand; dates; area; origin/age; productive life; input identity/UUID; quantity/composition; output mass/moisture; residue fate"
+      collection_method: "Reconcile invoices, logs, mapped area, meters, and weights"
+      unit: "Native units plus kg, m3, MJ, ha·year"
+      frequency: "Each event and annual close"
+      temporal_coverage: "Complete crop cycle or establishment through reporting harvest year"
+      site_scope: "Every included field/stand/area"
+      aggregation_rule: "Aggregate only identical species, organ, route, geography, period, moisture basis"
+      quality_evidence: "Calibrations, invoices, maps, tickets, completeness reconciliation"
+    - protocol_id: cp_harvest
+      process_id: "harvest_capture"
+      flow_role: "Harvest input/output, energy, residue/loss"
+      record_type: "Harvest batch log"
+      raw_fields: "lot; method; dates; input; collected mass/moisture; energy; residue/loss; destinations"
+      collection_method: "Weigh hand-offs and meter/invoice energy"
+      unit: "kg, %, MJ"
+      frequency: "Each batch"
+      temporal_coverage: "Complete harvest window"
+      site_scope: "Each source field/stand"
+      aggregation_rule: "Batch mass balance"
+      quality_evidence: "Scale/moisture checks, machine logs, receipts"
+    - protocol_id: cp_conditioning
+      process_id: "primary_conditioning"
+      flow_role: "Input, cleaned output, service, reject"
+      record_type: "Run log"
+      raw_fields: "batch; input/output mass/moisture; equipment; energy; water; reject class/path"
+      collection_method: "Weigh and meter at run boundary"
+      unit: "kg, %, kWh, MJ, m3"
+      frequency: "Each run/changeover"
+      temporal_coverage: "All included runs"
+      site_scope: "Each site/line"
+      aggregation_rule: "Batch balance; shared changeover once"
+      quality_evidence: "Calibration, reject checks, reconciliation"
+    - protocol_id: cp_drying
+      process_id: "stabilization_drying"
+      flow_role: "Input/output, energy, time, rejects, water loss"
+      record_type: "Drying batch log"
+      raw_fields: "batch; method; masses; moisture/basis; dates; energy; rejects"
+      collection_method: "Weigh/test before and after; meter energy"
+      unit: "kg, %, h, MJ"
+      frequency: "Each batch"
+      temporal_coverage: "Entire drying interval"
+      site_scope: "Each drying area/device"
+      aggregation_rule: "Dry-matter balance and batch attribution"
+      quality_evidence: "Moisture method, calibration, surface protection, reconciliation"
+    - protocol_id: cp_grading
+      process_id: "grading_sorting"
+      flow_role: "Input, grades, downgrade, reject, service"
+      record_type: "Grading/dispatch log"
+      raw_fields: "batch; identity; criteria; input; each output; moisture; destination; energy/changeover"
+      collection_method: "Weigh every state and reconcile dispatch"
+      unit: "kg, %, MJ"
+      frequency: "Each run/changeover"
+      temporal_coverage: "All included runs"
+      site_scope: "Each site/line"
+      aggregation_rule: "Accepted + downgrade + reject = adjusted input; service once"
+      quality_evidence: "Grade inspection, calibration, dispatch/rework receipts"
+  calculation_rules:
+    - id: calc_moisture_conversion
+      applies_to: "Mass conversion"
+      rule: "dry matter = wet mass × (1 − wet-basis moisture); target wet mass = dry matter ÷ (1 − target wet-basis moisture)"
+      inputs:
+        - mass
+        - moisture
+        - basis
+      output: "Comparable mass"
+      source_ids: []
+    - id: calc_drying_water
+      applies_to: "evaporated_water"
+      rule: "wet input × input moisture − dried output × output moisture; investigate negative results"
+      inputs:
+        - "input/output mass and wet-basis moisture"
+      output: "kg water"
+      source_ids: []
+    - id: calc_land
+      applies_to: "Land occupation"
+      rule: "hectares × occupied days ÷ 365.25; normalize by output"
+      inputs:
+        - area
+        - dates
+        - output
+      output: "ha·year/1,000 kg"
+      source_ids: []
+    - id: calc_soil_n2o
+      applies_to: "Managed-soil N2O"
+      rule: "Apply IPCC managed-soil equations to recorded synthetic/organic N and residue N; convert N2O-N to N2O by 44/28"
+      inputs:
+        - "N inputs"
+        - "residue N"
+        - factors
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_perennial
+      applies_to: "Perennial periods"
+      rule: "attributable establishment + termination burden divided by recorded productive life; reflect documented area changes"
+      inputs:
+        - "period inventories"
+        - "productive years/area"
+      output: "Annualized burden"
+      source_ids: []
+    - id: calc_allocation
+      applies_to: "Multi-output nodes"
+      rule: "Direct assignment first, then declared physical dry-mass or economic allocation; shares sum to 1"
+      inputs:
+        - "masses/moisture or prices"
+        - "shared burden"
+      output: "Burden by output"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Product states"
+      requirement: "Species and organ mandatory; retain route, geography, year, grade, moisture/basis, and drying status."
+      evidence: "Traceable lot records"
+    - id: dq_temporal
+      applies_to: "Production"
+      requirement: "Cover full cycle/year; perennial records include establishment, productive life, replacement, termination, age/origin, and cohort links."
+      evidence: "Dated field/stand records"
+    - id: dq_completeness
+      applies_to: "All nodes"
+      requirement: "Include every actual nutrient product, water, energy, output, rework, reject, residue, and hand-off; reconcile mass."
+      evidence: "Invoice/meter and mass balance"
+    - id: dq_measurement
+      applies_to: "Mass, moisture, area, energy"
+      requirement: "Use calibrated instruments or documented estimates; state moisture method/basis."
+      evidence: "Calibration/test/map/worksheet"
+    - id: dq_aggregation
+      applies_to: "Combined records"
+      requirement: "Combine only identical species, organ, route, geography, period, and moisture basis; disclose included coverage."
+      evidence: "Sampling frame and coverage calculation"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "Reference flow"
+    rule: "Fail if species, crop, organ, route, geography, harvest year, grade, moisture/basis, or drying status is missing, or unrelated species are averaged without separate datasets and mass shares."
+    source_ids: []
+  - rule_id: validate_route
+    applies_to: "Graph"
+    rule: "Require one production delta per lot and matching period/input records; annual and perennial routes coexist only as traceable lots."
+    source_ids:
+      - icar-rabi-coriander-2021
+      - ncsu-common-juniper
+  - rule_id: validate_nodes
+    applies_to: "Graph"
+    rule: "Require production, harvest, conditioning, and grading; require drying when moisture reduction occurs. Every node declares states and hand-offs."
+    source_ids:
+      - codex-spice-hygiene
+  - rule_id: validate_mass
+    applies_to: "Harvest through grading"
+    rule: "Batch input equals accepted + downgraded + rejects + measured moisture loss ± inventory change within 5%; otherwise investigate/disclose."
+    source_ids: []
+  - rule_id: validate_ranges
+    applies_to: "Inventory"
+    rule: "Every quantitative card has role, bounds, unit, denominator, basis kind, evidence kind, and sources when external. Outliers require explanation; reasoned ranges are screens, not limits."
+    source_ids: []
+  - rule_id: validate_nutrients
+    applies_to: "Production"
+    rule: "Allow at most one nutrient Product-input card per process, bound only to flow-set.agricultural-nutrient-supply@0.3.0; prohibit group binding. Resolve every actual product UUID during foreground generation."
+    source_ids: []
+  - rule_id: validate_outputs
+    applies_to: "Multi-output nodes"
+    rule: "Enumerate intended outputs/hand-offs, residue/waste, allocation precedence, and shares summing to 1; prevent duplicate hand-offs."
+    source_ids: []
+  - rule_id: validate_periods
+    applies_to: "Perennial route"
+    rule: "Require period and replacement/termination decisions and reject duplicated establishment or maintenance burdens."
+    source_ids:
+      - ncsu-common-juniper
+  - rule_id: validate_rework
+    applies_to: "Post-harvest"
+    rule: "Route every off-spec state exactly once; accepted output excludes unresolved rejects; rework retains prior burdens."
+    source_ids: []
+  - rule_id: validate_star_anise
+    applies_to: "Star anise claiming cited specification"
+    rule: "Verify moisture ≤10% dry basis, extraneous matter ≤1%, stalks ≤3%, broken/abnormal fruit ≤25%; do not apply to other species."
+    source_ids:
+      - fssai-star-anise-2023
+published_dataset_profile:
+  dataset_role: "Species-, organ-, route-, geography-, and period-specific foreground farm-gate production dataset"
+  downstream_use: "secondary_dataset; background_dataset after representativeness and uncertainty review"
+  allowed_use: "LCA of a whole raw spice lot matching identity, route, gate, moisture, geography, and period"
+  excluded_use: "Mixed-spice average; leaf herb; ground/blended spice; oil/oleoresin; sterilized/retail product; annual-perennial substitution without scenario modelling"
+  required_metadata: "Reference qualifiers; field/stand and period; stand origin/age/life; graph; input identities/UUIDs; allocation; mass/moisture balances; grades/destinations; coverage"
+  required_quality_disclosure: "Foreground/secondary shares, measurement/estimation, range exceptions, missing UUIDs, representativeness, perennial annualization, allocation sensitivity, reject/rework treatment"
+  update_trigger: "Change in species/organ, route, geography, technology, drying, productive life, yield, inputs, allocation, quality specification, reference UUID, or evidence"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-period-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-period-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "icar-rabi-coriander-2021"
+    type: "official_guidance"
+    reference: "ICAR, *Rabi Agro-Advisory for Farmers 2021-22*, coriander section. https://icar.gov.in/sites/default/files/2022-09/Rabi-Agro-Advisory-2021-22_0.pdf"
+    used_for: "Annual grain route, input examples, distinct leaf/grain outputs"
+  - id: "codex-spice-hygiene"
+    type: "official_guidance"
+    reference: "Codex Alimentarius, proposed Code of Hygienic Practice for Spices and Condiments. https://www.fao.org/fao-who-codexalimentarius/sh-proxy/es/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FMeetings%252FCX-712-24%252Fal91_13e.pdf"
+    used_for: "Harvest, drying, cleaning, grading, and downstream exclusions"
+  - id: "fssai-star-anise-2023"
+    type: "standard"
+    reference: "FSSAI, Chapter 2.9, section 2.9.34 Star Anise, version 1 (2023). https://fssai.gov.in/upload/uploadfiles/files/Chapter%202_9%20%28Salt%20Spices%2C%20Condiments%20and%20related%20products%29.pdf"
+    used_for: "Star-anise identity and species-specific moisture/quality limits"
+  - id: "codex-cxs-358-2024"
+    type: "standard"
+    reference: "Codex CXS 358-2024, dried/dehydrated fruits and berries including juniper berry and star anise. https://www.fao.org/fao-who-codexalimentarius/codex-texts/standards/en"
+    used_for: "Dried fruit/berry market route"
+  - id: "ncsu-common-juniper"
+    type: "extension_guidance"
+    reference: "North Carolina State Extension, *Common Juniper*. https://plants.ces.ncsu.edu/plants/juniperus-communis-var-communis/common-name/common-juniper/"
+    used_for: "Woody perennial route and second/third-year cone maturation"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, *2019 Refinement*, Volume 4, Chapter 11. https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "Managed-soil N2O method"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f33433d87ef2b5b404d968c60cdb90a63ff80e777d3b1414d3e680b84415a969"
+  generated_content_sha256: "sha256:e87dbf4b8db0b50946a37ef8776505d943412a8d394b8a4611e614cb037f2cd5"

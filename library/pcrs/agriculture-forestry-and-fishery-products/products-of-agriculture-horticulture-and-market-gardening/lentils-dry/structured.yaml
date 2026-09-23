@@ -1,10 +1,1223 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01704"
-  title: "Lentils, dry"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.lentils-dry"
+  classification_refs: "CPC 3.0: 01704 Lentils, dry"
+  covered_products: "Mature dry whole Lens culinaris grain at farm gate"
+  excluded_products: "Green vegetable lentils; planting seed; sprouts; dehulled/split lentils; flour; cooked and downstream processed products"
+  representative_product: "Whole mature dry lentil grain"
+  production_route: "Managed biological parent field_production; mutually exclusive direct-combine or swath/combine harvest routes; cleaning and grading; alternative technology route delta between direct-combine and swath/combine changes harvest operation records; conditional aeration/drying changes energy, moisture-loss and validation records"
+  market_state: "Unprocessed whole dry grain with declared class, colour, grade, moisture, damage, splits/breakage, foreign matter and conditioning route"
+functional_unit:
+  what: "Mature dry whole Lens culinaris grain at farm gate"
+  how_much: "1,000 kg"
+  how_well: "Declared class, colour, grade, moisture, split/broken and damaged fractions, foreign matter, harvest and conditioning route"
+  how_long_or_cycle: "One crop cycle through farm-gate hand-off"
+  reference_flow_link: "lentils_dry_farm_gate"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "The foreground starts with a prepared field and planting material. Field production hands standing mature crop to an independent harvest node. Harvest hands uncleaned grain to primary conditioning; grading creates accepted, downgraded and rejected states; conditional stabilization ends at farm-gate hand-off. Direct combine and swath/combine are mutually exclusive per lot. Operation records are indexed by field, lot and batch; shared burdens are assigned once by measured throughput. The dataset uses a single-period inventory for one crop cycle, with no storage beyond conditional stabilization and no cross-cycle asset events."
+      source_ids: []
+    - rule_id: boundary_farm_gate
+      applies_to: "all processes"
+      rule: "Include field work, harvest, threshing, farm cleaning, grading and conditional aeration/drying through hand-off; exclude downstream processing."
+      source_ids:
+        - manitoba-lentils-production-management
+        - ndsu-pulse-field-guide-2019
+    - rule_id: boundary_route
+      applies_to: "harvest"
+      rule: "Select exactly one harvest route per lot and record swath operation and shatter only when applicable."
+      source_ids:
+        - manitoba-lentils-production-management
+        - ndsu-pulse-field-guide-2019
+    - rule_id: boundary_conditioning
+      applies_to: "stabilization"
+      rule: "Include aeration/drying only when required and retain inlet/outlet moisture, energy, duration and reject evidence."
+      source_ids:
+        - manitoba-lentils-production-management
+        - ndsu-pulse-field-guide-2019
+boundary_abstraction:
+  declared_starting_condition: "Prepared field plus purchased or retained planting seed ready for one crop cycle"
+  starting_condition_role: "Foreground crop-production starting condition"
+  product_classification_scope: "Mature dry whole Lens culinaris grain at farm gate"
+  recursive_input_rule: "Retained lentil grain used as seed is recorded once as a prior-crop seed input and is not regenerated recursively in the current crop cycle."
+  upstream_dataset_requirement: "Use upstream datasets for seed, actual nutrient and crop-protection products, energy, electricity and irrigation supply."
+  disclosure: "Declare geography, crop year, cultivar/class, field area, prior crop, tillage, irrigation, harvest route, lot moisture and grade, conditioning route and all residue destinations."
+reference_flow_definition:
+  reference_amount: "1,000 kg"
+  product_flow_ref:
+    name: "Lentils, dry"
+    uuid: "ec8a8323-9812-417c-896f-3b98f11d3cc9"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Lens culinaris"
+    - "whole mature grain"
+    - "market class and colour"
+    - "farm-gate grade"
+    - "wet-basis moisture"
+    - "split/broken and damage fractions"
+    - "foreign matter"
+    - "harvest route"
+    - "aeration/drying status"
+  binding: "fixed"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "grain, residue, reject and loss masses"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Report moisture basis and convert grain to declared farm-gate moisture before normalization."
+  - id: field_area
+    applies_to: "field records"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "ha"
+    rule: "Normalize crop-cycle inputs and outputs from the same harvested area."
+  - id: moisture_balance
+    applies_to: "aeration and drying"
+    required_property_ref:
+      name: "Mass fraction"
+      uuid: ""
+    required_unit: "% wet basis"
+    rule: "Measure inlet and outlet moisture by lot and calculate water removed by wet-basis mass balance."
+process_map:
+  - id: field_production
+    name: "Managed lentil field production"
+    inclusion: "required"
+    inclusion_condition: "One crop cycle"
+    role: "Managed biological production parent; prepared field to standing mature crop"
+    quantitative_reference: "per cultivated ha and crop cycle"
+  - id: harvest_threshing
+    name: "Harvest and threshing"
+    inclusion: "required"
+    inclusion_condition: "Direct combine or swath/combine selected per lot"
+    role: "Independent harvest node with an alternative technology route delta; standing crop to uncleaned grain"
+    quantitative_reference: "per harvested ha"
+  - id: primary_conditioning
+    name: "Farm cleaning"
+    inclusion: "required"
+    inclusion_condition: "At least one cleaning pass"
+    role: "Primary conditioning; harvested grain to cleaned grain"
+    quantitative_reference: "per 1,000 kg cleaned grain"
+  - id: grading_sorting
+    name: "Grading and destination assignment"
+    inclusion: "required"
+    inclusion_condition: "Each farm-gate lot"
+    role: "Grade accepted, downgraded, rejected and rework states"
+    quantitative_reference: "per 1,000 kg graded input"
+  - id: stabilization
+    name: "Aeration or drying"
+    inclusion: "conditional"
+    inclusion_condition: "Inlet moisture or storage risk requires intervention"
+    role: "Preservation node; accepted grain to stable farm-gate grain"
+    quantitative_reference: "per 1,000 kg final dry lentils"
+process_inventory:
+  - id: field_production
+    label: "Managed lentil field production"
+    inputs:
+      product:
+        - row_id: planting_seed
+          role: "Planting seed"
+          name: "Lentil seed for planting"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured seed mass sown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "33.6"
+                upper: "89.7"
+                unit: "kg/ha"
+                basis: "planting seed per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - manitoba-lentils-production-management
+        - row_id: agricultural_nutrient_supply
+          role: "Agricultural nutrient supply"
+          name: "Actual agricultural nutrient products"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.agricultural-nutrient-supply"
+            version: "0.3.0"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "sum measured actual mineral, organic and nutrient-bearing amendment products while retaining identity and nutrient analysis"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg products/ha"
+                basis: "total actual nutrient products per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ipcc-2019-managed-soils
+        - row_id: crop_protection_products
+          role: "Crop-protection products"
+          name: "Crop-protection products"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured seed treatment, herbicide, fungicide, insecticide, desiccant and adjuvant products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg products/ha"
+                basis: "commercial products per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - manitoba-lentils-production-management
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Irrigation water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "irrigation-water"
+          property_unit: "Volume / m3"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "metered or calculated delivered irrigation; zero for verified rainfed fields"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_inputs
+              source_ids:
+                - fao-crop-water-needs
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "m3/ha"
+                basis: "delivered irrigation per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - fao-crop-water-needs
+        - row_id: field_energy
+          role: "Field energy carriers"
+          name: "Field fuel and electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured energy for tillage, planting, spraying and irrigation, excluding harvest"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_operations
+              source_ids:
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/ha"
+                basis: "field energy per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ndsu-pulse-field-guide-2019
+      waste:
+        []
+      elementary:
+        - row_id: soil_n2o
+          role: "Managed-soil nitrous oxide"
+          name: "Dinitrogen monoxide, to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "IPCC selected-tier calculation from collected nitrogen and residue records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_field_emissions
+              source_ids:
+                - ipcc-2019-managed-soils
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg N2O/ha"
+                basis: "direct and indirect N2O per cultivated hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - ipcc-2019-managed-soils
+    outputs:
+      product:
+        - row_id: standing_mature_crop
+          role: "Standing mature lentil crop"
+          name: "Standing mature lentil crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "mass balance of harvested grain, residues and field losses"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha in one crop cycle"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "10000"
+                unit: "kg/ha"
+                basis: "standing mature above-ground crop mass per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - ndsu-pulse-field-guide-2019
+      waste:
+        []
+      elementary:
+        []
+  - id: harvest_threshing
+    label: "Harvest and threshing"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Standing crop received"
+          name: "Standing mature lentil crop"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "equals the same-field standing mature crop hand-off"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "10000"
+                unit: "kg/ha"
+                basis: "standing crop received per harvested hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: harvest_energy
+          role: "Harvest energy carriers"
+          name: "Harvest fuel and electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured combine energy plus swather energy only for swath/combine lots"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per cultivated ha harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_operations
+              source_ids:
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "3000"
+                unit: "MJ/ha"
+                basis: "harvest energy per hectare for selected route"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ndsu-pulse-field-guide-2019
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: harvested_grain
+          role: "Uncleaned harvested grain"
+          name: "Uncleaned harvested lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "scale or calibrated yield-monitor mass at measured moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "500"
+                upper: "4000"
+                unit: "kg/ha"
+                basis: "uncleaned harvested grain per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ndsu-pulse-field-guide-2019
+        - row_id: straw_pod_material
+          role: "Recovered straw and pod material"
+          name: "Lentil straw and pod material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured recovered dry matter; product only with independent intended hand-off"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per cultivated ha harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/ha"
+                basis: "recovered straw and pod dry matter per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: field_harvest_loss
+          role: "Field and harvest losses"
+          name: "Lentil grain lost in field"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "representative loss samples extrapolated to harvested area"
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per cultivated ha harvested"
+              kind: "crop_cycle"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest_mass_balance
+              source_ids:
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg/ha"
+                basis: "shattered and uncollected grain per hectare"
+                basis_kind: "crop_cycle"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ndsu-pulse-field-guide-2019
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "Farm cleaning"
+    inputs:
+      product:
+        - row_id: uncleaned_grain_input
+          role: "Uncleaned grain received"
+          name: "Uncleaned harvested lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured input mass linked to harvest lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg cleaned grain output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1250"
+                unit: "kg/1000 kg output"
+                basis: "uncleaned input per 1,000 kg cleaned output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+        - row_id: cleaning_energy
+          role: "Cleaning energy"
+          name: "Cleaning electricity and fuel"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "metered energy for cleaning passes and recirculation"
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg cleaned grain output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_operations
+              source_ids:
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "MJ/1000 kg output"
+                basis: "cleaning energy per 1,000 kg cleaned output"
+                basis_kind: "process_output"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ndsu-pulse-field-guide-2019
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cleaned_grain
+          role: "Cleaned grain"
+          name: "Cleaned lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured output after loose foreign matter removal"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg cleaned grain output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg/1000 kg output"
+                basis: "cleaned output quantitative reference"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: cleaning_rejects
+          role: "Cleaning rejects and foreign matter"
+          name: "Cleaning rejects and foreign matter"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured by rework, recovery or disposal destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg cleaned grain output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg/1000 kg output"
+                basis: "rejects per 1,000 kg cleaned output"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+      elementary:
+        []
+  - id: grading_sorting
+    label: "Grading and destination assignment"
+    inputs:
+      product:
+        - row_id: cleaned_grain_input
+          role: "Cleaned grain received"
+          name: "Cleaned lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured grading input preserving lot identity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg graded input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg/1000 kg input"
+                basis: "cleaned grain entering grading"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_grade_grain
+          role: "Intended output accepted grade grain"
+          name: "Accepted-grade lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured accepted mass excluding downgrade, reject and rework"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg graded input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "750"
+                upper: "1000"
+                unit: "kg/1000 kg input"
+                basis: "accepted grain per 1,000 kg graded input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+        - row_id: downgraded_grain
+          role: "Intended output downgraded co-product grain"
+          name: "Downgraded lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured downgraded mass with independent destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg graded input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg/1000 kg input"
+                basis: "downgraded usable grain per 1,000 kg graded input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+      waste:
+        - row_id: grading_rejects
+          role: "Grading rejects and rework"
+          name: "Rejected lentil material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured split, cracked, discoloured, damaged or foreign material by return, recovery or disposal destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg graded input"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grading_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg/1000 kg input"
+                basis: "rejected material per 1,000 kg graded input"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+      elementary:
+        []
+  - id: stabilization
+    label: "Aeration or drying"
+    inputs:
+      product:
+        - row_id: accepted_grain_input
+          role: "Accepted grain requiring stabilization"
+          name: "Accepted-grade lentil grain"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured wet input mass and inlet moisture"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg final dry lentils"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1250"
+                unit: "kg/1000 kg final"
+                basis: "wet input per 1,000 kg final dry lentils"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+        - row_id: stabilization_energy
+          role: "Stabilization energy"
+          name: "Aeration or drying energy"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "metered fan electricity and dryer fuel by lot"
+            value_mode: "calculated_value"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1,000 kg final dry lentils"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_operations
+              source_ids:
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "MJ/1000 kg final"
+                basis: "fan and dryer energy per 1,000 kg final dry lentils"
+                basis_kind: "reference_flow"
+                evidence_kind: "external_source"
+                source_ids:
+                  - ndsu-pulse-field-guide-2019
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: lentils_dry_farm_gate
+          role: "Dry lentils at farm gate"
+          name: "Lentils, dry"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ec8a8323-9812-417c-896f-3b98f11d3cc9"
+          binding: "fixed"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "1,000 kg reference product at declared outlet moisture"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1,000 kg reference product"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "1000"
+                upper: "1000"
+                unit: "kg/1000 kg reference product"
+                basis: "final accepted grain per reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+      waste:
+        - row_id: stabilization_rejects
+          role: "Stabilization rejects"
+          name: "Rejected stabilized lentil grain"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "measured heat-damaged, mould-affected or rejected mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg final dry lentils"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stabilization_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/1000 kg final"
+                basis: "rejects per 1,000 kg final dry lentils"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+      elementary:
+        - row_id: water_removed
+          role: "Water removed"
+          name: "Water, to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Record the stated flow for the linked field or lot and preserve its destination and hand-off."
+          amount:
+            expression: "wet-basis inlet/outlet moisture mass balance reconciled with rejects"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1,000 kg final dry lentils"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_stabilization_lot
+              source_ids:
+                - mass-balance-identity
+                - manitoba-lentils-production-management
+                - ndsu-pulse-field-guide-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "250"
+                unit: "kg/1000 kg final"
+                basis: "water removed per 1,000 kg final dry lentils"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+                  - manitoba-lentils-production-management
+                  - ndsu-pulse-field-guide-2019
+allocation_rules:
+  - rule_id: allocation_single_product
+    applies_to: "grain only"
+    rule: "Attribute burdens to accepted dry lentils when other outputs are residues or wastes; disclose destinations without credit."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_coproduct
+    applies_to: "intended outputs"
+    rule: "Enumerate each independently intended straw/pod or downgraded-grain output and apply a disclosed study-specific allocation; use physical dry mass when causality supports it, otherwise disclose economic allocation and prices."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_batch
+    applies_to: "fields, lots and runs"
+    rule: "Link inputs, outputs, cleaning and changeover to runs; allocate shared burdens once by measured throughput."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: allocation_rework
+    applies_to: "returned material"
+    rule: "Retain prior burdens, add only incremental rework, and count material once at its final destination."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field_inputs
+      process_id: "field_production"
+      flow_role: "seed, nutrient, protection, irrigation"
+      record_type: "invoices, logs, meter"
+      raw_fields: "field; area; product; amount; analysis; date"
+      collection_method: "reconcile applications to field"
+      unit: "kg; L; m3; ha"
+      frequency: "each application"
+      temporal_coverage: "crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "sum by product then area-normalize"
+      quality_evidence: "invoice; calibrated meter; label"
+    - protocol_id: cp_energy_operations
+      process_id: "all"
+      flow_role: "fuel and electricity"
+      record_type: "meter and machine log"
+      raw_fields: "process; field/lot; carrier; quantity; factor; runtime"
+      collection_method: "meter and log reconciliation"
+      unit: "L; kg; kWh; MJ"
+      frequency: "each operation"
+      temporal_coverage: "crop cycle to hand-off"
+      site_scope: "field/facility"
+      aggregation_rule: "convert by documented factor; allocate once"
+      quality_evidence: "calibration; invoice; runtime"
+    - protocol_id: cp_field_emissions
+      process_id: "field_production"
+      flow_role: "N2O"
+      record_type: "calculated record"
+      raw_fields: "N by source; residue N; factors; fractions"
+      collection_method: "selected IPCC tier"
+      unit: "kg N; kg N2O"
+      frequency: "crop cycle"
+      temporal_coverage: "crop cycle"
+      site_scope: "each field"
+      aggregation_rule: "calculate by field first"
+      quality_evidence: "factor version; calculation sheet"
+    - protocol_id: cp_harvest_mass_balance
+      process_id: "harvest_threshing"
+      flow_role: "grain, residues, losses"
+      record_type: "scale, monitor, samples"
+      raw_fields: "field; route; area; masses; moisture; loss"
+      collection_method: "weigh and representative loss sampling"
+      unit: "kg; %; ha"
+      frequency: "field/lot"
+      temporal_coverage: "harvest"
+      site_scope: "each field"
+      aggregation_rule: "moisture-align and reconcile outputs"
+      quality_evidence: "calibration; sampling plan"
+    - protocol_id: cp_conditioning_lot
+      process_id: "primary_conditioning"
+      flow_role: "grain and rejects"
+      record_type: "scale and log"
+      raw_fields: "lot; input; output; moisture; pass; reject; destination"
+      collection_method: "weigh every inlet and outlet"
+      unit: "kg; %"
+      frequency: "lot/pass"
+      temporal_coverage: "conditioning"
+      site_scope: "each lot"
+      aggregation_rule: "sum passes without rework duplication"
+      quality_evidence: "calibration; closure"
+    - protocol_id: cp_grading_lot
+      process_id: "grading_sorting"
+      flow_role: "accepted, downgrade, reject, rework"
+      record_type: "ticket and test"
+      raw_fields: "lot; grade; colour; moisture; splits; damage; foreign matter; mass; destination"
+      collection_method: "weigh and classify every output"
+      unit: "kg; %"
+      frequency: "lot"
+      temporal_coverage: "grading"
+      site_scope: "each lot"
+      aggregation_rule: "reconcile exclusive destinations"
+      quality_evidence: "ticket; test; calibration"
+    - protocol_id: cp_stabilization_lot
+      process_id: "stabilization"
+      flow_role: "grain, water, reject"
+      record_type: "moisture, scale, operation log"
+      raw_fields: "lot; inlet/outlet mass and moisture; reject; airflow; duration; energy"
+      collection_method: "test and weigh before/after"
+      unit: "kg; %; h"
+      frequency: "lot"
+      temporal_coverage: "intervention"
+      site_scope: "each lot"
+      aggregation_rule: "moisture balance with rejects"
+      quality_evidence: "calibrated moisture meter and scale"
+  calculation_rules:
+    - id: calc_normalization
+      applies_to: "all"
+      rule: "normalized amount = process amount × 1,000 / accepted final mass"
+      inputs:
+        - "process amount"
+        - "final mass"
+      output: "per 1,000 kg reference flow"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_moisture
+      applies_to: "grain/drying"
+      rule: "dry solids = wet mass × (1 − moisture fraction); reconcile water in rejects"
+      inputs:
+        - "wet masses and moisture"
+      output: "aligned grain and water removed"
+      source_ids:
+        - mass-balance-identity
+        - manitoba-lentils-production-management
+    - id: calc_n2o
+      applies_to: "soil"
+      rule: "Apply disclosed IPCC tier and convert N2O-N to N2O by 44/28."
+      inputs:
+        - "N activity and factors"
+      output: "kg N2O"
+      source_ids:
+        - ipcc-2019-managed-soils
+    - id: calc_mass_balance
+      applies_to: "harvest/conditioning/grading"
+      rule: "input = exclusive outputs + losses + releases + stock change within uncertainty"
+      inputs:
+        - "linked masses"
+      output: "closure"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference product"
+      requirement: "Retain species, class, colour, year, grade, moisture, split/broken, damage, foreign matter, harvest and conditioning route."
+      evidence: "lot ticket and tests"
+    - id: dq_completeness
+      applies_to: "crop cycle"
+      requirement: "Cover every field operation and harvest, cleaning, grading, rework and stabilization lot."
+      evidence: "field-to-lot trace"
+    - id: dq_mass_balance
+      applies_to: "material processes"
+      requirement: "Reconcile all products, residues, wastes, losses, releases and stock changes."
+      evidence: "closure worksheet"
+    - id: dq_representativeness
+      applies_to: "dataset"
+      requirement: "Report geography, crop year, fields, classes, irrigation, harvest routes, drying share and aggregation weights."
+      evidence: "metadata and lot index"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "reference flow"
+    rule: "Require the fixed UUIDs, 1,000 kg amount and every qualifier."
+    source_ids:
+      - manitoba-lentils-production-management
+  - rule_id: validate_route
+    applies_to: "harvest"
+    rule: "Exactly one direct-combine or swath/combine route per lot; both routes cannot be counted together."
+    source_ids:
+      - manitoba-lentils-production-management
+      - ndsu-pulse-field-guide-2019
+  - rule_id: validate_nutrient_cardinality
+    applies_to: "field production"
+    rule: "Permit at most one nutrient-supply Product-input card, bound only to flow-set.agricultural-nutrient-supply version 0.3.0; prohibit separate N, P, K, manure or amendment cards."
+    source_ids:
+      - ipcc-2019-managed-soils
+  - rule_id: validate_outputs
+    applies_to: "harvest/grading"
+    rule: "Enumerate intended products, residues, loss, accepted, downgraded, reject and hand-offs; decide attribution for every co-product."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_rework
+    applies_to: "cleaning/grading"
+    rule: "Link each off-spec state to rework, downgrade, recovery or disposal and prevent double counting."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_batch
+    applies_to: "all runs"
+    rule: "Link inputs, outputs, cleaning and changeovers to field/lot/batch and assign shared burdens once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_conditioning
+    applies_to: "stabilization"
+    rule: "When used, require inlet/outlet moisture, energy, duration, water removed, rejects and closure."
+    source_ids:
+      - manitoba-lentils-production-management
+      - ndsu-pulse-field-guide-2019
+  - rule_id: validate_ranges
+    applies_to: "all cards"
+    rule: "Require exactly one complete Range with lower, upper, unit, denominator/basis, basis kind, evidence kind and source ids, aligned in EN, ZH and structured output."
+    source_ids:
+      - mass-balance-identity
+published_dataset_profile:
+  dataset_role: "Foreground farm-gate dry-lentil production dataset"
+  downstream_use: "secondary_dataset; background_dataset after representativeness review"
+  allowed_use: "LCA and footprints needing mature whole dry lentil grain at farm gate"
+  excluded_use: "Vegetable lentils, planting seed, sprouts, splits, flour, cooked products or undisclosed downstream processing"
+  required_metadata: "geography; crop year; field/lot coverage; class; colour; grade; moisture; splits/damage/foreign matter; prior crop; tillage; irrigation; harvest and conditioning routes; destinations; allocation"
+  required_quality_disclosure: "primary-data coverage; calibration; missing data; estimates; mass balance; factor versions; weights; range exceptions"
+  update_trigger: "changed class mix, geography, year, management, route, technology, specification, destination, allocation or factors"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.grading-sorting-node
+      kind: "activity"
+      path: "library/modules/activities/grading-sorting-node.yaml"
+      decision: "applicable"
+    - id: module.activity.harvest-capture-node
+      kind: "activity"
+      path: "library/modules/activities/harvest-capture-node.yaml"
+      decision: "applicable"
+    - id: module.activity.managed-biological-production
+      kind: "activity"
+      path: "library/modules/activities/managed-biological-production.yaml"
+      decision: "applicable"
+    - id: module.activity.preservation-stabilization-node
+      kind: "activity"
+      path: "library/modules/activities/preservation-stabilization-node.yaml"
+      decision: "applicable"
+    - id: module.activity.primary-conditioning-node
+      kind: "activity"
+      path: "library/modules/activities/primary-conditioning-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-production-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-production-route.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.batch-continuous-production
+      kind: "system_condition"
+      path: "library/modules/system-conditions/batch-continuous-production.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "manitoba-lentils-production-management"
+    type: "official_guidance"
+    reference: "Province of Manitoba, Lentils — Production and Management, https://www.gov.mb.ca/agriculture/crops/crop-management/print,lentils.html"
+    used_for: "seed rate, route, harvest moisture, cracking, aeration and grade concerns"
+  - id: "ndsu-pulse-field-guide-2019"
+    type: "extension_guidance"
+    reference: "NDSU Extension A1922, Pulse Crop Production Field Guide for North Dakota, https://www.ndsu.edu/agriculture/sites/default/files/2025-09/a1922.pdf"
+    used_for: "production, harvest, damage and natural-air drying"
+  - id: "fao-crop-water-needs"
+    type: "official_guidance"
+    reference: "FAO, Crop Water Needs, Chapter 3, https://www.fao.org/4/s2022e/s2022e07.htm"
+    used_for: "lentil/pulse crop coefficients and irrigation context"
+  - id: "ipcc-2019-managed-soils"
+    type: "method_factor"
+    reference: "IPCC, 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
+    used_for: "managed-soil N2O method and nitrogen activity data"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of mass for moisture-aligned inputs, outputs, losses, releases and stock change"
+    used_for: "hand-offs, moisture, mass balance, allocation and rework"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:2152e04ec0193b7415f0268578d0096d84cb13af98564aeff1120c082328abe9"
+  generated_content_sha256: "sha256:668e9d4464eed11368355a10bd20fb5ad416044fc218b8ca6c53fd384dfdea7e"
