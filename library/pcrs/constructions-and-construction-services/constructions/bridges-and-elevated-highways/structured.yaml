@@ -1,10 +1,644 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53221"
-  title: "Bridges and elevated highways"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.bridges-and-elevated-highways"
+  classification_refs: "CPC 3.0 53221, Bridges and elevated highways."
+  covered_products: "Site-accepted bridges, viaducts and elevated highways of declared duty."
+  excluded_products: "At-grade roads, tunnels, isolated paving or repair, operation and future maintenance."
+  representative_product: "One complete site-accepted bridge or elevated-highway structure."
+  production_route: "Form foundations and supports; cast in place or erect verified prefabricated elements; integrate deck, connections and safety systems; test and hand over."
+  market_state: "Installed and accepted at the project site."
+functional_unit:
+  what: "Complete site-accepted bridge or elevated-highway structure."
+  how_much: "One accepted asset; structural length, deck area and span count are mandatory size descriptors."
+  how_well: "Specified structural load, geometry, connections, drainage and safety tests pass."
+  how_long_or_cycle: "One project through signed handover; design life is metadata, not operation in this boundary."
+  reference_flow_link: "reference_product_bridge"
+system_boundary:
+  rules:
+    - rule_id: handover_gate
+      applies_to: "whole structure"
+      rule: "Include site works and acceptance testing through signed handover. Traffic operation, maintenance and end-of-life are separate."
+      source_ids:
+        - unsd-cpc-53221
+    - rule_id: component_gate
+      applies_to: "purchased components"
+      rule: "Supplier manufacture of girders and panels is upstream; site lifting, connections and curing belong here. Never also count a purchased component's raw materials as site inputs."
+      source_ids:
+        - fhwa-pbes
+    - rule_id: route_delta
+      applies_to: "structural elements"
+      rule: "Parent assembly joins supports, superstructure and deck. A prefabricated route needs component supplier, transport, lifting and connection records; cast-in-place work needs raw concrete, reinforcement, formwork and curing records. Select one evidenced route per element."
+      source_ids:
+        - fhwa-pbes
+    - rule_id: finish_gate
+      applies_to: "initial deck finishing"
+      rule: "The load-bearing deck is the parent state. Include initial waterproofing, surfacing, parapets and drainage only if in the original handover; later stand-alone resurfacing is excluded."
+      source_ids: []
+    - rule_id: shared_and_secondary
+      applies_to: "common works and recovered inputs"
+      rule: "Attribute common cranes, falsework and access works once across nodes for the project period. Recycled metal or aggregate requires origin, recovery handoff and prior-burden convention."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Surveyed site and ground, with existing structures and demolition or remediation identified before foundation work."
+  starting_condition_role: "Physical baseline for construction, not a free bridge product."
+  product_classification_scope: "One complete accepted elevated structure; ordinary approaches and independent assets are separate."
+  recursive_input_rule: "Purchased girders or deck panels enter as components at supplier gate; a complete accepted bridge cannot silently enter as raw material."
+  upstream_dataset_requirement: "Link matching concrete, steel, other components, energy, freight and waste-treatment datasets."
+  disclosure: "Report ground baseline, geometry, duty, materials, construction route, common temporary works, secondary input origin, exclusions and data gaps."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Site-accepted bridge or elevated-highway structure; UUID unresolved"
+    uuid: ""
+  flow_property_ref:
+    uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+  unit_group_ref:
+    uuid: "5beb6eed-33a9-47b8-9ede-1dfe8f679159"
+  reference_unit: "asset"
+  required_qualifiers:
+    - "Georeferenced endpoints"
+    - "use and load class"
+    - "structural length"
+    - "bridge-deck area"
+    - "span count and lengths"
+    - "substructure and superstructure type"
+    - "cast-in-place and prefabricated shares"
+    - "initial finishing and approach-road scope"
+    - "handover date"
+    - "design life"
+reference_flows:
+  []
+measurement_rules:
+  - id: asset_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "asset"
+    rule: "Count complete signed handovers, not spans or component deliveries."
+  - id: bridge_geometry
+    applies_to: "reference qualifiers"
+    required_property_ref:
+      name: "Length and area"
+      uuid: ""
+    required_unit: "m and m2"
+    rule: "Measure structural length between declared supports and accepted deck plan area from as-built drawings."
+  - id: material_mass
+    applies_to: "materials and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert project volumes or component counts with documented mix density or supplier unit mass."
+  - id: site_energy
+    applies_to: "construction plant"
+    required_property_ref:
+      name: "Energy or fuel mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Keep carriers distinct; do not count hired-service fuel or generator electricity twice."
+process_map:
+  - id: supports
+    name: "Foundations and substructure"
+    inclusion: "required"
+    inclusion_condition: "Surveyed baseline to accepted supports."
+    role: "Form foundations, piers and abutments; repair or route failed work out."
+    quantitative_reference: "One accepted asset and surveyed geometry."
+  - id: deck_handover
+    name: "Superstructure, deck and handover"
+    inclusion: "required"
+    inclusion_condition: "Accepted supports to signed passable structure."
+    role: "Join girders or cast structure, complete deck, finish and test."
+    quantitative_reference: "One accepted asset and measured deck area."
+process_inventory:
+  - id: supports
+    label: "Foundations and substructure"
+    inputs:
+      product:
+        - row_id: support_materials
+          role: "Support materials"
+          name: "Foundation and support products by design item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate concrete, reinforcement, structural steel, piles and bearings by item; identify recycled content and do not overlap component and raw-material burdens."
+          amount:
+            expression: "Reconcile delivered, installed, returned and rejected quantities by item."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/asset"
+                basis: "broad design-dependent first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: earthwork_service
+          role: "Earthwork service"
+          name: "Foundation excavation service"
+          flow_type: "product"
+          property_unit: "Contract work quantity / declared unit"
+          description: "Use only for a purchased excavation service whose machinery fuel is not also counted as owned plant energy."
+          amount:
+            expression: "Record certified excavation work and its service boundary."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "declared work units/asset"
+                basis: "broad first-pass screen pending contract unit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: support_energy
+          role: "Support equipment energy"
+          name: "Construction electricity or fuel by carrier"
+          flow_type: "product"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record owned fuel or electricity by carrier, net of hired-service and shared-plant double counting."
+          amount:
+            expression: "Sum site meters, invoices and equipment logs by work package."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/asset"
+                basis: "broad equipment-energy first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_supports
+          role: "Accepted supports"
+          name: "Accepted bridge substructure"
+          flow_type: "product"
+          property_unit: "Count / accepted support system"
+          description: "Only surveyed foundations, piers and abutments passing the support gate move internally to deck work; this is not another final asset or sale."
+          amount:
+            expression: "Count the internally accepted support system linked to the final asset."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "accepted support systems/asset"
+                basis: "one internal support handoff per final asset"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: support_rejects
+          role: "Spoil and rejected supports"
+          name: "Spoil and rejected support material by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify reusable clean excavation, contaminated spoil and rejected material separately; link repair to supports or exit to verified recovery or disposal."
+          amount:
+            expression: "Reconcile dispatch mass and internal repair loops by material and destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/asset"
+                basis: "broad site-dependent first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: deck_handover
+    label: "Superstructure, deck and handover"
+    inputs:
+      product:
+        - row_id: supports_in
+          role: "Accepted supports handoff"
+          name: "Accepted bridge substructure"
+          flow_type: "product"
+          property_unit: "Count / accepted support system"
+          description: "This is exactly the output accepted_supports; carry its foreground burdens once, never as an additional purchased support system."
+          amount:
+            expression: "Match the signed internal support-gate output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "accepted support systems/asset"
+                basis: "same output from the support node"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: deck_components
+          role: "Superstructure and deck components"
+          name: "Superstructure and deck products by installed item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record girders, panels or cast-in-place materials, bearings, joints, parapets and drainage by actual item. Supplier components and raw site-casting materials for the same element are mutually exclusive."
+          amount:
+            expression: "Reconcile supplier, delivery, installed and rejected quantities by construction route."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - fhwa-pbes
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/asset"
+                basis: "broad design-dependent first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: component_freight
+          role: "Delivered-component freight"
+          name: "Component freight service by actual mode"
+          flow_type: "product"
+          property_unit: "Transport work / t*km"
+          description: "Separate transport of purchased girders, panels and other major components from supplier product burdens; select actual road or water freight mode from delivery records and do not duplicate supplier-included freight."
+          amount:
+            expression: "Multiply documented delivered tonnes by loaded kilometres, net of transport already included upstream."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_freight
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "t*km/asset"
+                basis: "broad first-pass screen dependent on component mass and supplier distance"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: deck_finishing
+          role: "Deck finishing products"
+          name: "Deck finishing products by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure initial waterproofing, surfacing, markings and protection only where included in this asset's handover; distinguish residues from intended finish."
+          amount:
+            expression: "Use batch tickets or deck area, thickness and measured density."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/asset"
+                basis: "broad deck-area-dependent first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: deck_energy
+          role: "Erection and finishing energy"
+          name: "Construction electricity or fuel by carrier"
+          flow_type: "product"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Measure lifting, pumping, curing and surface-work energy by actual carrier, allocating shared cranes or falsework once across nodes."
+          amount:
+            expression: "Sum site meters, invoices and equipment logs after shared-plant attribution."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/asset"
+                basis: "broad equipment-energy first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_bridge
+          role: "Accepted bridge or elevated highway"
+          name: "Site-accepted bridge or elevated-highway structure"
+          flow_type: "product"
+          property_unit: "Count / asset"
+          description: "The complete structure passes load, geometry, connection, deck, drainage and safety acceptance. Failed work cannot enter this count."
+          amount:
+            expression: "1 asset"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "asset/asset reference"
+                basis: "one signed complete handover per reference"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: deck_rejects
+          role: "Deck rejects and finishing residues"
+          name: "Superstructure rejects and residues by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Damaged components, concrete overrun, formwork and finishing residues loop to deck_handover repair or exit to declared recovery, return or disposal; they are not accepted output."
+          amount:
+            expression: "Reconcile measured rejects with rework, recovery, return and disposal."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/asset"
+                basis: "broad design-dependent first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: one_asset
+    applies_to: "accepted output"
+    rule: "The bridge is the sole intended product; reusable excavation or scrap follows its actual destination, not another accepted-bridge count."
+    source_ids: []
+  - rule_id: rework_burden
+    applies_to: "rejected work"
+    rule: "Keep repair burdens in the producing node and trace recovery or disposal; rejected components do not enter reference_product_bridge."
+    source_ids: []
+  - rule_id: secondary_inputs
+    applies_to: "recycled steel or aggregate"
+    rule: "Record origin, recovery gate and applicable supplier/prior-system burden convention; never count both prior product burden and cut-off recovery dataset."
+    source_ids: []
+  - rule_id: shared_plant
+    applies_to: "common cranes, falsework and access works"
+    rule: "Attribute one acquired burden across supports and deck_handover by logged service hours or measured work for the project period; reconcile shares to 100%."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_materials
+      process_id: "supports_deck_handover"
+      flow_role: "purchased and installed materials"
+      record_type: "procurement and as-built records"
+      raw_fields: "item, supplier, route, mass or volume, density, installed, returned, rejected, secondary origin"
+      collection_method: "reconcile delivery and as-built quantities; retain installed plus loss minus returns without component/raw overlap"
+      unit: "kg, m3, item"
+      frequency: "each lot"
+      temporal_coverage: "project construction"
+      site_scope: "named asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "tickets, drawings and mix records"
+    - protocol_id: cp_services
+      process_id: "supports"
+      flow_role: "hired earthwork"
+      record_type: "certified measurements"
+      raw_fields: "contract unit, quantity, fuel inclusion"
+      collection_method: "contractor work records; retain non-overlapping claims"
+      unit: "declared unit"
+      frequency: "each claim"
+      temporal_coverage: "foundation phase"
+      site_scope: "named asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "signed measurement sheets"
+    - protocol_id: cp_freight
+      process_id: "deck_handover"
+      flow_role: "component freight"
+      record_type: "bills of lading and route records"
+      raw_fields: "item, tonnes, mode, loaded distance, supplier freight inclusion"
+      collection_method: "reconcile delivered loads and route; sum tonnes times loaded kilometres by mode"
+      unit: "t, km, t*km"
+      frequency: "each shipment"
+      temporal_coverage: "project construction"
+      site_scope: "named asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "delivery and carrier records"
+    - protocol_id: cp_energy
+      process_id: "supports_deck_handover"
+      flow_role: "carrier energy"
+      record_type: "meters, invoices, equipment logs"
+      raw_fields: "carrier, amount, node, equipment, hours, shared attribution"
+      collection_method: "reconcile meter and invoice; sum by carrier and count common plant once"
+      unit: "kWh, MJ, kg"
+      frequency: "monthly and work package"
+      temporal_coverage: "project construction"
+      site_scope: "named asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "meters and machine logs"
+    - protocol_id: cp_waste
+      process_id: "supports_deck_handover"
+      flow_role: "spoil and rejects"
+      record_type: "weighbridge and transfer notes"
+      raw_fields: "mass, material, route, destination, rework link"
+      collection_method: "weigh and trace; sum by material and destination net of loops"
+      unit: "kg"
+      frequency: "each movement"
+      temporal_coverage: "project construction"
+      site_scope: "named asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "weighbridge records"
+    - protocol_id: cp_acceptance
+      process_id: "supports_deck_handover"
+      flow_role: "internal and final gates"
+      record_type: "surveys and sign-off"
+      raw_fields: "endpoints, length, area, spans, load class, defects, tests, date"
+      collection_method: "signed inspection; match internal support and final count"
+      unit: "asset, m, m2"
+      frequency: "each gate"
+      temporal_coverage: "construction and handover"
+      site_scope: "named asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "as-built plans and certificates"
+  calculation_rules:
+    - id: material_balance
+      applies_to: "material and waste"
+      rule: "Purchased = installed + returned + rejected + stock change on consistent moisture and units."
+      inputs:
+        - delivery
+        - installation
+        - return
+        - stock
+      output: "reconciled kg/asset"
+      source_ids: []
+    - id: volume_to_mass
+      applies_to: "concrete and finishing"
+      rule: "Mass = measured volume × project-specific density."
+      inputs:
+        - volume
+        - density
+      output: "kg/asset"
+      source_ids: []
+    - id: shared_hours
+      applies_to: "common plant"
+      rule: "Node burden = total acquired burden × node logged hours / all eligible hours; measured work may replace hours if justified."
+      inputs:
+        - "common burden and logs"
+      output: "allocated burden"
+      source_ids: []
+    - id: geometry_check
+      applies_to: "reference product"
+      rule: "Measure deck plan area and structural length from as-built dimensions, excluding ordinary approaches."
+      inputs:
+        - "as-built geometry"
+      output: "m2 and m/asset"
+      source_ids: []
+  data_quality_requirements:
+    - id: geometry_gate
+      applies_to: "reference asset"
+      requirement: "Retain dated acceptance with length, deck area, spans and load class."
+      evidence: "signed certificate and survey"
+    - id: route_evidence
+      applies_to: "major elements"
+      requirement: "Identify cast-in-place or prefabricated route and supplier gate, without overlap."
+      evidence: "design, purchasing and pour records"
+    - id: boundary_complete
+      applies_to: "all nodes"
+      requirement: "Reconcile material, service, energy, waste, temporary works and approach exclusions."
+      evidence: "package ledger"
+    - id: uuid_gap
+      applies_to: "final exchanges"
+      requirement: "Confirm matching platform flow, property and unit identities before concrete dataset release."
+      evidence: "detail-confirmed identity records"
+validation_rules:
+  - rule_id: complete_asset
+    applies_to: "reference output"
+    rule: "Require one signed complete structure with geometry, duty and date; no span or component independently satisfies the reference."
+    source_ids:
+      - unsd-cpc-53221
+  - rule_id: gate_link
+    applies_to: "both nodes"
+    rule: "Match supports_in to accepted_supports; carry support burdens once, without another purchased support system."
+    source_ids: []
+  - rule_id: route_exclusive
+    applies_to: "major elements"
+    rule: "Verify one construction route, supplier component boundary and on-site connections for each element; prohibit overlapping routes."
+    source_ids:
+      - fhwa-pbes
+  - rule_id: reject_path
+    applies_to: "failed work"
+    rule: "Trace every reject to repair, recovery, return or disposal; exclude from accepted geometry until retested."
+    source_ids: []
+  - rule_id: secondary_shared
+    applies_to: "recycled inputs and temporary works"
+    rule: "Verify origin/burden convention and reconcile shared-work shares to one acquired burden for the defined period."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Site-specific foreground package for one accepted bridge or elevated highway."
+  downstream_use: "Reviewed secondary or background construction dataset with process and lifecyclemodel links."
+  allowed_use: "Comparisons where geometry, duty, route, location and scope are disclosed."
+  excluded_use: "Component manufacture, stand-alone paving, traffic operation or generic at-grade road per km."
+  required_metadata: "Endpoints, geometry, load class, route/material mix, inclusion matrix, date, design life and quality."
+  required_quality_disclosure: "Supplier coverage, record completeness, unresolved identities, shared-work attribution, provisional ranges and exclusions."
+  update_trigger: "Material change in structure, route, supplier inventory, acceptance gate or data quality."
+data_sources:
+  - id: "unsd-cpc-53221"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53221"
+    used_for: "Product scope and bridge/elevated-highway boundary."
+  - id: "fhwa-pbes"
+    type: "official_guidance"
+    reference: "https://www.fhwa.dot.gov/bridge/prefab/if09010/01a.cfm"
+    used_for: "Prefabricated concrete and steel elements, site connections and route-specific interfaces."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e50d3cb599a8a688b86860091702bc82c1fd97922895427df610ba1cf8627d1c"
+  generated_content_sha256: "sha256:0d70ba67cdfed66c6026afccd4b6a4591a48faddadd03e1a1254425940e32093"
