@@ -1,10 +1,846 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53129"
-  title: "Other non-residential buildings"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.other-non-residential-buildings"
+  classification_refs: "CPC 3.0 53129; mapping acceptance is separate."
+  covered_products: "New non-residential building in a declared eligible use with attributable fixed building systems."
+  excluded_products: "Industrial or commercial building; specialized non-building plant; outdoor recreation; movable fit-out; routine operation; detached equipment sale."
+  representative_product: "Accepted building with declared use, gross floor area convention and fixed-system schedule."
+  production_route: "Site removal; foundation and structural forming; enclosure and finishing; fixed-system integration and commissioning through signed handover."
+  market_state: "Completed and accepted building asset, not an occupied service."
+functional_unit:
+  what: "Constructed and accepted use-qualified non-residential building."
+  how_much: "1 m2 accepted gross floor area (GFA); report total accepted GFA."
+  how_well: "Structure, roof or envelope and contracted fixed systems pass declared acceptance tests."
+  how_long_or_cycle: "One new-build project through signed handover; design life is metadata, not operation in this boundary."
+  reference_flow_link: "accepted_building output from integrate_handover, divided by accepted GFA."
+system_boundary:
+  rules:
+    - rule_id: gate_new_build
+      applies_to: "whole building"
+      rule: "Include ground works, structure, enclosure, fixed systems, pre-handover testing and corrections; exclude routine occupation and movable equipment."
+      source_ids:
+        - unsd-cpc3-notes
+        - doe-building-commissioning
+    - rule_id: use_qualified
+      applies_to: "building use"
+      rule: "Require actual use and fixed-system schedule; never infer an inventory from the residual classification label."
+      source_ids:
+        - unsd-cpc3-notes
+    - rule_id: removal_handoff
+      applies_to: "prepare_site"
+      rule: "Identify source soil or surface, surveyed removal, on-site reuse, export and accepted ground; removal is separate from forming."
+      source_ids:
+        - eu-levels
+    - rule_id: forming_handoff
+      applies_to: "form_structure"
+      rule: "Identify pre-form materials, geometry-changing work, accepted structure, forming losses and repair."
+      source_ids:
+        - eu-levels
+    - rule_id: finish_handoff
+      applies_to: "enclose_finish"
+      rule: "Identify parent frame, actual roof or envelope and applied finishes, residues and accepted roofed or enclosed state."
+      source_ids:
+        - eu-levels
+    - rule_id: integration_handoff
+      applies_to: "integrate_handover"
+      rule: "Join structure, enclosure and use-specific fixed services; record separately purchased mechanical, electrical and test services when present without duplicating subcontract inputs; only accepted GFA enters the reference output."
+      source_ids:
+        - doe-building-commissioning
+    - rule_id: route_delta
+      applies_to: "use-specific systems"
+      rule: "Document topology, inventory, tests and basis for each use; mixed uses may coexist with non-overlapping attribution."
+      source_ids:
+        - unsd-cpc3-notes
+        - doe-building-commissioning
+boundary_abstraction:
+  declared_starting_condition: "Surveyed site and existing utility interfaces before new-build works."
+  starting_condition_role: "Physical baseline, not burden-free prepared foundations or an existing completed building."
+  product_classification_scope: "Accepted roofed or enclosed building within one declared contract and use-qualified GFA."
+  recursive_input_rule: "Separately purchased completed same-category building modules enter at supplier handover with upstream datasets; do not count their component materials again."
+  upstream_dataset_requirement: "Material, prefabricated component, energy, transport and treatment datasets matching geography and technology."
+  disclosure: "Use; area convention; drawings; contract limit; installed fixed systems; mixed-use split; ground removal; defects; unresolved identities."
+reference_flow_definition:
+  reference_amount: "1 m2 accepted GFA"
+  product_flow_ref:
+    name: "Accepted use-qualified non-residential building; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "m2 GFA"
+  required_qualifiers:
+    - "Use and occupancy class"
+    - site
+    - "new-build status"
+    - "GFA convention"
+    - "total and open-sided covered-area treatment"
+    - "structural and roof/envelope systems"
+    - "fixed-system schedule"
+    - "contract boundary"
+    - "acceptance date"
+    - "mixed-use split"
+reference_flows:
+  []
+measurement_rules:
+  - id: accepted_gfa
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Area, UUID unresolved"
+      uuid: ""
+    required_unit: "m2 GFA"
+    rule: "Measure signed accepted gross floor area using one disclosed convention. For an open-sided roofed building, declare whether covered floor area is included; do not mix net and gross, or apply this basis where no defensible floor area exists."
+  - id: material_balance
+    applies_to: "construction products"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile deliveries, returns, installed mass, stock and waste by material; document density conversions."
+  - id: site_energy
+    applies_to: "construction and commissioning"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh; MJ; kg"
+    rule: "Separate purchased carriers and pre-handover testing from post-handover operation."
+  - id: mixed_use
+    applies_to: "shared works"
+    required_property_ref:
+      name: "Area or evidenced physical service"
+      uuid: ""
+    required_unit: "m2; declared unit"
+    rule: "Use non-overlapping area and allocate shared systems once."
+process_map:
+  - id: prepare_site
+    name: "Site survey and removal"
+    inclusion: "required"
+    inclusion_condition: "Surveyed site to accepted prepared ground."
+    role: "Independent ground-removal node; route spoil and reuse."
+    quantitative_reference: "Surveyed cut and accepted footprint."
+  - id: form_structure
+    name: "Foundation and structural forming"
+    inclusion: "required"
+    inclusion_condition: "Prepared ground to inspected supporting frame."
+    role: "Change purchased materials into specified geometry; repair defects."
+    quantitative_reference: "Installed mass and accepted structural area."
+  - id: enclose_finish
+    name: "Roof or enclosure and surface finishing"
+    inclusion: "required"
+    inclusion_condition: "Inspected frame to accepted roofed or enclosed spaces."
+    role: "Add actual roof, envelope, partitions and protective finishes as applicable."
+    quantitative_reference: "Installed mass and accepted floor area."
+  - id: integrate_handover
+    name: "Fixed-system integration and acceptance"
+    inclusion: "required"
+    inclusion_condition: "Roofed or enclosed spaces to signed whole-building acceptance."
+    role: "Integrate use-qualified fixed systems; test, correct and hand over."
+    quantitative_reference: "Accepted GFA and system schedule."
+process_inventory:
+  - id: prepare_site
+    label: "Site survey and removal"
+    inputs:
+      product:
+        - row_id: site_energy_input
+          role: "Construction energy for site works"
+          name: "Purchased construction energy by carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Record only metered energy for owner-accounted removal, excluding subcontract-embedded energy."
+          amount:
+            expression: "Reconcile meter and fuel logs to site tasks."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "site-task energy divided by all recorded energy of the same carrier"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_ground
+          role: "Accepted prepared ground"
+          name: "Accepted prepared ground by project footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Surveyed ground ready for foundation work is an internal handoff only."
+          amount:
+            expression: "Measure non-overlapping accepted foundation footprint."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "accepted prepared footprint divided by specified footprint"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        - row_id: exported_spoil
+          role: "Exported excavation and clearance waste"
+          name: "Excavated material by substance and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Material removed from the identified site source and leaving the contract boundary; on-site reuse is separate."
+          amount:
+            expression: "Balance cut, on-site reuse, stock and export by material."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "exported mass divided by removed mass for the same material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      elementary:
+        []
+  - id: form_structure
+    label: "Foundation and structural forming"
+    inputs:
+      product:
+        - row_id: received_prepared_ground
+          role: "Prepared-ground handoff"
+          name: "Accepted prepared ground by project footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "The same accepted prepared footprint enters structural work once, without another upstream purchase."
+          amount:
+            expression: "Match the accepted outgoing prepared footprint from prepare_site."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_structure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "fraction"
+                basis: "received prepared footprint divided by accepted outgoing footprint"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+        - row_id: structural_materials
+          role: "Foundation and frame materials"
+          name: "Purchased structural material by as-built bill"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual concrete, reinforcement, steel, timber or other pre-form materials by distinct identity; no universal recipe."
+          amount:
+            expression: "Sum delivered mass net of returns; retain installed and loss splits."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_structure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "installed mass divided by delivered mass net of returns by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_structure
+          role: "Inspected supporting structure"
+          name: "Accepted in-situ supporting structure"
+          flow_type: "product"
+          property_unit: "Area / m2 footprint"
+          description: "Formed foundation and frame meeting drawings are handed to enclosure, not sold as a second building."
+          amount:
+            expression: "Measure accepted structural footprint and retain as-built mass schedule."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_structure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "accepted structural area divided by specified structural area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        - row_id: structural_rejects
+          role: "Rejected structural material"
+          name: "Rejected structural material by substance and route"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-spec material is repaired, returned, recovered or disposed through a documented path, never counted as accepted structure."
+          amount:
+            expression: "Link defect and disposition to the producing structure node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_structure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "rejected mass divided by same-material input net of returns"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      elementary:
+        []
+  - id: enclose_finish
+    label: "Roof or enclosure and surface finishing"
+    inputs:
+      product:
+        - row_id: received_structure
+          role: "Inspected-structure handoff"
+          name: "Accepted in-situ supporting structure"
+          flow_type: "product"
+          property_unit: "Area / m2 footprint"
+          description: "The inspected foundation and frame enter enclosure once, retaining the structural bill and acceptance state."
+          amount:
+            expression: "Match the accepted outgoing structure footprint from form_structure."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_enclosure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "fraction"
+                basis: "received structure area divided by accepted outgoing structure area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+        - row_id: envelope_finish_inputs
+          role: "Envelope and finish products"
+          name: "Envelope or finishing product by material and function"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record design-specific cladding, glazing, insulation, partitions and surface products delivered to the inspected frame."
+          amount:
+            expression: "Reconcile purchase, installed quantity, unused return and waste."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_enclosure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "installed mass divided by purchased mass net of returns by product"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_enclosure
+          role: "Accepted roofed or enclosed spaces"
+          name: "Accepted roofed or enclosed building spaces"
+          flow_type: "product"
+          property_unit: "Area / m2 GFA"
+          description: "Inspected roofed or enclosed spaces with applicable functional surfaces transfer to fixed-system integration."
+          amount:
+            expression: "Measure accepted non-overlapping GFA of roofed or enclosed spaces using the declared convention."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_enclosure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "accepted roofed or enclosed GFA divided by specified GFA in the same convention"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        - row_id: finish_residues
+          role: "Finishing offcuts and residues"
+          name: "Finish residue by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record coating residues, offcuts and damaged finishes with explicit repair, return, recovery or disposal path."
+          amount:
+            expression: "Weigh or invoice off-site residue; separate repaired and returned quantities."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_enclosure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "exported residue mass divided by purchased mass net of returns by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      elementary:
+        []
+  - id: integrate_handover
+    label: "Fixed-system integration and acceptance"
+    inputs:
+      product:
+        - row_id: received_enclosure
+          role: "Roofed-or-enclosed-space handoff"
+          name: "Accepted roofed or enclosed building spaces"
+          flow_type: "product"
+          property_unit: "Area / m2 GFA"
+          description: "The accepted roofed or enclosed spaces enter fixed-system integration once, without duplicating their upstream materials."
+          amount:
+            expression: "Match the accepted outgoing area from enclose_finish under the same GFA convention."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_systems
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "fraction"
+                basis: "received roofed or enclosed area divided by accepted outgoing area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+        - row_id: fixed_system_inputs
+          role: "Installed fixed services and use-specific systems"
+          name: "Fixed building component by physical identity"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual HVAC, electrical, plumbing, controls, lifts and applicable use-specific fixed systems, never a universal list."
+          amount:
+            expression: "Reconcile supplier receipt, installed equipment and returns by system."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_systems
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "installed component mass divided by delivered mass net of returns by system"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+        - row_id: commissioning_energy
+          role: "Pre-handover commissioning energy"
+          name: "Purchased test energy by carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Meter test electricity and fuels separately from later operations."
+          amount:
+            expression: "Assign metered carriers only to tests before signed handover."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_systems
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "pre-handover test energy divided by total transition energy for the carrier"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_building
+          role: "Accepted non-residential building"
+          name: "Accepted use-qualified non-residential building"
+          flow_type: "product"
+          property_unit: "Area / m2 GFA"
+          description: "Only GFA passing structure, enclosure, fixed-system and use-specific tests enters the reference output."
+          amount:
+            expression: "Use signed accepted GFA from as-built plans, not planned or net area."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_systems
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "m2 GFA per m2 accepted GFA"
+                basis: "accepted GFA divided by the same accepted GFA denominator"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      waste:
+        - row_id: system_rejects
+          role: "Defective integration materials"
+          name: "Defective fixed-system component by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Installation and testing rejects go to repair, supplier return, recovery or disposal, not accepted output."
+          amount:
+            expression: "Reconcile rejected mass to producing work and documented destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per m2 accepted GFA"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_systems
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction"
+                basis: "rejected component mass divided by delivered mass net of returns"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - eu-levels
+      elementary:
+        []
+allocation_rules:
+  - rule_id: no_duplicate_systems
+    applies_to: "structure, enclosure and MEP"
+    rule: "Attribute each supplier package and common site service once; do not add subcontract-embedded burdens again."
+    source_ids:
+      - eu-levels
+  - rule_id: mixed_use_attribution
+    applies_to: "mixed use"
+    rule: "Split accepted GFA into non-overlapping uses; allocate shared structure and systems using evidenced area, mass, capacity or service drivers."
+    source_ids:
+      - eu-levels
+  - rule_id: reject_rework
+    applies_to: "defects"
+    rule: "Keep repair inputs and burdens with the producing node; trace return, recovery or disposal; accepted GFA excludes unresolved defects."
+    source_ids:
+      - doe-building-commissioning
+  - rule_id: single_project_period
+    applies_to: "construction cycle"
+    rule: "Attribute construction burdens to the one accepted project; do not amortize them over assumed future operating years within this construction-only dataset."
+    source_ids:
+      - eu-levels
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "Excavated spoil, finishing residue and defective components are waste or returned materials, not automatic saleable co-products. A separately evidenced recovered saleable output needs its own declared route and allocation review; no unverified avoided-burden credit is applied."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_site
+      process_id: "prepare_site"
+      flow_role: "energy, ground, spoil"
+      record_type: "survey, meter, haul ticket"
+      raw_fields: "footprint, cut, energy, material mass, reuse, stock, destination"
+      collection_method: "survey and invoice/meter reconciliation"
+      unit: "m2; kg; kWh; MJ"
+      frequency: "each survey and shipment"
+      temporal_coverage: "ground works to foundation acceptance"
+      site_scope: "contract site"
+      aggregation_rule: "balance removal and sum non-overlapping footprint"
+      quality_evidence: "signed survey and tickets"
+    - protocol_id: cp_structure
+      process_id: "form_structure"
+      flow_role: "materials, structure, defects"
+      record_type: "supplier and inspection records"
+      raw_fields: "delivered, returned, installed and rejected mass, accepted geometry"
+      collection_method: "as-built bill and inspection log"
+      unit: "kg; m2"
+      frequency: "each delivery and inspection"
+      temporal_coverage: "foundations through frame acceptance"
+      site_scope: "contract structure"
+      aggregation_rule: "mass balance by material"
+      quality_evidence: "invoices, as-builts, defect closeout"
+    - protocol_id: cp_enclosure
+      process_id: "enclose_finish"
+      flow_role: "roof or envelope, accepted area, residues"
+      record_type: "bill, inspection, waste ticket"
+      raw_fields: "material mass, returns, accepted GFA, residue mass and route"
+      collection_method: "quantity survey and ticket reconciliation"
+      unit: "kg; m2"
+      frequency: "each lot and inspection"
+      temporal_coverage: "roof/envelope to finish acceptance"
+      site_scope: "contract roof, envelope and interiors"
+      aggregation_rule: "balance purchase, install, return and waste"
+      quality_evidence: "signed inspection and manifests"
+    - protocol_id: cp_systems
+      process_id: "integrate_handover"
+      flow_role: "fixed systems, test energy, output, rejects"
+      record_type: "installed schedule, meters, test log"
+      raw_fields: "system IDs, mass, energy, accepted GFA, defects, destinations"
+      collection_method: "supplier bills, meter intervals and signed tests"
+      unit: "kg; kWh; MJ; m2"
+      frequency: "each system and test"
+      temporal_coverage: "integration to signed handover"
+      site_scope: "fixed contract systems"
+      aggregation_rule: "sum accepted area, reconcile each system"
+      quality_evidence: "test sheets, punch list, certificate"
+  calculation_rules:
+    - id: normalize_area
+      applies_to: "inventory"
+      rule: "Divide attributed whole-project quantity by signed accepted GFA in one disclosed convention."
+      inputs:
+        - "attributed quantity"
+        - "accepted GFA"
+      output: "quantity per m2 GFA"
+      source_ids:
+        - eu-levels
+    - id: site_balance
+      applies_to: "prepare_site"
+      rule: "Removed mass = on-site reuse + stock change + off-site export, per material with documented conversion."
+      inputs:
+        - survey
+        - weighbridge
+        - stock
+      output: "reconciled spoil"
+      source_ids:
+        - eu-levels
+    - id: material_balance
+      applies_to: "installed goods"
+      rule: "Delivered minus returns = installed + waste + stock change for each material; investigate discrepancy."
+      inputs:
+        - invoices
+        - "installed schedule"
+        - "waste tickets"
+      output: "reconciled inventory"
+      source_ids:
+        - eu-levels
+    - id: mixed_use_split
+      applies_to: "shared works"
+      rule: "Attribute once to exclusive accepted-use areas or evidenced physical service drivers."
+      inputs:
+        - "area schedule"
+        - "system capacity"
+        - bill
+      output: "use-qualified inventory"
+      source_ids:
+        - eu-levels
+  data_quality_requirements:
+    - id: use_and_area
+      applies_to: "reference"
+      requirement: "State use, new-build status, GFA convention, as-built total and signed acceptance."
+      evidence: "area schedule and certificate"
+    - id: system_completeness
+      applies_to: "installed works"
+      requirement: "Cross-check drawings, bills, inspection and commissioning list for omissions or duplicates."
+      evidence: "as-built index and closeout list"
+    - id: rework_destinations
+      applies_to: "rejects"
+      requirement: "Link each reject to repair, return, recovery or treatment without inflating accepted GFA."
+      evidence: "defect and transfer log"
+    - id: identity_quality
+      applies_to: "all flows"
+      requirement: "Resolve actual identity with property, unit, direction, geography and route compatibility before final exchange generation."
+      evidence: "detail-confirmed platform record"
+validation_rules:
+  - rule_id: validate_boundary
+    applies_to: "whole building"
+    rule: "Reject data packages including post-handover operation, movable furniture or detached works as construction inventory."
+    source_ids:
+      - unsd-cpc3-notes
+      - doe-building-commissioning
+  - rule_id: validate_use_delta
+    applies_to: "integration"
+    rule: "Require evidence for each use-specific system and test; mixed uses need non-overlapping attribution."
+    source_ids:
+      - doe-building-commissioning
+  - rule_id: validate_balances
+    applies_to: "all nodes"
+    rule: "Reconcile removal, delivered/installed materials and rejects; repair loops stay with producing nodes."
+    source_ids:
+      - eu-levels
+  - rule_id: validate_reference
+    applies_to: "reference"
+    rule: "Check accepted GFA, open-sided covered-area treatment, use and signed date; normalized output corresponds to that same denominator. If floor area is not defensible, require a narrower rule."
+    source_ids:
+      - eu-levels
+      - doe-building-commissioning
+published_dataset_profile:
+  dataset_role: "Foreground construction data package for a declared non-residential building use."
+  downstream_use: "Secondary or background dataset for process and lifecyclemodel assembly after identities are verified."
+  allowed_use: "Comparison within the same use, area convention, boundary and fixed-system completeness."
+  excluded_use: "Cross-use substitution without system adjustment; operational building impacts; unspecific residual-building proxy."
+  required_metadata: "Use, location, new-build status, GFA convention and total, contract limit, structure, envelope, fixed-system schedule, mixed-use split and acceptance date."
+  required_quality_disclosure: "Primary-data coverage, material balances, commissioning evidence, identity gaps and missing systems."
+  update_trigger: "Design or use change, bill revision, new foreground measurements, commissioning correction or verified flow identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.surface-finishing-node
+      kind: "activity"
+      path: "library/modules/activities/surface-finishing-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-notes"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Classification boundary and eligible uses."
+  - id: "eu-levels"
+    type: "official_guidance"
+    reference: "https://environment.ec.europa.eu/topics/circular-economy/levelsold/start-using-levels_en"
+    used_for: "Building life-cycle inventory and material reporting context."
+  - id: "doe-building-commissioning"
+    type: "official_guidance"
+    reference: "https://www.energy.gov/cmei/femp/commissioning-federal-buildings"
+    used_for: "Fixed-system commissioning and handover gate."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:60e6dda7706f9a2591f6f8d8c6c0c8934ff00158e23d31b3445128dd21df7d23"
+  generated_content_sha256: "sha256:d64947ebf2e0553893092b08a812a214244fd307827029fcca64a229e35040d4"

@@ -1,10 +1,677 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53231"
-  title: "Aqueducts and other water supply conduits, except pipelines"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.aqueducts-and-other-water-supply-conduits-except-pipelines"
+  classification_refs: "CPC 3.0 53231, Aqueducts and other water supply conduits, except pipelines; mapping acceptance is separate."
+  covered_products: "Completed non-pipeline channels, canals and aqueduct structures for water supply."
+  excluded_products: "Pipelines, irrigation/flood-control systems, dams, navigation structures, pumping/treatment, operation and delivered water."
+  representative_product: "One accepted route-kilometre of non-pipeline water-supply conduit."
+  production_route: "Survey and prepare corridor; excavate and form support; build or line hydraulic section; join structure, lining and joints; test and hand over."
+  market_state: "Installed, tested and accepted fixed infrastructure at a named site."
+functional_unit:
+  what: "Site-accepted non-pipeline water-supply conduit segment."
+  how_much: "One route-kilometre along accepted centreline, measured once."
+  how_well: "Declared supply duty, section geometry and hydraulic acceptance criteria pass tests."
+  how_long_or_cycle: "One construction project through signed handover; design life is metadata."
+  reference_flow_link: "accepted_conduit from conduit_handover."
+system_boundary:
+  rules:
+    - rule_id: b_gate
+      applies_to: "whole product"
+      rule: "Include survey, excavation, structure, lining, joints, tests and repair through signed handover; exclude operation and later maintenance."
+      source_ids:
+        - unsd-53231
+        - usbr-cip-construction
+    - rule_id: b_nonpipe
+      applies_to: "classification"
+      rule: "Inspect actual hydraulic section; project label alone never admits a pipeline."
+      source_ids:
+        - unsd-53231
+    - rule_id: b_removal
+      applies_to: "corridor"
+      rule: "Excavation independently hands graded support to construction; classify removed ground as reuse, stock, export or residual."
+      source_ids:
+        - usbr-cip-construction
+    - rule_id: b_form_join
+      applies_to: "section"
+      rule: "Declare pre-form material, formed section geometry, joined structure/lining/joints and accepted handoff; reject defective sections."
+      source_ids:
+        - usbr-cip-construction
+        - usbr-canal-design
+    - rule_id: b_alternative
+      applies_to: "route"
+      rule: "Parent activity is section construction. Earth-, membrane-, concrete-lined and elevated structures have distinct component and test requirements; choose one form per reach, while different reaches may coexist."
+      source_ids:
+        - usbr-cip-construction
+        - usbr-canal-design
+boundary_abstraction:
+  declared_starting_condition: "Surveyed corridor, pre-existing works and ground before preparation; demolition and remediation disclosed."
+  starting_condition_role: "Physical construction baseline, not free conduit product."
+  product_classification_scope: "One accepted non-pipeline water-supply segment with declared appurtenance interfaces."
+  recursive_input_rule: "Prefabricated channel sections enter as supplied components; never treat another complete accepted conduit as an unexamined raw input."
+  upstream_dataset_requirement: "Link structure/lining products, freight, energy, water, purchased construction and waste treatment where used."
+  disclosure: "Physical form, route, materials, ground, test gate, excluded plant/pipelines, shared works and rework."
+reference_flow_definition:
+  reference_amount: "1 route-km of accepted water-supply conduit"
+  product_flow_ref:
+    name: "Site-accepted non-pipeline water-supply conduit; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "route-km"
+  required_qualifiers:
+    - "Georeferenced endpoints and centreline"
+    - open
+    - "buried non-pipe or elevated form"
+    - "section and design capacity"
+    - "lining/support type"
+    - "water-supply duty"
+    - "included appurtenances"
+    - "hydraulic test"
+    - "handover date"
+reference_flows:
+  []
+measurement_rules:
+  - id: route_length
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Length, UUID unresolved"
+      uuid: ""
+    required_unit: "route-km"
+    rule: "Measure signed accepted centreline once; parallel conduits have separate lengths."
+  - id: earth_mass
+    applies_to: "cut, fill and spoil"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert survey volume with measured density and moisture; retain conversion."
+  - id: installed_mass
+    applies_to: "structure and lining"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert delivery units by specification; reconcile installed, returned and rejected mass."
+  - id: site_energy
+    applies_to: "plant"
+    required_property_ref:
+      name: "Energy or fuel mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Separate carriers and avoid double-counting subcontractor fuel."
+  - id: test_water
+    applies_to: "hydraulic test"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record supplied, reused, recovered, discharged and retained water; throughput is not construction output."
+process_map:
+  - id: corridor_preparation
+    name: "Excavation and support preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed corridor to accepted graded support."
+    role: "Remove ground; form subgrade and classify spoil."
+    quantitative_reference: "Accepted route-km and earth mass."
+  - id: conduit_handover
+    name: "Section construction and handover"
+    inclusion: "required"
+    inclusion_condition: "Accepted support to tested conduit."
+    role: "Form section; join structure/lining and test."
+    quantitative_reference: "Accepted route-km."
+process_inventory:
+  - id: corridor_preparation
+    label: "Excavation and support preparation"
+    inputs:
+      product:
+        - row_id: earthwork_service
+          role: "Earthwork service"
+          name: "Site excavation and grading service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Only purchased work; do not also count its embedded equipment fuel as owned fuel."
+          amount:
+            expression: "Sum signed work quantities by reach and scope."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_earthwork
+              source_ids:
+                - usbr-cip-construction
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "declared service units/route-km"
+                basis: "provisional and contract-unit dependent"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preparation_energy
+          role: "Equipment energy"
+          name: "Construction energy by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record owned-plant carrier quantities, excluding purchased-service energy."
+          amount:
+            expression: "Sum metered and invoiced carrier amounts for this node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kWh-equivalent/route-km"
+                basis: "provisional carrier-converted review only"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_support
+          role: "Accepted graded support"
+          name: "Accepted graded conduit support"
+          flow_type: "product"
+          property_unit: "Route length / route-km"
+          description: "Prepared geometry and bearing pass inspection; this intermediate is not a complete conduit."
+          amount:
+            expression: "Record signed accepted chainage, excluding deficient reaches."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "route-km/route-km reference"
+                basis: "one accepted support route-km per final route-km"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: excavation_spoil
+          role: "Exported excavation spoil"
+          name: "Excavated soil and rock waste by material and receiver"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Reused fill remains inside the site balance; exports have one documented receiver."
+          amount:
+            expression: "Reconcile excavation with reuse, stock change and receiving tickets."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_earthwork
+              source_ids:
+                - mass-balance-identity
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg excavated material"
+                basis: "exported spoil divided by excavated mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: conduit_handover
+    label: "Section construction and handover"
+    inputs:
+      product:
+        - row_id: support_received
+          role: "Accepted support received"
+          name: "Accepted graded conduit support"
+          flow_type: "product"
+          property_unit: "Route length / route-km"
+          description: "Match the internal input once to the upstream accepted chainage."
+          amount:
+            expression: "Match accepted_support by chainage."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "route-km/route-km reference"
+                basis: "one accepted upstream support route-km per final route-km"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+        - row_id: structure_lining
+          role: "Structure and lining components"
+          name: "Supplied structural and lining products by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Expand concrete, reinforcement, aggregate, membrane or clay lining, joints and elevated supports only where installed. These are pre-form material and joining inputs."
+          amount:
+            expression: "Reconcile delivered, installed, returned, rejected and stock mass by component."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - usbr-cip-construction
+                - usbr-canal-design
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/route-km"
+                basis: "provisional route-dependent screen, not design quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: construction_water
+          role: "Construction and test water"
+          name: "Construction and hydraulic test water by actual source"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+          property_unit: "Volume / m3"
+          description: "Separate mixing, curing and test water from later supply operations."
+          amount:
+            expression: "Meter input water and reconcile reuse, recovery, discharge and retention."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "m3/m3 supplied water"
+                basis: "recovered plus discharged plus retained divided by supplied water after recirculation adjustment"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: installation_service
+          role: "Purchased section installation and joining service"
+          name: "Purchased conduit section installation and joining service"
+          flow_type: "product"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Activate only when an external contractor forms, installs or joins the section, lining or joints. Exclude that contractor's embedded plant energy from owned-plant records; do not invent an installation-service UUID from an unrelated construction-service group."
+          amount:
+            expression: "Record signed installed work by reach and contract unit; zero when performed entirely by owned crew and plant."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - usbr-cip-construction
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "declared service units/route-km"
+                basis: "provisional contract-unit-dependent review, not a mandatory purchase"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_conduit
+          role: "Accepted water-supply conduit"
+          name: "Site-accepted non-pipeline water-supply conduit"
+          flow_type: "product"
+          property_unit: "Route length / route-km"
+          description: "Only hydraulically accepted non-pipeline length is the reference output; deficient sections require repair and retest."
+          amount:
+            expression: "Signed accepted centreline length excluding failed or unfinished reaches."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "route-km/route-km reference"
+                basis: "accepted length normalized to one route-km"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: construction_rejects
+          role: "Rejected lining and offcuts"
+          name: "Rejected lining and structural waste by material and receiver"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify failed material by destination; repaired sections remain rework, never accepted before retest."
+          amount:
+            expression: "Reconcile rejected mass with component balance and manifests."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rejects
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg supplied structure and lining materials"
+                basis: "rejected and exported mass divided by delivered component mass"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_no_water_coproduct
+    applies_to: "reference"
+    rule: "Construction outputs length, not water volume; operation is separate."
+    source_ids:
+      - unsd-53231
+      - reference-definition
+  - rule_id: a_shared
+    applies_to: "common works"
+    rule: "Attribute common measured plant or works to accepted reaches using documented physical drivers; fractions sum to one, with no duplicate burden."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: a_rework
+    applies_to: "failed work"
+    rule: "Keep repair with final accepted reach; route exported waste once and exclude failed length until retest."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_earthwork
+      process_id: "corridor_preparation"
+      flow_role: "service and spoil"
+      record_type: "each reach"
+      raw_fields: "chainage, cut/fill, density, reuse, stock, export, service scope"
+      collection_method: "survey, contract and weighbridge"
+      unit: "m3, kg, service unit"
+      frequency: "each reach"
+      temporal_coverage: "preparation to support gate"
+      site_scope: "alignment"
+      aggregation_rule: "mass balance by reach"
+      quality_evidence: "survey, invoices, tickets"
+    - protocol_id: cp_energy
+      process_id: "both_nodes"
+      flow_role: "owned energy"
+      record_type: "each carrier"
+      raw_fields: "amount, node, date, shared consumers"
+      collection_method: "meter and plant log"
+      unit: "kWh, MJ, kg or L"
+      frequency: "weekly"
+      temporal_coverage: "build and tests"
+      site_scope: "alignment"
+      aggregation_rule: "sum by carrier and node"
+      quality_evidence: "meter and log"
+    - protocol_id: cp_components
+      process_id: "conduit_handover"
+      flow_role: "structure/lining"
+      record_type: "each item"
+      raw_fields: "specification, delivered, installed, returns, rejects, stock"
+      collection_method: "delivery and as-built bill"
+      unit: "kg, m3, item"
+      frequency: "each delivery"
+      temporal_coverage: "section build"
+      site_scope: "segment"
+      aggregation_rule: "convert and balance by product"
+      quality_evidence: "invoices and drawings"
+    - protocol_id: cp_water_test
+      process_id: "conduit_handover"
+      flow_role: "construction water"
+      record_type: "each test"
+      raw_fields: "source, input, reuse, recovery, discharge, retention, result"
+      collection_method: "meter and test sheet"
+      unit: "m3"
+      frequency: "each test"
+      temporal_coverage: "build to handover"
+      site_scope: "reach"
+      aggregation_rule: "net-input and destination balance"
+      quality_evidence: "meter and test report"
+    - protocol_id: cp_acceptance
+      process_id: "both_nodes"
+      flow_role: "support and conduit"
+      record_type: "each chainage"
+      raw_fields: "endpoints, form, capacity, section, defects, repair, test, sign-off"
+      collection_method: "survey and inspection"
+      unit: "route-km"
+      frequency: "each gate"
+      temporal_coverage: "support to handover"
+      site_scope: "reach"
+      aggregation_rule: "accepted length only; match node handoff"
+      quality_evidence: "drawings and certificate"
+    - protocol_id: cp_rejects
+      process_id: "conduit_handover"
+      flow_role: "failed material"
+      record_type: "each rejection"
+      raw_fields: "material, mass, reach, repair, reuse, receiver"
+      collection_method: "waste and repair register"
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "build"
+      site_scope: "reach"
+      aggregation_rule: "balance with components"
+      quality_evidence: "manifests and receipts"
+  calculation_rules:
+    - id: calc_reference
+      applies_to: "output"
+      rule: ""
+      inputs:
+        - "signed survey"
+      output: ""
+      source_ids:
+        - reference-definition
+    - id: calc_earth
+      applies_to: "earthwork"
+      rule: ""
+      inputs:
+        - survey
+        - density
+        - tickets
+      output: ""
+      source_ids:
+        - mass-balance-identity
+    - id: calc_material
+      applies_to: "components"
+      rule: ""
+      inputs:
+        - "bills and manifests"
+      output: ""
+      source_ids:
+        - mass-balance-identity
+    - id: calc_shared
+      applies_to: "common works"
+      rule: ""
+      inputs:
+        - "metering and usage"
+      output: ""
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "final exchanges"
+      requirement: "Confirm UUID, type, gate, property and unit against platform detail before dataset release."
+      evidence: "detail/support review"
+    - id: dq_scope
+      applies_to: "reference"
+      requirement: "Verify non-pipe form, water-supply duty, endpoints, section, included works and sign-off."
+      evidence: "as-built and certificate"
+    - id: dq_materials
+      applies_to: "major items"
+      requirement: "Reconcile source, delivered, installed, return, reject and receiver quantities."
+      evidence: "bills and manifests"
+    - id: dq_time
+      applies_to: "all"
+      requirement: "Preserve dated construction and tests; disclose gaps."
+      evidence: "logs and test sheets"
+    - id: dq_ranges
+      applies_to: "all"
+      requirement: "Provisional guards trigger review, never replace missing measurements."
+      evidence: "foreground records"
+validation_rules:
+  - rule_id: v_nonpipe
+    applies_to: "reference"
+    rule: "Reject pipe assets regardless of project name; distinguish irrigation, dams and navigation."
+    source_ids:
+      - unsd-53231
+  - rule_id: v_gate
+    applies_to: "reference"
+    rule: "Require centreline, hydraulic test and signed handover; water throughput is not construction output."
+    source_ids:
+      - usbr-canal-design
+      - reference-definition
+  - rule_id: v_route
+    applies_to: "variants"
+    rule: "Assign each reach an evidenced lining/structural route and check corresponding materials and tests; no two exclusive forms on one reach."
+    source_ids:
+      - usbr-cip-construction
+      - usbr-canal-design
+  - rule_id: v_balance
+    applies_to: "earth/components"
+    rule: "Reconcile excavation, components, rework and export without duplicate counts."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_rework
+    applies_to: "failed reach"
+    rule: "Link defect to repair/retest or recovery/disposal; do not accept until passed."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_uuid
+    applies_to: "identity"
+    rule: "Leave generic conduit, waste and component UUID blank until exact detail and support verification."
+    source_ids:
+      - reference-definition
+published_dataset_profile:
+  dataset_role: "Construction package for site-accepted non-pipeline water-supply conduit."
+  downstream_use: "secondary_dataset or background_dataset for infrastructure process and lifecyclemodel after identity review."
+  allowed_use: "Per-route-km construction assessment for matching form, capacity, site and handover gate."
+  excluded_use: "Pipelines, other-purpose works, water operation and whole-life claims without linked scenarios."
+  required_metadata: "Endpoints, form, length, capacity, lining/support, ground, included works, tests and date."
+  required_quality_disclosure: "Quantity coverage, provisional guards, earth/material balance, work-package overlap and UUID gaps."
+  update_trigger: "Accepted length, form, schedule, test result, supplier or identity changes."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-53231"
+    type: "official_guidance"
+    reference: "UNSD CPC explanatory note 53231, https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53231"
+    used_for: "Boundary and exclusions."
+  - id: "usbr-cip-construction"
+    type: "official_guidance"
+    reference: "US Bureau of Reclamation, Construction Activity Descriptions, https://www.usbr.gov/gp/nepa/cip/activity_descriptions.html"
+    used_for: "Preparation, excavation and lining roles."
+  - id: "usbr-canal-design"
+    type: "official_guidance"
+    reference: "US Bureau of Reclamation, Design Standards No. 3: Canals and Related Structures, https://www.usbr.gov/pn/snakeriver/landuse/authorized/designstandards3.pdf"
+    used_for: "Hydraulic/structural acceptance questions."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation reconciled against collected earth, component and water records."
+    used_for: "Balances and reject checks."
+  - id: "reference-definition"
+    type: "method_factor"
+    reference: "Accepted-centreline definition and arithmetic normalization in this PCR."
+    used_for: "Reference output and handoff."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:3ad16538ffda74d0b2916d56b6d845716e7b0c1d36cb6c22b62d94820e2648bf"
+  generated_content_sha256: "sha256:a7610602e860ac3f8a625df42aaef12931673c4f42ed60c971ad3f88c6542b98"

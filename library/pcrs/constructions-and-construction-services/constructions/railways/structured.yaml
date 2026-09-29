@@ -1,10 +1,736 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53212"
-  title: "Railways"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.railways"
+  classification_refs: "CPC 3.0 53212, Railways; mapping acceptance is separate."
+  covered_products: "Site-accepted railway alignment with formation, permanent way and declared trackside electrification, control and safety systems."
+  excluded_products: "Rolling stock and operation; station buildings; separately measured bridges, tunnels and utilities; future maintenance."
+  representative_product: "One route-kilometre of tested and accepted railway alignment."
+  production_route: "Prepare formation; install track components; integrate in-scope power and safety systems; test and hand over."
+  market_state: "Installed and accepted infrastructure at a named site."
+functional_unit:
+  what: "Site-accepted railway alignment segment."
+  how_much: "One route-km; report track-km separately for multiple tracks."
+  how_well: "Formation, track geometry and included systems pass specified acceptance tests."
+  how_long_or_cycle: "One construction project through handover; future service life is scenario metadata."
+  reference_flow_link: "accepted_railway from track_handover."
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "whole product"
+      rule: "Include actual works and testing through signed infrastructure handover. Operation, maintenance and end-of-life are separate scenarios."
+      source_ids:
+        - unsd-53212
+        - fra-track-2026
+    - rule_id: asset_interfaces
+      applies_to: "bridges, tunnels and stations"
+      rule: "Record whether each asset is inside this measured contract or a separate linked dataset; never silently include or omit it."
+      source_ids:
+        - unsd-53212
+        - uic-mainline-lcat
+    - rule_id: assembly_boundary
+      applies_to: "rails, sleepers, fasteners, ballast/slab and systems"
+      rule: "Supplier manufacture belongs to product inputs; installation and integration belong here. Record accepted and rejected states separately."
+      source_ids:
+        - fra-track-2026
+    - rule_id: secondary_and_shared
+      applies_to: "recovered inputs and common works"
+      rule: "Declare recovery hand-off, prior-burden convention, consuming nodes and service periods; attribute each burden once."
+      source_ids:
+        - uic-mainline-lcat
+boundary_abstraction:
+  declared_starting_condition: "Surveyed right-of-way, existing track or structures, ground condition and any demolition or remediation at commencement."
+  starting_condition_role: "Physical baseline for new construction, not a free infrastructure product."
+  product_classification_scope: "One accepted rail alignment; separately measured station, bridge, tunnel and train assets remain outside."
+  recursive_input_rule: "Purchased track panels enter as components at their supply gate; never treat another complete accepted line as an unexamined raw input."
+  upstream_dataset_requirement: "Link compatible rail, sleeper, fastening, ballast or slab, power/control products, freight, energy and waste treatment datasets."
+  disclosure: "Report starting state, route and track lengths, included systems, civil interfaces, shared works, secondary origin, cut-offs and gaps."
+reference_flow_definition:
+  reference_amount: "1 route-km of accepted railway alignment"
+  product_flow_ref:
+    name: "Site-accepted railway alignment; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "route-km"
+  required_qualifiers:
+    - "Georeferenced endpoints"
+    - "route-km and track-km"
+    - "track count and gauge"
+    - "ballast or slab track form"
+    - at-grade
+    - "elevated and underground shares"
+    - "power and signalling scope"
+    - bridge
+    - "tunnel and station interfaces"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: route_length
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Length, UUID unresolved"
+      uuid: ""
+    required_unit: "route-km"
+    rule: "Measure once along the accepted centreline between endpoints; parallel tracks do not multiply this length."
+  - id: track_length
+    applies_to: "track inventory"
+    required_property_ref:
+      name: "Length"
+      uuid: ""
+    required_unit: "track-km"
+    rule: "Sum installed track centrelines, including separately disclosed sidings and turnouts."
+  - id: material_mass
+    applies_to: "materials and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert pieces, linear and volume units using project-specific unit mass or density, retaining the conversion record."
+  - id: freight_work
+    applies_to: "inbound transport"
+    required_property_ref:
+      name: "Mass × distance"
+      uuid: ""
+    required_unit: "t·km"
+    rule: "Multiply delivered tonnes by loaded distance and disclose the provider's return-trip treatment."
+  - id: site_energy
+    applies_to: "equipment"
+    required_property_ref:
+      name: "Energy or fuel mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Keep carriers separate; avoid counting generator fuel and its electricity twice."
+process_map:
+  - id: formation
+    name: "Corridor and track formation"
+    inclusion: "required"
+    inclusion_condition: "From surveyed right-of-way to accepted track-supporting formation."
+    role: "Earthwork, drainage and prepared formation; route deficient work to rework or export."
+    quantitative_reference: "Accepted route-km and measured work."
+  - id: track_handover
+    name: "Permanent way and systems handover"
+    inclusion: "required"
+    inclusion_condition: "From accepted formation to tested railway."
+    role: "Join rails, sleepers, fasteners and ballast/slab; integrate declared power/control; reject failed work."
+    quantitative_reference: "Accepted route-km and track-km."
+process_inventory:
+  - id: formation
+    label: "Corridor and track formation"
+    inputs:
+      product:
+        - row_id: earthwork_service
+          role: "Earthwork service"
+          name: "Corridor earthwork and compaction service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Use only for subcontracted work whose equipment fuel is not also counted as owned foreground fuel. The contract may cover excavation, backfill or compaction; select the exact Flow Set group from foreground service records."
+          amount:
+            expression: "Record actual contract quantity and chainage."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_earthwork
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "declared service units/route-km"
+                basis: "broad initial screen pending the contract unit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: formation_materials
+          role: "Formation and drainage materials"
+          name: "Formation products by as-built item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate aggregate, geotextiles, drainage and stabilization products by actual specification. Reclaimed aggregate requires origin and recovery-gate evidence."
+          amount:
+            expression: "Reconcile delivered, installed, returned and stock quantities by material."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/route-km"
+                basis: "broad route-dependent first-pass screen, not a design quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: formation_energy
+          role: "Formation equipment energy"
+          name: "Construction fuel and electricity by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record owned plant fuel and electricity, excluding energy already represented by the earthwork service."
+          amount:
+            expression: "Sum meters, invoices and machine logs by work package and carrier."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kWh-equivalent/route-km"
+                basis: "broad first-pass equipment energy screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_formation
+          role: "Accepted formation"
+          name: "Accepted track-supporting formation"
+          flow_type: "product"
+          property_unit: "Route length / route-km"
+          description: "Only surveyed formation passing its bearing and geometry gate moves to track installation."
+          amount:
+            expression: "Record accepted chainage, excluding failed or pending sections."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "route-km/route-km reference"
+                basis: "accepted formation supporting one accepted route-km"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: spoil_export
+          role: "Spoil exported"
+          name: "Excavated soil and rock waste by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Reused fill stays inside the measured formation balance; exported material has one documented receiver."
+          amount:
+            expression: "Reconcile excavation, reuse, stock and exported weighbridge mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg excavated material"
+                basis: "exported spoil divided by excavated material after stock reconciliation"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: track_handover
+    label: "Permanent way and systems handover"
+    inputs:
+      product:
+        - row_id: formation_received
+          role: "Accepted formation received"
+          name: "Accepted track-supporting formation"
+          flow_type: "product"
+          property_unit: "Route length / route-km"
+          description: "The same accepted chainage enters once as the internal intermediate from formation."
+          amount:
+            expression: "Match input chainage to accepted upstream output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "route-km/route-km reference"
+                basis: "one accepted upstream route-km per downstream route-km"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+        - row_id: track_components
+          role: "Permanent-way components"
+          name: "Track components by delivered as-built product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Expand rail, sleeper, fastening, ballast or slab, and turnout items into separate actual exchanges. Track form, gauge and track-km govern the item schedule; reclaimed rail or ballast requires recovery hand-off."
+          amount:
+            expression: "Convert actual bills to installed mass and reconcile delivery, returns, rejects and stock."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted route-km; additionally per track-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/route-km"
+                basis: "broad first-pass screen dependent on track count and form"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: system_components
+          role: "Power and safety components"
+          name: "Installed railway power, control and safety products by item"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Record only contracted track electrification, signalling and safety equipment; station-only equipment stays separate."
+          amount:
+            expression: "Sum as-built accepted equipment by specification; disclose zero when not in scope."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg/route-km"
+                basis: "broad screen including zero for an out-of-scope system"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: component_freight
+          role: "Inbound component freight"
+          name: "Freight transport service by recorded mode and route"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+          property_unit: "Transport work / t·km"
+          description: "Use actual shipment mode, mass and distance, avoiding transport already included in supplier gates."
+          amount:
+            expression: "Sum tonnes multiplied by loaded kilometres by mode."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_freight
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "t·km/route-km"
+                basis: "broad initial freight-work review screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: installation_energy
+          role: "Installation and testing energy"
+          name: "Construction fuel and electricity by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Meter tamping, welding and test energy by carrier; allocate shared plant across nodes and periods only once."
+          amount:
+            expression: "Reconcile carrier invoices and meters to installation and test work packages."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kWh-equivalent/route-km"
+                basis: "broad first-pass installation and test screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_railway
+          role: "Accepted railway"
+          name: "Site-accepted railway alignment"
+          flow_type: "product"
+          property_unit: "Route length / route-km"
+          description: "Count only chainage for which track and included systems pass specified tests and handover."
+          amount:
+            expression: "One accepted route-km, with track-km and systems scope as qualifiers."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "route-km/reference flow"
+                basis: "one accepted route-km by definition"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: track_rejects
+          role: "Track installation rejects"
+          name: "Installation waste by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Segregate cut rail, broken sleepers, off-spec ballast and failed equipment by destination. Reworked items return to installation; unresolved rejects never enter accepted output."
+          amount:
+            expression: "Reconcile installed, returned, reworked, exported and stock quantities."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg delivered components"
+                basis: "exported rejects divided by delivered components after returns and stock changes"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: shared_assets
+    applies_to: "shared haul road, depot, plant and temporary power"
+    rule: "Name consuming nodes and service periods. Attribute measured use by machine hours, work volume or another documented physical driver; fractions sum to one."
+    source_ids:
+      - uic-mainline-lcat
+  - rule_id: multiple_tracks
+    applies_to: "parallel tracks or projects"
+    rule: "Assign specific work first; allocate inseparable corridor work by documented physical use or covered length, never multiplying one route-km by track count."
+    source_ids:
+      - reference-definition
+  - rule_id: secondary_inputs
+    applies_to: "reclaimed rail, ballast and aggregate"
+    rule: "Document origin and recovery hand-off. Count recovery processing once under the chosen upstream convention; no prior-use burden or substitution credit without evidence."
+    source_ids:
+      - uic-mainline-lcat
+  - rule_id: rework_reject
+    applies_to: "failed formation and track work"
+    rule: "Keep rework at its producing node; route unrepaired material to recovery or disposal once; exclude pending or rejected chainage from output."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_earthwork
+      process_id: "formation"
+      flow_role: "earthwork service"
+      record_type: "survey and contract"
+      raw_fields: "chainage, excavation, fill, service scope and unit"
+      collection_method: "survey and signed contractor log"
+      unit: "m3, service unit"
+      frequency: "each package"
+      temporal_coverage: "preparation to formation gate"
+      site_scope: "named corridor"
+      aggregation_rule: "sum without duplicate owned-machine fuel"
+      quality_evidence: "survey and invoices"
+    - protocol_id: cp_materials
+      process_id: "formation_track_handover"
+      flow_role: "permanent products"
+      record_type: "deliveries and as-built bill"
+      raw_fields: "product, specification, mass or items, installed, returns, stock, secondary origin"
+      collection_method: "signed delivery and as-built schedule"
+      unit: "kg, item, m3"
+      frequency: "each delivery"
+      temporal_coverage: "full construction"
+      site_scope: "accepted segment"
+      aggregation_rule: "reconcile each product line"
+      quality_evidence: "invoices and certificates"
+    - protocol_id: cp_energy
+      process_id: "formation_track_handover"
+      flow_role: "equipment and test power"
+      record_type: "meter and fuel log"
+      raw_fields: "carrier, amount, node, date, shared consumers"
+      collection_method: "meter, invoice and machine log"
+      unit: "kWh, MJ, kg, L"
+      frequency: "weekly"
+      temporal_coverage: "construction and test"
+      site_scope: "named corridor"
+      aggregation_rule: "sum carriers and attribute common readings once"
+      quality_evidence: "meter and invoice"
+    - protocol_id: cp_freight
+      process_id: "track_handover"
+      flow_role: "inbound products"
+      record_type: "shipment record"
+      raw_fields: "product mass, mode, origin, distance, return convention"
+      collection_method: "dispatch docket and route log"
+      unit: "t, km, t·km"
+      frequency: "each trip"
+      temporal_coverage: "supply to site"
+      site_scope: "supplier to corridor"
+      aggregation_rule: "sum tonnes × loaded km by mode"
+      quality_evidence: "signed transport record"
+    - protocol_id: cp_waste
+      process_id: "formation_track_handover"
+      flow_role: "spoil and rejects"
+      record_type: "waste/rework log"
+      raw_fields: "material, mass, node, reuse, rework, export, receiver"
+      collection_method: "weighbridge and manifest"
+      unit: "kg"
+      frequency: "each movement"
+      temporal_coverage: "full construction"
+      site_scope: "named corridor"
+      aggregation_rule: "balance by origin and destination"
+      quality_evidence: "tickets and receipts"
+    - protocol_id: cp_acceptance
+      process_id: "formation_track_handover"
+      flow_role: "accepted states"
+      record_type: "survey and commissioning"
+      raw_fields: "endpoints, route-km, track-km, gauge, form, systems, defects, tests, acceptance"
+      collection_method: "as-built survey and signed test"
+      unit: "route-km, track-km"
+      frequency: "each gate"
+      temporal_coverage: "formation to handover"
+      site_scope: "accepted segment"
+      aggregation_rule: "match chainage and omit failed lengths"
+      quality_evidence: "drawings and certificates"
+  calculation_rules:
+    - id: material_balance
+      applies_to: "each product"
+      rule: "Gross delivered = installed + exported waste + returns + closing stock minus opening stock within documented tolerance."
+      inputs:
+        - delivery
+        - installation
+        - "waste and stock"
+      output: "kg/product and kg/route-km"
+      source_ids:
+        - mass-balance-identity
+    - id: spoil_balance
+      applies_to: "excavation"
+      rule: "Excavated = on-site reuse + export + stock change after density and bulking conversion."
+      inputs:
+        - survey
+        - "density and weighbridge"
+      output: "kg/route-km and residual"
+      source_ids:
+        - mass-balance-identity
+    - id: transport_work
+      applies_to: "inbound freight"
+      rule: "Sum actual loaded tonnes × kilometres by mode."
+      inputs:
+        - "mass and route records"
+      output: "t·km/route-km"
+      source_ids:
+        - reference-definition
+    - id: track_ratio
+      applies_to: "parallel tracks"
+      rule: "Track-km / route-km is disclosed, not used to multiply reference output."
+      inputs:
+        - "as-built route and track survey"
+      output: "track-km/route-km"
+      source_ids:
+        - reference-definition
+    - id: shared_fraction
+      applies_to: "common resources"
+      rule: "Attributed amount = measured common amount × physical-use fraction; all fractions sum to one."
+      inputs:
+        - "meter and use records"
+      output: "amount/route-km"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_scope
+      applies_to: "reference and interfaces"
+      requirement: "Check accepted endpoints, route and track length, gauge, form, system scope and separate civil assets."
+      evidence: "as-built plan and certificate"
+    - id: dq_materials
+      applies_to: "major components"
+      requirement: "Reconcile rails, sleepers, fasteners, ballast/slab and equipment by specification and secondary origin."
+      evidence: "delivery, as-built and waste records"
+    - id: dq_time
+      applies_to: "all phases"
+      requirement: "Use project dates, supplier vintage and disclosed temporal gaps."
+      evidence: "schedule, invoices and tests"
+    - id: dq_identity
+      applies_to: "final exchanges"
+      requirement: "Confirm concrete UUID against platform detail, flow type, gate, property and unit before release."
+      evidence: "flow and support-reference review"
+    - id: dq_shared
+      applies_to: "common plant"
+      requirement: "Demonstrate consumers, service period and single allocation."
+      evidence: "meter and allocation worksheet"
+validation_rules:
+  - rule_id: v_handover
+    applies_to: "reference product"
+    rule: "Require signed acceptance, endpoints, route-km, track-km, gauge, form and included systems; reject pending lengths."
+    source_ids:
+      - unsd-53212
+      - fra-track-2026
+  - rule_id: v_interfaces
+    applies_to: "civil assets"
+    rule: "Check station, bridge, tunnel and rolling-stock ownership; separately measured assets cannot vanish or be counted twice."
+    source_ids:
+      - unsd-53212
+      - uic-mainline-lcat
+  - rule_id: v_balance
+    applies_to: "formation and materials"
+    rule: "Test excavation and delivered-product balances including returns, stock, rework and exported rejects."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_rework
+    applies_to: "deficient work"
+    rule: "Link every rejected state to rework or one recovery/disposal exit before acceptance."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_secondary
+    applies_to: "recovered inputs"
+    rule: "Require origin, recovery gate and one burden convention, without unsupported substitution credit."
+    source_ids:
+      - uic-mainline-lcat
+  - rule_id: v_shared
+    applies_to: "common works"
+    rule: "Verify all consumers and periods, physical driver and attribution fractions summing to one."
+    source_ids:
+      - uic-mainline-lcat
+  - rule_id: v_identity
+    applies_to: "final UUIDs"
+    rule: "A same-title at-plant or Mass flow cannot identify a site-accepted route-length output; leave unresolved UUID blank."
+    source_ids:
+      - reference-definition
+published_dataset_profile:
+  dataset_role: "Construction-stage package for an accepted railway alignment."
+  downstream_use: "secondary_dataset or background_dataset in infrastructure process and lifecyclemodel projections after concrete identity review."
+  allowed_use: "Construction assessment per route-km with matching track count, form, systems and gate."
+  excluded_use: "Train operation, maintenance or whole-life claim; unlinked stand-alone bridge or tunnel attribution."
+  required_metadata: "Endpoints, route and track length, track count, gauge, track form, system scope, interfaces, dates and acceptance."
+  required_quality_disclosure: "Material, transport, energy and waste completeness; provisional ranges; UUID gaps; secondary origin and shared allocation."
+  update_trigger: "As-built length/scope change, corrected quantities, supplier substitution or verified reference identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.secondary-material-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/secondary-material-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-53212"
+    type: "official_guidance"
+    reference: "UNSD CPC explanatory note 53212, https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53212"
+    used_for: "Railway category and included systems."
+  - id: "fra-track-2026"
+    type: "official_guidance"
+    reference: "Federal Railroad Administration, Track and Structures Compliance Manual 2026, https://railroads.dot.gov/elibrary/track-and-structures-compliance-manual-2026"
+    used_for: "Track-component and acceptance questions; jurisdictional values not universalized."
+  - id: "uic-mainline-lcat"
+    type: "literature"
+    reference: "UIC MAINLINE project LCA Tool, https://uic.org/com/enews/nr/410/article/the-european-railway-project-4663"
+    used_for: "Rail infrastructure asset separation and lifecycle context."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass reconciliation applied to project materials and excavation."
+    used_for: "Material, spoil and reject balances."
+  - id: "reference-definition"
+    type: "method_factor"
+    reference: "This PCR's accepted-route-kilometre definition and arithmetic normalization."
+    used_for: "Output length, track ratio and transport calculation."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:6390e21a132d3385a2dc284e25788497d0292f86ba466f57a391135d3a502aaa"
+  generated_content_sha256: "sha256:edd18fda29ca59a9b73716ee4c0ff97e8ea7a3ef257825582ba1027baaf86fdd"

@@ -1,10 +1,683 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53242"
-  title: "Long-distance communication and power lines (cables)"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.long-distance-communication-and-power-lines-cables"
+  classification_refs: "CPC 3.0 53242, Long-distance communication and power lines (cables); mapping acceptance is separate."
+  covered_products: "Accepted long-distance overhead, buried or submarine communication or power-transmission line."
+  excluded_products: "Stand-alone cable, local distribution, separately delivered buildings, operation and repair."
+  representative_product: "One accepted route-km of a specified line segment between declared terminals."
+  production_route: "Corridor survey and preparation; overhead erection/stringing, land trenching/ducting/pulling or submarine clearance/laying/protection; joining, testing and handover."
+  market_state: "Installed and accepted infrastructure at handover."
+functional_unit:
+  what: "Installed long-distance communication or power-transmission line segment."
+  how_much: "1 accepted route-km along the alignment; disclose cable/circuit-km separately."
+  how_well: "Declared electrical or optical design, protection and commissioning tests passed."
+  how_long_or_cycle: "Construction to signed commissioning; design life is metadata, not use-stage burden."
+  reference_flow_link: "accepted_line from line_integration."
+system_boundary:
+  rules:
+    - rule_id: handover_gate
+      applies_to: "whole line"
+      rule: "Include necessary survey, clearing, supports/protection, installation, joints, interfaces and commissioning through signed handover; exclude use and maintenance."
+      source_ids:
+        - doe-transmission-eis
+        - itu-g971
+    - rule_id: corridor_handoff
+      applies_to: "both nodes"
+      rule: "corridor_preparation independently removes obstructions and passes only accepted prepared alignment to line_integration; track residual exits separately."
+      source_ids:
+        - doe-transmission-eis
+        - itu-g971
+    - rule_id: route_delta
+      applies_to: "line_integration"
+      rule: "Overhead requires foundations, supports and stringing; buried land requires trench/duct/backfill; submarine requires survey, clearance, laying, slack/protection and tests. Segment records may coexist."
+      source_ids:
+        - doe-transmission-eis
+        - itu-g971
+    - rule_id: shared_equipment
+      applies_to: "equipment and vessels"
+      rule: "Assign use to actual segments once; avoid duplicating subcontract service and owned energy."
+      source_ids:
+        - doe-transmission-eis
+        - itu-g971
+boundary_abstraction:
+  declared_starting_condition: "Surveyed right-of-way or seabed corridor and existing terminal interfaces before work."
+  starting_condition_role: "Physical baseline, not burden-free constructed line."
+  product_classification_scope: "Accepted long-distance line with declared route and function; local distribution outside."
+  recursive_input_rule: "Purchased components enter at supplier handover; an installed line cannot enter as unexamined material."
+  upstream_dataset_requirement: "Link route-matched cable, conductor, metal, concrete, polymer, energy, freight and treatment datasets; avoid counting subcontract and owned plant twice."
+  disclosure: "Function, alignment, route lengths, component scope, removals, rejects, shared plant, tests and identity gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted route-km"
+  product_flow_ref:
+    name: "Accepted installed long-distance line; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "route-km"
+  required_qualifiers:
+    - "Communication or power function"
+    - terminals
+    - "route segment"
+    - "voltage or optical specification"
+    - "circuit/fibre count"
+    - "route and cable length"
+    - supports
+    - "protection and interface scope"
+    - "acceptance tests and date."
+reference_flows:
+  []
+measurement_rules:
+  - id: route_length
+    applies_to: "reference output"
+    required_property_ref:
+      name: "Length, UUID unresolved"
+      uuid: ""
+    required_unit: "route-km"
+    rule: "Survey alignment once; multiple circuits do not multiply route-km."
+  - id: component_length
+    applies_to: "cable and conductor"
+    required_property_ref:
+      name: "Length"
+      uuid: ""
+    required_unit: "m or km"
+    rule: "Report installed length including slack apart from route length."
+  - id: material_mass
+    applies_to: "components and rejects"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile receipts, installation, returns and rejects by specification."
+  - id: earthwork_volume
+    applies_to: "corridor works"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Separate surveyed in-situ volume from loose haul volume."
+  - id: energy_carrier
+    applies_to: "plant and vessels"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Report fuel and purchased electricity separately; do not double count generated electricity."
+process_map:
+  - id: corridor_preparation
+    name: "Corridor clearing and preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed alignment to accepted prepared route."
+    role: "Independently remove vegetation, soil, obstructions or seabed debris; hand off prepared corridor, route residuals."
+    quantitative_reference: "Surveyed prepared route-km, area and excavation."
+  - id: line_integration
+    name: "Line installation and acceptance"
+    inclusion: "required"
+    inclusion_condition: "Accepted corridor to signed commissioning."
+    role: "Integrate cable/conductor and support/protection roles with joining services; repair or route rejects."
+    quantitative_reference: "Accepted route-km and route-specific component quantity."
+process_inventory:
+  - id: corridor_preparation
+    label: "Corridor clearing and preparation"
+    inputs:
+      product:
+        - row_id: preparation_service
+          role: "Earthwork and clearance service"
+          name: "Route-specific corridor preparation service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Conditional contracted clearing, trenching or marine clearance, only when its plant energy is not also reported as owned foreground use."
+          amount:
+            expression: "Reconcile subcontract scope to surveyed prepared alignment."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "declared service units/route-km"
+                basis: "broad screen, not a design quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preparation_energy
+          role: "Preparation energy"
+          name: "Energy carrier for terrestrial or marine corridor work"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Distinguish actual fuel, purchased electricity and vessel propulsion by carrier."
+          amount:
+            expression: "Allocate metered carrier use to the prepared segment once."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "MJ-equivalent/route-km"
+                basis: "disclosed carriers; screening only"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_corridor
+          role: "Accepted prepared corridor"
+          name: "Accepted prepared route alignment"
+          flow_type: "product"
+          property_unit: "Length / route-km"
+          description: "Internal handoff with segment location and route type, not a finished line."
+          amount:
+            expression: "Survey and sign off alignment ready for installation."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "prepared route-km/accepted route-km"
+                basis: "matched segment alignment"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - segment-length-identity
+      waste:
+        - row_id: corridor_residuals
+          role: "Removed corridor residuals"
+          name: "Removed corridor material sent to external management"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identify source and destination of vegetation, soil, rock and recovered obstruction; retained backfill is not exported waste."
+          amount:
+            expression: "Weigh dispatch or use surveyed volume and tested density, net of reuse."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residuals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass / removed mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: line_integration
+    label: "Line installation and acceptance"
+    inputs:
+      product:
+        - row_id: corridor_handoff
+          role: "Prepared-corridor handoff"
+          name: "Accepted prepared route from corridor_preparation"
+          flow_type: "product"
+          property_unit: "Length / route-km"
+          description: "Match the internal input to the prepared-corridor output by segment ID; do not purchase it twice."
+          amount:
+            expression: "Match input and output length for the same accepted segment."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "input/output route-km ratio"
+                basis: "matched accepted segment"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - segment-length-identity
+        - row_id: line_components
+          role: "Cable or conductor components"
+          name: "Cable, conductor and joining components by specification"
+          flow_type: "product"
+          property_unit: "Length or mass / m or kg"
+          description: "Record cable or conductor, joints, repeaters and accessories by specification; separate manufactured supply from installation."
+          amount:
+            expression: "Reconcile delivered and installed length including slack, returns and rejects."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per accepted route-km and route segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "component-km/route-km"
+                basis: "circuits, fibres, branches and slack; broad initial screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: support_components
+          role: "Supports and protection components"
+          name: "Route-specific supports and protection by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Route-specific towers, foundations, insulators, ducts, backfill, armour, seabed protection and directly integral interfaces are separately identified component roles."
+          amount:
+            expression: "Reconcile installed quantity with deliveries, reusable temporary works and rejects."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per accepted route-km and route segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg/route-km"
+                basis: "broad route-specific screen, not a design specification"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: installation_energy
+          role: "Installation energy"
+          name: "Energy carrier for route-specific line installation"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Include erection, stringing, cable pulling, laying, burial and testing as applicable, by actual carrier."
+          amount:
+            expression: "Meter or allocate equipment and vessel energy by segment, excluding duplicate subcontract service."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "MJ-equivalent/route-km"
+                basis: "disclosed carrier total; screening only"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: installation_service
+          role: "Joining and installation service"
+          name: "Route-specific line installation and commissioning service"
+          flow_type: "product"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Conditional subcontracted stringing, pulling, splicing, laying or testing. Identify the contracted joining role and segment; exclude its embedded plant energy from owned foreground energy, or split non-overlapping scope explicitly."
+          amount:
+            expression: "Reconcile invoiced work to accepted segment and owned-work boundaries."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_installation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "declared service units/route-km"
+                basis: "broad screen, actual contract scope controls"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_line
+          role: "Accepted installed line"
+          name: "Accepted installed long-distance communication or power line; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Length / route-km; UUIDs unresolved"
+          description: "Count only alignment passing route-specific electrical or optical commissioning and signed handover; rejected segments are excluded."
+          amount:
+            expression: "Survey accepted segments and sum once by function and route."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "accepted route-km/reference route-km"
+                basis: "one accepted route-km per reference unit"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - segment-length-identity
+      waste:
+        - row_id: rejected_components
+          role: "Rejected installation components"
+          name: "Rejected line components by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "At the producing node, identify damaged cable, supports or joints and record repair, supplier return, recovery or disposal. A repaired component re-enters installation; the same rejected material cannot also count as accepted output."
+          amount:
+            expression: "Reconcile rejection, repair/return and final boundary exit once."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted route-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered component mass"
+                basis: "final rejected mass / delivered mass by component"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_route_length
+    applies_to: "accepted line"
+    rule: "Count each physical segment once even with multiple circuits; report communication and power functions separately unless shared-asset attribution has evidence."
+    source_ids:
+      - segment-length-identity
+  - rule_id: shared_plant
+    applies_to: "equipment, vessel, temporary access"
+    rule: "Assign actual use by hours or work quantities to segment once."
+    source_ids:
+      - doe-transmission-eis
+      - itu-g971
+  - rule_id: reject_loop
+    applies_to: "off-spec components"
+    rule: "Return repair to line_integration; classify supplier return, recovery or disposal as boundary exits, retain burdens, and exclude rejects from accepted length."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_corridor
+      process_id: "corridor_preparation"
+      flow_role: "clearing and handoff"
+      record_type: "survey and work log"
+      raw_fields: "segment, route, length, area, volume, subcontract, acceptance"
+      collection_method: "as-built survey and sign-off"
+      unit: "km, m2, m3, service unit"
+      frequency: "each segment"
+      temporal_coverage: "pre-work to corridor acceptance"
+      site_scope: "entire alignment"
+      aggregation_rule: "sum accepted segments only"
+      quality_evidence: "survey and certificate"
+    - protocol_id: cp_residuals
+      process_id: "corridor_preparation"
+      flow_role: "removal and destination"
+      record_type: "dispatch ticket"
+      raw_fields: "material, origin, mass, volume, density, reuse, destination"
+      collection_method: "weighed and surveyed reconciliation"
+      unit: "kg, m3"
+      frequency: "each dispatch"
+      temporal_coverage: "clearing period"
+      site_scope: "corridor and destination"
+      aggregation_rule: "sum exported mass once"
+      quality_evidence: "ticket and receipt"
+    - protocol_id: cp_components
+      process_id: "line_integration"
+      flow_role: "cable, supports, rejects"
+      record_type: "delivery and QA ledger"
+      raw_fields: "specification, segment, delivered, installed, slack, rejected, repaired, returned, destination"
+      collection_method: "supplier and as-built reconciliation"
+      unit: "m, kg, item"
+      frequency: "each lot"
+      temporal_coverage: "installation to acceptance"
+      site_scope: "all segments"
+      aggregation_rule: "reconcile installed, returned and rejected"
+      quality_evidence: "invoice, installation and defect record"
+    - protocol_id: cp_energy
+      process_id: "both_nodes"
+      flow_role: "energy"
+      record_type: "meter and fuel log"
+      raw_fields: "carrier, quantity, plant, vessel, segment, hours, contracted scope"
+      collection_method: "meter and invoice reconciliation"
+      unit: "kWh, MJ, kg"
+      frequency: "monthly"
+      temporal_coverage: "active work"
+      site_scope: "corridor, site and vessel"
+      aggregation_rule: "allocate once by use"
+      quality_evidence: "meter and receipt"
+    - protocol_id: cp_installation
+      process_id: "line_integration"
+      flow_role: "contracted joining and testing"
+      record_type: "contract and test dossier"
+      raw_fields: "segment, service scope, quantity, test, invoice, owned-work exclusion"
+      collection_method: "contract-to-as-built reconciliation"
+      unit: "declared service unit"
+      frequency: "each package"
+      temporal_coverage: "installation to test"
+      site_scope: "relevant segment"
+      aggregation_rule: "sum accepted nonduplicated scope"
+      quality_evidence: "invoice and test certificate"
+    - protocol_id: cp_acceptance
+      process_id: "line_integration"
+      flow_role: "reference output"
+      record_type: "commissioning dossier"
+      raw_fields: "alignment, function, route, length, specification, test, defects, date"
+      collection_method: "survey and signed test"
+      unit: "route-km"
+      frequency: "each segment and final"
+      temporal_coverage: "completion gate"
+      site_scope: "terminal-to-terminal"
+      aggregation_rule: "sum passed non-overlapping segments"
+      quality_evidence: "signed tests and handover"
+  calculation_rules:
+    - id: accepted_length
+      applies_to: "output"
+      rule: "Sum signed non-overlapping route lengths; exclude failed sections pending retest."
+      inputs:
+        - "survey and commissioning"
+      output: "accepted route-km"
+      source_ids:
+        - segment-length-identity
+    - id: component_balance
+      applies_to: "components"
+      rule: "Delivered = installed + returned + final rejected + stock change by specification."
+      inputs:
+        - delivery
+        - installation
+        - return
+        - rejects
+      output: "kg or m by component"
+      source_ids:
+        - mass-balance-identity
+    - id: residual_mass
+      applies_to: "corridor"
+      rule: "Exported mass = weighed dispatch or surveyed removed volume × tested density minus reused mass."
+      inputs:
+        - survey
+        - tickets
+        - density
+        - reuse
+      output: "kg exported/route-km"
+      source_ids:
+        - mass-balance-identity
+    - id: carrier_conversion
+      applies_to: "energy"
+      rule: "Convert each carrier with disclosed factor; avoid counting generator fuel and its electricity twice."
+      inputs:
+        - meter
+        - "fuel and allocation"
+      output: "MJ-equivalent/route-km"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: route_identity
+      applies_to: "line"
+      requirement: "Declare function, route, terminals, specification and segment ID."
+      evidence: "design and as-built dossier"
+    - id: route_testing
+      applies_to: "installation"
+      requirement: "Preserve overhead electrical/stringing, buried protection/continuity or submarine laying/optical tests as applicable."
+      evidence: "test and acceptance dossier"
+    - id: quantity_reconciliation
+      applies_to: "components and residuals"
+      requirement: "Explain unmatched length, mass, returns, spoil and rework."
+      evidence: "signed reconciliation"
+    - id: identity_disclosure
+      applies_to: "unbound flows"
+      requirement: "Preserve semantic specification until platform detail and support-row confirmation."
+      evidence: "supplier and as-built specification"
+validation_rules:
+  - rule_id: function_and_route
+    applies_to: "output"
+    rule: "Reject output without function, route, terminals, segment length and signed commissioning."
+    source_ids:
+      - doe-transmission-eis
+      - itu-g971
+  - rule_id: segment_route_delta
+    applies_to: "segments"
+    rule: "Require foundations/supports/stringing for overhead, trench/duct/backfill for buried or survey/clearance/laying/protection/tests for submarine; do not assign two alternatives to one segment."
+    source_ids:
+      - doe-transmission-eis
+      - itu-g971
+  - rule_id: corridor_to_line
+    applies_to: "graph"
+    rule: "Match prepared and installed alignment; every removed residual needs destination."
+    source_ids:
+      - segment-length-identity
+      - mass-balance-identity
+  - rule_id: rework_and_double_count
+    applies_to: "installation"
+    rule: "Flag rejects counted as accepted, unresolved repair exits, duplicate subcontract/owned energy or cable length mistaken for route length."
+    source_ids:
+      - mass-balance-identity
+      - segment-length-identity
+  - rule_id: uuid_gate
+    applies_to: "exchanges"
+    rule: "Require detail-confirmed exact Product/Waste flow and support UUIDs before concrete TIDAS exchange; manufactured cable is not installed-line reference."
+    source_ids:
+      - segment-length-identity
+published_dataset_profile:
+  dataset_role: "Site-specific construction-stage line foreground package; candidate method until review."
+  downstream_use: "Secondary or background dataset only where function, route, specification and handover match."
+  allowed_use: "Construction burden for declared accepted route-km and disclosed segments."
+  excluded_use: "Cable manufacture alone, local distribution, throughput, line operation or unqualified route comparison."
+  required_metadata: "Terminals, geography, year, function, route lengths, circuits/fibres, voltage/capacity, components, tests and handover."
+  required_quality_disclosure: "Survey and reconciliation methods, route deltas, cut-offs, shared plant, rejects, range tiers and unresolved identities."
+  update_trigger: "Route, design, specification, quantity, test scope or verified platform identity changes."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "doe-transmission-eis"
+    type: "official_guidance"
+    reference: "U.S. Department of Energy, DOE/EIS-0414 Final Environmental Impact Statement, Volume 1, https://www.energy.gov/sites/default/files/EIS-0414-FEIS-2012-Volume1.pdf"
+    used_for: "Overhead clearing, foundations, towers and stringing."
+  - id: "itu-g971"
+    type: "standard"
+    reference: "ITU-T G.971 (2024), General features of optical fibre submarine cable systems, https://www.itu.int/epublications/publication/itu-t-g-971-2024-12-general-features-of-optical-fibre-submarine-cable-systems"
+    used_for: "Submarine survey, clearance, laying, protection and tests."
+  - id: "segment-length-identity"
+    type: "method_factor"
+    reference: "Surveyed non-overlapping installed-alignment length identity for one route-km."
+    used_for: "Handoff and reference-length checks."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-material identity applied to weighed and surveyed foreground records."
+    used_for: "Material and reject reconciliation."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:9d26cc5651cbb77443c1bf877a526315c6e8eea94df608322b07d4888d505cad"
+  generated_content_sha256: "sha256:7c271bb16ffc957d773934477904ce94211f9f63df61e95963f8b70a2f78a472"

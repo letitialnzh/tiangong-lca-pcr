@@ -1,10 +1,767 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53234"
-  title: "Irrigation and flood control waterworks"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.irrigation-and-flood-control-waterworks"
+  classification_refs: "CPC 3.0 53234, Irrigation and flood control waterworks; mapping acceptance is separate."
+  covered_products: "Accepted irrigation channels and structures or flood-control channels, levees and integral works."
+  excluded_products: "Water-supply conduits, dams, navigation channels, stand-alone pipelines, farming, operation and maintenance."
+  representative_product: "One accepted, function-qualified irrigation or flood-control waterwork at a declared site and chainage."
+  production_route: "Survey and excavation; canal/levee formation with route-specific lining or compacted fill; integration of controls, drainage and protection; testing and handover."
+  market_state: "Installed civil asset at signed construction acceptance."
+functional_unit:
+  what: "Constructed irrigation or flood-control waterwork with declared function and integral elements."
+  how_much: "One site-accepted asset; report functional length, formed volume and liner or protected area separately."
+  how_well: "As-built geometry, compaction or lining, drainage/control function and acceptance tests satisfy project specification."
+  how_long_or_cycle: "One construction project through signed handover; design life is disclosed metadata."
+  reference_flow_link: "accepted_waterwork from waterwork_handover."
+system_boundary:
+  rules:
+    - rule_id: handover_gate
+      applies_to: "whole asset"
+      rule: "Include temporary works, earthwork, forming, integral controls/protection, tests and remediation through signed acceptance; exclude later irrigation delivery and flood-control operation."
+      source_ids:
+        - usbr-canal-linings
+        - usace-levee-manual
+    - rule_id: removal_handoff
+      applies_to: "site_earthworks"
+      rule: "Survey removed material from land or existing-channel source; pass only accepted formation to forming; distinguish internal reuse from exported spoil."
+      source_ids:
+        - usbr-canal-linings
+        - usace-levee-manual
+    - rule_id: forming_handoff
+      applies_to: "form_waterwork"
+      rule: "Pass accepted shaped channel or embankment to integration; off-spec lifts, liners and geometry return for rework or leave as waste."
+      source_ids:
+        - usbr-canal-linings
+        - usace-levee-manual
+    - rule_id: route_delta
+      applies_to: "form_waterwork"
+      rule: "Declare lined-canal or earth-levee segments and different material, equipment, geometry and QA records; assign mixed segments once."
+      source_ids:
+        - usbr-canal-linings
+        - usace-levee-manual
+boundary_abstraction:
+  declared_starting_condition: "Surveyed ground, existing channel or levee, watercourse, vegetation and access at declared chainage before works."
+  starting_condition_role: "Physical baseline, not an unburdened finished waterwork."
+  product_classification_scope: "One accepted irrigation or flood-control asset; separately accepted dams, supply conduits and navigation works remain distinct."
+  recursive_input_rule: "A purchased same-category segment enters at supplier handover with its own dataset; do not count an entire asset as unexplained raw material."
+  upstream_dataset_requirement: "Link route-matched fill, aggregate, cement, concrete, liner, geotextile, steel, energy, transport and treatment datasets where relevant."
+  disclosure: "Function, chainage, route segments, diversion, cut/fill and reuse, borrow and spoil destinations, shared plant, tests, exclusions and unresolved identities."
+reference_flow_definition:
+  reference_amount: "1 accepted irrigation or flood-control waterwork"
+  product_flow_ref:
+    name: "Accepted irrigation or flood-control waterwork; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "waterwork"
+  required_qualifiers:
+    - Site
+    - function
+    - "design flow or protection target"
+    - "start/end chainage"
+    - "accepted length"
+    - "canal or levee geometry"
+    - "liner/embankment type"
+    - "integral controls"
+    - "route segments"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: asset_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "waterwork"
+    rule: "Count only the accepted asset; report segment length and function to prevent unlike assets being treated as equivalent."
+  - id: survey_volume
+    applies_to: "excavation and compacted fill"
+    required_property_ref:
+      name: "In-situ or compacted volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Keep in-situ, loose haul and compacted volumes separate; convert to mass with measured state-specific density."
+  - id: liner_area
+    applies_to: "lined canal route"
+    required_property_ref:
+      name: "Installed area"
+      uuid: ""
+    required_unit: "m2"
+    rule: "Reconcile design, installed, rejected and repaired lining areas."
+  - id: energy_carrier
+    applies_to: "site plant"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Record fuel and purchased electricity separately; avoid double counting generator fuel and its electricity."
+process_map:
+  - id: site_earthworks
+    name: "Survey, diversion and resource removal"
+    inclusion: "required"
+    inclusion_condition: "Existing ground/channel to surveyed accepted formation."
+    role: "Independently remove soil or unsuitable material before forming; route reusable cut, residuals and spoil."
+    quantitative_reference: "Surveyed in-situ cut and accepted formation."
+  - id: form_waterwork
+    name: "Channel or embankment forming"
+    inclusion: "required"
+    inclusion_condition: "Accepted formation to accepted shaped channel or levee."
+    role: "Form geometry from fill, lining and protection inputs; rework rejected lifts, liners or geometry."
+    quantitative_reference: "Formed length, compacted volume and liner area."
+  - id: waterwork_handover
+    name: "Integral controls and final acceptance"
+    inclusion: "required"
+    inclusion_condition: "Formed asset to signed acceptance."
+    role: "Integrate gates, drains and protection as required; test assembled asset and repair rejected work."
+    quantitative_reference: "One accepted asset with measured segments."
+process_inventory:
+  - id: site_earthworks
+    label: "Survey, diversion and resource removal"
+    inputs:
+      product:
+        - row_id: earthwork_service
+          role: "Excavation and earthwork service"
+          name: "Excavation and earthwork construction service by actual scope"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Only subcontracted scope not already counted as owner plant use."
+          amount:
+            expression: "Reconcile invoice, survey and owner-supplied equipment."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_earthworks
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/waterwork"
+                basis: "broad first-pass screen, not a contracted quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: diversion_materials
+          role: "Temporary diversion materials"
+          name: "Temporary diversion and drainage construction materials by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record cofferdam, drainage and temporary protection materials only where actually installed or consumed; document reuse across projects and restoration after removal."
+          amount:
+            expression: "Reconcile delivered, installed, removed, reused and discarded material by route."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_earthworks
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/waterwork"
+                basis: "broad screen for route-specific temporary works"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: earthwork_energy
+          role: "Earthwork plant energy"
+          name: "Site plant energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Fuel or power for excavation, internal haul and dewatering."
+          amount:
+            expression: "Meter actual carrier use, net of subcontract scope."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/waterwork"
+                basis: "disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_formation
+          role: "Accepted prepared formation"
+          name: "Accepted prepared formation at declared chainage"
+          flow_type: "product"
+          property_unit: "Length and area / m and m2"
+          description: "Surveyed prism or levee foundation handed to form_waterwork, not a second saleable asset."
+          amount:
+            expression: "Match surveyed chainage and acceptance to forming input."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_earthworks
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of design chainage"
+                basis: "accepted chainage divided by design chainage"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: exported_spoil
+          role: "Exported excavated spoil"
+          name: "Excavated soil or unsuitable material sent off site"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-site soil or unsuitable material; accepted on-site reuse remains in cut/fill balance."
+          amount:
+            expression: "Survey cut and determine export from weighbridge or density, net of reuse."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_earthworks
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass divided by removed mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: form_waterwork
+    label: "Channel or embankment forming"
+    inputs:
+      product:
+        - row_id: formation_handoff
+          role: "Prepared formation handoff"
+          name: "Accepted prepared formation from site_earthworks"
+          flow_type: "product"
+          property_unit: "Length and area / m and m2"
+          description: "Internal accepted formation from site_earthworks."
+          amount:
+            expression: "Match area and chainage to accepted upstream output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_earthworks
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "matched formation handoffs"
+                basis: "one input for each accepted formation output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: forming_materials
+          role: "Fill, liner and protection materials"
+          name: "Route-specific fill, liner and protection product by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Declare route-specific borrow fill, concrete/asphalt/geomembrane liner, geotextile and erosion protection; do not presume all are used."
+          amount:
+            expression: "Reconcile delivered, installed, reused, returned and rejected mass by material."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per accepted waterwork and route segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000000"
+                unit: "kg/waterwork"
+                basis: "broad route-specific screen, not design quantities"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: forming_energy
+          role: "Forming plant energy"
+          name: "Site plant energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Separate compaction, placement, mixing and lining equipment by carrier."
+          amount:
+            expression: "Meter equipment and allocate shared plant by measured use."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/waterwork"
+                basis: "measured carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: formed_segment
+          role: "Accepted formed segment"
+          name: "Accepted formed irrigation or flood-control segment"
+          flow_type: "product"
+          property_unit: "Length / m"
+          description: "Accepted geometry and compacted fill or lining, handed to waterwork_handover."
+          amount:
+            expression: "Sum accepted chainages once; disclose volume and liner area by route."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_forming_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of design segment length"
+                basis: "accepted formed length divided by design length"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: forming_rejects
+          role: "Rejected forming materials"
+          name: "Rejected fill, liner or protection leaving the site"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-spec fill lifts, damaged lining and rejected protection are reworked in form_waterwork, returned, recovered or discarded; only boundary exits appear here."
+          amount:
+            expression: "Record failures and repairs; count only non-reworked exits as waste."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered forming mass"
+                basis: "boundary-exit reject mass divided by delivered forming mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: waterwork_handover
+    label: "Integral controls and final acceptance"
+    inputs:
+      product:
+        - row_id: formed_handoff
+          role: "Formed segment handoff"
+          name: "Accepted formed segment from form_waterwork"
+          flow_type: "product"
+          property_unit: "Length / m"
+          description: "Take accepted formed segments, not an additional purchased asset."
+          amount:
+            expression: "Match chainage and segment type to accepted forming output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_forming_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "matched segment handoffs"
+                basis: "one input for each accepted forming output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: control_components
+          role: "Integral control and drainage components"
+          name: "Integral hydraulic control and drainage component by specification"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Only function-required gates, culverts, drains, filters and protection within this asset; separately accepted structures stay outside."
+          amount:
+            expression: "Reconcile delivered, installed, returned and rejected components."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg-equivalent/waterwork"
+                basis: "broad material screen; count-only components require separate conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_waterwork
+          role: "Accepted irrigation or flood-control waterwork"
+          name: "Accepted irrigation or flood-control waterwork at declared site"
+          flow_type: "product"
+          property_unit: "Count / waterwork"
+          description: "Signed handover follows functional, geometry and material QA; rejected chainage is excluded."
+          amount:
+            expression: "Count one accepted asset with chainage and route-segment register."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_final_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "accepted waterwork/reference flow"
+                basis: "signed accepted asset count at stated gate"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: integration_rejects
+          role: "Rejected components at integration"
+          name: "Rejected integral components leaving construction boundary"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Failed controls and drains are repaired or replaced within this node; only returned, recovered or discarded exits appear as waste."
+          amount:
+            expression: "Reconcile failures, repairs, replacements and exits."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted waterwork"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered component mass"
+                basis: "boundary-exit rejects divided by delivered component mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_asset
+    applies_to: "accepted output"
+    rule: "Attribute route-specific work to accepted asset and segments; no assumed co-product credit for excavated material."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: cut_fill_balance
+    applies_to: "soil and borrow"
+    rule: "Reused cut stays internal with its burdens; exported spoil, recovered material and purchased fill have distinct destinations."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: shared_plant
+    applies_to: "diversion and equipment"
+    rule: "Assign shared plant and access by measured use or documented engineering driver, once across assets."
+    source_ids:
+      - usace-levee-manual
+  - rule_id: reject_retention
+    applies_to: "failed work"
+    rule: "Keep rejected-work and rework burdens with producing node; no failed segment counted as accepted or unverified recovery credit."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_earthworks
+      process_id: "site_earthworks"
+      flow_role: "survey, service, diversion materials, cut and spoil"
+      record_type: "survey and ticket"
+      raw_fields: "chainage; cut; density; reuse; disposal; contract scope; temporary-material delivery, installation and removal"
+      collection_method: "survey, weighbridge, contract and delivery tickets"
+      unit: "m; m3; kg"
+      frequency: "each segment/load"
+      temporal_coverage: "project"
+      site_scope: "declared chainage"
+      aggregation_rule: "reconcile cut, reuse, exports, temporary materials and stock"
+      quality_evidence: "survey, density test, tickets"
+    - protocol_id: cp_energy
+      process_id: "site_earthworks_form_waterwork"
+      flow_role: "plant energy"
+      record_type: "meter and fuel log"
+      raw_fields: "carrier; quantity; equipment; hours; project share"
+      collection_method: "meter, invoice, log"
+      unit: "kWh; MJ; kg"
+      frequency: "shift/month"
+      temporal_coverage: "project"
+      site_scope: "site and shared plant"
+      aggregation_rule: "sum carrier and assign once"
+      quality_evidence: "meter, invoice, allocation"
+    - protocol_id: cp_materials
+      process_id: "form_waterwork"
+      flow_role: "fill, liner, protection, rejects"
+      record_type: "bill and inspection"
+      raw_fields: "specification; delivered; installed; density; repaired; rejected"
+      collection_method: "ticket, survey, test"
+      unit: "kg; m3; m2"
+      frequency: "batch/lift/segment"
+      temporal_coverage: "project"
+      site_scope: "route segment"
+      aggregation_rule: "reconcile deliveries, accepted installation and exits"
+      quality_evidence: "tickets, compaction, liner tests"
+    - protocol_id: cp_forming_acceptance
+      process_id: "form_waterwork_waterwork_handover"
+      flow_role: "segment handoff"
+      record_type: "acceptance register"
+      raw_fields: "chainage; route; geometry; volume; liner area; rework"
+      collection_method: "survey, sign-off"
+      unit: "m; m3; m2"
+      frequency: "segment"
+      temporal_coverage: "project"
+      site_scope: "declared chainage"
+      aggregation_rule: "sum accepted non-overlapping chainage"
+      quality_evidence: "as-built survey, QA"
+    - protocol_id: cp_components
+      process_id: "waterwork_handover"
+      flow_role: "controls and rejects"
+      record_type: "bill and inspection"
+      raw_fields: "component; delivered; installed; failed; repaired; returned"
+      collection_method: "delivery, inspection"
+      unit: "kg; item"
+      frequency: "component"
+      temporal_coverage: "project"
+      site_scope: "accepted asset"
+      aggregation_rule: "reconcile installed and exits"
+      quality_evidence: "tickets, inspection"
+    - protocol_id: cp_final_acceptance
+      process_id: "waterwork_handover"
+      flow_role: "accepted output"
+      record_type: "handover certificate"
+      raw_fields: "asset ID; function; chainage; tests; exclusions; date"
+      collection_method: "signed certificate"
+      unit: "waterwork; m"
+      frequency: "handover"
+      temporal_coverage: "project"
+      site_scope: "asset"
+      aggregation_rule: "count accepted assets only"
+      quality_evidence: "certificate, tests"
+  calculation_rules:
+    - id: cut_reconciliation
+      applies_to: "site_earthworks"
+      rule: "Removed mass = internal reuse + exports + stock change, with state-specific density."
+      inputs:
+        - survey
+        - density
+        - tickets
+      output: "reconciled cut and spoil"
+      source_ids:
+        - mass-balance-identity
+    - id: installed_reconciliation
+      applies_to: "form_waterwork"
+      rule: "Delivered = accepted installed + returned + reject + stock change; rework is not a second new input."
+      inputs:
+        - tickets
+        - survey
+        - inspection
+      output: "materials and rejects"
+      source_ids:
+        - mass-balance-identity
+    - id: accepted_chainage
+      applies_to: "waterwork_handover"
+      rule: "Count non-overlapping signed chainage once; retain route geometry separately."
+      inputs:
+        - "segment and handover registers"
+      output: "accepted asset and length"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: route_trace
+      applies_to: "all nodes"
+      requirement: "Identify function, chainage, routes, specifications and gate."
+      evidence: "as-built drawings, QA register"
+    - id: material_balance
+      applies_to: "cut, fill, liner, controls"
+      requirement: "Show state conversion, reuse, rejects, stock change and destination."
+      evidence: "survey, density tests, tickets"
+    - id: identity_gap
+      applies_to: "unresolved flows"
+      requirement: "Do not issue final concrete process exchanges until flow UUID, property and unit group are detail-confirmed."
+      evidence: "platform identity review"
+validation_rules:
+  - rule_id: scope_gate
+    applies_to: "reference product"
+    rule: "Confirm function, site, chainage and signed acceptance; exclude supply conveyance, dams, navigation and operation."
+    source_ids:
+      - unsd-cpc3-notes
+  - rule_id: route_records
+    applies_to: "form_waterwork"
+    rule: "Lined-canal segments need liner/joint evidence; levees need borrow, lift, geometry and drainage evidence; reconcile mixed routes."
+    source_ids:
+      - usbr-canal-linings
+      - usace-levee-manual
+  - rule_id: handoff_match
+    applies_to: "all nodes"
+    rule: "Match formation and formed-segment output/input chainages without duplicate burdens."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: reject_path
+    applies_to: "forming and integration"
+    rule: "Repaired work loops to producing node; exits have destinations and are excluded from accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: range_evidence
+    applies_to: "all cards"
+    rule: "Provisional guardrails are QA prompts, not design quantities or default inventories."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Site-specific foreground construction package for accepted irrigation or flood-control waterwork."
+  downstream_use: "Secondary or background construction data only when function, geometry, route and gate match."
+  allowed_use: "Construction-stage modelling for declared accepted asset and integral components."
+  excluded_use: "Water-delivery operation, flood-event response, dams, navigation and comparisons without function normalization."
+  required_metadata: "Site, year, function, design target, chainage, geometry, routes, cut/fill, lining, components, energy, tests and handover."
+  required_quality_disclosure: "Conversion, cut/fill balance, shared-work attribution, provisional ranges, cut-offs and identity gaps."
+  update_trigger: "Changed scope, route, as-built geometry or quantity, acceptance or confirmed identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-notes"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 Explanatory Notes, https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Scope and water-supply exclusion."
+  - id: "usbr-canal-linings"
+    type: "official_guidance"
+    reference: "U.S. Bureau of Reclamation, Linings for Irrigation Canals, https://www.usbr.gov/tsc/techreferences/mands/mands-pdfs/LngIrCnl.pdf"
+    used_for: "Canal lining alternatives and forming."
+  - id: "usace-levee-manual"
+    type: "official_guidance"
+    reference: "U.S. Army Corps of Engineers, EM 1110-2-1913, Design and Construction of Levees, https://www.publications.usace.army.mil/Portals/76/Publications/EngineerManuals/EM_1110-2-1913.pdf"
+    used_for: "Levee earthworks, compaction and QA."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-material identity applied to surveyed and weighed foreground records."
+    used_for: "Cut/fill, material, reject and handoff reconciliation."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f5f3802c40a51d64595e02a5df6caa94ae3208cc8f0993b27cf4daee67209bfd"
+  generated_content_sha256: "sha256:e95bdea2729b246b7c621a9dcf971f91f8bdfef1ec88e5f118d75ac447f958fb"

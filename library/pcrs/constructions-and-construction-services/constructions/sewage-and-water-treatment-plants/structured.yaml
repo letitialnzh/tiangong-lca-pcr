@@ -1,10 +1,799 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53253"
-  title: "Sewage and water treatment plants"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.sewage-and-water-treatment-plants"
+  classification_refs: "CPC 3.0 53253; mapping acceptance is separate."
+  covered_products: "Accepted treatment plant or separately contracted sewage-system facility and integral contract connections."
+  excluded_products: "Independently accepted local mains, long-distance pipelines, equipment-only sales, routine treatment service."
+  representative_product: "One accepted function-qualified treatment facility with declared design treatment capacity and unit list."
+  production_route: "Site excavation; civil tank/foundation forming; equipment, process-piping and controls integration; dry/wet tests, remediation and signed handover."
+  market_state: "Installed asset at engineering acceptance, not a volume of treated water."
+functional_unit:
+  what: "Constructed and accepted sewage- or water-treatment plant or contracted sewage-system facility."
+  how_much: "One accepted facility; report design capacity in m3/day and connection dimensions separately."
+  how_well: "As-built units, structural integrity, leakage, controls and performance tests meet the specific contract acceptance criteria."
+  how_long_or_cycle: "One construction project through signed handover; design life is disclosed metadata."
+  reference_flow_link: "accepted_facility output from integrate_accept."
+system_boundary:
+  rules:
+    - rule_id: handover_gate
+      applies_to: "whole facility"
+      rule: "Include contract works, dry/wet testing and defect closeout through signed acceptance; exclude normal post-handover treatment."
+      source_ids:
+        - epa-startup
+    - rule_id: connection_limit
+      applies_to: "pipe interfaces"
+      rule: "Include only directly attributable contract connections; independently accepted local mains and long-distance pipelines use separate datasets."
+      source_ids:
+        - unsd-cpc3-notes
+    - rule_id: removal_handoff
+      applies_to: "prepare_site"
+      rule: "Record ground/source condition, removed material, internal cut reuse and exported spoil separately; pass accepted excavation to forming."
+      source_ids:
+        - mass-balance-identity
+    - rule_id: forming_handoff
+      applies_to: "form_civil"
+      rule: "Pass accepted tank shells/foundations to integration; rejected sections are repaired or leave with documented destination."
+      source_ids:
+        - mass-balance-identity
+    - rule_id: route_delta
+      applies_to: "integrate_accept"
+      rule: "Actual process-unit topology, materials, test media and acceptance criteria follow the sewage, potable-water or sewage-system route."
+      source_ids:
+        - epa-startup
+boundary_abstraction:
+  declared_starting_condition: "Surveyed site and existing drainage or utility interfaces before contract construction."
+  starting_condition_role: "Physical baseline, not a free finished plant."
+  product_classification_scope: "One accepted treatment plant or contracted sewage-system facility; independent mains remain separate."
+  recursive_input_rule: "Purchased same-category completed modules enter at supplier handover with their own upstream dataset, not as unexplained raw material."
+  upstream_dataset_requirement: "Route-matched concrete, steel, pipe, process equipment, energy, transport and waste treatment datasets."
+  disclosure: "Function, capacity, units, contract connections, civil quantities, spoil, commissioning, shared works, rework and identity gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted facility"
+  product_flow_ref:
+    name: "Accepted sewage or water treatment facility; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "facility"
+  required_qualifiers:
+    - Site
+    - function
+    - "design capacity"
+    - "treatment-unit list"
+    - "contract limit"
+    - "connection length"
+    - "test media"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: facility_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "facility"
+    rule: "Count the signed accepted contractual facility once, not each treatment unit."
+  - id: design_capacity
+    applies_to: "treatment route"
+    required_property_ref:
+      name: "Volume per time"
+      uuid: ""
+    required_unit: "m3/day"
+    rule: "Report designed influent or treated-water capacity separately from commissioning test volume."
+  - id: earth_state
+    applies_to: "excavation and fill"
+    required_property_ref:
+      name: "Volume and density"
+      uuid: ""
+    required_unit: "m3; kg/m3"
+    rule: "Distinguish in-situ cut, loose haul and compacted fill before mass conversion."
+  - id: energy_carrier
+    applies_to: "construction and tests"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh; MJ; kg"
+    rule: "Keep fuel and electricity separate and do not double count generator output."
+process_map:
+  - id: prepare_site
+    name: "Excavation and site preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed site to accepted excavation."
+    role: "Independently remove soil/obstructions; route reusable cut and spoil."
+    quantitative_reference: "Surveyed footprint and removed volume."
+  - id: form_civil
+    name: "Tank and foundation forming"
+    inclusion: "required"
+    inclusion_condition: "Accepted excavation to accepted civil shell."
+    role: "Transform concrete, reinforcement and fill into designed geometry; repair failed sections."
+    quantitative_reference: "As-built civil volume and area."
+  - id: integrate_accept
+    name: "Equipment integration and acceptance"
+    inclusion: "required"
+    inclusion_condition: "Civil shell to signed whole-facility handover."
+    role: "Install pumps, treatment units, piping and controls; dry/wet test and correct defects."
+    quantitative_reference: "One accepted facility with design capacity."
+process_inventory:
+  - id: prepare_site
+    label: "Excavation and site preparation"
+    inputs:
+      product:
+        - row_id: earthwork_service
+          role: "Earthwork service"
+          name: "Earthwork and excavation construction service by contracted scope"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Separately subcontracted site clearing and excavation; exclude owner equipment counted elsewhere."
+          amount:
+            expression: "Reconcile invoice to surveyed excavation and shared-work allocation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of documented excavation"
+                basis: "assigned excavation scope divided by documented project excavation"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: site_energy
+          role: "Site energy"
+          name: "Construction energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Fuel or electricity for owner-operated excavation, dewatering and local haul only; omit energy already embodied in subcontracted earthwork service."
+          amount:
+            expression: "Meter carrier use by task and separate subcontract scope."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/facility"
+                basis: "broad screen with documented carrier conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_excavation
+          role: "Accepted excavation"
+          name: "Accepted excavation and foundation footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Surveyed prepared footprint handed to form_civil, not an additional saleable plant."
+          amount:
+            expression: "Sum non-overlapping accepted foundation footprints."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified footprint"
+                basis: "accepted footprint divided by specified footprint"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: exported_spoil
+          role: "Exported spoil"
+          name: "Exported excavated material by type and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-site excavated or unsuitable material; on-site cut reuse is an internal handoff."
+          amount:
+            expression: "Balance removed mass against reuse, stock change and export."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass divided by removed mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: form_civil
+    label: "Tank and foundation forming"
+    inputs:
+      product:
+        - row_id: received_excavation
+          role: "Received accepted excavation"
+          name: "Accepted excavation and foundation footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Internal handoff of accepted_excavation from prepare_site; do not reassign its upstream removal burdens as a new purchased service."
+          amount:
+            expression: "Match the upstream accepted footprint exactly."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off area"
+                basis: "received area divided by accepted upstream area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: civil_materials
+          role: "Civil materials"
+          name: "Civil construction material by actual specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Concrete, reinforcement, fill and formwork by specification; reusable formwork is apportioned by actual use."
+          amount:
+            expression: "Reconcile delivered, installed, returned, rejected and stocked amounts by material."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered material mass"
+                basis: "accepted installed mass divided by delivered mass by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: civil_energy
+          role: "Civil energy"
+          name: "Civil-construction energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Power or fuel for formwork, placement and curing support, excluding purchased services that already include that energy."
+          amount:
+            expression: "Meter equipment use and assign only unbundled activity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/facility"
+                basis: "broad screen with documented carrier conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: civil_shell
+          role: "Accepted civil shell"
+          name: "Accepted civil tank shells and foundations"
+          flow_type: "product"
+          property_unit: "Concrete volume / m3"
+          description: "Accepted tank and foundation structures handed to integrate_accept."
+          amount:
+            expression: "Sum as-built accepted structures without counting repairs twice."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified structures"
+                basis: "accepted structures divided by specified structures"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: civil_rejects
+          role: "Rejected civil material"
+          name: "Rejected civil material by type and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-spec pours or sections repaired here or sent to declared recovery/disposal. Only boundary exits are waste."
+          amount:
+            expression: "Reconcile failure, rework, return, recovery and disposal."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of civil-material delivery mass"
+                basis: "boundary-exit rejects divided by delivered civil mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: integrate_accept
+    label: "Equipment integration and acceptance"
+    inputs:
+      product:
+        - row_id: received_civil_shell
+          role: "Received accepted civil shell"
+          name: "Accepted civil tank shells and foundations"
+          flow_type: "product"
+          property_unit: "Concrete volume / m3"
+          description: "Internal handoff of civil_shell from form_civil; it is not another externally purchased structure."
+          amount:
+            expression: "Match accepted upstream shell dimensions and QA sign-off."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off civil volume"
+                basis: "received volume divided by accepted upstream volume"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: plant_components
+          role: "Process equipment and direct pipes"
+          name: "Plant equipment and integral process-piping components by specification"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Pumps, process units, valves, controls and contract-limited connection pipe by route; receive the accepted civil shell internally without repurchasing it."
+          amount:
+            expression: "Reconcile deliveries, installations, returns and replacements by unit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered components"
+                basis: "accepted installed components divided by delivered components"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: test_water
+          role: "Wet-test water"
+          name: "Commissioning test water by source and quality"
+          flow_type: "product"
+          property_unit: "Volume / m3"
+          description: "Only water crossing construction boundary for testing and cleaning before handover; operating influent is excluded."
+          amount:
+            expression: "Meter test withdrawal, reuse and discharge."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "m3/facility"
+                basis: "broad initial screen; actual test schedule controls quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: test_energy
+          role: "Commissioning energy"
+          name: "Commissioning energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Meter fuel and electricity for pre-handover dry/wet tests and repairs; exclude routine operation after acceptance."
+          amount:
+            expression: "Meter by test and carrier through signed handover."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/facility"
+                basis: "broad screen with documented carrier conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_facility
+          role: "Accepted facility"
+          name: "Accepted sewage or water treatment facility of declared function and capacity"
+          flow_type: "product"
+          property_unit: "Count / facility"
+          description: "Whole plant or separately contracted sewage-system facility after dry/wet checks, defect closure and signed handover."
+          amount:
+            expression: "Count exactly one accepted facility per contractual reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "facility/reference flow"
+                basis: "signed facility count at handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: integration_rejects
+          role: "Failed equipment and trial residues"
+          name: "Failed components and commissioning residues by identity and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Rejected units and construction-test residues leave to measured return, recovery or treatment; repaired units loop in this node and are not additional accepted output."
+          amount:
+            expression: "Reconcile failures, repairs, returns and exported trial material."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of relevant delivered material mass"
+                basis: "boundary-exit rejects divided by relevant delivered mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_facility
+    applies_to: "accepted output"
+    rule: "Attribute construction to the accepted asset; no operating treatment output belongs to this reference product."
+    source_ids:
+      - unsd-cpc3-notes
+  - rule_id: shared_works
+    applies_to: "shared access, plant and tests"
+    rule: "Assign by metered use or documented engineering driver and count common work once."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: spoil_route
+    applies_to: "cut and fill"
+    rule: "Internal reuse retains site burdens; export has explicit destination; no unsupported recovery credit."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: reject_retention
+    applies_to: "defects"
+    rule: "Keep repair burdens at originating node; only retested and accepted structures/units enter final asset."
+    source_ids:
+      - mass-balance-identity
+      - epa-startup
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_site
+      process_id: "prepare_site"
+      flow_role: "earthwork, footprint, spoil"
+      record_type: "survey and ticket"
+      raw_fields: "footprint; cut; density; reuse; export; destination; contract scope"
+      collection_method: "survey, weighbridge, invoice"
+      unit: "m2; m3; kg"
+      frequency: "segment/load"
+      temporal_coverage: "project"
+      site_scope: "contract site"
+      aggregation_rule: "balance cut, reuse and export"
+      quality_evidence: "survey, ticket"
+    - protocol_id: cp_energy
+      process_id: "prepare_site_form_civil"
+      flow_role: "construction energy"
+      record_type: "meter and equipment log"
+      raw_fields: "carrier; meter; fuel; task; subcontract overlap"
+      collection_method: "meter, invoice, shift log"
+      unit: "kWh; MJ; kg"
+      frequency: "shift/month"
+      temporal_coverage: "project"
+      site_scope: "site plant"
+      aggregation_rule: "sum by carrier and allocate once"
+      quality_evidence: "meters and invoices"
+    - protocol_id: cp_civil
+      process_id: "form_civil"
+      flow_role: "materials, shell, rejects"
+      record_type: "bill and inspection"
+      raw_fields: "specification; delivery; installation; volume; reject; repair; return; accepted shell"
+      collection_method: "tickets, as-built and QA"
+      unit: "kg; m3; item"
+      frequency: "batch/structure"
+      temporal_coverage: "project"
+      site_scope: "civil footprint"
+      aggregation_rule: "reconcile delivered and accepted states"
+      quality_evidence: "tickets, QA"
+    - protocol_id: cp_components
+      process_id: "integrate_accept"
+      flow_role: "units and connections"
+      record_type: "bill and inspection"
+      raw_fields: "unit list; delivered; installed; returned; connection length; design capacity"
+      collection_method: "bill, as-built and QA"
+      unit: "kg; item; m; m3/day"
+      frequency: "unit/segment"
+      temporal_coverage: "project"
+      site_scope: "facility"
+      aggregation_rule: "reconcile unit and connection scope"
+      quality_evidence: "invoices, drawings"
+    - protocol_id: cp_tests
+      process_id: "integrate_accept"
+      flow_role: "water, energy, rejects"
+      record_type: "meter and test"
+      raw_fields: "test water; energy; dry/wet result; failure; repair; residue; destination"
+      collection_method: "meter, test sheet, waste ticket"
+      unit: "m3; kWh; kg"
+      frequency: "test"
+      temporal_coverage: "through acceptance"
+      site_scope: "facility"
+      aggregation_rule: "sum construction tests only"
+      quality_evidence: "signed tests"
+    - protocol_id: cp_acceptance
+      process_id: "integrate_accept"
+      flow_role: "accepted facility"
+      record_type: "certificate"
+      raw_fields: "function; capacity; unit list; connection limit; defects; closure; date"
+      collection_method: "signed handover"
+      unit: "facility; m3/day"
+      frequency: "handover"
+      temporal_coverage: "project"
+      site_scope: "contract asset"
+      aggregation_rule: "count signed asset once"
+      quality_evidence: "certificate"
+  calculation_rules:
+    - id: cut_balance
+      applies_to: "prepare_site"
+      rule: "Removed mass = reused + exported + stock change using measured state-specific density."
+      inputs:
+        - survey
+        - density
+        - tickets
+      output: "cut and spoil"
+      source_ids:
+        - mass-balance-identity
+    - id: component_balance
+      applies_to: "civil and integration"
+      rule: "Delivered = accepted installed + returned + rejected exit + stock change; repair is not another new input."
+      inputs:
+        - bills
+        - QA
+        - returns
+      output: "accepted material and reject"
+      source_ids:
+        - mass-balance-identity
+    - id: acceptance_count
+      applies_to: "integrate_accept"
+      rule: "Count signed accepted facility after defect closure; capacity remains a qualifier."
+      inputs:
+        - "tests and handover"
+      output: "reference product"
+      source_ids:
+        - epa-startup
+  data_quality_requirements:
+    - id: route_trace
+      applies_to: "all nodes"
+      requirement: "State function, capacity, unit list, contract boundary and gate."
+      evidence: "drawings and handover"
+    - id: handoff_balance
+      applies_to: "site and civil"
+      requirement: "Match accepted internal handoffs without double counting."
+      evidence: "survey and QA"
+    - id: trial_separation
+      applies_to: "commissioning"
+      requirement: "Separate construction tests from post-handover operation."
+      evidence: "dated test sheets"
+    - id: identity_gap
+      applies_to: "unresolved flows"
+      requirement: "Confirm concrete flow, property and unit-group UUIDs before final process exchanges."
+      evidence: "platform detail review"
+validation_rules:
+  - rule_id: scope_gate
+    applies_to: "reference product"
+    rule: "Confirm function, capacity and signed acceptance; exclude independently accepted mains, equipment-only sale and routine service."
+    source_ids:
+      - unsd-cpc3-notes
+  - rule_id: route_units
+    applies_to: "integrate_accept"
+    rule: "Actual sewage, potable-water or sewage-system unit list must drive inventory and tests; absent units contribute nothing."
+    source_ids:
+      - epa-startup
+  - rule_id: test_gate
+    applies_to: "acceptance"
+    rule: "Require dry/wet checks, leak/control testing, defect closure and signed handover."
+    source_ids:
+      - epa-startup
+  - rule_id: reject_path
+    applies_to: "all nodes"
+    rule: "Rework loops to producing node; waste exits have measured destination and never enter accepted output."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: range_role
+    applies_to: "all cards"
+    rule: "Provisional screening bounds are QA prompts, not default material intensity."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground construction package for an accepted treatment or sewage-system facility."
+  downstream_use: "Secondary or background construction data only for comparable function, capacity, route and gate."
+  allowed_use: "Construction-stage facility modelling with stated civil and equipment scope."
+  excluded_use: "Routine treatment service, independent mains and equipment-only products."
+  required_metadata: "Site, year, function, capacity, units, civil work, connections, tests and handover."
+  required_quality_disclosure: "Shared-work allocation, material balances, trial/operation separation, provisional ranges and UUID gaps."
+  update_trigger: "Changed route, design, contract boundary, as-built quantities, acceptance or confirmed identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-notes"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 Explanatory Notes, https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Scope and mains separation."
+  - id: "epa-startup"
+    type: "official_guidance"
+    reference: "US EPA, Start-Up of Municipal Wastewater Treatment Facilities, EPA 430/9-74-008, https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=00000IDV.TXT"
+    used_for: "Unit differences and dry/wet acceptance tests."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-material identity applied to surveyed and weighed foreground records."
+    used_for: "Materials, handoffs and rejects."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f9b80e4a00169d7b42b83599ec80764e13cf42cc5ab156d7c0974778cdc013d3"
+  generated_content_sha256: "sha256:c8e47044a5e0c66a7cfc71ef5ba91862d0f53a2065795c4a9553b022cf192ecb"

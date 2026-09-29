@@ -1,10 +1,754 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53269"
-  title: "Other constructions for manufacturing"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.other-constructions-for-manufacturing"
+  classification_refs: "CPC 3.0 53269; mapping acceptance is separate."
+  covered_products: "Completed product-specialized manufacturing facilities with integrated route-specific structures and equipment."
+  excluded_products: "Generic industrial buildings; equipment-only sales; manufactured output; operation; independently delivered infrastructure."
+  representative_product: "One accepted specialized manufacturing facility with declared process family, capacity and installed units."
+  production_route: "Site removal/preparation; foundation and process-structure forming; equipment/utility/control integration; tests, correction and handover."
+  market_state: "Installed and accepted capital asset, not manufacturing service or commodity output."
+functional_unit:
+  what: "Constructed and accepted product-specialized manufacturing facility."
+  how_much: "One accepted facility; designed throughput is a qualifier, not the reference amount."
+  how_well: "Installed units and interfaces meet contractual pre-handover tests and defect closeout."
+  how_long_or_cycle: "One construction project through signed acceptance; operating life is metadata."
+  reference_flow_link: "accepted_facility output of integrate_accept."
+system_boundary:
+  rules:
+    - rule_id: asset_gate
+      applies_to: "whole facility"
+      rule: "Include attributable construction, integration, pre-handover testing and defect closure through signed acceptance; exclude routine later production."
+      source_ids:
+        - doe-commissioning
+    - rule_id: specialized_limit
+      applies_to: "classification"
+      rule: "Require product-/process-specific installed works, not merely a generic industrial shell; exclude equipment-only sales."
+      source_ids:
+        - unsd-cpc3
+    - rule_id: removal_handoff
+      applies_to: "prepare_site"
+      rule: "Identify removal source, removed state, accepted footprint, on-site reuse and off-site spoil; removal is independent of forming."
+      source_ids: []
+    - rule_id: forming_handoff
+      applies_to: "form_structures"
+      rule: "Convert specified materials and accepted footprint into inspected foundations/process structures; separate repair and rejects."
+      source_ids: []
+    - rule_id: integration_handoff
+      applies_to: "integrate_accept"
+      rule: "Integrate route-specific equipment, utilities and controls; deliver only tested accepted facility."
+      source_ids:
+        - doe-commissioning
+    - rule_id: route_delta
+      applies_to: "process family"
+      rule: "Resolve actual units, containment, utilities, controls and tests from design; no generic intensity is transferable without qualification."
+      source_ids:
+        - unsd-cpc3
+    - rule_id: hazard_gate
+      applies_to: "applicable hazardous-chemical routes"
+      rule: "Where PSM applies, retain pre-startup review before introduction of highly hazardous chemicals; this is not universal or post-handover production."
+      source_ids:
+        - osha-psm
+boundary_abstraction:
+  declared_starting_condition: "Surveyed site, ground condition and documented pre-project service interfaces."
+  starting_condition_role: "Physical baseline, not a burden-free finished facility."
+  product_classification_scope: "One accepted specialized manufacturing facility within the declared construction contract."
+  recursive_input_rule: "Purchased complete same-category facility modules enter at supplier handover with upstream datasets, not as free raw components."
+  upstream_dataset_requirement: "Specification-matched material, equipment, energy, transport and waste-treatment datasets."
+  disclosure: "Process family; unit list; capacity; limits; removal; installed quantities; tests; shared works; rework/rejects; UUID gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted facility"
+  product_flow_ref:
+    name: "Accepted specialized manufacturing facility; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "facility"
+  required_qualifiers:
+    - Site
+    - "process/product family"
+    - "designed capacity and unit"
+    - "installed unit list"
+    - "contract limit"
+    - "acceptance criteria/date"
+    - "shared-work attribution"
+reference_flows:
+  []
+measurement_rules:
+  - id: facility_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count; UUID unresolved"
+      uuid: ""
+    required_unit: "facility"
+    rule: "Count one signed-off contractual facility, not each process unit."
+  - id: capacity_basis
+    applies_to: "facility qualification"
+    required_property_ref:
+      name: "Designed throughput"
+      uuid: ""
+    required_unit: "declared mass or item/time unit"
+    rule: "State rated basis, product family and tested configuration; do not convert to operational output."
+  - id: earth_mass
+    applies_to: "site removal"
+    required_property_ref:
+      name: "Volume, bulk density, mass"
+      uuid: ""
+    required_unit: "m3; kg/m3; kg"
+    rule: "Distinguish in-situ cut, reused fill, stock and exported spoil."
+  - id: energy_carriers
+    applies_to: "construction and testing"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh; MJ; kg"
+    rule: "Meter actual carriers before acceptance; exclude routine production energy."
+process_map:
+  - id: prepare_site
+    name: "Site removal and preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed baseline to accepted footprint."
+    role: "Remove identified site material; distinguish reuse and spoil."
+    quantitative_reference: "Survey and accepted area."
+  - id: form_structures
+    name: "Foundation and process-structure forming"
+    inclusion: "required"
+    inclusion_condition: "Accepted footprint to inspected structures."
+    role: "Form route-specific geometry; repair or reject failed work."
+    quantitative_reference: "As-built takeoff and inspection."
+  - id: integrate_accept
+    name: "Equipment integration and facility acceptance"
+    inclusion: "required"
+    inclusion_condition: "Inspected structures to signed handover."
+    role: "Join actual equipment, utilities and controls; test and close defects."
+    quantitative_reference: "Installed register, tests and one facility."
+process_inventory:
+  - id: prepare_site
+    label: "Site removal and preparation"
+    inputs:
+      product:
+        - row_id: site_energy
+          role: "Site preparation energy"
+          name: "Site energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Owner-operated excavation/preparation energy by actual carrier; exclude subcontract-embedded energy."
+          amount:
+            expression: "Assign meter and fuel records to site tasks."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of metered site energy"
+                basis: "assigned energy divided by metered site energy"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_footprint
+          role: "Accepted prepared footprint"
+          name: "Accepted prepared manufacturing-facility footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Surveyed ground ready for foundations; internal handoff, not a second saleable facility."
+          amount:
+            expression: "Sum non-overlapping accepted areas."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified area"
+                basis: "accepted area divided by specified foundation footprint"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      waste:
+        - row_id: exported_spoil
+          role: "Exported excavation spoil"
+          name: "Exported excavated material by type and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Removed soil or rock leaving the project, by material and destination; exclude on-site reuse."
+          amount:
+            expression: "Balance cut against reuse, stock and export."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass divided by removed mass by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      elementary:
+        []
+  - id: form_structures
+    label: "Foundation and process-structure forming"
+    inputs:
+      product:
+        - row_id: received_footprint
+          role: "Received prepared footprint"
+          name: "Accepted prepared manufacturing-facility footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Carry the accepted site area into forming once, without repurchasing site preparation."
+          amount:
+            expression: "Match preceding accepted area."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off area"
+                basis: "received area divided by upstream accepted area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+        - row_id: structure_materials
+          role: "Structure-forming materials"
+          name: "Foundation or process-structure material by grade and function"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Concrete, reinforcement, steel, refractory and lining material only as specified by actual route and structure."
+          amount:
+            expression: "Balance delivery, accepted placement, stock, returns and rejects by grade."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_structures
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered mass"
+                basis: "accepted installed mass divided by delivered mass by grade"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_structures
+          role: "Accepted process structures"
+          name: "Accepted specialized manufacturing foundations and process structures"
+          flow_type: "product"
+          property_unit: "Installed material mass / kg"
+          description: "Inspected foundations, supports and route-specific structures passed to installation."
+          amount:
+            expression: "Sum accepted installed mass by structure and grade."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_structures
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of placed mass"
+                basis: "accepted mass divided by placed mass by grade"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      waste:
+        - row_id: structure_rejects
+          role: "Rejected structure material"
+          name: "Rejected structure material by composition and recovery destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Failed/off-spec material exiting forming; same-node repair remains an input loop, not a second accepted output."
+          amount:
+            expression: "Measure net rejected exit mass after same-node repair."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_structures
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of placed mass"
+                basis: "rejected mass divided by placed mass by grade"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      elementary:
+        []
+  - id: integrate_accept
+    label: "Equipment integration and facility acceptance"
+    inputs:
+      product:
+        - row_id: received_structures
+          role: "Received process structures"
+          name: "Accepted specialized manufacturing foundations and process structures"
+          flow_type: "product"
+          property_unit: "Installed material mass / kg"
+          description: "Carry inspected structures forward once as an internal handoff."
+          amount:
+            expression: "Match accepted structure mass from form_structures."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_structures
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off mass"
+                basis: "received mass divided by upstream accepted structure mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+        - row_id: process_equipment
+          role: "Route-specific process equipment"
+          name: "Manufacturing process equipment by actual unit and specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Purchased furnaces, vessels, production machinery, containment and handling units only when included in the whole-facility contract."
+          amount:
+            expression: "Reconcile procured, installed, spare, returned and rejected components."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of procured mass"
+                basis: "accepted installed mass divided by procured mass by unit"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+        - row_id: utility_controls
+          role: "Integrated utilities and controls"
+          name: "Installed utility and control components by actual system"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Piping, electrical, control, ventilation and other balance-of-facility systems from actual design; do not duplicate process_equipment."
+          amount:
+            expression: "Reconcile installed mass by system and procurement register."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of procured mass"
+                basis: "installed mass divided by procured mass by system"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+        - row_id: installation_service
+          role: "Contracted installation and joining service"
+          name: "Specialized facility installation service by actual work package"
+          flow_type: "product"
+          property_unit: "Contracted service hours / h"
+          description: "When independently procured, record mechanical erection, piping, electrical installation and control hookup against actual work packages; owner-operated work is represented by its direct inputs instead."
+          amount:
+            expression: "Reconcile accepted work-package hours to invoices and as-built scope without substituting a generic labor intensity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of invoiced service hours"
+                basis: "accepted hours divided by invoiced hours by work package"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+        - row_id: commissioning_energy
+          role: "Commissioning energy"
+          name: "Commissioning energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Purchased energy for cold tests and pre-handover checks by actual carrier, not subsequent production."
+          amount:
+            expression: "Reconcile dated test meters and invoices through handover."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of total metered project energy"
+                basis: "commissioning energy divided by total metered project energy"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_facility
+          role: "Accepted specialized manufacturing facility"
+          name: "Accepted specialized manufacturing facility for declared process family"
+          flow_type: "product"
+          property_unit: "Count / facility"
+          description: "Only a tested facility with defects closed and signed handover counts; manufactured output is outside this card."
+          amount:
+            expression: "Set to one only after all contract acceptance conditions pass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "facility"
+                basis: "per signed-off facility"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      waste:
+        - row_id: installation_rejects
+          role: "Rejected installation material"
+          name: "Rejected facility component by composition and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Off-spec or damaged components exiting integration after repair attempts; identify recovery, return or disposal destination."
+          amount:
+            expression: "Record net exit mass after same-node rework, by material and route."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered component mass"
+                basis: "rejected exit mass divided by delivered component mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: shared_work
+    applies_to: "multiple units or product families"
+    rule: "Assign site, civil, utility and test burdens by measured takeoff or documented engineering driver; count shared works once."
+    source_ids: []
+  - rule_id: test_output
+    applies_to: "pre-handover testing"
+    rule: "If tests produce saleable material, meter and disclose quantity/disposition separately; never credit routine production or silently shift construction burdens."
+    source_ids:
+      - doe-commissioning
+  - rule_id: reject_route
+    applies_to: "forming and integration"
+    rule: "Keep rework inputs at producing node; accepted facility excludes rejects. Record recovered, returned or discarded exits by destination."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_site
+      process_id: "prepare_site"
+      flow_role: "removal, energy, footprint, spoil"
+      record_type: "survey and site log"
+      raw_fields: "cut; density; material; reuse; stock; export; accepted area; fuel; electricity"
+      collection_method: "surveys, tickets, meters"
+      unit: "m3; kg; m2; kWh; MJ"
+      frequency: "each lot and monthly meter"
+      temporal_coverage: "whole preparation"
+      site_scope: "project site"
+      aggregation_rule: "reconcile cut, reuse, stock, export and accepted area"
+      quality_evidence: "signed survey, tickets and readings"
+    - protocol_id: cp_structures
+      process_id: "form_structures"
+      flow_role: "materials, accepted works, rejects"
+      record_type: "material and inspection register"
+      raw_fields: "grade; delivery; placement; accepted mass; rework; return; rejection; destination"
+      collection_method: "receipts, as-built takeoff, inspection"
+      unit: "kg; m3"
+      frequency: "each delivery/lot"
+      temporal_coverage: "whole civil period"
+      site_scope: "project site"
+      aggregation_rule: "balance by grade and structure"
+      quality_evidence: "receipts, drawings, inspections"
+    - protocol_id: cp_equipment
+      process_id: "integrate_accept"
+      flow_role: "equipment, utilities, joining service, rejects"
+      record_type: "procurement and installation register"
+      raw_fields: "unit/system; specification; delivered; installed; spare; returned; rejected; destination; work-package invoiced and accepted hours"
+      collection_method: "supplier and site records"
+      unit: "kg; count; h"
+      frequency: "each component/system/work package"
+      temporal_coverage: "whole installation"
+      site_scope: "contract units"
+      aggregation_rule: "balance by actual unit without overlap; reconcile accepted service hours"
+      quality_evidence: "supplier records, invoices, sign-off, rejection tickets"
+    - protocol_id: cp_tests
+      process_id: "integrate_accept"
+      flow_role: "test energy, acceptance"
+      record_type: "commissioning and turnover pack"
+      raw_fields: "process family; designed capacity; unit list; carrier; test; defect closure; safety review if applicable; date"
+      collection_method: "meters, certificates, signed turnover"
+      unit: "kWh; MJ; kg; facility"
+      frequency: "each test/final acceptance"
+      temporal_coverage: "through handover"
+      site_scope: "accepted facility"
+      aggregation_rule: "sum test carriers; count facility after closure"
+      quality_evidence: "readings, certificates, conditional safety review, signature"
+  calculation_rules:
+    - id: site_balance
+      applies_to: "prepare_site"
+      rule: "Removed mass = reused + exported + stock change + documented loss by material."
+      inputs:
+        - survey
+        - density
+        - tickets
+      output: "kg by destination"
+      source_ids:
+        - balance-identity
+    - id: structure_balance
+      applies_to: "form_structures"
+      rule: "Delivered = accepted installed + rejected + returned + stock change by grade; rework is not new delivery."
+      inputs:
+        - receipts
+        - inspection
+      output: "kg by state"
+      source_ids:
+        - balance-identity
+    - id: equipment_balance
+      applies_to: "integrate_accept"
+      rule: "Delivered = accepted installed + spare + rejected + returned + stock change by component."
+      inputs:
+        - "procurement and installation"
+      output: "kg by state"
+      source_ids:
+        - balance-identity
+    - id: acceptance_count
+      applies_to: "reference product"
+      rule: "Count = 1 only when tests, defect closeout and applicable safety review are documented and handover signed."
+      inputs:
+        - "test and turnover pack"
+      output: "facility count"
+      source_ids:
+        - doe-commissioning
+        - osha-psm
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "facility"
+      requirement: "Declare product/process family, installed units, designed capacity and contract limit; no generic recipe."
+      evidence: "design and as-built register"
+    - id: dq_balance
+      applies_to: "all nodes"
+      requirement: "Reconcile materials, energy, handoffs, shared works and reject destinations."
+      evidence: "ledgers and reconciliation"
+    - id: dq_gate
+      applies_to: "acceptance"
+      requirement: "Separate pre-handover tests from production; document applicable safety review."
+      evidence: "dated tests, signed turnover and conditional review"
+    - id: dq_identity
+      applies_to: "final exchanges"
+      requirement: "Resolve compatible flow, property and unit UUIDs before creating exchanges; expose candidate-stage gaps."
+      evidence: "platform detail and measured units"
+validation_rules:
+  - rule_id: v_reference
+    applies_to: "facility"
+    rule: "Reject count other than one, missing signed acceptance, process-family identity, capacity basis or unit list."
+    source_ids:
+      - doe-commissioning
+  - rule_id: v_handoffs
+    applies_to: "process chain"
+    rule: "Match prepared area and accepted structure mass across internal handoffs."
+    source_ids:
+      - balance-identity
+  - rule_id: v_rejects
+    applies_to: "forming/integration"
+    rule: "No rejected lot may count as accepted; link repair to producing node and exit to named destination."
+    source_ids: []
+  - rule_id: v_route
+    applies_to: "design variants"
+    rule: "Verify units and shared-work attribution against as-built records; apply hazard gate only when triggered."
+    source_ids:
+      - osha-psm
+  - rule_id: v_boundary
+    applies_to: "whole facility"
+    rule: "Exclude operating output/emissions after handover; disclose pre-handover test material separately."
+    source_ids:
+      - doe-commissioning
+published_dataset_profile:
+  dataset_role: "Foreground construction data package for one accepted specialized manufacturing facility."
+  downstream_use: "secondary_dataset; background_dataset only with matched process family, route, size and geography."
+  allowed_use: "Model installed facility construction with disclosed contract limit, unit list, route and handover."
+  excluded_use: "Model routine production, product yield, operating emissions, equipment-only sales or an unqualified mix of unlike plants."
+  required_metadata: "Site; process/product family; designed capacity/unit; installed units; contract limits; period; acceptance; shared allocation; UUID gaps."
+  required_quality_disclosure: "Primary-record coverage, balances, tests, conditional safety review, rework and upstream match."
+  update_trigger: "Changed route, units, boundary, material takeoff, capacity, acceptance gate, identity or guidance."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3"
+    type: "official_guidance"
+    reference: "[UNSD CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "Specialized-facility identity and generic-building exclusion."
+  - id: "doe-commissioning"
+    type: "official_guidance"
+    reference: "[US DOE commissioning of federal facilities](https://www.energy.gov/cmei/femp/commissioning-federal-buildings)"
+    used_for: "Test, defect and handover logic; not a universal industry test protocol."
+  - id: "osha-psm"
+    type: "standard"
+    reference: "[OSHA 29 CFR 1910.119(i)](https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.119)"
+    used_for: "Conditional hazardous-chemical pre-startup gate."
+  - id: "balance-identity"
+    type: "method_factor"
+    reference: "Conservation and bounded-fraction identities applied to actual project records."
+    used_for: "Reconciliation and mathematical QA ranges; not empirical intensity factors."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:ffa205d91b792fe4173ca23776945978556442161c65b638bac94c15e4c1806e"
+  generated_content_sha256: "sha256:9a48b9a3faa29e5c51172a8c4182e21c43a0dbeef8c11c4602868e4d17de6ac3"

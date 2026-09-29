@@ -1,10 +1,653 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53252"
-  title: "Local cables and related works"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.local-cables-and-related-works"
+  classification_refs: "CPC 3.0 53252, Local cables and related works; mapping acceptance is separate."
+  covered_products: "Accepted local power or communication cable alignment and directly related local distribution stations, towers or antennas."
+  excluded_products: "Long-distance lines, component manufacture alone, delivered utility service, operation and repair."
+  representative_product: "One accepted local-network construction delivery with an itemized asset schedule."
+  production_route: "Survey; route/site preparation; overhead support or underground duct/trench work; cable laying and joining; optional station or tower integration; testing and handover."
+  market_state: "Constructed, tested and accepted infrastructure at handover."
+functional_unit:
+  what: "Accepted local cable or directly related local distribution works in a declared delivery."
+  how_much: "1 signed accepted package; separately disclose accepted route-km and station/tower/antenna counts and capacities."
+  how_well: "Design-specific electrical safety/continuity or optical link tests and related-asset commissioning passed."
+  how_long_or_cycle: "Construction to signed handover; design life is metadata, not use-stage burden."
+  reference_flow_link: "accepted_local_works from asset_integration."
+system_boundary:
+  rules:
+    - rule_id: handover_boundary
+      applies_to: "delivery"
+      rule: "Include necessary preparation, component delivery to site, civil/installation work, integration and commissioning through signed acceptance; exclude operation and later repair."
+      source_ids:
+        - unsd-cpc3-53252
+        - rus-underground-distribution
+        - itu-g6503
+    - rule_id: preparation_interface
+      applies_to: "local_route_preparation"
+      rule: "Independently remove obstructing soil or vegetation and pass accepted prepared segment/site to integration; exported removal is not intended product."
+      source_ids:
+        - rus-underground-distribution
+    - rule_id: route_delta
+      applies_to: "asset_integration"
+      rule: "Underground needs trench, duct and backfill records; overhead needs pole/tower/support and stringing records. Keep power and communication tests separate."
+      source_ids:
+        - rus-underground-distribution
+        - itu-g6503
+    - rule_id: related_asset_scope
+      applies_to: "station or tower"
+      rule: "Include only directly related local-network assets, separately counting equipment and civil works and disclosing existing-asset reuse."
+      source_ids:
+        - unsd-cpc3-53252
+boundary_abstraction:
+  declared_starting_condition: "Surveyed local alignment or site with existing utility interfaces identified before works."
+  starting_condition_role: "Physical baseline; existing poles, ducts and stations are not automatically new outputs."
+  product_classification_scope: "Accepted local cables and directly related works within one acceptance boundary."
+  recursive_input_rule: "A purchased installed work of this category needs a documented subcontract boundary; do not treat the whole accepted package as a material input."
+  upstream_dataset_requirement: "Connect specification-matched cable, conductor, duct, concrete, steel, electrical equipment, energy, freight and treatment datasets as applicable."
+  disclosure: "Asset schedule, route alternatives, re-used infrastructure, removals, rejects, subcontract scope, tests and identity gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted delivery package"
+  product_flow_ref:
+    name: "Accepted local cable and related works; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "accepted package"
+  required_qualifiers:
+    - Location
+    - "local-network function"
+    - "power or communication specification"
+    - "overhead/underground route-km"
+    - "cable/circuit/fibre length"
+    - "station/tower count and capacity"
+    - "existing-asset interface"
+    - "tests and handover."
+reference_flows:
+  []
+measurement_rules:
+  - id: package_count
+    applies_to: "reference"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "accepted package"
+    rule: "Count each independently signed delivery once; unlike packages are not comparable without asset disaggregation."
+  - id: route_length
+    applies_to: "cable"
+    required_property_ref:
+      name: "Length"
+      uuid: ""
+    required_unit: "route-km"
+    rule: "Sum surveyed non-overlapping accepted local segments; circuits and fibres do not multiply route length."
+  - id: component_quantity
+    applies_to: "components"
+    required_property_ref:
+      name: "Length, mass or count"
+      uuid: ""
+    required_unit: "m, kg or item"
+    rule: "Reconcile delivered, installed, returned and rejected quantities by specification."
+  - id: groundwork_volume
+    applies_to: "excavation"
+    required_property_ref:
+      name: "Volume and mass"
+      uuid: ""
+    required_unit: "m3 and kg"
+    rule: "Keep in-situ volume distinct from loose haul volume and destination mass."
+  - id: carrier_use
+    applies_to: "plant"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Record power and fuels separately and prevent generator fuel/output double count."
+process_map:
+  - id: local_route_preparation
+    name: "Local route and site preparation"
+    inclusion: "conditional"
+    inclusion_condition: "New corridor, excavation or foundation preparation occurs."
+    role: "Remove ground/obstructions, pass accepted prepared segment/site and route residuals."
+    quantitative_reference: "Route-km, site count and excavated volume."
+  - id: asset_integration
+    name: "Cable and related-asset integration and acceptance"
+    inclusion: "required"
+    inclusion_condition: "All declared packages."
+    role: "Join cables, supports/ducts, joints and in-scope station/tower components; test, accept or route defects."
+    quantitative_reference: "One accepted package with route-km and asset schedule."
+process_inventory:
+  - id: local_route_preparation
+    label: "Local route and site preparation"
+    inputs:
+      product:
+        - row_id: prep_energy
+          role: "Preparation energy"
+          name: "Energy carrier for local preparation equipment"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Actual excavation, clearing and site-plant fuel or electricity by carrier; exclude the same energy in purchased work."
+          amount:
+            expression: "Meter or allocate actual plant use to prepared alignment/site."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package, with route-km or site count disclosed"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_plant
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "MJ-equivalent/accepted package"
+                basis: "broad initial check, not a design value"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_local_site
+          role: "Prepared alignment or station site"
+          name: "Prepared local route or related-asset site"
+          flow_type: "product"
+          property_unit: "Length or count / route-km or site"
+          description: "Internal handoff records the segment or site identity later received by integration; it is not an accepted cable asset."
+          amount:
+            expression: "Sign off prepared alignment/site by as-built survey."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_route
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of prepared segment/site records matched"
+                basis: "matched records divided by prepared records"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - record-match-identity
+      waste:
+        - row_id: removed_material
+          role: "Removed earth and vegetation"
+          name: "Removed local-route material requiring external management"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record source, reuse, export and receiver. Approved backfill retained on site is not exported waste."
+          amount:
+            expression: "Weigh dispatch or convert surveyed volume using tested density, net of reuse."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_spoil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass divided by total removed mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      elementary:
+        []
+  - id: asset_integration
+    label: "Cable and related-asset integration and acceptance"
+    inputs:
+      product:
+        - row_id: prepared_handoff
+          role: "Prepared-route or site handoff"
+          name: "Prepared local route/site from local_route_preparation"
+          flow_type: "product"
+          property_unit: "Length or count / route-km or site"
+          description: "Where preparation occurs, receive the same accepted alignment or site once; station-only delivery may have no cable length."
+          amount:
+            expression: "Match segment/site IDs to preparation output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_route
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "matched input/output record ratio"
+                basis: "identical segment/site IDs across processes"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - record-match-identity
+        - row_id: cable_supply
+          role: "Cable and conductor"
+          name: "Cable, conductor and joint components by specification"
+          flow_type: "product"
+          property_unit: "Length and mass / m and kg"
+          description: "Specify power/communication cable, insulation, conductor or fibre count and joints; manufactured cable is an input, never accepted works output."
+          amount:
+            expression: "Reconcile delivered, installed/slack, returned and rejected cable."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per accepted package and route-km where relevant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "cable-m/accepted package"
+                basis: "broad initial check; disclose circuits, branches and slack"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: support_equipment
+          role: "Supports, ducts and equipment"
+          name: "Local support and related-asset components by specification"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Record ducts, poles, towers, foundations, transformers, switchgear, cabinets, antennas and protection only when installed in the declared package; supplier ledger splits component roles."
+          amount:
+            expression: "Reconcile delivered and installed quantities, returns and rejects by component."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per accepted package and asset schedule"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg/accepted package"
+                basis: "broad initial check by route and design"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: integration_energy
+          role: "Integration energy"
+          name: "Energy carrier for local integration"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Record lifting, cable-pulling, splicing and test energy by carrier, excluding duplicate subcontract energy."
+          amount:
+            expression: "Meter or allocate owned equipment and test energy once."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_plant
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "MJ-equivalent/accepted package"
+                basis: "broad check; carrier meters control"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: specialist_work
+          role: "Specialist joining work"
+          name: "Local specialist installation or commissioning service"
+          flow_type: "product"
+          property_unit: "Service quantity / declared unit"
+          description: "Conditional purchased termination, splicing, lifting or testing. Define the contractor's scope and avoid duplicated owned plant/labour."
+          amount:
+            expression: "Allocate invoiced accepted work to segment or station."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_subcontract
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "declared service units/accepted package"
+                basis: "broad screening; invoice unit and scope prevail"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_local_works
+          role: "Accepted local works"
+          name: "Accepted installed local cable or related local-network works; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / accepted package; UUIDs unresolved"
+          description: "Count only assets passing function-specific tests and signed handover; attach an asset schedule rather than assuming universal route-km."
+          amount:
+            expression: "Count one signed package with separately accepted line and station/tower quantities."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "accepted package/reference package"
+                basis: "one signed package per reference unit"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - record-match-identity
+      waste:
+        - row_id: rejected_components
+          role: "Rejected components"
+          name: "Rejected cable and equipment by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identify damaged/off-spec cable cuts, joints and equipment at integration. Record repair/re-test, supplier return, recovery or disposal; defects are not accepted output."
+          amount:
+            expression: "Reconcile defects, rework, return and final exit once."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted package"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of received component mass"
+                basis: "final reject mass / received component mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: asset_schedule
+    applies_to: "multi-asset package"
+    rule: "Assign quantities to segments and station/tower assets by measured use; show package totals and component denominators; never compare unlike packages as equal route-km."
+    source_ids:
+      - record-match-identity
+  - rule_id: shared_plant
+    applies_to: "equipment and subcontract"
+    rule: "Apportion shared equipment by metered hours or work quantity once and document joint trenches/supports shared with other networks."
+    source_ids:
+      - material-balance-identity
+  - rule_id: defect_route
+    applies_to: "rejected components"
+    rule: "Retain defect burdens, link repair to asset_integration, identify return/recovery/disposal exits and exclude unresolved defects from accepted output."
+    source_ids:
+      - material-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_route
+      process_id: "local_route_preparation"
+      flow_role: "alignment and handoff"
+      record_type: "survey and permit"
+      raw_fields: "segment/site ID, route, length, excavation, clearance, readiness, acceptance"
+      collection_method: "as-built survey and signed release"
+      unit: "route-km, m3, site"
+      frequency: "each segment/site"
+      temporal_coverage: "preparation to handoff"
+      site_scope: "whole delivery"
+      aggregation_rule: "sum non-overlapping accepted segments/sites"
+      quality_evidence: "survey and release"
+    - protocol_id: cp_spoil
+      process_id: "local_route_preparation"
+      flow_role: "removed material"
+      record_type: "dispatch and reuse log"
+      raw_fields: "source, material, volume, mass, density, reuse, receiver"
+      collection_method: "weighing and survey reconciliation"
+      unit: "m3, kg"
+      frequency: "each batch"
+      temporal_coverage: "preparation"
+      site_scope: "route/site and receiver"
+      aggregation_rule: "exported mass net of reuse"
+      quality_evidence: "dispatch and receipt"
+    - protocol_id: cp_plant
+      process_id: "both_nodes"
+      flow_role: "energy"
+      record_type: "meter and fuel log"
+      raw_fields: "carrier, quantity, equipment, hours, route/site, subcontract scope"
+      collection_method: "meter and invoice cross-check"
+      unit: "kWh, MJ, kg"
+      frequency: "shift or month"
+      temporal_coverage: "construction to tests"
+      site_scope: "all sites"
+      aggregation_rule: "allocate measured use once"
+      quality_evidence: "meter and receipt"
+    - protocol_id: cp_components
+      process_id: "asset_integration"
+      flow_role: "components and defects"
+      record_type: "lot, installation and QA ledger"
+      raw_fields: "component, specification, delivered, installed, spare, reject, repair, return, destination"
+      collection_method: "supplier/as-built reconciliation"
+      unit: "m, kg, item"
+      frequency: "each lot"
+      temporal_coverage: "arrival to acceptance"
+      site_scope: "each asset"
+      aggregation_rule: "balance by component and function"
+      quality_evidence: "invoice, schedule, defect report"
+    - protocol_id: cp_subcontract
+      process_id: "asset_integration"
+      flow_role: "joining and tests"
+      record_type: "contract and invoice"
+      raw_fields: "scope, function, asset, quantity, owned-work exclusion"
+      collection_method: "contract-to-test reconciliation"
+      unit: "declared service unit"
+      frequency: "each contract"
+      temporal_coverage: "integration to test"
+      site_scope: "contracted scope"
+      aggregation_rule: "sum accepted nonduplicated scope"
+      quality_evidence: "invoice and test dossier"
+    - protocol_id: cp_acceptance
+      process_id: "asset_integration"
+      flow_role: "reference package"
+      record_type: "commissioning dossier"
+      raw_fields: "function, asset schedule, route length, station/tower count, specification, failed/passed tests, handover"
+      collection_method: "signed test and acceptance"
+      unit: "package, route-km, item"
+      frequency: "each handover"
+      temporal_coverage: "completion"
+      site_scope: "whole delivery"
+      aggregation_rule: "count signed package once"
+      quality_evidence: "test and handover certificate"
+  calculation_rules:
+    - id: accepted_package
+      applies_to: "output"
+      rule: "Count one package only after all declared assets pass; sum accepted route lengths and related-asset counts separately."
+      inputs:
+        - schedule
+        - survey
+        - tests
+      output: "package plus route-km and item schedule"
+      source_ids:
+        - record-match-identity
+    - id: component_balance
+      applies_to: "components"
+      rule: "Received = installed + spare/return + final reject + stock change by specification; rework enters once."
+      inputs:
+        - "invoice and QA ledger"
+      output: "m, kg or item"
+      source_ids:
+        - material-balance-identity
+    - id: spoil_balance
+      applies_to: "preparation"
+      rule: "Exported mass = weighed dispatch or surveyed volume × measured density minus reused mass."
+      inputs:
+        - survey
+        - density
+        - dispatch
+        - reuse
+      output: "kg/package"
+      source_ids:
+        - material-balance-identity
+    - id: energy_normalization
+      applies_to: "plant"
+      rule: "Convert carriers with declared factors, allocate to accepted package once and avoid generator fuel/electricity double count."
+      inputs:
+        - meters
+        - fuel
+        - hours
+      output: "carrier inventory/package"
+      source_ids:
+        - material-balance-identity
+  data_quality_requirements:
+    - id: asset_identity
+      applies_to: "delivery"
+      requirement: "Record function, place, route, schedule, interface and accepted quantity."
+      evidence: "design and signed as-built dossier"
+    - id: function_tests
+      applies_to: "cable and station"
+      requirement: "Preserve electrical insulation/continuity/safety, optical loss/continuity or station/tower tests as applicable."
+      evidence: "signed test dossier"
+    - id: balances
+      applies_to: "material"
+      requirement: "Explain unmatched length/mass, excavation, reuse, rejects and repair."
+      evidence: "reconciled ledger and receipts"
+    - id: uuid_disclosure
+      applies_to: "unbound flow"
+      requirement: "Preserve supplier and as-built specification until exact platform identity and support rows are confirmed."
+      evidence: "specification and manifest gap"
+validation_rules:
+  - rule_id: package_gate
+    applies_to: "reference output"
+    rule: "Require local-network function, asset schedule, applicable tests and signed handover; station-only work may have zero cable route-km."
+    source_ids:
+      - unsd-cpc3-53252
+      - itu-g6503
+  - rule_id: route_delta_check
+    applies_to: "segment"
+    rule: "Require trench/duct/backfill underground or poles/supports/stringing overhead; choose one route per physical segment."
+    source_ids:
+      - rus-underground-distribution
+  - rule_id: handoff_check
+    applies_to: "graph"
+    rule: "Match prepared and received segment/site IDs and require a receiver for exported spoil."
+    source_ids:
+      - record-match-identity
+      - material-balance-identity
+  - rule_id: defect_check
+    applies_to: "integration"
+    rule: "Reject duplicate energy, unresolved defects as accepted, cable-m mistaken for route-km or station count folded into length."
+    source_ids:
+      - material-balance-identity
+      - record-match-identity
+  - rule_id: identity_gate
+    applies_to: "exchange"
+    rule: "Require exact detail-confirmed UUIDs before concrete exchange; manufactured cable or utility service is not installed works."
+    source_ids:
+      - record-match-identity
+published_dataset_profile:
+  dataset_role: "Site-specific construction foreground package; candidate method until review."
+  downstream_use: "Secondary/background dataset only with matched function, route, asset schedule and handover."
+  allowed_use: "Construction burdens for the specified accepted package, with line and station quantities separate."
+  excluded_use: "Cable manufacture alone, utility service, long-distance network or comparison of unlike packages as route-km."
+  required_metadata: "Geography, year, function, route-km, cable lengths, voltage/fibres, station/tower schedule, reused assets and handover."
+  required_quality_disclosure: "Survey, route alternatives, component and spoil balance, shared plant, rejects, provisional ranges and unbound identities."
+  update_trigger: "Boundary, route, design, asset mix, quantities, acceptance criteria or verified platform identity changes."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-53252"
+    type: "official_guidance"
+    reference: "UNSD, CPC Version 3.0 Explanatory Notes, subclass 53252, https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Category boundary and related assets."
+  - id: "rus-underground-distribution"
+    type: "official_guidance"
+    reference: "USDA Rural Utilities Service Bulletin 1728F-806, Specifications and Drawings for Underground Electric Distribution, https://www.rd.usda.gov/files/UEP_Bulletin_1728F-806.pdf"
+    used_for: "Underground installation roles."
+  - id: "itu-g6503"
+    type: "standard"
+    reference: "ITU-T G.650.3 (2017), Test methods for installed single-mode optical fibre cable links, https://www.itu.int/epublications/publication/itu-t-g-650-3-2017-08-test-methods-for-installed-single-mode-optical-fibre-cable-links"
+    used_for: "Communication-link test gate."
+  - id: "record-match-identity"
+    type: "method_factor"
+    reference: "Identical segment/site and signed-package record equality."
+    used_for: "Handoff and output counting."
+  - id: "material-balance-identity"
+    type: "method_factor"
+    reference: "Material conservation across receipt, installation, reuse, rejection and exit."
+    used_for: "Component, spoil and reject checks."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7b95fbd7e36a84a7d808cb9839677c0cad42b36600ff5fad4b81fcfd34a9371e"
+  generated_content_sha256: "sha256:babf842fa0620815b32823baa36d92a113d7e6a74cd354c6f351a066c052602b"
