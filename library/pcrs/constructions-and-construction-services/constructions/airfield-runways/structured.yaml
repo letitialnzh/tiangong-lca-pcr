@@ -1,10 +1,755 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53213"
-  title: "Airfield runways"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.airfield-runways"
+  classification_refs: "CPC 3.0 53213, Airfield runways."
+  covered_products: "Site-accepted runway, taxiway or apron pavement and contract-integral non-building structures."
+  excluded_products: "Airport buildings, aircraft, operations, later maintenance and separately measured lighting or navigation assets."
+  representative_product: "One m2 of accepted runway pavement in a named continuous segment."
+  production_route: "Prepare subgrade and drainage; place designed base and flexible or rigid surface; finish and test."
+  market_state: "Installed and accepted airside infrastructure at a specified site."
+functional_unit:
+  what: "Site-accepted airfield pavement asset."
+  how_much: "1 m2 of accepted plan-view paved area; also report total continuous-segment area."
+  how_well: "Specified bearing, layer, surface, marking and geometric tests passed."
+  how_long_or_cycle: "One construction contract through signed handover; service life is separate scenario metadata."
+  reference_flow_link: "reference_product_airfield_pavement"
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "entire asset"
+      rule: "Include documented preparation, layer placement, finishing, testing and rework through signed acceptance; exclude use, maintenance and end-of-life."
+      source_ids:
+        - unsd-53213
+        - faa-ac-150-5370-10
+    - rule_id: asset_interfaces
+      applies_to: "drainage, lighting and structures"
+      rule: "Include only contract-integral measured items; link separately measured systems and buildings instead of silently including them."
+      source_ids:
+        - unsd-53213
+        - faa-ac-150-5370-10
+    - rule_id: internal_handoff
+      applies_to: "successive nodes"
+      rule: "Formation passes to paving after subgrade testing; laid pavement passes to finishing after layer testing; neither handoff creates a second final product."
+      source_ids:
+        - faa-ac-150-5370-10
+    - rule_id: secondary_shared
+      applies_to: "recovered inputs and shared plant"
+      rule: "Declare recovery gate and burden convention; attribute shared plant to identified nodes and service period exactly once."
+      source_ids:
+        - faa-ac-150-5370-10
+boundary_abstraction:
+  declared_starting_condition: "Surveyed existing ground or pavement, subsurface condition and demolition or remediation at contract start."
+  starting_condition_role: "Physical baseline, not a burden-free finished runway input."
+  product_classification_scope: "One accepted airside pavement segment, not the complete airport."
+  recursive_input_rule: "Purchased paving components enter at supply gate; another finished accepted pavement is not an unexamined raw input."
+  upstream_dataset_requirement: "Link actual aggregate, asphalt/concrete, marking, energy, transport, construction-service and waste-treatment datasets."
+  disclosure: "Record initial state, design, every included asset and interface, recovered inputs, shared works, cut-offs and data gaps."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Site-accepted airfield pavement; UUID unresolved"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-19da-a746-0800200c9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a3c8-18da-a746-0800200c9a66"
+  reference_unit: "m2"
+  required_qualifiers:
+    - Runway
+    - "taxiway or apron type"
+    - "continuous segment"
+    - "as-built area"
+    - "width and length"
+    - "aircraft loading class"
+    - "flexible or rigid layer section"
+    - drainage
+    - "lighting and marking scope"
+    - "acceptance date and site."
+reference_flows:
+  []
+measurement_rules:
+  - id: accepted_area
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Area, UUID unresolved"
+      uuid: ""
+    required_unit: "m2"
+    rule: "Survey accepted plan-view footprint once; overlapping layers do not multiply area."
+  - id: layer_mass
+    applies_to: "materials and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile delivered, installed, returned and rejected material; convert volume using project density."
+  - id: site_energy
+    applies_to: "construction plant"
+    required_property_ref:
+      name: "Energy or fuel mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Keep carriers separate and exclude fuel embedded in purchased services."
+  - id: freight_work
+    applies_to: "material transport"
+    required_property_ref:
+      name: "Mass × distance"
+      uuid: ""
+    required_unit: "t·km"
+    rule: "Multiply delivered tonnes by loaded route distance, disclosing return-trip treatment."
+process_map:
+  - id: formation
+    name: "Site formation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed baseline to tested formation."
+    role: "Earthwork, subgrade and in-scope drainage."
+    quantitative_reference: "Accepted area and earthwork records."
+  - id: paving
+    name: "Pavement-layer integration"
+    inclusion: "required"
+    inclusion_condition: "Tested formation to tested laid pavement."
+    role: "Join subbase, base and surface products; route defects."
+    quantitative_reference: "Accepted area and layer records."
+  - id: finish_handover
+    name: "Surface finishing and acceptance"
+    inclusion: "required"
+    inclusion_condition: "Tested laid pavement to signed handover."
+    role: "Apply in-scope markings, test and correct."
+    quantitative_reference: "Accepted area and finish records."
+process_inventory:
+  - id: formation
+    label: "Site formation"
+    inputs:
+      product:
+        - row_id: formation_products
+          role: "Formation and drainage products"
+          name: "Formation products by as-built item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record aggregate, geotextile, stabilization and drainage products by specification; recovered inputs need origin evidence."
+          amount:
+            expression: "Reconcile delivered, installed, returned and lost mass."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/m2"
+                basis: "provisional broad project-specific screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: earthwork_service
+          role: "Earthwork service"
+          name: "Excavation and compaction construction service"
+          flow_type: "product"
+          property_unit: "Contract quantity / declared unit"
+          description: "Use only for outsourced work not already represented by directly measured plant fuel."
+          amount:
+            expression: "Record approved work-order quantity and contract unit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "declared service units/m2"
+                basis: "provisional screen after contract unit is specified"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: formation_energy
+          role: "Formation energy"
+          name: "Construction energy by actual carrier"
+          flow_type: "product"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record direct equipment fuel and electricity by carrier; exclude subcontracted service energy."
+          amount:
+            expression: "Sum metered and logged use attributable to formation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kWh-equivalent/m2"
+                basis: "broad provisional equipment-energy screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_formation
+          role: "Accepted formation"
+          name: "Tested airside pavement formation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Only tested formation passes internally to paving; this is not another final reference product."
+          amount:
+            expression: "Record accepted area at the subgrade test gate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "m2/m2 reference"
+                basis: "accepted formation supporting one accepted m2"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - faa-ac-150-5370-10
+      waste:
+        - row_id: spoil_export
+          role: "Exported spoil"
+          name: "Excavated soil or removed pavement by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "On-site reused fill remains in the formation balance; exported material has one receiver."
+          amount:
+            expression: "Reconcile excavation, reuse, stock and exported weighbridge mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/m2"
+                basis: "broad ground-dependent provisional screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: paving
+    label: "Pavement-layer integration"
+    inputs:
+      product:
+        - row_id: formation_handoff
+          role: "Tested formation handoff"
+          name: "Tested airside pavement formation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Consume accepted_formation internally once without another upstream product dataset."
+          amount:
+            expression: "Match paired formation output by surveyed section."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "m2/m2 reference"
+                basis: "paired formation output and paving input"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - faa-ac-150-5370-10
+        - row_id: layer_products
+          role: "Pavement-layer products"
+          name: "Pavement products by layer and specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate aggregate, asphalt mix, concrete, reinforcement and joint products by actual flexible or rigid layer. Reclaimed material requires origin and recovery handoff."
+          amount:
+            expression: "Reconcile receipts, installed mass, returns and rejects by layer."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/m2"
+                basis: "provisional section-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: material_freight
+          role: "Material freight"
+          name: "Material freight service by mode and route"
+          flow_type: "product"
+          property_unit: "Transport work / t·km"
+          description: "Record actual transport mode and route for delivered materials, excluding transport already embedded in a supplier dataset."
+          amount:
+            expression: "Delivered tonnes multiplied by loaded distance."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_freight
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "t·km/m2"
+                basis: "broad provisional route-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: paving_energy
+          role: "Paving energy"
+          name: "Paving fuel and electricity by carrier"
+          flow_type: "product"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record directly operated mixing, paving and rolling equipment; do not duplicate supplier-plant energy."
+          amount:
+            expression: "Allocate meters and equipment logs to paving."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kWh-equivalent/m2"
+                basis: "broad provisional site-energy screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: laid_pavement
+          role: "Tested laid pavement"
+          name: "Laid and tested airfield pavement"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Layer-tested pavement passes internally to finishing; failed sections remain in rework."
+          amount:
+            expression: "Record area passing specified thickness, compaction or strength gates."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "m2/m2 reference"
+                basis: "tested pavement proceeding to finishing"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - faa-ac-150-5370-10
+      waste:
+        - row_id: paving_rejects
+          role: "Rejected pavement"
+          name: "Rejected pavement material by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Route off-spec mix or removed pavement to documented rework, recovery or disposal; rejected area is not accepted output."
+          amount:
+            expression: "Weigh rejected loads and record treatment or return path."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/m2"
+                basis: "broad provisional reject screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: finish_handover
+    label: "Surface finishing and acceptance"
+    inputs:
+      product:
+        - row_id: laid_handoff
+          role: "Laid pavement handoff"
+          name: "Laid and tested airfield pavement"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Consume laid_pavement internally once; finishing does not recreate layer-material burdens."
+          amount:
+            expression: "Match paired paving output by surveyed section."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "m2/m2 reference"
+                basis: "paired paving output and finishing input"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - faa-ac-150-5370-10
+        - row_id: finishing_products
+          role: "Marking and fixture products"
+          name: "Airside marking and integral fixture products"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Capture paint, beads, sealant and contracted embedded fixtures by specification; omit separately procured systems."
+          amount:
+            expression: "Reconcile issue, installed quantity, returns and residue."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg-equivalent/m2"
+                basis: "broad provisional screen with item mass conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_airfield_pavement
+          role: "Accepted airfield pavement"
+          name: "Site-accepted airfield pavement"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Only signed, surveyed and tested pavement is the reference output; failed sections remain in rework."
+          amount:
+            expression: "1 m2"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - faa-ac-150-5370-10
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "m2/m2 reference"
+                basis: "one accepted m2 by definition"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - faa-ac-150-5370-10
+      waste:
+        - row_id: finishing_residues
+          role: "Finishing residues"
+          name: "Finishing waste by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record excess marking material and removed defective finish by substance and documented receiver."
+          amount:
+            expression: "Reconcile issued products with installed, returned and wasted material."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/m2"
+                basis: "broad provisional loss screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_asset
+    applies_to: "construction output"
+    rule: "Attribute measured works to the accepted segment; link independently measured airport assets instead of allocating their full burden here."
+    source_ids:
+      - unsd-53213
+  - rule_id: rework_reject
+    applies_to: "off-spec material"
+    rule: "Retain rework burden in the producing node, trace recovery/disposal exits and exclude failed area from accepted area."
+    source_ids:
+      - faa-ac-150-5370-10
+  - rule_id: secondary_input
+    applies_to: "reclaimed asphalt and aggregate"
+    rule: "State origin, recovery gate and prior-burden or cut-off convention; count recovery and current processing once."
+    source_ids:
+      - faa-ac-150-5370-10
+  - rule_id: shared_plant
+    applies_to: "common batching plant, haul road or site utilities"
+    rule: "Identify formation, paving and finishing consumers and service period; apportion actual burden by measured use or documented work once."
+    source_ids:
+      - faa-ac-150-5370-10
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_materials
+      process_id: "formation_paving_finish_handover"
+      flow_role: "Material inputs"
+      record_type: "Bill, delivery and as-built"
+      raw_fields: "Item, layer, mass, count, density, delivered, installed, returned, origin"
+      collection_method: "Reconcile supplier tickets and survey; retain net installed quantity plus tracked loss"
+      unit: "kg, m3, item"
+      frequency: "Each batch"
+      temporal_coverage: "Contract start to acceptance"
+      site_scope: "Measured segment"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Signed tickets and as-built records"
+    - protocol_id: cp_services
+      process_id: "formation"
+      flow_role: "Purchased works"
+      record_type: "Contract measurement"
+      raw_fields: "Work item, contractor, unit, quantity and equipment scope"
+      collection_method: "Approved measured work; sum non-overlapping items"
+      unit: "contract unit"
+      frequency: "Each work order"
+      temporal_coverage: "Formation works"
+      site_scope: "Segment"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Certified payment record"
+    - protocol_id: cp_energy
+      process_id: "formation_paving_finish_handover"
+      flow_role: "Direct energy"
+      record_type: "Meter and plant log"
+      raw_fields: "Carrier, quantity, node, shared hours"
+      collection_method: "Reconcile meters and invoices; allocate once by node usage"
+      unit: "kWh, MJ, kg"
+      frequency: "Daily or billing period"
+      temporal_coverage: "Contract start to acceptance"
+      site_scope: "Site and shared plant"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Meter and fuel slips"
+    - protocol_id: cp_freight
+      process_id: "paving"
+      flow_role: "Freight"
+      record_type: "Consignment"
+      raw_fields: "Mass, mode, origin, destination, loaded distance, supplier scope"
+      collection_method: "Delivery ticket reconciliation; sum mass × distance once"
+      unit: "t, km, t·km"
+      frequency: "Each delivery"
+      temporal_coverage: "Material delivery"
+      site_scope: "Supply chain"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Transport documents"
+    - protocol_id: cp_waste
+      process_id: "formation_paving_finish_handover"
+      flow_role: "Spoil and reject"
+      record_type: "Weighbridge and transfer"
+      raw_fields: "Type, mass, node, rework or receiver"
+      collection_method: "Reconcile removal and destination; count export once"
+      unit: "kg"
+      frequency: "Each movement"
+      temporal_coverage: "Contract start to acceptance"
+      site_scope: "Site and receiver"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Transfer receipt"
+    - protocol_id: cp_acceptance
+      process_id: "formation_paving_finish_handover"
+      flow_role: "Handoff and final output"
+      record_type: "Survey and test"
+      raw_fields: "Segment, area, thickness, bearing, strength, markings, defect, signed date"
+      collection_method: "Survey and test register; sum non-overlapping accepted area"
+      unit: "m2 and test units"
+      frequency: "Every hold point"
+      temporal_coverage: "Contract start to handover"
+      site_scope: "Continuous segment"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Signed test and handover"
+  calculation_rules:
+    - id: normalize_area
+      applies_to: "every row"
+      rule: "Divide measured amount by signed accepted area, retaining rejects and rework in numerator."
+      inputs:
+        - "Quantity and accepted survey area"
+      output: "Quantity/m2"
+      source_ids:
+        - faa-ac-150-5370-10
+    - id: mass_conversion
+      applies_to: "volume or count"
+      rule: "Convert using recorded density or item mass, not a universal layer thickness."
+      inputs:
+        - "Volume/count and density/item mass"
+      output: "kg"
+      source_ids:
+        - faa-ac-150-5370-10
+    - id: freight_calculation
+      applies_to: "deliveries"
+      rule: "Sum non-overlapping loads × loaded distances."
+      inputs:
+        - "Consignment tonnes and km"
+      output: "t·km/m2"
+      source_ids:
+        - faa-ac-150-5370-10
+    - id: internal_balance
+      applies_to: "process edges"
+      rule: "Equalize formation output with paving input and laid-pavement output with finishing input."
+      inputs:
+        - "Surveyed hold-point area"
+      output: "Paired internal m2"
+      source_ids:
+        - faa-ac-150-5370-10
+  data_quality_requirements:
+    - id: identity
+      applies_to: "asset and layers"
+      requirement: "Declare asset role, geometry, aircraft loading class, layer section and acceptance scope."
+      evidence: "As-built design and signed handover"
+    - id: completeness
+      applies_to: "all nodes"
+      requirement: "Cover all included work packages and trace returns, waste and shared equipment once."
+      evidence: "Contract reconciliation"
+    - id: measurement
+      applies_to: "area and mass"
+      requirement: "Use surveyed non-overlapping accepted area and documented conversion factors."
+      evidence: "Survey, tickets and density tests"
+    - id: temporal
+      applies_to: "all records"
+      requirement: "Align activity to contract construction and handover dates; disclose substitutions."
+      evidence: "Dated logs and invoices"
+    - id: gaps
+      applies_to: "unresolved data"
+      requirement: "Disclose missing UUIDs, supplier data and provisional ranges before dataset release."
+      evidence: "Gap register"
+validation_rules:
+  - rule_id: gate_test
+    applies_to: "reference product"
+    rule: "Require signed acceptance, area survey and specified bearing, surface and marking tests; reject untested area."
+    source_ids:
+      - faa-ac-150-5370-10
+  - rule_id: handoff_balance
+    applies_to: "three nodes"
+    rule: "Match each internal output area to the next-node input without adding it as another final product."
+    source_ids:
+      - faa-ac-150-5370-10
+  - rule_id: material_balance
+    applies_to: "inputs and waste"
+    rule: "Reconcile receipts = installed + returned + rejects + stock change; link each reject to rework, recovery or disposal."
+    source_ids:
+      - faa-ac-150-5370-10
+  - rule_id: secondary_shared_check
+    applies_to: "recovered inputs and shared plant"
+    rule: "Check origin, recovery gate, burden convention, consumers and service period; detect duplicate burdens."
+    source_ids:
+      - faa-ac-150-5370-10
+  - rule_id: scope_check
+    applies_to: "adjacent assets"
+    rule: "Exclude or link buildings, aircraft and standalone systems; do not count them as pavement layers."
+    source_ids:
+      - unsd-53213
+published_dataset_profile:
+  dataset_role: "Construction-stage foreground package for site-accepted airfield pavement."
+  downstream_use: "Secondary or background dataset for airport infrastructure process and lifecycle model."
+  allowed_use: "Matching pavement type, aircraft loading, layer section, geography and contract scope."
+  excluded_use: "Aircraft operation, buildings, maintenance or other pavement design without adjustment."
+  required_metadata: "Site, segment, accepted area, design, included systems, dates, suppliers and UUID evidence."
+  required_quality_disclosure: "Primary-record coverage, conversions, unresolved UUIDs, provisional ranges and shared/secondary attribution."
+  update_trigger: "Changed design, scope, supplier route, acceptance gate, recovered input or verified flow identity."
+data_sources:
+  - id: "unsd-53213"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53213"
+    used_for: "Category and building boundary."
+  - id: "faa-ac-150-5370-10"
+    type: "official_guidance"
+    reference: "https://www.faa.gov/airports/engineering/construction_standards"
+    used_for: "Airport construction items and acceptance record structure."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:a954995b8d49393dc3a297b2dd96b6f6cc284051b6e7ebc142a00bdcff6d9c47"
+  generated_content_sha256: "sha256:2f5f9e0b8450848c01ad05f36cca18321b9de660fbc5c430f0abafe563fc3cd5"
