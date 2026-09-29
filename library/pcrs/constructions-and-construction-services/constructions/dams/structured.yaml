@@ -1,10 +1,717 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53233"
-  title: "Dams"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.dams"
+  classification_refs: "CPC 3.0 53233, Dams; mapping acceptance is separate."
+  covered_products: "Accepted dam body and integral foundation, seepage, spillway and outlet works."
+  excluded_products: "Stand-alone generation facilities, irrigation networks, ordinary flood channels and reservoir operation."
+  representative_product: "One site-accepted dam with declared function and geometry."
+  production_route: "Diversion and foundation preparation, then concrete placement or compacted earth/rock fill, appurtenant integration and testing."
+  market_state: "Installed civil asset at signed handover."
+functional_unit:
+  what: "Completed dam body and declared integral appurtenances."
+  how_much: "One accepted dam; disclose crest length, height and structural volume separately."
+  how_well: "Design-function, foundation, structural, seepage and hydraulic tests passed."
+  how_long_or_cycle: "One construction project through signed handover; design life is metadata."
+  reference_flow_link: "accepted_dam from dam_build."
+system_boundary:
+  rules:
+    - rule_id: handover_gate
+      applies_to: "whole asset"
+      rule: "Include necessary diversion, foundation, placement, integral hydraulic works and testing through signed handover; exclude later storage, generation and maintenance."
+      source_ids:
+        - usbr-design-standards
+        - usbr-dam-project
+    - rule_id: foundation_handoff
+      applies_to: "both nodes"
+      rule: "Pass only accepted treated foundation to dam_build; removed material and rejected work have separate paths."
+      source_ids:
+        - usbr-design-standards
+    - rule_id: route_segments
+      applies_to: "dam body"
+      rule: "Separate concrete and embankment segment inventories and QA, but count a composite dam once."
+      source_ids:
+        - usbr-design-standards
+    - rule_id: shared_temporary_works
+      applies_to: "diversion and plant"
+      rule: "Record owner, consuming node and service period; assign each shared burden once."
+      source_ids:
+        - usbr-design-standards
+boundary_abstraction:
+  declared_starting_condition: "Surveyed river reach, foundation strata, existing works and borrow areas before diversion."
+  starting_condition_role: "Physical baseline, not burden-free dam input."
+  product_classification_scope: "One accepted dam; separately delivered facilities are linked externally."
+  recursive_input_rule: "Purchased components enter at supplier handover; an entire dam cannot recursively enter as unexamined material."
+  upstream_dataset_requirement: "Link route-matched concrete, cement, aggregate, fill, steel, energy, transport and treatment datasets."
+  disclosure: "Geometry, route, borrow and spoil origin/destination, diversion, shared plant, material cut-offs, tests and identity gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted dam"
+  product_flow_ref:
+    name: "Completed dam; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "dam"
+  required_qualifiers:
+    - Site
+    - "river and function"
+    - "dam type"
+    - "crest length and height"
+    - "structural volume"
+    - "route segments"
+    - "included spillways and outlets"
+    - "foundation treatment"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: dam_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "dam"
+    rule: "Count only the signed accepted structure; disclose geometry for comparison."
+  - id: materials_mass
+    applies_to: "installed and rejected materials"
+    required_property_ref:
+      name: "Mass or volume"
+      uuid: ""
+    required_unit: "kg or m3"
+    rule: "Convert volume with measured material density and reconcile deliveries, installation, returns and rejects."
+  - id: excavation_volume
+    applies_to: "foundation and borrow"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Distinguish surveyed in-situ volume from loose haul volume."
+  - id: construction_energy
+    applies_to: "plant"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Record carrier and avoid counting generator fuel and its electricity twice."
+process_map:
+  - id: site_foundation
+    name: "Diversion and foundation preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed riverbed to accepted foundation."
+    role: "Independently remove unsuitable ground, route spoil, treat foundation and return failures for rework."
+    quantitative_reference: "Surveyed excavation and accepted foundation area."
+  - id: dam_build
+    name: "Dam body and appurtenant integration"
+    inclusion: "required"
+    inclusion_condition: "Accepted foundation to signed dam handover."
+    role: "Integrate placed concrete or compacted fill, filters and hydraulic works; route rejected placements."
+    quantitative_reference: "One accepted dam and measured route segments."
+process_inventory:
+  - id: site_foundation
+    label: "Diversion and foundation preparation"
+    inputs:
+      product:
+        - row_id: foundation_service
+          role: "Foundation excavation service"
+          name: "Foundation excavation service by actual method"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Contracted work only if its plant energy is not also reported as owned foreground use."
+          amount:
+            expression: "Reconcile subcontracted scope, excavated volume and owner-supplied energy."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site_works
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/dam"
+                basis: "broad first-pass screen, not a design quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: foundation_materials
+          role: "Foundation and diversion materials"
+          name: "Foundation-treatment and temporary-diversion materials by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record grout, cutoff and cofferdam materials actually installed or consumed; reuse of temporary works needs a declared handoff."
+          amount:
+            expression: "Reconcile delivery, installed or consumed quantity, reuse and rejected mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000000"
+                unit: "kg/dam"
+                basis: "installed or consumed materials; broad provisional upper screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: foundation_energy
+          role: "Foundation construction energy"
+          name: "Energy carrier for excavation, diversion and dewatering"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Separate actual diesel, electricity and other carriers."
+          amount:
+            expression: "Meter or reconcile plant fuel use by carrier."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/dam"
+                basis: "all disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_foundation
+          role: "Accepted prepared foundation"
+          name: "Accepted treated dam foundation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Internal handoff to dam_build, not a second saleable dam."
+          amount:
+            expression: "Survey accepted area and transfer matching location to placement."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site_works
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "m2/dam"
+                basis: "surveyed accepted area; provisional upper screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: spoil_export
+          role: "Excavated spoil"
+          name: "Excavated soil and rock sent to off-site management"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identify material type and destination; accepted internal reuse is not exported spoil."
+          amount:
+            expression: "Dispatch mass or surveyed in-situ volume times tested density, net of reuse."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_spoil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of excavated mass"
+                basis: "exported mass divided by excavated mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: dam_build
+    label: "Dam body and appurtenant integration"
+    inputs:
+      product:
+        - row_id: foundation_handoff
+          role: "Prepared foundation handoff"
+          name: "Accepted treated dam foundation from site_foundation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Internal transfer of the surveyed accepted foundation from site_foundation; do not purchase it again or duplicate its upstream burdens."
+          amount:
+            expression: "Match transferred area and location to the accepted foundation output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site_works
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "input/output accepted-area ratio"
+                basis: "matched input and output area at identical location"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: concrete_materials
+          role: "Concrete-route materials"
+          name: "Installed concrete-route materials by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "For concrete or RCC segments only; distinguish binders, aggregates, admixtures, steel and ready mix without double counting."
+          amount:
+            expression: "Reconcile mix, delivery, installed volume, returns and rejects."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per accepted dam, concrete segments only"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000000"
+                unit: "kg/dam"
+                basis: "declared volume and mix design; broad provisional upper screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: embankment_materials
+          role: "Embankment-route materials"
+          name: "Installed earth, rock and filter products by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "For earth/rock segments only; distinguish core, shell, filter, drain, riprap and borrow sources."
+          amount:
+            expression: "Reconcile borrow, deliveries, accepted compacted volume and rejects."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per accepted dam, embankment segments only"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000000"
+                unit: "kg/dam"
+                basis: "surveyed geometry and measured density; broad provisional upper screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: construction_water
+          role: "Construction water"
+          name: "Construction process water"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Volume / m3"
+          description: "Only batching, curing, dust control and compaction water; not water stored by the reservoir."
+          amount:
+            expression: "Meter by source and use; reconcile transfers once."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "m3/dam"
+                basis: "construction withdrawals only"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: placement_energy
+          role: "Placement energy"
+          name: "Construction energy carrier for dam placement"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Separate batching, hauling, placing, compacting, pumps and testing by actual carrier."
+          amount:
+            expression: "Meter or reconcile fuel receipts to actual plant use."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000000"
+                unit: "MJ-equivalent/dam"
+                basis: "all disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: hydraulic_components
+          role: "Integral hydraulic components"
+          name: "Installed integral hydraulic components by item"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Only contractually included spillway, outlet, gate and seepage-control components; externally delivered waterways are linked."
+          amount:
+            expression: "Reconcile as-built bill with deliveries and rejected items."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg-equivalent/dam"
+                basis: "included items converted by documented unit mass"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_dam
+          role: "Accepted dam"
+          name: "Completed accepted dam; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / dam; UUIDs unresolved"
+          description: "Only after passed structural, seepage and hydraulic tests and signed handover."
+          amount:
+            expression: "One accepted dam after final handover; exclude rejected placements."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "dam/dam"
+                basis: "one accepted asset per reference asset"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: rejected_material
+          role: "Rejected construction material"
+          name: "Rejected concrete, fill or component by actual destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Name the producing node and whether each rejected batch is reworked, recovered or disposed; never count it as accepted dam."
+          amount:
+            expression: "Reconcile rejection tickets, rework returns and exported residuals once."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted dam"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered mass"
+                basis: "rejected mass divided by delivered mass by material type"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: one_dam_output
+    applies_to: "asset"
+    rule: "Count a composite or single-route dam once; multifunctional water supply, flood control and power require a separate justified use-stage study."
+    source_ids:
+      - usbr-design-standards
+  - rule_id: shared_diversion
+    applies_to: "diversion, pumps and equipment"
+    rule: "Assign actual use to each node by metered hours, work quantities or disclosed engineering proxy, retaining service period and users; count once."
+    source_ids:
+      - usbr-design-standards
+  - rule_id: rework_residual
+    applies_to: "rejected material"
+    rule: "Return rework to its producer; apply recovery credit only under a disclosed study convention and exclude rejects from accepted output."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_site_works
+      process_id: "site_foundation"
+      flow_role: "diversion, excavation, foundation"
+      record_type: "survey and subcontract log"
+      raw_fields: "area, in-situ volume, work scope, acceptance"
+      collection_method: "survey and engineer sign-off"
+      unit: "m2, m3, service unit"
+      frequency: "each package"
+      temporal_coverage: "start to foundation acceptance"
+      site_scope: "site"
+      aggregation_rule: "sum accepted packages, separate rework"
+      quality_evidence: "survey and acceptance records"
+    - protocol_id: cp_spoil
+      process_id: "site_foundation"
+      flow_role: "spoil"
+      record_type: "dispatch and destination tickets"
+      raw_fields: "type, origin, mass, density, reuse, destination"
+      collection_method: "ticket and density reconciliation"
+      unit: "kg, m3"
+      frequency: "each dispatch"
+      temporal_coverage: "excavation period"
+      site_scope: "site and destination"
+      aggregation_rule: "sum exported mass once"
+      quality_evidence: "tickets and receipt"
+    - protocol_id: cp_materials
+      process_id: "both_nodes"
+      flow_role: "foundation, diversion, placed materials and rejects"
+      record_type: "delivery, mix, borrow, placement and QA ledger"
+      raw_fields: "item, segment, delivered, placed, density, rejected, disposition"
+      collection_method: "batch/lift records and as-built survey"
+      unit: "kg, m3, item"
+      frequency: "each batch or lift"
+      temporal_coverage: "placement to completion"
+      site_scope: "all segments"
+      aggregation_rule: "reconcile installed, returned and rejected"
+      quality_evidence: "batch, compaction and concrete tests"
+    - protocol_id: cp_water
+      process_id: "dam_build"
+      flow_role: "construction water"
+      record_type: "meter log"
+      raw_fields: "source, reading, use, transfer"
+      collection_method: "meter readings"
+      unit: "m3"
+      frequency: "monthly and major use"
+      temporal_coverage: "construction"
+      site_scope: "site intake"
+      aggregation_rule: "sum withdrawals by use"
+      quality_evidence: "calibrated meter and permit"
+    - protocol_id: cp_energy
+      process_id: "both_nodes"
+      flow_role: "fuel and electricity"
+      record_type: "meter, invoice and runtime log"
+      raw_fields: "carrier, quantity, plant, node, hours"
+      collection_method: "meter and fuel reconciliation"
+      unit: "kWh, MJ, kg"
+      frequency: "monthly"
+      temporal_coverage: "active work"
+      site_scope: "site and shared plant"
+      aggregation_rule: "assign by actual use, convert once"
+      quality_evidence: "meter and receipts"
+    - protocol_id: cp_acceptance
+      process_id: "dam_build"
+      flow_role: "reference output"
+      record_type: "acceptance dossier"
+      raw_fields: "type, geometry, test, defects, date"
+      collection_method: "signed engineer inspection"
+      unit: "dam, m, m3"
+      frequency: "final and retest"
+      temporal_coverage: "completion gate"
+      site_scope: "whole dam"
+      aggregation_rule: "count one after acceptance"
+      quality_evidence: "signed certificate"
+  calculation_rules:
+    - id: spoil_mass
+      applies_to: "excavation"
+      rule: "Exported mass = weighed dispatch or in-situ volume × tested density, minus documented internal reuse."
+      inputs:
+        - survey
+        - tickets
+        - density
+        - reuse
+      output: "kg exported/dam"
+      source_ids:
+        - mass-balance-identity
+    - id: placed_material
+      applies_to: "segments"
+      rule: "Installed mass = accepted volume × measured density; reconcile with deliveries and rejects."
+      inputs:
+        - "as-built volume"
+        - density
+        - delivery
+      output: "kg installed/segment"
+      source_ids:
+        - mass-balance-identity
+    - id: carrier_energy
+      applies_to: "plant"
+      rule: "Convert each carrier with declared factor; do not add generated electricity to generator fuel."
+      inputs:
+        - "metered carriers"
+        - conversion
+        - allocation
+      output: "MJ-equivalent/dam"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: route_evidence
+      applies_to: "structure"
+      requirement: "Identify each concrete, embankment or composite segment and applicable test regime."
+      evidence: "as-built, mix and compaction records"
+    - id: mass_reconciliation
+      applies_to: "excavation and placement"
+      requirement: "Explain unmatched deliveries, spoil, rework and rejects."
+      evidence: "signed reconciliation"
+    - id: acceptance_evidence
+      applies_to: "reference output"
+      requirement: "Retain geometry and structural, seepage and hydraulic tests plus handover."
+      evidence: "acceptance dossier"
+    - id: identity_disclosure
+      applies_to: "unbound flows"
+      requirement: "Retain semantic specifications until platform detail confirmation."
+      evidence: "supplier specification"
+validation_rules:
+  - rule_id: reference_acceptance
+    applies_to: "output"
+    rule: "Reject a one-dam output without signed handover, geometry, route and integral-works scope."
+    source_ids:
+      - usbr-design-standards
+  - rule_id: foundation_link
+    applies_to: "graph"
+    rule: "Accepted foundation must connect to actual dam segments; exported spoil needs a destination."
+    source_ids:
+      - usbr-design-standards
+  - rule_id: route_checks
+    applies_to: "materials"
+    rule: "Check mix and placement for concrete and borrow, lift and compaction for embankment; composite dams need both."
+    source_ids:
+      - usbr-design-standards
+  - rule_id: shared_and_rework
+    applies_to: "site burdens"
+    rule: "Flag duplicate temporary works, missing reject paths or rejects counted as accepted."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: identity_gate
+    applies_to: "final exchange"
+    rule: "Require detail-confirmed exact flow, property and unit-group UUID before emitting an exchange."
+    source_ids:
+      - usbr-design-standards
+published_dataset_profile:
+  dataset_role: "Site-specific completed civil asset foreground package; candidate method until review."
+  downstream_use: "Secondary or background construction data if geometry, route and gate match."
+  allowed_use: "Construction-stage accounting for declared accepted dam and integral hydraulic works."
+  excluded_use: "Generation, reservoir operation, irrigation service or unqualified comparison."
+  required_metadata: "Site, year, type, geometry, segments, spillway/outlet scope, borrow/spoil, energy and acceptance."
+  required_quality_disclosure: "Quantity and density methods, shared-works attribution, unresolved UUIDs, range tier and cut-offs."
+  update_trigger: "Design, route, as-built quantities, acceptance, scope or confirmed identity changes."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "usbr-design-standards"
+    type: "official_guidance"
+    reference: "U.S. Bureau of Reclamation, Reclamation Design Standards, https://www.usbr.gov/tsc/techreferences/designstandards-datacollectionguides/designstandards.html"
+    used_for: "Dam routes, foundation, seepage, diversion and hydraulic structures."
+  - id: "usbr-dam-project"
+    type: "official_guidance"
+    reference: "U.S. Bureau of Reclamation, dam project description, https://www.usbr.gov/projects/index.php?id=383"
+    used_for: "Foundation cutoff, borrow, placement and grouting route examples."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-material identity applied to surveyed and weighed foreground records."
+    used_for: "Reconciliation and 0–1 fraction checks."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:d05e3ebee84c2ad2a1a0e02b7cbac9701f052ffe9d217e68381c71841e4aa1fb"
+  generated_content_sha256: "sha256:295da4050f853f436498941ed865c2557233d3433f0fdd161f396a9c47832e5e"

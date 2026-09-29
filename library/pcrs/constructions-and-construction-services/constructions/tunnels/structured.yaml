@@ -1,10 +1,696 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53222"
-  title: "Tunnels"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.tunnels"
+  classification_refs: "CPC 3.0 53222, Tunnels; mapping acceptance is separate."
+  covered_products: "Completed road, highway, railway and underground-rail-traffic tunnel civil assets."
+  excluded_products: "Ordinary underpasses, stand-alone rail lines, mining tunnels and transport operation."
+  representative_product: "One centreline-km of site-accepted transport tunnel with declared bore and system scope."
+  production_route: "Excavate and support ground; transfer accepted excavation to permanent lining and systems integration; test and hand over."
+  market_state: "Installed and commissioned civil asset at a named site."
+functional_unit:
+  what: "Site-accepted transport tunnel."
+  how_much: "One accepted centreline-km; disclose bore-km separately."
+  how_well: "Lining, water control, portals and included systems pass acceptance tests."
+  how_long_or_cycle: "One construction project through signed handover; design life is metadata."
+  reference_flow_link: "accepted_tunnel from lining_handover."
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "whole asset"
+      rule: "Include work and testing through signed handover; exclude later traffic operation and maintenance."
+      source_ids:
+        - unsd-tunnels
+        - fhwa-tunnel-manual
+    - rule_id: civil_interfaces
+      applies_to: "portals, roads and railway systems"
+      rule: "Record which interfaces belong to the measured contract and which link to external assets; assign shared work once."
+      source_ids:
+        - unsd-tunnels
+        - fhwa-tunnel-manual
+    - rule_id: excavation_handoff
+      applies_to: "two process nodes"
+      rule: "Transfer accepted supported excavation by matched chainage; spoil is a distinct output, not another accepted tunnel."
+      source_ids:
+        - fhwa-tunnel-manual
+        - mass-balance-identity
+    - rule_id: secondary_and_shared
+      applies_to: "recovered inputs and shared boring plant, pumps or power"
+      rule: "Record recovery gate, burden convention, consumers and service periods; count each burden once."
+      source_ids:
+        - mass-balance-identity
+boundary_abstraction:
+  declared_starting_condition: "Surveyed ground, existing works, groundwater and portal areas before excavation; declare prior demolition or remediation."
+  starting_condition_role: "Physical baseline, not a burden-free tunnel component."
+  product_classification_scope: "One accepted tunnel; separately measured rail line, road deck, bridge, station and utility assets are linked."
+  recursive_input_rule: "Purchased components enter at supplier handover; an accepted tunnel is not an unexamined raw input to another tunnel."
+  upstream_dataset_requirement: "Link compatible concrete, steel, waterproofing, energy, freight, waste treatment and included system datasets."
+  disclosure: "Ground, method, length, bores, materials, systems, spoil destinations, shared plant, secondary origins, cut-offs and identity gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted tunnel centreline-km"
+  product_flow_ref:
+    name: "Site-accepted transport tunnel; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "centreline-km"
+  required_qualifiers:
+    - Endpoints
+    - "bore count and bore-km"
+    - cross-section
+    - "road or rail function"
+    - "excavation method"
+    - "geology and groundwater"
+    - "support and lining"
+    - portals
+    - "safety and rail-system scope"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: tunnel_length
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Length, UUID unresolved"
+      uuid: ""
+    required_unit: "centreline-km"
+    rule: "Measure accepted centreline once between endpoints; disclose parallel bore-km without multiplying reference output."
+  - id: excavated_volume
+    applies_to: "excavation"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Use in-situ surveyed volume; record bulking and density conversions separately for spoil mass."
+  - id: material_mass
+    applies_to: "installed products and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert pieces and volumes using documented product-specific unit mass or density."
+  - id: site_energy
+    applies_to: "construction equipment"
+    required_property_ref:
+      name: "Energy or fuel mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Separate carriers and attribute shared equipment once; do not count generator fuel and its electricity twice."
+process_map:
+  - id: excavation_support
+    name: "Excavation and ground support"
+    inclusion: "required"
+    inclusion_condition: "Surveyed ground to accepted supported excavation."
+    role: "Remove ground, route spoil and install support; deficient chainage returns for rework."
+    quantitative_reference: "Accepted supported length and surveyed excavation."
+  - id: lining_handover
+    name: "Lining and systems handover"
+    inclusion: "required"
+    inclusion_condition: "Accepted excavation to signed tunnel handover."
+    role: "Integrate lining, waterproofing, drainage, portals and in-scope systems; test and reject failures."
+    quantitative_reference: "Accepted centreline-km and bore-km."
+process_inventory:
+  - id: excavation_support
+    label: "Excavation and ground support"
+    inputs:
+      product:
+        - row_id: excavation_service
+          role: "Excavation service"
+          name: "Tunnel excavation service by actual method"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Use for subcontracted work only when its equipment energy is not also counted as owned foreground energy. Select the exact service from contract records."
+          amount:
+            expression: "Record contract quantity, chainage and owner-supplied exclusions."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_excavation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/centreline-km"
+                basis: "broad first-pass screen, not a design quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: support_products
+          role: "Support products"
+          name: "Ground support products by as-built item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate anchors, shotcrete, grout, precast support and steel by specification. Reclaimed inputs require origin and recovery-handover evidence."
+          amount:
+            expression: "Reconcile delivered, installed, returned and rejected quantities."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/centreline-km"
+                basis: "broad geometry-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: excavation_energy
+          role: "Excavation energy"
+          name: "Construction energy by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record energy not included in the subcontract service; identify boring machines, pumps and ventilation by consumer and period."
+          amount:
+            expression: "Sum metered carriers attributed to this node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/centreline-km"
+                basis: "broad method-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: supported_excavation
+          role: "Accepted supported excavation"
+          name: "Accepted supported tunnel excavation"
+          flow_type: "product"
+          property_unit: "Centreline length / centreline-km"
+          description: "Internal intermediate only: transfer accepted chainage once to lining_handover; failed sections stay for rework."
+          amount:
+            expression: "Transfer surveyed chainage passing support and stability acceptance."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "centreline-km/centreline-km reference"
+                basis: "matched accepted chainage at internal handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: spoil_export
+          role: "Excavated spoil"
+          name: "Excavated soil and rock by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate on-site reuse, beneficial recovery and disposal; spoil is removed ground, not accepted tunnel output."
+          amount:
+            expression: "Reconcile in-situ excavation, density, reuse, stock and weighed export."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_spoil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg excavated material"
+                basis: "exported mass divided by reconciled excavated mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: lining_handover
+    label: "Lining and systems handover"
+    inputs:
+      product:
+        - row_id: excavation_received
+          role: "Supported excavation received"
+          name: "Accepted supported tunnel excavation"
+          flow_type: "product"
+          property_unit: "Centreline length / centreline-km"
+          description: "Match upstream accepted chainage exactly; do not import its burdens again as an external dataset."
+          amount:
+            expression: "Reconcile upstream and downstream accepted chainage."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "centreline-km/centreline-km reference"
+                basis: "matched upstream chainage"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+        - row_id: lining_products
+          role: "Lining and water-control products"
+          name: "Lining and water-control products by as-built item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record lining, reinforcement, membranes, grout, drainage and portal products by specification; manufacture is upstream, installation here."
+          amount:
+            expression: "Reconcile deliveries, installed amounts, returns and rejects."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/centreline-km"
+                basis: "broad cross-section-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: systems_products
+          role: "Safety and rail-interface components"
+          name: "Included tunnel-system components by specification"
+          flow_type: "product"
+          property_unit: "Mass or item / kg or item"
+          description: "Include ventilation, fire, lighting, control and rail-interface components only if specified in the tunnel contract; otherwise link the external asset."
+          amount:
+            expression: "Record delivered and installed quantities and test status."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "items/centreline-km"
+                basis: "broad scope-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: installation_energy
+          role: "Installation and testing energy"
+          name: "Construction energy by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record energy not already attributed to excavation or supplier manufacture; disclose common power and ventilation periods."
+          amount:
+            expression: "Sum metered carriers attributed to installation and testing."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/centreline-km"
+                basis: "broad method-dependent screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_tunnel
+          role: "Accepted tunnel"
+          name: "Site-accepted transport tunnel"
+          flow_type: "product"
+          property_unit: "Centreline length / centreline-km"
+          description: "Count only chainage with completed lining, water control and in-scope system tests; pending or rejected sections do not enter reference output."
+          amount:
+            expression: "One accepted centreline-km with bore-km and systems disclosed separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "centreline-km/reference flow"
+                basis: "one accepted centreline-km by definition"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: installation_rejects
+          role: "Rejected installation products"
+          name: "Rejected products by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Identify defective segments, membranes, concrete and failed equipment by producing node and destination. Rework loops stay at that node; unrepaired rejects exit once."
+          amount:
+            expression: "Reconcile installed, returned, reworked and exported mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted centreline-km"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg delivered products"
+                basis: "exported rejects divided by delivered products after returns and stock"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: shared_equipment
+    applies_to: "boring machine, pumps, power and access used by both nodes or projects"
+    rule: "List consuming nodes and periods. Attribute by logged hours, meters, excavated volume or documented physical use; fractions sum to one."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: parallel_bores
+    applies_to: "multiple bores"
+    rule: "Assign bore-specific work directly; divide inseparable common work by physical use or bore-km, never multiply centreline-km output."
+    source_ids:
+      - reference-definition
+  - rule_id: secondary_inputs
+    applies_to: "recovered aggregate, steel or segment material"
+    rule: "Document origin, recovery gate and prior-burden convention. Count recovery processing once; no unsupported substitution credit."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: reject_and_spoil
+    applies_to: "spoil and failed work"
+    rule: "Spoil is not an accepted co-product by default. Route reuse or disposal by receiver; retain rework burdens at producing node."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_excavation
+      process_id: "excavation_support"
+      flow_role: "excavation service"
+      record_type: "contract and survey"
+      raw_fields: "method, chainage, bore, volume, service coverage and owner fuel"
+      collection_method: "signed contract log and survey"
+      unit: "m3, service unit"
+      frequency: "each package"
+      temporal_coverage: "excavation to support gate"
+      site_scope: "named tunnel"
+      aggregation_rule: "sum non-overlapping packages"
+      quality_evidence: "survey and invoices"
+    - protocol_id: cp_materials
+      process_id: "excavation_support_lining_handover"
+      flow_role: "support, lining, systems"
+      record_type: "delivery and as-built"
+      raw_fields: "specification, mass, installed, returned, stock, secondary origin, recovery gate"
+      collection_method: "delivery and as-built schedule"
+      unit: "kg, item, m3"
+      frequency: "each delivery"
+      temporal_coverage: "full construction"
+      site_scope: "named tunnel"
+      aggregation_rule: "reconcile each product"
+      quality_evidence: "invoices and certificates"
+    - protocol_id: cp_energy
+      process_id: "excavation_support_lining_handover"
+      flow_role: "equipment energy"
+      record_type: "meter and fuel log"
+      raw_fields: "carrier, quantity, machine, node, period, shared consumers"
+      collection_method: "meters and machine logs"
+      unit: "kWh, MJ, kg"
+      frequency: "weekly"
+      temporal_coverage: "excavation to tests"
+      site_scope: "named tunnel"
+      aggregation_rule: "attribute each carrier once"
+      quality_evidence: "meters and invoices"
+    - protocol_id: cp_spoil
+      process_id: "excavation_support"
+      flow_role: "removed ground"
+      record_type: "survey and movement"
+      raw_fields: "volume, density, reuse, stock, export, receiver, classification"
+      collection_method: "survey and weighbridge"
+      unit: "m3, kg"
+      frequency: "each movement"
+      temporal_coverage: "excavation to clearance"
+      site_scope: "named tunnel"
+      aggregation_rule: "balance destinations"
+      quality_evidence: "survey and tickets"
+    - protocol_id: cp_waste
+      process_id: "lining_handover"
+      flow_role: "rejects"
+      record_type: "waste and rework log"
+      raw_fields: "product, mass, defect, node, return, rework, receiver"
+      collection_method: "weighbridge and work order"
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "lining to handover"
+      site_scope: "named tunnel"
+      aggregation_rule: "balance each product"
+      quality_evidence: "tickets and receipts"
+    - protocol_id: cp_acceptance
+      process_id: "excavation_support_lining_handover"
+      flow_role: "gate states"
+      record_type: "survey and test"
+      raw_fields: "endpoints, bore, chainage, section, support, water control, systems, defects, sign-off"
+      collection_method: "as-built survey and signed test"
+      unit: "centreline-km, bore-km"
+      frequency: "each gate"
+      temporal_coverage: "support to handover"
+      site_scope: "accepted chainage"
+      aggregation_rule: "match upstream and final length"
+      quality_evidence: "drawings and certificates"
+  calculation_rules:
+    - id: spoil_balance
+      applies_to: "excavation"
+      rule: "Excavated mass after density conversion = on-site reuse + export + stock change within documented tolerance."
+      inputs:
+        - survey
+        - density
+        - movements
+      output: "kg/centreline-km and residual"
+      source_ids:
+        - mass-balance-identity
+    - id: material_balance
+      applies_to: "each product"
+      rule: "Delivered + opening stock = installed + returned + rejects + closing stock within documented tolerance."
+      inputs:
+        - delivery
+        - as-built
+        - return
+        - waste
+        - stock
+      output: "kg/product and kg/centreline-km"
+      source_ids:
+        - mass-balance-identity
+    - id: bore_ratio
+      applies_to: "multiple bores"
+      rule: "Bore-km / centreline-km is disclosed, not used to multiply reference output."
+      inputs:
+        - "accepted length survey"
+      output: "bore-km/centreline-km"
+      source_ids:
+        - reference-definition
+    - id: shared_fraction
+      applies_to: "common assets"
+      rule: "Attributed amount = measured amount × documented use fraction; fractions across consumers sum to one."
+      inputs:
+        - "machine logs and meters"
+      output: "amount/centreline-km"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_scope
+      applies_to: "reference and interfaces"
+      requirement: "Check endpoints, length, geometry, method, geology, systems and linked road or rail assets."
+      evidence: "design, as-built and certificate"
+    - id: dq_materials
+      applies_to: "major inputs"
+      requirement: "Reconcile support, lining, waterproofing and systems by specification and secondary origin."
+      evidence: "delivery, as-built and waste records"
+    - id: dq_time
+      applies_to: "all phases"
+      requirement: "Use project dates, supplier vintage and disclosed gaps."
+      evidence: "schedule, invoices and tests"
+    - id: dq_identity
+      applies_to: "final exchanges"
+      requirement: "Confirm UUID against platform detail, flow type, delivery gate, property and unit before release."
+      evidence: "flow and support-reference review"
+    - id: dq_shared
+      applies_to: "common plant"
+      requirement: "Demonstrate consumers, service period, physical driver and single allocation."
+      evidence: "meters and allocation worksheet"
+validation_rules:
+  - rule_id: v_handover
+    applies_to: "reference product"
+    rule: "Require signed acceptance, endpoints, centreline-km, bore-km, geometry, ground and system scope; reject pending chainage."
+    source_ids:
+      - unsd-tunnels
+      - fhwa-tunnel-manual
+  - rule_id: v_interfaces
+    applies_to: "road and rail interfaces"
+    rule: "Check separate alignment, track, station and utility datasets for omissions and double counts."
+    source_ids:
+      - unsd-tunnels
+      - fhwa-tunnel-manual
+  - rule_id: v_balance
+    applies_to: "excavation and materials"
+    rule: "Test spoil and product balances with density, reuse, stock, returns and rejects."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_rework
+    applies_to: "deficient work"
+    rule: "Link rejects to rework or one recovery/disposal exit before acceptance."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_secondary
+    applies_to: "recovered input"
+    rule: "Require origin, recovery gate and one burden convention."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_shared
+    applies_to: "common plant"
+    rule: "Verify consumers, periods, physical driver and fractions summing to one."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_identity
+    applies_to: "final UUIDs"
+    rule: "An at-plant or mass-based flow cannot identify site-accepted length-based tunnel output; leave UUID blank until detail-confirmed."
+    source_ids:
+      - reference-definition
+published_dataset_profile:
+  dataset_role: "Construction-stage foreground package for an accepted transport tunnel."
+  downstream_use: "secondary_dataset or background_dataset in infrastructure process and lifecyclemodel projections after concrete identity review."
+  allowed_use: "Construction assessment per accepted centreline-km with matching bore geometry, method, ground and systems."
+  excluded_use: "Traffic operation, maintenance, whole-life claims, mining tunnel or stand-alone rail-line attribution."
+  required_metadata: "Endpoints, centreline-km, bore-km, section, method, geology, groundwater, lining, systems, interfaces, dates and acceptance."
+  required_quality_disclosure: "Material, energy and spoil completeness; provisional ranges; UUID gaps; secondary origin and shared plant attribution."
+  update_trigger: "As-built scope change, corrected quantities, supplier substitution or verified reference identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.secondary-material-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/secondary-material-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-tunnels"
+    type: "official_guidance"
+    reference: "UNSD CPC explanatory note 53222, https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53222"
+    used_for: "Tunnel category and adjacent exclusions."
+  - id: "fhwa-tunnel-manual"
+    type: "official_guidance"
+    reference: "FHWA, Technical Manual for Design and Construction of Road Tunnels: Civil Elements, https://www.fhwa.dot.gov/bridge/tunnel/library.cfm"
+    used_for: "Excavation, support, lining and water-control questions; no jurisdictional value universalized."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass and physical-use reconciliation applied to project records."
+    used_for: "Spoil, material, reject and shared-resource checks."
+  - id: "reference-definition"
+    type: "method_factor"
+    reference: "This PCR's accepted-centreline-kilometre definition and arithmetic normalization."
+    used_for: "Length, handover and ratio calculations."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e36bd071933a8b0bf6c4b736cbeda38e6fb753a90391c3373b6c6486994a53cc"
+  generated_content_sha256: "sha256:39b3223195f9656e0707ec7f70698a911851d9ea0185e801483d2aac5cb4c2a2"

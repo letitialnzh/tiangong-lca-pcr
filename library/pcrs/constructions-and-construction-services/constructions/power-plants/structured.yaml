@@ -1,10 +1,773 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53262"
-  title: "Power plants"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.power-plants"
+  classification_refs: "CPC 3.0 53262; mapping acceptance is separate."
+  covered_products: "Accepted generating plant with integrated civil, generation and balance-of-plant systems inside one contract boundary."
+  excluded_products: "Electricity output and routine operation; independently contracted transmission; equipment-only sales; separate fuel-supply facilities."
+  representative_product: "One accepted technology-qualified generating plant with declared rated capacity and unit list."
+  production_route: "Site removal and preparation; foundation and civil forming; equipment and electrical integration; commissioning tests and defect closeout to signed handover."
+  market_state: "Installed and accepted capital asset, not electricity supplied to the grid."
+functional_unit:
+  what: "Constructed and accepted electricity-generating plant."
+  how_much: "One accepted plant; report rated capacity separately in MW."
+  how_well: "Civil, mechanical, electrical and control systems meet contractual pre-handover acceptance tests."
+  how_long_or_cycle: "One construction project through signed acceptance; design life is metadata, not operation in this boundary."
+  reference_flow_link: "accepted_plant output from integrate_accept."
+system_boundary:
+  rules:
+    - rule_id: handover_gate
+      applies_to: "whole plant"
+      rule: "Include construction, installation, pre-handover commissioning and required defect closeout to signed acceptance; exclude routine post-handover generation."
+      source_ids:
+        - doe-commissioning
+    - rule_id: asset_limit
+      applies_to: "plant interfaces"
+      rule: "Include directly attributable balance-of-plant and grid connection within the contract; separately accepted transmission infrastructure is outside."
+      source_ids:
+        - unsd-cpc3-notes
+    - rule_id: removal_handoff
+      applies_to: "prepare_site"
+      rule: "Identify source soil or rock, accepted prepared footprint, on-site reuse and off-site spoil separately; removal is independent of civil forming."
+      source_ids:
+        - unsd-cpc3-notes
+    - rule_id: forming_handoff
+      applies_to: "form_civil"
+      rule: "Convert specified materials and accepted excavation to inspected foundations; link repair and rejected sections to this node."
+      source_ids:
+        - doe-commissioning
+    - rule_id: integration_handoff
+      applies_to: "integrate_accept"
+      rule: "Record purchased generating equipment, balance-of-plant and installation services; hand off only the tested accepted plant."
+      source_ids:
+        - doe-commissioning
+    - rule_id: test_export_limit
+      applies_to: "integrate_accept"
+      rule: "If pre-handover test electricity leaves the plant, record its metered export as a separate conditional output; post-handover generation is outside."
+      source_ids:
+        - doe-commissioning
+    - rule_id: technology_delta
+      applies_to: "integrate_accept"
+      rule: "Resolve actual technology-specific units and tests from as-built records; do not copy a generic intensity."
+      source_ids:
+        - doe-commissioning
+boundary_abstraction:
+  declared_starting_condition: "Surveyed site, ground condition and existing grid or utility interface before contract works."
+  starting_condition_role: "Physical baseline, not a burden-free finished plant."
+  product_classification_scope: "One accepted generating plant, including only attributable on-site and contract works."
+  recursive_input_rule: "Purchased same-category completed plant modules enter at supplier handover with an upstream dataset, not as free raw components."
+  upstream_dataset_requirement: "Technology-matched materials, equipment, energy, transport and waste-treatment datasets."
+  disclosure: "Technology, capacity basis, contract limit, unit list, shared works, ground removal, installed masses, tests, rejects, rework and identity gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted plant"
+  product_flow_ref:
+    name: "Accepted power plant; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "plant"
+  required_qualifiers:
+    - Site
+    - technology
+    - "rated capacity and MW basis"
+    - "unit list"
+    - "contract limits"
+    - "test protocol"
+    - "acceptance date"
+    - "hybrid-route attribution"
+reference_flows:
+  []
+measurement_rules:
+  - id: plant_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "plant"
+    rule: "Count one signed accepted contractual plant, not each turbine or MWh."
+  - id: capacity_label
+    applies_to: "plant qualification"
+    required_property_ref:
+      name: "Rated electrical power"
+      uuid: ""
+    required_unit: "MW"
+    rule: "State net or gross basis, tested configuration and unit count."
+  - id: earth_state
+    applies_to: "site removal"
+    required_property_ref:
+      name: "Volume and bulk density"
+      uuid: ""
+    required_unit: "m3; kg/m3"
+    rule: "Distinguish in-situ cut, hauled spoil and compacted fill before conversion."
+  - id: energy_carrier
+    applies_to: "construction and testing"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh; MJ; kg"
+    rule: "Separate purchased electricity, site fuel and test-generated electricity; avoid double counting."
+process_map:
+  - id: prepare_site
+    name: "Site removal and preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed land to accepted prepared footprint."
+    role: "Remove material from identified source; distinguish reuse and spoil."
+    quantitative_reference: "Surveyed cut and footprint."
+  - id: form_civil
+    name: "Civil forming and foundation acceptance"
+    inclusion: "required"
+    inclusion_condition: "Accepted footprint to inspected foundations and structures."
+    role: "Form specified geometry; repair or reject failed sections."
+    quantitative_reference: "As-built volume, mass and geometry."
+  - id: integrate_accept
+    name: "Equipment integration and plant acceptance"
+    inclusion: "required"
+    inclusion_condition: "Inspected civil works to signed whole-plant handover."
+    role: "Join generating equipment, balance-of-plant and electrical systems; test and correct defects."
+    quantitative_reference: "One accepted plant and rated MW."
+process_inventory:
+  - id: prepare_site
+    label: "Site removal and preparation"
+    inputs:
+      product:
+        - row_id: earthwork_service
+          role: "Contracted earthwork"
+          name: "Earthwork and excavation construction service by actual scope"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Use only for separately purchased excavation or preparation; exclude its machine fuel from owner-operated energy."
+          amount:
+            expression: "Reconcile invoice quantities to surveys."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of surveyed excavation"
+                basis: "contracted excavation divided by total surveyed excavation"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+        - row_id: site_energy
+          role: "Site energy"
+          name: "Construction energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Purchased electricity or fuel for owner-operated excavation and preparation, excluding subcontract-embedded energy."
+          amount:
+            expression: "Meter each carrier and assign to documented tasks."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of metered site energy"
+                basis: "assigned energy divided by metered site energy"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_footprint
+          role: "Accepted prepared footprint"
+          name: "Accepted prepared plant footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Surveyed ground prepared for foundations; an internal handoff, not another saleable plant."
+          amount:
+            expression: "Sum non-overlapping accepted foundation areas."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified area"
+                basis: "accepted area divided by specified footprint"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      waste:
+        - row_id: exported_spoil
+          role: "Exported spoil"
+          name: "Exported excavated material by type and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Excavated soil or rock leaving the project; distinguish on-site reuse and stock change."
+          amount:
+            expression: "Balance cut against reuse, stock and export by material."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass divided by removed mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      elementary:
+        []
+  - id: form_civil
+    label: "Civil forming and foundation acceptance"
+    inputs:
+      product:
+        - row_id: received_footprint
+          role: "Received prepared footprint"
+          name: "Accepted prepared plant footprint"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Internal transfer of accepted ground; do not purchase the same site works again."
+          amount:
+            expression: "Match the upstream accepted footprint."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off area"
+                basis: "received area divided by upstream accepted area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+        - row_id: civil_materials
+          role: "Civil materials"
+          name: "Civil construction material by actual specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Concrete, reinforcement, structural steel and specified foundation materials by grade."
+          amount:
+            expression: "Reconcile delivery, accepted installation, stock, returns and rejects."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered mass"
+                basis: "accepted mass divided by delivered mass by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_civil
+          role: "Accepted civil works"
+          name: "Accepted power-plant civil foundation and structure"
+          flow_type: "product"
+          property_unit: "Installed material mass / kg"
+          description: "Inspected foundations, structures and equipment bases passed to integration."
+          amount:
+            expression: "Sum accepted installed mass by structure; retain geometry separately."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of placed material mass"
+                basis: "accepted mass divided by placed mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      waste:
+        - row_id: civil_rejects
+          role: "Civil rejects"
+          name: "Rejected civil material by composition and recovery destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Rejected material leaving forming; repaired material loops within this node and is not counted twice."
+          amount:
+            expression: "Record rejects net of same-node rework by destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of placed mass"
+                basis: "rejected mass divided by placed mass by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      elementary:
+        []
+  - id: integrate_accept
+    label: "Equipment integration and plant acceptance"
+    inputs:
+      product:
+        - row_id: received_civil
+          role: "Received civil works"
+          name: "Accepted power-plant civil foundation and structure"
+          flow_type: "product"
+          property_unit: "Installed material mass / kg"
+          description: "Internal accepted foundations and structures from form_civil."
+          amount:
+            expression: "Match preceding node's accepted civil mass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_civil
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off mass"
+                basis: "received mass divided by upstream accepted civil mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+        - row_id: plant_equipment
+          role: "Generating and auxiliary equipment"
+          name: "Generating and auxiliary equipment by component and technology"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Generating units, electrical equipment, controls and route-specific balance-of-plant components by procurement and as-built identity."
+          amount:
+            expression: "Reconcile procured, installed, spare, returned and rejected components."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered equipment mass"
+                basis: "accepted installed mass divided by delivered mass by component"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+        - row_id: commissioning_energy
+          role: "Commissioning energy"
+          name: "Commissioning energy carrier by actual carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Purchased energy for pre-handover tests and defect correction; separately report generated test electricity."
+          amount:
+            expression: "Meter by test and carrier, excluding routine operation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of metered pre-handover energy"
+                basis: "assigned test energy divided by metered pre-handover energy"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_plant
+          role: "Accepted power plant"
+          name: "Accepted power plant by technology and rated capacity"
+          flow_type: "product"
+          property_unit: "Count / plant"
+          description: "Single tested and signed-off generating asset; not an electricity output."
+          amount:
+            expression: "One only after required tests and defect closeout satisfy acceptance."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "plant"
+                basis: "signed accepted plant count for this reference project"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+        - row_id: commissioning_test_electricity
+          role: "Exported commissioning-test electricity"
+          name: "Exported pre-handover test electricity by actual electrical specification"
+          flow_type: "product"
+          property_unit: "Electrical energy / kWh"
+          description: "Conditional co-output only when metered electricity generated during pre-handover tests leaves the plant boundary. Test self-use is internal; post-handover generation is excluded."
+          amount:
+            expression: "Meter exported kWh during dated pre-handover tests and reconcile generation, self-use and export."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_tests
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of pre-handover generated electricity"
+                basis: "exported kWh divided by metered pre-handover generated kWh"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      waste:
+        - row_id: integration_rejects
+          role: "Rejected integration components"
+          name: "Rejected plant component by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Failed components leaving integration; repaired items loop within integrate_accept until accepted or exit by documented recovery route."
+          amount:
+            expression: "Record net rejected mass by component and destination after rework."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted plant"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered equipment mass"
+                basis: "rejected mass divided by delivered mass by component"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - material-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: shared_works
+    applies_to: "multiple units or hybrid routes"
+    rule: "Assign common civil, utilities and commissioning burdens by measured unit-specific quantities; if inseparable, document a consistent engineering-driver allocation."
+    source_ids:
+      - doe-commissioning
+  - rule_id: test_electricity
+    applies_to: "commissioning"
+    rule: "Exported pre-handover test electricity is an incidental co-output. Retain construction and testing burdens with the accepted plant, assign no avoided-grid credit, and disclose exported kWh; test self-use is internal and post-handover generation is excluded."
+    source_ids:
+      - doe-commissioning
+  - rule_id: reject_rework
+    applies_to: "forming and integration"
+    rule: "Keep repair burdens at producing node; accepted output excludes rejects. Declare recovered, returned or discarded destinations and avoid duplicate procurement."
+    source_ids:
+      - doe-commissioning
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_site
+      process_id: "prepare_site"
+      flow_role: "removal, service, energy, footprint, spoil"
+      record_type: "survey and site log"
+      raw_fields: "cut volume; material; density; reuse; export; invoice; metered energy; accepted area"
+      collection_method: "surveys, tickets, meters and invoices"
+      unit: "m3; kg; kWh; MJ; m2"
+      frequency: "each lot and monthly meter"
+      temporal_coverage: "full preparation"
+      site_scope: "project site"
+      aggregation_rule: "reconcile cut, reuse, stock and export; sum non-overlapping area"
+      quality_evidence: "signed survey, tickets, invoice, meter"
+    - protocol_id: cp_civil
+      process_id: "form_civil"
+      flow_role: "civil materials, works, rejects"
+      record_type: "material and inspection register"
+      raw_fields: "grade; delivered, installed, returned and rejected mass; structure; inspection"
+      collection_method: "procurement and as-built takeoff"
+      unit: "kg; m3"
+      frequency: "each delivery and lot"
+      temporal_coverage: "full civil works"
+      site_scope: "project site"
+      aggregation_rule: "balance by grade and structure"
+      quality_evidence: "receipts, drawings, inspections"
+    - protocol_id: cp_equipment
+      process_id: "integrate_accept"
+      flow_role: "equipment and rejects"
+      record_type: "equipment register"
+      raw_fields: "unit; technology; model; mass; delivery, installation, spares, returns, rejects, destination"
+      collection_method: "procurement and installation records"
+      unit: "kg; count"
+      frequency: "each component lot"
+      temporal_coverage: "full installation"
+      site_scope: "project site"
+      aggregation_rule: "balance by component"
+      quality_evidence: "supplier records, installation logs, rejection tickets"
+    - protocol_id: cp_tests
+      process_id: "integrate_accept"
+      flow_role: "test energy, exported test electricity and accepted plant"
+      record_type: "test and handover pack"
+      raw_fields: "carrier; test energy; test-generated kWh; test self-use kWh; exported test kWh; rated MW; pass/fail; defect list; acceptance date"
+      collection_method: "calibrated meters and signed turnover"
+      unit: "kWh; MJ; MW; plant"
+      frequency: "each test and final acceptance"
+      temporal_coverage: "through handover"
+      site_scope: "accepted plant"
+      aggregation_rule: "reconcile generation, self-use and export by test; count plant on signed acceptance"
+      quality_evidence: "readings, certificates, signed handover"
+  calculation_rules:
+    - id: cut_balance
+      applies_to: "prepare_site"
+      rule: "Removed mass = reused + exported + stock change + documented loss; investigate imbalance."
+      inputs:
+        - survey
+        - density
+        - tickets
+      output: "kg by material and destination"
+      source_ids: []
+    - id: civil_balance
+      applies_to: "form_civil"
+      rule: "Delivered = accepted installed + rejects + returns + stock change by material."
+      inputs:
+        - "receipts and inspection"
+      output: "kg accepted and rejected"
+      source_ids: []
+    - id: equipment_balance
+      applies_to: "integrate_accept"
+      rule: "Delivered = accepted installed + spares + returns + rejects + stock change by component."
+      inputs:
+        - "equipment register"
+      output: "kg by component state"
+      source_ids: []
+    - id: plant_acceptance
+      applies_to: "reference product"
+      rule: "Accepted count = 1 only when mandatory tests and defect closeout pass and handover is signed."
+      inputs:
+        - tests
+        - punchlist
+        - handover
+      output: "plant count"
+      source_ids:
+        - doe-commissioning
+    - id: test_electricity_balance
+      applies_to: "integrate_accept"
+      rule: "Pre-handover test-generated kWh = internal test self-use + exported kWh + documented loss or stock change; export is a separate incidental output."
+      inputs:
+        - "dated test meters"
+      output: "exported kWh"
+      source_ids:
+        - material-balance-identity
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "whole plant"
+      requirement: "Record technology, net/gross capacity basis, unit list and contract limit; do not substitute a generic recipe."
+      evidence: "design basis and as-built unit list"
+    - id: dq_completeness
+      applies_to: "all nodes"
+      requirement: "Reconcile quantities, shared works, route-specific equipment and rejected material."
+      evidence: "survey, ledgers and reconciliation"
+    - id: dq_gate
+      applies_to: "acceptance"
+      requirement: "Distinguish tests from operation and retain signed turnover evidence."
+      evidence: "commissioning pack and acceptance signature"
+    - id: dq_identity
+      applies_to: "all exchanges"
+      requirement: "Resolve each final exchange to compatible flow, property and unit UUIDs; disclose candidate-stage gaps."
+      evidence: "platform detail and collection unit"
+validation_rules:
+  - rule_id: v_reference
+    applies_to: "accepted plant"
+    rule: "Reject plant count other than one or missing acceptance, technology or capacity qualification."
+    source_ids:
+      - doe-commissioning
+  - rule_id: v_handoffs
+    applies_to: "process chain"
+    rule: "Match prepared area and accepted civil mass across internal handoffs."
+    source_ids: []
+  - rule_id: v_balances
+    applies_to: "materials"
+    rule: "Enforce non-negative, non-duplicated spoil, civil and equipment balances."
+    source_ids: []
+  - rule_id: v_route
+    applies_to: "technology delta"
+    rule: "Verify unit list, MW basis and tests against as-built records; assign hybrid common works once."
+    source_ids:
+      - doe-commissioning
+  - rule_id: v_rejects
+    applies_to: "rework"
+    rule: "Rejects cannot count as accepted; link repair to producing node and exits to destinations."
+    source_ids:
+      - doe-commissioning
+  - rule_id: v_energy
+    applies_to: "commissioning"
+    rule: "Reconcile purchased carrier and pre-handover generated electricity, self-use and metered export; create the conditional output only for export, and exclude routine post-handover generation."
+    source_ids:
+      - doe-commissioning
+published_dataset_profile:
+  dataset_role: "Foreground construction data package for one accepted generating plant."
+  downstream_use: "secondary_dataset; background_dataset when technology, geography and capacity qualifiers are compatible."
+  allowed_use: "Model installed plant construction burdens with disclosed route, capacity, allocation and handover gate."
+  excluded_use: "Model electricity generation, operational emissions, lifetime output, transmission or technology-agnostic MW intensity without separate methods."
+  required_metadata: "Site, technology, net/gross MW basis, unit list, contract limit, construction period, tests, handover date, design life and UUID gaps."
+  required_quality_disclosure: "Primary-data coverage, surveys, procurement balance, tests, shared allocation, rework and matching upstream datasets."
+  update_trigger: "Changed technology, unit list, boundary, major material takeoff, capacity rating, test gate, UUID evidence or guidance."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+    - id: module.system-condition.multi-output-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/multi-output-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-notes"
+    type: "official_guidance"
+    reference: "[UNSD CPC Version 3.0 explanatory notes](https://unstats.un.org/UNSDWebsite/statcom/session_56/documents/BG-3o-Explanatory_Notes_of_the_Central_Product_Classification_Version3-E.pdf)"
+    used_for: "Category and adjacent asset boundary."
+  - id: "doe-commissioning"
+    type: "official_guidance"
+    reference: "[US DOE G 413.3-23 Nuclear Facilities Commissioning](https://www.energy.gov/documents/nuclear-facilities-commissioning)"
+    used_for: "Construction-to-test turnover, acceptance, defects and handover; commissioning method evidence, not an assertion all plants are nuclear."
+  - id: "material-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-material and fraction identities applied to measured project records."
+    used_for: "Material, handoff and equipment QA guardrails."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:a92aa7633cf13c7d20dc7d4d599860f99347911a0fad57cfcd4c2c00f631684c"
+  generated_content_sha256: "sha256:38000efefdaad5189ad5dc51fe9dc52953edb36af73f21cedd0bbcaeac3e0b0e"

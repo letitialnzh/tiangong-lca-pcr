@@ -1,10 +1,987 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53241"
-  title: "Long-distance pipelines"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.long-distance-pipelines"
+  classification_refs: "CPC 3.0 53241, Long-distance pipelines; mapping acceptance is separate."
+  covered_products: "Accepted long-distance transmission pipeline and integral pumping structures in the project scope."
+  excluded_products: "Local distribution mains, aqueducts, separate station projects and pipeline transport service."
+  representative_product: "One accepted specified long-distance pipeline project."
+  production_route: "Corridor preparation and trenching, pipe stringing and welding, field coating, laying/backfill or crossing, pressure testing, restoration and handover."
+  market_state: "Installed civil asset at signed handover."
+functional_unit:
+  what: "Completed long-distance pipeline asset with declared integral stations."
+  how_much: "One accepted project; disclose accepted route length and installed pipe mass separately."
+  how_well: "Welding, coating, pressure, route and restoration acceptance completed."
+  how_long_or_cycle: "One construction project through signed handover; design life is metadata."
+  reference_flow_link: "accepted_pipeline from line_install."
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "whole asset"
+      rule: "Include corridor work, joining, coating, installation, pressure testing, necessary repair and restoration through signed handover; exclude transport operation."
+      source_ids:
+        - phmsa-pipeline-construction
+        - unsd-cpc3-53241
+    - rule_id: earthwork_handoff
+      applies_to: "corridor_earthwork"
+      rule: "Measure removal from surveyed source ground independently; pass accepted prepared route to installation and separate reused backfill from exported spoil."
+      source_ids:
+        - phmsa-pipeline-construction
+    - rule_id: assembly_finish_handoff
+      applies_to: "pipe_assembly, joint_coating"
+      rule: "Pass inspected joined pipe to coating and accepted coated pipe to installation; failed welds or coating return for repair or leave to a declared destination."
+      source_ids:
+        - phmsa-pipeline-construction
+    - rule_id: segment_routes
+      applies_to: "line_install"
+      rule: "Separate open-cut, trenchless and submarine route records and inventories; count each accepted chainage once."
+      source_ids:
+        - phmsa-pipeline-construction
+        - ferc-pipeline-construction
+boundary_abstraction:
+  declared_starting_condition: "Surveyed route and existing ground or sea-bed before construction."
+  starting_condition_role: "Physical baseline, not burden-free installed infrastructure."
+  product_classification_scope: "One accepted transmission asset; separate station projects are linked, not silently included."
+  recursive_input_rule: "Purchased pipe and services enter at supplier handover; a complete pipeline is not an unexamined material input."
+  upstream_dataset_requirement: "Route-matched pipe, coating, energy, transport, water and waste-management datasets."
+  disclosure: "Segment methods, soil or sea-bed state, spoil reuse and destination, station scope, test medium, shared plant and signed acceptance."
+reference_flow_definition:
+  reference_amount: "1 accepted pipeline project"
+  product_flow_ref:
+    name: "Completed long-distance pipeline; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "pipeline project"
+  required_qualifiers:
+    - "Conveyed medium"
+    - "alignment and geography"
+    - "route length"
+    - diameter
+    - "wall thickness and material"
+    - coating
+    - "pressure class"
+    - "installation method by segment"
+    - "included stations"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: project_count
+    applies_to: "reference output"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "project"
+    rule: "Count signed accepted projects once; retain route length for comparison."
+  - id: pipe_balance
+    applies_to: "pipe and fittings"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile delivered, installed, returned and rejected mass by specification."
+  - id: route_volume
+    applies_to: "corridor"
+    required_property_ref:
+      name: "Length and in-situ volume"
+      uuid: ""
+    required_unit: "km and m3"
+    rule: "Measure installed chainage and surveyed cut volume; do not use loose-haul volume as in-situ excavation."
+  - id: water_balance
+    applies_to: "pressure testing"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Reconcile intake, reuse, treatment, discharge and residual water by test section."
+  - id: energy_carrier
+    applies_to: "equipment"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Avoid counting generator fuel and generated electricity twice."
+process_map:
+  - id: corridor_earthwork
+    name: "Corridor preparation and removal"
+    inclusion: "required"
+    inclusion_condition: "Surveyed route to accepted prepared corridor."
+    role: "Clear, grade and remove trench or crossing material independently; route reusable backfill and exported spoil."
+    quantitative_reference: "Surveyed area and cut volume."
+  - id: pipe_assembly
+    name: "Stringing and joining"
+    inclusion: "required"
+    inclusion_condition: "Delivered components to inspected joined string."
+    role: "Integrate pipe joints, bends and fittings through welding and inspection; repair or reject failed joints."
+    quantitative_reference: "Installed pipe mass and joint count."
+  - id: joint_coating
+    name: "Field-joint protection"
+    inclusion: "required"
+    inclusion_condition: "Inspected joined string to accepted coated string."
+    role: "Apply and inspect field coating; repair defects and route residues."
+    quantitative_reference: "Accepted coating area and joint count."
+  - id: line_install
+    name: "Installation, test and handover"
+    inclusion: "required"
+    inclusion_condition: "Prepared route and coated string to signed acceptance."
+    role: "Lay pipe, backfill or cross, test, repair, restore and hand over one line."
+    quantitative_reference: "Accepted route length and one project."
+process_inventory:
+  - id: corridor_earthwork
+    label: "Corridor preparation and removal"
+    inputs:
+      product:
+        - row_id: corridor_energy
+          role: "Corridor equipment energy"
+          name: "Energy carrier by actual fuel or electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Meter actual fuel and electricity for clearing, grading and excavation when owned foreground equipment is used; do not repeat fuel embedded in a contracted service."
+          amount:
+            expression: "Allocate measured use to corridor_earthwork and reconcile generator fuel and output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/project"
+                basis: "all disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: earthwork_service
+          role: "Corridor excavation service"
+          name: "Construction service for actual clearing and excavation method"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Declared service property / declared unit"
+          description: "Use when separately contracted; do not also count the same contractor equipment as owned foreground plant."
+          amount:
+            expression: "Reconcile subcontract scope with surveyed area and cut volume."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/project"
+                basis: "broad first-pass screen, not design quantity"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_route
+          role: "Accepted prepared route"
+          name: "Accepted prepared corridor or crossing route"
+          flow_type: "product"
+          property_unit: "Length / km"
+          description: "Internal surveyed handoff to installation, not another saleable asset."
+          amount:
+            expression: "Sum non-overlapping accepted as-built chainage."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "km/project"
+                basis: "accepted as-built route"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: exported_spoil
+          role: "Exported excavation spoil"
+          name: "Excavated soil or rock by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Reused soil remains in the foreground backfill balance; record removed material crossing to a destination."
+          amount:
+            expression: "Reconcile excavation, backfill, stockpile and export using measured density."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000000"
+                unit: "kg/project"
+                basis: "exported mass only"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: pipe_assembly
+    label: "Stringing and joining"
+    inputs:
+      product:
+        - row_id: assembly_energy
+          role: "Joining equipment energy"
+          name: "Energy carrier by actual fuel or electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Meter actual fuel and electricity for bending, welding and inspection when owned foreground equipment is used; do not repeat fuel embedded in a contracted service."
+          amount:
+            expression: "Allocate measured use to pipe_assembly and reconcile generator fuel and output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_joints
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/project"
+                basis: "all disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: pipe_components
+          role: "Pipe joints and fittings"
+          name: "Pipe joints and fittings by material and specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Enumerate pipe joints, bends, valves and fittings by specification; integral station components only when in project scope."
+          amount:
+            expression: "Reconcile delivered, installed, returned and rejected mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000000"
+                unit: "kg/project"
+                basis: "delivered specified components"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: joining_service
+          role: "Contracted joining and inspection service"
+          name: "Pipe joining and inspection service by actual method"
+          flow_type: "product"
+          property_unit: "Service quantity / declared unit"
+          description: "Use only for separately contracted bending, welding or nondestructive inspection; owned equipment and the same contractor service must not overlap."
+          amount:
+            expression: "Match invoices, accepted joint register and repair work."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_joints
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/project"
+                basis: "contracted joining and inspection work"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: joined_string
+          role: "Inspected joined pipe string"
+          name: "Inspected joined pipe string"
+          flow_type: "product"
+          property_unit: "Length / km"
+          description: "Internal handoff to field coating only after weld inspection."
+          amount:
+            expression: "Count accepted joined chainage once after repair and retest."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_joints
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "km/project"
+                basis: "accepted inspected length"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_pipe
+          role: "Rejected pipe cut-outs"
+          name: "Rejected pipe and weld cut-outs by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Failed joints return for repair; irreparable cut-outs exit to documented recovery or disposal, never accepted output."
+          amount:
+            expression: "Count material leaving after rework decisions."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_joints
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/project"
+                basis: "exported cut-outs after repair"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: joint_coating
+    label: "Field-joint protection"
+    inputs:
+      product:
+        - row_id: coating_energy
+          role: "Coating equipment energy"
+          name: "Energy carrier by actual fuel or electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Meter actual fuel and electricity for surface preparation, application and inspection when owned foreground equipment is used; do not repeat fuel embedded in a contracted service."
+          amount:
+            expression: "Allocate measured use to joint_coating and reconcile generator fuel and output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_coating
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/project"
+                basis: "all disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: joined_string_input
+          role: "Inspected joined string received"
+          name: "Inspected joined pipe string"
+          flow_type: "product"
+          property_unit: "Length / km"
+          description: "Receive the inspected output of pipe_assembly without adding its upstream burdens again."
+          amount:
+            expression: "Equal accepted joined length entering field coating."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_joints
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "km/project"
+                basis: "matches joined_string output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: coating_material
+          role: "Coating and repair material"
+          name: "Field-joint coating material by formulation"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Apply coating to inspected joined pipe; identify primer, wrap, coating and repair stocks in source records."
+          amount:
+            expression: "Reconcile purchased, applied, returned and discarded mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_coating
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/project"
+                basis: "applied and discarded field material"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: coating_service
+          role: "Contracted field-coating service"
+          name: "Field-joint coating and inspection service by method"
+          flow_type: "product"
+          property_unit: "Service quantity / declared unit"
+          description: "Include separate application, inspection or repair service when performed by a contractor; avoid overlap with owned equipment energy."
+          amount:
+            expression: "Match contractor scope, accepted joint area and repair logs."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_coating
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/project"
+                basis: "contracted field coating and inspection"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: coated_string
+          role: "Accepted coated pipe string"
+          name: "Accepted coated pipe string"
+          flow_type: "product"
+          property_unit: "Length / km"
+          description: "Pass only coating-inspected string to installation; failed areas return for surface repair."
+          amount:
+            expression: "Reconcile coating inspection with accepted joined length."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_coating
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "km/project"
+                basis: "coating-inspected accepted length"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: coating_residue
+          role: "Coating residues"
+          name: "Field-coating residue by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Route packaging, unused coating and removed defective coating by material to documented recovery or disposal."
+          amount:
+            expression: "Subtract returned usable stock from collected residue."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_coating
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/project"
+                basis: "boundary-exiting residue after repair"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: line_install
+    label: "Installation, test and handover"
+    inputs:
+      product:
+        - row_id: install_energy
+          role: "Installation equipment energy"
+          name: "Energy carrier by actual fuel or electricity"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Meter actual fuel and electricity for lowering, crossing, backfill and restoration when owned foreground equipment is used; do not repeat fuel embedded in a contracted service."
+          amount:
+            expression: "Allocate measured use to line_install and reconcile generator fuel and output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/project"
+                basis: "all disclosed carriers with documented conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: prepared_route_input
+          role: "Prepared route received"
+          name: "Accepted prepared corridor or crossing route"
+          flow_type: "product"
+          property_unit: "Length / km"
+          description: "Receive the surveyed output of corridor_earthwork without repeating its excavation burden."
+          amount:
+            expression: "Match the non-overlapping prepared_route output."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "km/project"
+                basis: "matches prepared_route output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: coated_string_input
+          role: "Coated string received"
+          name: "Accepted coated pipe string"
+          flow_type: "product"
+          property_unit: "Length / km"
+          description: "Receive only inspected coated string from joint_coating, not an additional purchased pipe burden."
+          amount:
+            expression: "Match the coated_string output and accepted installation chainage."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_coating
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "km/project"
+                basis: "matches coated_string output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: installation_service
+          role: "Installation and crossing service"
+          name: "Installation service by actual route"
+          flow_type: "product"
+          property_unit: "Service quantity / declared unit"
+          description: "Record contracted lowering, drilling or submarine laying by segment, without duplicating owned equipment inputs."
+          amount:
+            expression: "Match service invoices and non-overlapping as-built chainage."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "declared service units/project"
+                basis: "route-specific service without owned-plant duplication"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: test_water
+          role: "Pressure-test water"
+          name: "Water supplied for hydrostatic pressure testing"
+          flow_type: "product"
+          property_unit: "Volume / m3"
+          description: "Record water intake by section; an approved air or gas test requires its actual medium and route explanation."
+          amount:
+            expression: "Meter withdrawals and inter-section transfers."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "m3/project"
+                basis: "withdrawal net of documented reuse"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_pipeline
+          role: "Accepted long-distance pipeline"
+          name: "Completed long-distance pipeline asset"
+          flow_type: "product"
+          property_unit: "Count / pipeline project"
+          description: "The single asset output follows passing pressure tests, repairs, restoration and signed handover."
+          amount:
+            expression: "One accepted project with route and station qualifiers."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "project/project"
+                basis: "one signed project reference"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - phmsa-pipeline-construction
+      waste:
+        - row_id: spent_test_water
+          role: "Spent pressure-test water"
+          name: "Spent hydrostatic-test water by destination"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Record transferred or treated test water as waste where appropriate; elementary emissions need specific substance and receiving medium."
+          amount:
+            expression: "Balance intake, reuse, treatment, discharge and residual water."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted pipeline project"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "m3/project"
+                basis: "spent volume after documented reuse"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_asset
+    applies_to: "whole project"
+    rule: "Count accepted pipeline once; prepared route, joined string and coated string are internal handoffs, not co-products."
+    source_ids:
+      - phmsa-pipeline-construction
+  - rule_id: shared_plant
+    applies_to: "equipment and stations"
+    rule: "Assign shared plant and temporary works by measured use, segment chainage or disclosed causal driver; never double-count owned fuel and contractor service."
+    source_ids:
+      - ferc-pipeline-construction
+  - rule_id: reject_burden
+    applies_to: "weld and coating rejects"
+    rule: "Retain burdens through repair; exported scrap or residue has a declared destination without an assumed credit against accepted output."
+    source_ids:
+      - phmsa-pipeline-construction
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_corridor
+      process_id: "corridor_earthwork"
+      flow_role: "service, energy, route, spoil"
+      record_type: "Survey, contract, fuel and haul logs"
+      raw_fields: "chainage, area, cut, density, reuse, export, destination, carrier, energy quantity, generator status"
+      collection_method: "Survey, meter and ticket reconciliation"
+      unit: "km, m2, m3, kg, MJ, kWh"
+      frequency: "per segment"
+      temporal_coverage: "construction"
+      site_scope: "complete route"
+      aggregation_rule: "Sum accepted chainage, balance material and energy"
+      quality_evidence: "signed surveys, meters, weigh tickets"
+    - protocol_id: cp_components
+      process_id: "pipe_assembly"
+      flow_role: "pipe and fittings"
+      record_type: "Delivery register"
+      raw_fields: "grade, diameter, wall, mass, installed, return, reject"
+      collection_method: "Scan and reconcile certificates"
+      unit: "kg"
+      frequency: "per delivery"
+      temporal_coverage: "construction"
+      site_scope: "all segments"
+      aggregation_rule: "Balance by specification"
+      quality_evidence: "mill certificates, as-built register"
+    - protocol_id: cp_joints
+      process_id: "pipe_assembly"
+      flow_role: "energy, service, joined string and rejects"
+      record_type: "Weld, fuel and inspection logs"
+      raw_fields: "joint ID, chainage, service quantity, carrier, energy quantity, generator status, inspection, repair, cut-out mass"
+      collection_method: "Joint-to-inspection and meter register"
+      unit: "km, kg, MJ, kWh, declared unit"
+      frequency: "per joint"
+      temporal_coverage: "construction"
+      site_scope: "all joints"
+      aggregation_rule: "Count accepted once after retest and reconcile energy"
+      quality_evidence: "NDT, meters, repair report"
+    - protocol_id: cp_coating
+      process_id: "joint_coating"
+      flow_role: "energy, service, coating, string, residue"
+      record_type: "Coating, fuel and inspection logs"
+      raw_fields: "batch, applied, return, residue, joint ID, service quantity, carrier, energy quantity, generator status, repair"
+      collection_method: "Batch, meter and holiday-test reconciliation"
+      unit: "kg, km, MJ, kWh, declared unit"
+      frequency: "per joint"
+      temporal_coverage: "construction"
+      site_scope: "all coated joints"
+      aggregation_rule: "Sum accepted length, energy and residue"
+      quality_evidence: "batch sheets, meters, test reports"
+    - protocol_id: cp_install
+      process_id: "line_install"
+      flow_role: "energy and installation service"
+      record_type: "As-built, fuel and contract logs"
+      raw_fields: "chainage, method, service quantity, carrier, energy quantity, generator status, restoration"
+      collection_method: "Survey, meter and invoice reconciliation"
+      unit: "km, MJ, kWh, declared unit"
+      frequency: "per segment"
+      temporal_coverage: "construction"
+      site_scope: "complete route"
+      aggregation_rule: "Non-overlapping accepted segments and energy"
+      quality_evidence: "as-built drawings, meters, sign-off"
+    - protocol_id: cp_test
+      process_id: "line_install"
+      flow_role: "water, spent water, accepted asset"
+      record_type: "Test and handover logs"
+      raw_fields: "section, medium, intake, reuse, discharge, treatment, result, signature"
+      collection_method: "Meters and test reports"
+      unit: "m3, project"
+      frequency: "per section"
+      temporal_coverage: "test to handover"
+      site_scope: "all sections"
+      aggregation_rule: "Balance water and count project once"
+      quality_evidence: "pressure charts, handover certificate"
+  calculation_rules:
+    - id: route_sum
+      applies_to: "line"
+      rule: "Sum non-overlapping accepted as-built segment lengths; alternatives at one chainage are exclusive."
+      inputs:
+        - "chainage and method"
+      output: "accepted km"
+      source_ids:
+        - phmsa-pipeline-construction
+    - id: material_balance
+      applies_to: "pipe and spoil"
+      rule: "Delivered = installed + returned + rejected; excavated = reused + exported + remaining stock after unit conversion."
+      inputs:
+        - surveys
+        - "delivery and haul tickets"
+      output: "reconciled kg or m3"
+      source_ids:
+        - phmsa-pipeline-construction
+    - id: hydrotest_balance
+      applies_to: "test medium"
+      rule: "Intake + transfer-in = transfer-out + discharge + treatment + retained, by section."
+      inputs:
+        - "meters and transfer logs"
+      output: "spent m3"
+      source_ids:
+        - phmsa-pipeline-construction
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "line"
+      requirement: "Every accepted chainage has one method, pipe specification and test disposition."
+      evidence: "as-built and test register"
+    - id: dq_rework
+      applies_to: "weld and coating"
+      requirement: "Link each failed inspection to repair/retest, recovery or disposal; unresolved failures block acceptance."
+      evidence: "defect logs"
+    - id: dq_balances
+      applies_to: "pipe, spoil, water"
+      requirement: "Investigate unexplained balances before release."
+      evidence: "reconciliation sheets"
+    - id: dq_identity
+      applies_to: "concrete exchanges"
+      requirement: "Confirm each actual flow UUID and support property/unit rows; Flow Sets alone do not finish identity."
+      evidence: "platform detail records"
+validation_rules:
+  - rule_id: handover_check
+    applies_to: "reference output"
+    rule: "Reject accepted-line output unless welding, coating, pressure, restoration and signed handover cover declared scope."
+    source_ids:
+      - phmsa-pipeline-construction
+  - rule_id: route_check
+    applies_to: "alternatives"
+    rule: "Validate non-overlapping chainage and route-specific excavation and installation records."
+    source_ids:
+      - ferc-pipeline-construction
+  - rule_id: reject_check
+    applies_to: "failed joints and coating"
+    rule: "Require repair and retest, recovery or disposal; no failed material enters accepted output."
+    source_ids:
+      - phmsa-pipeline-construction
+  - rule_id: scope_check
+    applies_to: "asset"
+    rule: "Reject a transport service or local distribution main as construction asset reference."
+    source_ids:
+      - unsd-cpc3-53241
+published_dataset_profile:
+  dataset_role: "Foreground construction package for one accepted long-distance pipeline."
+  downstream_use: "secondary_dataset or background_dataset for asset construction."
+  allowed_use: "Route-matched infrastructure modelling with declared medium, length, material, method and station scope."
+  excluded_use: "Pipeline transport operation, local distribution and unqualified comparisons."
+  required_metadata: "Geography, alignment, chainage, medium, pipe specification, segment method, station scope, test and handover date."
+  required_quality_disclosure: "Material and water balances, shared plant, rejects, unresolved identities and provisional ranges."
+  update_trigger: "Route, diameter, material or station-scope change, revised tests or verified identity updates."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.surface-finishing-node
+      kind: "activity"
+      path: "library/modules/activities/surface-finishing-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-53241"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Product scope and exclusions."
+  - id: "phmsa-pipeline-construction"
+    type: "official_guidance"
+    reference: "https://www.phmsa.dot.gov/technical-resources/pipeline/pipeline-construction/phases-pipeline-construction-overview"
+    used_for: "Construction, test, repair and restoration sequence."
+  - id: "ferc-pipeline-construction"
+    type: "official_guidance"
+    reference: "https://www.ferc.gov/interstate-natural-gas-facility-my-land-what-do-i-need-know"
+    used_for: "Installation and pressure-test gates."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:fbe84b83351ad0e7fd0a5309be254f206e8307f5cc0e1d2671091da7b6d87ea6"
+  generated_content_sha256: "sha256:da03959282f2ed2b58fe1ad426f72b6bad303da3bf6b7eec7c71a3358d6b2866"

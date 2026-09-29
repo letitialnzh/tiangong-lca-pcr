@@ -1,10 +1,845 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53261"
-  title: "Mining constructions"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.mining-constructions"
+  classification_refs: "CPC 3.0 53261, Mining constructions; mapping acceptance is separate."
+  covered_products: "Site-accepted mine-specific shafts, drifts, winding towers, loading/discharge stations and related non-building civil facilities."
+  excluded_products: "Mineral extraction and processing; standalone buildings; non-mine tunnels; separately sold equipment; mine operation and future maintenance."
+  representative_product: "One accepted mine access or handling facility with declared geometry and installed-system scope."
+  production_route: "Survey and prepare ground; remove ground for shaft/drift routes; form permanent support or foundation; integrate structural, hoisting, loading and ventilation interfaces as contracted; test and hand over. Surface-only towers/stations omit underground excavation."
+  market_state: "Installed, tested and accepted facility at a named mine site."
+functional_unit:
+  what: "One functional mine-specific civil facility accepted on site."
+  how_much: "One accepted facility; disclose excavated volume, supported length and structural quantities separately."
+  how_well: "Geometry, structural support and in-scope handling/ventilation interfaces pass signed tests."
+  how_long_or_cycle: "One construction contract through handover; operating life is scenario metadata."
+  reference_flow_link: "accepted_mining_structure from facility_integration."
+system_boundary:
+  rules:
+    - rule_id: construction_handover
+      applies_to: "whole facility"
+      rule: "Include preparation, excavation where applicable, permanent support, integration and testing through signed handover; exclude mineral extraction and operation."
+      source_ids:
+        - unsd-cpc3-53261
+        - msha-shaft-sinking
+    - rule_id: removal_interface
+      applies_to: "ground removal"
+      rule: "Survey the source state; separate excavated spoil, on-site reuse and final export by destination. ground_removal hands accepted prepared ground to support_forming; removal is neither ore extraction nor treatment."
+      source_ids:
+        - msha-shaft-sinking
+        - mass-balance-identity
+    - rule_id: forming_interface
+      applies_to: "support and foundation"
+      rule: "support_forming takes accepted prepared ground and hands stable lining/foundation to facility_integration; account for support loss and rework."
+      source_ids:
+        - msha-shaft-sinking
+    - rule_id: assembly_interface
+      applies_to: "tower, loading, hoisting and ventilation"
+      rule: "Identify support, structural elements and installed systems as separate component roles; site installation joins them, while supplier manufacture remains upstream."
+      source_ids:
+        - unsd-cpc3-53261
+        - msha-hoist-braking
+    - rule_id: route_delta
+      applies_to: "underground versus surface"
+      rule: "Shaft/drift routes require removal and ground support; surface-only towers/stations require foundation and assembly without fictitious underground excavation. Declare coexisting works before aggregation."
+      source_ids:
+        - unsd-cpc3-53261
+        - msha-shaft-sinking
+boundary_abstraction:
+  declared_starting_condition: "Surveyed mine site and ground condition before works, with existing workings, utilities, dewatering, contamination and demolition declared."
+  starting_condition_role: "Physical baseline for construction, not a free finished mine facility."
+  product_classification_scope: "One accepted mine-specific civil facility and contracted integrated systems; extraction and mine operation remain outside."
+  recursive_input_rule: "Prefabricated lining, tower or loading module enters as a component at its supplier gate; never hide another accepted facility as an unexamined raw input."
+  upstream_dataset_requirement: "Link compatible materials, equipment, energy, freight and waste-treatment datasets at their actual gates."
+  disclosure: "Facility type, ground state, route, geometry, excavation/disposal, component origin, shared works, temporary works, integrated systems and acceptance."
+reference_flow_definition:
+  reference_amount: "1 accepted mine-specific facility"
+  product_flow_ref:
+    name: "Site-accepted mining construction; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "facility"
+  required_qualifiers:
+    - "Facility type and mine site"
+    - "endpoints or footprint"
+    - "excavation volume and shaft/drift length if applicable"
+    - "support type"
+    - "installed system scope"
+    - "contract interfaces"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: facility_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "facility"
+    rule: "Count separately functional facilities only after signed handover."
+  - id: excavation_volume
+    applies_to: "removed ground"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Use surveyed in-situ volume; document density and bulking when converting to spoil mass."
+  - id: length_and_area
+    applies_to: "shaft, drift and surface works"
+    required_property_ref:
+      name: "Length and area"
+      uuid: ""
+    required_unit: "m, m2"
+    rule: "Report as-built supported length and footprint without counting them as extra facilities."
+  - id: material_mass
+    applies_to: "permanent inputs and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Convert pieces and volumes using documented unit mass or density, then reconcile stock and returns."
+  - id: site_energy
+    applies_to: "equipment and tests"
+    required_property_ref:
+      name: "Energy or fuel mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Separate carriers; avoid counting generator fuel and electricity twice."
+process_map:
+  - id: ground_removal
+    name: "Ground preparation and removal"
+    inclusion: "required"
+    inclusion_condition: "Shaft/drift route excavates; surface-only route prepares the surveyed foundation footprint with zero underground excavation."
+    role: "Independently remove ground and hand off a surveyed prepared opening or base; route spoil by destination."
+    quantitative_reference: "Surveyed in-situ volume and accepted prepared ground."
+  - id: support_forming
+    name: "Permanent support and foundation formation"
+    inclusion: "required"
+    inclusion_condition: "Starts from accepted prepared ground and ends at the supported opening or foundation gate."
+    role: "Form lining, support and foundation from pre-form ground; route failed support to rework or export."
+    quantitative_reference: "Accepted formed support and installed material."
+  - id: facility_integration
+    name: "Structure, systems and handover"
+    inclusion: "required"
+    inclusion_condition: "Begins with accepted support/foundation and ends with signed facility acceptance."
+    role: "Install civil and in-scope handling/ventilation elements, test, and route rejects."
+    quantitative_reference: "One accepted facility and measured components."
+process_inventory:
+  - id: ground_removal
+    label: "Ground preparation and removal"
+    inputs:
+      product:
+        - row_id: removal_energy
+          role: "Ground-removal energy"
+          name: "Ground-removal energy by measured carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Meter excavation, haulage within site and preparation equipment by carrier; surface-only work records actual preparation energy and zero underground excavation."
+          amount:
+            expression: "Sum machine logs and meters for surveyed ground removal or base preparation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/facility"
+                basis: "broad first-pass screen by documented carrier and excavation route"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_ground
+          role: "Accepted prepared ground"
+          name: "Accepted prepared mine-facility ground"
+          flow_type: "product"
+          property_unit: "Prepared package / item"
+          description: "Hand off a surveyed excavated opening or prepared surface foundation base before permanent support. This is not an ore product or the finished facility."
+          amount:
+            expression: "Record one geometry-verified preparation package for the facility."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_excavation
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "package/facility"
+                basis: "one surveyed prepared-ground package for one accepted facility"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: excavation_spoil
+          role: "Excavated spoil"
+          name: "Excavated spoil by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record excavated soil and rock by destination; on-site reuse remains in the ground mass balance. Surface-only route records actual cleared material, which may be zero."
+          amount:
+            expression: "Reconcile in-situ survey and density with reuse, stock and exported weighbridge mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residuals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg excavated material"
+                basis: "exported spoil divided by removed ground after on-site reuse and stock reconciliation"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: support_forming
+    label: "Permanent support and foundation formation"
+    inputs:
+      product:
+        - row_id: prepared_ground_received
+          role: "Prepared ground received"
+          name: "Accepted prepared mine-facility ground"
+          flow_type: "product"
+          property_unit: "Prepared package / item"
+          description: "The accepted surveyed ground package is the pre-form state for lining, support or foundation construction."
+          amount:
+            expression: "Match one upstream preparation package and its surveyed geometry to this forming node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_excavation
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "package/facility"
+                basis: "one accepted ground package enters the support-forming node"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+        - row_id: support_materials
+          role: "Support and foundation materials"
+          name: "Permanent support and foundation products by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Expand concrete, steel, anchors, lining and stabilization products by as-built specification. Surface-only work uses its actual foundation schedule."
+          amount:
+            expression: "Reconcile delivered, installed, returned and stock mass per material."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/facility"
+                basis: "broad facility-dependent initial screen, not a design allowance"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: formation_energy
+          role: "Formation energy"
+          name: "Construction energy by measured carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Meter lining, foundation forming, support placement and temporary ventilation by actual carrier; excavation energy belongs to ground_removal, and fuel already represented in a contractor service is excluded."
+          amount:
+            expression: "Sum meters, invoices and machine logs by work package."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/facility"
+                basis: "broad initial screen after recorded carrier conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: formation_water
+          role: "Process and dust-control water"
+          name: "Process water by supplied source"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.water-use"
+            version: "0.2.0"
+            group: "process-water"
+          property_unit: "Mass / kg"
+          description: "Include purchased or transferred water for drilling, concrete and suppression. Naturally withdrawn water is elementary input and must not be double counted."
+          amount:
+            expression: "Convert metered volume to mass using documented site density."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg/facility"
+                basis: "broad initial screen with volume-to-mass conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: formed_support
+          role: "Accepted formed support"
+          name: "Accepted supported opening or prepared foundation"
+          flow_type: "product"
+          property_unit: "Accepted component / item"
+          description: "Only supported opening or prepared foundation passing its gate moves to systems integration; failed work remains in rework."
+          amount:
+            expression: "Record one accepted intermediate package per facility with geometry and tests."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "package/facility"
+                basis: "one accepted support package for each accepted facility"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: formation_residuals
+          role: "Rejected support"
+          name: "Rejected support by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Track failed lining, concrete and support by material and receiver. Off-spec support returns to this node or exits once; excavated ground belongs to ground_removal."
+          amount:
+            expression: "Reconcile supplied support material, installed mass, rework, returns, stock and exported rejects."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residuals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg supplied support material"
+                basis: "exported reject mass divided by supplied support mass after rework and stock reconciliation"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: facility_integration
+    label: "Structure, systems and handover"
+    inputs:
+      product:
+        - row_id: support_received
+          role: "Formed support received"
+          name: "Accepted supported opening or prepared foundation"
+          flow_type: "product"
+          property_unit: "Accepted component / item"
+          description: "Match the accepted upstream package and geometry; do not purchase it as another complete facility."
+          amount:
+            expression: "Match one upstream package to this contract."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "package/facility"
+                basis: "one accepted support package per accepted facility"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+        - row_id: integration_components
+          role: "Structural and handling components"
+          name: "Structural, hoisting, loading and ventilation components by as-built item"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Itemize tower steelwork, loading structures, hoist interfaces, conveyors, fans and control equipment only when contracted; disclose excluded roles."
+          amount:
+            expression: "Convert installed items using supplier bills; reconcile returns and rejects."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/facility"
+                basis: "broad initial screen dependent on installed scope"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: component_freight
+          role: "Inbound component freight"
+          name: "Freight transport service by recorded mode and route"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+          property_unit: "Transport work / t*km"
+          description: "Use actual loaded mass and distance by mode; avoid freight included in the supplier gate."
+          amount:
+            expression: "Sum loaded tonnes multiplied by kilometres by mode."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_freight
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000000"
+                unit: "t*km/facility"
+                basis: "broad initial route-dependent transport screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: integration_energy
+          role: "Installation and testing energy"
+          name: "Installation and testing energy by measured carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Meter lifting, joining, installation, tests and temporary ventilation by carrier. Attribute shared plant once by actual use."
+          amount:
+            expression: "Reconcile invoices, meters and equipment logs for installation and commissioning."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kWh-equivalent/facility"
+                basis: "broad first-pass installation and testing screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_mining_structure
+          role: "Accepted mining construction"
+          name: "Site-accepted mining construction"
+          flow_type: "product"
+          property_unit: "Accepted facility count / facility"
+          description: "Count only separately functional facilities passing permanent-structure and in-scope system tests; reject incomplete work."
+          amount:
+            expression: "Record one accepted facility with its physical geometry and equipment scope."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "facility/reference flow"
+                basis: "one accepted facility by definition"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - reference-definition
+      waste:
+        - row_id: integration_rejects
+          role: "Installation rejects"
+          name: "Installation rejects by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Segregate damaged and cut components by material and receiver. Rework returns to this node; unresolved defects never enter accepted output."
+          amount:
+            expression: "Reconcile accepted, reworked, returned, recovered and discarded mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residuals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg delivered components"
+                basis: "exported reject mass divided by delivered component mass after returns and stock"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: facility_scope
+    applies_to: "multiple facilities in one contract"
+    rule: "Assign direct works first; allocate inseparable shared plant, roads or utilities by documented physical use, with fractions summing to one."
+    source_ids:
+      - reference-definition
+  - rule_id: spoil_destination
+    applies_to: "removed ground"
+    rule: "Keep reuse in the site balance; record exported material by receiver and treatment. No substitution credit without separate evidence."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: rework_reject
+    applies_to: "failed support and installation"
+    rule: "Retain rework in its producing node; route final exits once to recovery or disposal; exclude rejected work from accepted output."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_materials
+      process_id: "support_forming_facility_integration"
+      flow_role: "permanent components"
+      record_type: "deliveries and as-built bill"
+      raw_fields: "specification, received, installed, returns, stock, rejects, recycled origin"
+      collection_method: "invoices and signed schedule"
+      unit: "kg, item, m3"
+      frequency: "each delivery"
+      temporal_coverage: "preparation through handover"
+      site_scope: "named facility"
+      aggregation_rule: "reconcile each material"
+      quality_evidence: "bills and certificates"
+    - protocol_id: cp_energy
+      process_id: "ground_removal_support_forming_facility_integration"
+      flow_role: "site energy"
+      record_type: "meter and machine log"
+      raw_fields: "carrier, amount, node, date, generator output, shared users"
+      collection_method: "meter, invoice and log"
+      unit: "kWh, MJ, kg, L"
+      frequency: "weekly"
+      temporal_coverage: "construction and tests"
+      site_scope: "named facility"
+      aggregation_rule: "sum by node and remove double counts"
+      quality_evidence: "meter and invoices"
+    - protocol_id: cp_water
+      process_id: "support_forming"
+      flow_role: "process water"
+      record_type: "meter and invoice"
+      raw_fields: "source, volume, density, use, return"
+      collection_method: "meter and site log"
+      unit: "m3, kg"
+      frequency: "weekly"
+      temporal_coverage: "preparation to support gate"
+      site_scope: "named facility"
+      aggregation_rule: "convert and reconcile source"
+      quality_evidence: "readings and invoices"
+    - protocol_id: cp_excavation
+      process_id: "ground_removal_support_forming"
+      flow_role: "ground and geometry"
+      record_type: "survey and work log"
+      raw_fields: "in-situ volume, supported length, area, soil/rock state, density"
+      collection_method: "as-built survey"
+      unit: "m3, m, m2, kg"
+      frequency: "each work package"
+      temporal_coverage: "preparation to support gate"
+      site_scope: "named opening/foundation"
+      aggregation_rule: "sum unique surveyed work"
+      quality_evidence: "drawings and survey"
+    - protocol_id: cp_residuals
+      process_id: "ground_removal_support_forming_facility_integration"
+      flow_role: "spoil and rejects"
+      record_type: "waste and rework log"
+      raw_fields: "material, origin, mass, reuse, rework, export, receiver, stock"
+      collection_method: "weighbridge and transfer tickets"
+      unit: "kg"
+      frequency: "each movement"
+      temporal_coverage: "full construction"
+      site_scope: "named facility"
+      aggregation_rule: "balance origin and destination"
+      quality_evidence: "tickets and receipts"
+    - protocol_id: cp_freight
+      process_id: "facility_integration"
+      flow_role: "inbound components"
+      record_type: "dispatch record"
+      raw_fields: "tonnes, distance, mode, supplier gate"
+      collection_method: "waybill and route log"
+      unit: "t, km, t*km"
+      frequency: "each shipment"
+      temporal_coverage: "supply to installation"
+      site_scope: "supplier to mine"
+      aggregation_rule: "sum tonnes times loaded distance"
+      quality_evidence: "waybills"
+    - protocol_id: cp_acceptance
+      process_id: "support_forming_facility_integration"
+      flow_role: "accepted states"
+      record_type: "survey and commissioning"
+      raw_fields: "type, geometry, components, tests, defects, sign-off"
+      collection_method: "signed survey and tests"
+      unit: "facility, m, m2, m3"
+      frequency: "each gate"
+      temporal_coverage: "support to handover"
+      site_scope: "named facility"
+      aggregation_rule: "count accepted states only"
+      quality_evidence: "certificates"
+  calculation_rules:
+    - id: material_balance
+      applies_to: "each permanent product"
+      rule: "Receipts plus opening stock = installed plus returns plus closing stock plus exported rejects within documented tolerance."
+      inputs:
+        - delivery
+        - installation
+        - "stock and waste"
+      output: "kg/product and kg/facility"
+      source_ids:
+        - mass-balance-identity
+    - id: spoil_balance
+      applies_to: "excavation"
+      rule: "Excavated mass = reused plus exported plus stock change after density conversion."
+      inputs:
+        - survey
+        - density
+        - reuse
+        - weighbridge
+      output: "kg/facility and residual"
+      source_ids:
+        - mass-balance-identity
+    - id: freight_work
+      applies_to: "inbound transport"
+      rule: "Sum loaded tonnes times kilometres by mode and supplier gate."
+      inputs:
+        - "waybill and route"
+      output: "t*km/facility"
+      source_ids:
+        - reference-definition
+    - id: shared_attribution
+      applies_to: "shared plant"
+      rule: "Attributed amount = measured common amount times physical-use fraction; fractions sum to one."
+      inputs:
+        - "meter and machine use"
+      output: "amount/facility"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_geometry
+      applies_to: "reference and ground works"
+      requirement: "Confirm function, site, geometry, support and installed scope."
+      evidence: "as-built drawing and signed tests"
+    - id: dq_materials
+      applies_to: "major products"
+      requirement: "Reconcile concrete, steel, lining and equipment deliveries against installed, reject and return records."
+      evidence: "bills, survey and waste log"
+    - id: dq_temporal
+      applies_to: "whole contract"
+      requirement: "Disclose construction dates, supplier vintage and missing periods."
+      evidence: "schedule and invoices"
+    - id: dq_routes
+      applies_to: "route choice"
+      requirement: "Justify underground excavation versus surface-only foundation and any zero inventory categories."
+      evidence: "contract and survey"
+    - id: dq_identity
+      applies_to: "final exchanges"
+      requirement: "Confirm each concrete UUID against platform type, gate, property, unit and purpose before release."
+      evidence: "flow and support-row review"
+validation_rules:
+  - rule_id: v_gate
+    applies_to: "reference output"
+    rule: "Require signed structural and contracted handling/hoisting/ventilation acceptance; reject incomplete work."
+    source_ids:
+      - unsd-cpc3-53261
+      - msha-hoist-braking
+  - rule_id: v_boundary
+    applies_to: "construction versus operation"
+    rule: "Reject ore extraction, beneficiation, routine ventilation and transport operation from this package."
+    source_ids:
+      - unsd-cpc3-53261
+  - rule_id: v_route
+    applies_to: "underground or surface"
+    rule: "Shaft/drift needs surveyed removal and support; surface-only tower/station needs foundation and assembly without fictional excavation."
+    source_ids:
+      - msha-shaft-sinking
+      - unsd-cpc3-53261
+  - rule_id: v_balance
+    applies_to: "materials and spoil"
+    rule: "Check delivery, excavation, installation, reuse, returns, stock and exported residual balances."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_rework
+    applies_to: "failed work"
+    rule: "Link each rejected state to producing-node rework or one recovery/disposal exit."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_identity
+    applies_to: "UUIDs"
+    rule: "A crane component or mine operation flow cannot represent an accepted facility; leave UUID blank until exact detail confirmation."
+    source_ids:
+      - reference-definition
+published_dataset_profile:
+  dataset_role: "Construction-stage package for one site-accepted mine-specific facility."
+  downstream_use: "secondary_dataset or background_dataset for infrastructure process/lifecyclemodel projection after concrete identity review."
+  allowed_use: "Construction comparison with matching function, geometry, support, installed systems and handover gate."
+  excluded_use: "Mineral extraction or operation, non-mine tunnel, or whole-life claim without operation and retirement stages."
+  required_metadata: "Site/function, starting ground, route, geometry, materials, installed systems, dates and acceptance."
+  required_quality_disclosure: "UUID gaps, provisional ranges, supplier gates, spoil balance, water/energy coverage, rejects and shared attribution."
+  update_trigger: "Design, as-built quantities, installed-system scope, supplier or verified flow identity changes."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-53261"
+    type: "official_guidance"
+    reference: "UNSD, CPC Version 3.0 explanatory notes, subclass 53261, https://unstats.un.org/UNSDWebsite/statcom/session_56/documents/BG-3o-Explanatory_Notes_of_the_Central_Product_Classification_Version3-E.pdf"
+    used_for: "Mine-specific construction scope."
+  - id: "msha-shaft-sinking"
+    type: "official_guidance"
+    reference: "MSHA, Slope and Shaft Sinking Plans Compliance Guide, https://arlweb.msha.gov/REGS/complian/guides/slope%20and%20shaft%20sinking%20compliance%20guide.pdf"
+    used_for: "Ground, shaft and ventilation route questions; jurisdictional details not universal thresholds."
+  - id: "msha-hoist-braking"
+    type: "official_guidance"
+    reference: "MSHA, Emergency Braking Systems for Mine Hoists, https://arlweb.msha.gov/s%26hinfo/paper6.htm"
+    used_for: "Hoist integration and testing questions; no universal performance value."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation-of-mass reconciliation for construction materials, spoil and rejects."
+    used_for: "Material and residual balances."
+  - id: "reference-definition"
+    type: "method_factor"
+    reference: "This PCR's accepted-facility definition and arithmetic normalization."
+    used_for: "Count, intermediate link, freight and shared attribution."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:4af21b61b813976988ae547b925486cd77af2a07849671d21ec791d1e5fe2dfb"
+  generated_content_sha256: "sha256:dc4dfa3c23504472d61fc03ac7a1771f49600b60c11a4a035875036c6d496a0e"

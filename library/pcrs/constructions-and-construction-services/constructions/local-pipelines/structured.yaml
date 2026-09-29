@@ -1,10 +1,879 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53251"
-  title: "Local pipelines"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.local-pipelines"
+  classification_refs: "CPC 3.0 53251, Local pipelines; mapping acceptance is separate."
+  covered_products: "Accepted local gas, potable-water, sewer, hot-water and steam pipeline segments with integral fittings, valves and chambers."
+  excluded_products: "Long-distance pipelines, aqueducts, treatment plants, separately contracted stations and distribution service."
+  representative_product: "One specified and accepted local pipe-network construction contract."
+  production_route: "Survey and prepare corridor; excavate or install trenchlessly; join pipe and fittings; lay, protect and restore; test, condition as needed and sign handover."
+  market_state: "Installed, tested and accepted infrastructure asset."
+functional_unit:
+  what: "A completed local pipeline asset within the signed contract boundary."
+  how_much: "One accepted contract; disclose accepted pipe length in m and installed mass in kg."
+  how_well: "Design, joint, leakage or pressure, applicable sanitary or sewer inspection, restoration and handover checks passed."
+  how_long_or_cycle: "One construction project to signed acceptance; design service life is metadata, not operating burden."
+  reference_flow_link: "accepted_local_line from line_install."
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "whole asset"
+      rule: "Include preparation, pipe joining and laying, testing, applicable disinfection or sewer inspection, rework, reinstatement and handover; exclude operation and conveyed product."
+      source_ids:
+        - unsd-cpc3-53251
+        - epa-water-main-preparation
+        - epa-sewer-evaluation
+    - rule_id: removal_handoff
+      applies_to: "corridor_removal"
+      rule: "Record material removed from the surveyed ground as a separate responsibility and pass only accepted prepared corridor to installation; distinguish reusable backfill from exported spoil."
+      source_ids:
+        - fhwa-utility-cuts
+    - rule_id: assembly_handoff
+      applies_to: "pipe_assembly"
+      rule: "Record pipe lengths, bends, fittings, valves, seals and jointing consumables; pass inspected joined assembly to installation, not uninspected stock. Failed joints return to assembly or exit to declared recovery/disposal."
+      source_ids:
+        - epa-water-main-preparation
+    - rule_id: route_delta
+      applies_to: "line_install"
+      rule: "Separate open-cut excavation/backfill from trenchless bore, pits and drilling-fluid obligations by chainage; do not count the same installed segment twice."
+      source_ids:
+        - fhwa-utility-cuts
+    - rule_id: acceptance_medium
+      applies_to: "line_install"
+      rule: "Apply pressure/leakage testing appropriate to the line; record potable-water flushing, disinfection and quality testing or sewer inspection where relevant, without imposing those steps on all media."
+      source_ids:
+        - epa-water-main-preparation
+        - epa-sewer-evaluation
+boundary_abstraction:
+  declared_starting_condition: "Surveyed existing street, ground or utility corridor before this contract's work."
+  starting_condition_role: "Physical baseline; installed utility infrastructure is not a free material input."
+  product_classification_scope: "One accepted local pipeline asset with declared integral structures."
+  recursive_input_rule: "Purchased complete pipe segments and construction services enter at supplier handover; an entire accepted local network is not silently reused as a component."
+  upstream_dataset_requirement: "Material-, geography- and technology-matched pipe, fittings, energy, transport, water, chemicals and waste-management datasets."
+  disclosure: "Baseline pavement and soil state; route by chainage; excavation and spoil destinations; material and joint specification; test water and discharge; repair loops; integral structures; acceptance evidence."
+reference_flow_definition:
+  reference_amount: "1 accepted local pipeline contract"
+  product_flow_ref:
+    name: "Completed local pipeline asset; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "accepted contract"
+  required_qualifiers:
+    - "Conveyed medium"
+    - "pressure or gravity duty"
+    - "accepted length"
+    - "diameter and material"
+    - location
+    - "open-cut and trenchless chainages"
+    - "test and conditioning requirements"
+    - "integral structures"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: contract_count
+    applies_to: "reference output"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "contract"
+    rule: "Count each signed accepted contract once and disclose length for comparison."
+  - id: pipe_reconciliation
+    applies_to: "pipe and fittings"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile delivered, installed, returned, rejected and retained stock mass by material specification."
+  - id: corridor_measurement
+    applies_to: "installation route"
+    required_property_ref:
+      name: "Length, area and in-situ volume"
+      uuid: ""
+    required_unit: "m, m2, m3"
+    rule: "Record accepted chainage once; derive open-cut in-situ volume from survey, not loose-haul volume."
+  - id: test_water_balance
+    applies_to: "hydrotest and flushing"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Record intake, reuse, discharge and retained water by test section; do not count recirculated water as new intake."
+  - id: energy_balance
+    applies_to: "site machinery"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh, MJ or kg"
+    rule: "Reconcile purchased electricity, generator output and generator fuel to prevent double counting."
+process_map:
+  - id: corridor_removal
+    name: "Corridor preparation and material removal"
+    inclusion: "required"
+    inclusion_condition: "Surveyed baseline to accepted prepared alignment."
+    role: "Remove pavement, soil or bore material independently of pipe manufacture and installation; pass prepared alignment and route spoil or residuals."
+    quantitative_reference: "Prepared chainage, surveyed in-situ volume and spoil mass."
+  - id: pipe_assembly
+    name: "Pipe and fitting assembly"
+    inclusion: "required"
+    inclusion_condition: "Delivered components to inspected joined assembly."
+    role: "Join pipe, bends, fittings, valves and seals, using separately invoiced joining service only when purchased; inspect joints; rework or route rejects."
+    quantitative_reference: "Installed component mass and accepted joint count."
+  - id: line_install
+    name: "Laying, testing and acceptance"
+    inclusion: "required"
+    inclusion_condition: "Prepared alignment and inspected assembly to signed accepted asset."
+    role: "Lay and support, backfill or bore, pressure/leak test, condition by medium, restore and hand over."
+    quantitative_reference: "Accepted length and one accepted contract."
+process_inventory:
+  - id: corridor_removal
+    label: "Corridor preparation and material removal"
+    inputs:
+      product:
+        - row_id: corridor_energy
+          role: "Corridor machinery energy"
+          name: "Actual fuel or electricity carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Record carrier-specific energy for owned excavation or bore-pit equipment; do not duplicate energy inside purchased excavation service."
+          amount:
+            expression: "Sum metered or invoiced energy attributable to this node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/contract"
+                basis: "all disclosed carriers converted to MJ-equivalent per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: excavation_service
+          role: "Purchased excavation service"
+          name: "Earthwork and excavation construction service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "earthwork-and-excavation"
+          property_unit: "Contract-compatible service property / declared unit"
+          description: "Only when excavation is contracted and not represented by owned foreground equipment; contract records define the exchange."
+          amount:
+            expression: "Record invoiced service quantity allocated to this contract."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "contract-declared service unit/contract"
+                basis: "purchased excavation service per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_alignment
+          role: "Accepted prepared alignment"
+          name: "Prepared local pipeline alignment; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Length / m"
+          description: "The independently inspected corridor or bore path handed to line_install; this is a project-internal intermediate, not the final product."
+          amount:
+            expression: "Survey accepted prepared chainage without counting overlapping route sections twice."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "m/contract"
+                basis: "accepted prepared chainage per contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: exported_spoil
+          role: "Exported excavation spoil"
+          name: "Excavation or drilling spoil by material and destination; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record soil, pavement or drilling residual removed from the project and routed to a documented destination; material reused as backfill remains internal, not exported waste."
+          amount:
+            expression: "Weigh exported material or calculate from surveyed volume, density and documented reuse."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_corridor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/contract"
+                basis: "exported spoil after documented internal reuse"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: pipe_assembly
+    label: "Pipe and fitting assembly"
+    inputs:
+      product:
+        - row_id: pipe_components
+          role: "Pipe and fittings delivered"
+          name: "Pipe and fitting components by material and specification; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect pipe lengths, bends, tees, valves, couplings, seals and jointing materials by specification; avoid substituting the finished network for these components."
+          amount:
+            expression: "Delivered mass minus returned unused stock, reconciled with installed and rejected material."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/contract"
+                basis: "pipe and fittings delivered for accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: joining_service
+          role: "Contracted joining service"
+          name: "Contracted pipe-joining service by method; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Contract-compatible service property / declared unit"
+          description: "Record welding, fusion or mechanical-joint installation service only when separately purchased; prevent double counting of owned labor and energy."
+          amount:
+            expression: "Allocate invoices to inspected joints, including rework, by documented contract scope."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "contract-declared service unit/contract"
+                basis: "separately purchased joining work per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: joining_energy
+          role: "Joining energy"
+          name: "Actual joining energy carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Record welding, fusion or mechanical-joint equipment energy according to actual technology."
+          amount:
+            expression: "Allocate metered use to accepted and rejected joints, including rework."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/contract"
+                basis: "disclosed joining carriers per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: inspected_assembly
+          role: "Inspected joined pipe assembly"
+          name: "Inspected local pipe assembly; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Length / m"
+          description: "Pass only joined lengths and fittings that passed recorded inspection to line_install."
+          amount:
+            expression: "Measure accepted joined length, excluding rejects pending rework."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "m/contract"
+                basis: "inspected joined length per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: assembly_rejects
+          role: "Rejected joints and cut-offs"
+          name: "Rejected pipe and joint material by disposition; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Failed joints return to pipe_assembly for recorded rework or leave for recovery/disposal; count the boundary exit only once."
+          amount:
+            expression: "Reconcile rejected mass with rework, returned stock, recovery and disposal tickets."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/contract"
+                basis: "final rejected mass exiting assembly after rework"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: line_install
+    label: "Laying, testing and acceptance"
+    inputs:
+      product:
+        - row_id: alignment_received
+          role: "Prepared alignment received"
+          name: "Prepared local pipeline alignment; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Length / m"
+          description: "Receive the accepted length passed from corridor_removal; it is an internal graph link, not purchased construction service."
+          amount:
+            expression: "Match accepted prepared chainage to installed chainage and explain any difference."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "m/contract"
+                basis: "received accepted chainage per contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: assembly_received
+          role: "Inspected assembly received"
+          name: "Inspected local pipe assembly; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Length / m"
+          description: "Receive the inspected pipe assembly from pipe_assembly; do not treat uninspected or rejected lengths as accepted installation input."
+          amount:
+            expression: "Match received assembly length, installed length and returned unused length."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "m/contract"
+                basis: "received inspected length per contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: installation_energy
+          role: "Installation energy"
+          name: "Actual installation energy carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Record laying, compaction, boring, testing and reinstatement machinery energy; distinguish from supplier service burdens."
+          amount:
+            expression: "Allocate meter or fuel records by activity and route chainage."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ-equivalent/contract"
+                basis: "disclosed carriers per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: backfill_service
+          role: "Purchased backfill service"
+          name: "Backfill and compaction construction service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.construction-service"
+            version: "0.2.0"
+            group: "backfill-and-compaction"
+          property_unit: "Contract-compatible service property / declared unit"
+          description: "Only when a contracted backfill and compaction service is purchased separately from owned equipment work."
+          amount:
+            expression: "Record invoiced service quantity attributable to open-cut sections."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "contract-declared service unit/contract"
+                basis: "purchased backfill service per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: bedding_backfill
+          role: "Bedding and imported backfill"
+          name: "Bedding and imported backfill by specification; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record imported granular bedding, surround and reinstatement material separately from excavated spoil reused on site."
+          amount:
+            expression: "Delivered mass minus unused returns, reconciled with placed quantities."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/contract"
+                basis: "external bedding and fill for accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: drilling_fluid
+          role: "Trenchless drilling fluid"
+          name: "Drilling fluid by actual formulation; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Apply only to sections using drilling or boring fluid; collect composition, fresh supply, recovered fluid and disposal independently of open-cut bedding."
+          amount:
+            expression: "Fresh material issued to trenchless sections minus unopened returns."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids:
+                - fhwa-utility-cuts
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/contract"
+                basis: "fresh drilling-fluid material for accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: test_water
+          role: "Test and flushing water"
+          name: "Water supplied for line testing or flushing; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Volume / m3"
+          description: "Collect intake for applicable hydrostatic test, flushing or disinfection; pneumatic test may have no water input. Use volume records, not an unsupported mass-based Flow Set group."
+          amount:
+            expression: "Meter external intake and deduct recirculated water before recording new supply."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids:
+                - epa-water-main-preparation
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "m3/contract"
+                basis: "fresh testing and flushing water per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: disinfectant
+          role: "Potable-water disinfection chemical"
+          name: "Disinfection chemical by substance and formulation; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Apply only where potable-water pipe disinfection is required; record actual chemical substance and concentration, without applying potable treatment to gas, sewer or thermal lines."
+          amount:
+            expression: "Reconcile delivered, dosed, returned and residual chemical mass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids:
+                - epa-water-main-preparation
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg/contract"
+                basis: "chemical issued for required potable-water disinfection"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_local_line
+          role: "Accepted local pipeline"
+          name: "Completed local pipeline asset; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / accepted contract"
+          description: "Count only the tested, restored and signed accepted asset; repair loops and rejected lengths do not add output."
+          amount:
+            expression: "One output after signed acceptance, with accepted length disclosed separately."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids:
+                - unsd-cpc3-53251
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "accepted contract"
+                basis: "signed accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: test_discharge
+          role: "Test and flush discharge"
+          name: "Test or flush wastewater by destination; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Account for test and flush water leaving to collection or treatment; identify discharge destination and residual disinfectant where relevant."
+          amount:
+            expression: "Intake plus initial fill minus reuse, retained water and measured losses; verify disposal records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted local pipeline contract"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_install_test
+              source_ids:
+                - epa-water-main-preparation
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "m3/contract"
+                basis: "test and flush water exported per accepted contract"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_asset
+    applies_to: "whole contract"
+    rule: "The accepted pipeline is the sole intended output; do not allocate construction burdens to conveyed gas, water, sewage or heat."
+    source_ids:
+      - unsd-cpc3-53251
+  - rule_id: shared_equipment
+    applies_to: "shared machinery"
+    rule: "Assign metered time, fuel or equipment use to this contract by documented activity and chainage; disclose residual estimation."
+    source_ids: []
+  - rule_id: reject_burden
+    applies_to: "pipe_assembly, line_install"
+    rule: "Retain repair and failed-test burdens with the accepted asset; only physically documented recovered material may leave as a separately accounted destination and no rejected length counts as accepted output."
+    source_ids:
+      - epa-water-main-preparation
+      - epa-sewer-evaluation
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_corridor
+      process_id: "corridor_removal"
+      flow_role: "energy, purchased service, prepared chainage, spoil"
+      record_type: "survey, log, invoice, haul ticket"
+      raw_fields: "chainage, method, cut section, in-situ volume, fuel, electricity, contracted quantity, spoil mass, reuse, destination"
+      collection_method: "as-built survey and source tickets"
+      unit: "m, m3, kg, kWh, MJ, service unit"
+      frequency: "by section and activity"
+      temporal_coverage: "full construction contract"
+      site_scope: "all open-cut, bore and pit sections"
+      aggregation_rule: "reconcile route length and material removal; aggregate once per contract"
+      quality_evidence: "survey, equipment logs, invoices, weighbridge and destination receipts"
+    - protocol_id: cp_components
+      process_id: "pipe_assembly"
+      flow_role: "components, joining service, energy, accepted joints, rejects"
+      record_type: "material register and inspection log"
+      raw_fields: "pipe/fitting type, delivered/returned/installed/rejected kg, joining-service invoices, joint count, inspection result, rework, carrier quantity"
+      collection_method: "supplier invoices, stock register and joint tests"
+      unit: "kg, m, count, kWh or MJ, service unit"
+      frequency: "by lot and joint"
+      temporal_coverage: "full construction contract"
+      site_scope: "all pipe assemblies in contract"
+      aggregation_rule: "reconcile stock and accepted joined length"
+      quality_evidence: "material certificates, joint inspection and rejection tickets"
+    - protocol_id: cp_install_test
+      process_id: "line_install"
+      flow_role: "internal handoffs, energy, service, bedding, drilling fluid, water, disinfectant, accepted asset, discharge"
+      record_type: "as-built, meter, test and acceptance records"
+      raw_fields: "prepared/received/installed length, route method, carrier quantity, service quantity, imported bedding kg, drilling-fluid kg, chemical substance and kg, intake/reuse/discharge m3, test type/result, disinfection or sewer inspection, defect and repair, acceptance signature"
+      collection_method: "as-built measurement, meters, invoices and signed tests"
+      unit: "m, count, kg, m3, kWh, MJ, service unit"
+      frequency: "per route section and test"
+      temporal_coverage: "full construction contract through handover"
+      site_scope: "all accepted sections and failed-test loops"
+      aggregation_rule: "count accepted output once; reconcile material, water and chainage"
+      quality_evidence: "test reports, water meter, discharge receipts, quality results and signed handover"
+  calculation_rules:
+    - id: spoil_mass
+      applies_to: "exported_spoil"
+      rule: "Exported mass = weighed haul mass, or surveyed in-situ volume × documented bulk density − internal reuse; explain uncertainty."
+      inputs:
+        - "cut volume"
+        - density
+        - "reuse and haul tickets"
+      output: "kg exported spoil"
+      source_ids: []
+    - id: component_balance
+      applies_to: "pipe_components, assembly_rejects"
+      rule: "Delivered = installed + returned unused + exited rejects + retained stock, within documented measurement uncertainty."
+      inputs:
+        - "material register and reject records"
+      output: "kg by material specification"
+      source_ids: []
+    - id: water_balance
+      applies_to: "test_water, test_discharge"
+      rule: "External intake + initial fill = discharge + retained water + measured losses; internal reuse is not a second intake."
+      inputs:
+        - intake
+        - reuse
+        - "discharge and retained volume"
+      output: "m3 by test section"
+      source_ids:
+        - epa-water-main-preparation
+    - id: route_sum
+      applies_to: "accepted length"
+      rule: "Accepted length = sum of non-overlapping signed as-built chainages by method."
+      inputs:
+        - "as-built chainages and acceptance"
+      output: "m accepted"
+      source_ids:
+        - fhwa-utility-cuts
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "concrete flow exchanges"
+      requirement: "Verify each final UUID with compatible type, property, unit, scope and support rows; a Flow Set is not a final UUID."
+      evidence: "platform detail and foreground selection record"
+    - id: dq_completion
+      applies_to: "whole contract"
+      requirement: "Cover every accepted chainage and test/repair loop through signed handover; disclose unavailable supplier data."
+      evidence: "as-built, acceptance, invoices and gap register"
+    - id: dq_routes
+      applies_to: "open-cut and trenchless sections"
+      requirement: "Preserve location and method for each chainage; do not double count pits, bore or overlapping excavations."
+      evidence: "route drawings and daily logs"
+    - id: dq_medium
+      applies_to: "testing and conditioning"
+      requirement: "Retain medium-specific pressure, leakage, potable-water disinfection or sewer inspection evidence as applicable."
+      evidence: "signed tests, laboratory results and inspection reports"
+validation_rules:
+  - rule_id: accepted_gate
+    applies_to: "reference output"
+    rule: "Reject a final output without signed as-built length, applicable test results, restoration and owner acceptance."
+    source_ids:
+      - epa-water-main-preparation
+      - epa-sewer-evaluation
+  - rule_id: handoff_match
+    applies_to: "process graph"
+    rule: "Prepared alignment and inspected assembly outputs must have matching line_install receiving cards; explain length or material differences."
+    source_ids: []
+  - rule_id: route_evidence
+    applies_to: "route delta"
+    rule: "Require per-chainage evidence for open-cut versus trenchless method, distinct excavation/drilling residuals and reinstatement; one chainage cannot be counted twice."
+    source_ids:
+      - fhwa-utility-cuts
+  - rule_id: reject_resolution
+    applies_to: "defects"
+    rule: "Every failed joint or test must have documented rework, return, recovery or disposal; exclude unresolved rejects from accepted output."
+    source_ids:
+      - epa-water-main-preparation
+      - epa-sewer-evaluation
+  - rule_id: water_balance_check
+    applies_to: "hydrotest and flushing"
+    rule: "Reconcile test-water intake, reuse, discharge and retained volume; record test water as zero only when the actual route uses no water."
+    source_ids:
+      - epa-water-main-preparation
+published_dataset_profile:
+  dataset_role: "Construction-stage foreground data package for an accepted local pipeline."
+  downstream_use: "secondary_dataset or background_dataset in process and lifecycle-model assemblies after review."
+  allowed_use: "Route-, medium-, material- and region-matched local pipeline construction comparisons."
+  excluded_use: "Long-distance transmission, pipe manufacturing alone, treatment facilities and distribution-operation service."
+  required_metadata: "Medium, duty, pipe specification, accepted length, installation route by chainage, integral structures, test procedure, location, date and signed handover."
+  required_quality_disclosure: "Coverage and uncertainty for material balance, cut volume, spoil destination, energy, water, defects, supplier datasets and unresolved UUIDs."
+  update_trigger: "Material, route, medium, acceptance or data source changes that alter the model boundary or inventory."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-53251"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 Explanatory Notes, class 53251 Local pipelines, https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Product boundary and exclusions."
+  - id: "fhwa-utility-cuts"
+    type: "official_guidance"
+    reference: "US Federal Highway Administration, Manual for Controlling and Reducing Pavement Utility Cuts, https://www.fhwa.dot.gov/utilities/utilitycuts/manual.pdf"
+    used_for: "Open-cut and trenchless route distinction and restoration."
+  - id: "epa-water-main-preparation"
+    type: "official_guidance"
+    reference: "US Environmental Protection Agency, New or Repaired Water Mains, https://www.epa.gov/sites/production/files/2015-09/documents/neworrepairedwatermains.pdf"
+    used_for: "Water-main test, flush, disinfection and acceptance stages."
+  - id: "epa-sewer-evaluation"
+    type: "official_guidance"
+    reference: "US Environmental Protection Agency, Prevention and Correction of Excessive Infiltration and Inflow into Sewer Systems, https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=9100WH40.TXT"
+    used_for: "Sewer leakage/air testing and inspection acceptance."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:9f9224242bea81f89c33e8b62741c75933af33588a0e2a24919b6de39a12d3ba"
+  generated_content_sha256: "sha256:f27ca462c3d102745276f1e515dc6a8d62c100d9029900c30897af6e1a0a69a3"

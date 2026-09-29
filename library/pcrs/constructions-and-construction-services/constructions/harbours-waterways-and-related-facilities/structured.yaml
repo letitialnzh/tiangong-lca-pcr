@@ -1,10 +1,683 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53232"
-  title: "Harbours, waterways and related facilities"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.harbours-waterways-and-related-facilities"
+  classification_refs: "CPC 3.0 53232, Harbours, waterways and related facilities."
+  covered_products: "Accepted navigation channels and basins, port berths, quays, piers, jetties, docks, breakwaters, locks and integral marine facilities."
+  excluded_products: "Vessels, port operations, routine maintenance dredging, ordinary water-supply conduits, dams, irrigation and flood-control works, separately measured buildings."
+  representative_product: "One uniquely identified accepted marine civil-works asset or bounded contract segment."
+  production_route: "Conditional new-work dredging and sediment placement, marine foundation and structure installation, then inspection and acceptance."
+  market_state: "Installed and accepted civil infrastructure at a named site; operating service is not the output."
+functional_unit:
+  what: "One declared navigation or port civil-works asset or bounded contract segment."
+  how_much: "1 accepted asset or segment; separately report as-built channel length, dredged volume, berth length, structure dimensions and bill of quantities as applicable."
+  how_well: "Contract geometry, navigation clearance, structural and environmental acceptance criteria met."
+  how_long_or_cycle: "One new-construction or capital-improvement contract through signed handover; service life is separate scenario metadata."
+  reference_flow_link: "accepted_marine_asset from inspection_handover."
+system_boundary:
+  rules:
+    - rule_id: new_work_gate
+      applies_to: "entire asset"
+      rule: "Include documented new construction or capital improvement through signed engineering handover; exclude port operation, vessel activity and later maintenance dredging."
+      source_ids:
+        - pianc-navigation-infrastructure-2014
+        - usace-montauk-harbor
+    - rule_id: sediment_route
+      applies_to: "navigation formation"
+      rule: "For each excavated lot document surveyed source, quality, transport and approved disposal or beneficial-use handoff; do not presume saleable product status."
+      source_ids:
+        - usace-montauk-harbor
+        - imo-dredged-material-assessment
+    - rule_id: structure_interface
+      applies_to: "marine structures"
+      rule: "Include foundations, materials and in-scope installation; separately contracted buildings and equipment enter only as linked datasets."
+      source_ids:
+        - pianc-navigation-infrastructure-2014
+    - rule_id: branch_handoff
+      applies_to: "both branches"
+      rule: "A formation or tested-structure handoff is intermediate; only the designated accepted asset is the reference product."
+      source_ids:
+        - pianc-navigation-infrastructure-2014
+boundary_abstraction:
+  declared_starting_condition: "Surveyed pre-work bathymetry, shoreline and seabed, existing structures, sediment quality and contract-design baseline."
+  starting_condition_role: "Physical baseline for new-work removal and installation, not a burden-free completed facility."
+  product_classification_scope: "One accepted harbour, waterway or related marine civil-works asset or bounded contract segment."
+  recursive_input_rule: "Purchased marine components and services enter at supply gate; a completed harbour or waterway asset cannot silently re-enter as raw material."
+  upstream_dataset_requirement: "Link materials, energy, water, transport, construction services and disposal or beneficial-use treatment to compatible upstream datasets."
+  disclosure: "Declare branch selection, pre-work condition, included assets, design and acceptance gate, sediment quality and destination, shared operations and gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted asset or contract segment"
+  product_flow_ref:
+    name: "Accepted harbour, waterway or related marine facility; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "item"
+  required_qualifiers:
+    - "Asset type and navigation function"
+    - "project and segment identifier"
+    - "site and water body"
+    - "as-built geometry and dredge datum"
+    - "sediment destination"
+    - "structural specification"
+    - "included interfaces"
+    - "acceptance test and handover date."
+reference_flows:
+  []
+measurement_rules:
+  - id: asset_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "item"
+    rule: "Count each accepted bounded asset or segment once; do not equate unlike asset types merely because each counts as one."
+  - id: dredged_volume
+    applies_to: "new-work dredging"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Use surveyed in-situ excavation volume and common datum; distinguish loose transported volume and dry sediment mass."
+  - id: structure_quantity
+    applies_to: "constructed works"
+    required_property_ref:
+      name: "Mass, volume or length"
+      uuid: ""
+    required_unit: "kg, m3 or m"
+    rule: "Convert bills to installed quantities using documented density or dimensions; preserve material identity."
+  - id: energy_transport
+    applies_to: "plant and shipment"
+    required_property_ref:
+      name: "Energy, fuel mass or mass × distance"
+      uuid: ""
+    required_unit: "kWh, MJ, kg or t·km"
+    rule: "Keep carriers and modes separate; use actual transported mass and loaded distance."
+process_map:
+  - id: navigation_formation
+    name: "Navigation formation and sediment routing"
+    inclusion: "conditional"
+    inclusion_condition: "New-work channel, basin or access geometry requires dredging."
+    role: "Independently remove source-bed sediment and hand it to approved placement; survey formed geometry."
+    quantitative_reference: "In-situ m3, sediment mass and destination records."
+  - id: marine_structure
+    name: "Marine foundation and structure installation"
+    inclusion: "conditional"
+    inclusion_condition: "Contract includes quay, pier, jetty, dock, breakwater, lock or integral structure."
+    role: "Install measured materials and test structure."
+    quantitative_reference: "Installed quantities and accepted dimensions."
+  - id: inspection_handover
+    name: "Integrated inspection and handover"
+    inclusion: "required"
+    inclusion_condition: "All included branches reach engineering acceptance."
+    role: "Reconcile as-built geometry, material and sediment records; release one declared asset."
+    quantitative_reference: "Signed accepted asset or segment."
+process_inventory:
+  - id: navigation_formation
+    label: "Navigation formation and sediment routing"
+    inputs:
+      product:
+        - row_id: dredging_energy
+          role: "Dredging plant energy"
+          name: "Dredging plant energy by recorded carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record directly controlled fuel and electricity by carrier, excluding energy embedded in contracted dredging services."
+          amount:
+            expression: "Reconcile vessel and plant logs for new-work excavation only."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kWh-equivalent/item"
+                basis: "provisional broad screen; replace with project plant and dredge-volume data"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sediment_transport
+          role: "Sediment placement transport"
+          name: "Freight transport service by recorded mode"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+          property_unit: "Mass × distance / t·km"
+          description: "Include separately measured transport to approved placement or beneficial-use gate by actual mode and mass-distance."
+          amount:
+            expression: "Sum transported tonnes × loaded distance for each sediment lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_sediment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "t·km/item"
+                basis: "provisional broad screen; lot mass and route records govern"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: surveyed_formation
+          role: "Surveyed navigation formation"
+          name: "Surveyed navigable channel or basin formation; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "The as-built channel or basin reaches the geometry test gate, but is not a second final asset."
+          amount:
+            expression: "Count one surveyed formation; report in-situ removed volume and as-built navigable geometry separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sediment
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "formation/item"
+                basis: "one conditional formation handoff per declared branch"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: disposal_sediment
+          role: "Dredged sediment for disposal"
+          name: "Dredged sediment for disposal; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record sediment as waste only for lots sent to approved disposal; beneficial-use lots require separate recorded product handoff and no automatic credit."
+          amount:
+            expression: "Reconcile wet and dry mass with each placement receipt."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_sediment
+              source_ids:
+                - usace-montauk-harbor
+                - imo-dredged-material-assessment
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000000"
+                unit: "kg/item"
+                basis: "provisional project screen; compare with surveyed volume, density and beneficial-use lots"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: marine_structure
+    label: "Marine foundation and structure installation"
+    inputs:
+      product:
+        - row_id: marine_materials
+          role: "Installed marine construction materials"
+          name: "Installed materials by specification; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record concrete, steel, armour stone, piles and other installed products as separate concrete exchanges from the bill of quantities; do not assume a generic material UUID."
+          amount:
+            expression: "Reconcile delivered, installed, returned and rejected mass by material class."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000000"
+                unit: "kg/item"
+                basis: "provisional project-scale screen; as-built bill governs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: marine_installation_service
+          role: "Contracted marine installation service"
+          name: "Marine installation service by contract work package; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Contract service quantity / declared unit"
+          description: "Include specialist pile driving, caisson placement or structural installation only where procured as a separate work package; do not also count its embedded plant energy as direct energy."
+          amount:
+            expression: "Record certified installed service quantity and unit from the work order."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_installation_service
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "declared service unit/item"
+                basis: "provisional project-scale screen; certified work order governs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: structure_energy
+          role: "Marine works construction energy"
+          name: "Marine construction energy by recorded carrier"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy or fuel mass / kWh, MJ or kg"
+          description: "Record directly controlled installation equipment by actual carrier; avoid counting subcontractor energy twice."
+          amount:
+            expression: "Reconcile plant fuel and electricity by installation work package."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kWh-equivalent/item"
+                basis: "provisional broad screen; actual plant use governs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: tested_structure
+          role: "Tested marine structure"
+          name: "Tested quay, pier, dock, breakwater or lock; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "Pass only compliant installed structure to handover; report berth length, volume or unit count as appropriate."
+          amount:
+            expression: "Count one branch-compliant tested structure or bounded segment."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "structure/item"
+                basis: "one conditional structure handoff per declared branch"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_material
+          role: "Rejected construction material"
+          name: "Rejected marine construction material by substance; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record off-spec or discarded installation material at its actual treatment handoff, not as installed mass."
+          amount:
+            expression: "Sum weighed rejected lots excluding accepted reuse in the same node."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000000"
+                unit: "kg/item"
+                basis: "provisional screen; project material balance governs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: inspection_handover
+    label: "Integrated inspection and handover"
+    inputs:
+      product:
+        - row_id: formation_handoff
+          role: "Navigation formation handoff"
+          name: "Surveyed navigable channel or basin formation; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "When the navigation branch is selected, transfer its surveyed formation once to integrated acceptance; do not re-add upstream dredging burdens."
+          amount:
+            expression: "Match the surveyed_formation item output and accepted as-built geometry."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "formation/item"
+                basis: "one transfer if the navigation branch is selected; otherwise zero"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: structure_handoff
+          role: "Marine structure handoff"
+          name: "Tested quay, pier, dock, breakwater or lock; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "When the structure branch is selected, transfer its tested structure once to integrated acceptance; do not re-add upstream installation burdens."
+          amount:
+            expression: "Match the tested_structure output and structural test record."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "structure/item"
+                basis: "one transfer if the structure branch is selected; otherwise zero"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_marine_asset
+          role: "Accepted harbour or waterway asset"
+          name: "Accepted harbour, waterway or related marine facility; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "Release one asset after all included branch geometry, structure, sediment and environmental records pass the contract gate."
+          amount:
+            expression: "Count signed accepted assets or bounded segments, never interim handoffs."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted asset"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "item/item"
+                basis: "one bounded accepted reference asset"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: sediment_fate
+    applies_to: "dredged lots"
+    rule: "Classify each lot by measured quality and actual approved destination. Credit beneficial-use material only with independently qualified recipient and handoff; otherwise retain waste-treatment burdens."
+    source_ids:
+      - usace-montauk-harbor
+      - imo-dredged-material-assessment
+  - rule_id: shared_work
+    applies_to: "common plant and temporary works"
+    rule: "Attribute shared activity by work package, hours, measured quantities or a declared causal driver; count each burden once."
+    source_ids:
+      - pianc-navigation-infrastructure-2014
+  - rule_id: no_double_asset
+    applies_to: "branch outputs"
+    rule: "Interim navigation formation and tested structures are internal handoffs, not co-products automatically counted with the final asset."
+    source_ids:
+      - pianc-navigation-infrastructure-2014
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_sediment
+      process_id: "navigation_formation"
+      flow_role: "dredge volume, lots and transport"
+      record_type: "survey, sampling, load and receipt logs"
+      raw_fields: "source cell; pre/post survey; datum; in-situ m3; dry/wet mass; quality; destination; route km"
+      collection_method: "survey and reconcile each lot to placement receipt"
+      unit: "m3, kg, km"
+      frequency: "each survey and load"
+      temporal_coverage: "new-work window"
+      site_scope: "project reach and placement sites"
+      aggregation_rule: "sum by source and destination; calculate t·km by mode"
+      quality_evidence: "survey datum, analyses and receipts"
+    - protocol_id: cp_energy
+      process_id: "navigation_formation_marine_structure"
+      flow_role: "direct plant energy"
+      record_type: "meter, bunkering and plant logs"
+      raw_fields: "carrier; meter; volume or mass; work package; dates"
+      collection_method: "reconcile to branch and avoid subcontract overlap"
+      unit: "kWh, MJ or kg"
+      frequency: "each shift or delivery"
+      temporal_coverage: "construction period"
+      site_scope: "included works"
+      aggregation_rule: "sum by branch and carrier"
+      quality_evidence: "readings and invoices"
+    - protocol_id: cp_materials
+      process_id: "marine_structure"
+      flow_role: "installed and rejected materials"
+      record_type: "bill, delivery and waste records"
+      raw_fields: "class; specification; density; delivered; installed; returned; rejected"
+      collection_method: "weigh or measure and reconcile"
+      unit: "kg or m3"
+      frequency: "each lot"
+      temporal_coverage: "installation period"
+      site_scope: "included structures"
+      aggregation_rule: "sum by class; convert with recorded density"
+      quality_evidence: "signed bills and receipts"
+    - protocol_id: cp_installation_service
+      process_id: "marine_structure"
+      flow_role: "contracted specialist installation"
+      record_type: "certified work order"
+      raw_fields: "task; provider; service quantity and unit; equipment inclusion; date"
+      collection_method: "reconcile certified work to installed structure"
+      unit: "declared service unit"
+      frequency: "each work package"
+      temporal_coverage: "installation period"
+      site_scope: "included structures"
+      aggregation_rule: "sum by non-overlapping task and unit"
+      quality_evidence: "signed certificate and subcontract scope"
+    - protocol_id: cp_acceptance
+      process_id: "inspection_handover"
+      flow_role: "branch and final acceptance"
+      record_type: "as-built, test and handover records"
+      raw_fields: "segment; branch; dimensions; tests; defects; date"
+      collection_method: "engineer sign-off"
+      unit: "item, m or m3"
+      frequency: "each gate"
+      temporal_coverage: "contract completion"
+      site_scope: "named segment"
+      aggregation_rule: "count accepted segment once"
+      quality_evidence: "signed acceptance and surveys"
+  calculation_rules:
+    - id: calc_in_situ_volume
+      applies_to: "navigation formation"
+      rule: "Integrate pre/post-bed survey difference over contract reach with common datum."
+      inputs:
+        - "surveyed grids and datum"
+      output: "m3 in situ"
+      source_ids:
+        - usace-montauk-harbor
+    - id: calc_sediment_tkm
+      applies_to: "placement transport"
+      rule: "Sum each load's declared-basis tonnes × loaded distance; never silently mix wet and dry bases."
+      inputs:
+        - "load mass"
+        - mode
+        - distance
+      output: "t·km by mode"
+      source_ids:
+        - usace-montauk-harbor
+    - id: calc_material_balance
+      applies_to: "structural materials"
+      rule: "Delivered = installed + returned + rejected + stock change within uncertainty."
+      inputs:
+        - delivery
+        - as-built
+        - "return and waste records"
+      output: "kg by material"
+      source_ids:
+        - pianc-navigation-infrastructure-2014
+  data_quality_requirements:
+    - id: quality_design_gate
+      applies_to: "reference asset"
+      requirement: "Distinguish new work from maintenance and declare design, segment, branch and acceptance."
+      evidence: "contract and handover files"
+    - id: quality_sediment
+      applies_to: "dredged material"
+      requirement: "Reconcile surveyed volume, quality, mass and every destination."
+      evidence: "surveys, samples and receipts"
+    - id: quality_identity
+      applies_to: "all exchange flows"
+      requirement: "Confirm concrete UUID against role, type, property, unit and context; leave unsupported UUIDs blank."
+      evidence: "flow detail and support-row evidence"
+    - id: quality_reconciliation
+      applies_to: "materials and energy"
+      requirement: "Reconcile plant, supplier and disposal records with cut-offs and uncertainty."
+      evidence: "meters, invoices and material balances"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "reference asset"
+    rule: "Reject a dataset mixing unlike facility types without component quantities or including post-handover operation as construction."
+    source_ids:
+      - unsd-cpc-53232
+      - pianc-navigation-infrastructure-2014
+  - rule_id: validate_branch
+    applies_to: "process graph"
+    rule: "Require at least one of navigation_formation or marine_structure; each selected branch must provide one matching input handoff to inspection_handover."
+    source_ids:
+      - pianc-navigation-infrastructure-2014
+  - rule_id: validate_sediment
+    applies_to: "navigation formation"
+    rule: "If dredging is included, require common-datum surveys, sediment quality and complete placement ledger; do not assume every lot is a product."
+    source_ids:
+      - usace-montauk-harbor
+      - imo-dredged-material-assessment
+  - rule_id: validate_structure
+    applies_to: "marine structures"
+    rule: "If structures are included, reconcile installed/rejected materials to the as-built asset; tested structure remains interim."
+    source_ids:
+      - pianc-navigation-infrastructure-2014
+  - rule_id: validate_identity
+    applies_to: "every flow"
+    rule: "A final concrete process exchange requires verified UUID; provisional Flow Set coverage is not itself an exchange UUID."
+    source_ids:
+      - pianc-navigation-infrastructure-2014
+published_dataset_profile:
+  dataset_role: "Project-specific foreground construction package for reviewed secondary or background construction data."
+  downstream_use: "Process and lifecycle-model projections for the stated marine asset, branch and engineering gate."
+  allowed_use: "Compare projects only after aligning facility function, design geometry, sediment route, site and coverage."
+  excluded_use: "Generic port operations, shipping, routine maintenance dredging, or another facility type without re-modelling."
+  required_metadata: "Site and water body; segment; design and as-built dimensions; branches; baseline; sediment quality and destination; material and energy; handover."
+  required_quality_disclosure: "Coverage, survey datum, conversions, material balance, UUID gaps, monitoring, uncertainty and cut-offs."
+  update_trigger: "Change in design, geometry, sediment destination, source condition, installation route, gate, Flow Set or flow identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-53232"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC 2.1 explanatory note for 53232, https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53232"
+    used_for: "Asset examples and boundary; checked-in CPC 3.0 label controls mapping."
+  - id: "pianc-navigation-infrastructure-2014"
+    type: "official_guidance"
+    reference: "PIANC, Initial Assessment of Environmental Effects of Navigation and Infrastructure Projects, https://www.pianc.org/publication/initial-assessment-of-environmental-effects-of-navigation-and-infrastructure-projects/"
+    used_for: "New-work dredging, port and waterway structures and route boundary."
+  - id: "usace-montauk-harbor"
+    type: "official_guidance"
+    reference: "US Army Corps of Engineers, Lake Montauk Harbor navigation improvement project, https://www.nan.usace.army.mil/Missions/Civil-Works/Projects-in-New-York/Lake-Montauk-Harbor/"
+    used_for: "Channel deepening, sediment quantities and placement destinations."
+  - id: "imo-dredged-material-assessment"
+    type: "official_guidance"
+    reference: "International Maritime Organization, Waste Assessment Guidance for Dredged Material, https://www.imo.org/en/ourwork/environment/pages/wag-default.aspx"
+    used_for: "Sediment quality and controlled disposal decision."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:4ac9e3fc69ed205a6be2b2c03c51172042274083ffeda04a2e89faba3e7a1295"
+  generated_content_sha256: "sha256:f6e58d552664d8aa452ad7d4ddf91a8eb2e2cbb50f1fb6d925b5b2a51f10b7ca"

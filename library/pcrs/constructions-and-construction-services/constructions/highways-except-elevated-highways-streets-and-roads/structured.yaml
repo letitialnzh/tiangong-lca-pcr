@@ -1,10 +1,772 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53211"
-  title: "Highways (except elevated highways), streets and roads"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.highways-except-elevated-highways-streets-and-roads"
+  classification_refs: "CPC 3.0:53211"
+  covered_products: "Non-elevated highways, streets and roads; surfaced parking, driveways, pedestrian and bicycle ways; integral safety installations and declared underpasses/overpasses"
+  excluded_products: "Elevated highways, highway tunnels, standalone bridges, railway tracks, runways, paving products, construction services, road use and later maintenance"
+  representative_product: "One accepted non-elevated asphalt-surfaced road segment with declared drainage and safety scope"
+  production_route: "Earthwork and compacted formation, pavement-layer assembly, finishing and handover. A rigid-concrete alternative replaces the asphalt surface route for the same area and requires changed materials, equipment, curing, waste and tests."
+  market_state: "Passable accepted civil asset at the site; traffic use and design-life scenarios are separate"
+functional_unit:
+  what: "Completed non-elevated road or surfaced-way segment at the declared site"
+  how_much: "One accepted segment; also report centreline length in m and paved area in m2 for intensity"
+  how_well: "Meets declared traffic/function class, layer structure, drainage and safety acceptance criteria"
+  how_long_or_cycle: "One construction project through signed opening or handover; service life is separate"
+  reference_flow_link: "Accepted output of finish_handover, counted once"
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "all processes"
+      rule: "Include materials through compatible upstream datasets, inbound transport, site work, layer construction, finishing, rejects and acceptance through handover; use, maintenance and end of life are separate scenarios."
+      source_ids:
+        - fhwa-lca-pave
+    - rule_id: assembly_handoff
+      applies_to: "layer_assembly"
+      rule: "Compacted formation is the parent; supplied base, surface, drainage and safety components form an assembled but unopened road."
+      source_ids:
+        - fhwa-lca-pave
+    - rule_id: finish_handoff
+      applies_to: "finish_handover"
+      rule: "The assembled road is the parent; marking, final treatment, testing and defect closure yield the accepted passable road."
+      source_ids:
+        - fhwa-lca-pave
+    - rule_id: alternative_surface
+      applies_to: "rigid versus flexible surfacing"
+      rule: "For one area, concrete and asphalt surface routes are mutually exclusive; record changed materials, equipment, cure/compaction, residues and test requirements relative to layer_assembly."
+      source_ids:
+        - fhwa-lca-pave
+    - rule_id: secondary_origin
+      applies_to: "reclaimed asphalt and recycled aggregate"
+      rule: "Declare prior use, recovery handoff and cut-off or inheritance point; do not import previous-life burden twice."
+      source_ids:
+        - fhwa-lca-pave
+    - rule_id: shared_plant
+      applies_to: "plant, machinery and utilities"
+      rule: "Identify consuming nodes/projects and service periods, and attribute logged use once by production or hours."
+      source_ids:
+        - fhwa-lca-pave
+boundary_abstraction:
+  declared_starting_condition: "Surveyed alignment before works; existing pavement, demolition, contamination and retained structures declared separately"
+  starting_condition_role: "Physical start of foreground site works"
+  product_classification_scope: "One passable non-elevated road or way within declared chainages, including specified integral drainage and safety"
+  recursive_input_rule: "A purchased completed road segment is upstream only if transformed; its existing length is not a second output."
+  upstream_dataset_requirement: "Materials, freight, energy, construction services and waste treatment use compatible gates, routes and geography."
+  disclosure: "Starting condition, as-built geometry and layer structure, shared plant, secondary-material origin, wastes, tests and handover."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Completed non-elevated road segment"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "segment"
+  required_qualifiers:
+    - "site and alignment"
+    - "chainage limits"
+    - "road type"
+    - "centreline length"
+    - "carriageway and path widths and areas"
+    - "material layers and thickness"
+    - "traffic/function class"
+    - drainage
+    - shoulders
+    - "marking and safety scope"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: segment_count
+    applies_to: "reference output"
+    required_property_ref:
+      name: "Number of items"
+      uuid: ""
+    required_unit: "segment"
+    rule: "Count one contiguous accepted segment within declared chainages, not its component layers."
+  - id: pavement_geometry
+    applies_to: "geometry/intensity"
+    required_property_ref:
+      name: "Length and area"
+      uuid: ""
+    required_unit: "m, m2"
+    rule: "Derive area by section from measured length and width; distinguish carriageway, shoulder and path."
+  - id: layer_mass
+    applies_to: "material and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile delivered, returned, installed and rejected quantities using measured area, thickness and density."
+  - id: energy_conversion
+    applies_to: "fuel and electricity"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "MJ or kWh"
+    rule: "Preserve energy carrier and documented conversion factors."
+process_map:
+  - id: formation
+    name: "Earthwork and formation"
+    inclusion: "required"
+    inclusion_condition: "Existing formation outside contract must be disclosed"
+    role: "Prepare and inspect compacted parent formation"
+    quantitative_reference: "surveyed area and cut/fill mass"
+  - id: layer_assembly
+    name: "Pavement and component assembly"
+    inclusion: "required"
+    inclusion_condition: "Select asphalt or rigid-concrete route by design"
+    role: "Join pavement layers, drainage and safety components; record technology delta"
+    quantitative_reference: "installed area, thickness and mass"
+  - id: finish_handover
+    name: "Finishing and opening"
+    inclusion: "required"
+    inclusion_condition: "Finish, test and close defects"
+    role: "Transfer passable accepted segment"
+    quantitative_reference: "one signed handover"
+process_inventory:
+  - id: formation
+    label: "Earthwork and formation"
+    inputs:
+      product:
+        - row_id: formation_fill
+          role: "Imported fill and subgrade material"
+          name: "Imported fill and subgrade materials"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Split actual fill by type. On-site reused spoil is an internal transfer, not purchased material."
+          amount:
+            expression: "Deliveries less returns and stock change"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg"
+                basis: "per completed segment, subject to actual cut/fill geometry"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: formation_handoff
+          role: "Accepted compacted formation"
+          name: "Accepted compacted formation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "This inspected parent is transferred internally, not sold as a second road."
+          amount:
+            expression: "Surveyed prepared area passing compaction tests"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_geometry_acceptance
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100000000"
+                unit: "m2"
+                basis: "per completed segment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: spoil_export
+          role: "Exported spoil"
+          name: "Exported spoil by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Distinguish clean reused soil, off-site waste and contaminated spoil by test and destination."
+          amount:
+            expression: "Weighbridge exits net of internal reuse"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg"
+                basis: "per completed segment and declared ground condition"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: layer_assembly
+    label: "Pavement and component assembly"
+    inputs:
+      product:
+        - row_id: formation_input
+          role: "Accepted formation transferred to pavement assembly"
+          name: "Accepted compacted formation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Receive the inspected compacted formation from formation as an internal parent state. Match the upstream accepted area and chainages; do not re-add its material, energy or earthwork burdens as a purchased product."
+          amount:
+            expression: "Accepted formation area entering layer assembly, reconciled to formation_handoff"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_geometry_acceptance
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100000000"
+                unit: "m2"
+                basis: "per completed segment, matching the accepted formation output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: virgin_layer_materials
+          role: "Virgin pavement materials"
+          name: "Virgin pavement materials as delivered"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Split actual aggregate, bitumen, cement, concrete, reinforcement and drainage materials by as-built layer; do not duplicate alternative surfaces."
+          amount:
+            expression: "Delivery mass by material and layer net of returns"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg"
+                basis: "per completed segment after material/layer split"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: secondary_layer_materials
+          role: "Recovered pavement materials"
+          name: "Recovered pavement materials as supplied"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional reclaimed asphalt or recycled aggregate requires origin, prior use, recovery handoff, composition and delivery mass."
+          amount:
+            expression: "Weighed accepted secondary material by layer"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "kg"
+                basis: "per completed segment; zero if no secondary input"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: material_freight
+          role: "Road freight for materials"
+          name: "Road freight transport service"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.transport-service"
+            version: "0.2.0"
+            group: "road-freight-transport"
+          property_unit: "Transport work / t*km"
+          description: "Record actual supplier-to-site truck loads and distances; omit transport embedded in delivered-at-site product datasets."
+          amount:
+            expression: "Sum shipment tonnes times route kilometres"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_freight
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "t*km"
+                basis: "per completed segment, excluding embedded delivery"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: paving_energy
+          role: "Paving energy carriers"
+          name: "Construction energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / MJ or kWh"
+          description: "Capture electricity and machinery fuel by actual carrier and task; attribute shared plant use once and exclude energy embedded in hired services."
+          amount:
+            expression: "Meter and fuel-log energy by carrier and task"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_plant_services
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000000"
+                unit: "MJ"
+                basis: "per completed segment after carrier conversion"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: assembled_road
+          role: "Assembled road before opening"
+          name: "Assembled road stage"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Installed base, surfacing, drainage and safety elements are the parent for finishing; acceptance remains outstanding."
+          amount:
+            expression: "Measured installed pavement area passing layer inspection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_geometry_acceptance
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100000000"
+                unit: "m2"
+                basis: "per completed segment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: paving_rejects
+          role: "Rejected paving material"
+          name: "Paving rejects by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Trace off-spec mix, broken components and packaging by composition, reuse, return and treatment destination."
+          amount:
+            expression: "Measured outbound rejects net of internal rework"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg"
+                basis: "per completed segment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: finish_handover
+    label: "Finishing and opening"
+    inputs:
+      product:
+        - row_id: assembled_road_input
+          role: "Assembled road transferred to finishing"
+          name: "Assembled road stage"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Receive the inspected installed road from layer_assembly as an internal parent state. Reconcile its area and structure to assembled_road; do not re-add its prior material, transport, energy or construction burdens."
+          amount:
+            expression: "Inspected assembled area entering finishing, reconciled to assembled_road"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_geometry_acceptance
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100000000"
+                unit: "m2"
+                basis: "per completed segment, matching the assembled-road output"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: finish_materials
+          role: "Marking and finishing materials"
+          name: "Road finishing materials as delivered"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual paint, beads, sealants and tactile elements; zero where no separate finish applies."
+          amount:
+            expression: "Delivered less returned finish materials by type"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed segment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: completed_road
+          role: "Completed road segment"
+          name: "Completed non-elevated road segment"
+          flow_type: "product"
+          property_unit: "Number of items / segment"
+          description: "Count once after layer, finish, drainage, safety and access tests and signed handover."
+          amount:
+            expression: "One accepted connected segment"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_geometry_acceptance
+              source_ids:
+                - unsd-cpc-53211
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "segment"
+                basis: "per accepted completed segment"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - unsd-cpc-53211
+      waste:
+        - row_id: finish_residue
+          role: "Finishing residue"
+          name: "Road finishing residue by destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate unused coating, containers and rejected marking by composition and destination."
+          amount:
+            expression: "Weighed residue net of return and internal reuse"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed segment"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - fhwa-lca-pave
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed segment"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_asset
+    applies_to: "road output"
+    rule: "Do not allocate layers into additional road products; length and area intensities report the same segment."
+    source_ids:
+      - fhwa-lca-pave
+  - rule_id: shared_asset
+    applies_to: "shared plant and utilities"
+    rule: "Cover all consumers and service periods; use metered production or hours and sum allocated burden to the recorded whole once."
+    source_ids:
+      - fhwa-lca-pave
+  - rule_id: secondary_burden
+    applies_to: "recovered inputs"
+    rule: "Record origin, recovery gate and cut-off or burden-inheritance convention; avoid previous-life double count."
+    source_ids:
+      - fhwa-lca-pave
+  - rule_id: reject_rework
+    applies_to: "off-spec work"
+    rule: "Retain failed-attempt material and energy, trace rework and destination, and exclude rejects from accepted output."
+    source_ids:
+      - fhwa-lca-pave
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_geometry_acceptance
+      process_id: "formation_layer_assembly_finish_handover"
+      flow_role: "geometry and accepted stages"
+      record_type: "survey and tests"
+      raw_fields: "chainage, width, area, thickness, density, function class, tests, handover"
+      collection_method: "reconcile as-built survey and certificates"
+      unit: "m, m2, mm, segment"
+      frequency: "each stage"
+      temporal_coverage: "full construction"
+      site_scope: "alignment"
+      aggregation_rule: "sum distinct accepted sections once"
+      quality_evidence: "signed survey and tests"
+    - protocol_id: cp_materials
+      process_id: "formation_layer_assembly_finish_handover"
+      flow_role: "fill, layers and finish"
+      record_type: "delivery and as-built ledger"
+      raw_fields: "type, supplier gate, mass, return, layer, recycled origin, installed quantity"
+      collection_method: "ticket and layer reconciliation"
+      unit: "kg"
+      frequency: "delivery"
+      temporal_coverage: "full construction"
+      site_scope: "segment/supplier"
+      aggregation_rule: "delivery less return/stock by material"
+      quality_evidence: "invoices, tickets, cores"
+    - protocol_id: cp_plant_services
+      process_id: "formation_layer_assembly"
+      flow_role: "machinery and energy"
+      record_type: "meter, fuel and equipment log"
+      raw_fields: "carrier, fuel, hours, task, consumer, period"
+      collection_method: "site and contractor logs"
+      unit: "MJ, kWh, h"
+      frequency: "shift/period"
+      temporal_coverage: "full construction"
+      site_scope: "site/shared plant"
+      aggregation_rule: "attribute logged use once"
+      quality_evidence: "meters and contracts"
+    - protocol_id: cp_freight
+      process_id: "layer_assembly"
+      flow_role: "inbound material transport"
+      record_type: "shipment"
+      raw_fields: "origin, destination, tonnes, km, delivery gate"
+      collection_method: "consignment and route check"
+      unit: "t, km, t*km"
+      frequency: "shipment"
+      temporal_coverage: "full construction"
+      site_scope: "inbound route"
+      aggregation_rule: "sum nonembedded tonne-km"
+      quality_evidence: "delivery evidence"
+    - protocol_id: cp_waste
+      process_id: "formation_layer_assembly_finish_handover"
+      flow_role: "spoil and rejects"
+      record_type: "transfer/reuse log"
+      raw_fields: "material, hazard, mass, node, destination, reuse"
+      collection_method: "weighbridge/receiver"
+      unit: "kg"
+      frequency: "movement"
+      temporal_coverage: "full construction"
+      site_scope: "segment"
+      aggregation_rule: "external exits net internal reuse"
+      quality_evidence: "receipts/tests"
+  calculation_rules:
+    - id: section_area
+      applies_to: "geometry"
+      rule: "Sum accepted section length times measured width by carriageway, shoulder and path."
+      inputs:
+        - chainage
+        - width
+      output: "m2"
+      source_ids:
+        - fhwa-lca-pave
+    - id: material_balance
+      applies_to: "materials"
+      rule: "Deliveries less returns and stock change equals installed plus rejected; investigate residual."
+      inputs:
+        - ledger
+        - as-built
+        - waste
+      output: "reconciled kg"
+      source_ids:
+        - fhwa-lca-pave
+    - id: freight_work
+      applies_to: "transport"
+      rule: "Sum shipment tonnes times route km, excluding supplier datasets already delivered at site."
+      inputs:
+        - tonnes
+        - km
+        - gate
+      output: "t*km"
+      source_ids:
+        - fhwa-lca-pave
+    - id: area_intensity
+      applies_to: "reporting"
+      rule: "Divide segment result by measured area or length, retaining the one-segment total."
+      inputs:
+        - "segment total"
+        - area
+        - length
+      output: "per-m2/per-m intensity"
+      source_ids:
+        - fhwa-lca-pave
+  data_quality_requirements:
+    - id: dq_geometry
+      applies_to: "reference"
+      requirement: "Confirm chainage, widths, areas, layer thickness, function class and acceptance."
+      evidence: "as-built survey/tests"
+    - id: dq_materials
+      applies_to: "layers"
+      requirement: "Reconcile supplied, installed, returned, stock and waste by layer and route."
+      evidence: "tickets, cores, ledger"
+    - id: dq_shared
+      applies_to: "plant"
+      requirement: "Identify all consuming nodes/projects and periods, without duplicated energy/service burden."
+      evidence: "dated equipment and meter logs"
+    - id: dq_secondary
+      applies_to: "recycled material"
+      requirement: "Document previous use, recovery gate, composition and burden convention."
+      evidence: "supplier and recovery records"
+validation_rules:
+  - rule_id: validate_product
+    applies_to: "reference"
+    rule: "Confirm passable non-elevated segment, declared chainages, class and signed handover; reject material, service, elevated highway or tunnel identity."
+    source_ids:
+      - unsd-cpc-53211
+  - rule_id: validate_geometry
+    applies_to: "layers"
+    rule: "Check area from length and width, and mass against layer thickness and density."
+    source_ids:
+      - fhwa-lca-pave
+  - rule_id: validate_route
+    applies_to: "surface alternative"
+    rule: "Verify parent layer_assembly and material/equipment/waste/test delta; reject simultaneous alternatives over one area."
+    source_ids:
+      - fhwa-lca-pave
+  - rule_id: validate_attribution
+    applies_to: "shared/secondary"
+    rule: "Check every shared consumer and period, secondary origin and recovery, and no duplicate burden."
+    source_ids:
+      - fhwa-lca-pave
+  - rule_id: validate_handoff
+    applies_to: "finish"
+    rule: "Confirm assembled parent, finishing inputs/residues, defect closure and passable accepted state."
+    source_ids:
+      - fhwa-lca-pave
+published_dataset_profile:
+  dataset_role: "Foreground construction package for one completed non-elevated road or surfaced-way segment"
+  downstream_use: "secondary_dataset; background_dataset only with matching geometry, function, route and site gate"
+  allowed_use: "Construction-stage modelling and separately identified lifecycle extensions"
+  excluded_use: "Operating traffic, whole-life result without scenarios, paving-material manufacture, elevated highway/tunnel, or area intensity without segment scope"
+  required_metadata: "site, chainages, length, area/width convention, layers/thickness, function class, drainage/safety, route, supplier gates, handover"
+  required_quality_disclosure: "survey gaps, unmeasured earthwork, material balance, shared plant, secondary origin, waste destinations, unresolved UUIDs"
+  update_trigger: "changed alignment, structure, route, supplier gate, acceptance scope or verified platform identity"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.surface-finishing-node
+      kind: "activity"
+      path: "library/modules/activities/surface-finishing-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.secondary-material-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/secondary-material-attribution.yaml"
+      decision: "applicable"
+    - id: module.system-condition.shared-infrastructure-attribution
+      kind: "system_condition"
+      path: "library/modules/system-conditions/shared-infrastructure-attribution.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-53211"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53211"
+    used_for: "Product boundary; CPC 2.1 explanatory note supplements the matching CPC 3.0 title"
+  - id: "fhwa-lca-pave"
+    type: "official_guidance"
+    reference: "https://www.fhwa.dot.gov/pavement/lcatool/LCA_Pave_Tool_Methodology.pdf"
+    used_for: "Pavement material, transport and construction decomposition; not a universal quantity range"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:b228d3c1e08878342b2b0903452c43689ddd5dd968b1ee5855393276290534f4"
+  generated_content_sha256: "sha256:00b6ef56533bd37f6591233edfd7c8e4cd52098221c4597a1ce9139ca744aa16"

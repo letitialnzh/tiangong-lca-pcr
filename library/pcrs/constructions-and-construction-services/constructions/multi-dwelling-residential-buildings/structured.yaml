@@ -1,10 +1,708 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53112"
-  title: "Multi-dwelling residential buildings"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.multi-dwelling-residential-buildings"
+  classification_refs: "CPC 3.0:53112"
+  covered_products: "Buildings with three or more dwellings; community residences for older persons, students, workers or other social groups"
+  excluded_products: "One- or two-dwelling buildings; non-residential buildings; separately sold construction services; standalone prefabricated components; separate civil infrastructure"
+  representative_product: "One commissioned apartment building including shared circulation and installed fixed services"
+  production_route: "Site and foundation work, structural and envelope assembly, fixed-service integration, surface finish, testing and handover; prefabricated alternatives require explicit component and installation records"
+  market_state: "Completed construction at the declared site, ready for the declared residential use at handover"
+functional_unit:
+  what: "Completed multi-dwelling residential building at the declared site"
+  how_much: "One building; report gross floor area in m2 as an intensity denominator"
+  how_well: "At least three dwellings or eligible community accommodation; included shared and fixed systems pass completion tests"
+  how_long_or_cycle: "One construction project through site handover; operation and service life are separate scenario descriptors"
+  reference_flow_link: "Accepted output of finish_handover; count the whole building once"
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "all nodes"
+      rule: "Include supplied products, delivery, site energy and equipment, installation, wastes and commissioning through accepted handover; keep use and end of life in separate scenarios."
+      source_ids:
+        - ec-building-gwp
+        - ec-levels
+    - rule_id: shared_elements
+      applies_to: "cores, corridors, lifts and central services"
+      rule: "Include once in the whole building; allocate to dwellings only in an additional dwelling-level view using a disclosed driver."
+      source_ids:
+        - ec-levels
+    - rule_id: prefab_delta
+      applies_to: "assembly"
+      rule: "Alternative technology route: replace corresponding site construction with supplied modules and installation for a documented prefabricated route; never count both alternatives for the same element."
+      source_ids:
+        - ec-levels
+    - rule_id: finish_handoff
+      applies_to: "finish"
+      rule: "The assembled shell and services are the parent state; only finished, tested and defect-closed construction becomes accepted output."
+      source_ids:
+        - ec-levels
+    - rule_id: secondary_origin
+      applies_to: "secondary material"
+      rule: "Record origin, recovery handoff and supplier gate; apply one consistent upstream-burden convention to avoid duplication."
+      source_ids:
+        - ec-levels
+    - rule_id: shared_assets
+      applies_to: "shared infrastructure and temporary works"
+      rule: "Attribute shared crane, scaffold, formwork and site utility burdens to all consuming nodes/buildings and service periods once using recorded use or a justified driver."
+      source_ids:
+        - ec-levels
+boundary_abstraction:
+  declared_starting_condition: "Surveyed site before works, with prior demolition, contamination and retained structures declared separately"
+  starting_condition_role: "Physical start of the foreground construction works"
+  product_classification_scope: "One completed residential building including common spaces and installed fixed systems within its handover asset"
+  recursive_input_rule: "A separately purchased completed building is an upstream product only if transformed; its dwellings do not become additional output buildings."
+  upstream_dataset_requirement: "Materials, components, utility, freight, waste treatment and subcontracted construction services need compatible physical gates and geographies."
+  disclosure: "Provide as-built quantities, area convention, shared/common elements, fixed-service scope, temporary works, secondary material origins, waste destinations and handover evidence."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Completed multi-dwelling residential building"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "building"
+  required_qualifiers:
+    - site
+    - "dwelling count or community-residence type"
+    - "gross floor area and convention"
+    - "basement and parking scope"
+    - "shared cores and fixed-service scope"
+    - "construction route"
+    - "handover date and acceptance evidence"
+reference_flows:
+  []
+measurement_rules:
+  - id: building_count
+    applies_to: "reference output"
+    required_property_ref:
+      name: "Number of items"
+      uuid: ""
+    required_unit: "building"
+    rule: "Count an accepted whole building once, not each dwelling, floor or component."
+  - id: gross_floor_area
+    applies_to: "intensity"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "m2"
+    rule: "Declare the as-built measurement convention and reconcile to accepted drawings."
+  - id: material_mass
+    applies_to: "material and waste cards"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Disclose density and conversion where delivery units differ from installed or waste units."
+  - id: site_energy
+    applies_to: "fuel and electricity"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "kWh or MJ"
+    rule: "Retain carrier identity and documented conversion factors."
+process_map:
+  - id: site_foundation
+    name: "Site and foundation work"
+    inclusion: "required"
+    inclusion_condition: "Unless an accepted existing foundation is expressly outside the contract"
+    role: "Excavate and create inspected foundation"
+    quantitative_reference: "as-built site records per building"
+  - id: assembly_services
+    name: "Structural and service integration"
+    inclusion: "required"
+    inclusion_condition: "As-built frame, envelope and fixed services"
+    role: "Join foundation, frame, envelope, shared areas, lifts and fixed services; alternative technology route with prefabrication may replace site assembly tasks"
+    quantitative_reference: "component schedule per building"
+  - id: finish_handover
+    name: "Surface finishing, testing and handover"
+    inclusion: "required"
+    inclusion_condition: "Accepted finish and system commissioning"
+    role: "Convert assembled parent to completed building by surface finishing and testing"
+    quantitative_reference: "one signed handover"
+process_inventory:
+  - id: site_foundation
+    label: "Site and foundation work"
+    inputs:
+      product:
+        - row_id: foundation_materials
+          role: "Foundation and earthwork materials"
+          name: "Foundation materials as delivered"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Expand this umbrella into concrete, reinforcement, piles and other actual supplied materials from the as-built bill; record recycled content and supplier recovery gate where applicable."
+          amount:
+            expression: "Installed quantity plus measured losses by product"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg"
+                basis: "per completed building after the umbrella is split by material; replace with product-specific evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: foundation_handoff
+          role: "Accepted in-place foundation"
+          name: "Accepted foundation stage"
+          flow_type: "product"
+          property_unit: "Stage / stage"
+          description: "The inspected foundation is an internal parent handoff to assembly, not another sold building."
+          amount:
+            expression: "One accepted stage with quantities retained in material records"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "stage"
+                basis: "per accepted completed building with a new foundation in scope"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: foundation_waste
+          role: "Spoil and foundation rejects"
+          name: "Foundation waste by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate excavated spoil and rejected foundation material by contamination and destination; on-site reuse is an internal transfer."
+          amount:
+            expression: "Weighbridge mass or surveyed volume converted with documented density"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed building; replace with site-specific mass balance"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: assembly_services
+    label: "Structural and service integration"
+    inputs:
+      product:
+        - row_id: foundation_stage_input
+          role: "Accepted foundation entering assembly"
+          name: "Accepted foundation stage"
+          flow_type: "product"
+          property_unit: "Stage / stage"
+          description: "Transfer the same inspected foundation from site_foundation into assembly as an internal stage input; this is not a purchased second foundation."
+          amount:
+            expression: "One accepted foundation stage transferred without a second upstream material burden"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "stage"
+                basis: "per completed building with a new foundation in scope"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: structure_components
+          role: "Structural and envelope components"
+          name: "Structural and envelope components as delivered"
+          flow_type: "product"
+          property_unit: "Mass, area or count / kg, m2 or item"
+          description: "Expand actual concrete, steel, timber, masonry, glazing, insulation and prefabricated modules individually. Supplier-finished modules and site-built alternatives are mutually exclusive for each element."
+          amount:
+            expression: "Installed quantity plus recorded rejected quantity by component"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "kg"
+                basis: "per completed building after the umbrella is split and area/count converted where justified; replace with component evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fixed_services
+          role: "Fixed building services"
+          name: "Fixed service components"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Record installed plumbing, electrical, heating/cooling, fire-safety, lifts and central systems by actual included scope; separate tenant appliances unless permanently installed and declared."
+          amount:
+            expression: "Accepted as-built installed equipment and components"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed building after item-to-mass conversion; replace with as-built schedule"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: site_energy_carriers
+          role: "Construction-site energy"
+          name: "Construction-site energy carriers"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Energy / kWh or MJ"
+          description: "Capture metered electricity and fuel for cranes, tools and site utilities by carrier and activity; exclude energy already included in purchased service datasets."
+          amount:
+            expression: "Metered and fuel-log use converted by carrier"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site_operations
+              source_ids:
+                - ec-building-gwp
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000000"
+                unit: "MJ"
+                basis: "per completed building across logged site carriers; replace with metered energy"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: assembled_parent
+          role: "Assembled parent with common areas"
+          name: "Assembled building parent state"
+          flow_type: "product"
+          property_unit: "Stage / stage"
+          description: "Hand the inspected structural shell, envelope, common circulation, lifts and integrated fixed systems to finishing as one parent state."
+          amount:
+            expression: "One inspected parent stage, reconciled to bill of quantities"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "stage"
+                basis: "per accepted completed building"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: assembly_rejects
+          role: "Assembly rejects and offcuts"
+          name: "Assembly rejects by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record offcuts and defective components at the producing node with rework, recovery or disposal destination; a corrected element is not a second accepted output."
+          amount:
+            expression: "Measured rejects net of documented internal reuse"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed building; replace with reconciled reject records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: finish_handover
+    label: "Surface finishing, testing and handover"
+    inputs:
+      product:
+        - row_id: assembled_parent_input
+          role: "Assembled parent entering finishing"
+          name: "Assembled building parent stage"
+          flow_type: "product"
+          property_unit: "Stage / stage"
+          description: "Transfer the inspected structural shell, common areas and fixed systems from assembly_services as one internal input to finishing without duplicating their upstream component burdens."
+          amount:
+            expression: "One inspected parent stage transferred to finishing"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "stage"
+                basis: "per accepted completed building"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: finishing_materials
+          role: "Finishing materials"
+          name: "Finishing products as installed"
+          flow_type: "product"
+          property_unit: "Mass or area / kg or m2"
+          description: "Record coatings, sealants, floor and wall finishes and fixed fit-out materials by actual specification. This node takes the assembled parent as an internal input."
+          amount:
+            expression: "Installed quantity plus recorded losses by product"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed building after the umbrella is split and area converted where justified; replace with product evidence"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: completed_building
+          role: "Completed multi-dwelling building"
+          name: "Completed multi-dwelling residential building"
+          flow_type: "product"
+          property_unit: "Number of items / building"
+          description: "Count the finished building only after common areas, included fixed systems, defects and commissioning pass signed acceptance."
+          amount:
+            expression: "One accepted building at signed handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - unsd-cpc-53112
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "building"
+                basis: "per accepted completed building"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: finish_residues
+          role: "Finish residues and rejects"
+          name: "Finishing waste by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate surplus finishes, contaminated containers and defective fit-out by hazard and destination, linking corrections to this node."
+          amount:
+            expression: "Measured waste net of documented internal reuse"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per completed building"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - ec-levels
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "kg"
+                basis: "per completed building; replace with measured residue and waste transfers"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: whole_building
+    applies_to: "whole-building reference"
+    rule: "Assign shared cores, corridors, lifts and central services once to the accepted building. For a separately declared dwelling-level view, allocate by measured area or a justified service driver while preserving the building total."
+    source_ids:
+      - ec-levels
+  - rule_id: shared_site_assets
+    applies_to: "crane, scaffold, formwork and utilities"
+    rule: "Record each consuming node/building and service period; allocate observed use directly or with a documented causal driver and charge each share once."
+    source_ids:
+      - ec-levels
+  - rule_id: secondary_materials
+    applies_to: "recovered components"
+    rule: "Identify previous use and recovery handoff; declare supplier-gate burden treatment, exclude already assigned prior-system burdens and do not double-count recovery."
+    source_ids:
+      - ec-levels
+  - rule_id: reject_rework
+    applies_to: "off-spec materials and work"
+    rule: "Retain failed-attempt input and energy in the producing node, trace correction and boundary exit, and exclude rejects from accepted output."
+    source_ids:
+      - ec-levels
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_materials
+      process_id: "site_foundation_assembly_services_finish_handover"
+      flow_role: "materials and components"
+      record_type: "as-built schedule and deliveries"
+      raw_fields: "specification, quantity, unit, supplier gate, recycled fraction, installed node, rejects"
+      collection_method: "reconcile invoices, deliveries and as-built schedule"
+      unit: "kg, m2, item"
+      frequency: "each delivery/change"
+      temporal_coverage: "full construction"
+      site_scope: "whole building"
+      aggregation_rule: "installed plus rejects less returns by product"
+      quality_evidence: "signed quantities and invoices"
+    - protocol_id: cp_site_operations
+      process_id: "assembly_services"
+      flow_role: "site energy"
+      record_type: "meters and fuel logs"
+      raw_fields: "carrier, meter, fuel, machine hours, task, date"
+      collection_method: "site log reconciliation"
+      unit: "kWh, MJ, h"
+      frequency: "shift or billing period"
+      temporal_coverage: "full construction"
+      site_scope: "site and shared assets"
+      aggregation_rule: "attribute logged use to building once"
+      quality_evidence: "meters and fuel tickets"
+    - protocol_id: cp_waste
+      process_id: "site_foundation_assembly_services_finish_handover"
+      flow_role: "spoil and rejects"
+      record_type: "transfer and reuse log"
+      raw_fields: "node, material, hazard, quantity, destination, reuse"
+      collection_method: "weighbridge and site bins"
+      unit: "kg, m3"
+      frequency: "each movement"
+      temporal_coverage: "full construction"
+      site_scope: "whole site"
+      aggregation_rule: "external exits by destination net internal reuse"
+      quality_evidence: "signed waste receipts"
+    - protocol_id: cp_acceptance
+      process_id: "site_foundation_assembly_services_finish_handover"
+      flow_role: "accepted stages/building"
+      record_type: "inspection and handover"
+      raw_fields: "stage acceptance, service tests, defects, dwelling count, gross floor area, handover date"
+      collection_method: "drawings and signed certificates"
+      unit: "building, m2, date"
+      frequency: "each gate"
+      temporal_coverage: "through handover"
+      site_scope: "whole building"
+      aggregation_rule: "count accepted building once"
+      quality_evidence: "signed commissioning and handover file"
+  calculation_rules:
+    - id: material_balance
+      applies_to: "material cards"
+      rule: "Delivered less returns equals installed plus waste plus stock change; explain residuals."
+      inputs:
+        - deliveries
+        - returns
+        - installed
+        - waste
+        - stock
+      output: "reconciled material quantity"
+      source_ids:
+        - ec-levels
+    - id: energy_total
+      applies_to: "site energy"
+      rule: "Sum logged carrier energy attributed to this building, preserving carrier identity."
+      inputs:
+        - meter
+        - fuel
+        - "allocation driver"
+      output: "kWh or MJ by carrier"
+      source_ids:
+        - ec-building-gwp
+    - id: area_intensity
+      applies_to: "reporting"
+      rule: "Divide whole-building result by measured gross floor area; retain the per-building total."
+      inputs:
+        - "accepted building"
+        - area
+      output: "per-m2 intensity"
+      source_ids:
+        - ec-levels
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "building"
+      requirement: "Verify at least three dwellings or eligible community accommodation, common spaces and fixed-service scope."
+      evidence: "signed as-built drawings and acceptance"
+    - id: dq_reconciliation
+      applies_to: "materials/waste"
+      requirement: "Reconcile as-built, supplied, returned, installed and discarded quantities by product."
+      evidence: "schedule, invoices, waste tickets"
+    - id: dq_shared
+      applies_to: "shared assets"
+      requirement: "Cover all consuming buildings/nodes and service periods without duplicate assignment."
+      evidence: "dated asset and utility logs"
+    - id: dq_handover
+      applies_to: "reference output"
+      requirement: "Count only after included systems pass tests and defects close."
+      evidence: "signed commissioning and handover file"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "reference product"
+    rule: "Confirm three or more dwellings or community residence, one completed building, site handover and measured area; reject an at-plant Mass flow substitute."
+    source_ids:
+      - unsd-cpc-53112
+      - ec-levels
+  - rule_id: validate_inventory
+    applies_to: "cards"
+    rule: "Match every as-built component to one node, inspect parent and finished handoffs, and trace each reject or waste destination."
+    source_ids:
+      - ec-levels
+  - rule_id: validate_routes
+    applies_to: "prefab alternative"
+    rule: "Verify assembly parent and changed component, installation and waste records; do not duplicate site-built and prefabricated routes for one element."
+    source_ids:
+      - ec-levels
+  - rule_id: validate_attribution
+    applies_to: "shared and secondary inputs"
+    rule: "Check all shared consumers and periods, secondary material origins and recovery gates, and absence of duplicate burden."
+    source_ids:
+      - ec-levels
+published_dataset_profile:
+  dataset_role: "Foreground construction package for one completed multi-dwelling residential building"
+  downstream_use: "secondary_dataset; background_dataset only with compatible site, scope and handover gate"
+  allowed_use: "Construction-stage modelling and separately identified lifecycle extensions"
+  excluded_use: "Direct operational whole-life results, dwelling-level results without allocation, or at-plant product mass"
+  required_metadata: "site, handover date, dwelling count or residence type, area convention, shared/core scope, fixed services, basement/parking, structural route, supplier gates"
+  required_quality_disclosure: "missing bills, unmetered site energy, reconciliation gaps, shared attribution, unresolved UUIDs"
+  update_trigger: "changed as-built scope, route, service acceptance, supplier gate or verified product identity"
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.surface-finishing-node
+      kind: "activity"
+      path: "library/modules/activities/surface-finishing-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc-53112"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Detail/EN/1074/53112"
+    used_for: "Product boundary; CPC 2.1 explanatory note clarifies unchanged CPC 3.0 label"
+  - id: "ec-levels"
+    type: "official_guidance"
+    reference: "https://green-forum.ec.europa.eu/green-business/levels/elearning-and-case-studies/levels-case-studies_en"
+    used_for: "As-built building description, area, bills of quantities and waste evidence channels"
+  - id: "ec-building-gwp"
+    type: "official_guidance"
+    reference: "https://energy.ec.europa.eu/topics/energy-efficiency/energy-performance-buildings/energy-performance-buildings-directive/global-warming-potential-buildings_en"
+    used_for: "Separation of construction, use and end-of-life stages"
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e72b3c2bf71321ab25301a489f10dbf02e5f7c025fd8da6b7c3294c5d0fe3f4f"
+  generated_content_sha256: "sha256:653085934557a53e7d7f348cb6c6dfcc140056f3cefbd0dd4181965a49f2a666"

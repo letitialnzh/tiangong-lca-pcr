@@ -1,10 +1,900 @@
 schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "53270"
-  title: "Outdoor sport and recreation facilities"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.outdoor-sport-and-recreation-facilities"
+  classification_refs: "CPC 3.0 53270; mapping acceptance is separate."
+  covered_products: "Accepted outdoor sport or recreation facility within one declared construction contract."
+  excluded_products: "Indoor sport installation; independently accepted building, road or utility; component sale; routine operation and maintenance."
+  representative_product: "One accepted named facility with disclosed area, installed schedule and performance gate."
+  production_route: "Survey/removal; earthwork and base forming; route-specific component integration; optional distinct surface or landscape finish; inspection, remediation and signed handover."
+  market_state: "Constructed and accepted outdoor asset, not attendance or playing hours."
+functional_unit:
+  what: "Constructed outdoor sport or recreation facility of declared family and scope."
+  how_much: "One signed, accepted facility; report developed area in m2 and route-specific capacity separately."
+  how_well: "Contract-specific surface, drainage, access, structure, planting or berth inspections passed and defects closed."
+  how_long_or_cycle: "One construction project through handover; design life is disclosed metadata."
+  reference_flow_link: "accepted_facility output from accept_facility."
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "whole facility"
+      rule: "Include contracted preparation, construction, pre-handover establishment/testing and defect closeout; exclude post-handover maintenance."
+      source_ids:
+        - unsd-cpc3-notes
+        - epa-gi-install
+    - rule_id: removal_gate
+      applies_to: "prepare_site"
+      rule: "Source is existing soil, vegetation or built material; separate on-site reuse and export. Accepted prepared ground hands to forming."
+      source_ids:
+        - site-mass-balance
+    - rule_id: forming_gate
+      applies_to: "form_base"
+      rule: "Prepared ground plus fill/structural material becomes inspected base or hardscape support; failed sections loop to repair."
+      source_ids:
+        - site-mass-balance
+    - rule_id: integration_gate
+      applies_to: "integrate_assets"
+      rule: "Receive accepted base and separately identified route components; install and inspect before finishing or acceptance."
+      source_ids:
+        - unsd-cpc3-notes
+    - rule_id: finish_gate
+      applies_to: "finish_surface"
+      rule: "Where specified, finish an established parent asset with surface, protection or planting; separate rejected area/residue."
+      source_ids:
+        - epa-gi-install
+    - rule_id: family_delta
+      applies_to: "integrate_assets; finish_surface"
+      rule: "Declare family-specific material, finish and test delta; mixed routes partition shared works once."
+      source_ids:
+        - unsd-cpc3-notes
+        - epa-parks-guide
+boundary_abstraction:
+  declared_starting_condition: "Surveyed outdoor site, existing vegetation/soil and utility or shoreline interfaces before contract work."
+  starting_condition_role: "Physical baseline; existing functional assets are not free new output."
+  product_classification_scope: "One accepted outdoor sport/recreation facility; independently accepted buildings, roads and utilities are separate."
+  recursive_input_rule: "Purchased same-category completed modules enter at supplier handover with their upstream dataset, not a second full facility bill."
+  upstream_dataset_requirement: "Specification- and location-matched construction materials, energy, transport and waste treatment; route-specific plant, paving or marine components where present."
+  disclosure: "Family, footprint partition, installed schedule, source ground, cut/fill, finish route, tests, shared works, reject paths and UUID gaps."
+reference_flow_definition:
+  reference_amount: "1 accepted facility"
+  product_flow_ref:
+    name: "Accepted outdoor sport or recreation facility; UUID unresolved"
+  flow_property_ref:
+    uuid: ""
+  unit_group_ref:
+    uuid: ""
+  reference_unit: "facility"
+  required_qualifiers:
+    - "Asset family"
+    - site
+    - "contract footprint"
+    - "installed schedule"
+    - "designed use/capacity"
+    - "route tests"
+    - "acceptance date"
+reference_flows:
+  []
+measurement_rules:
+  - id: facility_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Count, UUID unresolved"
+      uuid: ""
+    required_unit: "facility"
+    rule: "Count the signed contractual asset once; subareas are attributes, not extra products."
+  - id: area_partition
+    applies_to: "developed footprint"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "m2"
+    rule: "Measure non-overlapping subareas; distinguish site, constructed surface and planted area."
+  - id: earth_state
+    applies_to: "cut and fill"
+    required_property_ref:
+      name: "Volume and density"
+      uuid: ""
+    required_unit: "m3; kg/m3"
+    rule: "Record in-situ, loose and compacted states before mass conversion."
+  - id: carrier_separation
+    applies_to: "construction energy"
+    required_property_ref:
+      name: "Carrier-specific energy or mass"
+      uuid: ""
+    required_unit: "kWh; MJ; kg"
+    rule: "Keep electricity and fuels separate; disclose conversion factors."
+process_map:
+  - id: prepare_site
+    name: "Site removal and preparation"
+    inclusion: "required"
+    inclusion_condition: "Surveyed baseline to inspected prepared ground."
+    role: "Remove/protect existing soil, vegetation and built material; route reuse and export."
+    quantitative_reference: "Survey and removal tickets."
+  - id: form_base
+    name: "Earthwork and base forming"
+    inclusion: "required"
+    inclusion_condition: "Prepared ground to inspected formation/base."
+    role: "Form levels, drainage and structural support; repair rejects."
+    quantitative_reference: "As-built area, volume and tests."
+  - id: integrate_assets
+    name: "Facility-component integration"
+    inclusion: "required"
+    inclusion_condition: "Inspected base to installed testable facility."
+    role: "Join route-specific surface, access, drainage, planting system or marine fixture."
+    quantitative_reference: "Component schedule and QA."
+  - id: finish_surface
+    name: "Surface or landscape finishing"
+    inclusion: "conditional"
+    inclusion_condition: "Distinct final surfacing, protection or planting specified after integration."
+    role: "Apply finish to parent asset and inspect."
+    quantitative_reference: "Finished area and rejects."
+  - id: accept_facility
+    name: "Final testing and handover"
+    inclusion: "required"
+    inclusion_condition: "Installed/finished work to signed acceptance."
+    role: "Test selected family, close defects and count one asset."
+    quantitative_reference: "Certificate and as-built schedule."
+process_inventory:
+  - id: prepare_site
+    label: "Site removal and preparation"
+    inputs:
+      product:
+        - row_id: removal_energy
+          role: "Removal energy"
+          name: "Site-removal energy carrier by actual type"
+          flow_type: "product"
+          binding: "parameterized"
+          flow_set_ref:
+            id: "flow-set.energy-supply"
+            version: "0.2.0"
+          property_unit: "Carrier-specific energy or mass / kWh, MJ or kg"
+          description: "Fuel or electricity for owner-operated clearing and excavation; omit carrier already embodied in purchased all-in service."
+          amount:
+            expression: "Meter by task and carrier; reconcile subcontracted scope."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of documented unbundled site energy"
+                basis: "assigned removal energy divided by documented unbundled site energy"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_ground
+          role: "Prepared ground"
+          name: "Prepared and surveyed construction ground"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Inspected, cleared ground handed to form_base, not another saleable facility."
+          amount:
+            expression: "Sum accepted non-overlapping prepared subareas."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified preparation area"
+                basis: "accepted prepared area divided by specified preparation area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        - row_id: exported_site_material
+          role: "Exported site material"
+          name: "Removed site material by composition and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Excavated soil, vegetation or removed construction material crossing the project boundary; internal reuse remains an internal state."
+          amount:
+            expression: "Balance removed mass against reuse, stock change and export."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of removed mass"
+                basis: "exported mass divided by removed mass by material type"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      elementary:
+        []
+  - id: form_base
+    label: "Earthwork and base forming"
+    inputs:
+      product:
+        - row_id: received_prepared_ground
+          role: "Received prepared ground"
+          name: "Prepared and surveyed construction ground"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Internal handoff from prepare_site; do not buy or count the same site preparation twice."
+          amount:
+            expression: "Match preceding inspected area."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_site
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off area"
+                basis: "received area divided by accepted prepared area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+        - row_id: base_materials
+          role: "Base and drainage materials"
+          name: "Base, structure and drainage material by specification"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Actual fill, aggregate, concrete, geotextile and drainage components by design; sports, landscape and marine routes use different bills."
+          amount:
+            expression: "Reconcile delivered, installed, returned and rejected mass by material."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_base
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered material mass"
+                basis: "accepted installed mass divided by delivered mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: inspected_base
+          role: "Inspected base"
+          name: "Inspected facility base and drainage formation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "As-built formed levels and support/drainage base handed to integrate_assets."
+          amount:
+            expression: "Measure accepted non-overlapping base area and disclose structures."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_base
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified formed area"
+                basis: "accepted base area divided by specified base area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        - row_id: base_rejects
+          role: "Rejected base material"
+          name: "Rejected base material by type and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Failed forming material leaving to return, recovery or disposal; repaired sections remain in form_base."
+          amount:
+            expression: "Count only boundary exits after repair and return reconciliation."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_base
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered base-material mass"
+                basis: "boundary-exit reject mass divided by delivered base mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      elementary:
+        []
+  - id: integrate_assets
+    label: "Facility-component integration"
+    inputs:
+      product:
+        - row_id: received_base
+          role: "Received inspected base"
+          name: "Inspected facility base and drainage formation"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Internal handoff of accepted base; its forming burden remains with form_base."
+          amount:
+            expression: "Match accepted base area and structures."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_base
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/handed-off area"
+                basis: "received base area divided by accepted upstream base area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+        - row_id: facility_components
+          role: "Route-specific components"
+          name: "Outdoor-facility component by material and function"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Disaggregate actual playing-surface systems, park paths, visitor fixtures, planting supports, beach installations or marina berth hardware. This is not a universal list."
+          amount:
+            expression: "Reconcile deliveries and accepted installation by specification."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered components"
+                basis: "accepted installed quantity divided by delivered quantity by item"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: installed_asset
+          role: "Installed asset"
+          name: "Installed outdoor facility before final finish and acceptance"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Joined and inspected facility components on accepted base; conditional finish or final acceptance follows."
+          amount:
+            expression: "Record non-overlapping installed area with component schedule."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified installed area"
+                basis: "inspected installed area divided by specified facility area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        - row_id: integration_rejects
+          role: "Rejected components"
+          name: "Rejected facility components by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Damaged or off-spec components crossing the boundary; repair and retest loop within integrate_assets."
+          amount:
+            expression: "Balance defects, repair, supplier return, recovery and disposal."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_components
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered component mass"
+                basis: "boundary-exit reject mass divided by relevant delivered component mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      elementary:
+        []
+  - id: finish_surface
+    label: "Surface or landscape finishing"
+    inputs:
+      product:
+        - row_id: received_installed_asset
+          role: "Received installed asset"
+          name: "Installed outdoor facility before final finish and acceptance"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Where finish is distinct, receive only applicable installed parent area; other area goes directly to acceptance."
+          amount:
+            expression: "Measure route area requiring independent finish."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_finish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of installed area"
+                basis: "received finish area divided by total installed area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+        - row_id: finish_inputs
+          role: "Finish or planting inputs"
+          name: "Final surface or planting material by specification"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Only specified turf/paving surface, protective material, soil amendment, plants or marine finish by route; retain material-specific mass or count."
+          amount:
+            expression: "Reconcile delivery, installation, return and reject by item."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_finish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered finish material"
+                basis: "accepted installed quantity divided by delivered quantity by material"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_finish
+          role: "Accepted finish"
+          name: "Finished and inspected outdoor facility area"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Inspected finished surface or planted area handed to accept_facility; pre-handover establishment is included only if contracted."
+          amount:
+            expression: "Sum accepted finish area without adding repaired area twice."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_finish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of specified finish area"
+                basis: "accepted finish area divided by specified finish area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        - row_id: finish_rejects
+          role: "Finish rejects"
+          name: "Rejected finish material by type and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Removed off-spec finish or planting material sent to documented reuse, recovery or treatment; repair burden remains here."
+          amount:
+            expression: "Count actual exit after repair and return reconciliation."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_finish
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "fraction of delivered finish-material mass"
+                basis: "boundary-exit rejected finish mass divided by delivered finish mass"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      elementary:
+        []
+  - id: accept_facility
+    label: "Final testing and handover"
+    inputs:
+      product:
+        - row_id: received_completed_work
+          role: "Installed and finished work"
+          name: "Completed outdoor facility work by non-overlapping area"
+          flow_type: "product"
+          property_unit: "Area / m2"
+          description: "Receive installed areas directly and separately finished areas after QA; partition them so no area is received twice."
+          amount:
+            expression: "Sum unfinished installed area and accepted finished area once."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "received/accepted project area"
+                basis: "received non-overlapping work area divided by accepted project area"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_facility
+          role: "Accepted outdoor facility"
+          name: "Accepted outdoor sport or recreation facility of declared family"
+          flow_type: "product"
+          property_unit: "Count / facility"
+          description: "Contractual sport or recreation asset after route-specific tests, defect closure and signed handover."
+          amount:
+            expression: "Count exactly one signed accepted facility per reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per accepted facility"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_acceptance
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "facility/reference flow"
+                basis: "signed accepted facility count"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - site-mass-balance
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: single_asset
+    applies_to: "accepted output"
+    rule: "Attribute construction to one signed asset; attendance and later maintenance are not co-products."
+    source_ids:
+      - unsd-cpc3-notes
+  - rule_id: mixed_family
+    applies_to: "mixed site"
+    rule: "Partition measurable subareas by as-built quantities; allocate genuinely shared works once by engineering driver or metered use."
+    source_ids:
+      - site-mass-balance
+  - rule_id: reuse_and_spoil
+    applies_to: "site material"
+    rule: "Internal cut reuse retains removal burden; export records destination without unsupported avoided-product credit."
+    source_ids:
+      - site-mass-balance
+  - rule_id: rework_retention
+    applies_to: "rejected work"
+    rule: "Return failed base, component or finish to producing node; retain repair burden there, never on extra accepted output."
+    source_ids:
+      - site-mass-balance
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_site
+      process_id: "prepare_site"
+      flow_role: "removal, energy, ground, spoil"
+      record_type: "survey and ticket"
+      raw_fields: "baseline; material; cut; density; reuse; export; destination; carrier; quantity"
+      collection_method: "survey, meter, weighbridge and invoice"
+      unit: "m2; m3; kg; kWh; MJ"
+      frequency: "area/load/shift"
+      temporal_coverage: "project"
+      site_scope: "contract site"
+      aggregation_rule: "balance removed mass and accepted area"
+      quality_evidence: "survey, tickets, meters"
+    - protocol_id: cp_base
+      process_id: "form_base"
+      flow_role: "base, drainage, rejects"
+      record_type: "delivery and as-built"
+      raw_fields: "specification; delivered; placed; returned; rejected; base area; test"
+      collection_method: "ticket, drawings and QA"
+      unit: "kg; m2; m3"
+      frequency: "batch/segment"
+      temporal_coverage: "project"
+      site_scope: "formed area"
+      aggregation_rule: "reconcile delivered and accepted states"
+      quality_evidence: "tickets and tests"
+    - protocol_id: cp_components
+      process_id: "integrate_assets"
+      flow_role: "components, asset, rejects"
+      record_type: "bill and inspection"
+      raw_fields: "family; component; delivered; installed; return; rejection; area; test"
+      collection_method: "bill, installation log and QA"
+      unit: "kg; item; m2"
+      frequency: "item/subarea"
+      temporal_coverage: "project"
+      site_scope: "installed facility"
+      aggregation_rule: "balance each item and partition area"
+      quality_evidence: "invoices, as-built, QA"
+    - protocol_id: cp_finish
+      process_id: "finish_surface"
+      flow_role: "finish, plants, rejects"
+      record_type: "delivery and inspection"
+      raw_fields: "finish type; material; delivered; accepted; rejected; area; establishment test"
+      collection_method: "tickets, survey and QA"
+      unit: "kg; item; m2"
+      frequency: "batch/subarea"
+      temporal_coverage: "through finish sign-off"
+      site_scope: "finished area"
+      aggregation_rule: "balance finish area and materials"
+      quality_evidence: "tickets, QA"
+    - protocol_id: cp_acceptance
+      process_id: "accept_facility"
+      flow_role: "completed work and asset"
+      record_type: "signed certificate"
+      raw_fields: "family; footprint; schedule; tests; defects; closure; acceptance date"
+      collection_method: "as-built and signed handover"
+      unit: "facility; m2"
+      frequency: "handover"
+      temporal_coverage: "through acceptance"
+      site_scope: "contract asset"
+      aggregation_rule: "partition work and count asset once"
+      quality_evidence: "signed certificate"
+  calculation_rules:
+    - id: site_balance
+      applies_to: "prepare_site"
+      rule: "Removed mass = on-site reused + exported + stock change, using measured state-specific density."
+      inputs:
+        - survey
+        - density
+        - tickets
+      output: "site material routes"
+      source_ids:
+        - site-mass-balance
+    - id: material_balance
+      applies_to: "forming, integration, finish"
+      rule: "Delivered = accepted installation + supplier return + boundary-exit reject + stock change; repair is not new delivery."
+      inputs:
+        - tickets
+        - QA
+        - returns
+      output: "material and reject rows"
+      source_ids:
+        - site-mass-balance
+    - id: area_partition_calc
+      applies_to: "installation to acceptance"
+      rule: "Accepted area = unfinished installed area + accepted finished area with no overlap."
+      inputs:
+        - as-built
+        - "finish QA"
+      output: "accepted area"
+      source_ids:
+        - site-mass-balance
+    - id: facility_count_calc
+      applies_to: "accept_facility"
+      rule: "Count one asset only after route tests and defect closure are signed."
+      inputs:
+        - tests
+        - certificate
+      output: "reference product"
+      source_ids:
+        - site-mass-balance
+  data_quality_requirements:
+    - id: family_trace
+      applies_to: "all nodes"
+      requirement: "State family, component schedule, footprint partition and handover gate."
+      evidence: "contract drawings, as-built, certificate"
+    - id: material_trace
+      applies_to: "removal, forming and finish"
+      requirement: "Preserve source condition, measurement state, material grade, reject/reuse destination and QA."
+      evidence: "surveys, tickets, inspections"
+    - id: route_trace
+      applies_to: "alternatives"
+      requirement: "Explain which sport, landscape, beach or marine inputs and tests apply; absent components contribute nothing."
+      evidence: "design and acceptance specification"
+    - id: identity_gap
+      applies_to: "unresolved flows"
+      requirement: "Verify exact flow, property and unit-group UUID before final exchanges."
+      evidence: "platform detail review"
+validation_rules:
+  - rule_id: scope_check
+    applies_to: "reference product"
+    rule: "Confirm outdoor family and signed acceptance; exclude indoor, separately delivered assets and operation."
+    source_ids:
+      - unsd-cpc3-notes
+  - rule_id: family_check
+    applies_to: "integrate_assets"
+    rule: "Require actual schedule, finish and tests for each family; reject universal turf, planting or marina bills."
+    source_ids:
+      - unsd-cpc3-notes
+      - epa-parks-guide
+  - rule_id: handoff_check
+    applies_to: "all nodes"
+    rule: "Match internal handoffs, non-overlapping area and material balances; count common work once."
+    source_ids:
+      - site-mass-balance
+  - rule_id: finish_check
+    applies_to: "finish_surface"
+    rule: "If activated, document parent, inputs, inspected finish and reject path; otherwise send installed asset directly to acceptance."
+    source_ids:
+      - epa-gi-install
+  - rule_id: reject_check
+    applies_to: "all nodes"
+    rule: "Rework stays with producing node; waste exits have destination and cannot become accepted output."
+    source_ids:
+      - site-mass-balance
+  - rule_id: range_role
+    applies_to: "all cards"
+    rule: "QA ratios are consistency tests, never universal construction intensities."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground construction package for accepted outdoor sport or recreation asset."
+  downstream_use: "Secondary/background construction data only for comparable family, site, components and gate."
+  allowed_use: "Construction-stage modelling with disclosed footprint, materials, route and acceptance."
+  excluded_use: "Indoor facility, separate building/transport asset, component sale, post-handover use or maintenance."
+  required_metadata: "Site, year, family, footprint partition, route components, material states, design use/capacity, tests and acceptance."
+  required_quality_disclosure: "Shared-work allocation, cut/fill balance, finish selection, defects/rework and UUID gaps."
+  update_trigger: "Changed family, design, contract boundary, accepted quantity, route or identity."
+module_references:
+  selection_mode: "automatic"
+  selected:
+    - id: module.activity.resource-removal-node
+      kind: "activity"
+      path: "library/modules/activities/resource-removal-node.yaml"
+      decision: "applicable"
+    - id: module.activity.forming-fabrication-node
+      kind: "activity"
+      path: "library/modules/activities/forming-fabrication-node.yaml"
+      decision: "applicable"
+    - id: module.activity.assembly-integration-node
+      kind: "activity"
+      path: "library/modules/activities/assembly-integration-node.yaml"
+      decision: "applicable"
+    - id: module.activity.surface-finishing-node
+      kind: "activity"
+      path: "library/modules/activities/surface-finishing-node.yaml"
+      decision: "applicable"
+    - id: module.technology.alternative-technology-route
+      kind: "technology"
+      path: "library/modules/technologies/alternative-technology-route.yaml"
+      decision: "applicable"
+    - id: module.system-condition.rework-reject-routing
+      kind: "system_condition"
+      path: "library/modules/system-conditions/rework-reject-routing.yaml"
+      decision: "applicable"
+  unresolved:
+    []
+data_sources:
+  - id: "unsd-cpc3-notes"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 Explanatory Notes, https://unstats.un.org/UNSDWebsite/statcom/session_56/documents/BG-3o-Explanatory_Notes_of_the_Central_Product_Classification_Version3-E.pdf"
+    used_for: "Asset-family scope and indoor exclusion."
+  - id: "epa-parks-guide"
+    type: "official_guidance"
+    reference: "US EPA, Green Infrastructure in Parks: A Guide to Collaboration, Funding, and Community Engagement, EPA 841-R-16-112, https://www.epa.gov/nps/green-infrastructure-parks-guide"
+    used_for: "Park-specific component distinctions."
+  - id: "epa-gi-install"
+    type: "official_guidance"
+    reference: "US EPA, Green Infrastructure Installation, Operation, and Maintenance, https://www.epa.gov/green-infrastructure/green-infrastructure-installation-operation-and-maintenance"
+    used_for: "Installation, inspection and operation separation where green infrastructure is present."
+  - id: "site-mass-balance"
+    type: "method_factor"
+    reference: "Conservation-of-material and non-overlapping-area identities applied to measured project surveys, tickets and acceptance records."
+    used_for: "Material balance, shared-work partition and QA formulas."
+projection_metadata:
+  contract_version: "1"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:d2b7c9a333e1421fb951ef74ce7f060574afa1fb751c00055c1a9132533cf95f"
+  generated_content_sha256: "sha256:ed43eeadbb178aea905028eb62813b98d713efd3da4f9abb5a0c113d16797823"
