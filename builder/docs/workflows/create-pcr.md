@@ -24,7 +24,9 @@ The AI produces the current best PCR from available evidence. This workflow writ
    A newly imported unmapped leaf normally has no `manifest.yaml`.
 3. Confirm that no existing canonical PCR record covers the same semantic product category.
 4. Choose a semantic PCR slug that does not contain the classification code. Explicitly initialize the four-file PCR
-   directory, or promote the matching retained legacy scaffold in place after checking its identity.
+   directory, or promote the matching retained legacy scaffold in place after checking its identity. For each CPC
+   reference, also create a draft `docs/adr/cpc-<code>.md` record, named by that CPC code;
+   this draft is not an accepted mapping.
 5. Research the current product and route, record explicit `true`, `false`, or `unresolved` route signals using
    `builder/docs/contracts/module-authoring-plan-contract.md`, and run
    `npm run pcr:module-plan -- --context <route-context.yaml> --format markdown`.
@@ -60,8 +62,12 @@ The AI produces the current best PCR from available evidence. This workflow writ
 26. Run the binding review gate in [review-pcr.md](review-pcr.md), resolve findings, resync the projection if content
     changed, and run `npm run validate`.
 27. Update `manifest.yaml` lifecycle fields with `npm run pcr:lifecycle -- --pcr <library/pcrs/...> ...` when content maturity or translation state changes.
-28. Only after semantic scope and methodology review, add or accept the classification mapping edge and run
-    `npm run catalog:build`. Never use an empty PCR merely to make classification coverage appear mapped.
+28. Only after semantic scope and methodology review, complete and accept each CPC code's individual decision record.
+    Check its source label, target PCR id, relation, included/excluded boundary, route, handover gate, findings, and
+    reviewer/time. Add the classification mapping edge with `decision_ref` pointing to that code-named record. Do not
+    reuse a generic policy anchor or batch decision for a new CPC edge. Run `npm run aliases:build` and
+    `npm run catalog:build` and read back coverage. Never use an empty PCR merely to make classification coverage
+    appear mapped. `pcr:lifecycle` alone does not accept or publish the mapping.
 
 ## Required PCR Facts
 

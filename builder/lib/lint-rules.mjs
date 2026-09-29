@@ -24,6 +24,7 @@ import {
   PROCESS_INCLUSION_VALUES as PROCESS_INCLUSION_VALUE_LIST,
 } from "../../packages/pcr-core/src/generated/controlled-vocabulary.mjs";
 import { manifestLifecycleProblems } from "./lifecycle-policy.mjs";
+import { inspectCpcDecisionRefs } from "./cpc-decision-ref.mjs";
 import {
   parsePcrMarkdownToStructured,
   structuredProjectionYaml,
@@ -205,20 +206,22 @@ function validateYamlContractFile({ contract, sourcePath, root, problems, entity
     missingMessage: `Missing contract file: ${toRepoRelative(root, sourcePath)}`,
   });
   if (!state.exists || !state.safe) {
-    return;
+    return null;
   }
   const text = readCanonicalRegularFile(sourcePath, root, problems);
   if (text === null) {
-    return;
+    return null;
   }
+  const value = parseYaml(text);
   addContractProblems({
     contract,
-    value: parseYaml(text),
+    value,
     sourcePath,
     root,
     problems,
     entityKind,
   });
+  return value;
 }
 
 function inventoryRows(processInventory) {
@@ -887,31 +890,70 @@ export function lint(options) {
   }
 
   if (requestedPcrs.length === 0) {
-    validateYamlContractFile({
+  const moduleGroups = ["activities", "technologies", "system-conditions"];
+  for (const group of moduleGroups) {
+    const moduleDirectory = path.join(root, "library/modules", group);
+    if (!existsSync(moduleDirectory)) continue;
+    for (const entry of readdirSync(moduleDirectory).sort()) {
+      if (!entry.endsWith(".yaml")) continue;
+      const sourcePath = path.join(moduleDirectory, entry);
+      validateYamlContractFile({
+        contract: "module-candidate.schema.json",
+        sourcePath,
+        root,
+        problems,
+        entityKind: "PCR candidate methodology module",
+      });
+      try {
+        const moduleText = readCanonicalRegularFile(sourcePath, root, problems);
+        if (moduleText === null) continue;
+        const module = parseYaml(moduleText);
+        const expectedPrefix = {
+          activities: "module.activity.",
+          technologies: "module.technology.",
+          "system-conditions": "module.system-condition.",
+        }[group];
+        const expectedId = `${expectedPrefix}${entry.slice(0, -5)}`;
+        if (module.id !== expectedId) {
+          problems.push(`${toRepoRelative(root, sourcePath)}: module id must match path (${expectedId})`);
+        }
+      } catch {
+        // The contract validator above reports unreadable or malformed YAML.
+      }
+    }
+  }
+
+  validateYamlContractFile({
     contract: "catalog.schema.json",
     sourcePath: path.join(root, "library/catalog.yaml"),
     root,
     problems,
     entityKind: "PCR catalog",
-    });
+  });
 
-    const mappingRoot = path.join(root, "classifications/mappings");
-    if (existsSync(mappingRoot)) {
+  const mappingRoot = path.join(root, "classifications/mappings");
+  if (existsSync(mappingRoot)) {
     const mappingRootStats = lstatSync(mappingRoot);
     if (mappingRootStats.isSymbolicLink() || !mappingRootStats.isDirectory()) {
       problems.push("classifications/mappings: mapping root must be a canonical directory");
     } else {
       for (const fileName of readdirSync(mappingRoot).filter((entry) => /\.ya?ml$/u.test(entry)).sort()) {
-        validateYamlContractFile({
+        const sourcePath = path.join(mappingRoot, fileName);
+        const mapping = validateYamlContractFile({
           contract: "classification-mapping.schema.json",
-          sourcePath: path.join(mappingRoot, fileName),
+          sourcePath,
           root,
           problems,
           entityKind: "classification mapping",
         });
+        problems.push(...inspectCpcDecisionRefs({
+          root,
+          mapping,
+          source: toRepoRelative(root, sourcePath),
+        }));
       }
     }
-    }
+  }
   }
 
   const pcrRoot = path.join(root, "library/pcrs");
