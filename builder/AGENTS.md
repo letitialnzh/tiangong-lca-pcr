@@ -24,6 +24,10 @@ This directory defines how agents construct, update, validate, and publish PCR r
   descriptor before importing a non-3.0 version.
 - Treat current mapping v2 as an accepted-positive-edge contract. Every edge must target a material PCR and carry
   explicit acceptance decision metadata; candidate or manual-review evidence belongs in coverage assessment.
+- For each new CPC-linked PCR, create a separate draft mapping decision at
+  `docs/adr/cpc-<code>.md` while authoring. After review, set that record to accepted and use
+  its exact path as the accepted edge's `decision_ref`; never reuse a batch or policy-only reference for a new edge.
+  Multiple CPC codes require separate code-named records. Do not add a research-session file for this purpose.
 - Treat `scaffold-cpc` as a fail-fast compatibility alias. It requires explicit `--legacy-scaffolds` and may operate
   only on a retained v1/scaffold mapping fixture. It must fail before mutation on a current v2 mapping, so it cannot
   inject an unaccepted edge or rehydrate a retired leaf-derived PCR directory. It must not repair a partial target,

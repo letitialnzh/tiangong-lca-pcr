@@ -49,6 +49,10 @@ One semantic product category uses one canonical PCR record. Additional classifi
 A newly imported classification leaf does not by itself justify a PCR directory. Leave it represented in classification
 coverage until product scope and methodology review establish a material canonical record; then create that record and
 accept the mapping edge. Do not create empty PCRs merely to make the classification look fully mapped.
+For each new CPC-linked PCR, start a separate draft decision record named for each referenced CPC code at
+`docs/adr/cpc-<code>.md`. After review, accept the record and use its exact path as that
+mapping edge's `decision_ref`; multiple codes require separate records. Existing accepted edges retain their historical
+decision references.
 
 Each material PCR should be a directory:
 
@@ -182,7 +186,8 @@ them. When intentionally replacing or promoting one of these records into a mate
 - update both `pcr.en-US.md` and `pcr.zh-CN.md` as paired renderings of the same rule
 - run `npm run pcr:sync-structured -- --pcr <library/pcrs/...>` after editing canonical Markdown so `structured.yaml` stays aligned
 - move `status`, `content_maturity`, and `translation_status` forward with `npm run pcr:lifecycle` only after the relevant methodology or translation review has happened
-- add a v2 accepted mapping edge only after the classification-to-PCR relation is reviewed and its durable decision evidence exists
+- add a v2 accepted CPC mapping edge only after its code-named decision record is reviewed and accepted, using that
+  file as `decision_ref`; `pcr:lifecycle` does not add the mapping
 - run `npm run aliases:build` and `npm run catalog:build` in the same coordinated change so the old id is either removed from alias sources or redirected to the reviewed canonical PCR, and the catalog pins the registry's exact bytes and entry count
 
 Repository lint regenerates and compares the deterministic projection for every material PCR. A stale

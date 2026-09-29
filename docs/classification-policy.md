@@ -72,29 +72,41 @@ Every edge points to a material PCR and carries `acceptance.status: accepted`, `
 is empty v2. Adding another classification system always adds source and coverage inputs; add
 mapping edges only for reviewed semantic matches, never by copying a PCR tree or manufacturing one edge per leaf.
 
-Acceptance does not require creating a new ADR. `decision_ref` only needs to point to applicable, readable, durable
-decision evidence; it may reuse an existing record or reference a non-ADR batch acceptance register, migration record,
-or other repository-local acceptance record. Create or update an ADR only when a batch introduces a new architecture or
-governance rule. A routine PCR batch must not be blocked merely because no new ADR exists.
+Historical acceptance did not require a new ADR per edge: `decision_ref` could point to applicable, readable, durable
+decision evidence, including a batch register or another repository-local record. That remains valid for existing edges.
+For new CPC edges, use the per-code ADR rule below; a batch decision or generic policy anchor is no longer sufficient.
+
+For CPC-linked PCRs authored after this policy change, the decision evidence is instead one code-named record per CPC
+edge at `docs/adr/cpc-<code>.md`. Create the record as a draft during PCR authoring, recording
+the source leaf, target PCR, relation, included and excluded product boundaries, route and handover gate, and review
+findings. Accept it only after the semantic match is reviewed; the accepted mapping's `decision_ref` must be that
+record's exact repository-relative path. If one PCR has multiple CPC references, create one record for each code. A
+record for a rejected or still-unmapped leaf may remain a draft but must not create a positive mapping. Historical
+accepted edges are not retroactively rewritten.
+
+For accepted CPC edges decided at or after `2026-09-29T05:07:13Z`, repository lint enforces the code-named
+`decision_ref` and an accepted record. Start from `builder/templates/cpc-mapping-decision.md.hbs`; its YAML frontmatter
+must set `status: accepted`, `authoritative: true`, and match the edge's CPC version/code, PCR id, relation,
+reviewer, and UTC decision time.
+The cutoff preserves earlier accepted decisions without retroactive edits.
 
 ### Candidate Promotion Mapping
 
-Promoting a retained legacy scaffold from `scaffold/empty_scaffold` to `candidate` is the explicit maintainer
-acceptance event for every positive `manifest.classification_refs` entry on that scaffold. `pcr:lifecycle` therefore
-adds the corresponding accepted mapping edges automatically, using the lifecycle timestamp as the decision time and
-this section as the durable decision reference. The command refuses missing references, `manual_review` relations,
-unknown mapping coordinates, source-label mismatches, and any code already mapped differently; it never replaces an
-accepted edge.
+Promoting a retained legacy scaffold from `scaffold/empty_scaffold` to `candidate` establishes material PCR content;
+it does not by itself accept the classification relation. The current `pcr:lifecycle` command changes PCR lifecycle
+state only. For a new CPC edge, first complete and accept its individual code-named decision record, then add the
+positive mapping with matching reviewer and UTC decision time. Never replace an existing accepted edge without a new
+explicit decision, and reject missing references, `manual_review` relations, unknown coordinates, or source-label
+mismatches. Rebuild aliases and catalog/coverage after the accepted mapping changes.
 
 The CPC 3.0 `01352` Kiwi fruit edge is accepted as an `exact` match to the retained `kiwi-fruit` PCR. Both describe
 fresh whole kiwifruit from managed orchard production through packhouse dispatch, including harvest, primary
 conditioning, grading, and any declared cold-storage period. Processed products and retail preparation after dispatch
 are outside that PCR boundary. This decision retains the existing PCR identity and its recorded acceptance time.
 
-For CPC 3.0, the same operation regenerates the deterministic legacy-id registry. When the promoted scaffold keeps
-its leaf-derived PCR id, that id is no longer retired and its alias is removed. Catalog, material-index, and coverage
-artifacts are rebuilt before the lifecycle command reports success. This coupling applies only to the deliberate
-scaffold-to-candidate transition; later candidate or active lifecycle edits do not create mapping decisions.
+For CPC 3.0, an accepted mapping change requires regenerating the deterministic legacy-id registry. When the
+promoted scaffold keeps its leaf-derived PCR id, that id is no longer retired and its alias is removed. Rebuild the
+catalog, material index, and coverage after accepting the edge; `pcr:lifecycle` does not perform those operations.
 
 External classification codes must not become PCR directory names. If two classification leaves resolve to the same semantic PCR, map both leaves to that PCR id. If two different PCRs would otherwise share the same semantic slug, disambiguate with a short stable hash or a clearer semantic qualifier, not with the classification code.
 

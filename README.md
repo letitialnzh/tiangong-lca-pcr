@@ -43,6 +43,8 @@ PCR records are canonical methodology documents. Classification systems such as 
 - `library/indexes/`: generated material PCR indexes.
 - `classifications/systems/`: source and normalized classification-system data.
 - `classifications/mappings/`: accepted mappings from external classification codes to canonical material PCR ids.
+- `docs/adr/cpc-<code>.md`: one code-named decision record for each newly authored CPC
+  mapping; draft during PCR authoring, accepted only after semantic review.
 - `classifications/aliases/`: deterministic terminal locators for retired leaf-derived PCR ids.
 - `classifications/indexes/`: derived classification coverage read models for the CLI.
 - `builder/`: CLI, implementation modules, scripts, schemas, templates, controlled vocabularies, and builder documentation for constructing and validating the PCR library.
@@ -163,6 +165,9 @@ publication pins the alias registry path, exact-byte SHA-256, and entry count, t
 the material index, and coverage indexes as one journaled recoverable artifact set. Runtime alias reads fail closed
 when that binding or registry drifts. If a catalog publication is interrupted, run `catalog:recover`, then
 `catalog:check`; use `catalog:recover -- --force-stale-lock` only after confirming no writer is active.
+New CPC-linked PCRs use individual code-named mapping decision records; `pcr:lifecycle` changes PCR state but does not
+accept a mapping. After accepting a decision, add its edge with that file as `decision_ref`, then rebuild aliases and
+catalog/coverage. Historical accepted mappings retain their existing references.
 
 PCR production agents follow the [Flow Identity Binding Contract](builder/docs/contracts/flow-binding-contract.md) for semantic-card completion, Flow Set assessment, uncovered-flow UUID lookup, detail confirmation, projection, and review. The selected versioned Flow Set registry owns its binding policy. Draft bindings remain provisional, and every final TIDAS process exchange must resolve to a verified concrete flow UUID.
 

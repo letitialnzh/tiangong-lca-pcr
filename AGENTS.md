@@ -126,6 +126,13 @@ material PCR, use `exact`, `broader`, `narrower`, or `proxy`, and carry an `acce
 decision-maker, UTC time, and durable decision reference. Candidate and `manual_review` evidence belongs in coverage
 assessment, not in the positive mapping.
 
+For every newly authored CPC-linked PCR, create an individual draft decision record while authoring at
+`docs/adr/cpc-<code>.md` (for example, `docs/adr/cpc-53129.md`). Its filename
+contains the CPC code; use one record per code if a PCR has multiple CPC references. After semantic mapping review, mark the
+record accepted and point that mapping edge's `decision_ref` to it. Do not use a batch decision or a generic policy
+anchor for new CPC edges, and do not accept a mapping merely because a draft decision record exists. Existing accepted
+edges retain their historical references; this rule is prospective.
+
 `pcr:import:cpc -- --source <csv>` is classification-only by default. Every invocation requires an explicit source;
 the command writes raw source, source metadata, and normalized classification artifacts, creates zero PCR records,
 creates a zero-edge mapping only when the mapping is absent, and validates then preserves the exact bytes of any
