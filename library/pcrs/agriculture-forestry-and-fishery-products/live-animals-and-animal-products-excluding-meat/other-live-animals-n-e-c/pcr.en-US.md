@@ -49,6 +49,8 @@ Legally supplied living animals not assigned to a more specific class: eligible 
 | m_net | reference product | Mass | kg | Use calibrated net live-animal mass; exclude removable water, substrate and container. |
 | m_count | each lot | Count and Mass | count and kg | Report count or documented population estimate; convert only using measured lot mass, never a universal larva/adult factor. |
 | m_period | cohort and shared assets | Time | period | Link actual inputs, outputs, deaths, services and replacement to unique nonoverlapping periods. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -95,14 +97,18 @@ These are responsibilities rather than universal technologies. Amphibian aquatic
 
 Actual species- and stage-qualified stock with supplier burden.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Actual species- and stage-qualified stock with supplier burden. Original collection denominator kind: process_output.
+
 - Selected flow: Purchased live breeding stock (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Actual species- and stage-qualified stock with supplier burden.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -117,14 +123,18 @@ Actual species- and stage-qualified stock with supplier burden.
 
 Record actual species-specific feed crossing the managed boundary.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Record actual species-specific feed crossing the managed boundary. Original collection denominator kind: process_output.
+
 - Selected flow: Feed supply (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Record actual species-specific feed crossing the managed boundary.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -139,14 +149,18 @@ Record actual species-specific feed crossing the managed boundary.
 
 Record actual species-specific biological substrate separately from feed.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Record actual species-specific biological substrate separately from feed. Original collection denominator kind: process_output.
+
 - Selected flow: Biological rearing substrate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Record actual species-specific biological substrate separately from feed.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -161,14 +175,18 @@ Record actual species-specific biological substrate separately from feed.
 
 Meter actual supplied water; distinguish removable holding medium.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Meter actual supplied water; distinguish removable holding medium. Original collection denominator kind: process_output.
+
 - Selected flow: Supplied rearing water
 - Flow property / unit: Mass / kg
-- Amount rule: Meter actual supplied water; distinguish removable holding medium.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -183,14 +201,18 @@ Meter actual supplied water; distinguish removable holding medium.
 
 Meter actual lighting, temperature, aeration or pump energy.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Meter actual lighting, temperature, aeration or pump energy. Original collection denominator kind: process_output.
+
 - Selected flow: Rearing energy
 - Flow property / unit: Energy / kWh
-- Amount rule: Meter actual lighting, temperature, aeration or pump energy.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -213,14 +235,18 @@ Meter actual lighting, temperature, aeration or pump energy.
 
 Weigh and count viable animals leaving rearing once by stage.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Weigh and count viable animals leaving rearing once by stage. Original collection denominator kind: process_output.
+
 - Selected flow: Living cohort to selection (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh and count viable animals leaving rearing once by stage.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -237,14 +263,18 @@ Weigh and count viable animals leaving rearing once by stage.
 
 Record stage-specific deaths as animal mass and actual disposal, not marketed live product.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Record stage-specific deaths as animal mass and actual disposal, not marketed live product. Original collection denominator kind: process_output.
+
 - Selected flow: Dead animals in rearing (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Record stage-specific deaths as animal mass and actual disposal, not marketed live product.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -259,14 +289,18 @@ Record stage-specific deaths as animal mass and actual disposal, not marketed li
 
 Measure spent substrate separately from dead animal mass and record destination.
 
+Denominator and scope requirements：per kg Managed species-specific rearing output
+
+Raw quantity and calculation requirements: Measure spent substrate separately from dead animal mass and record destination. Original collection denominator kind: process_output.
+
 - Selected flow: Spent biological substrate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure spent substrate separately from dead animal mass and record destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Managed species-specific rearing output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rear`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -289,14 +323,18 @@ Measure spent substrate separately from dead animal mass and record destination.
 
 Meter energy used in the lawful event; no fictitious husbandry.
 
+Denominator and scope requirements：per kg Independent lawful live capture output
+
+Raw quantity and calculation requirements: Meter energy used in the lawful event; no fictitious husbandry. Original collection denominator kind: process_output.
+
 - Selected flow: Capture equipment energy
 - Flow property / unit: Energy / kWh
-- Amount rule: Meter energy used in the lawful event; no fictitious husbandry.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Independent lawful live capture output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -319,14 +357,18 @@ Meter energy used in the lawful event; no fictitious husbandry.
 
 Count and weigh viable animals at collection handoff, linked to species and permit.
 
+Denominator and scope requirements：per kg Independent lawful live capture output
+
+Raw quantity and calculation requirements: Count and weigh viable animals at collection handoff, linked to species and permit. Original collection denominator kind: process_output.
+
 - Selected flow: Lawfully captured living animals (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Count and weigh viable animals at collection handoff, linked to species and permit.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Independent lawful live capture output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -343,14 +385,18 @@ Count and weigh viable animals at collection handoff, linked to species and perm
 
 Separate dead or injured animals from viable output and record disposal.
 
+Denominator and scope requirements：per kg Independent lawful live capture output
+
+Raw quantity and calculation requirements: Separate dead or injured animals from viable output and record disposal. Original collection denominator kind: process_output.
+
 - Selected flow: Capture mortality (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Separate dead or injured animals from viable output and record disposal.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Independent lawful live capture output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -373,14 +419,18 @@ Separate dead or injured animals from viable output and record disposal.
 
 Receive measured live lot from one route or upstream purchase without recreating source burdens.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Receive measured live lot from one route or upstream purchase without recreating source burdens. Original collection denominator kind: process_output.
+
 - Selected flow: Live source animals (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Receive measured live lot from one route or upstream purchase without recreating source burdens.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -395,14 +445,18 @@ Receive measured live lot from one route or upstream purchase without recreating
 
 Meter species-appropriate water actually supplied, not animal mass.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Meter species-appropriate water actually supplied, not animal mass. Original collection denominator kind: process_output.
+
 - Selected flow: Temporary-holding water
 - Flow property / unit: Mass / kg
-- Amount rule: Meter species-appropriate water actually supplied, not animal mass.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -417,14 +471,18 @@ Meter species-appropriate water actually supplied, not animal mass.
 
 Meter actual temperature, light, aeration or handling energy.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Meter actual temperature, light, aeration or handling energy. Original collection denominator kind: process_output.
+
 - Selected flow: Temporary-holding energy
 - Flow property / unit: Energy / kWh
-- Amount rule: Meter actual temperature, light, aeration or handling energy.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -447,14 +505,18 @@ Meter actual temperature, light, aeration or handling energy.
 
 Weigh accepted species- and stage-qualified lot to gate.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Weigh accepted species- and stage-qualified lot to gate. Original collection denominator kind: process_output.
+
 - Selected flow: Selected viable animals (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh accepted species- and stage-qualified lot to gate.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -469,14 +531,18 @@ Weigh accepted species- and stage-qualified lot to gate.
 
 Only a real separately marketed live stage or other qualified product at its own handoff; no duplicate accepted animal.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Only a real separately marketed live stage or other qualified product at its own handoff; no duplicate accepted animal. Original collection denominator kind: process_output.
+
 - Selected flow: Independently sold lawful output (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Only a real separately marketed live stage or other qualified product at its own handoff; no duplicate accepted animal.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -493,14 +559,18 @@ Only a real separately marketed live stage or other qualified product at its own
 
 Record animal deaths in selection and holding separately from viable output.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Record animal deaths in selection and holding separately from viable output. Original collection denominator kind: process_output.
+
 - Selected flow: Dead animals in selection (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Record animal deaths in selection and holding separately from viable output.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -515,14 +585,18 @@ Record animal deaths in selection and holding separately from viable output.
 
 Measure discarded medium separately from animal losses and record treatment.
 
+Denominator and scope requirements：per kg Live selection and holding output
+
+Raw quantity and calculation requirements: Measure discarded medium separately from animal losses and record treatment. Original collection denominator kind: process_output.
+
 - Selected flow: Discarded holding medium (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure discarded medium separately from animal losses and record treatment.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Live selection and holding output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_select`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -545,14 +619,18 @@ Measure discarded medium separately from animal losses and record treatment.
 
 Receive accepted viable lot once from selection.
 
+Denominator and scope requirements：per kg Contained source-gate handover output
+
+Raw quantity and calculation requirements: Receive accepted viable lot once from selection. Original collection denominator kind: process_output.
+
 - Selected flow: Selected live animals (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Receive accepted viable lot once from selection.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Contained source-gate handover output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -567,14 +645,18 @@ Receive accepted viable lot once from selection.
 
 Measure protective container and removable medium separately from animal mass.
 
+Denominator and scope requirements：per kg Contained source-gate handover output
+
+Raw quantity and calculation requirements: Measure protective container and removable medium separately from animal mass. Original collection denominator kind: process_output.
+
 - Selected flow: Species-appropriate containment
 - Flow property / unit: Mass / kg
-- Amount rule: Measure protective container and removable medium separately from animal mass.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Contained source-gate handover output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -597,14 +679,18 @@ Measure protective container and removable medium separately from animal mass.
 
 Weigh net living animal biomass at actual source gate; verify count and lawful transfer.
 
+Raw reference-output records: Weigh net living animal biomass at actual source gate; verify count and lawful transfer. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Species-, stage- and gate-qualified living animal
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh net living animal biomass at actual source gate; verify count and lawful transfer.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Contained source-gate handover output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -621,14 +707,18 @@ Weigh net living animal biomass at actual source gate; verify count and lawful t
 
 Separate deaths during holding from sold viable animals and record treatment.
 
+Denominator and scope requirements：per kg Contained source-gate handover output
+
+Raw quantity and calculation requirements: Separate deaths during holding from sold viable animals and record treatment. Original collection denominator kind: process_output.
+
 - Selected flow: Deaths before handover (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Separate deaths during holding from sold viable animals and record treatment.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg Contained source-gate handover output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate`
 - Range: Broad provisional lot-completeness screen, not an empirical factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -656,10 +746,10 @@ Separate deaths during holding from sold viable animals and record treatment.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_rear | rear | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | sum by species, stage, node and nonoverlapping period | calibration, provenance, permit, ledger and destination evidence |
-| cp_capture | capture | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | sum by species, stage, node and nonoverlapping period | calibration, provenance, permit, ledger and destination evidence |
-| cp_select | select | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | sum by species, stage, node and nonoverlapping period | calibration, provenance, permit, ledger and destination evidence |
-| cp_gate | gate | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | sum by species, stage, node and nonoverlapping period | calibration, provenance, permit, ledger and destination evidence |
+| cp_rear | rear | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters.; Raw aggregation requirements: sum by species, stage, node and nonoverlapping period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | per reference flow | calibration, provenance, permit, ledger and destination evidence; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_capture | capture | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters.; Raw aggregation requirements: sum by species, stage, node and nonoverlapping period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | per reference flow | calibration, provenance, permit, ledger and destination evidence; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_select | select | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters.; Raw aggregation requirements: sum by species, stage, node and nonoverlapping period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | per reference flow | calibration, provenance, permit, ledger and destination evidence; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_gate | gate | all listed flows | lot/meter/provenance ledger | species, stage, time, source, calibrated mass, count, input, death, output, destination | Weigh and count each lot; reconcile permits, invoices and meters.; Raw aggregation requirements: sum by species, stage, node and nonoverlapping period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;count;kWh | each lot and period | complete cohort or capture and service period | actual site | per reference flow | calibration, provenance, permit, ledger and destination evidence; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

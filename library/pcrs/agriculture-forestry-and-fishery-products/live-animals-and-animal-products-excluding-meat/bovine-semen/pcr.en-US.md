@@ -37,9 +37,9 @@ This PCR covers usable semen from cattle and buffalo donors at the collection-ce
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | Usable bovine semen dose at collection-centre dispatch |
-| Reference flow property | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` as candidate property; dose equivalence requires specification. |
-| Reference unit group | Count/dose unit group (UUID unresolved). |
-| Reference unit | dose |
+| Reference flow property | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` |
+| Reference unit group | Units of items `5beb6eed-33a9-47b8-9ede-1dfe8f679159` |
+| Reference unit | item |
 | Required qualifiers | Donor species/breed and health; batch; sperm concentration/count, motility and grade; dose volume; fresh/chilled/frozen state; extender; container; centre gate; reporting period. |
 
 The platform mass-based farm-gate bovine-semen candidate is not a centre-dispatch dose and has contradictory non-bovine commentary. It is not bound.
@@ -48,10 +48,13 @@ The platform mass-based farm-gate bovine-semen candidate is not a centre-dispatc
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
-| `dose_identity` | reference output | Count/dose (unit-group UUID unresolved) | dose | Count only quality-accepted released doses; report sperm count and viability separately. |
+| `dose_identity` | reference output | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` | item | Count only quality-accepted released doses; one item is one dose meeting the declared specification, not one sperm or an arbitrary container. Report sperm count and viability separately. |
 | `material_balance` | semen, extender and filled doses | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` or calibrated volume | kg or mL | Reconcile raw semen and extender with accepted, downgraded, rejected and lost material using measured density where conversion is needed. |
 | `state_separation` | preservation | dose count | dose | Fresh, chilled and frozen units require separate denominators and quality specifications, not universal equivalence. |
 | `period_link` | donor upkeep | donor-days and dose count | day; dose | Attribute service and outputs to the same documented donor period. |
+| `accepted_item_count` | reference product and its output card | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` | item | The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted breeding dose of the declared species, state, grade and release specification. Preserve native dose counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -101,14 +104,18 @@ The platform mass-based farm-gate bovine-semen candidate is not a centre-dispatc
 
 Measure feed dry matter by donor species and service period.
 
+Denominator and scope requirements：per accepted dose
+
+Raw quantity and calculation requirements: Recorded intake allocated across documented donor-days and accepted doses. Original collection denominator kind: reference_flow.
+
 - Selected flow: Donor feed and forage (UUID unresolved)
 - Flow property / unit: Mass / kg dry matter
-- Amount rule: Recorded intake allocated across documented donor-days and accepted doses.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Provisional screen, not a factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -123,14 +130,18 @@ Measure feed dry matter by donor species and service period.
 
 Measure drinking and husbandry water; its precise supply group depends on foreground use.
 
+Denominator and scope requirements：per accepted dose
+
+Raw quantity and calculation requirements: Meter or reconcile tanks for donor period. Original collection denominator kind: reference_flow.
+
 - Selected flow: Donor water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Meter or reconcile tanks for donor period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Provisional water screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -153,14 +164,18 @@ Measure drinking and husbandry water; its precise supply group depends on foregr
 
 Only an actual legitimate animal handoff is an independent output.
 
+Denominator and scope requirements：per donor period
+
+Raw quantity and calculation requirements: Record transferred mass and donor-period attribution. Original collection denominator kind: process_output.
+
 - Selected flow: Culled bovine animal (UUID unresolved)
 - Flow property / unit: Mass / kg live mass
-- Amount rule: Record transferred mass and donor-period attribution.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per donor period
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Conditional cull mass
   - Range role: QA guardrail (`qa_guardrail`)
@@ -177,14 +192,18 @@ Only an actual legitimate animal handoff is an independent output.
 
 Classify as waste only when not independently transferred as a useful product.
 
+Denominator and scope requirements：per accepted dose
+
+Raw quantity and calculation requirements: Measure manure by treatment path, period and donor group. Original collection denominator kind: reference_flow.
+
 - Selected flow: Managed donor manure (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure manure by treatment path, period and donor group.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Provisional manure screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -201,15 +220,19 @@ Classify as waste only when not independently transferred as a useful product.
 
 Donor enteric methane is calculated from the documented species, intake and donor-days, not from a flow UUID as a factor.
 
+Denominator and scope requirements：per accepted dose
+
+Raw quantity and calculation requirements: Apply a disclosed species-appropriate enteric method to donor-days and measured activity. Original collection denominator kind: reference_flow.
+
 - Selected flow: Methane, biogenic `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
 - Binding: `fixed`
-- Amount rule: Apply a disclosed species-appropriate enteric method to donor-days and measured activity.
-- Value mode: Foreground calculation (`calculated_value`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated record (`calculated_from_collection`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Sources: `ipcc-livestock-2019`
 - Range: Provisional emissions screen, not factor
@@ -225,15 +248,19 @@ Donor enteric methane is calculated from the documented species, intake and dono
 
 Apply a documented manure-system method to donor-specific excretion and management rather than borrowing a universal factor.
 
+Denominator and scope requirements：per accepted dose
+
+Raw quantity and calculation requirements: Calculate manure-system N2O for actual managed manure and donor period. Original collection denominator kind: reference_flow.
+
 - Selected flow: Nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
 - Binding: `fixed`
-- Amount rule: Calculate manure-system N2O for actual managed manure and donor period.
-- Value mode: Foreground calculation (`calculated_value`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated record (`calculated_from_collection`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Sources: `ipcc-livestock-2019`
 - Range: Provisional emissions screen, not factor
@@ -249,15 +276,19 @@ Apply a documented manure-system method to donor-specific excretion and manageme
 
 Calculate reported ammonia from actual housing and manure-management pathway with method and nitrogen basis declared.
 
+Denominator and scope requirements：per accepted dose
+
+Raw quantity and calculation requirements: Calculate reported NH3 from recorded manure and housing pathway; do not infer a factor from identity. Original collection denominator kind: reference_flow.
+
 - Selected flow: Ammonia `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg NH3
 - Binding: `fixed`
-- Amount rule: Calculate reported NH3 from recorded manure and housing pathway; do not infer a factor from identity.
-- Value mode: Foreground calculation (`calculated_value`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated record (`calculated_from_collection`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Sources: `ipcc-livestock-2019`
 - Range: Provisional emissions screen, not factor
@@ -279,14 +310,18 @@ Calculate reported ammonia from actual housing and manure-management pathway wit
 
 Record contacting sleeves and single-use collection materials; reusable equipment is a service.
 
+Denominator and scope requirements：per collection event
+
+Raw quantity and calculation requirements: Issued less unused or reusable returns. Original collection denominator kind: process_output.
+
 - Selected flow: Collection consumables (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Issued less unused or reusable returns.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per collection event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collection`
 - Sources: `woah-hygiene-2024`
 - Range: Provisional consumable screen
@@ -310,14 +345,18 @@ Record contacting sleeves and single-use collection materials; reusable equipmen
 
 The collected state transfers independently from animal management to laboratory evaluation.
 
+Denominator and scope requirements：per collection event
+
+Raw quantity and calculation requirements: Measure collection volume by donor and event, including failed events. Original collection denominator kind: process_output.
+
 - Selected flow: Raw bovine ejaculate (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measure collection volume by donor and event, including failed events.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per collection event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collection`
 - Sources: `woah-bovine-2024`
 - Range: Provisional collection-volume screen
@@ -343,14 +382,18 @@ The collected state transfers independently from animal management to laboratory
 
 Keep donor and collection-event linkage through quality tests.
 
+Denominator and scope requirements：per grading event
+
+Raw quantity and calculation requirements: Transfer collected volume net of separately recorded samples. Original collection denominator kind: process_output.
+
 - Selected flow: Raw bovine ejaculate to grading (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Transfer collected volume net of separately recorded samples.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per grading event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_quality`
 - Range: Grading-input balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -373,14 +416,18 @@ Keep donor and collection-event linkage through quality tests.
 
 Accepted grade transfers to preparation after sperm count, motility and other declared tests.
 
+Denominator and scope requirements：per grading event
+
+Raw quantity and calculation requirements: Sum accepted graded portions by donor and destination. Original collection denominator kind: process_output.
+
 - Selected flow: Quality-accepted raw bovine semen (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Sum accepted graded portions by donor and destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per grading event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_quality`
 - Sources: `woah-bovine-2024`
 - Range: Accepted-grade volume
@@ -396,14 +443,18 @@ Accepted grade transfers to preparation after sperm count, motility and other de
 
 Only a separate usable specification and actual handoff permit an intended lower-grade product.
 
+Denominator and scope requirements：per grading event
+
+Raw quantity and calculation requirements: Measure independently transferred lower-grade material; otherwise reject. Original collection denominator kind: process_output.
+
 - Selected flow: Downgraded bovine semen (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measure independently transferred lower-grade material; otherwise reject.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per grading event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_quality`
 - Range: Conditional downgraded-grade volume
   - Range role: QA guardrail (`qa_guardrail`)
@@ -420,14 +471,18 @@ Only a separate usable specification and actual handoff permit an intended lower
 
 Failed-quality semen and assay residue follow the documented waste destination.
 
+Denominator and scope requirements：per grading event
+
+Raw quantity and calculation requirements: Reconcile input with accepted, downgraded, sampled and rejected states. Original collection denominator kind: process_output.
+
 - Selected flow: Rejected raw bovine semen and test residue (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Reconcile input with accepted, downgraded, sampled and rejected states.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per grading event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_quality`
 - Range: Rejected-volume balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -450,14 +505,18 @@ Failed-quality semen and assay residue follow the documented waste destination.
 
 The first bounded laboratory preparation receives quality-accepted raw semen.
 
+Denominator and scope requirements：per preparation batch
+
+Raw quantity and calculation requirements: Measured accepted volume transferred from grading. Original collection denominator kind: process_output.
+
 - Selected flow: Accepted raw bovine semen (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measured accepted volume transferred from grading.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preparation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preparation`
 - Range: Preparation-input volume
   - Range role: QA guardrail (`qa_guardrail`)
@@ -480,14 +539,18 @@ The first bounded laboratory preparation receives quality-accepted raw semen.
 
 Prepared usable state, net of removed fractions, transfers to extender blending.
 
+Denominator and scope requirements：per preparation batch
+
+Raw quantity and calculation requirements: Measure recovered volume and sperm count. Original collection denominator kind: process_output.
+
 - Selected flow: Prepared bovine semen before extension (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measure recovered volume and sperm count.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preparation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preparation`
 - Range: Prepared-volume balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -504,14 +567,18 @@ Prepared usable state, net of removed fractions, transfers to extender blending.
 
 Removed fractions and unusable prepared portions go to the actual waste treatment.
 
+Denominator and scope requirements：per preparation batch
+
+Raw quantity and calculation requirements: Reconcile input, prepared output, sample and loss. Original collection denominator kind: process_output.
+
 - Selected flow: Semen-preparation reject (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Reconcile input, prepared output, sample and loss.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preparation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preparation`
 - Range: Conditional preparation reject
   - Range role: QA guardrail (`qa_guardrail`)
@@ -534,14 +601,18 @@ Removed fractions and unusable prepared portions go to the actual waste treatmen
 
 Measure the semen component entering the recorded composition recipe.
 
+Denominator and scope requirements：per formulation batch
+
+Raw quantity and calculation requirements: Measured semen input per batch. Original collection denominator kind: process_output.
+
 - Selected flow: Prepared bovine semen before extension (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measured semen input per batch.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per formulation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_formulation`
 - Range: Semen-component volume
   - Range role: QA guardrail (`qa_guardrail`)
@@ -556,14 +627,18 @@ Measure the semen component entering the recorded composition recipe.
 
 Record actual diluent, buffer, nutrients, antibiotic if used and cryoprotectant for the frozen route; no universal recipe.
 
+Denominator and scope requirements：per formulation batch
+
+Raw quantity and calculation requirements: Weigh each component and reconcile with formulated bulk. Original collection denominator kind: process_output.
+
 - Selected flow: Semen extender components (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh each component and reconcile with formulated bulk.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per formulation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_formulation`
 - Sources: `fao-cryoconservation-2021`
 - Range: Provisional component-mass screen
@@ -587,14 +662,18 @@ Record actual diluent, buffer, nutrients, antibiotic if used and cryoprotectant 
 
 Quality-accepted blended bulk transfers to discrete dose filling.
 
+Denominator and scope requirements：per formulation batch
+
+Raw quantity and calculation requirements: Measure batch bulk volume and composition. Original collection denominator kind: process_output.
+
 - Selected flow: Formulated bovine semen bulk (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measure batch bulk volume and composition.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per formulation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_formulation`
 - Range: Formulated bulk balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -611,14 +690,18 @@ Quality-accepted blended bulk transfers to discrete dose filling.
 
 Failed mixture goes to declared disposal unless separately demonstrated as a useful independent output.
 
+Denominator and scope requirements：per formulation batch
+
+Raw quantity and calculation requirements: Inputs minus accepted bulk and measured process losses. Original collection denominator kind: process_output.
+
 - Selected flow: Off-spec semen formulation (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Inputs minus accepted bulk and measured process losses.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per formulation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_formulation`
 - Range: Conditional off-spec volume
   - Range role: QA guardrail (`qa_guardrail`)
@@ -641,14 +724,18 @@ Failed mixture goes to declared disposal unless separately demonstrated as a use
 
 Measured mixture enters the separate bulk-to-discrete-dose responsibility.
 
+Denominator and scope requirements：per fill run
+
+Raw quantity and calculation requirements: Measure input by fill run. Original collection denominator kind: process_output.
+
 - Selected flow: Formulated bovine semen bulk (UUID unresolved)
 - Flow property / unit: Volume / mL
-- Amount rule: Measure input by fill run.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per fill run
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dosing`
 - Range: Filling-input balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -663,14 +750,18 @@ Measured mixture enters the separate bulk-to-discrete-dose responsibility.
 
 Count primary containers and seals; secondary dispatch packages are separate.
 
+Denominator and scope requirements：per fill run
+
+Raw quantity and calculation requirements: Issued minus unused returns, reconciled to filled and rejected units. Original collection denominator kind: process_output.
+
 - Selected flow: Dose straws and seals (UUID unresolved)
 - Flow property / unit: Count / item
-- Amount rule: Issued minus unused returns, reconciled to filled and rejected units.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per fill run
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dosing`
 - Sources: `woah-bovine-2024`
 - Range: Straw-count balance
@@ -694,14 +785,18 @@ Count primary containers and seals; secondary dispatch packages are separate.
 
 Filled sealed units move to preservation or directly to dispatch packing if fresh.
 
+Denominator and scope requirements：per fill run
+
+Raw quantity and calculation requirements: Count quality-accepted fills with volume and sperm count by lot. Original collection denominator kind: process_output.
+
 - Selected flow: Filled bovine semen dose before preservation (UUID unresolved)
 - Flow property / unit: Count / dose
-- Amount rule: Count quality-accepted fills with volume and sperm count by lot.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per fill run
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dosing`
 - Range: Accepted-fill count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -718,14 +813,18 @@ Filled sealed units move to preservation or directly to dispatch packing if fres
 
 Underfilled, broken and unsealed units follow waste destination; track lost semen volume separately.
 
+Denominator and scope requirements：per fill run
+
+Raw quantity and calculation requirements: Count rejects and reconcile associated material loss. Original collection denominator kind: process_output.
+
 - Selected flow: Rejected filled bovine semen dose (UUID unresolved)
 - Flow property / unit: Count / dose
-- Amount rule: Count rejects and reconcile associated material loss.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per fill run
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dosing`
 - Range: Reject-count balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -748,14 +847,18 @@ Underfilled, broken and unsealed units follow waste destination; track lost seme
 
 Fresh doses bypass this intervention; chilled and frozen lots enter by documented route.
 
+Denominator and scope requirements：per preservation batch
+
+Raw quantity and calculation requirements: Count route-assigned incoming filled units. Original collection denominator kind: process_output.
+
 - Selected flow: Filled bovine semen dose before preservation (UUID unresolved)
 - Flow property / unit: Count / dose
-- Amount rule: Count route-assigned incoming filled units.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preservation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preservation`
 - Range: Preserved-route input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -770,14 +873,18 @@ Fresh doses bypass this intervention; chilled and frozen lots enter by documente
 
 Meter refrigeration, controlled freezing and storage utility by route and occupancy period.
 
+Denominator and scope requirements：per accepted preserved dose
+
+Raw quantity and calculation requirements: Attribute metered shared energy once to actual routes and periods. Original collection denominator kind: process_output.
+
 - Selected flow: Energy supplied for preservation (foreground carrier unresolved)
 - Flow property / unit: Energy / kWh
-- Amount rule: Attribute metered shared energy once to actual routes and periods.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted preserved dose
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preservation`
 - Range: Provisional energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -792,14 +899,18 @@ Meter refrigeration, controlled freezing and storage utility by route and occupa
 
 Measure cryogen consumption and vessel refill loss; reusable tank is a separate shared asset.
 
+Denominator and scope requirements：per accepted frozen dose
+
+Raw quantity and calculation requirements: Purchases minus returns and end inventory, apportioned to frozen lots. Original collection denominator kind: process_output.
+
 - Selected flow: Liquid nitrogen at centre input (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Purchases minus returns and end inventory, apportioned to frozen lots.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted frozen dose
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preservation`
 - Sources: `fao-cryoconservation-2021`
 - Range: Provisional nitrogen screen
@@ -823,14 +934,18 @@ Measure cryogen consumption and vessel refill loss; reusable tank is a separate 
 
 Quality-accepted chilled or frozen units pass to dispatch packing with state label.
 
+Denominator and scope requirements：per preservation batch
+
+Raw quantity and calculation requirements: Count units accepted after route-specific hold or thaw tests. Original collection denominator kind: process_output.
+
 - Selected flow: Chilled or frozen bovine semen dose (UUID unresolved)
 - Flow property / unit: Count / dose
-- Amount rule: Count units accepted after route-specific hold or thaw tests.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preservation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preservation`
 - Range: Accepted preservation count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -847,14 +962,18 @@ Quality-accepted chilled or frozen units pass to dispatch packing with state lab
 
 Failed quality or storage losses are waste at their actual destination.
 
+Denominator and scope requirements：per preservation batch
+
+Raw quantity and calculation requirements: Count loss by route, cause, lot and service period. Original collection denominator kind: process_output.
+
 - Selected flow: Rejected preserved bovine semen dose (UUID unresolved)
 - Flow property / unit: Count / dose
-- Amount rule: Count loss by route, cause, lot and service period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preservation batch
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preservation`
 - Range: Preservation-reject count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -877,14 +996,18 @@ Failed quality or storage losses are waste at their actual destination.
 
 Receive fresh filled or accepted preserved units once, retaining donor, quality and state.
 
+Denominator and scope requirements：per dispatch lot
+
+Raw quantity and calculation requirements: Count one source path for each released lot. Original collection denominator kind: process_output.
+
 - Selected flow: Accepted bovine semen doses before dispatch (UUID unresolved)
 - Flow property / unit: Count / dose
-- Amount rule: Count one source path for each released lot.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per dispatch lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dispatch`
 - Range: Dispatch-input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -899,14 +1022,18 @@ Receive fresh filled or accepted preserved units once, retaining donor, quality 
 
 Record actual secondary package materials; returnable transport vessels are cycle-attributed assets, not consumables.
 
+Denominator and scope requirements：per accepted dispatched dose
+
+Raw quantity and calculation requirements: Issued minus unused packaging by material and lot. Original collection denominator kind: reference_flow.
+
 - Selected flow: Protective dispatch packaging (foreground material unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Issued minus unused packaging by material and lot.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per accepted dispatched dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dispatch`
 - Range: Provisional packaging screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -929,14 +1056,20 @@ Record actual secondary package materials; returnable transport vessels are cycl
 
 One quality-released insemination dose crosses the semen-centre dispatch gate.
 
+Raw reference-output records: Exactly one accepted released dose per reference flow. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted breeding dose of the declared species, state, grade and release specification. Preserve native dose counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Usable bovine semen dose at collection-centre dispatch
-- Flow property / unit: Count / dose
-- Amount rule: Exactly one accepted released dose per reference flow.
-- Value mode: Foreground record (`foreground_record`)
+- Flow property / unit: Number of items / item
+- Amount rule: 1 item
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 accepted dose
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dispatch`
 - Sources: `un-cpc-3`; `woah-bovine-2024`
 - Range: Reference-dose identity
@@ -954,14 +1087,18 @@ One quality-released insemination dose crosses the semen-centre dispatch gate.
 
 Damaged doses and packaging rejected before release follow actual waste routes.
 
+Denominator and scope requirements：per dispatch lot
+
+Raw quantity and calculation requirements: Reconcile released and rejected unit counts, with package mass separately measured. Original collection denominator kind: process_output.
+
 - Selected flow: Pre-dispatch rejected semen dose and package (UUID unresolved)
 - Flow property / unit: Count / dose plus kg package
-- Amount rule: Reconcile released and rejected unit counts, with package mass separately measured.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per dispatch lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dispatch`
 - Range: Packed-dose reject count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -989,14 +1126,14 @@ Damaged doses and packaging rejected before release follow actual waste routes.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_donor` | `donor_management` | feed, water, cull, manure, assets | donor ledger | donor_id, species, breed, donor_days, feed_DM, water, health, cull_mass, manure, asset_service | weigh, meter, husbandry log | kg, day | daily/event | complete donor service | all supplying donors | sum by donor-period | dated donor and purchase logs |
-| `cp_collection` | `semen_collection` | raw ejaculate and supplies | collection log | donor_id, event_id, volume, consumables, failed_event | volume and material issue record | mL, kg | event | all eligible events | centre collection room | sum by event | calibrated collection record |
-| `cp_quality` | `quality_grading` | accepted, downgraded, reject | laboratory assay | event_id, sperm_count, concentration, motility, grade, sample_volume, destination | grade assay | mL, count | event | all collections | centre laboratory | reconcile each destination | signed test and grade record |
-| `cp_preparation` | `first_preparation` | prepared and rejected | batch log | batch_id, incoming_volume, prepared_volume, removed_volume | calibrated balance | mL | batch | all preparation batches | centre laboratory | input-output balance | batch trace |
-| `cp_formulation` | `formulation` | semen, constituents, bulk, reject | recipe log | batch_id, semen_volume, ingredient_mass, batch_volume, reject_volume | weigh actual recipe | kg, mL | batch | all blended batches | centre laboratory | material balance | lot and scale log |
-| `cp_dosing` | `dosing` | bulk, straw, filled, reject | fill-run ledger | run_id, bulk_volume, straw_issued, straw_returned, filled_count, reject_count, dose_volume, sperm_per_dose | counter and fill balance | mL, dose | run | all fill runs | fill line | count and volume balance | machine calibration |
-| `cp_preservation` | `preservation` | energy, nitrogen, accepted, reject | cold-chain log | batch_id, route, temperature, hold_days, kWh, nitrogen_mass, vessel_service, accepted_count, reject_count | meter, logger, vessel balance | kWh, kg, dose | batch/day | all stored lots | cold room and tanks | route-period denominator | logger and purchase logs |
-| `cp_dispatch` | `centre_dispatch` | package, release, reject | release ledger | lot_id, donor, species, route, grade, package_mass, vessel_cycle, released_count, reject_count, gate_time | release count and issue log | dose, kg | lot | all dispatches | centre gate | count released once | QA release and receipt |
+| `cp_donor` | `donor_management` | feed, water, cull, manure, assets | donor ledger | donor_id, species, breed, donor_days, feed_DM, water, health, cull_mass, manure, asset_service | weigh, meter, husbandry log; Raw aggregation requirements: sum by donor-period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, day | daily/event | complete donor service | all supplying donors | per reference flow | dated donor and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_collection` | `semen_collection` | raw ejaculate and supplies | collection log | donor_id, event_id, volume, consumables, failed_event | volume and material issue record; Raw aggregation requirements: sum by event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL, kg | event | all eligible events | centre collection room | per reference flow | calibrated collection record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_quality` | `quality_grading` | accepted, downgraded, reject | laboratory assay | event_id, sperm_count, concentration, motility, grade, sample_volume, destination | grade assay; Raw aggregation requirements: reconcile each destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL, count | event | all collections | centre laboratory | per reference flow | signed test and grade record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_preparation` | `first_preparation` | prepared and rejected | batch log | batch_id, incoming_volume, prepared_volume, removed_volume | calibrated balance; Raw aggregation requirements: input-output balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL | batch | all preparation batches | centre laboratory | per reference flow | batch trace; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_formulation` | `formulation` | semen, constituents, bulk, reject | recipe log | batch_id, semen_volume, ingredient_mass, batch_volume, reject_volume | weigh actual recipe; Raw aggregation requirements: material balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, mL | batch | all blended batches | centre laboratory | per reference flow | lot and scale log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_dosing` | `dosing` | bulk, straw, filled, reject | fill-run ledger | run_id, bulk_volume, straw_issued, straw_returned, filled_count, reject_count, dose_volume, sperm_per_dose | counter and fill balance; Raw aggregation requirements: count and volume balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL, dose | run | all fill runs | fill line | per reference flow | machine calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_preservation` | `preservation` | energy, nitrogen, accepted, reject | cold-chain log | batch_id, route, temperature, hold_days, kWh, nitrogen_mass, vessel_service, accepted_count, reject_count | meter, logger, vessel balance; Raw aggregation requirements: route-period denominator. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kWh, kg, dose | batch/day | all stored lots | cold room and tanks | per reference flow | logger and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_dispatch` | `centre_dispatch` | package, release, reject | release ledger | lot_id, donor, species, route, grade, package_mass, vessel_cycle, released_count, reject_count, gate_time | release count and issue log; Raw aggregation requirements: count released once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | dose, kg | lot | all dispatches | centre gate | per reference flow | QA release and receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

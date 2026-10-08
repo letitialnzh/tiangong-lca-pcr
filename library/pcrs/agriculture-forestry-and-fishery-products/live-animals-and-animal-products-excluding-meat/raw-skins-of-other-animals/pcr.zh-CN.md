@@ -52,6 +52,8 @@ sync_with: pcr.en-US.md
 | m_state | 新鲜与保藏批次 | Mass；水分/盐分比例 | kg；kg/kg | 仅凭批次实测前后质量和成分比例进行状态换算；不得使用通用乘数。 |
 | m_balance | 各批次 | Mass | kg | 核对来源皮、各等级、废弃物、添加的保藏介质及实测水分/库存变化。 |
 | m_period | 来源及共用服务 | 时间；服务量 | 期间；服务单位 | 按真实事件和期间关联来源阶段、共用场地、冷库及保藏服务，且只归集一次。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -100,14 +102,18 @@ sync_with: pcr.en-US.md
 
 仅限申报物种实际上市的动物体或部位；上游来源数据止于此交接。
 
+分母与范围要求：每 kg 剥下原皮
+
+原始数量及计算要求：称量实际投入，记录来源、物种及部位。 原始采集分母类型：process_output。
+
 - 选定流：物种明确的商业带皮动物体或部位（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量实际投入，记录来源、物种及部位。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 剥下原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_remove`
 - 数量范围：投入台账 QA，非出皮率
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -124,14 +130,18 @@ sync_with: pcr.en-US.md
 
 仅当实际来源依法为 Waste 且准许回收时使用；可销售 Product 来源使用另一卡，两者不能同时用于同一材料。
 
+分母与范围要求：每 kg 剥下原皮
+
+原始数量及计算要求：称量回收投入，保存许可及终端处理备选记录。 原始采集分母类型：process_output。
+
 - 选定流：记录 Waste 状态且物种明确的可回收动物材料（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量回收投入，保存许可及终端处理备选记录。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 剥下原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_remove`
 - 数量范围：回收台账 QA，非回收率
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -152,14 +162,18 @@ sync_with: pcr.en-US.md
 
 按物种及部位限定的未鞣制原皮只向首次清理交接一次。
 
+分母与范围要求：每 kg 剥下原皮
+
+原始数量及计算要求：清理前称量并关联来源事件。 原始采集分母类型：process_output。
+
 - 选定流：申报物种刚剥下的新鲜原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：清理前称量并关联来源事件。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 剥下原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_remove`
 - 数量范围： 精确归一化实测产出
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -176,14 +190,18 @@ sync_with: pcr.en-US.md
 
 不可销售切除物/组织按实际去向处理；若部位单独销售，须另行判定 Product 身份。
 
+分母与范围要求：每 kg 剥下原皮
+
+原始数量及计算要求：残余与可销售皮张分别称量。 原始采集分母类型：process_output。
+
 - 选定流：按去向分类的不可销售剥皮残余（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：残余与可销售皮张分别称量。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 剥下原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_residue`
 - 数量范围：仅作残余台账 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -206,14 +224,18 @@ sync_with: pcr.en-US.md
 
 接收剥皮交付，或保留上游负担的外购同类未清理原皮，不可再记一次剥皮。
 
+分母与范围要求：每 kg 清理后原皮
+
+原始数量及计算要求：来料质量和来源票据只记录一次。 原始采集分母类型：process_output。
+
 - 选定流：物种明确、清理前的原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：来料质量和来源票据只记录一次。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 清理后原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_condition`
 - 数量范围：仅作来料批次 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -228,14 +250,18 @@ sync_with: pcr.en-US.md
 
 按来源及子类记录实际供水，不设默认清洗用水率。
 
+分母与范围要求：每 kg 清理后原皮
+
+原始数量及计算要求：计量本节点实际供水。 原始采集分母类型：process_output。
+
 - 选定流：首次清理皮张所供用水（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：计量本节点实际供水。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 清理后原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_condition`
 - 数量范围：用水台账 QA，非清洗配方
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -258,14 +284,18 @@ sync_with: pcr.en-US.md
 
 只经过首次清洗、去肉与修边，不含制革处理。
 
+分母与范围要求：每 kg 清理后原皮
+
+原始数量及计算要求：分级交接时称量皮张。 原始采集分母类型：process_output。
+
 - 选定流：物种明确、首次清理后的原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：分级交接时称量皮张。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 清理后原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_condition`
 - 数量范围： 精确归一化实测产出
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -282,14 +312,18 @@ sync_with: pcr.en-US.md
 
 将皮/组织修边物与废水分开；废水另列处理台账。
 
+分母与范围要求：每 kg 清理后原皮
+
+原始数量及计算要求：称量不可销售修边物并确定去向。 原始采集分母类型：process_output。
+
 - 选定流：按废物去向分类的不可销售清理修边物（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量不可销售修边物并确定去向。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 清理后原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_residue`
 - 数量范围：仅作修边台账 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -312,14 +346,18 @@ sync_with: pcr.en-US.md
 
 分级前核对批次真实物种、部位和用途。
 
+分母与范围要求：每 kg 可销售分级原皮
+
+原始数量及计算要求：称量来料并核对清理票据。 原始采集分母类型：process_output。
+
 - 选定流： Species-qualified first-cleaned raw skin (UUID unresolved)
 - 流属性/单位： Mass / kg
-- 数量规则：称量来料并核对清理票据。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 可销售分级原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_grade`
 - 数量范围：仅作分级投入台账 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -342,14 +380,18 @@ sync_with: pcr.en-US.md
 
 每个合格批次只能进入新鲜交付或保藏之一，不得双计。
 
+分母与范围要求：每 kg 可销售分级原皮
+
+原始数量及计算要求：称量分级批次并记录唯一去向。 原始采集分母类型：process_output。
+
 - 选定流：物种明确的合格等级原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量分级批次并记录唯一去向。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 可销售分级原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_grade`
 - 数量范围： 等级分流，非规定占比
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -364,14 +406,18 @@ sync_with: pcr.en-US.md
 
 只有可单独销售的低等级才为 Product；不能销售时应走拒收 Waste 卡。
 
+分母与范围要求：每 kg 可销售分级原皮
+
+原始数量及计算要求：称量低等级皮并记录实际价格和去向。 原始采集分母类型：process_output。
+
 - 选定流：物种明确、可销售的低等级原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量低等级皮并记录实际价格和去向。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 可销售分级原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_grade`
 - 数量范围： 等级分流，非规定占比
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -388,14 +434,18 @@ sync_with: pcr.en-US.md
 
 记录真实处理去向，不虚构联产品抵扣。
 
+分母与范围要求：每 kg 可销售分级原皮
+
+原始数量及计算要求：称量拒收物并记录原因。 原始采集分母类型：process_output。
+
 - 选定流：按去向分类、物种明确的拒收原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量拒收物并记录原因。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 可销售分级原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_residue`
 - 数量范围：仅作拒收台账 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -418,14 +468,18 @@ sync_with: pcr.en-US.md
 
 新鲜销售绕过此节点；只有被选中保藏的可销售等级进入。
 
+分母与范围要求：每 kg 保藏原皮
+
+原始数量及计算要求：称量保藏前批次并记等级。 原始采集分母类型：process_output。
+
 - 选定流：物种明确、实际保藏前的已分级原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量保藏前批次并记等级。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 保藏原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_preserve`
 - 数量范围：保藏前状态台账 QA，非保藏系数
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -440,14 +494,18 @@ sync_with: pcr.en-US.md
 
 仅记录实用盐、盐水或其他合法原皮保藏介质；不得假定每个物种都盐渍。
 
+分母与范围要求：每 kg 保藏原皮
+
+原始数量及计算要求：称量添加介质，区分保留量和废弃量。 原始采集分母类型：process_output。
+
 - 选定流：方法特定的原皮保藏介质（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量添加介质，区分保留量和废弃量。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 保藏原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_preserve`
 - 数量范围：介质台账 QA，非配方
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -462,14 +520,18 @@ sync_with: pcr.en-US.md
 
 计量冷藏、干燥或保藏的实际电、燃料等能源，并仅分配一次共用服务。
 
+分母与范围要求：每 kg 保藏原皮
+
+原始数量及计算要求：按方法、批次及节点计量实际能源。 原始采集分母类型：process_output。
+
 - 选定流：实际保藏能源载体（UUID 未解析）
 - 流属性/单位： Energy / MJ
-- 数量规则：按方法、批次及节点计量实际能源。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 保藏原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_preserve`
 - 数量范围：能源台账 QA，非规定系数
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -492,14 +554,18 @@ sync_with: pcr.en-US.md
 
 声明实测处理后状态、水分和附着盐；不含浸灰、鞣制或整理。
 
+分母与范围要求：每 kg 保藏原皮
+
+原始数量及计算要求：保藏后称量，核对投入、添加介质、损耗和拒收物。 原始采集分母类型：process_output。
+
 - 选定流：物种明确、保藏后未鞣制皮张（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：保藏后称量，核对投入、添加介质、损耗和拒收物。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 保藏原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_preserve`
 - 数量范围： 精确归一化实测产出
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -516,14 +582,18 @@ sync_with: pcr.en-US.md
 
 追踪实际废物去向；水分蒸发不能算作固体废皮。
 
+分母与范围要求：每 kg 保藏原皮
+
+原始数量及计算要求：称量废介质/拒收物，另测水分损耗。 原始采集分母类型：process_output。
+
 - 选定流：按废物去向分类的废介质或拒收皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量废介质/拒收物，另测水分损耗。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 保藏原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_residue`
 - 数量范围：仅作保藏残余 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -546,14 +616,18 @@ sync_with: pcr.en-US.md
 
 每个物理批次只从新鲜分级或保藏产出之一接收，不能两者兼算。
 
+分母与范围要求：每 kg 净出售原皮
+
+原始数量及计算要求：在实际 gate 核对等级、状态及来源票据。 原始采集分母类型：process_output。
+
 - 选定流：物种明确、可销售的新鲜或保藏原皮（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：在实际 gate 核对等级、状态及来源票据。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 净出售原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_handover`
 - 数量范围：仅作状态路径台账 QA
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -568,14 +642,18 @@ sync_with: pcr.en-US.md
 
 记录 gate 前实际使用的包裹物、箱或可复用支架；不含后续配送。
 
+分母与范围要求：每 kg 净出售原皮
+
+原始数量及计算要求：称量消耗材料，或按实际使用次数分配实测复用服务。 原始采集分母类型：process_output。
+
 - 选定流：实际防护包装材料或可复用呈现用具（UUID 未解析）
 - 流属性/单位： Mass / kg
-- 数量规则：称量消耗材料，或按实际使用次数分配实测复用服务。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 kg 净出售原皮
-- 基准类型： 过程产出（`process_output`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_handover`
 - 数量范围：包装台账 QA，非规定质量
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -598,14 +676,18 @@ sync_with: pcr.en-US.md
 
 这是由实际物种、部位、等级、状态和 gate 实例化的一张广义参考产出卡，并非假定一个 UUID 可代表所有变体。
 
+参考产出的原始记录：称量净出售原皮，不含包装及可分离游离保藏介质。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流： 按物种、状态和 gate 限定的其他动物原皮
 - 流属性/单位： Mass / kg
-- 数量规则：称量净出售原皮，不含包装及可分离游离保藏介质。
-- 数值来源模式： 前景记录（`foreground_record`）
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 1 kg 参考原皮净重
-- 基准类型： 参考流（`reference_flow`）
-- 证据类型： 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_handover`
 - 数量范围：精确参考质量恒等关系
   - 范围角色： QA 校验范围（`qa_guardrail`）
@@ -635,12 +717,12 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_remove | remove | 来源动物体和剥下皮张 | 来源/剥皮台账 | 物种、部位、合法来源、Product/Waste 状态、事件、动物体/皮质量、真实联产品、期间 | 来源票据与校准秤 | kg;period | 每次事件 | 来源与剥皮期间 | 供应及剥皮场址 | 每批只计一次来源与剥皮 | 许可、票据、校准 |
-| cp_condition | condition | 原皮投入、用水、清理后原皮 | 清理台账 | 来源批次、水子类、质量、清理动作、修边 | 计量表和秤 | kg | 每批 | 清理期间 | 实际场址 | 按批汇总投入产出 | 计量、秤及作业票据 |
-| cp_grade | grade | 合格、降级和拒收 | 分级台账 | 物种、部位、等级、质量、原因、去向 | 分级票据和秤 | kg | 每批 | 分级期间 | 实际场址 | 互斥等级之和 | 发运/拒收票据 |
-| cp_preserve | preserve | 可选保藏投入产出 | 保藏台账 | 批次、方法、前后质量、盐/盐水、水分、能源、残余、服务时间 | 秤、检测与计量表 | kg;MJ;period | 每个保藏批次 | 保藏/服务期间 | 实际场址 | 前后状态及服务相联汇总 | 配方、检测和计量表 |
-| cp_handover | handover | 净皮、包装与 gate | 交付台账 | 物种、部位、用途、来源、状态、等级、毛重/皮重、净重、包装复用、gate | 发运票据和秤 | kg | 每个销售批次 | 实际交付事件 | 实际场址 | 每个物理批次只计一次净重 | 票据及校准 |
-| cp_residue | remove;condition;grade;preserve | 拒收和废弃物 | 处理台账 | 批次、材料、质量、分类、去向、期间 | 秤和转运记录 | kg | 每次事件 | 相关期间 | 来源场址 | 按路线和材料各计一次 | 转运记录及秤 |
+| cp_remove | remove | 来源动物体和剥下皮张 | 来源/剥皮台账 | 物种、部位、合法来源、Product/Waste 状态、事件、动物体/皮质量、真实联产品、期间 | 来源票据与校准秤；原始汇总要求：每批只计一次来源与剥皮。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;period | 每次事件 | 来源与剥皮期间 | 供应及剥皮场址 | 每参考流 | 许可、票据、校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_condition | condition | 原皮投入、用水、清理后原皮 | 清理台账 | 来源批次、水子类、质量、清理动作、修边 | 计量表和秤；原始汇总要求：按批汇总投入产出。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每批 | 清理期间 | 实际场址 | 每参考流 | 计量、秤及作业票据；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_grade | grade | 合格、降级和拒收 | 分级台账 | 物种、部位、等级、质量、原因、去向 | 分级票据和秤；原始汇总要求：互斥等级之和。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每批 | 分级期间 | 实际场址 | 每参考流 | 发运/拒收票据；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_preserve | preserve | 可选保藏投入产出 | 保藏台账 | 批次、方法、前后质量、盐/盐水、水分、能源、残余、服务时间 | 秤、检测与计量表；原始汇总要求：前后状态及服务相联汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;MJ;period | 每个保藏批次 | 保藏/服务期间 | 实际场址 | 每参考流 | 配方、检测和计量表；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_handover | handover | 净皮、包装与 gate | 交付台账 | 物种、部位、用途、来源、状态、等级、毛重/皮重、净重、包装复用、gate | 发运票据和秤；原始汇总要求：每个物理批次只计一次净重。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每个销售批次 | 实际交付事件 | 实际场址 | 每参考流 | 票据及校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_residue | remove;condition;grade;preserve | 拒收和废弃物 | 处理台账 | 批次、材料、质量、分类、去向、期间 | 秤和转运记录；原始汇总要求：按路线和材料各计一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每次事件 | 相关期间 | 来源场址 | 每参考流 | 转运记录及秤；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

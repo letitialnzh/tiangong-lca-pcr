@@ -89,6 +89,20 @@ measurement_rules:
       uuid: ""
     required_unit: "original unit"
     rule: "Assign events to flock/cohort and year before per-kg normalization."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
 process_map:
   - id: flock
     name: "Managed sheep flock"
@@ -136,13 +150,13 @@ process_inventory:
           name: "Sheep feed and grazed biomass by actual identity"
           flow_type: "product"
           property_unit: "Mass / kg dry matter"
-          description: "Quantify purchased rations and grazed biomass by cohort, feed type, dry matter and year; owned-land feed production is linked once."
+          description: "Quantify purchased rations and grazed biomass by cohort, feed type, dry matter and year; owned-land feed production is linked once. Denominator and scope requirements：per kg greasy wool after flock-year attribution Raw quantity and calculation requirements: intake from purchase, forage and stock records Original collection denominator kind: reference_flow."
           amount:
-            expression: "intake from purchase, forage and stock records"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after flock-year attribution"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -163,16 +177,16 @@ process_inventory:
           name: "Water supply for flock operations"
           flow_type: "product"
           property_unit: "Volume / m3"
-          description: "Separate drinking and cleaning by purpose and source; concrete exchanges follow records."
+          description: "Separate drinking and cleaning by purpose and source; concrete exchanges follow records. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: metered or documented withdrawal by purpose and year Original collection denominator kind: reference_flow."
           amount:
-            expression: "metered or documented withdrawal by purpose and year"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_water_energy
               source_ids: []
             ranges:
@@ -189,16 +203,16 @@ process_inventory:
           name: "Agricultural nutrient supply"
           flow_type: "product"
           property_unit: "Mass / kg product and kg N or P"
-          description: "One consolidated card covers mineral and organic nutrients when owned pasture production is in scope; expand by actual product and N/P composition."
+          description: "One consolidated card covers mineral and organic nutrients when owned pasture production is in scope; expand by actual product and N/P composition. Denominator and scope requirements：per kg greasy wool after field attribution Raw quantity and calculation requirements: application records by product, nutrient and field-year Original collection denominator kind: reference_flow."
           amount:
-            expression: "application records by product, nutrient and field-year"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after field attribution"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_flock_feed
               source_ids: []
             ranges:
@@ -215,16 +229,16 @@ process_inventory:
           name: "Energy supply for flock operations"
           flow_type: "product"
           property_unit: "Energy or carrier quantity / kWh, MJ, L or kg"
-          description: "Expand carriers from meter/fuel records by use and service year, including shared housing and manure equipment."
+          description: "Expand carriers from meter/fuel records by use and service year, including shared housing and manure equipment. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: meter and fuel records by carrier and year Original collection denominator kind: reference_flow."
           amount:
-            expression: "meter and fuel records by carrier and year"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_water_energy
               source_ids: []
             ranges:
@@ -247,16 +261,16 @@ process_inventory:
           name: "Live sheep by actual cohort and gate"
           flow_type: "product"
           property_unit: "Mass and count / kg and head"
-          description: "Record sale/cull heads, live mass and destination as independently transferred outputs; avoid duplicate full burden in a live-sheep dataset."
+          description: "Record sale/cull heads, live mass and destination as independently transferred outputs; avoid duplicate full burden in a live-sheep dataset. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: net transfer by cohort and date Original collection denominator kind: reference_flow."
           amount:
-            expression: "net transfer by cohort and date"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_flock_outputs
               source_ids:
                 - iwto-wool-lca-2016
@@ -274,13 +288,13 @@ process_inventory:
           name: "Exported sheep manure by actual wet/dry state"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Only productive independently transferred manure is a co-product; otherwise manure remains in waste management."
+          description: "Only productive independently transferred manure is a co-product; otherwise manure remains in waste management. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: net transferred mass after farm use and storage change Original collection denominator kind: reference_flow."
           amount:
-            expression: "net transferred mass after farm use and storage change"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -306,13 +320,13 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass / kg CH4"
-          description: "Calculate sheep enteric methane by cohort, diet and year; manure methane is a different pathway."
+          description: "Calculate sheep enteric methane by cohort, diet and year; manure methane is a different pathway. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: declared IPCC tier applied to cohort-year activity Original collection denominator kind: reference_flow."
           amount:
-            expression: "declared IPCC tier applied to cohort-year activity"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -335,13 +349,13 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass / kg N2O"
-          description: "Report direct manure-management N2O; field-soil and indirect pathways are separate where applicable."
+          description: "Report direct manure-management N2O; field-soil and indirect pathways are separate where applicable. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: excreted N × management share × declared factor and N-to-N2O conversion Original collection denominator kind: reference_flow."
           amount:
-            expression: "excreted N × management share × declared factor and N-to-N2O conversion"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -364,13 +378,13 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
           property_unit: "Mass / kg NH3"
-          description: "Track NH3 from documented manure storage/application pathway and reconcile N."
+          description: "Track NH3 from documented manure storage/application pathway and reconcile N. Denominator and scope requirements：per kg greasy wool after allocation Raw quantity and calculation requirements: manure N × documented volatilization method Original collection denominator kind: reference_flow."
           amount:
-            expression: "manure N × documented volatilization method"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg greasy wool after allocation"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -395,16 +409,16 @@ process_inventory:
           name: "Water supply for on-animal fleece wash"
           flow_type: "product"
           property_unit: "Volume / m3"
-          description: "Use water while fleece remains on living sheep; record source, collection/discharge and wash event."
+          description: "Use water while fleece remains on living sheep; record source, collection/discharge and wash event. Denominator and scope requirements：per kg fleece-washed greasy wool Raw quantity and calculation requirements: metered or estimated use by event Original collection denominator kind: process_output."
           amount:
-            expression: "metered or estimated use by event"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg fleece-washed greasy wool"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_wash_shear
               source_ids: []
             ranges:
@@ -429,16 +443,16 @@ process_inventory:
           name: "Collected on-animal wash effluent"
           flow_type: "waste"
           property_unit: "Volume / m3"
-          description: "If collected, record volume and recipient; direct release requires medium-specific elementary modelling, not a guessed waste UUID."
+          description: "If collected, record volume and recipient; direct release requires medium-specific elementary modelling, not a guessed waste UUID. Denominator and scope requirements：per kg fleece-washed greasy wool Raw quantity and calculation requirements: measured captured outflow by event Original collection denominator kind: process_output."
           amount:
-            expression: "measured captured outflow by event"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg fleece-washed greasy wool"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_wash_shear
               source_ids: []
             ranges:
@@ -461,16 +475,16 @@ process_inventory:
           name: "Energy for shearing"
           flow_type: "product"
           property_unit: "Energy or carrier / kWh, MJ or L"
-          description: "Record electric or fuel-powered clippers and related equipment by carrier and event."
+          description: "Record electric or fuel-powered clippers and related equipment by carrier and event. Denominator and scope requirements：per kg captured fleece Raw quantity and calculation requirements: meter or equipment log per event Original collection denominator kind: process_output."
           amount:
-            expression: "meter or equipment log per event"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg captured fleece"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_wash_shear
               source_ids: []
             ranges:
@@ -493,16 +507,16 @@ process_inventory:
           name: "Greasy sheep fleece immediately after shearing"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Weigh fleece by animal/cohort and shear event before sorting; retain the on-animal wash state."
+          description: "Weigh fleece by animal/cohort and shear event before sorting; retain the on-animal wash state. Denominator and scope requirements：per kg final greasy wool Raw quantity and calculation requirements: gross captured fleece net of collection tare Original collection denominator kind: reference_flow."
           amount:
-            expression: "gross captured fleece net of collection tare"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg final greasy wool"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_wash_shear
               source_ids:
                 - iwto-wool-lca-2016
@@ -535,16 +549,16 @@ process_inventory:
           name: "Skirted unscoured greasy fleece"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record still-greasy prepared fleece mass and moisture before grade assignment."
+          description: "Record still-greasy prepared fleece mass and moisture before grade assignment. Denominator and scope requirements：per kg final greasy wool Raw quantity and calculation requirements: measured prepared fleece Original collection denominator kind: reference_flow."
           amount:
-            expression: "measured prepared fleece"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg final greasy wool"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade_bale
               source_ids: []
             ranges:
@@ -562,16 +576,16 @@ process_inventory:
           name: "Farm skirting rejects by material and destination"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Separate unmarketable soil, vegetation and fibre from independently sold low-grade wool; record disposal/recovery destination."
+          description: "Separate unmarketable soil, vegetation and fibre from independently sold low-grade wool; record disposal/recovery destination. Denominator and scope requirements：per kg captured fleece Raw quantity and calculation requirements: measured rejected mass Original collection denominator kind: process_output."
           amount:
-            expression: "measured rejected mass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg captured fleece"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade_bale
               source_ids: []
             ranges:
@@ -601,16 +615,16 @@ process_inventory:
           name: "Accepted grade-specific greasy sheep wool"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Measure accepted grade-specific net mass transferred to farm baling."
+          description: "Measure accepted grade-specific net mass transferred to farm baling. Denominator and scope requirements：per kg final greasy wool Raw quantity and calculation requirements: measured grade-specific mass Original collection denominator kind: reference_flow."
           amount:
-            expression: "measured grade-specific mass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per kg final greasy wool"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade_bale
               source_ids: []
             ranges:
@@ -627,16 +641,16 @@ process_inventory:
           name: "Downgraded but saleable greasy sheep wool"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Where separately marketed, retain grade, buyer gate and mass. Unsaleable material is reject."
+          description: "Where separately marketed, retain grade, buyer gate and mass. Unsaleable material is reject. Denominator and scope requirements：per kg final greasy wool Raw quantity and calculation requirements: net downgraded mass by destination Original collection denominator kind: reference_flow."
           amount:
-            expression: "net downgraded mass by destination"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per kg final greasy wool"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade_bale
               source_ids: []
             ranges:
@@ -661,13 +675,13 @@ process_inventory:
           name: "Baling and presentation materials"
           flow_type: "product"
           property_unit: "Mass or count / kg or item"
-          description: "Record actual textile, film, ties and labels; determine reuse cycles from farm records."
+          description: "Record actual textile, film, ties and labels; determine reuse cycles from farm records. Denominator and scope requirements：per kg net greasy wool at farm gate Raw quantity and calculation requirements: net material consumed per bale, net of documented reuse Original collection denominator kind: reference_flow."
           amount:
-            expression: "net material consumed per bale, net of documented reuse"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per kg net greasy wool at farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -693,13 +707,13 @@ process_inventory:
           name: "Shorn greasy sheep wool at producing farm gate"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Final net mass by grade, bale and wash state is the reference output. The platform plant-gate Raw Wool candidate is not fixed here."
+          description: "Final net mass by grade, bale and wash state is the reference output. The platform plant-gate Raw Wool candidate is not fixed here. Raw reference-output records: accepted and saleable downgraded dispatch, net of bale tare Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
           amount:
-            expression: "accepted and saleable downgraded dispatch, net of bale tare"
+            expression: "1 kg"
             value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "1 kg net greasy wool at farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -748,73 +762,73 @@ dataset_production:
       flow_role: "feed, nutrients"
       record_type: "flock/field/invoice"
       raw_fields: "cohort; pasture area; diet; dry matter; nutrient composition; date; stock"
-      collection_method: "farm records and documented intake model"
+      collection_method: "farm records and documented intake model; Raw aggregation requirements: reconcile purchased, grown and consumed. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, ha"
       frequency: "monthly/event"
       temporal_coverage: "flock and rearing years"
       site_scope: "farm"
-      aggregation_rule: "reconcile purchased, grown and consumed"
-      quality_evidence: "receipts, feed tests"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "receipts, feed tests; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_water_energy
       process_id: "flock"
       flow_role: "water, energy"
       record_type: "meter/invoice"
       raw_fields: "source; carrier; purpose; period; shared consumer"
-      collection_method: "meter and invoice"
+      collection_method: "meter and invoice; Raw aggregation requirements: allocate by consumer. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "m3, kWh, L"
       frequency: "monthly"
       temporal_coverage: "flock year"
       site_scope: "farm"
-      aggregation_rule: "allocate by consumer"
-      quality_evidence: "meter images, invoices"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter images, invoices; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_flock_outputs
       process_id: "flock"
       flow_role: "live animals"
       record_type: "sale/stock register"
       raw_fields: "cohort; head; live mass; date; gate"
-      collection_method: "weighbridge and stock count"
+      collection_method: "weighbridge and stock count; Raw aggregation requirements: opening + additions - removals = closing. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, head"
       frequency: "event"
       temporal_coverage: "flock year"
       site_scope: "farm"
-      aggregation_rule: "opening + additions - removals = closing"
-      quality_evidence: "sale slips, register"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "sale slips, register; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_manure
       process_id: "flock"
       flow_role: "manure and emissions"
       record_type: "activity register"
       raw_fields: "cohort; N intake/excretion; management; storage; transfer; factors"
-      collection_method: "collect activity and IPCC tier"
+      collection_method: "collect activity and IPCC tier; Raw aggregation requirements: distinct CH4, N2O, NH3 pathways. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg N, kg manure"
       frequency: "monthly/event"
       temporal_coverage: "flock year"
       site_scope: "farm"
-      aggregation_rule: "distinct CH4, N2O, NH3 pathways"
-      quality_evidence: "activity/factor sheets"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "activity/factor sheets; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_wash_shear
       process_id: "fleece_wash_shearing"
       flow_role: "wash and capture"
       record_type: "event"
       raw_fields: "sheep; wash date/water/effluent/dry-off; shear date; raw mass; energy"
-      collection_method: "event log, scale, meter"
+      collection_method: "event log, scale, meter; Raw aggregation requirements: link one route to one fleece. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, m3, kWh"
       frequency: "event"
       temporal_coverage: "shear season"
       site_scope: "farm"
-      aggregation_rule: "link one route to one fleece"
-      quality_evidence: "event and calibration sheets"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "event and calibration sheets; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_grade_bale
       process_id: "conditioning_grading_baling"
       flow_role: "mass/presentation"
       record_type: "grade/bale register"
       raw_fields: "capture; skirtings; grade; moisture; tare; packing/reuse; dispatch"
-      collection_method: "scale and buyer docket"
+      collection_method: "scale and buyer docket; Raw aggregation requirements: capture = grades + rejects + change/loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, item"
       frequency: "bale"
       temporal_coverage: "shear season"
       site_scope: "farm"
-      aggregation_rule: "capture = grades + rejects + change/loss"
-      quality_evidence: "scale tickets, grading records"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale tickets, grading records; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: wool_balance
       applies_to: "shear to gate"
@@ -925,21 +939,21 @@ data_sources:
     used_for: "enteric and manure pathways"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:a2f91975f663d683d98a86cf6d1e83081611893099c9dcd2521682b9e9147085"
+  source_sha256: "sha256:d5f9b63549d50cae434ceb8d865e449eecd7dac09603a33c406abf7c4068beb4"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_3184"
+    - unit_id: "normative_5905"
       family: "system_boundary"
       span:
         start:
-          offset: 3184
-          line: 53
+          offset: 5905
+          line: 55
           column: 1
         end:
-          offset: 4976
-          line: 74
+          offset: 7700
+          line: 76
           column: 1
-      markdown: "## System Boundary\n\nInclude managed sheep production, feed and pasture, manure, conditional pre-shear on-animal washing, shearing, farm airing/skirting, grade sorting, baling and producing-farm handover. Account for upstream purchased animal, feed, energy, water, fertilizer and packaging datasets once. Record rearing, replacements, culls and shared facilities across years. Stop before auction, post-farm freight, scouring, grease extraction and textile manufacture (`iwto-wool-lca-2016`).\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed sheep/lamb cohort with age, origin, opening stock and inherited burden |\n| starting_condition_role | flock starting inventory, not zero-burden animals |\n| product_classification_scope | greasy shorn sheep wool only |\n| recursive_input_rule | Purchased greasy wool entering baling is a separately linked same-category input, never newly grown fleece |\n| upstream_dataset_requirement | Purchased animals, feed, nutrient, energy, water and packaging datasets where crossing boundary |\n| disclosure | breed, farm, flock-year, wash route, shear and grade balances, animal/manure co-products, attribution method |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `farm_gate_limit` | all nodes | Stop at accepted greasy-wool bale handover; exclude post-shear scouring and later logistics. | `un-cpc-2025`; `iwto-wool-lca-2016` |\n| `wash_gate` | optional wash | Wash fleece while still on live sheep before shearing; document water, effluent and dry-off, retaining greasy output. | `wco-hs-2017` |\n| `route_delta` | wash/no-wash | Both inherit flock husbandry; one fleece uses one route. Wash adds a separate node and inventory; no double route attribution. | `iwto-wool-lca-2016` |\n\n"
+      markdown: "## 5. System Boundary\n\nInclude managed sheep production, feed and pasture, manure, conditional pre-shear on-animal washing, shearing, farm airing/skirting, grade sorting, baling and producing-farm handover. Account for upstream purchased animal, feed, energy, water, fertilizer and packaging datasets once. Record rearing, replacements, culls and shared facilities across years. Stop before auction, post-farm freight, scouring, grease extraction and textile manufacture (`iwto-wool-lca-2016`).\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed sheep/lamb cohort with age, origin, opening stock and inherited burden |\n| starting_condition_role | flock starting inventory, not zero-burden animals |\n| product_classification_scope | greasy shorn sheep wool only |\n| recursive_input_rule | Purchased greasy wool entering baling is a separately linked same-category input, never newly grown fleece |\n| upstream_dataset_requirement | Purchased animals, feed, nutrient, energy, water and packaging datasets where crossing boundary |\n| disclosure | breed, farm, flock-year, wash route, shear and grade balances, animal/manure co-products, attribution method |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `farm_gate_limit` | all nodes | Stop at accepted greasy-wool bale handover; exclude post-shear scouring and later logistics. | `un-cpc-2025`; `iwto-wool-lca-2016` |\n| `wash_gate` | optional wash | Wash fleece while still on live sheep before shearing; document water, effluent and dry-off, retaining greasy output. | `wco-hs-2017` |\n| `route_delta` | wash/no-wash | Both inherit flock husbandry; one fleece uses one route. Wash adds a separate node and inventory; no double route attribution. | `iwto-wool-lca-2016` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -956,14 +970,14 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 3184
-              line: 53
+              offset: 5905
+              line: 55
               column: 1
             end:
-              offset: 3202
-              line: 53
-              column: 19
-          text: "## System Boundary"
+              offset: 5926
+              line: 55
+              column: 22
+          text: "## 5. System Boundary"
           depth: 2
       ancestor_context:
         - span:
@@ -976,18 +990,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_25388"
+    - unit_id: "normative_34051"
       family: "allocation"
       span:
         start:
-          offset: 25388
-          line: 586
+          offset: 34051
+          line: 664
           column: 1
         end:
-          offset: 26631
-          line: 595
+          offset: 35297
+          line: 673
           column: 1
-      markdown: "## Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `flock_outputs` | fleece, live sheep/lambs, exported manure and other independent products | Prefer physical subdivision where separable; for shared flock burdens disclose and consistently apply a justified allocation such as period-specific economic value, with price and sensitivity. No zero-burden cull sheep or dual product/waste manure. | `iwto-wool-lca-2016` |\n| `period_link` | breeding, replacement, growth, shearing and culling years | Link inputs, animal stocks, events and outputs across relevant years; amortize only with observed service/lifetime evidence. Assign animal-year burden once. | `iwto-wool-lca-2016` |\n| `shared_assets` | pasture, housing, water system, shearing shed and equipment | Identify flock/shearing/baling consumers and service years; allocate shared use by documented hours, area or animal-time before product allocation; avoid node duplication. | `iwto-wool-lca-2016` |\n| `grade_accounting` | accepted, downgraded and rejected fleece | Keep grade outputs and destinations separate; marketable downgrade is product, unsaleable skirtings waste, and fibre cannot be both. | `iwto-wool-lca-2016` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `flock_outputs` | fleece, live sheep/lambs, exported manure and other independent products | Prefer physical subdivision where separable; for shared flock burdens disclose and consistently apply a justified allocation such as period-specific economic value, with price and sensitivity. No zero-burden cull sheep or dual product/waste manure. | `iwto-wool-lca-2016` |\n| `period_link` | breeding, replacement, growth, shearing and culling years | Link inputs, animal stocks, events and outputs across relevant years; amortize only with observed service/lifetime evidence. Assign animal-year burden once. | `iwto-wool-lca-2016` |\n| `shared_assets` | pasture, housing, water system, shearing shed and equipment | Identify flock/shearing/baling consumers and service years; allocate shared use by documented hours, area or animal-time before product allocation; avoid node duplication. | `iwto-wool-lca-2016` |\n| `grade_accounting` | accepted, downgraded and rejected fleece | Keep grade outputs and destinations separate; marketable downgrade is product, unsaleable skirtings waste, and fibre cannot be both. | `iwto-wool-lca-2016` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1004,14 +1018,14 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 25388
-              line: 586
+              offset: 34051
+              line: 664
               column: 1
             end:
-              offset: 25425
-              line: 586
-              column: 38
-          text: "## Allocation and Co-product Handling"
+              offset: 34091
+              line: 664
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
           depth: 2
       ancestor_context:
         - span:
@@ -1024,18 +1038,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_30287"
+    - unit_id: "normative_41302"
       family: "validation"
       span:
         start:
-          offset: 30287
-          line: 626
+          offset: 41302
+          line: 704
           column: 1
         end:
-          offset: 31258
-          line: 636
+          offset: 42276
+          line: 714
           column: 1
-      markdown: "## Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | reference/grades | Reject goat/camelid/pulled wool, post-shear scoured fibre, non-farm gate or unknown species; check greasy net kg. | `un-cpc-2025`; `wco-hs-2017` |\n| `validate_route` | wash/no-wash | Confirm wash on living sheep before shear with water/effluent/dry-off evidence; one fleece uses one route. | `wco-hs-2017`; `iwto-wool-lca-2016` |\n| `validate_balance` | fleece/co-products | Reconcile capture, grades, rejects, bale tare, live animals and manure; no product/waste dual classification. | `iwto-wool-lca-2016` |\n| `validate_period` | flock/shared assets | Verify period, replacement, service and co-product shares sum once; no inherited-burden omission. | `iwto-wool-lca-2016` |\n| `validate_binding` | concrete exchanges | Resolve unresolved inputs from actual records and exact UUIDs for concrete outputs before dataset publication. | |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | reference/grades | Reject goat/camelid/pulled wool, post-shear scoured fibre, non-farm gate or unknown species; check greasy net kg. | `un-cpc-2025`; `wco-hs-2017` |\n| `validate_route` | wash/no-wash | Confirm wash on living sheep before shear with water/effluent/dry-off evidence; one fleece uses one route. | `wco-hs-2017`; `iwto-wool-lca-2016` |\n| `validate_balance` | fleece/co-products | Reconcile capture, grades, rejects, bale tare, live animals and manure; no product/waste dual classification. | `iwto-wool-lca-2016` |\n| `validate_period` | flock/shared assets | Verify period, replacement, service and co-product shares sum once; no inherited-burden omission. | `iwto-wool-lca-2016` |\n| `validate_binding` | concrete exchanges | Resolve unresolved inputs from actual records and exact UUIDs for concrete outputs before dataset publication. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1052,14 +1066,14 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 30287
-              line: 626
+              offset: 41302
+              line: 704
               column: 1
             end:
-              offset: 30306
-              line: 626
-              column: 20
-          text: "## Validation Rules"
+              offset: 41324
+              line: 704
+              column: 23
+          text: "## 9. Validation Rules"
           depth: 2
       ancestor_context:
         - span:
@@ -1076,221 +1090,221 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_3184"
+      unit_id: "normative_5905"
       source_span:
         start:
-          offset: 3204
-          line: 55
+          offset: 5928
+          line: 57
           column: 1
         end:
-          offset: 3675
-          line: 55
+          offset: 6399
+          line: 57
           column: 472
     - pointer: "/system_boundary/rules/1"
       rule_id: "farm_gate_limit"
       identity_kind: "explicit"
-      unit_id: "normative_3184"
+      unit_id: "normative_5905"
       source_span:
         start:
-          offset: 4455
-          line: 70
+          offset: 7179
+          line: 72
           column: 1
         end:
-          offset: 4621
-          line: 70
+          offset: 7345
+          line: 72
           column: 167
     - pointer: "/system_boundary/rules/2"
       rule_id: "wash_gate"
       identity_kind: "explicit"
-      unit_id: "normative_3184"
+      unit_id: "normative_5905"
       source_span:
         start:
-          offset: 4622
-          line: 71
+          offset: 7346
+          line: 73
           column: 1
         end:
-          offset: 4789
-          line: 71
+          offset: 7513
+          line: 73
           column: 168
     - pointer: "/system_boundary/rules/3"
       rule_id: "route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_3184"
+      unit_id: "normative_5905"
       source_span:
         start:
-          offset: 4790
-          line: 72
+          offset: 7514
+          line: 74
           column: 1
         end:
-          offset: 4974
-          line: 72
+          offset: 7698
+          line: 74
           column: 185
     - pointer: "/allocation_rules/0"
       rule_id: "flock_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_25388"
+      unit_id: "normative_34051"
       source_span:
         start:
-          offset: 25498
-          line: 590
+          offset: 34164
+          line: 668
           column: 1
         end:
-          offset: 25866
-          line: 590
+          offset: 34532
+          line: 668
           column: 369
     - pointer: "/allocation_rules/1"
       rule_id: "period_link"
       identity_kind: "explicit"
-      unit_id: "normative_25388"
+      unit_id: "normative_34051"
       source_span:
         start:
-          offset: 25867
-          line: 591
+          offset: 34533
+          line: 669
           column: 1
         end:
-          offset: 26126
-          line: 591
+          offset: 34792
+          line: 669
           column: 260
     - pointer: "/allocation_rules/2"
       rule_id: "shared_assets"
       identity_kind: "explicit"
-      unit_id: "normative_25388"
+      unit_id: "normative_34051"
       source_span:
         start:
-          offset: 26127
-          line: 592
+          offset: 34793
+          line: 670
           column: 1
         end:
-          offset: 26405
-          line: 592
+          offset: 35071
+          line: 670
           column: 279
     - pointer: "/allocation_rules/3"
       rule_id: "grade_accounting"
       identity_kind: "explicit"
-      unit_id: "normative_25388"
+      unit_id: "normative_34051"
       source_span:
         start:
-          offset: 26406
-          line: 593
+          offset: 35072
+          line: 671
           column: 1
         end:
-          offset: 26629
-          line: 593
+          offset: 35295
+          line: 671
           column: 224
     - pointer: "/validation_rules/0"
       rule_id: "validate_identity"
       identity_kind: "explicit"
-      unit_id: "normative_30287"
+      unit_id: "normative_41302"
       source_span:
         start:
-          offset: 30379
-          line: 630
+          offset: 41397
+          line: 708
           column: 1
         end:
-          offset: 30568
-          line: 630
+          offset: 41586
+          line: 708
           column: 190
     - pointer: "/validation_rules/1"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_30287"
+      unit_id: "normative_41302"
       source_span:
         start:
-          offset: 30569
-          line: 631
+          offset: 41587
+          line: 709
           column: 1
         end:
-          offset: 30751
-          line: 631
+          offset: 41769
+          line: 709
           column: 183
     - pointer: "/validation_rules/2"
       rule_id: "validate_balance"
       identity_kind: "explicit"
-      unit_id: "normative_30287"
+      unit_id: "normative_41302"
       source_span:
         start:
-          offset: 30752
-          line: 632
+          offset: 41770
+          line: 710
           column: 1
         end:
-          offset: 30930
-          line: 632
+          offset: 41948
+          line: 710
           column: 179
     - pointer: "/validation_rules/3"
       rule_id: "validate_period"
       identity_kind: "explicit"
-      unit_id: "normative_30287"
+      unit_id: "normative_41302"
       source_span:
         start:
-          offset: 30931
-          line: 633
+          offset: 41949
+          line: 711
           column: 1
         end:
-          offset: 31097
-          line: 633
+          offset: 42115
+          line: 711
           column: 167
     - pointer: "/validation_rules/4"
       rule_id: "validate_binding"
       identity_kind: "explicit"
-      unit_id: "normative_30287"
+      unit_id: "normative_41302"
       source_span:
         start:
-          offset: 31098
-          line: 634
+          offset: 42116
+          line: 712
           column: 1
         end:
-          offset: 31256
-          line: 634
+          offset: 42274
+          line: 712
           column: 159
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_3184"
+      unit_id: "normative_5905"
       source_span:
         start:
-          offset: 3184
-          line: 53
+          offset: 5905
+          line: 55
           column: 1
         end:
-          offset: 3202
-          line: 53
-          column: 19
+          offset: 5926
+          line: 55
+          column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_3184"
+      unit_id: "normative_5905"
       source_span:
         start:
-          offset: 3703
-          line: 59
+          offset: 6427
+          line: 61
           column: 1
         end:
-          offset: 4382
-          line: 66
+          offset: 7106
+          line: 68
           column: 126
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_25388"
+      unit_id: "normative_34051"
       source_span:
         start:
-          offset: 25388
-          line: 586
+          offset: 34051
+          line: 664
           column: 1
         end:
-          offset: 25425
-          line: 586
-          column: 38
+          offset: 34091
+          line: 664
+          column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_30287"
+      unit_id: "normative_41302"
       source_span:
         start:
-          offset: 30287
-          line: 626
+          offset: 41302
+          line: 704
           column: 1
         end:
-          offset: 30306
-          line: 626
-          column: 20
+          offset: 41324
+          line: 704
+          column: 23
 projection_metadata:
   contract_version: "2"
   generator: "tiangong-pcr-builder/markdown-projection"
@@ -1298,5 +1312,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:a2f91975f663d683d98a86cf6d1e83081611893099c9dcd2521682b9e9147085"
-  generated_content_sha256: "sha256:a1852a4a62749670709d7a2e55857f148fdd2950f50ff99c25d16ee0c9328c2a"
+    sha256: "sha256:d5f9b63549d50cae434ceb8d865e449eecd7dac09603a33c406abf7c4068beb4"
+  generated_content_sha256: "sha256:430112df0f4a3aaadd6567326e071431fc131715ba31a70a44c5186b13afbde0"

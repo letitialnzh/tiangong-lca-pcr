@@ -7,11 +7,11 @@ sync_with: pcr.zh-CN.md
 
 # Shorn greasy sheep wool at the producing farm gate
 
-## Scope and Applicability
+## 1. Scope and Applicability
 
 This rule covers sheep/lamb fleece cut from live animals and transferred as greasy, unscoured wool at the producing farm gate. Optional fleece washing occurs **on the animal before shearing**. Post-shear scouring, degreasing, topmaking, pulled pelt wool, and goat or camelid hair are excluded. The CPC 02941 label is interpreted with the WCO Chapter 51 sheep/lamb definition of wool (`un-cpc-2025`; `wco-hs-2017`).
 
-## Product Category Identity
+## 2. Product Category Identity
 
 | Field | Value |
 | --- | --- |
@@ -23,7 +23,7 @@ This rule covers sheep/lamb fleece cut from live animals and transferred as grea
 | production_route | Managed flock → optional on-animal wash → shearing → airing/skirting → grading → baling and farm handover; wash/no-wash routes are mutually exclusive per fleece, with distinct water, effluent and dry-off records |
 | market_state | Unscoured greasy wool; record moisture, vegetable matter, grade and bale state |
 
-## Reference Flow
+## 3. Reference Flow
 
 | Field | Value |
 | --- | --- |
@@ -42,15 +42,17 @@ This rule covers sheep/lamb fleece cut from live animals and transferred as grea
 | Reference unit | kg |
 | Required qualifiers | sheep/lamb breed and cohort; farm; flock year; shear date; unwashed or fleece-washed-on-animal; moisture; vegetable matter; grade; net bale mass; farm handover |
 
-## Measurement and Unit Rules
+## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `net_greasy_mass` | wool outputs | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Weigh net as-received greasy wool after bale tare, not clean-wool yield (`iwto-wool-lca-2016`). |
 | `moisture_state` | fleece | Mass fraction | % | Record moisture method, date and wet/dry basis; fleece-washed is not scoured. |
 | `flock_period` | flock activity | Original activity property | original unit | Assign events to flock/cohort and year before per-kg normalization. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
-## System Boundary
+## 5. System Boundary
 
 Include managed sheep production, feed and pasture, manure, conditional pre-shear on-animal washing, shearing, farm airing/skirting, grade sorting, baling and producing-farm handover. Account for upstream purchased animal, feed, energy, water, fertilizer and packaging datasets once. Record rearing, replacements, culls and shared facilities across years. Stop before auction, post-farm freight, scouring, grease extraction and textile manufacture (`iwto-wool-lca-2016`).
 
@@ -71,7 +73,7 @@ Include managed sheep production, feed and pasture, manure, conditional pre-shea
 | `wash_gate` | optional wash | Wash fleece while still on live sheep before shearing; document water, effluent and dry-off, retaining greasy output. | `wco-hs-2017` |
 | `route_delta` | wash/no-wash | Both inherit flock husbandry; one fleece uses one route. Wash adds a separate node and inventory; no double route attribution. | `iwto-wool-lca-2016` |
 
-## Process Inventory Structure
+## 6. Process Inventory Structure
 
 ### Process Map
 
@@ -94,12 +96,16 @@ Include managed sheep production, feed and pasture, manure, conditional pre-shea
 
 Quantify purchased rations and grazed biomass by cohort, feed type, dry matter and year; owned-land feed production is linked once.
 
+Denominator and scope requirements：per kg greasy wool after flock-year attribution
+
+Raw quantity and calculation requirements: intake from purchase, forage and stock records Original collection denominator kind: reference_flow.
+
 - Selected flow: Sheep feed and grazed biomass by actual identity
 - Flow property / unit: Mass / kg dry matter
-- Amount rule: intake from purchase, forage and stock records
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after flock-year attribution
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_flock_feed`
@@ -117,14 +123,18 @@ Quantify purchased rations and grazed biomass by cohort, feed type, dry matter a
 
 Separate drinking and cleaning by purpose and source; concrete exchanges follow records.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: metered or documented withdrawal by purpose and year Original collection denominator kind: reference_flow.
+
 - Selected flow: Water supply for flock operations
 - Flow property / unit: Volume / m3
-- Amount rule: metered or documented withdrawal by purpose and year
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_water_energy`
 - Range: Provisional flock water screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -139,14 +149,18 @@ Separate drinking and cleaning by purpose and source; concrete exchanges follow 
 
 One consolidated card covers mineral and organic nutrients when owned pasture production is in scope; expand by actual product and N/P composition.
 
+Denominator and scope requirements：per kg greasy wool after field attribution
+
+Raw quantity and calculation requirements: application records by product, nutrient and field-year Original collection denominator kind: reference_flow.
+
 - Selected flow: Agricultural nutrient supply
 - Flow property / unit: Mass / kg product and kg N or P
-- Amount rule: application records by product, nutrient and field-year
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after field attribution
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_flock_feed`
 - Range: Provisional nutrient-product screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -161,14 +175,18 @@ One consolidated card covers mineral and organic nutrients when owned pasture pr
 
 Expand carriers from meter/fuel records by use and service year, including shared housing and manure equipment.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: meter and fuel records by carrier and year Original collection denominator kind: reference_flow.
+
 - Selected flow: Energy supply for flock operations
 - Flow property / unit: Energy or carrier quantity / kWh, MJ, L or kg
-- Amount rule: meter and fuel records by carrier and year
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_water_energy`
 - Range: Provisional energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -191,14 +209,18 @@ Expand carriers from meter/fuel records by use and service year, including share
 
 Record sale/cull heads, live mass and destination as independently transferred outputs; avoid duplicate full burden in a live-sheep dataset.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: net transfer by cohort and date Original collection denominator kind: reference_flow.
+
 - Selected flow: Live sheep by actual cohort and gate
 - Flow property / unit: Mass and count / kg and head
-- Amount rule: net transfer by cohort and date
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_flock_outputs`
 - Sources: `iwto-wool-lca-2016`
 - Range: Provisional live-output screen
@@ -214,12 +236,16 @@ Record sale/cull heads, live mass and destination as independently transferred o
 
 Only productive independently transferred manure is a co-product; otherwise manure remains in waste management.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: net transferred mass after farm use and storage change Original collection denominator kind: reference_flow.
+
 - Selected flow: Exported sheep manure by actual wet/dry state
 - Flow property / unit: Mass / kg
-- Amount rule: net transferred mass after farm use and storage change
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
@@ -241,13 +267,17 @@ Only productive independently transferred manure is a co-product; otherwise manu
 
 Calculate sheep enteric methane by cohort, diet and year; manure methane is a different pathway.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: declared IPCC tier applied to cohort-year activity Original collection denominator kind: reference_flow.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
 - Binding: Fixed (`fixed`)
-- Amount rule: declared IPCC tier applied to cohort-year activity
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
@@ -265,13 +295,17 @@ Calculate sheep enteric methane by cohort, diet and year; manure methane is a di
 
 Report direct manure-management N2O; field-soil and indirect pathways are separate where applicable.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: excreted N × management share × declared factor and N-to-N2O conversion Original collection denominator kind: reference_flow.
+
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
 - Binding: Fixed (`fixed`)
-- Amount rule: excreted N × management share × declared factor and N-to-N2O conversion
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
@@ -289,13 +323,17 @@ Report direct manure-management N2O; field-soil and indirect pathways are separa
 
 Track NH3 from documented manure storage/application pathway and reconcile N.
 
+Denominator and scope requirements：per kg greasy wool after allocation
+
+Raw quantity and calculation requirements: manure N × documented volatilization method Original collection denominator kind: reference_flow.
+
 - Selected flow: Ammonia to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg NH3
 - Binding: Fixed (`fixed`)
-- Amount rule: manure N × documented volatilization method
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg greasy wool after allocation
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
@@ -319,14 +357,18 @@ Track NH3 from documented manure storage/application pathway and reconcile N.
 
 Use water while fleece remains on living sheep; record source, collection/discharge and wash event.
 
+Denominator and scope requirements：per kg fleece-washed greasy wool
+
+Raw quantity and calculation requirements: metered or estimated use by event Original collection denominator kind: process_output.
+
 - Selected flow: Water supply for on-animal fleece wash
 - Flow property / unit: Volume / m3
-- Amount rule: metered or estimated use by event
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg fleece-washed greasy wool
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_wash_shear`
 - Range: Provisional on-animal wash screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -345,14 +387,18 @@ Use water while fleece remains on living sheep; record source, collection/discha
 
 If collected, record volume and recipient; direct release requires medium-specific elementary modelling, not a guessed waste UUID.
 
+Denominator and scope requirements：per kg fleece-washed greasy wool
+
+Raw quantity and calculation requirements: measured captured outflow by event Original collection denominator kind: process_output.
+
 - Selected flow: Collected on-animal wash effluent
 - Flow property / unit: Volume / m3
-- Amount rule: measured captured outflow by event
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg fleece-washed greasy wool
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_wash_shear`
 - Range: Provisional effluent screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -375,14 +421,18 @@ Independent harvest: fleece is removed from a living production animal and moves
 
 Record electric or fuel-powered clippers and related equipment by carrier and event.
 
+Denominator and scope requirements：per kg captured fleece
+
+Raw quantity and calculation requirements: meter or equipment log per event Original collection denominator kind: process_output.
+
 - Selected flow: Energy for shearing
 - Flow property / unit: Energy or carrier / kWh, MJ or L
-- Amount rule: meter or equipment log per event
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg captured fleece
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_wash_shear`
 - Range: Provisional shearing energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -401,14 +451,18 @@ Record electric or fuel-powered clippers and related equipment by carrier and ev
 
 Weigh fleece by animal/cohort and shear event before sorting; retain the on-animal wash state.
 
+Denominator and scope requirements：per kg final greasy wool
+
+Raw quantity and calculation requirements: gross captured fleece net of collection tare Original collection denominator kind: reference_flow.
+
 - Selected flow: Greasy sheep fleece immediately after shearing
 - Flow property / unit: Mass / kg
-- Amount rule: gross captured fleece net of collection tare
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final greasy wool
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_wash_shear`
 - Sources: `iwto-wool-lca-2016`
 - Range: Capture-to-gate mass screen
@@ -432,14 +486,18 @@ First post-capture preparation airs and removes visible contaminants by hand. It
 
 Record still-greasy prepared fleece mass and moisture before grade assignment.
 
+Denominator and scope requirements：per kg final greasy wool
+
+Raw quantity and calculation requirements: measured prepared fleece Original collection denominator kind: reference_flow.
+
 - Selected flow: Skirted unscoured greasy fleece
 - Flow property / unit: Mass / kg
-- Amount rule: measured prepared fleece
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final greasy wool
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_bale`
 - Range: Skirted fleece screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -456,14 +514,18 @@ Record still-greasy prepared fleece mass and moisture before grade assignment.
 
 Separate unmarketable soil, vegetation and fibre from independently sold low-grade wool; record disposal/recovery destination.
 
+Denominator and scope requirements：per kg captured fleece
+
+Raw quantity and calculation requirements: measured rejected mass Original collection denominator kind: process_output.
+
 - Selected flow: Farm skirting rejects by material and destination
 - Flow property / unit: Mass / kg
-- Amount rule: measured rejected mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg captured fleece
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_bale`
 - Range: Reject fraction screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -486,14 +548,18 @@ Incoming material is skirted greasy fleece. Declare accepted commercial grades a
 
 Measure accepted grade-specific net mass transferred to farm baling.
 
+Denominator and scope requirements：per kg final greasy wool
+
+Raw quantity and calculation requirements: measured grade-specific mass Original collection denominator kind: reference_flow.
+
 - Selected flow: Accepted grade-specific greasy sheep wool
 - Flow property / unit: Mass / kg
-- Amount rule: measured grade-specific mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg final greasy wool
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_bale`
 - Range: Accepted-grade share screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -508,14 +574,18 @@ Measure accepted grade-specific net mass transferred to farm baling.
 
 Where separately marketed, retain grade, buyer gate and mass. Unsaleable material is reject.
 
+Denominator and scope requirements：per kg final greasy wool
+
+Raw quantity and calculation requirements: net downgraded mass by destination Original collection denominator kind: reference_flow.
+
 - Selected flow: Downgraded but saleable greasy sheep wool
 - Flow property / unit: Mass / kg
-- Amount rule: net downgraded mass by destination
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg final greasy wool
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_bale`
 - Range: Downgraded-grade share screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -538,12 +608,16 @@ Pack or present accepted greasy wool for protection at farm. Record bale reuse, 
 
 Record actual textile, film, ties and labels; determine reuse cycles from farm records.
 
+Denominator and scope requirements：per kg net greasy wool at farm gate
+
+Raw quantity and calculation requirements: net material consumed per bale, net of documented reuse Original collection denominator kind: reference_flow.
+
 - Selected flow: Baling and presentation materials
 - Flow property / unit: Mass or count / kg or item
-- Amount rule: net material consumed per bale, net of documented reuse
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg net greasy wool at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_bale`
@@ -564,12 +638,16 @@ Record actual textile, film, ties and labels; determine reuse cycles from farm r
 
 Final net mass by grade, bale and wash state is the reference output. The platform plant-gate Raw Wool candidate is not fixed here.
 
+Raw reference-output records: accepted and saleable downgraded dispatch, net of bale tare Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Shorn greasy sheep wool at producing farm gate
 - Flow property / unit: Mass / kg
-- Amount rule: accepted and saleable downgraded dispatch, net of bale tare
+- Amount rule: 1 kg
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: 1 kg net greasy wool at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_bale`
@@ -583,7 +661,7 @@ Final net mass by grade, bale and wash state is the reference output. The platfo
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Calculated from collection (`calculated_from_collection`)
 
-## Allocation and Co-product Handling
+## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
@@ -592,18 +670,18 @@ Final net mass by grade, bale and wash state is the reference output. The platfo
 | `shared_assets` | pasture, housing, water system, shearing shed and equipment | Identify flock/shearing/baling consumers and service years; allocate shared use by documented hours, area or animal-time before product allocation; avoid node duplication. | `iwto-wool-lca-2016` |
 | `grade_accounting` | accepted, downgraded and rejected fleece | Keep grade outputs and destinations separate; marketable downgrade is product, unsaleable skirtings waste, and fibre cannot be both. | `iwto-wool-lca-2016` |
 
-## Foreground Data Collection, Calculation, and Quality Rules
+## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_flock_feed` | `flock` | feed, nutrients | flock/field/invoice | cohort; pasture area; diet; dry matter; nutrient composition; date; stock | farm records and documented intake model | kg, ha | monthly/event | flock and rearing years | farm | reconcile purchased, grown and consumed | receipts, feed tests |
-| `cp_water_energy` | `flock` | water, energy | meter/invoice | source; carrier; purpose; period; shared consumer | meter and invoice | m3, kWh, L | monthly | flock year | farm | allocate by consumer | meter images, invoices |
-| `cp_flock_outputs` | `flock` | live animals | sale/stock register | cohort; head; live mass; date; gate | weighbridge and stock count | kg, head | event | flock year | farm | opening + additions - removals = closing | sale slips, register |
-| `cp_manure` | `flock` | manure and emissions | activity register | cohort; N intake/excretion; management; storage; transfer; factors | collect activity and IPCC tier | kg N, kg manure | monthly/event | flock year | farm | distinct CH4, N2O, NH3 pathways | activity/factor sheets |
-| `cp_wash_shear` | `fleece_wash`, `shearing` | wash and capture | event | sheep; wash date/water/effluent/dry-off; shear date; raw mass; energy | event log, scale, meter | kg, m3, kWh | event | shear season | farm | link one route to one fleece | event and calibration sheets |
-| `cp_grade_bale` | `conditioning`, `grading`, `baling` | mass/presentation | grade/bale register | capture; skirtings; grade; moisture; tare; packing/reuse; dispatch | scale and buyer docket | kg, item | bale | shear season | farm | capture = grades + rejects + change/loss | scale tickets, grading records |
+| `cp_flock_feed` | `flock` | feed, nutrients | flock/field/invoice | cohort; pasture area; diet; dry matter; nutrient composition; date; stock | farm records and documented intake model; Raw aggregation requirements: reconcile purchased, grown and consumed. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, ha | monthly/event | flock and rearing years | farm | per reference flow | receipts, feed tests; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_water_energy` | `flock` | water, energy | meter/invoice | source; carrier; purpose; period; shared consumer | meter and invoice; Raw aggregation requirements: allocate by consumer. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | m3, kWh, L | monthly | flock year | farm | per reference flow | meter images, invoices; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_flock_outputs` | `flock` | live animals | sale/stock register | cohort; head; live mass; date; gate | weighbridge and stock count; Raw aggregation requirements: opening + additions - removals = closing. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | event | flock year | farm | per reference flow | sale slips, register; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `flock` | manure and emissions | activity register | cohort; N intake/excretion; management; storage; transfer; factors | collect activity and IPCC tier; Raw aggregation requirements: distinct CH4, N2O, NH3 pathways. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg N, kg manure | monthly/event | flock year | farm | per reference flow | activity/factor sheets; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_wash_shear` | `fleece_wash`, `shearing` | wash and capture | event | sheep; wash date/water/effluent/dry-off; shear date; raw mass; energy | event log, scale, meter; Raw aggregation requirements: link one route to one fleece. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, m3, kWh | event | shear season | farm | per reference flow | event and calibration sheets; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_grade_bale` | `conditioning`, `grading`, `baling` | mass/presentation | grade/bale register | capture; skirtings; grade; moisture; tare; packing/reuse; dispatch | scale and buyer docket; Raw aggregation requirements: capture = grades + rejects + change/loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, item | bale | shear season | farm | per reference flow | scale tickets, grading records; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 
@@ -623,7 +701,7 @@ Final net mass by grade, bale and wash state is the reference output. The platfo
 | `temporal` | multi-year flock | Link animal age, events and shared assets to service years; disclose gaps. | cohort and asset registers |
 | `measurement` | masses/moisture/energy | Retain calibration and original units; disclose estimates. | scale/meter records |
 
-## Validation Rules
+## 9. Validation Rules
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
@@ -633,7 +711,7 @@ Final net mass by grade, bale and wash state is the reference output. The platfo
 | `validate_period` | flock/shared assets | Verify period, replacement, service and co-product shares sum once; no inherited-burden omission. | `iwto-wool-lca-2016` |
 | `validate_binding` | concrete exchanges | Resolve unresolved inputs from actual records and exact UUIDs for concrete outputs before dataset publication. | |
 
-## Published Dataset Profile
+## 10. Published Dataset Profile
 
 | Field | Value |
 | --- | --- |
@@ -645,7 +723,7 @@ Final net mass by grade, bale and wash state is the reference output. The platfo
 | required_quality_disclosure | measured/calculated values, factor tier, gaps, provisional ranges, co-product sensitivity |
 | update_trigger | route, species, gate, grade, allocation, factor or identity evidence changes |
 
-## Data Sources
+## 11. Data Sources
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |

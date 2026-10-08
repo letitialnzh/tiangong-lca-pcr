@@ -113,6 +113,13 @@ measurement_rules:
       uuid: ""
     required_unit: "kg CH4, kg N2O, kg NH3"
     rule: "Calculate each species separately from declared flock category, manure path, activity data and method tier; do not collapse them into a generic gas mass."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
 process_map:
   - id: flock_production
     name: "Flock husbandry and farm-gate handover"
@@ -130,14 +137,14 @@ process_inventory:
           name: "Live starting chickens"
           flow_type: "product"
           property_unit: "Mass and supporting count / kg and head"
-          description: "Record all birds admitted from an earlier phase or supplier, with class, origin, count, measured or sampled live mass, date and inherited burden."
+          description: "Record all birds admitted from an earlier phase or supplier, with class, origin, count, measured or sampled live mass, date and inherited burden. Denominator and scope requirements：per kg live chicken at farm gate, with cohort-period index"
           amount:
             expression: "admitted live mass and count by flock and period"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken at farm gate, with cohort-period index"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_bird_events
@@ -157,14 +164,14 @@ process_inventory:
           name: "Poultry feed products by actual formulation"
           flow_type: "product"
           property_unit: "Mass / kg as-fed and kg dry matter"
-          description: "Include feed issued to the flock, including pasture or scavenged intake when estimated from recorded access and performance; preserve product identity, as-fed mass, dry matter and diet phase."
+          description: "Include feed issued to the flock, including pasture or scavenged intake when estimated from recorded access and performance; preserve product identity, as-fed mass, dry matter and diet phase. Denominator and scope requirements：per kg live chicken at farm gate and allocated cohort-period"
           amount:
             expression: "net feed issued plus measured or modelled range intake by flock phase"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken at farm gate and allocated cohort-period"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_feed_records
@@ -184,14 +191,14 @@ process_inventory:
           name: "Water supply for flock operations"
           flow_type: "product"
           property_unit: "Volume or Mass / m3 or kg"
-          description: "Record supplied drinking, cleaning and cooling water by purpose and source. This conditional umbrella is expanded to concrete exchanges from foreground use records."
+          description: "Record supplied drinking, cleaning and cooling water by purpose and source. This conditional umbrella is expanded to concrete exchanges from foreground use records. Denominator and scope requirements：per kg live chicken at farm gate"
           amount:
             expression: "metered or estimated withdrawal by function, flock and period"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken at farm gate"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_water_energy
@@ -211,14 +218,14 @@ process_inventory:
           name: "Energy supply for flock operations"
           flow_type: "product"
           property_unit: "Energy or carrier quantity / kWh, MJ, kg or L"
-          description: "Keep electricity, gas, biomass and liquid fuels separate by carrier and use; ventilation, heating, feeding and manure equipment can have different service periods."
+          description: "Keep electricity, gas, biomass and liquid fuels separate by carrier and use; ventilation, heating, feeding and manure equipment can have different service periods. Denominator and scope requirements：per kg live chicken at farm gate"
           amount:
             expression: "meter, invoice or equipment log by carrier and service period"
             value_mode: "foreground_record"
             specificity: "technology_specific"
             basis:
-              text: "per kg live chicken at farm gate"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_water_energy
@@ -237,14 +244,14 @@ process_inventory:
           name: "Route-specific bedding and animal-health products"
           flow_type: "product"
           property_unit: "Mass, volume, dose or item / original product unit"
-          description: "Inventory each bedding, disinfectant, vaccine, medicine and other physical husbandry product separately in the concrete dataset; do not equate a dose with mass."
+          description: "Inventory each bedding, disinfectant, vaccine, medicine and other physical husbandry product separately in the concrete dataset; do not equate a dose with mass. Denominator and scope requirements：per kg live chicken at farm gate"
           amount:
             expression: "measured purchase, use and stock change by item and flock"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
-              text: "per kg live chicken at farm gate"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_materials_health
@@ -263,13 +270,13 @@ process_inventory:
           name: "Inbound road freight service"
           flow_type: "product"
           property_unit: "Goods transport / t*km"
-          description: "Record only an actual road-freight inbound service under farm control for birds, feed or materials. Supplier-delivered logistics already included upstream is excluded. A non-road service needs its own verified exchange outside this road-group card."
+          description: "Record only an actual road-freight inbound service under farm control for birds, feed or materials. Supplier-delivered logistics already included upstream is excluded. A non-road service needs its own verified exchange outside this road-group card. Denominator and scope requirements：per kg live chicken at farm gate"
           amount:
             expression: "delivered mass multiplied by controlled road distance"
             value_mode: "calculated_value"
             specificity: "route_specific"
             basis:
-              text: "per kg live chicken at farm gate"
+              text: "per reference flow"
               kind: "transport_service"
             evidence:
               kind: "calculated_from_collection"
@@ -295,16 +302,16 @@ process_inventory:
           name: "Live chicken at producing farm gate"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Record only birds alive at the point of transfer. Reconcile sold or transferred mass and count with admission, growth and mortality records."
+          description: "Record only birds alive at the point of transfer. Reconcile sold or transferred mass and count with admission, growth and mortality records. Raw reference-output records: measured kg live chicken handed over by class and cohort Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
           amount:
-            expression: "measured kg live chicken handed over by class and cohort"
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "1 kg reference live chicken output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_bird_events
               source_ids:
                 - fao-leap-poultry-2016
@@ -323,14 +330,14 @@ process_inventory:
           name: "Hatching or table eggs by actual product identity"
           flow_type: "product"
           property_unit: "Mass and count / kg shell-on and item"
-          description: "Include only eggs that leave the same managed system as intended products. Record egg class, shell-on mass, count and farm-gate handover; a separately modelled egg PCR must receive the attributed burden once."
+          description: "Include only eggs that leave the same managed system as intended products. Record egg class, shell-on mass, count and farm-gate handover; a separately modelled egg PCR must receive the attributed burden once. Denominator and scope requirements：per kg live chicken output and declared output set"
           amount:
             expression: "measured saleable eggs handed over by category and cohort-period"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
-              text: "per kg live chicken output and declared output set"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_output_handover
@@ -350,14 +357,14 @@ process_inventory:
           name: "Chicken manure or litter product by actual state"
           flow_type: "product"
           property_unit: "Mass / kg wet and kg dry matter"
-          description: "Count as a product only if an identified buyer or receiving process accepts it for a documented beneficial use. Otherwise use the waste card."
+          description: "Count as a product only if an identified buyer or receiving process accepts it for a documented beneficial use. Otherwise use the waste card. Denominator and scope requirements：per kg live chicken output"
           amount:
             expression: "measured transferred mass and composition at product handover"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_manure_records
@@ -378,14 +385,14 @@ process_inventory:
           name: "Poultry mortality waste by actual disposal route"
           flow_type: "waste"
           property_unit: "Mass and count / kg and head"
-          description: "Record deaths, count and recovered mass by phase, and route to on-farm treatment or off-farm handover. Do not add dead birds to live reference output."
+          description: "Record deaths, count and recovered mass by phase, and route to on-farm treatment or off-farm handover. Do not add dead birds to live reference output. Denominator and scope requirements：per kg live chicken output"
           amount:
             expression: "measured or class-weight-estimated dead-bird mass by event"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_bird_events
@@ -404,14 +411,14 @@ process_inventory:
           name: "Poultry litter, manure or egg residue waste by state"
           flow_type: "waste"
           property_unit: "Mass / kg wet and kg dry matter"
-          description: "Identify treatment, destination and moisture for each residue. Avoid reporting the same manure stream as both product and waste."
+          description: "Identify treatment, destination and moisture for each residue. Avoid reporting the same manure stream as both product and waste. Denominator and scope requirements：per kg live chicken output"
           amount:
             expression: "measured mass after deduction of separately transferred product streams"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_manure_records
@@ -434,14 +441,14 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg CH4"
-          description: "Include only where the declared manure system and method generate CH4. Do not infer an enteric methane pathway for poultry."
+          description: "Include only where the declared manure system and method generate CH4. Do not infer an enteric methane pathway for poultry. Denominator and scope requirements：per kg live chicken output"
           amount:
             expression: "manure-system-specific CH4 calculated from measured volatile solids and documented factor tier"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_manure_records
@@ -463,14 +470,14 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg N2O"
-          description: "Calculate direct and attributable indirect N2O by the documented manure and nitrogen pathway; avoid duplicating downstream land application emissions."
+          description: "Calculate direct and attributable indirect N2O by the documented manure and nitrogen pathway; avoid duplicating downstream land application emissions. Denominator and scope requirements：per kg live chicken output"
           amount:
             expression: "pathway-specific N2O from measured manure nitrogen and documented factor tier"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_manure_records
@@ -492,14 +499,14 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg NH3"
-          description: "Record ammonia as NH3 species mass to air where a declared housing, storage or treatment pathway emits it."
+          description: "Record ammonia as NH3 species mass to air where a declared housing, storage or treatment pathway emits it. Denominator and scope requirements：per kg live chicken output"
           amount:
             expression: "pathway-specific NH3 from measured manure nitrogen and documented method"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live chicken output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_manure_records
@@ -544,85 +551,85 @@ dataset_production:
       flow_role: "admitted birds, deaths and live handover"
       record_type: "flock log and weighbridge record"
       raw_fields: "event date, class, purpose, head count, weight, scale, phase, supplier or destination"
-      collection_method: "direct counts and calibrated scale or documented sample"
+      collection_method: "direct counts and calibrated scale or documented sample; Raw aggregation requirements: sum by class-period; estimate missing class mass only from sampled birds. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "head; kg"
       frequency: "each event"
       temporal_coverage: "full declared cohort and reporting period"
       site_scope: "each house, flock and farm gate"
-      aggregation_rule: "sum by class-period; estimate missing class mass only from sampled birds"
-      quality_evidence: "signed transfer records, scale calibration and flock reconciliation"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "signed transfer records, scale calibration and flock reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_feed_records
       process_id: "flock_production"
       flow_role: "feed and range intake"
       record_type: "inventory, ration and range log"
       raw_fields: "product, batch, as-fed mass, dry matter, issued, returned, stock change, flock, access period"
-      collection_method: "invoices, bin scale and ration or range intake calculation"
+      collection_method: "invoices, bin scale and ration or range intake calculation; Raw aggregation requirements: net intake by feed identity and phase, then allocated once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; kg dry matter"
       frequency: "delivery and feeding period"
       temporal_coverage: "all active flock phases"
       site_scope: "each ration and flock"
-      aggregation_rule: "net intake by feed identity and phase, then allocated once"
-      quality_evidence: "invoices, recipe, moisture assay and stock reconciliation"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoices, recipe, moisture assay and stock reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_water_energy
       process_id: "flock_production"
       flow_role: "supplied water and energy"
       record_type: "meter and invoice"
       raw_fields: "purpose, source, meter, carrier, amount, unit, period, users"
-      collection_method: "read meter or validated invoice; record allocation key"
+      collection_method: "read meter or validated invoice; record allocation key; Raw aggregation requirements: assign by measured service and reconcile to bill. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "m3; kg; kWh; MJ; L"
       frequency: "meter interval"
       temporal_coverage: "full cohort period"
       site_scope: "every source, house and shared utility"
-      aggregation_rule: "assign by measured service and reconcile to bill"
-      quality_evidence: "meter reading, bill and shared-use schedule"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter reading, bill and shared-use schedule; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_materials_health
       process_id: "flock_production"
       flow_role: "bedding and animal-health products"
       record_type: "use and treatment register"
       raw_fields: "item, dose or mass, unit, batch, treated birds, date, stocks"
-      collection_method: "physical stock and treatment records"
+      collection_method: "physical stock and treatment records; Raw aggregation requirements: net use by product and phase. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; L; dose; item"
       frequency: "use event"
       temporal_coverage: "full cohort period"
       site_scope: "each flock and storage area"
-      aggregation_rule: "net use by product and phase"
-      quality_evidence: "stock count, treatment log and invoice"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "stock count, treatment log and invoice; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_inbound_transport
       process_id: "flock_production"
       flow_role: "controlled freight"
       record_type: "trip record"
       raw_fields: "cargo identity, mass, origin, destination, mode, distance, provider, delivery terms"
-      collection_method: "route and delivery docket"
+      collection_method: "route and delivery docket; Raw aggregation requirements: mass times distance, excluding supplier-included legs. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "t; km; t*km"
       frequency: "each trip"
       temporal_coverage: "full cohort period"
       site_scope: "controlled inbound legs"
-      aggregation_rule: "mass times distance, excluding supplier-included legs"
-      quality_evidence: "delivery note, route evidence and invoice"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "delivery note, route evidence and invoice; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_output_handover
       process_id: "flock_production"
       flow_role: "eggs and other intended output"
       record_type: "egg grading and transfer record"
       raw_fields: "output class, shell-on mass, count, grade, rejects, date, buyer"
-      collection_method: "scale, count and dispatch docket"
+      collection_method: "scale, count and dispatch docket; Raw aggregation requirements: saleable mass by category-period; exclude rejects. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; item"
       frequency: "each collection and dispatch"
       temporal_coverage: "relevant laying periods"
       site_scope: "each layer flock and handover"
-      aggregation_rule: "saleable mass by category-period; exclude rejects"
-      quality_evidence: "grading log, scale and receipt"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "grading log, scale and receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_manure_records
       process_id: "flock_production"
       flow_role: "manure, litter, waste and species emissions"
       record_type: "manure path and treatment log"
       raw_fields: "flock class, housing, bedding, N, volatile solids, wet and dry mass, storage, export, treatment, factor tier"
-      collection_method: "sampling, weighing, log and documented factor method"
+      collection_method: "sampling, weighing, log and documented factor method; Raw aggregation requirements: close wet/dry mass and nitrogen balance, then calculate pathway species. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; kg N; kg VS; kg species"
       frequency: "each removal and method period"
       temporal_coverage: "all housing and storage periods"
       site_scope: "each manure pathway and receiving destination"
-      aggregation_rule: "close wet/dry mass and nitrogen balance, then calculate pathway species"
-      quality_evidence: "sample result, removal ticket, factor version and balance"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "sample result, removal ticket, factor version and balance; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: c_live_mass
       applies_to: "reference output"
@@ -766,19 +773,19 @@ data_sources:
     used_for: "supplied-water source and use distinction"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:37a330c12e42583570bc78b9ff03a9c0e8f81ccc5114f2d29ece8d3d4fa2d2f2"
+  source_sha256: "sha256:1839f61b91e0aaf7ec43f2d453ad99435dfe78a7a2d69a2c592a5ecca18a6065"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5170"
+    - unit_id: "normative_6276"
       family: "system_boundary"
       span:
         start:
-          offset: 5170
-          line: 61
+          offset: 6276
+          line: 62
           column: 1
         end:
-          offset: 8312
-          line: 86
+          offset: 9418
+          line: 87
           column: 1
       markdown: "## 5. System Boundary\n\nForeground starts with admitted chicks, pullets or other starting birds and the declared housing and land state. It includes controlled breeding or brooding when present, growing or laying, feed and water provision, animal health, ventilation and heat, controlled manure and litter handling, flock selection and live weighing through the producing-farm gate. Feed production, purchased-bird rearing, supplied energy, medicines and off-farm services require linked upstream datasets unless actually operated within the declared foreground. Directly controlled inbound movement is included only if not already in supplier delivery.\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | admitted flock by class, age, live mass, head count, source and opening period, with declared housing and litter state |\n| starting_condition_role | biological starting stock and shared housing state whose prior burdens must be linked or explicitly attributed by period |\n| product_classification_scope | CPC 3.0 `02151`, live chickens; eggs, meat and other poultry are separate categories |\n| recursive_input_rule | purchased or internally transferred live chickens are starting-stock inputs with source, mass, count, phase, date and prior burden; they are not silently recreated as farm-gate output |\n| upstream_dataset_requirement | supplier or prior-phase datasets for birds, feed, bedding, health products, energy and services; any missing compatible dataset requires a disclosed gap and replacement plan |\n| disclosure | flock purpose and class, route, site, housing and range access, feed basis, manure path, mortality, egg output, shared assets, phase and period, live-weight method, output handovers and unresolved identities |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `b_managed_flock` | all routes | Model one managed flock parent; declare broiler, breeder, layer, housed or free-range changes in topology, feed, housing, litter, manure, energy, duration and validation from actual route records. | `fao-leap-poultry-2016` |\n| `b_farm_gate` | live chicken reference | Stop at live-weight measurement and transfer at the producing farm gate; exclude slaughter, dressing and downstream transport. | `fao-leap-poultry-2016` |\n| `b_phase_links` | replacement, brooding, growing, laying and spent-bird phases | Link admission, inputs, shared assets, mortality, eggs and live-bird output to cohort and period; attribute opening-stock burdens once. | `fao-leap-poultry-2016` |\n| `b_manure_route` | manure and litter | Include controlled collection, storage, treatment and land use; record exported product or waste at actual handover and exclude off-farm treatment from the farm foreground unless controlled. | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |\n| `b_shared_housing` | poultry house, range, water, energy and manure facilities | Identify all flock classes and service periods consuming each shared asset, including egg and live-bird nodes; assign its burden once on measured service. | `fao-leap-poultry-2016` |\n\n"
       headings:
@@ -797,12 +804,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5170
-              line: 61
+              offset: 6276
+              line: 62
               column: 1
             end:
-              offset: 5191
-              line: 61
+              offset: 6297
+              line: 62
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -817,16 +824,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_25439"
+    - unit_id: "normative_27543"
       family: "allocation"
       span:
         start:
-          offset: 25439
-          line: 438
+          offset: 27543
+          line: 469
           column: 1
         end:
-          offset: 26984
-          line: 447
+          offset: 29088
+          line: 478
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_output_set` | live birds, eggs and exported manure | Enumerate every independently intended output and actual handover. Keep losses and waste outside the intended output set; separate hatching from table eggs and product manure from residue. | `fao-leap-poultry-2016`; `fao-leap-nutrient-flows-2018` |\n| `a_physical_then_economic` | unavoidable shared output burdens | First separate measured process or phase burdens. Where a remaining shared burden cannot be subdivided physically, declare a documented physical causal basis if credible; otherwise use period-specific economic shares with disclosed prices and sensitivity. Never credit a co-product and allocate the same burden again. | `fao-leap-poultry-2016` |\n| `a_phase` | breeder, broiler, layer and replacement periods | Attribute starting stock, replacement, rearing, laying, culling and termination burdens to their actual cohorts and outputs. State the period decision explicitly, including an opening-stock reconciliation and no duplicate allocation to a separate egg PCR. | `fao-leap-poultry-2016` |\n| `a_shared_assets` | housing, equipment, water, energy and manure systems | Enumerate all consuming flock classes, output nodes and service periods. Allocate each asset once using recorded occupied area-time, equipment hours, meter use or another measured service basis; disclose a fallback and test total assigned share equals 100%. | `fao-leap-poultry-2016` |\n\n"
       headings:
@@ -845,12 +852,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 25439
-              line: 438
+              offset: 27543
+              line: 469
               column: 1
             end:
-              offset: 25479
-              line: 438
+              offset: 27583
+              line: 469
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -865,16 +872,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_33277"
+    - unit_id: "normative_38118"
       family: "validation"
       span:
         start:
-          offset: 33277
-          line: 481
+          offset: 38118
+          line: 512
           column: 1
         end:
-          offset: 35080
-          line: 493
+          offset: 39921
+          line: 524
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_reference_gate` | reference output | Require live state, kg Mass, head count, purpose, class, cohort and producing-farm gate; reject meat or post-slaughter output and a Number-of-items-only reference. | `fao-leap-poultry-2016` |\n| `v_route_delta` | alternative routes | Require the managed parent plus evidence for any housed, free-range, broiler, breeder or layer difference in topology, feed, manure, energy, periods or output set; do not accept a route label alone. | `fao-leap-poultry-2016` |\n| `v_balance` | flock and residues | Reconcile admitted, born, sold, retained and dead head counts; reconcile feed and manure mass or nutrient paths within disclosed measurement uncertainty. | `fao-leap-poultry-2016`; `fao-leap-nutrient-flows-2018` |\n| `v_output_once` | eggs, manure and live birds | Require unique handover and role for every output; prevent eggs or manure from appearing as both product and waste or in two PCR datasets with the same burden. | `fao-leap-poultry-2016` |\n| `v_period_shared` | periods and shared assets | Require opening stock, phase links, asset users, service periods and shares summing to one; reject double attribution between egg and live-bird outputs. | `fao-leap-poultry-2016` |\n| `v_emissions` | CH4, N2O and NH3 | Validate species, receiving medium, poultry category and documented manure pathway and factor; zero or omit methane when no generating pathway exists. | `ipcc-2019-livestock-manure` |\n| `v_unresolved_uuid` | concrete exchanges | Replace every unresolved or unresolved flow with a detail-verified compatible UUID, retaining the flow identity verification evidence and selection evidence, before emitting TIDAS exchanges. | `fao-leap-poultry-2016` |\n\n"
       headings:
@@ -893,12 +900,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 33277
-              line: 481
+              offset: 38118
+              line: 512
               column: 1
             end:
-              offset: 33299
-              line: 481
+              offset: 38140
+              line: 512
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -917,272 +924,272 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 5193
-          line: 63
+          offset: 6299
+          line: 64
           column: 1
         end:
-          offset: 5822
-          line: 63
+          offset: 6928
+          line: 64
           column: 630
     - pointer: "/system_boundary/rules/1"
       rule_id: "b_managed_flock"
       identity_kind: "explicit"
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 7043
-          line: 80
+          offset: 8149
+          line: 81
           column: 1
         end:
-          offset: 7302
-          line: 80
+          offset: 8408
+          line: 81
           column: 260
     - pointer: "/system_boundary/rules/2"
       rule_id: "b_farm_gate"
       identity_kind: "explicit"
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 7303
-          line: 81
+          offset: 8409
+          line: 82
           column: 1
         end:
-          offset: 7500
-          line: 81
+          offset: 8606
+          line: 82
           column: 198
     - pointer: "/system_boundary/rules/3"
       rule_id: "b_phase_links"
       identity_kind: "explicit"
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 7501
-          line: 82
+          offset: 8607
+          line: 83
           column: 1
         end:
-          offset: 7747
-          line: 82
+          offset: 8853
+          line: 83
           column: 247
     - pointer: "/system_boundary/rules/4"
       rule_id: "b_manure_route"
       identity_kind: "explicit"
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 7748
-          line: 83
+          offset: 8854
+          line: 84
           column: 1
         end:
-          offset: 8044
-          line: 83
+          offset: 9150
+          line: 84
           column: 297
     - pointer: "/system_boundary/rules/5"
       rule_id: "b_shared_housing"
       identity_kind: "explicit"
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 8045
-          line: 84
+          offset: 9151
+          line: 85
           column: 1
         end:
-          offset: 8310
-          line: 84
+          offset: 9416
+          line: 85
           column: 266
     - pointer: "/allocation_rules/0"
       rule_id: "a_output_set"
       identity_kind: "explicit"
-      unit_id: "normative_25439"
+      unit_id: "normative_27543"
       source_span:
         start:
-          offset: 25552
-          line: 442
+          offset: 27656
+          line: 473
           column: 1
         end:
-          offset: 25858
-          line: 442
+          offset: 27962
+          line: 473
           column: 307
     - pointer: "/allocation_rules/1"
       rule_id: "a_physical_then_economic"
       identity_kind: "explicit"
-      unit_id: "normative_25439"
+      unit_id: "normative_27543"
       source_span:
         start:
-          offset: 25859
-          line: 443
+          offset: 27963
+          line: 474
           column: 1
         end:
-          offset: 26271
-          line: 443
+          offset: 28375
+          line: 474
           column: 413
     - pointer: "/allocation_rules/2"
       rule_id: "a_phase"
       identity_kind: "explicit"
-      unit_id: "normative_25439"
+      unit_id: "normative_27543"
       source_span:
         start:
-          offset: 26272
-          line: 444
+          offset: 28376
+          line: 475
           column: 1
         end:
-          offset: 26619
-          line: 444
+          offset: 28723
+          line: 475
           column: 348
     - pointer: "/allocation_rules/3"
       rule_id: "a_shared_assets"
       identity_kind: "explicit"
-      unit_id: "normative_25439"
+      unit_id: "normative_27543"
       source_span:
         start:
-          offset: 26620
-          line: 445
+          offset: 28724
+          line: 476
           column: 1
         end:
-          offset: 26982
-          line: 445
+          offset: 29086
+          line: 476
           column: 363
     - pointer: "/validation_rules/0"
       rule_id: "v_reference_gate"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 33372
-          line: 485
+          offset: 38213
+          line: 516
           column: 1
         end:
-          offset: 33605
-          line: 485
+          offset: 38446
+          line: 516
           column: 234
     - pointer: "/validation_rules/1"
       rule_id: "v_route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 33606
-          line: 486
+          offset: 38447
+          line: 517
           column: 1
         end:
-          offset: 33873
-          line: 486
+          offset: 38714
+          line: 517
           column: 268
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 33874
-          line: 487
+          offset: 38715
+          line: 518
           column: 1
         end:
-          offset: 34124
-          line: 487
+          offset: 38965
+          line: 518
           column: 251
     - pointer: "/validation_rules/3"
       rule_id: "v_output_once"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 34125
-          line: 488
+          offset: 38966
+          line: 519
           column: 1
         end:
-          offset: 34362
-          line: 488
+          offset: 39203
+          line: 519
           column: 238
     - pointer: "/validation_rules/4"
       rule_id: "v_period_shared"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 34363
-          line: 489
+          offset: 39204
+          line: 520
           column: 1
         end:
-          offset: 34593
-          line: 489
+          offset: 39434
+          line: 520
           column: 231
     - pointer: "/validation_rules/5"
       rule_id: "v_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 34594
-          line: 490
+          offset: 39435
+          line: 521
           column: 1
         end:
-          offset: 34814
-          line: 490
+          offset: 39655
+          line: 521
           column: 221
     - pointer: "/validation_rules/6"
       rule_id: "v_unresolved_uuid"
       identity_kind: "explicit"
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 34815
-          line: 491
+          offset: 39656
+          line: 522
           column: 1
         end:
-          offset: 35078
-          line: 491
+          offset: 39919
+          line: 522
           column: 264
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 5170
-          line: 61
+          offset: 6276
+          line: 62
           column: 1
         end:
-          offset: 5191
-          line: 61
+          offset: 6297
+          line: 62
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5170"
+      unit_id: "normative_6276"
       source_span:
         start:
-          offset: 5850
-          line: 67
+          offset: 6956
+          line: 68
           column: 1
         end:
-          offset: 6950
-          line: 74
+          offset: 8056
+          line: 75
           column: 225
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_25439"
+      unit_id: "normative_27543"
       source_span:
         start:
-          offset: 25439
-          line: 438
+          offset: 27543
+          line: 469
           column: 1
         end:
-          offset: 25479
-          line: 438
+          offset: 27583
+          line: 469
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_33277"
+      unit_id: "normative_38118"
       source_span:
         start:
-          offset: 33277
-          line: 481
+          offset: 38118
+          line: 512
           column: 1
         end:
-          offset: 33299
-          line: 481
+          offset: 38140
+          line: 512
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1191,5 +1198,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:37a330c12e42583570bc78b9ff03a9c0e8f81ccc5114f2d29ece8d3d4fa2d2f2"
-  generated_content_sha256: "sha256:335be8960423c7354cde99b91342d7d42e2142713a4cdb9fd5c4212dfbe42196"
+    sha256: "sha256:1839f61b91e0aaf7ec43f2d453ad99435dfe78a7a2d69a2c592a5ecca18a6065"
+  generated_content_sha256: "sha256:92961e84453a77b0279745e30748541450d174258df712a073502781d974b82b"

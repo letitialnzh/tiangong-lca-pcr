@@ -37,9 +37,9 @@ sync_with: pcr.en-US.md
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | 中心放行的非牛繁殖用精液剂量 |
-| Reference flow property | 合格剂量计数（UUID 未解析）；体积和质量为另行测量的属性。 |
-| Reference unit group | 计数／剂量单位组（UUID 未解析）。 |
-| Reference unit | dose |
+| Reference flow property | 物品数量 `01846770-4cfe-4a25-8ad9-919d8d378345` |
+| Reference unit group | 数量单位组 `5beb6eed-33a9-47b8-9ede-1dfe8f679159` |
+| Reference unit | item |
 | Required qualifiers | 供体物种／品种；健康和采集批次；质量规格与精子数；剂量体积；新鲜／冷藏／冷冻；容器；中心关口；报告期间。 |
 
 ## 4. 计量与单位规则
@@ -50,6 +50,9 @@ sync_with: pcr.en-US.md
 | `liquid_balance` | 原精液和稀释液 | 校准体积及浓度 | mL; sperm/mL | 核对原液、制备液、废弃物与分装剂量；不能仅由体积推定剂量等价。 |
 | `state_partition` | 最终产品 | 按状态计数 | dose | 新鲜、冷藏、冷冻各用独立分母；跨状态比较须说明转换。 |
 | `period_link` | 供体及共享服务 | 时长和合格产出 | donor-day; dose | 将有日期的投入、事件及资产服务关联至供体和批次期间，避免重复年化。 |
+| `accepted_item_count` | 参考产品及其产出卡 | 物品数量 `01846770-4cfe-4a25-8ad9-919d8d378345` | item | 机器单位 item 是已确认单位组参考单位 Item(s) 的本地写法，倍率为 1。一件表示一个符合声明物种、状态、等级及放行规格的合格繁殖用剂量。原始采集记录保留剂量计数。此计数写法不将容器、体积、精子数、卵母细胞或操作次数视为合格产品，也不建立不同物种、状态或剂量规格之间的等价关系。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -98,14 +101,18 @@ sync_with: pcr.en-US.md
 
 记录供体在对应期间的实测摄入，不按剂量假定固定值。
 
+分母与范围要求：每份关联的合格剂量
+
+原始数量及计算要求：汇总供体期间实际摄入。 原始采集分母类型：reference_flow。
+
 - 选定流：已识别非牛供体的饲料和牧草（UUID 未解析）
 - 流属性/单位：干物质质量 / kg
-- 数量规则：汇总供体期间实际摄入。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每份关联的合格剂量
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_donor`
 - 数量范围：暂定饲料完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -120,14 +127,18 @@ sync_with: pcr.en-US.md
 
 计量饮水和卫生用水，不假设跨物种统一耗水率。
 
+分母与范围要求：每份关联的合格剂量
+
+原始数量及计算要求：按供体期间计量或核对供应量。 原始采集分母类型：reference_flow。
+
 - 选定流：供体管理所用供水（UUID 未解析）
 - 流属性/单位：质量 / kg
-- 数量规则：按供体期间计量或核对供应量。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每份关联的合格剂量
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_donor`
 - 数量范围：暂定用水完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -152,14 +163,18 @@ sync_with: pcr.en-US.md
 
 除非有独立产品交接证据，收集粪污按废物处理；区分直接排泄与已收集量。
 
+分母与范围要求：每供体期间
+
+原始数量及计算要求：只记录一次收集质量及去向。 原始采集分母类型：process_output。
+
 - 选定流：流向已记录管理去向的供体粪污（UUID 未解析）
 - 流属性/单位：湿质量 / kg
-- 数量规则：只记录一次收集质量及去向。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每供体期间
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_donor`
 - 数量范围：暂定粪污筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -182,14 +197,18 @@ sync_with: pcr.en-US.md
 
 一次性器材计入采集；可复用设备在共享服务中归属。
 
+分母与范围要求：每次采集
+
+原始数量及计算要求：逐次采集计数或称量领用材料。 原始采集分母类型：process_output。
+
 - 选定流：与物种相容的精液采集耗材（UUID 未解析）
 - 流属性/单位：质量 / kg
-- 数量规则：逐次采集计数或称量领用材料。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每次采集
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：暂定耗材筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -212,14 +231,18 @@ sync_with: pcr.en-US.md
 
 独立采集从受管理供体取出精液，将原液交给质量评估。
 
+分母与范围要求：每次采集
+
+原始数量及计算要求：测量事件体积及浓度。 原始采集分母类型：process_output。
+
 - 选定流：采集到的非牛原精液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：测量事件体积及浓度。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每次采集
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：暂定原液体积筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -236,14 +259,18 @@ sync_with: pcr.en-US.md
 
 附带或不可回收采集物按真实去向归为废物。
 
+分母与范围要求：每次采集
+
+原始数量及计算要求：称量或由实测事件平衡估算，并记录去向。 原始采集分母类型：process_output。
+
 - 选定流：送处理的失败采集物（UUID 未解析）
 - 流属性/单位：质量 / kg
-- 数量规则：称量或由实测事件平衡估算，并记录去向。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每次采集
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：暂定拒收物筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -266,14 +293,18 @@ sync_with: pcr.en-US.md
 
 按物种适用的浓度、活力和存活率标准评估采集批次。
 
+分母与范围要求：每分级批次
+
+原始数量及计算要求：与采集事件体积和批次身份核对。 原始采集分母类型：process_output。
+
 - 选定流：分级入口的非牛原精液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：与采集事件体积和批次身份核对。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分级批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：原液投入筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -296,14 +327,18 @@ sync_with: pcr.en-US.md
 
 合格部分交至初步制备。
 
+分母与范围要求：每分级批次
+
+原始数量及计算要求：记录合格体积和精子数。 原始采集分母类型：process_output。
+
 - 选定流：制备前合格的非牛精液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：记录合格体积和精子数。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分级批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：合格占比筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -318,14 +353,18 @@ sync_with: pcr.en-US.md
 
 仅在有合法替代用途和独立交接记录时按产品计；否则归入拒收废物。
 
+分母与范围要求：每分级批次
+
+原始数量及计算要求：记录独立转移体积和去向。 原始采集分母类型：process_output。
+
 - 选定流：转向有记录替代用途的非牛降级精液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：记录独立转移体积和去向。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分级批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：条件性降级占比
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -342,14 +381,18 @@ sync_with: pcr.en-US.md
 
 不可用部分作为废物进入已记录处理去向。
 
+分母与范围要求：每分级批次
+
+原始数量及计算要求：拒收、合格和降级体积与投入核对。 原始采集分母类型：process_output。
+
 - 选定流：送处理的非牛拒收精液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：拒收、合格和降级体积与投入核对。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分级批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：拒收占比筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -372,14 +415,18 @@ sync_with: pcr.en-US.md
 
 使用实际的物种相容稀释液配方，不假定通用配方。
 
+分母与范围要求：每制备批次
+
+原始数量及计算要求：按批记录制备和领用液体。 原始采集分母类型：process_output。
+
 - 选定流：精液制备介质（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：按批记录制备和领用液体。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每制备批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_prepare`
 - 数量范围：暂定介质筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -402,14 +449,18 @@ sync_with: pcr.en-US.md
 
 合格原液与介质制成散装液并交给分装。
 
+分母与范围要求：每制备批次
+
+原始数量及计算要求：合格原液加介质减去损失。 原始采集分母类型：process_output。
+
 - 选定流：分装前制备好的非牛精液散装液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：合格原液加介质减去损失。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每制备批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_prepare`
 - 数量范围：制备体积筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -426,14 +477,18 @@ sync_with: pcr.en-US.md
 
 洒漏及拒收的制备液按废物处理，与合格散装液分开。
 
+分母与范围要求：每制备批次
+
+原始数量及计算要求：测量并标明实际处置路径。 原始采集分母类型：process_output。
+
 - 选定流：送处理的精液制备残液（UUID 未解析）
 - 流属性/单位：体积 / mL
-- 数量规则：测量并标明实际处置路径。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每制备批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_prepare`
 - 数量范围：制备损失占比
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -456,14 +511,18 @@ sync_with: pcr.en-US.md
 
 领用容器与正确分装及拒收数量相核对。
 
+分母与范围要求：每分装批次
+
+原始数量及计算要求：计数领用的精液管或瓶及封口材料。 原始采集分母类型：process_output。
+
 - 选定流：与物种／路线相容的剂量容器（UUID 未解析）
 - 流属性/单位：计数 / item
-- 数量规则：计数领用的精液管或瓶及封口材料。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分装批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_fill`
 - 数量范围：容器领用筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -486,14 +545,18 @@ sync_with: pcr.en-US.md
 
 散装制备液成为可保存或直接包装的新鲜剂量。
 
+分母与范围要求：每分装批次
+
+原始数量及计算要求：计数正确分装和封口的剂量，记录体积和精子规格。 原始采集分母类型：process_output。
+
 - 选定流：分装后的非牛繁殖用精液剂量（UUID 未解析）
 - 流属性/单位：计数 / dose
-- 数量规则：计数正确分装和封口的剂量，记录体积和精子规格。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分装批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_fill`
 - 数量范围：分装剂量筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -510,14 +573,18 @@ sync_with: pcr.en-US.md
 
 灌装错误、损坏或封口失败的单位按废物处理，除非有记录的回收路线。
 
+分母与范围要求：每分装批次
+
+原始数量及计算要求：核对领用容器、合格分装及失败单位。 原始采集分母类型：process_output。
+
 - 选定流：送处理的精液分装拒收单位（UUID 未解析）
 - 流属性/单位：计数 / item
-- 数量规则：核对领用容器、合格分装及失败单位。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每分装批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_fill`
 - 数量范围：分装拒收占比
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -540,14 +607,18 @@ sync_with: pcr.en-US.md
 
 仅对实际使用的冷藏或冷冻路线计入实测制冷电力。
 
+分母与范围要求：每保存剂量
+
+原始数量及计算要求：计量批次和持有期间的电力。 原始采集分母类型：reference_flow。
+
 - 选定流：精液冷藏或冷冻用电（UUID 未解析）
 - 流属性/单位：能源 / kWh
-- 数量规则：计量批次和持有期间的电力。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每保存剂量
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_preserve`
 - 数量范围：暂定电力筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -562,14 +633,18 @@ sync_with: pcr.en-US.md
 
 冷冻批次记录实际补充的低温介质；冷藏和新鲜批次不继承此投入。
 
+分母与范围要求：每冷冻剂量
+
+原始数量及计算要求：记录领用及回收数量和储存服务归属。 原始采集分母类型：reference_flow。
+
 - 选定流：路线特定低温介质（UUID 未解析）
 - 流属性/单位：质量 / kg
-- 数量规则：记录领用及回收数量和储存服务归属。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每冷冻剂量
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_preserve`
 - 数量范围：暂定低温介质筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -592,14 +667,18 @@ sync_with: pcr.en-US.md
 
 冷藏或冷冻剂量经时间／温度和质量验收后交接。
 
+分母与范围要求：每保存批次
+
+原始数量及计算要求：按冷藏或冷冻状态计数合格单位。 原始采集分母类型：process_output。
+
 - 选定流：包装前保存的非牛精液剂量（UUID 未解析）
 - 流属性/单位：计数 / dose
-- 数量规则：按冷藏或冷冻状态计数合格单位。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每保存批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_preserve`
 - 数量范围：保存产率筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -616,14 +695,18 @@ sync_with: pcr.en-US.md
 
 完整性或保存后质量不合格者独立记录废弃去向。
 
+分母与范围要求：每保存批次
+
+原始数量及计算要求：核对进入、合格和拒收单位。 原始采集分母类型：process_output。
+
 - 选定流：送处理的保存后拒收精液单位（UUID 未解析）
 - 流属性/单位：计数 / item
-- 数量规则：核对进入、合格和拒收单位。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每保存批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_preserve`
 - 数量范围：保存拒收占比
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -646,14 +729,18 @@ sync_with: pcr.en-US.md
 
 仅纳入中心领用的防护包装；可复用容器按实际复用次数归属。
 
+分母与范围要求：每放行剂量
+
+原始数量及计算要求：称量领用包装并只计入一次复用服务份额。 原始采集分母类型：reference_flow。
+
 - 选定流：非牛精液剂量防护包装（UUID 未解析）
 - 流属性/单位：质量 / kg
-- 数量规则：称量领用包装并只计入一次复用服务份额。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每放行剂量
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_release`
 - 数量范围：暂定包装筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -676,14 +763,20 @@ sync_with: pcr.en-US.md
 
 唯一参考产品是中心交接的合格非牛繁殖用精液。
 
+参考产出的原始记录：按物种、等级和状态计数合格单位，并关联体积和精子数。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+机器单位 item 是已确认单位组参考单位 Item(s) 的本地写法，倍率为 1。一件表示一个符合声明物种、状态、等级及放行规格的合格繁殖用剂量。原始采集记录保留剂量计数。此计数写法不将容器、体积、精子数、卵母细胞或操作次数视为合格产品，也不建立不同物种、状态或剂量规格之间的等价关系。
+
+分母与范围要求：每参考流
+
 - 选定流： 中心放行的非牛繁殖用精液剂量
-- 流属性/单位：计数 / dose
-- 数量规则：按物种、等级和状态计数合格单位，并关联体积和精子数。
-- 数值来源模式：前景记录（`foreground_record`）
+- 流属性 / 单位：物品数量 / item
+- 数量规则：1 item
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 份合格剂量
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_release`
 - 数量范围：参考计数恒等
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -700,14 +793,18 @@ sync_with: pcr.en-US.md
 
 损坏包装按记录的回收或处置路线作为废物，不增加产品数量。
 
+分母与范围要求：每放行批次
+
+原始数量及计算要求：中心拒收包装只计数或称量一次。 原始采集分母类型：process_output。
+
 - 选定流：送实际去向的拒收防护包装（UUID 未解析）
 - 流属性/单位：质量 / kg
-- 数量规则：中心拒收包装只计数或称量一次。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每放行批次
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_release`
 - 数量范围：暂定包装拒收筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -735,13 +832,13 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_donor` | `donor` | 供体投入和产出 | 供体登记与计量 | donor_id, species, period, feed_mass, water_mass, health_event, eligible_days, manure_mass | 有日期记录与校准计量 | day; kg | 每事件并按月核对 | 完整供体期间 | 中心和供体 | 将投入与事件关联供体期间 | 登记与票据 |
-| `cp_collect` | `collect` | 耗材、原液、失败物 | 采集事件 | donor_id, event_id, issued_mass, raw_mL, concentration, rejected_mass | 校准容器和领用台账 | mL; kg | 每次事件 | 所有采集事件 | 中心 | 按供体和批次汇总 | 校准与链路 |
-| `cp_grade` | `grade` | 质量状态 | 实验室评估 | lot_id, raw_mL, accepted_mL, downgraded_mL, rejected_mL, grade, destination | 物种特定检测及去向台账 | mL; fraction | 每批 | 所有评估批次 | 实验室 | 核对所有等级与投入 | 检测与批准 |
-| `cp_prepare` | `prepare` | 介质、散装液和损失 | 批次记录 | lot_id, accepted_mL, medium_mL, bulk_mL, loss_mL | 校准分配与体积平衡 | mL | 每批 | 所有制备批次 | 实验室 | 逐批平衡 | 配方与校准 |
-| `cp_fill` | `fill` | 容器与合格／拒收单位 | 分装记录 | lot_id, issued_items, filled_doses, rejected_items, dose_mL, sperm_count | 计数与封口检查 | item; dose; mL | 每批 | 所有分装批次 | 分装线 | 核对领用与分装 | 批次和 QA |
-| `cp_preserve` | `preserve` | 电力、低温介质、合格／拒收单位 | 保存记录 | batch_id, state, kWh, cryogen_kg, start, end, accepted_doses, rejected_items | 计量、供给台账和温度记录 | kWh; kg; dose | 每批 | 完整处理与持有 | 中心 | 按批次和服务时间归属 | 计量与校准 |
-| `cp_release` | `release` | 包装、产品、拒收 | 放行台账 | lot_id, species, state, packaging_kg, reuse_cycles, accepted_doses, rejected_kg | 计数、称量和放行证 | kg; dose | 每次放行 | 所有放行批次 | 中心关口 | 按物种和状态汇总 | 签署放行 |
+| `cp_donor` | `donor` | 供体投入和产出 | 供体登记与计量 | donor_id, species, period, feed_mass, water_mass, health_event, eligible_days, manure_mass | 有日期记录与校准计量；原始汇总要求：将投入与事件关联供体期间。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | day; kg | 每事件并按月核对 | 完整供体期间 | 中心和供体 | 每参考流 | 登记与票据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_collect` | `collect` | 耗材、原液、失败物 | 采集事件 | donor_id, event_id, issued_mass, raw_mL, concentration, rejected_mass | 校准容器和领用台账；原始汇总要求：按供体和批次汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | mL; kg | 每次事件 | 所有采集事件 | 中心 | 每参考流 | 校准与链路；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_grade` | `grade` | 质量状态 | 实验室评估 | lot_id, raw_mL, accepted_mL, downgraded_mL, rejected_mL, grade, destination | 物种特定检测及去向台账；原始汇总要求：核对所有等级与投入。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | mL; fraction | 每批 | 所有评估批次 | 实验室 | 每参考流 | 检测与批准；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_prepare` | `prepare` | 介质、散装液和损失 | 批次记录 | lot_id, accepted_mL, medium_mL, bulk_mL, loss_mL | 校准分配与体积平衡；原始汇总要求：逐批平衡。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | mL | 每批 | 所有制备批次 | 实验室 | 每参考流 | 配方与校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_fill` | `fill` | 容器与合格／拒收单位 | 分装记录 | lot_id, issued_items, filled_doses, rejected_items, dose_mL, sperm_count | 计数与封口检查；原始汇总要求：核对领用与分装。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | item; dose; mL | 每批 | 所有分装批次 | 分装线 | 每参考流 | 批次和 QA；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_preserve` | `preserve` | 电力、低温介质、合格／拒收单位 | 保存记录 | batch_id, state, kWh, cryogen_kg, start, end, accepted_doses, rejected_items | 计量、供给台账和温度记录；原始汇总要求：按批次和服务时间归属。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kWh; kg; dose | 每批 | 完整处理与持有 | 中心 | 每参考流 | 计量与校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_release` | `release` | 包装、产品、拒收 | 放行台账 | lot_id, species, state, packaging_kg, reuse_cycles, accepted_doses, rejected_kg | 计数、称量和放行证；原始汇总要求：按物种和状态汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; dose | 每次放行 | 所有放行批次 | 中心关口 | 每参考流 | 签署放行；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

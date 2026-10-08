@@ -31,7 +31,7 @@ This rule covers unprocessed goat milk accepted at the producing dairy farm gate
 | How much | 1 kg as-collected accepted milk |
 | How well | Goat species, raw/unprocessed state, temperature, fat/protein or solids, rejection and sampling basis declared |
 | How long or cycle | Defined reporting period spanning lactation and replacement phases; disclose herd-period attribution |
-| reference_flow_link | Accepted warm output `warm_milk` or accepted chilled output `chilled_milk`, never both for the same milk lot |
+| reference_flow_link | `reference_product_handover` |
 
 | Field | Value |
 | --- | --- |
@@ -42,6 +42,8 @@ This rule covers unprocessed goat milk accepted at the producing dairy farm gate
 | Reference unit | kg |
 | Required qualifiers | goat species; farm identifier; lactation and replacement period; herd route; accepted and rejected mass; warm or farm-chilled state; milk temperature; fat/protein or solids; transfer gate |
 
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
+
 The broad warm-or-chilled reference has no verified single flow UUID. The chilled-specific identity applies only to `chilled_milk`.
 
 ## 4. Measurement and Unit Rules
@@ -51,6 +53,8 @@ The broad warm-or-chilled reference has no verified single flow UUID. The chille
 | `accepted_mass` | reference milk | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Normalize all inventories to measured accepted milk; subtract rejected or lost milk once. |
 | `milk_quality` | accepted milk | measured fat/protein or solids | reported concentration basis | Retain the sampled composition and temperature with the exact lot or period; do not silently standardize milk mass. |
 | `period_link` | herd and milk | Mass and time | kg, days | Link animal-days, feed, replacement and manure records to the milk reporting period before normalization. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -74,6 +78,7 @@ The broad warm-or-chilled reference has no verified single flow UUID. The chille
 | `conditional_cooling` | cooling | Farm cooling applies only to milk actually cooled before gate; warm milk bypasses this node. | `fao-small-ruminant-2016` |
 | `route_delta` | herd | Grazing/housed/mixed modes change feed source, manure location and energy or housing records; animal-days remain one herd ledger. | `fao-small-ruminant-2016` |
 | `phase_boundary` | herd | Record lactation, dry/replacement and culling events by period; carry multi-period burdens to outputs once. | `fao-small-ruminant-2016` |
+| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |
 
 ## 6. Process Inventory Structure
 
@@ -85,6 +90,7 @@ The broad warm-or-chilled reference has no verified single flow UUID. The chille
 | `milking` | Milking capture | required | Each accepted or rejected milking lot | Independent removal from herd and collected-liquid handoff | gross captured milk kg |
 | `conditioning` | First farm milk conditioning | required | Straining, first quality test and acceptance at producing farm | Raw collected to accepted warm state and rejects | accepted warm milk kg |
 | `cooling` | Farm milk cooling | conditional | Producing farm cools milk before gate | Warm accepted to stabilized chilled state | chilled accepted milk kg |
+| `reference_handover` | Actual producer reference-product handover | required | One actual declared route, state and producer gate per foreground package | Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution | 1 kg accepted product at the declared handover |
 
 The herd node's intended milk potential transfers once to milking; measured gross milk is recorded at milking, not also as a separate sale. Grazed biomass and housed feed are mutually resolved by site records. Kids/culls and usable exported manure are independently transferred co-products only when documented, whereas residual manure and rejected milk remain waste or internal handling, not invented sales.
 
@@ -98,14 +104,18 @@ The herd node's intended milk potential transfers once to milking; measured gros
 
 Record purchased feed and actual grazed biomass by dry matter and origin; distinguish purchased input from farm-grown feed already inside this foreground boundary.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Feed ledger plus measured or documented grazing intake, assigned by animal-days. Original collection denominator kind: reference_flow.
+
 - Selected flow: Goat feed and forage
 - Flow property / unit: Mass / kg dry matter
-- Amount rule: Feed ledger plus measured or documented grazing intake, assigned by animal-days.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional feed completeness screen
   - Range role: Default estimate (`default_estimate`)
@@ -120,14 +130,18 @@ Record purchased feed and actual grazed biomass by dry matter and origin; distin
 
 Record drinking and managed cleaning water crossing the herd boundary; direct rainfall is not this Product input.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Meter or delivery record allocated to herd use, excluding milking and conditioning meters. Original collection denominator kind: reference_flow.
+
 - Selected flow: Supplied herd water
 - Flow property / unit: Mass / kg
-- Amount rule: Meter or delivery record allocated to herd use, excluding milking and conditioning meters.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional herd water completeness screen
   - Range role: Default estimate (`default_estimate`)
@@ -142,14 +156,18 @@ Record drinking and managed cleaning water crossing the herd boundary; direct ra
 
 Include only animals entering the dairy herd from outside; use a verified upstream live-goat burden once.
 
+Denominator and scope requirements：per kg accepted milk over attributed periods
+
+Raw quantity and calculation requirements: Recorded entering live mass assigned across actual productive periods. Original collection denominator kind: reference_flow.
+
 - Selected flow: Purchased replacement goats
 - Flow property / unit: Mass / kg live weight
-- Amount rule: Recorded entering live mass assigned across actual productive periods.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk over attributed periods
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional replacement screen
   - Range role: Default estimate (`default_estimate`)
@@ -172,14 +190,18 @@ Include only animals entering the dairy herd from outside; use a verified upstre
 
 Count only documented animal handovers; retained replacements are internal transfers, not sold outputs.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Weighed or sampled transfer mass by animal class and handover date. Original collection denominator kind: reference_flow.
+
 - Selected flow: Live goat kids and culled goats
 - Flow property / unit: Mass / kg live weight
-- Amount rule: Weighed or sampled transfer mass by animal class and handover date.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional live-animal transfer screen
   - Range role: Default estimate (`default_estimate`)
@@ -194,14 +216,18 @@ Count only documented animal handovers; retained replacements are internal trans
 
 Count only manure with a documented useful recipient; manure remaining on pasture or handled as waste is not this co-product.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Weighed export mass and moisture by recipient and date. Original collection denominator kind: reference_flow.
+
 - Selected flow: Usable goat manure for independent transfer
 - Flow property / unit: Mass / kg wet mass
-- Amount rule: Weighed export mass and moisture by recipient and date.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional exported-manure screen
   - Range role: Default estimate (`default_estimate`)
@@ -218,12 +244,16 @@ Count only manure with a documented useful recipient; manure remaining on pastur
 
 Record collected or deposited manure not independently transferred as product, including pasture deposition by location.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Manure balance by housing, storage, land application and pasture deposition; avoid duplicate entry with exported manure. Original collection denominator kind: reference_flow.
+
 - Selected flow: Residual goat manure
 - Flow property / unit: Mass / kg wet mass
-- Amount rule: Manure balance by housing, storage, land application and pasture deposition; avoid duplicate entry with exported manure.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
@@ -242,13 +272,17 @@ Record collected or deposited manure not independently transferred as product, i
 
 Calculate goat enteric methane from the evidenced herd method and animal-days, separately from manure methane.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Apply declared IPCC enteric method to goat classes and animal-days; disclose factor and climate assumptions. Original collection denominator kind: reference_flow.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Apply declared IPCC enteric method to goat classes and animal-days; disclose factor and climate assumptions.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_emissions`
@@ -266,13 +300,17 @@ Calculate goat enteric methane from the evidenced herd method and animal-days, s
 
 Calculate methane from manure actually assigned to each management pathway, including pasture deposition as relevant.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Apply declared IPCC manure pathway method, not the enteric result a second time. Original collection denominator kind: reference_flow.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Apply declared IPCC manure pathway method, not the enteric result a second time.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_emissions`
@@ -290,13 +328,17 @@ Calculate methane from manure actually assigned to each management pathway, incl
 
 Calculate direct manure-system nitrous oxide by goat nitrogen and pathway; indirect effects remain separately declared.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Use declared IPCC manure nitrogen and pathway method with documented volatilization and leaching boundary. Original collection denominator kind: reference_flow.
+
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Use declared IPCC manure nitrogen and pathway method with documented volatilization and leaching boundary.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_emissions`
@@ -314,13 +356,17 @@ Calculate direct manure-system nitrous oxide by goat nitrogen and pathway; indir
 
 Record ammonia volatilization from the actual manure pathway only where the selected method provides it.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Calculate from collected manure nitrogen and selected volatilization factor; retain factor evidence. Original collection denominator kind: reference_flow.
+
 - Selected flow: Ammonia to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Calculate from collected manure nitrogen and selected volatilization factor; retain factor evidence.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_emissions`
@@ -344,14 +390,18 @@ Record ammonia volatilization from the actual manure pathway only where the sele
 
 Include measured electricity or fuel used by milking equipment, not cooling energy.
 
+Denominator and scope requirements：per kg gross captured milk
+
+Raw quantity and calculation requirements: Meter or fuel log assigned to milking shift. Original collection denominator kind: process_output.
+
 - Selected flow: Milking equipment energy
 - Flow property / unit: Energy / kWh equivalent
-- Amount rule: Meter or fuel log assigned to milking shift.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg gross captured milk
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_milking`
 - Range: Provisional milking energy screen
   - Range role: Default estimate (`default_estimate`)
@@ -374,14 +424,18 @@ Include measured electricity or fuel used by milking equipment, not cooling ener
 
 Milk removed from goats is measured before first straining and acceptance; this internal handoff is not a farm-gate sale.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Sum calibrated milking lot masses, including later rejected portions. Original collection denominator kind: reference_flow.
+
 - Selected flow: Gross captured raw goat milk
 - Flow property / unit: Mass / kg
-- Amount rule: Sum calibrated milking lot masses, including later rejected portions.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_milking`
 - Range: Gross-to-accepted mass reconciliation screen
   - Range role: Default estimate (`default_estimate`)
@@ -406,14 +460,18 @@ Milk removed from goats is measured before first straining and acceptance; this 
 
 Conditional umbrella: record only actual supplied water crossing for straining, equipment hygiene and first farm quality preparation, excluding herd drinking water. Resolve the concrete water function from site records.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Assigned meter or batch cleaning record. Original collection denominator kind: reference_flow.
+
 - Selected flow: First-conditioning water
 - Flow property / unit: Mass / kg
-- Amount rule: Assigned meter or batch cleaning record.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning`
 - Range: Provisional first-conditioning water screen
   - Range role: Default estimate (`default_estimate`)
@@ -436,12 +494,18 @@ Conditional umbrella: record only actual supplied water crossing for straining, 
 
 This milk is ready for farm-gate handover warm, or for the optional farm cooling node; a cooled lot must not also be sold warm.
 
+Denominator and scope requirements：per kg accepted milk at farm gate
+
+Raw quantity and calculation requirements: Gross milk less first-conditioning rejects; record warm gate transfers and cooling transfers separately. Original collection denominator kind: reference_flow.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
 - Selected flow: Accepted warm raw goat milk
 - Flow property / unit: Mass / kg
-- Amount rule: Gross milk less first-conditioning rejects; record warm gate transfers and cooling transfers separately.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning`
@@ -460,14 +524,18 @@ This milk is ready for farm-gate handover warm, or for the optional farm cooling
 
 Record rejected or spilled milk and retained straining residues with documented treatment; do not assign them accepted milk status.
 
+Denominator and scope requirements：per kg accepted milk
+
+Raw quantity and calculation requirements: Measure rejected milk mass and separately describe residue destination. Original collection denominator kind: reference_flow.
+
 - Selected flow: Rejected raw goat milk and straining residues
 - Flow property / unit: Mass / kg
-- Amount rule: Measure rejected milk mass and separately describe residue destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning`
 - Range: Provisional conditioning reject screen
   - Range role: Default estimate (`default_estimate`)
@@ -490,14 +558,18 @@ Record rejected or spilled milk and retained straining residues with documented 
 
 Include only energy used by cooling equipment controlled by the producing farm before gate.
 
+Denominator and scope requirements：per kg farm-chilled accepted milk
+
+Raw quantity and calculation requirements: Cooling meter or assigned equipment log, with shared tank service allocated once. Original collection denominator kind: process_output.
+
 - Selected flow: Farm cooling energy
 - Flow property / unit: Energy / kWh equivalent
-- Amount rule: Cooling meter or assigned equipment log, with shared tank service allocated once.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-chilled accepted milk
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cooling`
 - Range: Provisional farm cooling energy screen
   - Range role: Default estimate (`default_estimate`)
@@ -520,15 +592,21 @@ Include only energy used by cooling equipment controlled by the producing farm b
 
 This is the cooled portion accepted and transferred at the producing farm gate, not milk cooled later by a collection centre.
 
+Denominator and scope requirements：per kg accepted milk at farm gate
+
+Raw quantity and calculation requirements: Measure cooled accepted mass at gate after any cooling reject or spill. Original collection denominator kind: reference_flow.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
 - Selected flow: Raw goat milk, chilled, farm gate `2c001731-6bd5-4e32-b3cf-15f4c67d4038`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Measure cooled accepted mass at gate after any cooling reject or spill.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cooling`
 - Range: Chilled milk reconciliation screen
   - Range role: Default estimate (`default_estimate`)
@@ -545,12 +623,16 @@ This is the cooled portion accepted and transferred at the producing farm gate, 
 
 Record milk spilled or rejected during farm-controlled cooling; do not count it as accepted chilled output.
 
+Denominator and scope requirements：per kg accepted milk at farm gate
+
+Raw quantity and calculation requirements: Incoming warm milk less accepted chilled milk, with rejection reason and destination. Original collection denominator kind: reference_flow.
+
 - Selected flow: Cooling loss and rejected raw goat milk
 - Flow property / unit: Mass / kg
-- Amount rule: Incoming warm milk less accepted chilled milk, with rejection reason and destination.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted milk at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cooling`
@@ -562,6 +644,84 @@ Record milk spilled or rejected during farm-controlled cooling; do not count it 
   - Basis: per kg accepted milk; replace with tank balance
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Elementary flows
+
+### Process: Actual producer reference-product handover (`reference_handover`)
+
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
+
+#### Inputs
+
+##### Product flows
+
+###### Raw milk of goats at producing farm gate for actual producer-handover linkage (`reference_handover_input`)
+
+This input matches the accepted goods represented by `warm_milk`, `chilled_milk` under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `warm_milk`, `chilled_milk`
+
+Required product-instance qualifiers: goat species; farm identifier; lactation and replacement period; herd route; accepted and rejected mass; warm or farm-chilled state; milk temperature; fat/protein or solids; transfer gate
+
+- Selected flow: Raw milk of goats at producing farm gate for actual producer-handover linkage
+- Flow property / unit: Mass / kg
+- Amount rule: Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
+
+#### Outputs
+
+##### Product flows
+
+###### Raw milk of goats at producing farm gate (`reference_product_handover`)
+
+This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `warm_milk`, `chilled_milk`
+
+Required product-instance qualifiers: goat species; farm identifier; lactation and replacement period; herd route; accepted and rejected mass; warm or farm-chilled state; milk temperature; fat/protein or solids; transfer gate
+
+- Selected flow: Raw milk of goats at producing farm gate
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
 
 ##### Elementary flows
 
@@ -580,12 +740,13 @@ Record milk spilled or rejected during farm-controlled cooling; do not count it 
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd` | `herd` | feed, water, replacement and animal outputs | herd and purchase ledger | goat class; head; animal-days; lactation phase; feed dry matter; grazing estimate; water; purchase and transfer live mass | farm logs, scale, invoices and meter | kg, head, days | daily and event | full milk reporting period and replacement phase | producing herd | Sum by goat class and phase; attribute once to milk and other outputs | signed ledger, scale and invoices |
-| `cp_manure` | `herd` | exported and residual manure | manure pathway ledger | housing/pasture shares; collection; storage; export mass; moisture; recipient | weighbridge, farm log and pathway inspection | kg, days | daily and event | full reporting period | herd pasture and housing | Reconcile total manure by mutually exclusive destination | transfer receipts and pathway record |
-| `cp_emissions` | `herd` | air emissions | method worksheet | animal-days; feed energy; nitrogen; manure pathway; factor; climate | calculate from `cp_herd` and `cp_manure` under declared IPCC method | kg | reporting period | same herd period | emitting farm | Sum distinct enteric and manure terms once | factor citation and calculation worksheet |
-| `cp_milking` | `milking` | gross milk and energy | batch meter log | goat herd; milk kg; milking time; meter; rejected later | calibrated milk scale and energy meter | kg, kWh | each milking | full reporting period | producing farm | Sum gross lot mass and assigned milking energy | calibration, shift log |
-| `cp_conditioning` | `conditioning` | accepted warm milk, rejects and water | lot quality and cleaning log | gross kg; straining loss; rejected kg; temperature; fat/protein or solids; water | scale, sample and water meter | kg, concentration | each lot | full reporting period | producing farm | Gross = accepted warm + reject/loss; transfer warm to gate or cooling once | test sheet and reject disposition |
-| `cp_cooling` | `cooling` | chilled milk and energy | farm cooling log | incoming warm kg; outgoing chilled kg; temperature; energy; time; losses | calibrated tank and energy meter | kg, kWh, temperature | each chilled lot | only farm-controlled cooling periods | producing farm | Incoming warm = chilled accepted + cooling loss; never duplicate warm sale | tank log and transfer receipt |
+| `cp_herd` | `herd` | feed, water, replacement and animal outputs | herd and purchase ledger | goat class; head; animal-days; lactation phase; feed dry matter; grazing estimate; water; purchase and transfer live mass | farm logs, scale, invoices and meter; Raw aggregation requirements: Sum by goat class and phase; attribute once to milk and other outputs. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head, days | daily and event | full milk reporting period and replacement phase | producing herd | per reference flow | signed ledger, scale and invoices; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `herd` | exported and residual manure | manure pathway ledger | housing/pasture shares; collection; storage; export mass; moisture; recipient | weighbridge, farm log and pathway inspection; Raw aggregation requirements: Reconcile total manure by mutually exclusive destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, days | daily and event | full reporting period | herd pasture and housing | per reference flow | transfer receipts and pathway record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_emissions` | `herd` | air emissions | method worksheet | animal-days; feed energy; nitrogen; manure pathway; factor; climate | calculate from `cp_herd` and `cp_manure` under declared IPCC method; Raw aggregation requirements: Sum distinct enteric and manure terms once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | reporting period | same herd period | emitting farm | per reference flow | factor citation and calculation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_milking` | `milking` | gross milk and energy | batch meter log | goat herd; milk kg; milking time; meter; rejected later | calibrated milk scale and energy meter; Raw aggregation requirements: Sum gross lot mass and assigned milking energy. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, kWh | each milking | full reporting period | producing farm | per reference flow | calibration, shift log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_conditioning` | `conditioning` | accepted warm milk, rejects and water | lot quality and cleaning log | gross kg; straining loss; rejected kg; temperature; fat/protein or solids; water | scale, sample and water meter; Raw aggregation requirements: Gross = accepted warm + reject/loss; transfer warm to gate or cooling once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, concentration | each lot | full reporting period | producing farm | per reference flow | test sheet and reject disposition; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_cooling` | `cooling` | chilled milk and energy | farm cooling log | incoming warm kg; outgoing chilled kg; temperature; energy; time; losses | calibrated tank and energy meter; Raw aggregation requirements: Incoming warm = chilled accepted + cooling loss; never duplicate warm sale. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, kWh, temperature | each chilled lot | only farm-controlled cooling periods | producing farm | per reference flow | tank log and transfer receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
 
 ### Calculation Rules
 

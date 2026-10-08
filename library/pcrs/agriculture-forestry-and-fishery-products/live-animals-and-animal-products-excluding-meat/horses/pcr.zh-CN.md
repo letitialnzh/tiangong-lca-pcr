@@ -52,6 +52,8 @@ sync_with: pcr.en-US.md
 | `herd_count` | 种马与养殖存栏 | Count | 匹 | 按群体及期间核对期初、购入、产驹、转移、售出、死亡和期末匹数。 |
 | `service_period` | 种马与共享资产 | Time | 天或季 | 分配负担前对繁殖、产驹、养殖期间、母马/公马更新和共享服务建立时间索引。 |
 | `manure_mass` | 粪肥产品/废物 | Mass | kg | 将外运可用粪肥、送处理废物与放牧排泄分成不同去向；记录水分或收到时的质量基准。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -97,14 +99,18 @@ sync_with: pcr.en-US.md
 
 按实测活重和承继上游负担记录购入种马；自有期初存栏属于声明的起始条件。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：按日龄与性别记录的实测接收活重 原始采集分母类型：process_output。
+
 - 选定流：活体种马（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按日龄与性别记录的实测接收活重
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定进入种马群的母马与公马完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -119,14 +125,18 @@ sync_with: pcr.en-US.md
 
 分别记录交付饲料、自有牧草及放牧采食，不把牧草采食重复计为外购饲料。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：交付量减库存变化及记录损失 原始采集分母类型：process_output。
+
 - 选定流：马饲料与外购牧草（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：交付量减库存变化及记录损失
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_feed`
 - 数量范围：暂定种马牧草与精饲料完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -141,14 +151,18 @@ sync_with: pcr.en-US.md
 
 按用途采集饮用水和马厩清洁用水；牧场降雨不是购入产品投入。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：计量或记录的供水量 原始采集分母类型：process_output。
+
 - 选定流：种马群供水（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量或记录的供水量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定供种马群用水完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -163,14 +177,18 @@ sync_with: pcr.en-US.md
 
 按诊疗日志记录进入种马节点的药品与护理用品；外部专业服务按提供方与期间记录。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：按药品和护理材料计量的产品数量 原始采集分母类型：process_output。
+
 - 选定流：马兽医用品（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按药品和护理材料计量的产品数量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_health`
 - 数量范围：暂定种马兽医药品与护理用品完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -185,14 +203,18 @@ sync_with: pcr.en-US.md
 
 运行种马圈舍时按载体和期间记录实际电、热与燃料。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：计量的载体能源 原始采集分母类型：process_output。
+
 - 选定流：圈舍能源载体（UUID 未解析）
 - 流属性/单位：Energy / kWh or MJ
-- 数量规则：计量的载体能源
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定种马圈舍能源完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -215,14 +237,18 @@ sync_with: pcr.en-US.md
 
 在种马阶段交接点称量并计数活马驹；区分销售与内部转养殖。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：合格马驹的实测活重 原始采集分母类型：process_output。
+
 - 选定流：种马场门口活马驹（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：合格马驹的实测活重
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：产出质量归一化
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -238,14 +264,18 @@ sync_with: pcr.en-US.md
 
 仅实际售出的活体淘汰种马属于联产品；死马和屠宰产物不属于此项。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：已售淘汰种马的实测活重 原始采集分母类型：process_output。
+
 - 选定流：种马场门口活体淘汰马（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：已售淘汰种马的实测活重
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定独立销售的活体淘汰种马完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -260,14 +290,18 @@ sync_with: pcr.en-US.md
 
 仅记录有接收方和用途证据的称重粪肥；放牧排泄保留于实际土地路径。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：称重并转移的粪肥产品 原始采集分母类型：process_output。
+
 - 选定流：外运马粪肥（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：称重并转移的粪肥产品
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定作为可用产品外运的种马粪肥完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -284,14 +318,18 @@ sync_with: pcr.en-US.md
 
 按质量与去向分类死马和送处理粪污，与可用粪肥产品分开。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：按去向计量的损失 原始采集分母类型：process_output。
+
 - 选定流：送往处理的种马阶段损失（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按去向计量的损失
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定种马死亡与弃置粪污完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -308,15 +346,19 @@ sync_with: pcr.en-US.md
 
 依据记录的马日、类别及饲料方式，以所选 IPCC 方法单独计算马肠道发酵 CH4，不与粪污 CH4 混合；UUID 仅标识排入空气的甲烷。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：按类别种群与期间、所选 IPCC 方法计算马肠道发酵 CH4 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，排入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：按类别种群与期间、所选 IPCC 方法计算马肠道发酵 CH4
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定非负肠道发酵 CH4 筛查
@@ -332,15 +374,19 @@ sync_with: pcr.en-US.md
 
 仅按记录的粪污系统和期间特定 IPCC 活动量与因子选择计算。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：依据采集粪污活动数据的路径特定 CH4 计算 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，排入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据采集粪污活动数据的路径特定 CH4 计算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定种马粪污生物源甲烷排入空气完整性筛查
@@ -356,15 +402,19 @@ sync_with: pcr.en-US.md
 
 采用实际粪污管理路径及直接或间接 N2O 方法输入；避免放牧土壤排放重复。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：依据采集粪污活动数据的路径特定 N2O 计算 原始采集分母类型：process_output。
+
 - 选定流：氧化亚氮，排入空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据采集粪污活动数据的路径特定 N2O 计算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定种马粪污氧化亚氮排入空气完整性筛查
@@ -380,15 +430,19 @@ sync_with: pcr.en-US.md
 
 仅报告实测 NH3 或另经审查的路径估算；空气流 UUID 不是排放因子。
 
+分母与范围要求：每 kg 离开种马阶段的活马驹
+
+原始数量及计算要求：实测 NH3 释放量或经审查的路径计算 原始采集分母类型：process_output。
+
 - 选定流：氨，排入空气 `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：实测 NH3 释放量或经审查的路径计算
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种马阶段的活马驹
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定种马粪污氨排入空气完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -409,14 +463,18 @@ sync_with: pcr.en-US.md
 
 内部种马转入或外购幼马上游数据只使用一次，并记录日龄、只数与质量。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：实测接收活重 原始采集分母类型：process_output。
+
 - 选定流：进入养殖的活幼马（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：实测接收活重
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定进入养殖的马驹或幼马完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -431,14 +489,18 @@ sync_with: pcr.en-US.md
 
 记录外购及自产饲料和实际放牧采食，区分放牧与圈养管理需求。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：交付饲料减库存变化与损失 原始采集分母类型：process_output。
+
 - 选定流：马饲料与外购牧草（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：交付饲料减库存变化与损失
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_feed`
 - 数量范围：暂定养殖牧草与精饲料完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -453,14 +515,18 @@ sync_with: pcr.en-US.md
 
 按用途、仪表与水源记录饮用和清洁供水；在用途未明前不指定单一流身份范围。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：实测供水量 原始采集分母类型：process_output。
+
 - 选定流：养殖供水（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：实测供水量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定供养殖马匹用水完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -475,14 +541,18 @@ sync_with: pcr.en-US.md
 
 按载体记录实际照明、供暖、通风与护理能源；放牧路线可有不同用量。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：按载体计量或发票记录的能源 原始采集分母类型：process_output。
+
 - 选定流：养殖能源载体（UUID 未解析）
 - 流属性/单位：Energy / kWh or MJ
-- 数量规则：按载体计量或发票记录的能源
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定养殖与马厩能源完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -497,14 +567,18 @@ sync_with: pcr.en-US.md
 
 按马群与期间纳入实际预防或治疗用品；不推断通用治疗计划。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：按群体计量的药品与护理材料 原始采集分母类型：process_output。
+
 - 选定流：马兽医用品（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按群体计量的药品与护理材料
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_health`
 - 数量范围：暂定养殖马匹兽医药品与护理用品完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -527,14 +601,18 @@ sync_with: pcr.en-US.md
 
 在独立交付前测量成年马或较大日龄幼马的活重，记录日龄/用途与只数。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：进入交付过程的实测活重 原始采集分母类型：process_output。
+
 - 选定流：养殖出口活马（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：进入交付过程的实测活重
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：产出质量归一化
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -550,14 +628,18 @@ sync_with: pcr.en-US.md
 
 按称重质量、买方和去向记录独立转移的可用粪肥。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：外运可售粪肥称重质量 原始采集分母类型：process_output。
+
 - 选定流：外运马粪肥（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：外运可售粪肥称重质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定外运的可用养殖粪肥完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -574,14 +656,18 @@ sync_with: pcr.en-US.md
 
 按日期、质量与去向记录死马和弃置粪污；放牧排泄不属外运废物。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：实测损失和外运粪污 原始采集分母类型：process_output。
+
 - 选定流：送往处理的养殖损失（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：实测损失和外运粪污
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定养殖死马及送处理粪污完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -598,15 +684,19 @@ sync_with: pcr.en-US.md
 
 依据记录的马日、类别及饲料方式，以所选 IPCC 方法单独计算马肠道发酵 CH4，不与粪污 CH4 混合；UUID 仅标识排入空气的甲烷。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：按类别种群与期间、所选 IPCC 方法计算马肠道发酵 CH4 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，排入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：按类别种群与期间、所选 IPCC 方法计算马肠道发酵 CH4
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定非负肠道发酵 CH4 筛查
@@ -622,15 +712,19 @@ sync_with: pcr.en-US.md
 
 仅根据实际粪污管理路径与采集的 IPCC 活动数据计算。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：依据养殖粪污记录的路径特定 CH4 计算 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，排入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据养殖粪污记录的路径特定 CH4 计算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定养殖粪污生物源甲烷排入空气完整性筛查
@@ -646,15 +740,19 @@ sync_with: pcr.en-US.md
 
 按记录路径将粪污管理直接和间接 N2O 与放牧土壤归属分开。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：依据养殖粪污记录的路径特定 N2O 计算 原始采集分母类型：process_output。
+
 - 选定流：氧化亚氮，排入空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据养殖粪污记录的路径特定 N2O 计算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定养殖粪污氧化亚氮排入空气完整性筛查
@@ -670,15 +768,19 @@ sync_with: pcr.en-US.md
 
 仅纳入实测 NH3 或另经审查的粪污路径方法，不借用 CH4/N2O 因子。
 
+分母与范围要求：每 kg 离开养殖的活马
+
+原始数量及计算要求：实测 NH3 或另经审查的计算 原始采集分母类型：process_output。
+
 - 选定流：氨，排入空气 `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：实测 NH3 或另经审查的计算
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开养殖的活马
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定养殖粪污氨排入空气完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -699,14 +801,18 @@ sync_with: pcr.en-US.md
 
 最终批次投入为种马场门口马驹或养殖马之一，先前负担仅转移一次。
 
+分母与范围要求：每 kg 合格参考活马
+
+原始数量及计算要求：核对后只数乘实测平均活重 原始采集分母类型：reference_flow。
+
 - 选定流：进入交付处理的活马（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：核对后只数乘实测平均活重
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 合格参考活马
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：依据采集计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定进入独立交付过程的活马完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -729,14 +835,18 @@ sync_with: pcr.en-US.md
 
 在声明的种马场或养殖农场生产者门口计数、称重合格活马。
 
+参考产出的原始记录：实测合格活重 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流： 生产者交付的活马
 - 流属性/单位：Mass / kg
-- 数量规则：实测合格活重
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 合格参考活马
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：产出质量归一化
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -754,14 +864,18 @@ sync_with: pcr.en-US.md
 
 按质量/只数和实际去向记录淘汰或死亡马；不得把屠宰投入称作生产者产品。
 
+分母与范围要求：每 kg 合格参考活马
+
+原始数量及计算要求：按去向实测未接受马匹质量 原始采集分母类型：reference_flow。
+
 - 选定流：送处理的不合格马（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按去向实测未接受马匹质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 合格参考活马
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定交付期间死亡或淘汰的马完整性筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -789,11 +903,11 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd` | `breeder`, `rearing`, `handover` | 马匹存栏与活重 | 马群及买方记录 | 期初/接收/产驹/售出/死亡匹数；按类别马日；品种、性别、日龄、用途；实测体重、交付门和日期 | 每次流转计数，并称量整批或日龄类别样本 | 匹；马日；kg | 每次流转及期间 | 完整繁殖/养殖群体 | 每个生产者交付门 | 存栏平衡、按类别加权的活重及类别特定马日 | 动物登记、秤及买方收据 |
-| `cp_feed` | `breeder`, `rearing` | 饲料与牧场 | 饲料发票和放牧日志 | 交付量、期初/期末库存、自有牧草、牧场面积/天数、马日 | 称重收据、饲料台账和放牧记录 | kg；ha 日；马日 | 每次接收及期间 | 完整种马季/群体 | 所有马厩与围场 | 交付量减库存变化和废弃量，按马群汇总 | 发票、秤及田间日志 |
-| `cp_utilities` | `breeder`, `rearing` | 水、电及燃料 | 仪表及燃料日志 | 水源、用途、期初/期末读数、载体和资产使用者 | 仪表读数或发票，使用因果归属键处理共享用量 | kg 水；kWh；MJ | 仪表间隔 | 所有运行期间 | 所有水、电接点 | 读数差、单位换算及一次性服务分配 | 仪表图像、收据与资产日志 |
-| `cp_health` | `breeder`, `rearing` | 药品与兽医护理 | 诊疗和采购日志 | 药品/材料、剂量/质量、马群、服务提供者及日期 | 处方及库存核对 | kg；次 | 每次事件 | 完整马群 | 所有受治疗马匹 | 按群体汇总产品量，并披露外部服务 | 兽医记录与发票 |
-| `cp_manure` | `breeder`, `rearing`, `handover` | 粪污、死亡与排放 | 粪污、死亡及监测日志 | 粪污管理、放牧排泄、外运及弃置质量、挥发性固体、直接气体监测、死亡匹数/质量、去向 | 称重/抽样，记录路径；声称实测气体时保存观测 | kg；马日 | 每次事件/期间 | 所有运行马群期间 | 马厩、围场及处理处 | 核对去向并只选择一次路径特定方法 | 粪污分析、田间和处置记录 |
+| `cp_herd` | `breeder`, `rearing`, `handover` | 马匹存栏与活重 | 马群及买方记录 | 期初/接收/产驹/售出/死亡匹数；按类别马日；品种、性别、日龄、用途；实测体重、交付门和日期 | 每次流转计数，并称量整批或日龄类别样本；原始汇总要求：存栏平衡、按类别加权的活重及类别特定马日。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 匹；马日；kg | 每次流转及期间 | 完整繁殖/养殖群体 | 每个生产者交付门 | 每参考流 | 动物登记、秤及买方收据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_feed` | `breeder`, `rearing` | 饲料与牧场 | 饲料发票和放牧日志 | 交付量、期初/期末库存、自有牧草、牧场面积/天数、马日 | 称重收据、饲料台账和放牧记录；原始汇总要求：交付量减库存变化和废弃量，按马群汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg；ha 日；马日 | 每次接收及期间 | 完整种马季/群体 | 所有马厩与围场 | 每参考流 | 发票、秤及田间日志；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_utilities` | `breeder`, `rearing` | 水、电及燃料 | 仪表及燃料日志 | 水源、用途、期初/期末读数、载体和资产使用者 | 仪表读数或发票，使用因果归属键处理共享用量；原始汇总要求：读数差、单位换算及一次性服务分配。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 水；kWh；MJ | 仪表间隔 | 所有运行期间 | 所有水、电接点 | 每参考流 | 仪表图像、收据与资产日志；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_health` | `breeder`, `rearing` | 药品与兽医护理 | 诊疗和采购日志 | 药品/材料、剂量/质量、马群、服务提供者及日期 | 处方及库存核对；原始汇总要求：按群体汇总产品量，并披露外部服务。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg；次 | 每次事件 | 完整马群 | 所有受治疗马匹 | 每参考流 | 兽医记录与发票；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure` | `breeder`, `rearing`, `handover` | 粪污、死亡与排放 | 粪污、死亡及监测日志 | 粪污管理、放牧排泄、外运及弃置质量、挥发性固体、直接气体监测、死亡匹数/质量、去向 | 称重/抽样，记录路径；声称实测气体时保存观测；原始汇总要求：核对去向并只选择一次路径特定方法。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg；马日 | 每次事件/期间 | 所有运行马群期间 | 马厩、围场及处理处 | 每参考流 | 粪污分析、田间和处置记录；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

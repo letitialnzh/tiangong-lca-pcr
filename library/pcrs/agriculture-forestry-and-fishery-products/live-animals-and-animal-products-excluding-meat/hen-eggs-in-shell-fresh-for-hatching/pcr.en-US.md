@@ -31,7 +31,7 @@ This PCR governs fresh, shell-on chicken eggs selected for hatching at the produ
 | How much | 1 kg shell-on egg mass; retain count and measured average mass |
 | How well | Declare breeder flock age and mating management, collection and selection, shell condition, storage time/temperature, measured quality tests if available; do not infer fertility or hatchability |
 | How long or cycle | Declared flock productive period with replacement and storage periods linked |
-| reference_flow_link | Final `farm_gate_hatching_eggs` output; internal egg states are reconciliation, not duplicate final output |
+| reference_flow_link | `farm_gate_hatching_eggs` |
 
 | Field | Value |
 | --- | --- |
@@ -50,6 +50,7 @@ This PCR governs fresh, shell-on chicken eggs selected for hatching at the produ
 | `egg_mass_count` | reference and internal egg states | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Measure shell-on mass and retain count; convert count by sampled lot mean mass, not an assumed universal egg weight. |
 | `period_carrier` | flock and shared inputs | Mass or carrier property | kg, MJ or kWh | Index incoming stock, shared services and outputs to flock period before reference normalization; inventory crossing periods is counted once. |
 | `emission_mass` | manure gases | Mass | kg substance | CH4, N2O and NH3 are separate named substances; convert N2O-N and NH3-N factor bases before reporting molecular mass. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -97,12 +98,14 @@ This PCR governs fresh, shell-on chicken eggs selected for hatching at the produ
 
 Record received birds and period; link upstream burden once.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Replacement breeder birds (UUID unresolved)
 - Flow property / unit: Mass / kg liveweight
 - Amount rule: Record received birds and period; link upstream burden once.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_flock`
@@ -119,12 +122,14 @@ Record received birds and period; link upstream burden once.
 
 Record purchased and separately produced feed net of stock changes.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Breeder feed (UUID unresolved)
 - Flow property / unit: Mass / kg as-fed
 - Amount rule: Record purchased and separately produced feed net of stock changes.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_inputs`
@@ -141,12 +146,14 @@ Record purchased and separately produced feed net of stock changes.
 
 Meter drinking and cleaning water by use.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Supplied farm water
 - Flow property / unit: Mass / L
 - Amount rule: Meter drinking and cleaning water by use.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_inputs`
@@ -163,12 +170,14 @@ Meter drinking and cleaning water by use.
 
 Record electricity, heat and fuels by actual carrier.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Energy carriers and utilities
 - Flow property / unit: Mass / MJ
 - Amount rule: Record electricity, heat and fuels by actual carrier.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_inputs`
@@ -197,12 +206,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Reconcile gross laid eggs to collection and loss; internal state, not final product.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Newly laid hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Reconcile gross laid eggs to collection and loss; internal state, not final product.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -219,12 +230,14 @@ Reconcile gross laid eggs to collection and loss; internal state, not final prod
 
 Record only independently sold culls; mortality is waste.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Spent breeder birds (UUID unresolved)
 - Flow property / unit: Mass / kg liveweight
 - Amount rule: Record only independently sold culls; mortality is waste.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_flock`
@@ -241,12 +254,14 @@ Record only independently sold culls; mortality is waste.
 
 Use this conditional product output only when manure is independently transferred for value; exclude the same material from `manure_waste`.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Marketed breeder manure (UUID unresolved)
 - Flow property / unit: Mass / kg wet and dry
 - Amount rule: Record measured sold mass, composition, gate and buyer by flock period.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure`
@@ -265,12 +280,14 @@ Use this conditional product output only when manure is independently transferre
 
 Record one actual manure-management handoff; separately sold manure is a co-product.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Breeder manure and litter (UUID unresolved)
 - Flow property / unit: Mass / kg wet
 - Amount rule: Record one actual manure-management handoff; separately sold manure is a co-product.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure`
@@ -289,13 +306,15 @@ Record one actual manure-management handoff; separately sold manure is a co-prod
 
 Model documented manure CH4 pathway from records.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
 - Binding: Fixed (`fixed`)
 - Amount rule: Model documented manure CH4 pathway from records.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure`
@@ -313,13 +332,15 @@ Model documented manure CH4 pathway from records.
 
 Model documented manure N2O; convert N2O-N to N2O.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
 - Binding: Fixed (`fixed`)
 - Amount rule: Model documented manure N2O; convert N2O-N to N2O.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure`
@@ -337,13 +358,15 @@ Model documented manure N2O; convert N2O-N to N2O.
 
 Record only a documented NH3 volatilization pathway.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Ammonia to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg NH3
 - Binding: Fixed (`fixed`)
 - Amount rule: Record only a documented NH3 volatilization pathway.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure`
@@ -367,12 +390,14 @@ Record only a documented NH3 volatilization pathway.
 
 Link to the same flock-period laid-egg output.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Newly laid hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Link to the same flock-period laid-egg output.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -401,12 +426,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Weigh batches before conditioning.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Collected raw hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Weigh batches before conditioning.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -425,12 +452,14 @@ Weigh batches before conditioning.
 
 Record broken/uncollected eggs and destination.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Collection egg loss (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record broken/uncollected eggs and destination.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -457,12 +486,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Link one incoming batch to collection; do not assume washing.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Collected raw hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Link one incoming batch to collection; do not assume washing.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -491,12 +522,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Record shell-intact prepared mass and hand off to grading.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Prepared hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Record shell-intact prepared mass and hand off to grading.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -515,12 +548,14 @@ Record shell-intact prepared mass and hand off to grading.
 
 Record damaged/contaminated mass and disposal.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Conditioning egg rejects (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record damaged/contaminated mass and disposal.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_eggs`
@@ -547,12 +582,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Link to first conditioning; candling only if actually performed.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Prepared hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Link to first conditioning; candling only if actually performed.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
@@ -581,12 +618,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Weigh accepted eggs; designation alone does not prove fertility.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Selected hatching hen eggs (UUID unresolved internal state)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Weigh accepted eggs; designation alone does not prove fertility.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
@@ -603,12 +642,14 @@ Weigh accepted eggs; designation alone does not prove fertility.
 
 Include only if actually sold as a separate co-product.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Fresh non-hatching hen eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Include only if actually sold as a separate co-product.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
@@ -627,12 +668,14 @@ Include only if actually sold as a separate co-product.
 
 Record unsafe/broken eggs and destination; not a co-product.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Rejected eggs (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record unsafe/broken eggs and destination; not a co-product.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
@@ -659,12 +702,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Record lot, time and temperature; omit node when no storage intervention occurs.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Selected hatching eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Record lot, time and temperature; omit node when no storage intervention occurs.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_storage`
@@ -681,12 +726,14 @@ Record lot, time and temperature; omit node when no storage intervention occurs.
 
 Measure actual cooling/ventilation use by lot or shared room.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Energy carriers and utilities
 - Flow property / unit: Mass / MJ
 - Amount rule: Measure actual cooling/ventilation use by lot or shared room.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_storage`
@@ -715,12 +762,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Record outgoing mass and full storage history.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Farm-stored hatching eggs (UUID unresolved)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Record outgoing mass and full storage history.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_storage`
@@ -739,12 +788,14 @@ Record outgoing mass and full storage history.
 
 Reconcile accepted, rejected and inventory change.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Storage egg rejects (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Reconcile accepted, rejected and inventory change.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_storage`
@@ -771,12 +822,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Take one direct-from-grade or stored route, never both.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Selected hatching eggs (UUID unresolved internal state)
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Take one direct-from-grade or stored route, never both.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover`
@@ -793,12 +846,14 @@ Take one direct-from-grade or stored route, never both.
 
 Record new and reusable materials, owner and evidenced use cycles.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Protective trays/packaging by actual material
 - Flow property / unit: Mass / kg
 - Amount rule: Record new and reusable materials, owner and evidenced use cycles.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_packaging`
@@ -827,15 +882,19 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 Weigh final accepted shell-on mass at actual breeder-farm handover.
 
+Raw reference-output records: Weigh final accepted shell-on mass at actual breeder-farm handover. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Hen eggs in shell, fresh, for hatching `e5791c05-2fe6-4cb4-aec8-30adb5e85b0b`
-- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg shell-on
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Weigh final accepted shell-on mass at actual breeder-farm handover.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Reference normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -853,12 +912,14 @@ Weigh final accepted shell-on mass at actual breeder-farm handover.
 
 Record breakage and non-reused package discard by actual destination.
 
+Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate
+
 - Selected flow: Breakage and discarded packaging by material (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record breakage and non-reused package discard by actual destination.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable shell-on hatching eggs at breeder-farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_packaging`
@@ -890,14 +951,14 @@ No prescribed flow in this coordinate; add only with observed and verified ident
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_flock` | `breeder_flock` | replacement, culls, age, route | flock register | cohort, species, age, head, mass, entry/exit, mortality, mating, housing/collection route | register and calibrated sample weighing | head; kg | event/monthly | full productive/replacement phases | all houses | cohort-period ledger | invoice, scale and mortality logs |
-| `cp_inputs` | `breeder_flock` | feed, water, energy | invoices, stock, meters | supplier, feed, dry matter, stock, water, carrier, meter, period, shared use | invoice, meter and stock reconciliation | kg; L; kWh; MJ | monthly/close | full flock period | all houses | net measured use by cohort | invoice, meter check, stock sheet |
-| `cp_eggs` | `breeder_flock`; `egg_collection`; `first_conditioning` | laid, collected, prepared, loss | batch register | collection time, count, sampled mass, shell condition, accepted/rejected mass, destination | count and calibrated weighing | count; kg | each batch | full period | all lines | state mass balance by batch | batch sheet, calibration |
-| `cp_grading` | `hatching_grade` | hatching, table, reject grades | grade log | grade rules, candling if done, count, kg, tests, destination | grading and weighing | count; kg | each batch | full period | all grading lines | mutually exclusive destinations | grade/test sheet |
-| `cp_manure` | `breeder_flock` | manure and air pathways | management log | bedding, moisture, nitrogen, pathway, dates, factors | observation, assay, method worksheet | kg; kg N | monthly/event | flock/manure period | all pathways | one ledger per material batch | log, lab and factor citation |
-| `cp_storage` | `egg_storage` | stored eggs and energy | lot/room log | kg in/out, timestamps, temperature, humidity, meter, rejects | room logger, meter, weighing | kg; h; C; kWh | each lot/daily | actual farm storage | all rooms | batch inventory and shared energy | logger, meter, scale |
-| `cp_packaging` | `egg_presentation` | trays and discard | package/reuse log | material, new/reused item, mass, owner, cycles, disposal | count/sample weighing | item; kg | each dispatch | full period | farm packing points | net material by evidenced reuse | purchase/return log |
-| `cp_handover` | `egg_presentation` | final reference | dispatch register | lot, count, kg, grade, gate, buyer, collection/storage history, tests | calibrated dispatch weighing | kg; count | each handover | full period | farm gates | accepted kg once | dispatch and calibration |
+| `cp_flock` | `breeder_flock` | replacement, culls, age, route | flock register | cohort, species, age, head, mass, entry/exit, mortality, mating, housing/collection route | register and calibrated sample weighing; Raw aggregation requirements: cohort-period ledger. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | event/monthly | full productive/replacement phases | all houses | per reference flow | invoice, scale and mortality logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_inputs` | `breeder_flock` | feed, water, energy | invoices, stock, meters | supplier, feed, dry matter, stock, water, carrier, meter, period, shared use | invoice, meter and stock reconciliation; Raw aggregation requirements: net measured use by cohort. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; L; kWh; MJ | monthly/close | full flock period | all houses | per reference flow | invoice, meter check, stock sheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_eggs` | `breeder_flock`; `egg_collection`; `first_conditioning` | laid, collected, prepared, loss | batch register | collection time, count, sampled mass, shell condition, accepted/rejected mass, destination | count and calibrated weighing; Raw aggregation requirements: state mass balance by batch. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | count; kg | each batch | full period | all lines | per reference flow | batch sheet, calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_grading` | `hatching_grade` | hatching, table, reject grades | grade log | grade rules, candling if done, count, kg, tests, destination | grading and weighing; Raw aggregation requirements: mutually exclusive destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | count; kg | each batch | full period | all grading lines | per reference flow | grade/test sheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `breeder_flock` | manure and air pathways | management log | bedding, moisture, nitrogen, pathway, dates, factors | observation, assay, method worksheet; Raw aggregation requirements: one ledger per material batch. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kg N | monthly/event | flock/manure period | all pathways | per reference flow | log, lab and factor citation; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_storage` | `egg_storage` | stored eggs and energy | lot/room log | kg in/out, timestamps, temperature, humidity, meter, rejects | room logger, meter, weighing; Raw aggregation requirements: batch inventory and shared energy. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; h; C; kWh | each lot/daily | actual farm storage | all rooms | per reference flow | logger, meter, scale; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_packaging` | `egg_presentation` | trays and discard | package/reuse log | material, new/reused item, mass, owner, cycles, disposal | count/sample weighing; Raw aggregation requirements: net material by evidenced reuse. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | item; kg | each dispatch | full period | farm packing points | per reference flow | purchase/return log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_handover` | `egg_presentation` | final reference | dispatch register | lot, count, kg, grade, gate, buyer, collection/storage history, tests | calibrated dispatch weighing; Raw aggregation requirements: accepted kg once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count | each handover | full period | farm gates | per reference flow | dispatch and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

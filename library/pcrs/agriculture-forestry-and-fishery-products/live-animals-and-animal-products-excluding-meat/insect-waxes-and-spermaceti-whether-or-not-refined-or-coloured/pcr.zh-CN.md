@@ -52,6 +52,8 @@ sync_with: pcr.en-US.md
 | m_state | 各处理状态 | Mass | kg | 实测分离及可选处理前后质量；单独记录添加着色剂与移除材料，不套用通用收率。 |
 | m_balance | 每一按来源限定的批次 | Mass | kg | 核对来源材料、添加物、蜡等级、残余和库存变化。 |
 | m_period | 来源与共用服务 | 时间 | 期间 | 按实际期间归集来源、采集和共用资产事件，不重复年化。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -99,14 +101,18 @@ sync_with: pcr.en-US.md
 
 仅实际蜂巢、封盖蜡或其他有记录的昆虫分泌物，不包括鲸蜡。
 
+分母与范围要求：每千克采集材料
+
+原始数量及计算要求：计量实际昆虫来源含蜡材料，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：昆虫来源含蜡材料（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际昆虫来源含蜡材料，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克采集材料
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -121,14 +127,18 @@ sync_with: pcr.en-US.md
 
 仅使用有合法来源链、上游负担且属于可交易 Product 的既存原料，不模拟新的捕鲸。依法属于 Waste 的材料使用另一张卡，同一材料不得两卡并计。
 
+分母与范围要求：每千克采集材料
+
+原始数量及计算要求：计量实际合法取得且可追溯的既存含鲸蜡材料，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：合法来源鲸蜡原料（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际合法取得且可追溯的既存含鲸蜡材料，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克采集材料
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -145,14 +155,18 @@ sync_with: pcr.en-US.md
 
 仅在现有材料依法属于 Waste 且允许回收时使用；同一材料不得再计 Product 投入。
 
+分母与范围要求：每千克采集材料
+
+原始数量及计算要求：称量合法废物投入，保留法律状态、上游负担和终端处理备选记录。 原始采集分母类型：process_output。
+
 - 选定流：合法来源且可回收的含鲸蜡废物（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：称量合法废物投入，保留法律状态、上游负担和终端处理备选记录。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克采集材料
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：条件性废物投入台账 QA，不是回收收率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -173,14 +187,18 @@ sync_with: pcr.en-US.md
 
 按来源记录一次采集并交接至初次分离。
 
+分母与范围要求：每千克采集材料
+
+原始数量及计算要求：计量实际采集后的含蜡材料，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源明确的采集含蜡材料（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际采集后的含蜡材料，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克采集材料
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_collect`
 - 数量范围：实测归一化恒等关系
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -197,14 +215,18 @@ sync_with: pcr.en-US.md
 
 不可售杂质按实际废物去向记录，不虚构蜂蜜或鲸类产出。
 
+分母与范围要求：每千克采集材料
+
+原始数量及计算要求：计量实际采集废弃物，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：按来源识别的不可售采集残渣（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际采集废弃物，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克采集材料
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residue`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -227,14 +249,18 @@ sync_with: pcr.en-US.md
 
 关联采集记录，不重复计入蜂群或存量原料负担。
 
+分母与范围要求：每千克初制蜡
+
+原始数量及计算要求：计量实际进入初次分离的采集材料，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源明确的采集含蜡材料（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际进入初次分离的采集材料，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克初制蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_condition`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -249,14 +275,18 @@ sync_with: pcr.en-US.md
 
 计量熔融或分离实际使用的能源，不设默认热量。
 
+分母与范围要求：每千克初制蜡
+
+原始数量及计算要求：计量实际初制能源，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：初次分离实际能源载体（UUID 未解析）
 - 流属性/单位：Energy / MJ
-- 数量规则：计量实际初制能源，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克初制蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_condition`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -271,14 +301,18 @@ sync_with: pcr.en-US.md
 
 仅在现场实际洗涤或水基清洁时，按 Product 投入记录供水；干法分离没有此投入。声明水源，并按实际去向和受纳介质核对废水或蒸发。
 
+分母与范围要求：每千克初制蜡
+
+原始数量及计算要求：按水源和批次计量跨初制边界的供水，不推断默认洗涤率。 原始采集分母类型：process_output。
+
 - 选定流：初次蜡清洁实际供应的水（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按水源和批次计量跨初制边界的供水，不推断默认洗涤率。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克初制蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_condition`
 - 数量范围：条件性用水台账 QA，不是洗涤配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -301,14 +335,18 @@ sync_with: pcr.en-US.md
 
 初次分离清洁后、可选精制着色前称重。
 
+分母与范围要求：每千克初制蜡
+
+原始数量及计算要求：计量实际初制蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源明确的初制蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际初制蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克初制蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_condition`
 - 数量范围：实测归一化恒等关系
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -325,14 +363,18 @@ sync_with: pcr.en-US.md
 
 滤渣等不可售残余按实际处理去向记录。
 
+分母与范围要求：每千克初制蜡
+
+原始数量及计算要求：计量实际分离残渣，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：不可售初次分离残渣（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际分离残渣，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克初制蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residue`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -355,14 +397,18 @@ sync_with: pcr.en-US.md
 
 仅精制或着色批次进入；原蜡批次绕过此节点。
 
+分母与范围要求：每千克处理后蜡
+
+原始数量及计算要求：计量实际进入可选处理的蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源明确的初制蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际进入可选处理的蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克处理后蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_treat`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -377,14 +423,18 @@ sync_with: pcr.en-US.md
 
 计量实际材料和留存在蜡中的着色剂；未处理批次不计入。
 
+分母与范围要求：每千克处理后蜡
+
+原始数量及计算要求：计量实际实际精制助剂或着色剂，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：具体材料的精制助剂或蜡着色剂（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际实际精制助剂或着色剂，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克处理后蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_treat`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -407,14 +457,18 @@ sync_with: pcr.en-US.md
 
 按实测质量及纯度、颜色状态交接处理后蜡。
 
+分母与范围要求：每千克处理后蜡
+
+原始数量及计算要求：计量实际精制或着色蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源明确的精制或着色蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际精制或着色蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克处理后蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_treat`
 - 数量范围：实测归一化恒等关系
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -431,14 +485,18 @@ sync_with: pcr.en-US.md
 
 废助剂和不可售残余按实际废物去向记录。
 
+分母与范围要求：每千克处理后蜡
+
+原始数量及计算要求：计量实际处理残渣，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：不可售精制或着色残渣（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际处理残渣，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克处理后蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residue`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -461,14 +519,18 @@ sync_with: pcr.en-US.md
 
 同一批次仅从初制蜡或处理后蜡进入一次，不得双计。
 
+分母与范围要求：每千克可售分级蜡
+
+原始数量及计算要求：计量实际进入分级的蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源和状态明确的待分级蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际进入分级的蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克可售分级蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -491,14 +553,18 @@ sync_with: pcr.en-US.md
 
 合格及独立销售的降级品各有唯一去向。
 
+分母与范围要求：每千克可售分级蜡
+
+原始数量及计算要求：计量实际合格或降级可售蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源、状态和等级明确的可售蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际合格或降级可售蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克可售分级蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：实测归一化恒等关系
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -515,14 +581,18 @@ sync_with: pcr.en-US.md
 
 不可售蜡按废物处理，不作为第二个产品。
 
+分母与范围要求：每千克可售分级蜡
+
+原始数量及计算要求：计量实际分级废蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：不可售废蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际分级废蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克可售分级蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residue`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -545,14 +615,18 @@ sync_with: pcr.en-US.md
 
 从分级接收一批来源、状态和等级确定的蜡。
 
+分母与范围要求：每千克净销售蜡
+
+原始数量及计算要求：计量实际包装前可售蜡，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：来源、状态和等级明确的可售蜡（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际包装前可售蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克净销售蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -567,14 +641,18 @@ sync_with: pcr.en-US.md
 
 记录实际消耗的包装或计量后的复用服务，不计后续运输。
 
+分母与范围要求：每千克净销售蜡
+
+原始数量及计算要求：计量实际保护性包装，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
+
 - 选定流：实际蜡包装或复用服务（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际保护性包装，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每千克净销售蜡
-- 基准类型：过程产出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：暂定非负台账 QA，不是收率或配方
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -597,14 +675,18 @@ sync_with: pcr.en-US.md
 
 按实际来源、销售状态和交付口实例化一个参考角色；不假定宽泛固定 UUID。
 
+参考产出的原始记录：计量实际实际交付口的净蜡，并关联批次、来源、状态和期间。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流： 来源、状态和 gate 明确的昆虫蜡或鲸蜡
 - 流属性/单位：Mass / kg
-- 数量规则：计量实际实际交付口的净蜡，并关联批次、来源、状态和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 千克净参考蜡
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：实测归一化恒等关系
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -634,12 +716,12 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_collect | collect | 来源与采集材料 | 来源台账 | 来源/物种、合法链、路线、材料质量、真实产出、事件、期间 | 来源单与校准秤 | kg;period | 每批 | 来源和采集期间 | 供应商与采集点 | 路线互斥，每批一次 | 单据、校准、合法链 |
-| cp_condition | condition | 材料、能源、条件性洗涤水和初制蜡 | 分离台账 | 批次、进出质量、方法、能源载体/数量、水源/投入、废水或蒸发去向、纯度、水分 | 秤、仪表与检测 | kg;MJ | 每批 | 初制期间 | 设施 | 按来源核对前后及用水平衡 | 秤、仪表、检测 |
-| cp_treat | treat | 可选精制或着色 | 处理台账 | 批次、进出质量、添加材料、颜色、纯度、废弃物 | 批次表、秤、检测 | kg | 每处理批 | 处理期间 | 设施 | 一次；原蜡绕过 | 批次表、检测 |
-| cp_grade | grade | 合格、降级、废弃 | 分级台账 | 来源、状态、等级、质量、去向 | 分级单与秤 | kg | 每批 | 分级期间 | 设施 | 等级互斥 | 分级与废弃单 |
-| cp_handover | handover | 蜡、包装、gate | 出货台账 | 来源、状态、着色剂、纯度、水分、毛重、皮重、净重、包装复用、gate | 出货单与秤 | kg | 每售出批 | 交付期间 | 设施 | 每批一次净重销售 | 单据与校准 |
-| cp_residue | collect;condition;treat;grade | 废物 | 处理台账 | 批次、类型、质量、去向、期间 | 秤与转移单 | kg | 每事件 | 相应期间 | 来源点 | 每材料/去向一次 | 转移单 |
+| cp_collect | collect | 来源与采集材料 | 来源台账 | 来源/物种、合法链、路线、材料质量、真实产出、事件、期间 | 来源单与校准秤；原始汇总要求：路线互斥，每批一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;period | 每批 | 来源和采集期间 | 供应商与采集点 | 每参考流 | 单据、校准、合法链；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_condition | condition | 材料、能源、条件性洗涤水和初制蜡 | 分离台账 | 批次、进出质量、方法、能源载体/数量、水源/投入、废水或蒸发去向、纯度、水分 | 秤、仪表与检测；原始汇总要求：按来源核对前后及用水平衡。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;MJ | 每批 | 初制期间 | 设施 | 每参考流 | 秤、仪表、检测；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_treat | treat | 可选精制或着色 | 处理台账 | 批次、进出质量、添加材料、颜色、纯度、废弃物 | 批次表、秤、检测；原始汇总要求：一次；原蜡绕过。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每处理批 | 处理期间 | 设施 | 每参考流 | 批次表、检测；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_grade | grade | 合格、降级、废弃 | 分级台账 | 来源、状态、等级、质量、去向 | 分级单与秤；原始汇总要求：等级互斥。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每批 | 分级期间 | 设施 | 每参考流 | 分级与废弃单；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_handover | handover | 蜡、包装、gate | 出货台账 | 来源、状态、着色剂、纯度、水分、毛重、皮重、净重、包装复用、gate | 出货单与秤；原始汇总要求：每批一次净重销售。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每售出批 | 交付期间 | 设施 | 每参考流 | 单据与校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_residue | collect;condition;treat;grade | 废物 | 处理台账 | 批次、类型、质量、去向、期间 | 秤与转移单；原始汇总要求：每材料/去向一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每事件 | 相应期间 | 来源点 | 每参考流 | 转移单；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

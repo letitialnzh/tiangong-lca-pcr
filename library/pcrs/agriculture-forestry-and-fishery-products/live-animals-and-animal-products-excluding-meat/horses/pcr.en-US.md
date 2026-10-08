@@ -52,6 +52,8 @@ The two confirmed platform candidates terminate at slaughter/plant rather than t
 | `herd_count` | Breeder and rearing stock | Count | horses | Reconcile opening, purchased, foaled, transferred, sold, dead and closing animals by cohort and period. |
 | `service_period` | Breeders and shared assets | Time | days or seasons | Index breeding, foaling and rearing periods, mare/stallion replacement and shared-service time before assigning burdens. |
 | `manure_mass` | Manure product/waste | Mass | kg | Keep exported usable manure, treatment waste and grazing deposits as separate destinations; record moisture or as-received basis. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -97,14 +99,18 @@ Gathering is a separate responsibility after biological production: it identifie
 
 Record purchased breeding horses at measured live mass and inherited upstream burden; opening owned stock is a declared starting condition.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured received live mass by age and sex Original collection denominator kind: process_output.
+
 - Selected flow: Live breeding horses (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured received live mass by age and sex
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional Breeding mares and stallions entering herd completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -119,14 +125,18 @@ Record purchased breeding horses at measured live mass and inherited upstream bu
 
 Record delivered feed, own forage and pasture intake separately, without counting grazed herbage as purchased feed.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: feed delivered less stock change and recorded losses Original collection denominator kind: process_output.
+
 - Selected flow: Equine feed and purchased forage (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: feed delivered less stock change and recorded losses
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_feed`
 - Range: Provisional Breeder forage and concentrate feed completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -141,14 +151,18 @@ Record delivered feed, own forage and pasture intake separately, without countin
 
 Collect drinking and stable-cleaning water by use; pasture rainfall is not a purchased Product input.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: metered or recorded supplied water Original collection denominator kind: process_output.
+
 - Selected flow: Supplied herd water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: metered or recorded supplied water
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional Supplied water for breeding herd completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -163,14 +177,18 @@ Collect drinking and stable-cleaning water by use; pasture rainfall is not a pur
 
 Record medicines and care supplies entering the breeder node from treatment logs; external professional service is documented by provider and period.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured product quantities by medicine and care material Original collection denominator kind: process_output.
+
 - Selected flow: Equine veterinary supplies (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured product quantities by medicine and care material
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_health`
 - Range: Provisional Veterinary medicines and care supplies for breeders completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -185,14 +203,18 @@ Record medicines and care supplies entering the breeder node from treatment logs
 
 Record actual electricity, heat and fuels by carrier and period where breeder housing is operated.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: metered carrier energy Original collection denominator kind: process_output.
+
 - Selected flow: Housing energy carrier (UUID unresolved)
 - Flow property / unit: Energy / kWh or MJ
-- Amount rule: metered carrier energy
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional Energy for breeder housing completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -215,14 +237,18 @@ Record actual electricity, heat and fuels by carrier and period where breeder ho
 
 Weigh and count living foals at the breeder handover; distinguish sales from internal transfer to rearing.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured accepted foal live mass Original collection denominator kind: process_output.
+
 - Selected flow: Live horse foals, breeder gate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured accepted foal live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Output mass normalization
   - Range role: QA guardrail (`qa_guardrail`)
@@ -238,14 +264,18 @@ Weigh and count living foals at the breeder handover; distinguish sales from int
 
 Only living culls actually sold leave as co-product; dead animals and slaughter outputs are excluded.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured live mass of sold breeding culls Original collection denominator kind: process_output.
+
 - Selected flow: Live horse culls at breeder gate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured live mass of sold breeding culls
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional Live breeding horses independently sold completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -260,14 +290,18 @@ Only living culls actually sold leave as co-product; dead animals and slaughter 
 
 Record only weighed manure with an evidenced recipient and use; grazing deposits remain in the actual land pathway.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: weighed manure product transferred Original collection denominator kind: process_output.
+
 - Selected flow: Exported horse manure (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: weighed manure product transferred
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Breeder manure exported as usable product completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -284,14 +318,18 @@ Record only weighed manure with an evidenced recipient and use; grazing deposits
 
 Classify dead horses and manure sent to treatment by mass and destination, separately from usable manure product.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured losses by destination Original collection denominator kind: process_output.
+
 - Selected flow: Breeder losses to treatment (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured losses by destination
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Breeder mortalities and discarded manure completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -308,14 +346,18 @@ Classify dead horses and manure sent to treatment by mass and destination, separ
 
 Calculate horse enteric fermentation separately from manure CH4 using recorded horse-days, class and feed regime with the chosen IPCC method; the UUID only identifies methane to air.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: horse enteric CH4 from class-specific population and period under selected IPCC method Original collection denominator kind: process_output.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: horse enteric CH4 from class-specific population and period under selected IPCC method
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Sources: `ipcc-livestock-2019`
@@ -332,14 +374,18 @@ Calculate horse enteric fermentation separately from manure CH4 using recorded h
 
 Calculate only for documented manure systems and period-specific IPCC activity/factor selection.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: pathway-specific CH4 calculation from collected manure activity Original collection denominator kind: process_output.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: pathway-specific CH4 calculation from collected manure activity
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -356,14 +402,18 @@ Calculate only for documented manure systems and period-specific IPCC activity/f
 
 Use actual managed-manure pathway and direct or indirect N2O method inputs; avoid double-counting pasture soil emissions.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: pathway-specific N2O calculation from collected manure activity Original collection denominator kind: process_output.
+
 - Selected flow: Nitrous oxide, to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: pathway-specific N2O calculation from collected manure activity
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -380,15 +430,19 @@ Use actual managed-manure pathway and direct or indirect N2O method inputs; avoi
 
 Report measured NH3 or a separately reviewed pathway estimate; the air-flow UUID is not an emission factor.
 
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured NH3 release or reviewed pathway calculation Original collection denominator kind: process_output.
+
 - Selected flow: Ammonia, to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: measured NH3 release or reviewed pathway calculation
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live foals leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Ammonia from breeder manure to air completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -409,14 +463,18 @@ Report measured NH3 or a separately reviewed pathway estimate; the air-flow UUID
 
 Use internal breeder transfer or a purchased young-horse upstream dataset exactly once, with age, count and mass.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: measured received live mass Original collection denominator kind: process_output.
+
 - Selected flow: Live young horses entering rearing (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured received live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Provisional Foals or young horses received for rearing completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -431,14 +489,18 @@ Use internal breeder transfer or a purchased young-horse upstream dataset exactl
 
 Record purchased and farm-produced feed and actual grazed forage, separating pasture and housed-management demands.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: delivered feed net of stock change and waste Original collection denominator kind: process_output.
+
 - Selected flow: Horse feed and purchased forage (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: delivered feed net of stock change and waste
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_feed`
 - Range: Provisional Rearing forage and concentrate feed completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -453,14 +515,18 @@ Record purchased and farm-produced feed and actual grazed forage, separating pas
 
 Record drinking and cleaning supply by use, meter and source; do not assign a single conditional flow identities group before use is known.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: measured supplied water Original collection denominator kind: process_output.
+
 - Selected flow: Supplied rearing water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured supplied water
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional Supplied water for rearing horses completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -475,14 +541,18 @@ Record drinking and cleaning supply by use, meter and source; do not assign a si
 
 Record carrier-specific lighting, heating, ventilation and care energy where used; pasture route may have different use.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: metered or invoiced energy by carrier Original collection denominator kind: process_output.
+
 - Selected flow: Rearing energy carrier (UUID unresolved)
 - Flow property / unit: Energy / kWh or MJ
-- Amount rule: metered or invoiced energy by carrier
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional Energy for rearing and stabling completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -497,14 +567,18 @@ Record carrier-specific lighting, heating, ventilation and care energy where use
 
 Include actual preventive or therapeutic supplies by horse cohort and period; do not infer a universal treatment schedule.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: measured medicines and care materials by cohort Original collection denominator kind: process_output.
+
 - Selected flow: Equine veterinary supplies (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured medicines and care materials by cohort
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_health`
 - Range: Provisional Veterinary medicines and care supplies for growing horses completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -527,14 +601,18 @@ Include actual preventive or therapeutic supplies by horse cohort and period; do
 
 Measure living adult or older young horses before independent handover, with age/purpose and count.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: measured live mass entering handover Original collection denominator kind: process_output.
+
 - Selected flow: Live horses at rearing exit (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured live mass entering handover
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Output mass normalization
   - Range role: QA guardrail (`qa_guardrail`)
@@ -550,14 +628,18 @@ Measure living adult or older young horses before independent handover, with age
 
 Record independently transferred usable manure by weighed mass, buyer and destination.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: weighed saleable manure removed Original collection denominator kind: process_output.
+
 - Selected flow: Exported horse manure (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: weighed saleable manure removed
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Usable rearing manure exported completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -574,14 +656,18 @@ Record independently transferred usable manure by weighed mass, buyer and destin
 
 Record deaths and discarded manure by date, mass and destination; grazing deposits are not exported waste.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: measured losses and manure removed Original collection denominator kind: process_output.
+
 - Selected flow: Rearing losses to treatment (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured losses and manure removed
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Rearing deaths and manure for treatment completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -598,14 +684,18 @@ Record deaths and discarded manure by date, mass and destination; grazing deposi
 
 Calculate horse enteric fermentation separately from manure CH4 using recorded horse-days, class and feed regime with the chosen IPCC method; the UUID only identifies methane to air.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: horse enteric CH4 from class-specific population and period under selected IPCC method Original collection denominator kind: process_output.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: horse enteric CH4 from class-specific population and period under selected IPCC method
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Sources: `ipcc-livestock-2019`
@@ -622,14 +712,18 @@ Calculate horse enteric fermentation separately from manure CH4 using recorded h
 
 Calculate only for the actual managed-manure pathway and collected IPCC activity inputs.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: pathway-specific CH4 calculation from rearing manure records Original collection denominator kind: process_output.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: pathway-specific CH4 calculation from rearing manure records
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -646,14 +740,18 @@ Calculate only for the actual managed-manure pathway and collected IPCC activity
 
 Separate direct and indirect managed-manure N2O from grazed-soil attribution using documented paths.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: pathway-specific N2O calculation from rearing manure records Original collection denominator kind: process_output.
+
 - Selected flow: Nitrous oxide, to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: pathway-specific N2O calculation from rearing manure records
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -670,15 +768,19 @@ Separate direct and indirect managed-manure N2O from grazed-soil attribution usi
 
 Include measured NH3 or a separately reviewed manure-pathway method, not a borrowed CH4/N2O factor.
 
+Denominator and scope requirements：per kg live horses leaving rearing
+
+Raw quantity and calculation requirements: measured NH3 or separately reviewed calculation Original collection denominator kind: process_output.
+
 - Selected flow: Ammonia, to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: measured NH3 or separately reviewed calculation
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live horses leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Ammonia from rearing manure to air completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -699,12 +801,16 @@ Include measured NH3 or a separately reviewed manure-pathway method, not a borro
 
 Input is either breeder-gate foals or reared horses for a final lot, with prior burden transferred once.
 
+Denominator and scope requirements：per kg accepted live horse reference
+
+Raw quantity and calculation requirements: reconciled count times measured mean live mass Original collection denominator kind: reference_flow.
+
 - Selected flow: Live horses entering handling (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: reconciled count times measured mean live mass
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live horse reference
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
@@ -729,14 +835,18 @@ Input is either breeder-gate foals or reared horses for a final lot, with prior 
 
 Count and weigh accepted live horses at the declared producing breeder or rearing-farm gate.
 
+Raw reference-output records: measured accepted live mass Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Live horses at producer handover
 - Flow property / unit: Mass / kg
-- Amount rule: measured accepted live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live horse reference
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd`
 - Range: Output mass normalization
   - Range role: QA guardrail (`qa_guardrail`)
@@ -754,14 +864,18 @@ Count and weigh accepted live horses at the declared producing breeder or rearin
 
 Record rejected or dead horses by mass/count and actual destination; do not call slaughter input a producer product.
 
+Denominator and scope requirements：per kg accepted live horse reference
+
+Raw quantity and calculation requirements: measured unaccepted horse mass by destination Original collection denominator kind: reference_flow.
+
 - Selected flow: Unaccepted horses for treatment (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured unaccepted horse mass by destination
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live horse reference
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional Horses dying or rejected during handover completeness screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -789,11 +903,11 @@ Record rejected or dead horses by mass/count and actual destination; do not call
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd` | `breeder`, `rearing`, `handover` | Horse stock and live mass | herd and buyer logs | opening/received/foaled/sold/dead counts; horse-days by class; breed, sex, age, purpose; measured weights; gate; date | count each movement and weigh lot or age-class sample | horses; horse-days; kg | each movement and period | complete breeding/rearing cohort | each producer gate | stock balance, class-weighted live mass and class-specific horse-days | animal register, scales, buyer receipt |
-| `cp_feed` | `breeder`, `rearing` | Feed and pasture | feed invoices and grazing log | deliveries; opening/closing feed stock; own forage; pasture area/days; horse-days | weighed receipts, feed ledger, grazing records | kg; ha-days; horse-days | each receipt and period | full herd season/cohort | all houses and paddocks | delivery less stock change and waste, by herd | invoices, scale and field log |
-| `cp_utilities` | `breeder`, `rearing` | Water, electricity and fuels | meter and fuel log | source, use, meter start/end, carrier and asset consumer | meter read or invoice with causal shared-use key | kg water; kWh; MJ | meter interval | all operated periods | all water and energy connections | difference readings, unit conversion, one service allocation | meter images, receipts, asset log |
-| `cp_health` | `breeder`, `rearing` | Medicines and veterinary care | treatment and purchase log | medicine/material, dose/mass, horse cohort, service provider, date | prescription and inventory reconciliation | kg; visits | each event | full horse cohort | all treated horses | product totals by cohort; disclose external service | veterinary record, invoice |
-| `cp_manure` | `breeder`, `rearing`, `handover` | Manure, deaths and emissions | manure, mortality and monitoring log | manure management, grazing deposition, exported and discarded mass, volatile solids, direct gas monitoring, dead count/mass, destination | weigh/sample, record route and observed gas when claimed | kg; horse-days | each event/period | all operated herd periods | stable, paddock, treatment | reconcile destinations, select pathway-specific method once | manure analysis, field and disposal record |
+| `cp_herd` | `breeder`, `rearing`, `handover` | Horse stock and live mass | herd and buyer logs | opening/received/foaled/sold/dead counts; horse-days by class; breed, sex, age, purpose; measured weights; gate; date | count each movement and weigh lot or age-class sample; Raw aggregation requirements: stock balance, class-weighted live mass and class-specific horse-days. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | horses; horse-days; kg | each movement and period | complete breeding/rearing cohort | each producer gate | per reference flow | animal register, scales, buyer receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed` | `breeder`, `rearing` | Feed and pasture | feed invoices and grazing log | deliveries; opening/closing feed stock; own forage; pasture area/days; horse-days | weighed receipts, feed ledger, grazing records; Raw aggregation requirements: delivery less stock change and waste, by herd. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; ha-days; horse-days | each receipt and period | full herd season/cohort | all houses and paddocks | per reference flow | invoices, scale and field log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_utilities` | `breeder`, `rearing` | Water, electricity and fuels | meter and fuel log | source, use, meter start/end, carrier and asset consumer | meter read or invoice with causal shared-use key; Raw aggregation requirements: difference readings, unit conversion, one service allocation. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg water; kWh; MJ | meter interval | all operated periods | all water and energy connections | per reference flow | meter images, receipts, asset log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_health` | `breeder`, `rearing` | Medicines and veterinary care | treatment and purchase log | medicine/material, dose/mass, horse cohort, service provider, date | prescription and inventory reconciliation; Raw aggregation requirements: product totals by cohort; disclose external service. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; visits | each event | full horse cohort | all treated horses | per reference flow | veterinary record, invoice; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `breeder`, `rearing`, `handover` | Manure, deaths and emissions | manure, mortality and monitoring log | manure management, grazing deposition, exported and discarded mass, volatile solids, direct gas monitoring, dead count/mass, destination | weigh/sample, record route and observed gas when claimed; Raw aggregation requirements: reconcile destinations, select pathway-specific method once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; horse-days | each event/period | all operated herd periods | stable, paddock, treatment | per reference flow | manure analysis, field and disposal record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

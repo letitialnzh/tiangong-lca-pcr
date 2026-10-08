@@ -55,6 +55,7 @@ sync_with: pcr.en-US.md
 | `feed_dry_matter` | 放牧采食的灌木和牧草、储存饲料、精料、副产品、补充料和代乳品 | 质量 | kg 干物质和 kg 原物料 | 保留原物料量及实测或供应商提供的干物质比例。无换算证据不得汇总湿基和干基饲料记录。 |
 | `water_separation` | 饮用水和服务用水 | 质量或体积 | kg 或 m3 | 区分供应水、降雨和非管理地表水，并披露计量或估算方法。 |
 | `gas_species_basis` | 甲烷、氧化亚氮和氨 | 质量 | kg CH4、kg N2O 或 kg N2O-N，以及 kg NH3 或 kg NH3-N | 保留指定物质及元素或分子基础；任何换算均须明确且可复现。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 归一化数量 = 可归属数量 × 声明参考数量 / 实测合格参考产出数量。归一化只执行一次，不得再次除以已使用的分母。 |
 
 ## 5. 系统边界
 
@@ -97,12 +98,14 @@ sync_with: pcr.en-US.md
 
 记录从所代表羊群历史之外获得的活山羊。在所代表群组内出生并留用的动物属于内部流，不得再次计为外购投入。
 
+分母与范围要求：每 kg 农场门口活山羊，基于所申报群组周期或报告期
+
 - Selected flow: 活种用或补充山羊（UUID 未解析）
 - Flow property / unit: 质量 / kg 活重；保留头数
 - Amount rule: 根据类别特异的进入体重计算进入活重，并将上游负担分配至实际服务期或所代表产出。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊，基于所申报群组周期或报告期
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_goat_events_weights`
@@ -120,12 +123,14 @@ sync_with: pcr.en-US.md
 
 记录跨越核算边界的每一种受管理日粮来源，包括其生产在范围内的放牧牧草或灌木、储存饲料、精料、副产品、补充料和代乳品。在实际饲料身份已知前，伞状条目保持未绑定。
 
+分母与范围要求：每 kg 农场门口活山羊及所申报羊群期间
+
 - Selected flow: 饲料、牧草、采食灌木和补充料（UUID 未解析）
 - Flow property / unit: 质量 / kg 干物质和 kg 原物料
 - Amount rule: 将原物料记录换算为干物质后，按来源和阶段汇总采食量或供应饲料；仅当拒食物被单独测量并确定路径时方可扣除。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊及所申报羊群期间
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_feed_and_grazing`
@@ -143,12 +148,14 @@ sync_with: pcr.en-US.md
 
 记录跨越农场边界的药品、疫苗、消毒剂、矿物质处理剂和其他保健产品。保留后续精确选流所需的配方和施用基础。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 兽医和山羊保健产品（UUID 未解析）
 - Flow property / unit: 产品特异属性 / 申报单位
 - Amount rule: 按产品、活性成分或配方、动物类别和阶段记录购入或施用量；不得将不同产品合并为一个最终交换。
 - Value mode: 前景记录（`foreground_record`）
 - Specificity: 产品特异（`product_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 采集记录（`collected_record`）
 - Collection protocol: `cp_health_inputs`
@@ -166,12 +173,14 @@ sync_with: pcr.en-US.md
 
 记录供应的饮用、清洗、降温及其他管理用途用水。降雨和非管理地表水单独披露，不自动视为供应的 Product 投入。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 山羊生产供应水
 - Flow property / unit: 质量或体积 / kg 或 m3
 - Amount rule: 按用途和阶段汇总计量或有记录的供应水；无直接测量时披露估算方法。
 - Value mode: 前景记录（`foreground_record`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 采集记录（`collected_record`）
 - Collection protocol: `cp_water_energy`
@@ -189,12 +198,14 @@ sync_with: pcr.en-US.md
 
 记录用于圈舍、照明、泵送、挤奶、纤维采集、饲喂、粪污处理和称量的外购电力、燃料、热力或其他能源载体。由前景记录确定实际载体。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 山羊生产能源载体和公用工程
 - Flow property / unit: 能源或载体特异属性 / MJ、kWh 或载体单位
 - Amount rule: 按用途、仪表、发票或燃料日志分别记录每种载体；保留换算因子，在最终交换选择前不得合并不同载体。
 - Value mode: 前景记录（`foreground_record`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 采集记录（`collected_record`）
 - Collection protocol: `cp_water_energy`
@@ -212,12 +223,14 @@ sync_with: pcr.en-US.md
 
 仅当运输位于所申报前景边界内时，记录饲料、垫料、保健产品、燃料和其他外购材料的货运服务。由独立牲畜服务实施的动物移动，在得到精确核验前保持未绑定。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 入场材料道路货运服务
 - Flow property / unit: 货物运输 / t*km
 - Amount rule: 对纳入前景边界的材料交付，根据运输质量和路线距离计算吨公里。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 路线特异（`route_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 运输服务（`transport_service`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_inbound_transport`
@@ -247,14 +260,18 @@ sync_with: pcr.en-US.md
 
 记录在农场门口移交所有权或控制权之前即时称量的活体动物质量。在宽泛的农场门口山羊 Product 流得到验证前，语义身份保持未绑定。
 
+分母与范围要求：生产农场门口 1 kg 活山羊
+
+参考产出的原始记录：归一化后恰为 1 kg 实测活重；保留归一化前实测批次或个体质量。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
 - Selected flow: 生产农场门口的家养活山羊
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Amount rule: 归一化后恰为 1 kg 实测活重；保留归一化前实测批次或个体质量。
-- Value mode: 固定值（`fixed_value`）
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - Specificity: 产品特异（`product_specific`）
-- Normalization basis: 生产农场门口 1 kg 活山羊
-- Basis kind: 参考流（`reference_flow`）
-- Evidence kind: 采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - Collection protocol: `cp_goat_events_weights`
 - Sources: `fao-leap-small-ruminants-2016`
 - Range: 参考归一化恒等范围
@@ -271,13 +288,15 @@ sync_with: pcr.en-US.md
 
 仅当山羊原奶被有意采集并独立移交时记录。羔羊饮用或废弃的奶不属于此联产品。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 农场门口山羊原奶 `2c001731-6bd5-4e32-b3cf-15f4c67d4038`
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Binding: 固定（`fixed`）
 - Amount rule: 按羊群阶段和报告期记录移交的原奶质量，扣除内部消耗或废弃的奶。
 - Value mode: 前景记录（`foreground_record`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 采集记录（`collected_record`）
 - Collection protocol: `cp_intended_outputs`
@@ -295,12 +314,14 @@ sync_with: pcr.en-US.md
 
 仅当马海毛、山羊绒或其他山羊纤维被有意采集并作为独立产出移交时记录。保留纤维类型、清洁状态、水分基础和交接点，以供后续身份解析。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 农场门口山羊纤维（UUID 未解析）
 - Flow property / unit: 质量 / kg
 - Amount rule: 按类型和状态测量移交纤维；无文件化换算时不得合并含脂、洗净或去粗毛状态。
 - Value mode: 前景记录（`foreground_record`）
 - Specificity: 产品特异（`product_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 采集记录（`collected_record`）
 - Collection protocol: `cp_intended_outputs`
@@ -318,12 +339,14 @@ sync_with: pcr.en-US.md
 
 仅当粪污被有意移交利用且有文件化接收方时，才记录为 Product 产出。场内保留粪污为内部存量；不可用或废弃粪污为 Waste 流。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 外运山羊粪污或粪污源土壤改良剂（UUID 未解析）
 - Flow property / unit: 质量 / kg 鲜物质和 kg 干物质；保留养分含量
 - Amount rule: 记录移交质量、水分或干物质、氮含量、处理状态、接收方和交接；排除内部还田粪污。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 产品特异（`product_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_manure_pathways`
@@ -343,12 +366,14 @@ sync_with: pcr.en-US.md
 
 按质量和目的地记录在参考交接前死亡的山羊及不可用动物材料。有意以活体淘汰畜移交的动物仍为预期 Product 产出，而非废物。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 山羊死亡动物和不可用动物材料（UUID 未解析）
 - Flow property / unit: 质量 / kg
 - Amount rule: 根据实测尸体重量，或头数乘以类别特异实测平均质量计算；记录目的地和处理路线。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_goat_events_weights`
@@ -368,13 +393,15 @@ sync_with: pcr.en-US.md
 
 计算所代表山羊类别、日粮、路线和期间由肠道发酵产生的甲烷。保留 CH4 质量和排放因子层级。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 排放至未指定空气的生物源甲烷 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - Binding: 固定（`fixed`）
 - Amount rule: 根据动物群体和阶段、饲料或能量摄入及文件化 IPCC 或国家特异方法计算；群组计算后归一化。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_emission_drivers`
@@ -392,13 +419,15 @@ sync_with: pcr.en-US.md
 
 计算牧场沉积或在收集、贮存、处理和利用路径中管理的粪污所产生的甲烷。该量须与肠道甲烷分开。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 排放至未指定空气的生物源甲烷 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - Binding: 固定（`fixed`）
 - Amount rule: 按动物类别、挥发性固体产量、路径份额、气候、贮存时长、甲烷转化因子及存在时的回收计算。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_manure_pathways`
@@ -416,13 +445,15 @@ sync_with: pcr.en-US.md
 
 计算受管理粪污和沉积排泄物产生的 N2O，保留直接与间接路径及 N2O 或 N2O-N 基础。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 排放至未指定空气的氧化亚氮 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O
 - Binding: 固定（`fixed`）
 - Amount rule: 按动物类别和阶段计算氮排泄量，将其分配至粪污路径，应用文件化直接和间接因子，并在需要时将 N2O-N 换算为 N2O。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_manure_pathways`
@@ -440,13 +471,15 @@ sync_with: pcr.en-US.md
 
 计算所纳入前景边界的圈舍、放牧沉积、收集、贮存、处理和施用路径产生的氨挥发。
 
+分母与范围要求：每 kg 农场门口活山羊
+
 - Selected flow: 排放至未指定空气的氨 `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg NH3
 - Binding: 固定（`fixed`）
 - Amount rule: 计算进入各路径的氮，应用文件化 NH3-N 挥发因子，并在需要时将 NH3-N 换算为 NH3；防止与粪污外运氮重叠。
 - Value mode: 计算值（`calculated_value`）
 - Specificity: 场址特异（`site_specific`）
-- Normalization basis: 每 kg 农场门口活山羊
+- 归一化基准：每参考流
 - Basis kind: 参考流（`reference_flow`）
 - Evidence kind: 根据采集数据计算（`calculated_from_collection`）
 - Collection protocol: `cp_manure_pathways`
@@ -475,14 +508,14 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_goat_events_weights` | `managed_goat_herd` | 山羊进入、出生、类别变化、死亡和移交 | 羊群事件登记和称量记录 | 动物 id 或批次；山羊类型；类别；性别；用途；事件；日期；实测体重；秤 id；来源或目的地 | 将羊群登记与经校准的个体或批次称量核对 | 头；kg 活重 | 每次事件和移交 | 完整群组周期或所申报报告期 | 每个所代表羊群组和农场单元 | 按事件和类别汇总实测质量；仅使用类别特异抽样体重换算头数 | 秤校准；事件台账核对；死亡去向证据 |
-| `cp_feed_and_grazing` | `managed_goat_herd` | 饲料、牧草、灌木采食、放牧和转场 | 采购、日粮、牧场和移动记录 | 饲料身份；原物料质量；干物质比例；拒食质量；牧场或灌木面积；动物日；路线和日期 | 外购饲料使用发票和秤；日粮日志；放牧使用牧场和移动记录 | kg 原物料；kg 干物质；ha；动物日 | 每次交付或日粮；每日或定期放牧记录 | 期间内所有饲喂阶段 | 每个所代表饲喂区域、路线和羊群组 | 将各来源换算为干物质，按类别和阶段分配，再按参考质量归一化 | 供应商分析或抽样干物质；库存平衡；路线日志 |
-| `cp_health_inputs` | `managed_goat_herd` | 兽医和羊群保健产品 | 药品、疫苗、消毒和处理日志 | 产品；配方或活性成分；用量；单位；动物类别；施用日期；用途 | 采购核对和处理登记 | 产品特异 | 每次采购和施用 | 完整报告期 | 每个所代表羊群组和农场单元 | 保留不同产品，仅汇总相同配方和单位 | 发票；批次 id；处理记录 |
-| `cp_water_energy` | `managed_goat_herd` | 供应水和能源 | 仪表、发票、燃料和使用日志 | 来源或载体；数量；单位；计量期；用途；动物群；共享用户 | 仪表读数、发票、储罐或燃料日志，以及必要时的文件化估算 | kg；m3；kWh；MJ；载体单位 | 计量或交付间隔 | 含期初和期末读数的完整报告期 | 每个所代表仪表、供应点、羊群组和共享用户 | 扣除无关用途；将共享总量仅一次归属至已识别消费者和期间 | 仪表 id 和读数；发票；换算因子；分配核对 |
-| `cp_inbound_transport` | `managed_goat_herd` | 入场材料货运 | 交付和路线记录 | 材料；运输质量；起点；目的地；距离；方式；装载份额 | 供应商文件、发运记录和有证据的路线距离 | t；km；t*km | 每次纳入的交付 | 完整报告期 | 每条纳入的起点至农场路线 | 按路线和方式汇总质量乘距离 | 发票或发运单；距离来源；装载份额证据 |
-| `cp_intended_outputs` | `managed_goat_herd` | 奶、纤维、外运粪污及其他预期产出 | 产出测量和交接记录 | 产出身份；状态；数量；单位；日期；接收方；相关时的水分或干物质；价格或物理分配驱动因素 | 与接收方交接关联的校准仪表或秤 | kg 及产出特异质量单位 | 每次采集或移交 | 完整报告期和相关阶段 | 每个所代表羊群组、采集点和接收方交接 | 汇总相同产出状态和交接；归属前分别保留产出 | 校准；销售或移交记录；质量或组成结果 |
-| `cp_manure_pathways` | `managed_goat_herd` | 粪污产生、沉积、贮存、处理、外运和排放 | 粪污和氮路径记录 | 类别和动物日；饲料摄入；消化率；排泄基础；路径份额；气候；贮存时长；处理；回收；外运；氮含量 | 羊群记录结合文件化 IPCC 或国家方法及实测移交 | kg 挥发性固体；kg N；kg 粪污；kg CH4；kg N2O；kg NH3 | 每月或每次管理变化 | 报告期内产生的全部粪污 | 每个所代表羊群组、沉积区域、贮存、处理和外运路线 | 将路径份额核对至 100%；按路径计算气体，并一致扣除文件化回收或外运 | 方法层级；因子来源；可用时的实验室结果；路径平衡 |
-| `cp_emission_drivers` | `managed_goat_herd` | 肠道甲烷 | 动物、日粮和排放方法记录 | 类别；动物日；体重；饲料摄入或总能；日粮；消化率；排放因子；层级 | 羊群和饲料记录结合文件化 IPCC 或国家方法 | 动物日；kg 干物质；MJ；kg CH4 | 每月或阶段变化 | 每个所代表类别和阶段 | 每个所代表羊群组和饲喂路线 | 按类别和阶段计算，汇总期间排放后归一化 | 因子来源；计算工作簿；羊群和饲料核对 |
+| `cp_goat_events_weights` | `managed_goat_herd` | 山羊进入、出生、类别变化、死亡和移交 | 羊群事件登记和称量记录 | 动物 id 或批次；山羊类型；类别；性别；用途；事件；日期；实测体重；秤 id；来源或目的地 | 将羊群登记与经校准的个体或批次称量核对；原始汇总要求：按事件和类别汇总实测质量；仅使用类别特异抽样体重换算头数。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 头；kg 活重 | 每次事件和移交 | 完整群组周期或所申报报告期 | 每个所代表羊群组和农场单元 | 每参考流 | 秤校准；事件台账核对；死亡去向证据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_feed_and_grazing` | `managed_goat_herd` | 饲料、牧草、灌木采食、放牧和转场 | 采购、日粮、牧场和移动记录 | 饲料身份；原物料质量；干物质比例；拒食质量；牧场或灌木面积；动物日；路线和日期 | 外购饲料使用发票和秤；日粮日志；放牧使用牧场和移动记录；原始汇总要求：将各来源换算为干物质，按类别和阶段分配，再按参考质量归一化。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 原物料；kg 干物质；ha；动物日 | 每次交付或日粮；每日或定期放牧记录 | 期间内所有饲喂阶段 | 每个所代表饲喂区域、路线和羊群组 | 每参考流 | 供应商分析或抽样干物质；库存平衡；路线日志；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_health_inputs` | `managed_goat_herd` | 兽医和羊群保健产品 | 药品、疫苗、消毒和处理日志 | 产品；配方或活性成分；用量；单位；动物类别；施用日期；用途 | 采购核对和处理登记；原始汇总要求：保留不同产品，仅汇总相同配方和单位。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 产品特异 | 每次采购和施用 | 完整报告期 | 每个所代表羊群组和农场单元 | 每参考流 | 发票；批次 id；处理记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_water_energy` | `managed_goat_herd` | 供应水和能源 | 仪表、发票、燃料和使用日志 | 来源或载体；数量；单位；计量期；用途；动物群；共享用户 | 仪表读数、发票、储罐或燃料日志，以及必要时的文件化估算；原始汇总要求：扣除无关用途；将共享总量仅一次归属至已识别消费者和期间。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg；m3；kWh；MJ；载体单位 | 计量或交付间隔 | 含期初和期末读数的完整报告期 | 每个所代表仪表、供应点、羊群组和共享用户 | 每参考流 | 仪表 id 和读数；发票；换算因子；分配核对；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_inbound_transport` | `managed_goat_herd` | 入场材料货运 | 交付和路线记录 | 材料；运输质量；起点；目的地；距离；方式；装载份额 | 供应商文件、发运记录和有证据的路线距离；原始汇总要求：按路线和方式汇总质量乘距离。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | t；km；t*km | 每次纳入的交付 | 完整报告期 | 每条纳入的起点至农场路线 | 每参考流 | 发票或发运单；距离来源；装载份额证据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_intended_outputs` | `managed_goat_herd` | 奶、纤维、外运粪污及其他预期产出 | 产出测量和交接记录 | 产出身份；状态；数量；单位；日期；接收方；相关时的水分或干物质；价格或物理分配驱动因素 | 与接收方交接关联的校准仪表或秤；原始汇总要求：汇总相同产出状态和交接；归属前分别保留产出。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 及产出特异质量单位 | 每次采集或移交 | 完整报告期和相关阶段 | 每个所代表羊群组、采集点和接收方交接 | 每参考流 | 校准；销售或移交记录；质量或组成结果；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure_pathways` | `managed_goat_herd` | 粪污产生、沉积、贮存、处理、外运和排放 | 粪污和氮路径记录 | 类别和动物日；饲料摄入；消化率；排泄基础；路径份额；气候；贮存时长；处理；回收；外运；氮含量 | 羊群记录结合文件化 IPCC 或国家方法及实测移交；原始汇总要求：将路径份额核对至 100%；按路径计算气体，并一致扣除文件化回收或外运。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 挥发性固体；kg N；kg 粪污；kg CH4；kg N2O；kg NH3 | 每月或每次管理变化 | 报告期内产生的全部粪污 | 每个所代表羊群组、沉积区域、贮存、处理和外运路线 | 每参考流 | 方法层级；因子来源；可用时的实验室结果；路径平衡；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_emission_drivers` | `managed_goat_herd` | 肠道甲烷 | 动物、日粮和排放方法记录 | 类别；动物日；体重；饲料摄入或总能；日粮；消化率；排放因子；层级 | 羊群和饲料记录结合文件化 IPCC 或国家方法；原始汇总要求：按类别和阶段计算，汇总期间排放后归一化。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 动物日；kg 干物质；MJ；kg CH4 | 每月或阶段变化 | 每个所代表类别和阶段 | 每个所代表羊群组和饲喂路线 | 每参考流 | 因子来源；计算工作簿；羊群和饲料核对；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

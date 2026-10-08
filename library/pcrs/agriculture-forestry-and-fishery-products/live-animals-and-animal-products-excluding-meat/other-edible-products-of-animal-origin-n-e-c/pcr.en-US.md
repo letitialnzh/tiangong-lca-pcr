@@ -51,6 +51,8 @@ A compatible source-specific upstream record carries source production and its b
 | m_net | sold lot | Mass | kg | Calibrated gross minus package tare and separately removed inedible matter; disclose retained moisture. |
 | m_states | each performed node | Mass | kg | Reconcile before/after state and actual additions/removals; never apply a cross-product yield. |
 | m_period | source and shared assets | Time | period | Assign source, collection, replacement and shared-service events to their actual period once. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -99,14 +101,18 @@ One concrete source route is required. Nest, secretion and egg collection have n
 
 One concrete edible animal-origin good at a documented animal, colony or nest source; upstream source production is not recounted.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified animal-origin material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collect`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -129,14 +135,18 @@ One concrete edible animal-origin good at a documented animal, colony or nest so
 
 Hand off the weighed collected state once, including source and actual period.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Collected source-qualified edible product (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collect`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -153,14 +163,18 @@ Hand off the weighed collected state once, including source and actual period.
 
 Separate unusable material from marketed co-products and document its destination.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Non-food collection residue (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_reject`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -184,14 +198,18 @@ Separate unusable material from marketed co-products and document its destinatio
 
 Conditional on actual cleaning or separation; otherwise bypass to grading.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Collected edible animal-origin material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_prepare`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -206,14 +224,18 @@ Conditional on actual cleaning or separation; otherwise bypass to grading.
 
 Meter Product water only if wet cleaning is performed; trace wastewater destination.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Actual supplied cleaning water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_prepare`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -236,14 +258,18 @@ Meter Product water only if wet cleaning is performed; trace wastewater destinat
 
 Record measured prepared state and next handoff; no cross-product yield.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: First-prepared source-qualified edible product (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_prepare`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -260,14 +286,18 @@ Record measured prepared state and next handoff; no cross-product yield.
 
 Classify inedible contamination, debris and actual destination; do not call it edible output.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Non-food preparation residue (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_reject`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -291,14 +321,18 @@ Classify inedible contamination, debris and actual destination; do not call it e
 
 Use the actual collected or prepared input when a bounded preservation step occurs.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified product before preservation (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_stabilize`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -313,14 +347,18 @@ Use the actual collected or prepared input when a bounded preservation step occu
 
 Meter actual energy carrier for performed chilling, drying or other lawful stabilization.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Actual energy carrier (UUID unresolved)
 - Flow property / unit: Energy / MJ
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_stabilize`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -343,14 +381,18 @@ Meter actual energy carrier for performed chilling, drying or other lawful stabi
 
 Measure after-state and moisture, then hand off to grading.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Stabilized source-qualified edible product (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_stabilize`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -367,14 +409,18 @@ Measure after-state and moisture, then hand off to grading.
 
 Record spoiled/rejected matter by legal destination; evaporation is a separate balance term.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Non-food preservation reject (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_reject`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -398,14 +444,18 @@ Record spoiled/rejected matter by legal destination; evaporation is a separate b
 
 Select exactly one actual collected, prepared or stabilized predecessor state.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified edible product before grade (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -428,14 +478,18 @@ Select exactly one actual collected, prepared or stabilized predecessor state.
 
 Declare food status, state and destination to handover.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Accepted source-qualified edible product (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -450,14 +504,18 @@ Declare food status, state and destination to handover.
 
 Only if independently marketable and food-eligible; otherwise classify as reject.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Food-eligible downgraded product (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -474,14 +532,18 @@ Only if independently marketable and food-eligible; otherwise classify as reject
 
 Document legal non-food disposition, never an edible grade.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Food-ineligible animal-origin reject (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_reject`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -505,14 +567,18 @@ Document legal non-food disposition, never an edible grade.
 
 Transfer accepted grade once to protective presentation.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Accepted source-qualified edible product (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -527,14 +593,18 @@ Transfer accepted grade once to protective presentation.
 
 Record package material, tare and reuse or single-use service.
 
+Denominator and scope requirements：per kg output of the corresponding process
+
+Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
+
 - Selected flow: Actual food-contact package or reusable service (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -557,14 +627,18 @@ Record package material, tare and reuse or single-use service.
 
 Net mass excludes package at the real production or first-collection gate.
 
+Raw reference-output records: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Source-, state- and gate-qualified other edible animal-origin good
 - Flow property / unit: Mass / kg
-- Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg output of the corresponding process
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -593,12 +667,12 @@ Net mass excludes package at the real production or first-collection gate.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_collect | collect | source and collected good | source ledger | good, species, legal/food status, real outputs, mass, gate, period | source ticket and calibrated scale | kg;period | each lot | source and collection periods | source and collector | once per output/lot | source, legal and scale records |
-| cp_prepare | prepare | first cleaning and prepared good | batch ledger | state, mass in/out, water, service, rejects | ticket, scale and meter | kg | each performed lot | preparation period | site | measured state balance | ticket and calibration |
-| cp_stabilize | stabilize | optional preservation | preservation ledger | pre/post state, mass, moisture, temperature, energy, losses | meter, scale and assay | kg;MJ | each performed lot | preservation period | site | before/after balance | meter and assay |
-| cp_grade | grade | grades and destinations | grade ledger | accepted, downgrade, reject, food decision, destinations | grade ticket and scale | kg | each lot | grading period | site | disjoint output set | grade/destination records |
-| cp_handover | handover | net sale, package, gate | dispatch ledger | state, moisture, gross, tare, net, package reuse, gate | dispatch ticket and scale | kg | each lot | handover period | site | one net handover/lot | ticket and calibration |
-| cp_reject | collect;prepare;stabilize;grade | residue/waste | disposition ledger | lot, type, mass, legal status, destination | weighing and transfer ticket | kg | each event | relevant period | site | once per terminal destination | transfer record |
+| cp_collect | collect | source and collected good | source ledger | good, species, legal/food status, real outputs, mass, gate, period | source ticket and calibrated scale; Raw aggregation requirements: once per output/lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;period | each lot | source and collection periods | source and collector | per reference flow | source, legal and scale records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_prepare | prepare | first cleaning and prepared good | batch ledger | state, mass in/out, water, service, rejects | ticket, scale and meter; Raw aggregation requirements: measured state balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each performed lot | preparation period | site | per reference flow | ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_stabilize | stabilize | optional preservation | preservation ledger | pre/post state, mass, moisture, temperature, energy, losses | meter, scale and assay; Raw aggregation requirements: before/after balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;MJ | each performed lot | preservation period | site | per reference flow | meter and assay; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_grade | grade | grades and destinations | grade ledger | accepted, downgrade, reject, food decision, destinations | grade ticket and scale; Raw aggregation requirements: disjoint output set. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | grading period | site | per reference flow | grade/destination records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_handover | handover | net sale, package, gate | dispatch ledger | state, moisture, gross, tare, net, package reuse, gate | dispatch ticket and scale; Raw aggregation requirements: one net handover/lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | handover period | site | per reference flow | ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_reject | collect;prepare;stabilize;grade | residue/waste | disposition ledger | lot, type, mass, legal status, destination | weighing and transfer ticket; Raw aggregation requirements: once per terminal destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each event | relevant period | site | per reference flow | transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

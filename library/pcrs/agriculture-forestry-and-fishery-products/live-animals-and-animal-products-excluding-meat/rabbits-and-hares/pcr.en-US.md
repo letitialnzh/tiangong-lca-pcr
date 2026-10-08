@@ -31,16 +31,18 @@ This PCR covers living domestic rabbits (*Oryctolagus cuniculus*) produced under
 | How much | 1 kg measured live mass, with head count and class-specific mass |
 | How well | Alive, unprocessed and species-resolved; disclose class and condition |
 | How long or cycle | Declared breeding/rearing cohort or lawful capture campaign and actual service periods |
-| reference_flow_link | `live_handover` or `hare_capture_output` according to exclusive route |
+| reference_flow_link | `reference_product_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Living rabbit or hare at farm or lawful capture handover (UUID unresolved) |
+| Reference product flow | Living rabbit or hare at farm or lawful capture handover |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | Species; domestic or wild; age/class; head count; condition; measured live mass; route; actual gate; jurisdiction and permit for capture; period |
+
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
 
 The confirmed platform Product identity is farm-gate production mix only and cannot describe the broad farm-or-capture reference.
 
@@ -52,6 +54,8 @@ The confirmed platform Product identity is farm-gate production mix only and can
 | `animal_ledger` | All animal lots | Count | head | Reconcile opening, births or capture, purchase, transfer, release, death and handover by species, class and period. |
 | `period_basis` | Breeders, replacement and assets | Time | days or cycle | Link gestation, lactation, weaning, rearing, replacement and shared service to benefited periods; use actual capture service days. |
 | `manure_basis` | Collected manure | Mass | kg | Report exported product and waste on consistent as-received or moisture-corrected basis; deposits are not exported product. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -75,6 +79,7 @@ The confirmed platform Product identity is farm-gate production mix only and can
 | `boundary_housing` | Managed housing variants | Rabbit breeding/rearing is the biological parent. Cages versus floor/litter change bedding, cleaning, housing energy and manure handling; record real shares, not universal yields. | `fao-rabbit-housing` |
 | `boundary_capture` | Living wild hares | Include only documented lawful live trapping, welfare handling and actual capture handover; no fictitious breeder, feed or farm gate. Missing legal evidence makes the route ineligible. | `vic-hare-control` |
 | `boundary_shared` | Shared assets | Attribute sheds, feeders, water systems, traps and vehicles once over consuming nodes and service periods; avoid duplicate transfers. | `fao-rabbit-housing`; `vic-hare-control` |
+| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |
 
 ## 6. Process Inventory Structure
 
@@ -86,6 +91,7 @@ The confirmed platform Product identity is farm-gate production mix only and can
 | `rearing` | Rear domestic rabbits to producer class | conditional | Operated grow-out; otherwise purchased stock has upstream burden | Biological growth with housing-specific inputs and manure | per kg live rabbits leaving rearing |
 | `farm_handover` | Select, weigh and hand over live farm rabbits | conditional | Domestic farm route | Independent collection/health screen and real farm gate | per kg accepted farm-gate live rabbits |
 | `hare_capture` | Lawfully capture and hand over living hares | conditional | Verified permit and observed live-capture route | Independent capture-only node and real capture gate | per kg accepted hares at capture handover |
+| `reference_handover` | Actual producer reference-product handover | required | One actual declared route, state and producer gate per foreground package | Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution | 1 kg accepted product at the declared handover |
 
 Farm and capture routes are mutually exclusive per animal. Cage and floor/litter modes can coexist by cohort/period. Capture is not a managed-production variant. Live collection is independent of biological growth because acceptance, weighing and handover follow production; losses or releases are not intended live output. Index breeding, weaning, rearing, replacement, asset service and capture events by period.
 
@@ -99,14 +105,18 @@ Farm and capture routes are mutually exclusive per animal. Cage and floor/litter
 
 Purchased breeding animals enter with upstream burden; opening owned stock is declared separately.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: measured received live mass Original collection denominator kind: process_output.
+
 - Selected flow: Living breeding rabbits (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured received live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -121,14 +131,18 @@ Purchased breeding animals enter with upstream burden; opening owned stock is de
 
 Record supplied feed, forage and stock changes; grazed material is not purchased feed.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: delivered feed less stock change and measured losses Original collection denominator kind: process_output.
+
 - Selected flow: Rabbit feed and forage (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: delivered feed less stock change and measured losses
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_feed`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -143,14 +157,18 @@ Record supplied feed, forage and stock changes; grazed material is not purchased
 
 Separate drinking from cleaning by actual use; a water group is deferred.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: metered or recorded supplied water Original collection denominator kind: process_output.
+
 - Selected flow: Supplied water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: metered or recorded supplied water
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -165,14 +183,18 @@ Separate drinking from cleaning by actual use; a water group is deferred.
 
 Record heating, ventilation, lighting and pumping by real carrier and service.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: metered or invoiced energy by carrier Original collection denominator kind: process_output.
+
 - Selected flow: Energy supply (UUID unresolved)
 - Flow property / unit: Energy / MJ
-- Amount rule: metered or invoiced energy by carrier
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -187,14 +209,18 @@ Record heating, ventilation, lighting and pumping by real carrier and service.
 
 Record route-specific litter and veterinary materials by separate actual identity.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: measured supplied material by identity Original collection denominator kind: process_output.
+
 - Selected flow: Bedding and veterinary materials (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured supplied material by identity
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_materials`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -217,14 +243,18 @@ Record route-specific litter and veterinary materials by separate actual identit
 
 Reconcile live count and mass; an internal transfer is not a second final sale.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: measured live weanling mass Original collection denominator kind: process_output.
+
 - Selected flow: Living weanling rabbits (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured live weanling mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Live output balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -239,14 +269,18 @@ Reconcile live count and mass; an internal transfer is not a second final sale.
 
 A distinct product only if actually sold alive; otherwise classify actual disposal state.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: measured sold live mass Original collection denominator kind: process_output.
+
 - Selected flow: Living culled breeder rabbits (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured sold live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -261,14 +295,18 @@ A distinct product only if actually sold alive; otherwise classify actual dispos
 
 Product only on documented beneficial-use transfer, not grazing deposits or disposal.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: weighed exported mass on disclosed moisture basis Original collection denominator kind: process_output.
+
 - Selected flow: Usable rabbit manure (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: weighed exported mass on disclosed moisture basis
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -285,14 +323,18 @@ Product only on documented beneficial-use transfer, not grazing deposits or disp
 
 Record dead animals and disposal bedding/manure by actual identity and destination.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: measured waste mass by identity and destination Original collection denominator kind: process_output.
+
 - Selected flow: Breeder mortality and disposal material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured waste mass by identity and destination
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_waste`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -309,14 +351,18 @@ Record dead animals and disposal bedding/manure by actual identity and destinati
 
 Calculate manure-path methane from observed storage and treatment, not a universal animal factor.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: site-specific manure pathway calculation Original collection denominator kind: process_output.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: site-specific manure pathway calculation
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -333,14 +379,18 @@ Calculate manure-path methane from observed storage and treatment, not a univers
 
 Calculate direct manure-management N2O only for the observed storage/treatment path and nitrogen activity; do not apply farm factors to captured wild hares.
 
+Denominator and scope requirements：per kg live weanlings leaving breeder
+
+Raw quantity and calculation requirements: manure-management N2O from observed nitrogen and pathway Original collection denominator kind: process_output.
+
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: manure-management N2O from observed nitrogen and pathway
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live weanlings leaving breeder
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -363,14 +413,18 @@ Calculate direct manure-management N2O only for the observed storage/treatment p
 
 Measure the transferred or purchased young stock once with inherited burden.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: received live mass Original collection denominator kind: process_output.
+
 - Selected flow: Living young rabbits (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: received live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -385,14 +439,18 @@ Measure the transferred or purchased young stock once with inherited burden.
 
 Measure delivered ration and losses by cohort rather than assuming feed conversion.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: delivered mass less stock change and losses Original collection denominator kind: process_output.
+
 - Selected flow: Rabbit rearing feed (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: delivered mass less stock change and losses
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_feed`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -407,14 +465,18 @@ Measure delivered ration and losses by cohort rather than assuming feed conversi
 
 Disaggregate drinking and cleaning by real use; defer group on this combined card.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: metered supplied water Original collection denominator kind: process_output.
+
 - Selected flow: Supplied water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: metered supplied water
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -429,14 +491,18 @@ Disaggregate drinking and cleaning by real use; defer group on this combined car
 
 Record actual ventilation, temperature and lighting carrier consumption.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: metered or invoiced energy Original collection denominator kind: process_output.
+
 - Selected flow: Energy supply (UUID unresolved)
 - Flow property / unit: Energy / MJ
-- Amount rule: metered or invoiced energy
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utilities`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -451,14 +517,18 @@ Record actual ventilation, temperature and lighting carrier consumption.
 
 Record litter and care materials separately for the actual housing mode.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: measured supplied material Original collection denominator kind: process_output.
+
 - Selected flow: Bedding and veterinary materials (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured supplied material
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_materials`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -481,14 +551,18 @@ Record litter and care materials separately for the actual housing mode.
 
 Transfer accepted living animals to final handover and reconcile count and mass.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: measured live transferred mass Original collection denominator kind: process_output.
+
 - Selected flow: Living reared rabbits (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured live transferred mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Live output balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -503,14 +577,18 @@ Transfer accepted living animals to final handover and reconcile count and mass.
 
 Product only with a distinct beneficial-use receiver and measured mass.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: weighed exported mass on disclosed moisture basis Original collection denominator kind: process_output.
+
 - Selected flow: Usable rabbit manure (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: weighed exported mass on disclosed moisture basis
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -527,14 +605,18 @@ Product only with a distinct beneficial-use receiver and measured mass.
 
 Dead animals and disposed litter/manure follow their actual waste destination.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: measured waste mass by identity and destination Original collection denominator kind: process_output.
+
 - Selected flow: Rearing mortality and disposal material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured waste mass by identity and destination
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_waste`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -551,14 +633,18 @@ Dead animals and disposed litter/manure follow their actual waste destination.
 
 Calculate for the observed rearing manure pathway and storage period.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: site-specific manure pathway calculation Original collection denominator kind: process_output.
+
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: site-specific manure pathway calculation
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -575,14 +661,18 @@ Calculate for the observed rearing manure pathway and storage period.
 
 Calculate direct manure-management N2O only for the observed storage/treatment path and nitrogen activity; do not apply farm factors to captured wild hares.
 
+Denominator and scope requirements：per kg live rabbits leaving rearing
+
+Raw quantity and calculation requirements: manure-management N2O from observed nitrogen and pathway Original collection denominator kind: process_output.
+
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: manure-management N2O from observed nitrogen and pathway
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live rabbits leaving rearing
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure`
 - Sources: `ipcc-livestock-2019`
@@ -605,14 +695,18 @@ Calculate direct manure-management N2O only for the observed storage/treatment p
 
 The producing-stage animal and prior burden enter once.
 
+Denominator and scope requirements：per kg accepted farm-gate live rabbits
+
+Raw quantity and calculation requirements: measured received live mass Original collection denominator kind: process_output.
+
 - Selected flow: Living farm rabbits (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured received live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted farm-gate live rabbits
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -635,15 +729,21 @@ The producing-stage animal and prior burden enter once.
 
 This narrow live unprocessed farm-gate output matches the confirmed platform Product/Mass identity.
 
+Denominator and scope requirements：per kg accepted farm-gate live rabbits
+
+Raw quantity and calculation requirements: weighed accepted live mass Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
 - Selected flow: Rabbits and hares, production mix at farm gate, live animal unprocessed `e501d3c2-f4f4-4fa0-9d52-ce0947f69797`
 - Flow property / unit: Mass / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: weighed accepted live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted farm-gate live rabbits
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animals`
 - Range: Live output balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -660,14 +760,18 @@ This narrow live unprocessed farm-gate output matches the confirmed platform Pro
 
 Only observed non-live losses are waste; living rejects retained on farm remain in the ledger.
 
+Denominator and scope requirements：per kg accepted farm-gate live rabbits
+
+Raw quantity and calculation requirements: measured disposal mass Original collection denominator kind: process_output.
+
 - Selected flow: Farm handover mortality (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured disposal mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted farm-gate live rabbits
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_waste`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -690,14 +794,18 @@ Only observed non-live losses are waste; living rejects retained on farm remain 
 
 Record actual consumed trap and welfare materials; reusable equipment is allocated service, not consumed anew each campaign.
 
+Denominator and scope requirements：per kg accepted hares at capture handover
+
+Raw quantity and calculation requirements: measured consumed mass by material Original collection denominator kind: process_output.
+
 - Selected flow: Capture and holding consumables (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured consumed mass by material
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted hares at capture handover
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -712,14 +820,18 @@ Record actual consumed trap and welfare materials; reusable equipment is allocat
 
 Record trap-check and short-holding fuel/electricity by carrier and actual service.
 
+Denominator and scope requirements：per kg accepted hares at capture handover
+
+Raw quantity and calculation requirements: measured campaign fuel and electricity Original collection denominator kind: process_output.
+
 - Selected flow: Energy supply (UUID unresolved)
 - Flow property / unit: Energy / MJ
-- Amount rule: measured campaign fuel and electricity
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted hares at capture handover
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -742,14 +854,20 @@ Record trap-check and short-holding fuel/electricity by carrier and actual servi
 
 Weigh living Lepus at the real permitted capture handover; do not attach a farm-gate UUID.
 
+Denominator and scope requirements：per kg accepted hares at capture handover
+
+Raw quantity and calculation requirements: measured accepted live mass Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
 - Selected flow: Living hares at lawful capture handover (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured accepted live mass
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted hares at capture handover
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Live output balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -766,14 +884,18 @@ Weigh living Lepus at the real permitted capture handover; do not attach a farm-
 
 Record dead hares and disposal materials; released living animals are separate ledger events, not product or waste.
 
+Denominator and scope requirements：per kg accepted hares at capture handover
+
+Raw quantity and calculation requirements: measured waste mass by category Original collection denominator kind: process_output.
+
 - Selected flow: Capture mortality and disposal material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured waste mass by category
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted hares at capture handover
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture`
 - Range: Provisional completeness screen, not a default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -783,6 +905,84 @@ Record dead hares and disposal materials; released living animals are separate l
   - Basis: per kg accepted hares at capture handover
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Elementary flows
+
+### Process: Actual producer reference-product handover (`reference_handover`)
+
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
+
+#### Inputs
+
+##### Product flows
+
+###### Living rabbit or hare at farm or lawful capture handover for actual producer-handover linkage (`reference_handover_input`)
+
+This input matches the accepted goods represented by `live_handover`, `hare_capture_output` under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `live_handover`, `hare_capture_output`
+
+Required product-instance qualifiers: Species; domestic or wild; age/class; head count; condition; measured live mass; route; actual gate; jurisdiction and permit for capture; period
+
+- Selected flow: Living rabbit or hare at farm or lawful capture handover for actual producer-handover linkage
+- Flow property / unit: Mass / kg
+- Amount rule: Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
+
+#### Outputs
+
+##### Product flows
+
+###### Living rabbit or hare at farm or lawful capture handover (`reference_product_handover`)
+
+This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `live_handover`, `hare_capture_output`
+
+Required product-instance qualifiers: Species; domestic or wild; age/class; head count; condition; measured live mass; route; actual gate; jurisdiction and permit for capture; period
+
+- Selected flow: Living rabbit or hare at farm or lawful capture handover
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
 
 ##### Elementary flows
 
@@ -801,13 +1001,14 @@ Record dead hares and disposal materials; released living animals are separate l
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_animals` | `breeder`, `rearing`, `farm_handover` | Living incoming, transferred, culled and final animals | herd/weigh ledger | species, class, count, mass, origin, destination, date | lot count and calibrated scale or documented class sample | head; kg | each event | entire cohort | actual farm sites | reconcile opening + births + purchases - deaths - sales - transfers = closing; normalize to accepted live mass | weigh slips, herd ledger, scale calibration |
-| `cp_feed` | `breeder`, `rearing` | feed and forage | purchase/ration ledger | material, mass, stock change, loss, cohort | delivery ticket and ration log | kg | batch and cycle | operated periods | houses/pasture | delivered less stock change and recorded loss by cohort | invoices and feed logs |
-| `cp_utilities` | `breeder`, `rearing` | water and energy | meter/invoice | water source/use, carrier, readings, shared consumer | meter read and use split | kg; MJ | meter interval | operated periods | all supply connections | convert units then attribute once by observed use | meter images, invoices |
-| `cp_materials` | `breeder`, `rearing` | bedding and care | material issue | identity, dose, mass, animal group, date, housing route | material issue and veterinary log | kg | each use | operated periods | houses | sum actual consumption by material/cohort | stock and care logs |
-| `cp_manure` | `breeder`, `rearing` | manure product/emission | pathway ledger | collected mass, moisture, nitrogen, storage, treatment, export, period | weigh, sample, transfer and storage record | kg; days | removal/cycle | operated periods | manure systems | distinguish beneficial product, disposal and deposit; calculate pathway emission | weigh slips, nitrogen analysis, receiver and method inputs |
-| `cp_waste` | `breeder`, `rearing`, `farm_handover` | mortality/disposal | loss ledger | species, count, mass, material, destination, date | count/weigh or documented estimate | head; kg | event | whole cohort | operated nodes | sum by waste identity/destination | disposal receipts, mortality log |
-| `cp_capture` | `hare_capture` | permit, animals, materials, energy and losses | permit/campaign ledger | jurisdiction, permit, trap, checks, species, captured/released/dead/handed-over counts and masses, material, energy, destination | legal-document check and observed event/meter log | head; kg; MJ | event | full lawful campaign | permitted site/handover | captured = released + dead + handover + held; attribute shared equipment by service | permit, welfare log, scale, trip/fuel log |
+| `cp_animals` | `breeder`, `rearing`, `farm_handover` | Living incoming, transferred, culled and final animals | herd/weigh ledger | species, class, count, mass, origin, destination, date | lot count and calibrated scale or documented class sample; Raw aggregation requirements: reconcile opening + births + purchases - deaths - sales - transfers = closing; normalize to accepted live mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | each event | entire cohort | actual farm sites | per reference flow | weigh slips, herd ledger, scale calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed` | `breeder`, `rearing` | feed and forage | purchase/ration ledger | material, mass, stock change, loss, cohort | delivery ticket and ration log; Raw aggregation requirements: delivered less stock change and recorded loss by cohort. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | batch and cycle | operated periods | houses/pasture | per reference flow | invoices and feed logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_utilities` | `breeder`, `rearing` | water and energy | meter/invoice | water source/use, carrier, readings, shared consumer | meter read and use split; Raw aggregation requirements: convert units then attribute once by observed use. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; MJ | meter interval | operated periods | all supply connections | per reference flow | meter images, invoices; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_materials` | `breeder`, `rearing` | bedding and care | material issue | identity, dose, mass, animal group, date, housing route | material issue and veterinary log; Raw aggregation requirements: sum actual consumption by material/cohort. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each use | operated periods | houses | per reference flow | stock and care logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `breeder`, `rearing` | manure product/emission | pathway ledger | collected mass, moisture, nitrogen, storage, treatment, export, period | weigh, sample, transfer and storage record; Raw aggregation requirements: distinguish beneficial product, disposal and deposit; calculate pathway emission. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; days | removal/cycle | operated periods | manure systems | per reference flow | weigh slips, nitrogen analysis, receiver and method inputs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_waste` | `breeder`, `rearing`, `farm_handover` | mortality/disposal | loss ledger | species, count, mass, material, destination, date | count/weigh or documented estimate; Raw aggregation requirements: sum by waste identity/destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | event | whole cohort | operated nodes | per reference flow | disposal receipts, mortality log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_capture` | `hare_capture` | permit, animals, materials, energy and losses | permit/campaign ledger | jurisdiction, permit, trap, checks, species, captured/released/dead/handed-over counts and masses, material, energy, destination | legal-document check and observed event/meter log; Raw aggregation requirements: captured = released + dead + handover + held; attribute shared equipment by service. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg; MJ | event | full lawful campaign | permitted site/handover | per reference flow | permit, welfare log, scale, trip/fuel log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
 
 ### Calculation Rules
 

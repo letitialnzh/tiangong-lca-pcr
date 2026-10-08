@@ -52,6 +52,8 @@ sync_with: pcr.en-US.md
 | `duck_count_conversion` | 计数记录 | 质量与只数 | kg; head | 用实测活禽 kg 除以活禽只数；不得以按只计数的 UUID 替代质量参考。 |
 | `feed_basis` | 饲料记录 | 原样质量与含水状态 | kg | 保留饲料状态并按一致基准汇总。 |
 | `carrier_basis` | 能源记录 | 载体特定属性 | 供应单位 | 归一化前保留实际载体、单位及有据可查的换算。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -98,14 +100,18 @@ sync_with: pcr.en-US.md
 
 记录归属期间种鸭群实际消耗的饲料类型和原样质量。
 
+分母与范围要求：每个种鸭期及转出种蛋
+
+原始数量及计算要求：领料加期初减期末库存及退回饲料。 原始采集分母类型：process_output。
+
 - 选定流：种鸭饲料；供应商身份未解析
 - 流属性/单位：质量 / kg
-- 数量规则：领料加期初减期末库存及退回饲料。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_inputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -120,14 +126,18 @@ sync_with: pcr.en-US.md
 
 记录该自营节点供应的饮用和服务用水；具体用水组别由前景用途记录决定。
 
+分母与范围要求：每个种鸭期及转出种蛋
+
+原始数量及计算要求：计量归属该种鸭期的用水。 原始采集分母类型：process_output。
+
 - 选定流：按实际用途区分的种鸭舍供应水
 - 流属性/单位：质量 / kg
-- 数量规则：计量归属该种鸭期的用水。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_inputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -142,14 +152,18 @@ sync_with: pcr.en-US.md
 
 按实际能源载体记录电力和燃料，避免共用表计重复计入。
 
+分母与范围要求：每个种鸭期及转出种蛋
+
+原始数量及计算要求：分载体计量或发票数量。 原始采集分母类型：process_output。
+
 - 选定流：种鸭舍能源载体
 - 流属性/单位：载体特定 / 供应单位
-- 数量规则：分载体计量或发票数量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_inputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -172,14 +186,18 @@ sync_with: pcr.en-US.md
 
 称重并计数销售或内部送孵的种蛋；内部负荷仅转移一次。
 
+分母与范围要求：每个种鸭产蛋期
+
+原始数量及计算要求：逐批实测种蛋质量和数量。 原始采集分母类型：process_output。
+
 - 选定流：鸭孵化种蛋；UUID 未解析
 - 流属性/单位：质量 / kg；另计个数
-- 数量规则：逐批实测种蛋质量和数量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_outputs`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -195,14 +213,18 @@ sync_with: pcr.en-US.md
 
 仅在食用蛋或淘汰活种鸭独立销售时分别记录其交付点。
 
+分母与范围要求：每个种鸭产蛋期
+
+原始数量及计算要求：计量每项独立转出的产出。 原始采集分母类型：process_output。
+
 - 选定流：销售蛋或淘汰活鸭；具体身份未解析
 - 流属性/单位：质量 / kg；另计数
-- 数量规则：计量每项独立转出的产出。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_outputs`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -218,14 +240,18 @@ sync_with: pcr.en-US.md
 
 仅在种鸭粪肥作为产品独立转出且有销售或交付凭证时记录。
 
+分母与范围要求：每个种鸭产蛋期及转出种蛋
+
+原始数量及计算要求：按种鸭期间称重并记录独立交付。 原始采集分母类型：process_output。
+
 - 选定流：种鸭粪肥产品；具体 UUID 未解析
 - 流属性/单位：质量 / kg
-- 数量规则：按种鸭期间称重并记录独立交付。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_outputs`
 - 数量范围：暂定粪污数量筛选区间
   - 范围角色：`default_estimate`
@@ -242,14 +268,18 @@ sync_with: pcr.en-US.md
 
 将死亡鸭与不可销售蛋从产品中分出并记录去向。
 
+分母与范围要求：每个种鸭产蛋期
+
+原始数量及计算要求：称重或据实测数量与平均质量计算。 原始采集分母类型：process_output。
+
 - 选定流：生物废物；具体身份未解析
 - 流属性/单位：质量 / kg
-- 数量规则：称重或据实测数量与平均质量计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期
-- 基准类型：`process_output`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_outputs`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -265,14 +295,18 @@ sync_with: pcr.en-US.md
 
 记录未作为产品独立转出的种鸭粪污及其处理去向。
 
+分母与范围要求：每个种鸭产蛋期及转出种蛋
+
+原始数量及计算要求：按种鸭期间称重并记录处理去向。 原始采集分母类型：process_output。
+
 - 选定流：种鸭粪污废物；具体 UUID 未解析
 - 流属性/单位：质量 / kg
-- 数量规则：按种鸭期间称重并记录处理去向。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_outputs`
 - 数量范围：暂定粪污数量筛选区间
   - 范围角色：`default_estimate`
@@ -289,15 +323,19 @@ sync_with: pcr.en-US.md
 
 仅用于已识别向空气排放生物源 CH4 的粪污贮存/处理途径；UUID 是身份，不是排放因子。
 
+分母与范围要求：每个种鸭产蛋期及转出种蛋
+
+原始数量及计算要求：依据实测挥发性固体、粪污管理系统与适用 CH4 方法因子计算。 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，向空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据实测挥发性固体、粪污管理系统与适用 CH4 方法因子计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_manure_emissions`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定物质专属排放筛选区间
@@ -313,15 +351,19 @@ sync_with: pcr.en-US.md
 
 仅用于已识别向空气释放 N2O 的粪污氮途径；不得混用直接与间接途径因子。
 
+分母与范围要求：每个种鸭产蛋期及转出种蛋
+
+原始数量及计算要求：依据实测粪污氮、管理途径与适用 N2O 方法因子计算。 原始采集分母类型：process_output。
+
 - 选定流：氧化亚氮，向空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据实测粪污氮、管理途径与适用 N2O 方法因子计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_manure_emissions`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定物质专属排放筛选区间
@@ -337,15 +379,19 @@ sync_with: pcr.en-US.md
 
 仅用于有独立证据证明的粪污/鸭舍途径 NH3 向空气挥发；不得从 IPCC CH4/N2O 因子推定其数量。
 
+分母与范围要求：每个种鸭产蛋期及转出种蛋
+
+原始数量及计算要求：该途径的实测 NH3，或有独立文件支持的相容因子计算。 原始采集分母类型：process_output。
+
 - 选定流：氨，向空气 `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：该途径的实测 NH3，或有独立文件支持的相容因子计算。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个种鸭产蛋期及转出种蛋
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_breeder_manure_emissions`
 - 数量范围：暂定物质专属排放筛选区间
   - 范围角色：`default_estimate`
@@ -366,14 +412,18 @@ sync_with: pcr.en-US.md
 
 追踪采购或内部种鸭蛋及其仅计一次的前序负荷。
 
+分母与范围要求：每个孵化批次
+
+原始数量及计算要求：实测批次投入质量和数量。 原始采集分母类型：process_output。
+
 - 选定流：鸭孵化种蛋；UUID 未解析
 - 流属性/单位：质量 / kg；另计数
-- 数量规则：实测批次投入质量和数量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个孵化批次
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_incubation_batch`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -388,14 +438,18 @@ sync_with: pcr.en-US.md
 
 按实际载体与批次归属孵化设备能源。
 
+分母与范围要求：每 kg 活鸭雏产出
+
+原始数量及计算要求：批次计量或发票能源量。 原始采集分母类型：process_output。
+
 - 选定流：孵化场能源载体
 - 流属性/单位：载体特定 / 供应单位
-- 数量规则：批次计量或发票能源量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 活鸭雏产出
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_incubation_batch`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -410,14 +464,18 @@ sync_with: pcr.en-US.md
 
 记录供应的过程与清洁用水；在前景交换数据中拆分实际用途。
 
+分母与范围要求：每 kg 活鸭雏产出
+
+原始数量及计算要求：计量归属孵化批次的水量。 原始采集分母类型：process_output。
+
 - 选定流：孵化场过程用水
 - 流属性/单位：质量 / kg
-- 数量规则：计量归属孵化批次的水量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 活鸭雏产出
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_incubation_batch`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -440,14 +498,18 @@ sync_with: pcr.en-US.md
 
 称重计数活鸭雏；选择内部转育成或最终孵化场销售，不得同时作为两项最终产出。
 
+分母与范围要求：每个孵化批次
+
+原始数量及计算要求：实测活鸭雏批次质量与数量。 原始采集分母类型：process_output。
+
 - 选定流：孵化场门活鸭雏；UUID 未解析
 - 流属性/单位：质量 / kg；另计数
-- 数量规则：实测活鸭雏批次质量与数量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个孵化批次
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_incubation_batch`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -465,14 +527,18 @@ sync_with: pcr.en-US.md
 
 按实际处置流记录未孵蛋、蛋壳和死亡鸭雏。
 
+分母与范围要求：每个孵化批次
+
+原始数量及计算要求：称重或由批次数量和观测质量计算。 原始采集分母类型：process_output。
+
 - 选定流：孵化生物废物；UUID 未解析
 - 流属性/单位：质量 / kg
-- 数量规则：称重或由批次数量和观测质量计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个孵化批次
-- 基准类型：`process_output`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_incubation_batch`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -496,14 +562,18 @@ sync_with: pcr.en-US.md
 
 记录进入育成的采购或内部活鸭雏，前序负荷只计一次。
 
+分母与范围要求：每个育成批次
+
+原始数量及计算要求：实测初始活禽质量与数量。 原始采集分母类型：process_output。
+
 - 选定流：进入育成的活鸭雏；UUID 未解析
 - 流属性/单位：质量 / kg；另计数
-- 数量规则：实测初始活禽质量与数量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个育成批次
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_batch`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -518,14 +588,18 @@ sync_with: pcr.en-US.md
 
 纳入实际消耗的采购或自产饲料；综合养殖采食不是零负荷。
 
+分母与范围要求：每 kg 最终活鸭
+
+原始数量及计算要求：期初库存加交付减期末库存及退回。 原始采集分母类型：reference_flow。
+
 - 选定流：按类型来源区分的鸭饲料；UUID 未解析
 - 流属性/单位：质量 / kg
-- 数量规则：期初库存加交付减期末库存及退回。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_inputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -540,14 +614,18 @@ sync_with: pcr.en-US.md
 
 按实际记录区分饮水、清洁水和综合养殖田间用水；在这些功能确定前暂不指定组别。
 
+分母与范围要求：每 kg 最终活鸭
+
+原始数量及计算要求：计量归属鸭育成的水量。 原始采集分母类型：reference_flow。
+
 - 选定流：按实际用途区分的育成供应水
 - 流属性/单位：质量 / kg
-- 数量规则：计量归属鸭育成的水量。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_inputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -562,14 +640,18 @@ sync_with: pcr.en-US.md
 
 按实际载体记录育雏保温、通风、水泵和设备能源。
 
+分母与范围要求：每 kg 最终活鸭
+
+原始数量及计算要求：按批次计量或分配载体能源。 原始采集分母类型：reference_flow。
+
 - 选定流：育成能源载体
 - 流属性/单位：载体特定 / 供应单位
-- 数量规则：按批次计量或分配载体能源。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_inputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -592,14 +674,18 @@ sync_with: pcr.en-US.md
 
 计数并称重从生物育成转向捕捉的活鸭。
 
+分母与范围要求：每个育成批次
+
+原始数量及计算要求：实测转向捕捉的活禽质量和只数。 原始采集分母类型：process_output。
+
 - 选定流：交付前的育成活鸭；UUID 未解析
 - 流属性/单位：质量 / kg；另计数
-- 数量规则：实测转向捕捉的活禽质量和只数。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个育成批次
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_batch`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -615,14 +701,18 @@ sync_with: pcr.en-US.md
 
 仅在真实综合经营中分别记录有意销售的粪肥、稻米或鱼及其交付点。
 
+分母与范围要求：每个育成批次及副产品交付
+
+原始数量及计算要求：实测每项独立转出的产品。 原始采集分母类型：process_output。
+
 - 选定流：独立转出副产品；具体 UUID 未解析
 - 流属性/单位：产品特定 / 实测单位
-- 数量规则：实测每项独立转出的产品。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`route_specific`
-- 归一化基准：每个育成批次及副产品交付
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_outputs`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -640,14 +730,18 @@ sync_with: pcr.en-US.md
 
 按去向分类死亡鸭、垫料和未作为产品有意转出的粪污。
 
+分母与范围要求：每个育成批次
+
+原始数量及计算要求：称重清运物或根据日志和类别实测均质量计算。 原始采集分母类型：process_output。
+
 - 选定流：生物残余物/废物；具体 UUID 未解析
 - 流属性/单位：质量 / kg
-- 数量规则：称重清运物或根据日志和类别实测均质量计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个育成批次
-- 基准类型：`process_output`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_rearing_outputs`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -664,15 +758,19 @@ sync_with: pcr.en-US.md
 
 仅用于已识别向空气排放生物源 CH4 的粪污贮存/处理途径；UUID 是身份，不是排放因子。
 
+分母与范围要求：每 kg 最终活鸭
+
+原始数量及计算要求：依据实测挥发性固体、粪污管理系统与适用 CH4 方法因子计算。 原始采集分母类型：reference_flow。
+
 - 选定流：生物源甲烷，向空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据实测挥发性固体、粪污管理系统与适用 CH4 方法因子计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_emissions`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定物质专属排放筛选区间
@@ -688,15 +786,19 @@ sync_with: pcr.en-US.md
 
 仅用于已识别向空气释放 N2O 的粪污氮途径；不得混用直接与间接途径因子。
 
+分母与范围要求：每 kg 最终活鸭
+
+原始数量及计算要求：依据实测粪污氮、管理途径与适用 N2O 方法因子计算。 原始采集分母类型：reference_flow。
+
 - 选定流：氧化亚氮，向空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：依据实测粪污氮、管理途径与适用 N2O 方法因子计算。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_emissions`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定物质专属排放筛选区间
@@ -712,15 +814,19 @@ sync_with: pcr.en-US.md
 
 仅用于有独立证据证明的粪污/鸭舍途径 NH3 向空气挥发；不得从 IPCC CH4/N2O 因子推定其数量。
 
+分母与范围要求：每 kg 最终活鸭
+
+原始数量及计算要求：该途径的实测 NH3，或有独立文件支持的相容因子计算。 原始采集分母类型：reference_flow。
+
 - 选定流：氨，向空气 `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：该途径的实测 NH3，或有独立文件支持的相容因子计算。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_emissions`
 - 数量范围：暂定物质专属排放筛选区间
   - 范围角色：`default_estimate`
@@ -741,14 +847,18 @@ sync_with: pcr.en-US.md
 
 只从一个前序节点接收活鸭；内部转移的前序负荷仅计一次。
 
+分母与范围要求：每个最终生产者交付批次
+
+原始数量及计算要求：实测待交付的活禽质量和只数。 原始采集分母类型：process_output。
+
 - 选定流：选定前序交付点的活鸭；UUID 未解析
 - 流属性/单位：质量 / kg；另计数
-- 数量规则：实测待交付的活禽质量和只数。
-- 数值来源模式：`foreground_record`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个最终生产者交付批次
-- 基准类型：`process_output`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_live_capture`
 - 数量范围：暂定筛选区间
   - 范围角色：`default_estimate`
@@ -771,14 +881,18 @@ sync_with: pcr.en-US.md
 
 只记录一个选定的孵化场或养殖场活鸭批次；排除死亡鸭和下游运输。
 
+参考产出的原始记录：1 kg 实测最终活鸭；记录只数与交付点。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流： 声明生产者交付点的家鸭活体；宽口径质量参考 UUID 未解析
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- 数量规则：1 kg 实测最终活鸭；记录只数与交付点。
-- 数值来源模式：`foreground_record`
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每 1 kg 最终活鸭
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_live_capture`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -796,14 +910,18 @@ sync_with: pcr.en-US.md
 
 单独记录呈送和最终售出活禽称重之间损失的鸭。
 
+分母与范围要求：每个最终生产者交付批次
+
+原始数量及计算要求：以死亡和剔除日志核对呈送减售出质量。 原始采集分母类型：process_output。
+
 - 选定流：捕捉废物；UUID 未解析
 - 流属性/单位：质量 / kg
-- 数量规则：以死亡和剔除日志核对呈送减售出质量。
-- 数值来源模式：`calculated_value`
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：`site_specific`
-- 归一化基准：每个最终生产者交付批次
-- 基准类型：`process_output`
-- 证据类型：`calculated_from_collection`
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_live_capture`
 - 数量范围：质量守恒校验区间
   - 范围角色：`qa_guardrail`
@@ -832,15 +950,15 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_breeder_inputs` | `breeder_flock` | 饲料、水、能源 | 台账、表计和发票 | 期间；鸭群；饲料类型/库存；水；能源载体；数量 | 将领料与表计归入产蛋期 | kg; kWh; MJ | 每次领料/抄表 | 完整种鸭期 | 种鸭单元 | 每期仅归属一份实测量 | 台账、发票、表计 |
-| `cp_breeder_outputs` | `breeder_flock` | 蛋、淘汰鸭、损失与粪污 | 收集/处置台账 | 期间；蛋数量/质量；去向；淘汰鸭；死亡；粪污质量/去向 | 计数称重批次及粪污转出/处置物 | kg; 只 | 每批 | 完整种鸭期 | 种鸭单元 | 按交付区分产品与废物 | 秤、销售与处置凭证 |
-| `cp_breeder_manure_emissions` | `breeder_flock` | 种鸭粪污物质专属排放 | 粪污、氮及 NH3 测量记录 | 种鸭期间；粪污；挥发性固体；氮；鸭舍/贮存途径；CH4/N2O 因子；独立 NH3 测量 | 按实际种鸭粪污系统计算 CH4/N2O；NH3 仅依据独立测量或另有来源的方法报告 | kg 物质 | 每个种鸭期 | 完整粪污期 | 种鸭单元/粪污节点 | 每份粪污的途径仅归属一次 | 分析、因子计算表、NH3 记录 |
-| `cp_incubation_batch` | `incubation` | 种蛋、服务、鸭雏、损失 | 批次表及表计 | 批次；蛋数量/质量/来源；鸭雏；损失；能源；水 | 按批次关联投入、产出及服务 | kg; 只; kWh; MJ | 每批 | 完整孵化期 | 孵化场 | 共享服务仅分配一次 | 批次表、秤、表计 |
-| `cp_rearing_batch` | `duck_rearing` | 起始/终末鸭 | 移动/称重台账 | 批次；年龄；只数；起始/终末质量 | 每次交接计数称重 | kg; 只 | 每次移动 | 完整育成期 | 鸭群 | 核对禽类移动 | 秤、登记表 |
-| `cp_rearing_inputs` | `duck_rearing` | 饲料、水、能源 | 台账和表计 | 批次；库存；饲料；水；载体；表计 | 核对实际消耗 | kg; kWh; MJ | 每次交付/抄表 | 完整育成期 | 鸭群与共享设施 | 共享服务仅分配一次 | 发票、表计 |
-| `cp_rearing_outputs` | `duck_rearing` | 副产品、粪污、死亡 | 销售/清运记录 | 批次；产品；质量；去向；死亡 | 称重产出或废物清运 | kg; 只 | 每次移动 | 完整育成期 | 鸭群/综合经营单元 | 按实际交付分类 | 销售、清运凭证 |
-| `cp_manure_emissions` | `duck_rearing` | 育成粪污物质专属排放 | 粪污、氮及 NH3 测量记录 | 批次；粪污；挥发性固体；氮；鸭舍/贮存途径；CH4/N2O 因子；独立 NH3 测量 | 按实际育成粪污系统计算 CH4/N2O；NH3 仅依据独立测量或另有来源的方法报告 | kg 物质 | 每批 | 粪污管理期间 | 鸭群/粪污节点 | 每份粪污的途径仅归属一次 | 分析、因子计算表、NH3 记录 |
-| `cp_live_capture` | `live_capture` | 呈送/售出/损失鸭 | 交付点称重表 | 批次；交付点；年龄；只数；呈送/售出/损失质量 | 在最终交付点称重计数 | kg; 只 | 每批 | 捕捉至交付 | 选定交付点 | 将售出活鸭归一到 1 kg | 秤、交付单 |
+| `cp_breeder_inputs` | `breeder_flock` | 饲料、水、能源 | 台账、表计和发票 | 期间；鸭群；饲料类型/库存；水；能源载体；数量 | 将领料与表计归入产蛋期；原始汇总要求：每期仅归属一份实测量。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; kWh; MJ | 每次领料/抄表 | 完整种鸭期 | 种鸭单元 | 每参考流 | 台账、发票、表计；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_breeder_outputs` | `breeder_flock` | 蛋、淘汰鸭、损失与粪污 | 收集/处置台账 | 期间；蛋数量/质量；去向；淘汰鸭；死亡；粪污质量/去向 | 计数称重批次及粪污转出/处置物；原始汇总要求：按交付区分产品与废物。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; 只 | 每批 | 完整种鸭期 | 种鸭单元 | 每参考流 | 秤、销售与处置凭证；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_breeder_manure_emissions` | `breeder_flock` | 种鸭粪污物质专属排放 | 粪污、氮及 NH3 测量记录 | 种鸭期间；粪污；挥发性固体；氮；鸭舍/贮存途径；CH4/N2O 因子；独立 NH3 测量 | 按实际种鸭粪污系统计算 CH4/N2O；NH3 仅依据独立测量或另有来源的方法报告；原始汇总要求：每份粪污的途径仅归属一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 物质 | 每个种鸭期 | 完整粪污期 | 种鸭单元/粪污节点 | 每参考流 | 分析、因子计算表、NH3 记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_incubation_batch` | `incubation` | 种蛋、服务、鸭雏、损失 | 批次表及表计 | 批次；蛋数量/质量/来源；鸭雏；损失；能源；水 | 按批次关联投入、产出及服务；原始汇总要求：共享服务仅分配一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; 只; kWh; MJ | 每批 | 完整孵化期 | 孵化场 | 每参考流 | 批次表、秤、表计；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_rearing_batch` | `duck_rearing` | 起始/终末鸭 | 移动/称重台账 | 批次；年龄；只数；起始/终末质量 | 每次交接计数称重；原始汇总要求：核对禽类移动。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; 只 | 每次移动 | 完整育成期 | 鸭群 | 每参考流 | 秤、登记表；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_rearing_inputs` | `duck_rearing` | 饲料、水、能源 | 台账和表计 | 批次；库存；饲料；水；载体；表计 | 核对实际消耗；原始汇总要求：共享服务仅分配一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; kWh; MJ | 每次交付/抄表 | 完整育成期 | 鸭群与共享设施 | 每参考流 | 发票、表计；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_rearing_outputs` | `duck_rearing` | 副产品、粪污、死亡 | 销售/清运记录 | 批次；产品；质量；去向；死亡 | 称重产出或废物清运；原始汇总要求：按实际交付分类。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; 只 | 每次移动 | 完整育成期 | 鸭群/综合经营单元 | 每参考流 | 销售、清运凭证；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure_emissions` | `duck_rearing` | 育成粪污物质专属排放 | 粪污、氮及 NH3 测量记录 | 批次；粪污；挥发性固体；氮；鸭舍/贮存途径；CH4/N2O 因子；独立 NH3 测量 | 按实际育成粪污系统计算 CH4/N2O；NH3 仅依据独立测量或另有来源的方法报告；原始汇总要求：每份粪污的途径仅归属一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 物质 | 每批 | 粪污管理期间 | 鸭群/粪污节点 | 每参考流 | 分析、因子计算表、NH3 记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_live_capture` | `live_capture` | 呈送/售出/损失鸭 | 交付点称重表 | 批次；交付点；年龄；只数；呈送/售出/损失质量 | 在最终交付点称重计数；原始汇总要求：将售出活鸭归一到 1 kg。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; 只 | 每批 | 捕捉至交付 | 选定交付点 | 每参考流 | 秤、交付单；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

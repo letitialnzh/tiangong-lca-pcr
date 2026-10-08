@@ -80,6 +80,13 @@ measurement_rules:
       uuid: ""
     required_unit: "day or declared period"
     rule: "Link inputs, outputs, deaths and shared service to actual cohort, campaign and service period."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
 process_map:
   - id: herd
     name: "Breed and rear eligible living ruminants"
@@ -109,13 +116,13 @@ process_inventory:
           name: "Species-qualified living breeding or young stock"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Purchased animals carry upstream burden; opening animals need cohort and prior-burden disclosure."
+          description: "Purchased animals carry upstream burden; opening animals need cohort and prior-burden disclosure. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "weigh by species, class and purchase/opening event"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -135,13 +142,13 @@ process_inventory:
           name: "Actual species-specific feed and forage"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record species-specific ration and grazing/purchased shares by cohort."
+          description: "Record species-specific ration and grazing/purchased shares by cohort. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "delivered mass less documented stock change and loss"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -161,13 +168,13 @@ process_inventory:
           name: "Supplied water"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record drinking and cleaning water actually supplied, not rainfall."
+          description: "Record drinking and cleaning water actually supplied, not rainfall. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "meter or reconcile supplied water"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -187,13 +194,13 @@ process_inventory:
           name: "Actual facility energy carrier"
           flow_type: "product"
           property_unit: "Energy or mass / kWh or kg"
-          description: "Record actual fuel or electricity used for husbandry, water supply and handling."
+          description: "Record actual fuel or electricity used for husbandry, water supply and handling. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "meter or reconcile energy by service period"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -219,13 +226,13 @@ process_inventory:
           name: "Species-qualified living ruminant"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "An internal live transfer, not a second final sale."
+          description: "An internal live transfer, not a second final sale. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "weigh live transfer by species and count"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -245,13 +252,13 @@ process_inventory:
           name: "Actual separately marketed farm product or service"
           flow_type: "product"
           property_unit: "Product-specific mass, count or service unit"
-          description: "Conditional umbrella for actual separate antler/velvet, milk, breeding services or other lawful output; expand into concrete identity/unit by foreground records. Never infer a product merely from species."
+          description: "Conditional umbrella for actual separate antler/velvet, milk, breeding services or other lawful output; expand into concrete identity/unit by foreground records. Never infer a product merely from species. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "measure each sold product at its independent gate"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -272,13 +279,13 @@ process_inventory:
           name: "Herd mortality carcass at actual disposal gate"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record dead animals by cause, cohort and actual disposal destination; these are not living stock or meat products."
+          description: "Record dead animals by cause, cohort and actual disposal destination; these are not living stock or meat products. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "measure carcass disposal mass by cohort and destination"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -298,13 +305,13 @@ process_inventory:
           name: "Discarded manure at actual disposal gate"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Use only manure actually discarded as Waste at its disposal gate; separately sold usable manure is a distinct Product output with its own identity and quantity."
+          description: "Use only manure actually discarded as Waste at its disposal gate; separately sold usable manure is a distinct Product output with its own identity and quantity. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "measure discarded manure by cohort and destination"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -330,13 +337,13 @@ process_inventory:
           name: "Actual capture energy carrier"
           flow_type: "product"
           property_unit: "Energy or mass / kWh or kg"
-          description: "Actual capture and short holding energy only; no invented farm feeding years."
+          description: "Actual capture and short holding energy only; no invented farm feeding years. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "meter or log actual authorized campaign energy"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -356,13 +363,13 @@ process_inventory:
           name: "Supplied water for actual live holding"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Include only measured water supplied during actual short holding; record zero only when the campaign has no such holding or supplied-water use and that condition is documented."
+          description: "Include only measured water supplied during actual short holding; record zero only when the campaign has no such holding or supplied-water use and that condition is documented. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "meter or document supplied water by capture campaign"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -382,13 +389,13 @@ process_inventory:
           name: "Actual capture or holding consumable by material identity"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record actual purchased restraint or temporary-holding consumables only where used; documented no-use is zero. Durable shared equipment is assigned through its service ledger, not counted again here."
+          description: "Record actual purchased restraint or temporary-holding consumables only where used; documented no-use is zero. Durable shared equipment is assigned through its service ledger, not counted again here. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "record purchased consumable use by campaign and material"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -414,13 +421,13 @@ process_inventory:
           name: "Species-qualified lawfully captured living ruminant"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Require species, permit, capture campaign and living condition at transfer."
+          description: "Require species, permit, capture campaign and living condition at transfer. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "weigh live capture transfers and reconcile head count"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -441,13 +448,13 @@ process_inventory:
           name: "Capture mortality carcass at actual disposal gate"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Actual dead animals have documented lawful disposition, not live reference output."
+          description: "Actual dead animals have documented lawful disposition, not live reference output. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "record death mass by campaign and destination"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -473,13 +480,13 @@ process_inventory:
           name: "Species-qualified living residual ruminant"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Link exactly once to either managed herd or lawful capture, never both for one lot."
+          description: "Link exactly once to either managed herd or lawful capture, never both for one lot. Denominator and scope requirements：per kg final live output"
           amount:
             expression: "weigh source transfer and reconcile accepted and rejected heads"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -505,16 +512,16 @@ process_inventory:
           name: "Species-qualified living residual ruminant"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "The single final reference gate requires species, class, count, mass, condition and legal origin."
+          description: "The single final reference gate requires species, class, count, mass, condition and legal origin. Denominator and scope requirements：per kg final live output Raw reference-output records: measured accepted live mass normalized to 1 kg Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit."
           amount:
-            expression: "measured accepted live mass normalized to 1 kg"
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg final live output"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_live
               source_ids: []
             ranges:
@@ -558,49 +565,49 @@ dataset_production:
       flow_role: "Live stock and transfers"
       record_type: "individual register and weigh ticket"
       raw_fields: "species; sex; age; permit; count; mass; health; source; destination; gate; date"
-      collection_method: "individual identification and calibrated scale"
+      collection_method: "individual identification and calibrated scale; Raw aggregation requirements: sum accepted measured mass at one gate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "head; kg"
       frequency: "every transfer"
       temporal_coverage: "whole cohort/campaign"
       site_scope: "every included site"
-      aggregation_rule: "sum accepted measured mass at one gate"
-      quality_evidence: "signed ticket; scale calibration; permit link"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "signed ticket; scale calibration; permit link; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_inputs
       process_id: "herd"
       flow_role: "Feed, water and energy"
       record_type: "invoices, meters and stock ledger"
       raw_fields: "type; quantity; stock change; supplier; node; period"
-      collection_method: "meter and purchase reconciliation"
+      collection_method: "meter and purchase reconciliation; Raw aggregation requirements: assign actual use to cohort/node then normalize. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; kWh; m3"
       frequency: "delivery/meter cycle"
       temporal_coverage: "all operated periods"
       site_scope: "all managed sites"
-      aggregation_rule: "assign actual use to cohort/node then normalize"
-      quality_evidence: "invoice; meter; allocation ledger"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice; meter; allocation ledger; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_capture
       process_id: "capture"
       flow_role: "Lawful capture inputs"
       record_type: "authorization and campaign log"
       raw_fields: "permit; species; jurisdiction; dates; method; fuel; count; survival"
-      collection_method: "permit inspection and campaign records"
+      collection_method: "permit inspection and campaign records; Raw aggregation requirements: total actual campaign once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kWh; kg; head"
       frequency: "each campaign"
       temporal_coverage: "authorization to handover"
       site_scope: "authorized capture/holding site"
-      aggregation_rule: "total actual campaign once"
-      quality_evidence: "permit; log; weigh ticket"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "permit; log; weigh ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_outputs
       process_id: "herd_capture"
       flow_role: "Sold outputs and losses"
       record_type: "sale and disposal register"
       raw_fields: "identity; quantity; destination; date; mortality; manure; cohort"
-      collection_method: "invoice, scale and disposal record"
+      collection_method: "invoice, scale and disposal record; Raw aggregation requirements: split product, internal stock and waste. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "declared unit"
       frequency: "each event"
       temporal_coverage: "whole cohort/campaign"
       site_scope: "each node"
-      aggregation_rule: "split product, internal stock and waste"
-      quality_evidence: "invoice; disposal manifest; register"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice; disposal manifest; register; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: c_live
       applies_to: "Final reference"
@@ -692,19 +699,19 @@ data_sources:
     used_for: "Live gate and downstream journey distinction"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:6018b85a35e13b1b2b00509a842174d2195387deaa192455dccd1fdd2398e30a"
+  source_sha256: "sha256:984a27017b7a9798844076344320e16b2f53f1c6df9cc8c5049de7cc8e1cfc11"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_3194"
+    - unit_id: "normative_4300"
       family: "system_boundary"
       span:
         start:
-          offset: 3194
-          line: 52
+          offset: 4300
+          line: 53
           column: 1
         end:
-          offset: 4953
-          line: 73
+          offset: 6059
+          line: 74
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Farm: opening herd or purchased stock with species, class, count, mass and prior burden. Capture: documented lawful campaign and source rights without fictional breeding. |\n| starting_condition_role | Farm biological stock or upstream Product input; capture source context, not zero-burden purchased stock |\n| product_classification_scope | CPC 3.0 `02129` residual living ruminants after species-level exclusions |\n| recursive_input_rule | Link purchased same-category live stock to one upstream producer dataset; internal transfers are not second final output. |\n| upstream_dataset_requirement | Match purchased animals, feed, water, energy and services by supplier, identity, state, geography and gate; retain capture authorization. |\n| disclosure | Species, residual decision, legal source, route, cohort/campaign, count/mass, mortality, products, gate and shared-service periods. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `b_species` | Every lot | Species identity and legal source are prerequisites; CPC inclusion is not a trade permit. Resolve bovine overlap explicitly. | `un-cpc-2025`; `woah-wildlife-2021` |\n| `b_routes` | Farm or capture | Farm includes real breeding/rearing and purchased-stock burden; capture includes authorized campaign, short holding and losses but no invented lifetime farm. Stop at actual live handover. | `fao-deer-farming`; `woah-wildlife-2021` |\n| `b_shared` | Shared facilities | Assign fencing, water/handling services to actual consuming nodes and periods once; exclude slaughter and post-gate buyer journey. | `fao-deer-farming`; `woah-transport` |\n\n"
       headings:
@@ -723,12 +730,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 3194
-              line: 52
+              offset: 4300
+              line: 53
               column: 1
             end:
-              offset: 3215
-              line: 52
+              offset: 4321
+              line: 53
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -743,16 +750,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_20650"
+    - unit_id: "normative_22825"
       family: "allocation"
       span:
         start:
-          offset: 20650
-          line: 469
+          offset: 22825
+          line: 502
           column: 1
         end:
-          offset: 21851
-          line: 478
+          offset: 24026
+          line: 511
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_outputs` | Farm and capture | Enumerate each independently sold live animal, antler/velvet, milk, breeding service, usable manure or other real product by identity, amount and handover. Internal transfer, hypothetical output, residue and discarded waste have no product credit; substitution is not a silent default. | `fao-deer-farming` |\n| `a_joint` | Joint production | Prefer measured process subdivision. Otherwise disclose a justified physical causal allocation tied to actual output and cohort; if none is defensible, report economic sensitivity with contemporaneous prices. | `fao-deer-farming` |\n| `a_period` | Herd cohorts or capture campaign | Link breeding, rearing, replacement, deaths, sold outputs and campaign events to actual period; assign opening/closing stock once and never invent capture-period husbandry. | `fao-deer-farming` |\n| `a_shared` | Fencing, water and handling facilities | Record service units, consuming nodes and periods; attribute once by measured use or declared physical proxy, never double charge herd/capture/handover. | `fao-deer-farming` |\n\n"
       headings:
@@ -771,12 +778,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 20650
-              line: 469
+              offset: 22825
+              line: 502
               column: 1
             end:
-              offset: 20690
-              line: 469
+              offset: 22865
+              line: 502
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -791,16 +798,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_25136"
+    - unit_id: "normative_28875"
       family: "validation"
       span:
         start:
-          offset: 25136
-          line: 505
+          offset: 28875
+          line: 538
           column: 1
         end:
-          offset: 26245
-          line: 515
+          offset: 29984
+          line: 548
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_scope` | Every dataset | Reject unidentified species, unresolved bovine overlap, undocumented legal source or dead/post-slaughter reference. CPC examples do not license trade. | `un-cpc-2025`; `woah-wildlife-2021` |\n| `v_route` | Farm or capture | Require exactly one source route per lot, actual herd or campaign records and living final gate; capture cannot acquire fictional farm inputs. | `fao-deer-farming`; `woah-wildlife-2021` |\n| `v_balance` | Stock and outputs | Reconcile count/mass, births or captures, transfers, mortality, sales and closing stock; internal transfers are not duplicate final output. | `fao-deer-farming` |\n| `v_attribution` | Joint outputs, periods and assets | Require actual handover set, explicit allocation, periods and one-time shared-service assignment. | `fao-deer-farming` |\n| `v_identity` | All unresolved cards | Keep unconfirmed UUID blank; a final exchange requires compatible concrete identity/property/unit evidence. conditional flow scope alone is not a UUID. | |\n\n"
       headings:
@@ -819,12 +826,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 25136
-              line: 505
+              offset: 28875
+              line: 538
               column: 1
             end:
-              offset: 25158
-              line: 505
+              offset: 28897
+              line: 538
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -843,207 +850,207 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "b_species"
       identity_kind: "explicit"
-      unit_id: "normative_3194"
+      unit_id: "normative_4300"
       source_span:
         start:
-          offset: 4286
-          line: 69
+          offset: 5392
+          line: 70
           column: 1
         end:
-          offset: 4478
-          line: 69
+          offset: 5584
+          line: 70
           column: 193
     - pointer: "/system_boundary/rules/1"
       rule_id: "b_routes"
       identity_kind: "explicit"
-      unit_id: "normative_3194"
+      unit_id: "normative_4300"
       source_span:
         start:
-          offset: 4479
-          line: 70
+          offset: 5585
+          line: 71
           column: 1
         end:
-          offset: 4744
-          line: 70
+          offset: 5850
+          line: 71
           column: 266
     - pointer: "/system_boundary/rules/2"
       rule_id: "b_shared"
       identity_kind: "explicit"
-      unit_id: "normative_3194"
+      unit_id: "normative_4300"
       source_span:
         start:
-          offset: 4745
-          line: 71
+          offset: 5851
+          line: 72
           column: 1
         end:
-          offset: 4951
-          line: 71
+          offset: 6057
+          line: 72
           column: 207
     - pointer: "/allocation_rules/0"
       rule_id: "a_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_20650"
+      unit_id: "normative_22825"
       source_span:
         start:
-          offset: 20763
-          line: 473
+          offset: 22938
+          line: 506
           column: 1
         end:
-          offset: 21106
-          line: 473
+          offset: 23281
+          line: 506
           column: 344
     - pointer: "/allocation_rules/1"
       rule_id: "a_joint"
       identity_kind: "explicit"
-      unit_id: "normative_20650"
+      unit_id: "normative_22825"
       source_span:
         start:
-          offset: 21107
-          line: 474
+          offset: 23282
+          line: 507
           column: 1
         end:
-          offset: 21371
-          line: 474
+          offset: 23546
+          line: 507
           column: 265
     - pointer: "/allocation_rules/2"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_20650"
+      unit_id: "normative_22825"
       source_span:
         start:
-          offset: 21372
-          line: 475
+          offset: 23547
+          line: 508
           column: 1
         end:
-          offset: 21617
-          line: 475
+          offset: 23792
+          line: 508
           column: 246
     - pointer: "/allocation_rules/3"
       rule_id: "a_shared"
       identity_kind: "explicit"
-      unit_id: "normative_20650"
+      unit_id: "normative_22825"
       source_span:
         start:
-          offset: 21618
-          line: 476
+          offset: 23793
+          line: 509
           column: 1
         end:
-          offset: 21849
-          line: 476
+          offset: 24024
+          line: 509
           column: 232
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_25136"
+      unit_id: "normative_28875"
       source_span:
         start:
-          offset: 25231
-          line: 509
+          offset: 28970
+          line: 542
           column: 1
         end:
-          offset: 25451
-          line: 509
+          offset: 29190
+          line: 542
           column: 221
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_25136"
+      unit_id: "normative_28875"
       source_span:
         start:
-          offset: 25452
-          line: 510
+          offset: 29191
+          line: 543
           column: 1
         end:
-          offset: 25671
-          line: 510
+          offset: 29410
+          line: 543
           column: 220
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_25136"
+      unit_id: "normative_28875"
       source_span:
         start:
-          offset: 25672
-          line: 511
+          offset: 29411
+          line: 544
           column: 1
         end:
-          offset: 25870
-          line: 511
+          offset: 29609
+          line: 544
           column: 199
     - pointer: "/validation_rules/3"
       rule_id: "v_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_25136"
+      unit_id: "normative_28875"
       source_span:
         start:
-          offset: 25871
-          line: 512
+          offset: 29610
+          line: 545
           column: 1
         end:
-          offset: 26047
-          line: 512
+          offset: 29786
+          line: 545
           column: 177
     - pointer: "/validation_rules/4"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_25136"
+      unit_id: "normative_28875"
       source_span:
         start:
-          offset: 26048
-          line: 513
+          offset: 29787
+          line: 546
           column: 1
         end:
-          offset: 26243
-          line: 513
+          offset: 29982
+          line: 546
           column: 196
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_3194"
+      unit_id: "normative_4300"
       source_span:
         start:
-          offset: 3194
-          line: 52
+          offset: 4300
+          line: 53
           column: 1
         end:
-          offset: 3215
-          line: 52
+          offset: 4321
+          line: 53
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_3194"
+      unit_id: "normative_4300"
       source_span:
         start:
-          offset: 3243
-          line: 56
+          offset: 4349
+          line: 57
           column: 1
         end:
-          offset: 4193
-          line: 63
+          offset: 5299
+          line: 64
           column: 149
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_20650"
+      unit_id: "normative_22825"
       source_span:
         start:
-          offset: 20650
-          line: 469
+          offset: 22825
+          line: 502
           column: 1
         end:
-          offset: 20690
-          line: 469
+          offset: 22865
+          line: 502
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_25136"
+      unit_id: "normative_28875"
       source_span:
         start:
-          offset: 25136
-          line: 505
+          offset: 28875
+          line: 538
           column: 1
         end:
-          offset: 25158
-          line: 505
+          offset: 28897
+          line: 538
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1052,5 +1059,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:6018b85a35e13b1b2b00509a842174d2195387deaa192455dccd1fdd2398e30a"
-  generated_content_sha256: "sha256:2ab16969afcdd600ef7b868660a62d14f1202909974615d1ca7839d00ea0e27e"
+    sha256: "sha256:984a27017b7a9798844076344320e16b2f53f1c6df9cc8c5049de7cc8e1cfc11"
+  generated_content_sha256: "sha256:0a76834f9734084252ef0be285ced04ba950bad974a8c41718c0aa38053d3c28"

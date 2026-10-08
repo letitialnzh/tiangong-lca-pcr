@@ -31,16 +31,18 @@ sync_with: pcr.en-US.md
 | How much | 实测带壳蛋质量 1 kg，同时保留枚数和批次实测平均单蛋质量 |
 | How well | 披露鸟种/品系、蛋壳完整性、等级、集蛋和暂存时间及条件，以及实际做过的受精或活力检测；不得推断孵化率 |
 | How long or cycle | 声明种禽生产期和集蛋/暂存期，并关联替换群次 |
-| reference_flow_link | 仅实际农场门口与之匹配时采用最终 `farm_gate_hatching_eggs`；其他交付门槛的参考身份保持未解析；内部蛋状态不是额外销售 |
+| reference_flow_link | `reference_product_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 非鸡类鲜带壳孵化蛋（宽口径、多门槛参考流 UUID 尚未解析） |
+| Reference product flow | 非鸡类鲜带壳孵化蛋 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 鸟种/品系；种禽群次；实际生产者门槛；枚数与 kg；蛋壳等级；孵化验收/检测证据；集蛋和暂存期及条件；拒收及降级去向；包装复用 |
+
+从实际交付批次实例化一个前景参考，声明全部必需限定项。类别可以覆盖不同状态及生产者交付门，但每个数据包只有一个声明物种／状态／交付门／等级分层，以及一个实测合格参考产出分母。不得汇总不相容状态，也不得以质量相同推定服务等价。路线专属来源行与 reference_handover 描述同一实际边界事件；关联内部移交不是另一次销售，也不是新增实体操作。
 
 ## 4. 计量与单位规则
 
@@ -49,6 +51,8 @@ sync_with: pcr.en-US.md
 | `egg_count_mass` | 最终及内部蛋批次 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg 和枚 | 按批次实测带壳质量和枚数；按批次实测平均单蛋质量换算枚数，不采用跨鸟种通用单蛋质量。 |
 | `egg_balance_unit` | 蛋状态转移 | Mass | 带壳 kg | 结合实测库存变化核对收集、筛选、降级、拒收、暂存和发运的质量。 |
 | `service_period` | 种禽和共用投入 | 各载体对应属性 | kg、L、MJ、kWh | 归一化到参考量之前，把每项投入、资产和产出关联至种禽期或蛋批期。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -72,6 +76,7 @@ sync_with: pcr.en-US.md
 | `grade_state` | 已筛选蛋 | 孵化用途需要有记录的批次筛选；预期用途不等于受精率或实际孵化率证据。 | `fao-goose-production` |
 | `handoff_once` | 蛋状态 | 同一批次的产出、收集、分级和包装状态按转移核对，不得作为重复独立产品。 | `fao-goose-production` |
 | `shared_boundary` | 禽舍、集蛋室、分级设备和复用蛋托 | 标明消耗节点和服务期；按因果分配驱动量仅计一次共用负担。 | `fao-animal-genetic-resources` |
+| `reference_handover_linkage` | 实际参考产品边界 | reference_handover 是来源行已经表示的同一实际生产者交付，不得延长交付门，或增加加工、捕获、储存、运输、服务及资本负担。单位过程投影保留实际运作的阶段参考；交付记录可以是最终前景数据包的边界接口，而非虚构独立操作。选择一个实际且限定完整的路线／产出分层，将匹配来源及输入追溯为内部移交，仅暴露一次合格参考产品。若来源已经在本交付门结束，应拆分其已有交付核算职责，不能再次计数。 |  |
 
 ## 6. 过程清单结构
 
@@ -83,6 +88,7 @@ sync_with: pcr.en-US.md
 | `egg_collection` | 独立集蛋 | `required` | 每条路线 | 从巢位/禽舍收集蛋，记录破损及交接 | 总 kg 和收集 kg |
 | `hatching_grade` | 孵化适用性筛选及去向分级 | `required` | 每条路线 | 分开验收蛋、安全另售降级蛋和废弃蛋 | 收集 kg |
 | `egg_presentation` | 生产者端保护与交付 | `required` | 直接或暂存批次 | 记录包装、暂存、损失及唯一最终交付门槛 | 验收 kg |
+| `reference_handover` | 实际生产者参考产品交付 | required | 每个前景数据包选择一个实际路线、状态及生产者交付门 | 同一实际边界交付只记录一次；为关联／核算职责，不增加处理或流通 | 声明交付门的 1 kg 合格产品 |
 
 ### 过程：管理性非鸡类种禽产蛋（`breeder_laying`）
 
@@ -94,14 +100,18 @@ sync_with: pcr.en-US.md
 
 记录来源、鸟种、数量、活重和生产群次。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：按群次仅记录一次外购替换种禽质量。 原始采集分母类型：reference_flow。
+
 - 选定流：非鸡类种禽（UUID 未解析）
 - 流属性/单位：Mass / 活重 kg
-- 数量规则：按群次仅记录一次外购替换种禽质量。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_flock`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -116,14 +126,18 @@ sync_with: pcr.en-US.md
 
 按鸟种和群次记录配方及净饲料供应。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：收货加期初库存减去期末库存及转出量。 原始采集分母类型：reference_flow。
+
 - 选定流：种禽饲料原料（UUID 未解析）
 - 流属性/单位：Mass / 原样 kg
-- 数量规则：收货加期初库存减去期末库存及转出量。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_inputs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -138,14 +152,18 @@ sync_with: pcr.en-US.md
 
 依据计量或发票分开记录饮用与清洁功能。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：按实际功能记录供水量。 原始采集分母类型：reference_flow。
+
 - 选定流：种禽舍供水
 - 流属性/单位：Volume / L
-- 数量规则：按实际功能记录供水量。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_inputs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -160,14 +178,18 @@ sync_with: pcr.en-US.md
 
 分开计量通风、照明和供暖的能源载体。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录各载体及有凭据的换算。 原始采集分母类型：reference_flow。
+
 - 选定流：能源载体与公用工程
 - 流属性/单位：Energy / 按载体 MJ 或 kWh
-- 数量规则：记录各载体及有凭据的换算。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_inputs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -194,14 +216,18 @@ sync_with: pcr.en-US.md
 
 总量内部蛋状态交给独立集蛋过程，不是第二次销售。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：称重或用枚数与批次实测平均质量换算，并核对损失。 原始采集分母类型：reference_flow。
+
 - 选定流：新产非鸡类带壳蛋（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：称重或用枚数与批次实测平均质量换算，并核对损失。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_eggs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -216,14 +242,18 @@ sync_with: pcr.en-US.md
 
 仅纳入实际出售禽只，不包括死亡禽只。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录独立销售质量、门槛和群次。 原始采集分母类型：reference_flow。
+
 - 选定流：淘汰非鸡类种禽（UUID 未解析）
 - 流属性/单位：Mass / 活重 kg
-- 数量规则：记录独立销售质量、门槛和群次。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_flock`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -238,14 +268,18 @@ sync_with: pcr.en-US.md
 
 仅在买方接收具有明确规格的产品时使用；否则为废物。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录出售质量与含水率，不得同时计为废物。 原始采集分母类型：reference_flow。
+
 - 选定流：外售非鸡类种禽粪肥（UUID 未解析）
 - 流属性/单位：Mass / 湿重及干重 kg
-- 数量规则：记录出售质量与含水率，不得同时计为废物。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residues`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -262,14 +296,18 @@ sync_with: pcr.en-US.md
 
 按材料与去向展开交换流，不与外售产出混合。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：按去向记录产生量与转移量。 原始采集分母类型：reference_flow。
+
 - 选定流：按材料与去向区分的农场残余废物（UUID 未解析）
 - 流属性/单位：Mass / 湿重及干重 kg
-- 数量规则：按去向记录产生量与转移量。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residues`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -295,14 +333,18 @@ sync_with: pcr.en-US.md
 
 同一群次从产蛋过程转入，不新增外购蛋负担。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：按批次与 laid_eggs 核对。 原始采集分母类型：reference_flow。
+
 - 选定流：产出带壳蛋内部转移（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：按批次与 laid_eggs 核对。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_eggs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -329,14 +371,18 @@ sync_with: pcr.en-US.md
 
 独立集蛋记录巢位取蛋、破损及交给分级过程。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：按鸟种、集蛋路线和时间称重。 原始采集分母类型：reference_flow。
+
 - 选定流：已收集未分拣非鸡类蛋（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：按鸟种、集蛋路线和时间称重。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_eggs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -353,14 +399,18 @@ sync_with: pcr.en-US.md
 
 仅包括实际破损、损失或不安全且未独立出售的蛋。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录枚数、质量和处理去向。 原始采集分母类型：reference_flow。
+
 - 选定流：按去向区分的破损蛋废物（UUID 未解析）
 - 流属性/单位：Mass / 带壳当量 kg
-- 数量规则：记录枚数、质量和处理去向。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_eggs`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -386,14 +436,18 @@ sync_with: pcr.en-US.md
 
 仅接收一次，并记录蛋壳状况与实际检测。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：与 collected_eggs 及库存变化核对。 原始采集分母类型：reference_flow。
+
 - 选定流：收集蛋内部转移（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：与 collected_eggs 及库存变化核对。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -420,14 +474,20 @@ sync_with: pcr.en-US.md
 
 验收鲜带壳蛋进入保护或直接交付，不构成另一次销售。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：按鸟种和等级记录验收枚数及实测质量。 原始采集分母类型：reference_flow。
+
+生产者交付关联：仅当本状态／交付门专属行被选为实际路线的最终来源时，才向 reference_handover_input 提供同一批实际合格产品。此时它是内部交付记录，不是第二次对外参考产品销售；否则保留原有中间移交角色。保留确切身份及原有路线条件，只选实际最终来源，不汇总所有连续移交；匹配同批次及相容的物种／状态／交付门证据。较窄固定身份的交付门或物种不得扩大。交付接口不增加加工、运输、产率假设或重复处理负担。
+
 - 选定流：已筛选非鸡类孵化蛋内部状态（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：按鸟种和等级记录验收枚数及实测质量。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -442,14 +502,18 @@ sync_with: pcr.en-US.md
 
 仅限在自身门槛被接收的安全非孵化蛋；不安全蛋仍为废物。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录枚数、质量、买方和安全状态。 原始采集分母类型：reference_flow。
+
 - 选定流：实际门槛的非鸡类鲜非孵化蛋（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：记录枚数、质量、买方和安全状态。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -466,14 +530,18 @@ sync_with: pcr.en-US.md
 
 与安全的外售降级蛋分开，并披露去向。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录枚数、质量和拒收原因。 原始采集分母类型：reference_flow。
+
 - 选定流：拒收蛋与蛋壳废物（UUID 未解析）
 - 流属性/单位：Mass / 湿重 kg
-- 数量规则：记录枚数、质量和拒收原因。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -499,14 +567,18 @@ sync_with: pcr.en-US.md
 
 仅一批已筛选蛋进入；如暂存，记录出入库时间。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：与 selected_eggs 和实测库存变化核对。 原始采集分母类型：reference_flow。
+
 - 选定流：已筛选孵化蛋内部转移（UUID 未解析）
 - 流属性/单位：Mass / 带壳 kg
-- 数量规则：与 selected_eggs 和实测库存变化核对。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -521,14 +593,18 @@ sync_with: pcr.en-US.md
 
 记录新料、复用材料及次数；门后运输包装不在本过程。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：记录新投入、损失及复用周期份额。 原始采集分母类型：reference_flow。
+
 - 选定流：保护性蛋包装材料
 - 流属性/单位：Mass 或枚数 / 按材料 kg 或件
-- 数量规则：记录新投入、损失及复用周期份额。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -543,14 +619,18 @@ sync_with: pcr.en-US.md
 
 仅包括门前保护能源，不包括下游孵化器热量。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：计量交付前的载体和期间。 原始采集分母类型：reference_flow。
+
 - 选定流：保护性暂存能源
 - 流属性/单位：Energy / 按载体 MJ 或 kWh
-- 数量规则：计量交付前的载体和期间。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -577,15 +657,21 @@ sync_with: pcr.en-US.md
 
 仅匹配农场门口的非鸡类孵化蛋时采用固定身份；其他门槛仍未解析。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：在匹配门槛记录实测验收带壳质量与枚数。 原始采集分母类型：reference_flow。
+
+生产者交付关联：仅当本状态／交付门专属行被选为实际路线的最终来源时，才向 reference_handover_input 提供同一批实际合格产品。此时它是内部交付记录，不是第二次对外参考产品销售；否则保留原有中间移交角色。保留确切身份及原有路线条件，只选实际最终来源，不汇总所有连续移交；匹配同批次及相容的物种／状态／交付门证据。较窄固定身份的交付门或物种不得扩大。交付接口不增加加工、运输、产率假设或重复处理负担。
+
 - 选定流：其他鸟类鲜带壳孵化蛋 `3ee29323-915c-4635-b8a2-8942a155e806`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 绑定：固定（`fixed`）
-- 数量规则：在匹配门槛记录实测验收带壳质量与枚数。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：参考量恒等检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -603,14 +689,18 @@ sync_with: pcr.en-US.md
 
 按实际蛋或包装材料及去向展开，不得隐入验收质量。
 
+分母与范围要求：每 kg 验收鲜带壳孵化蛋
+
+原始数量及计算要求：分开记录实际破损、拒收和包装损失。 原始采集分母类型：reference_flow。
+
 - 选定流：门前蛋或包装废物（UUID 未解析）
 - 流属性/单位：Mass / 按材料 kg
-- 数量规则：分开记录实际破损、拒收和包装损失。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收鲜带壳孵化蛋
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_handover`
 - 数量范围：暂定宽范围质量检查
   - 范围角色：质量检查（`qa_guardrail`）
@@ -624,6 +714,84 @@ sync_with: pcr.en-US.md
 ##### 基本流
 
 此坐标不预设卡片；实测交换流须独立核实身份。
+
+### Process: 实际生产者参考产品交付（`reference_handover`）
+
+从实际交付批次实例化一个前景参考，声明全部必需限定项。类别可以覆盖不同状态及生产者交付门，但每个数据包只有一个声明物种／状态／交付门／等级分层，以及一个实测合格参考产出分母。不得汇总不相容状态，也不得以质量相同推定服务等价。路线专属来源行与 reference_handover 描述同一实际边界事件；关联内部移交不是另一次销售，也不是新增实体操作。
+
+#### 输入
+
+##### 产品流
+
+###### 非鸡类鲜带壳孵化蛋（实际生产者交付关联） (`reference_handover_input`)
+
+本输入在原有路线条件下匹配 `selected_eggs`, `farm_gate_hatching_eggs` 所表示的合格产品。它是来源至交付的内部关联，不是新购同类别产品，也不是额外生产；匹配来源与输入在数据包边界抵消。
+
+实际路线／状态／交付门由前景交付证据确定，保留全部必需限定项；使用同一实际合格批次的最终来源，不汇总所有连续阶段移交。固定来源身份仅适用于其确切物种／状态／交付门；其他覆盖路线使用相容的未绑定来源角色，在创建最终数据集前解析真实前景交换。
+
+选定来源／接口行：`selected_eggs`, `farm_gate_hatching_eggs`
+
+必需产品实例限定项：鸟种/品系；种禽群次；实际生产者门槛；枚数与 kg；蛋壳等级；孵化验收/检测证据；集蛋和暂存期及条件；拒收及降级去向；包装复用
+
+- 选定流：非鸡类鲜带壳孵化蛋（实际生产者交付关联）
+- 流属性 / 单位：质量 / kg
+- 数量规则：使用与关联来源行核对的同批实测合格数量，仅对声明参考流归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 数据特异性：场址特异（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reference_handover`
+
+- 数量范围：归一化后的确切身份核对，不是生产产率默认值
+  - 范围角色：质量检查边界（`qa_guardrail`）
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - 基准：声明参考数量；输入与输出为同一交付台账中的同一实际合格产品
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### 废物流
+
+##### 基本流
+
+#### 输出
+
+##### 产品流
+
+###### 非鸡类鲜带壳孵化蛋 (`reference_product_handover`)
+
+本卡为声明生产者边界的实际合格参考产品，依 cp_reference_handover 测量；它是唯一对外参考产出。依据真实批次实例化身份，不套用广义固定 UUID。
+
+实际路线／状态／交付门由前景交付证据确定，保留全部必需限定项；使用同一实际合格批次的最终来源，不汇总所有连续阶段移交。固定来源身份仅适用于其确切物种／状态／交付门；其他覆盖路线使用相容的未绑定来源角色，在创建最终数据集前解析真实前景交换。
+
+选定来源／接口行：`selected_eggs`, `farm_gate_hatching_eggs`
+
+必需产品实例限定项：鸟种/品系；种禽群次；实际生产者门槛；枚数与 kg；蛋壳等级；孵化验收/检测证据；集蛋和暂存期及条件；拒收及降级去向；包装复用
+
+- 选定流：非鸡类鲜带壳孵化蛋
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值来源模式：计算值（`calculated_value`）
+- 数据特异性：场址特异（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reference_handover`
+
+- 数量范围：归一化后的确切身份核对，不是生产产率默认值
+  - 范围角色：质量检查边界（`qa_guardrail`）
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - 基准：声明参考数量；输入与输出为同一交付台账中的同一实际合格产品
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### 废物流
+
+##### 基本流
 
 ## 7. 分配与联产品处理
 
@@ -640,12 +808,13 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_flock` | `breeder_laying` | 种禽接收与退出 | 群体和销售台账 | 鸟种、品系、数量、活重、日期、群龄、死亡、销售 | 台账与发票及称重记录核对 | 枚、kg | 每事件 | 完整生产群期 | 农场与群次 | 将种禽和销售关联至服务期 | 发票、秤检与死亡记录 |
-| `cp_inputs` | `breeder_laying` | 饲料、水、能源 | 供应台账与表计 | 饲料收货/库存、水用途、载体和读数 | 发票、库存及表计核对 | kg、L、MJ、kWh | 每月及每群期 | 种禽生产期 | 禽舍 | 按群次及用途汇总净使用 | 发票、表计与盘点 |
-| `cp_residues` | `breeder_laying` | 粪污与死亡 | 清运记录 | 湿/干 kg、含水率、去向、买方、死亡数 | 转运称重并记录销售/处理 | kg、只 | 每次转运 | 完整群期 | 禽舍与去向 | 仅一次拆分产品和废物 | 转运单与买方验收 |
-| `cp_eggs` | `egg_collection` | 产出、收集和损失蛋 | 巢位/集蛋日志 | 群次、时间、枚数、批次 kg、破损 | 校准秤与枚数核对 | kg、枚 | 每次集蛋 | 集蛋期 | 农场巢位路线 | 平衡总产、收集和损失 | 秤检及集蛋日志 |
-| `cp_grade` | `hatching_grade` | 验收、降级、拒收 | 分级/检测日志 | 蛋壳状况、检测、枚数、kg、等级、买方或废物 | 检查和校准称重 | kg、枚 | 每批次 | 集蛋至分级 | 分级节点 | 每枚蛋仅赋一个去向 | 检测、买方及拒收记录 |
-| `cp_handover` | `egg_presentation` | 暂存、包装和最终蛋批 | 暂存/发运日志 | 暂存时间/条件、材料/复用、能源、枚数/kg、损失、门槛 | 表计、材料及批次称重 | kg、枚、时间、温度、MJ | 每批次 | 分级至交付 | 生产者暂存室/门槛 | 平衡库存、损失及唯一产出 | 秤检、暂存日志和收据 |
+| `cp_flock` | `breeder_laying` | 种禽接收与退出 | 群体和销售台账 | 鸟种、品系、数量、活重、日期、群龄、死亡、销售 | 台账与发票及称重记录核对；原始汇总要求：将种禽和销售关联至服务期。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 枚、kg | 每事件 | 完整生产群期 | 农场与群次 | 每参考流 | 发票、秤检与死亡记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_inputs` | `breeder_laying` | 饲料、水、能源 | 供应台账与表计 | 饲料收货/库存、水用途、载体和读数 | 发票、库存及表计核对；原始汇总要求：按群次及用途汇总净使用。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、L、MJ、kWh | 每月及每群期 | 种禽生产期 | 禽舍 | 每参考流 | 发票、表计与盘点；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_residues` | `breeder_laying` | 粪污与死亡 | 清运记录 | 湿/干 kg、含水率、去向、买方、死亡数 | 转运称重并记录销售/处理；原始汇总要求：仅一次拆分产品和废物。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、只 | 每次转运 | 完整群期 | 禽舍与去向 | 每参考流 | 转运单与买方验收；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_eggs` | `egg_collection` | 产出、收集和损失蛋 | 巢位/集蛋日志 | 群次、时间、枚数、批次 kg、破损 | 校准秤与枚数核对；原始汇总要求：平衡总产、收集和损失。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、枚 | 每次集蛋 | 集蛋期 | 农场巢位路线 | 每参考流 | 秤检及集蛋日志；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_grade` | `hatching_grade` | 验收、降级、拒收 | 分级/检测日志 | 蛋壳状况、检测、枚数、kg、等级、买方或废物 | 检查和校准称重；原始汇总要求：每枚蛋仅赋一个去向。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、枚 | 每批次 | 集蛋至分级 | 分级节点 | 每参考流 | 检测、买方及拒收记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_handover` | `egg_presentation` | 暂存、包装和最终蛋批 | 暂存/发运日志 | 暂存时间/条件、材料/复用、能源、枚数/kg、损失、门槛 | 表计、材料及批次称重；原始汇总要求：平衡库存、损失及唯一产出。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、枚、时间、温度、MJ | 每批次 | 分级至交付 | 生产者暂存室/门槛 | 每参考流 | 秤检、暂存日志和收据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_reference_handover` | `reference_handover` | 合格产品及匹配的内部来源移交 | 生产者交付台账 | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | 在同一实际交付门测量合格净产品，将列出的状态／交付门专属来源行及关联输入与唯一实际产出核对。拒收、库存变化及其他销售单独记录；不假设新增处理或运输。 | kg；原生来源数量 | 每次实际交付 | 匹配来源及交付期间 | 仅声明生产者交付门 | 每参考流 | 可追溯验收记录、同批来源至产出台账、校准数量方法及归一化计算表 |
 
 ### 计算规则
 

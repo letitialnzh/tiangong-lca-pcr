@@ -56,6 +56,7 @@ sync_with: pcr.en-US.md
 | `feed_dry_matter` | forage, browse, concentrates and supplements | Mass | kg dry matter and kg as-fed | Preserve as-fed mass and dry-matter fraction; identify the reviewed method for unmeasured intake. |
 | `water_basis` | supplied water | Mass or volume | kg or m3 | Separate managed supply from rainfall or unmanaged access and disclose meter coverage or estimation. |
 | `emission_basis` | CH4, N2O and NH3 | Mass of named substance | kg CH4, kg N2O or N2O-N, kg NH3 or NH3-N | Keep substance and element bases explicit and document molecular conversions. |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 归一化数量 = 可归属数量 × 声明参考数量 / 实测合格参考产出数量。归一化只执行一次，不得再次除以已使用的分母。 |
 
 ## 5. 系统边界
 
@@ -96,12 +97,14 @@ sync_with: pcr.en-US.md
 ###### 引入的繁殖与替换动物 (`incoming_animals`)
 
 记录从所代表畜群历史之外引入的活体动物，不得重复计算群内出生并留养的动物。
+分母与范围要求：per kg reference live weight and period
+
 - 选定流： Live incoming camel or camelid by actual species/class (UUID unresolved)
 - 流属性/单位： Mass / kg live weight; head retained
 - 数量规则： Record species, class, origin, entry, purpose, head and live weight; attribute burden over actual service/output periods.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight and period
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_herd_events`
@@ -118,12 +121,14 @@ sync_with: pcr.en-US.md
 ###### 饲料、草料与灌木采食 (`feed_browse`)
 
 按实际来源、状态、物种组和生物阶段记录受管理的饲料、草料、灌木采食物和补充料。
+分母与范围要求：per kg reference live weight
+
 - 选定流： Actual feed, forage or browse identity (UUID unresolved)
 - 流属性/单位： Mass / kg dry matter and kg as-fed
 - 数量规则： Record intake by species, class, phase, source and dry-matter basis; retain estimation method and refusals.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_feed_movement`
@@ -140,12 +145,14 @@ sync_with: pcr.en-US.md
 ###### 动物保健产品 (`health_products`)
 
 记录跨越前景边界的药品、疫苗、消毒剂及其他动物保健产品。
+分母与范围要求：per kg reference live weight
+
 - 选定流： Health product by actual formulation (UUID unresolved)
 - 流属性/单位： Mass, volume or dose / kg, L or dose
 - 数量规则： Record formulation, administered/discarded quantity, species/class, date and purpose; zero when unused.
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_health_inputs`
@@ -162,12 +169,14 @@ sync_with: pcr.en-US.md
 ###### 供应水 (`supplied_water`)
 
 记录供应给所代表动物和活动的受管理饮用水与服务用水。
+分母与范围要求：per kg reference live weight
+
 - 选定流： Supplied process water
 - 流属性/单位： Mass or volume / kg or m3
 - 数量规则： Meter or estimate documented supply by use, species, location and period.
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_water_energy_transport`
@@ -183,12 +192,14 @@ sync_with: pcr.en-US.md
 ###### 能源载体 (`energy_supply`)
 
 按实际用途和报告期记录购入的电力、燃料、热力及其他能源载体。
+分母与范围要求：per kg reference live weight
+
 - 选定流： Energy carrier supply
 - 流属性/单位： Energy or carrier quantity / kWh, MJ, L or kg
 - 数量规则： Record each carrier by activity, meter/allocation and period.
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Technology-specific (`technology_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_water_energy_transport`
@@ -204,12 +215,14 @@ sync_with: pcr.en-US.md
 ###### 纳入边界的入场运输 (`inbound_transport`)
 
 仅当物料投入的货运服务位于已声明前景边界内时记录该运输。
+分母与范围要求：per kg reference live weight
+
 - 选定流： Inbound road-freight service by vehicle/cargo
 - 流属性/单位： Goods transport / t*km
 - 数量规则： Multiply transported tonnes by included one-way kilometres; retain vehicle, cargo, load and route.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Route-specific (`route_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Transport service (`transport_service`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_water_energy_transport`
@@ -233,15 +246,19 @@ sync_with: pcr.en-US.md
 ###### 活骆驼或其他驼科动物参考产出 (`live_camelid_reference_output`)
 
 记录生产农场交接时的活体动物质量，并保留物种组、动物类别、路线和称重证据。
+分母与范围要求：1 kg live weight at farm gate
+
+参考产出的原始记录：Record accepted live weight and head by species, class, route, lot, weighing point and transfer date; normalize to 1 kg. 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
 - 选定流： Camels and camelids `d5b8e5ed-dfcc-4755-a7fb-d51316970d8b`
 - 绑定： Fixed (`fixed`)
-- 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; unit group `93a60a57-a4c8-11da-a746-0800200c9a66`
-- 数量规则： Record accepted live weight and head by species, class, route, lot, weighing point and transfer date; normalize to 1 kg.
-- 数值来源模式： Foreground record (`foreground_record`)
+- 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围： Product-specific (`product_specific`)
-- 归一化基准： 1 kg live weight at farm gate
-- 基准类型： Reference flow (`reference_flow`)
-- 证据类型： Collected record (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议： `cp_herd_events`
 - 来源： `fao-gleam`
 - 数量范围： Reference normalization
@@ -256,13 +273,15 @@ sync_with: pcr.en-US.md
 ###### 骆驼奶联产品 (`camel_milk`)
 
 仅在骆驼奶被独立预期并转移时记录；本卡不适用于南美驼科动物路线。
+分母与范围要求：per kg reference live weight and period
+
 - 选定流： Raw milk of camel `c20da2ab-1dac-40ad-9206-43996d07bcff`
 - 绑定： Fixed (`fixed`)
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则： Record transferred mass, species, period, composition and hand-off; inapplicable to South American camelid routes and milk consumed internally.
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Product-specific (`product_specific`)
-- 归一化基准： per kg reference live weight and period
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_outputs_losses`
@@ -279,12 +298,14 @@ sync_with: pcr.en-US.md
 ###### 纤维或毛联产品 (`fibre_hair`)
 
 仅在纤维或毛被独立预期并以已声明物种和状态转移时记录。
+分母与范围要求：per kg reference live weight and period
+
 - 选定流： Camelid fibre or hair by species and state (UUID unresolved)
 - 流属性/单位： Mass / kg
 - 数量规则： Record recovered mass, species, group, method, moisture/greasy basis, grade and hand-off; inapplicable where not intended.
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Product-specific (`product_specific`)
-- 归一化基准： per kg reference live weight and period
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_outputs_losses`
@@ -301,12 +322,14 @@ sync_with: pcr.en-US.md
 ###### 外运粪肥 (`exported_manure`)
 
 仅当粪肥有意转移给已识别接收方时，将其记录为产品产出。
+分母与范围要求：per kg reference live weight and period
+
 - 选定流： Exported camelid manure by managed state (UUID unresolved)
 - 流属性/单位： Mass / kg wet mass plus dry matter or nutrient content
 - 数量规则： Record mass, moisture, nitrogen where available, species, state, destination and date; do not duplicate deposition or waste.
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight and period
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_manure_emissions`
@@ -325,12 +348,14 @@ sync_with: pcr.en-US.md
 ###### 死亡动物及不可用物料 (`mortality_waste`)
 
 将动物死亡物及不可用物料记录为具有明确去向的废物流，而非预期产出。
+分母与范围要求：per kg reference live weight
+
 - 选定流： Camelid mortality waste by treatment route (UUID unresolved)
 - 流属性/单位： Mass / kg
 - 数量规则： Record head, species/class, mass, date, cause where known and treatment/destination.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_outputs_losses`
@@ -349,13 +374,15 @@ sync_with: pcr.en-US.md
 ###### 排入空气的肠道甲烷 (`enteric_ch4`)
 
 按物种组、动物类别和阶段计算肠道发酵排入空气的生物源甲烷。
+分母与范围要求：per kg reference live weight
+
 - 选定流： methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 绑定： Fixed (`fixed`)
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - 数量规则： Calculate by species/category and period from population, feed/gross energy and reviewed factors.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_manure_emissions`
@@ -372,13 +399,15 @@ sync_with: pcr.en-US.md
 ###### 排入空气的粪污甲烷 (`manure_ch4`)
 
 计算受管理粪污路径排入空气的生物源甲烷，并与肠道甲烷分开。
+分母与范围要求：per kg reference live weight
+
 - 选定流： methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 绑定： Fixed (`fixed`)
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - 数量规则： Calculate by species, volatile solids, pathway, climate and storage; keep separate from enteric CH4.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_manure_emissions`
@@ -395,13 +424,15 @@ sync_with: pcr.en-US.md
 ###### 排入空气的直接氧化亚氮 (`direct_n2o`)
 
 计算边界内粪污管理和排泄物沉积直接排入空气的氧化亚氮。
+分母与范围要求：per kg reference live weight
+
 - 选定流： nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 绑定： Fixed (`fixed`)
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O or kg N2O-N
 - 数量规则： Calculate by species/class, nitrogen excretion, period and manure/deposition pathway; retain basis conversion.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_manure_emissions`
@@ -418,13 +449,15 @@ sync_with: pcr.en-US.md
 ###### 排入空气的间接氧化亚氮 (`indirect_n2o`)
 
 仅根据有记录的挥发或淋溶与径流前体计算间接氧化亚氮。
+分母与范围要求：per kg reference live weight
+
 - 选定流： nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 绑定： Fixed (`fixed`)
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O or kg N2O-N
 - 数量规则： Calculate only for documented volatilization or leaching/runoff precursors; do not duplicate direct N2O.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_manure_emissions`
@@ -441,13 +474,15 @@ sync_with: pcr.en-US.md
 ###### 排入空气的氨 (`ammonia_air`)
 
 计算所代表粪污氮路径排入空气的氨，并保留分子基准。
+分母与范围要求：per kg reference live weight
+
 - 选定流： ammonia `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - 绑定： Fixed (`fixed`)
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg NH3 or kg NH3-N
 - 数量规则： Calculate by manure nitrogen pathway and reviewed factors; preserve basis and precursor linkage.
 - 数值来源模式： Calculated value (`calculated_value`)
 - 适用范围： Site-specific (`site_specific`)
-- 归一化基准： per kg reference live weight
+- 归一化基准：每参考流
 - 基准类型： Reference flow (`reference_flow`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_manure_emissions`
@@ -477,12 +512,12 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd_events` | managed_camelid_production | entries, births, class changes, transfers, deaths and reference output | herd, weight and transfer records | id; species; class; sex; purpose; event; date; head; weight; scale; origin/destination | calibrated weighing linked to herd records | head; kg | each event | complete cohort/period | all represented groups | reconcile opening + entries + births = closing + transfers + deaths; normalize transferred mass | calibration, signed transfer, reconciliation |
-| `cp_feed_movement` | managed_camelid_production | feed, browse, grazing and managed movement | invoice, ration, land and movement log | identity; source; as-fed; dry matter; class; parcel; distance; duration; refusals | weigh supply; declare method for unmeasured intake | kg; animal-days; km | event/period | all phases | group, land and shelter | sum by identity/class; preserve estimation and movement | invoice, analysis, land/movement logs |
-| `cp_health_inputs` | `managed_camelid_production` | 保健投入 | 治疗和采购记录 | 产品；配方；剂量；数量；物种/类别；日期；用途；废弃量 | 核对治疗、采购和库存 | 剂；kg；L | 每次治疗 | 完整期间 | 所有动物组 | 按配方汇总 | 签字日志、发票、库存平衡 |
-| `cp_water_energy_transport` | `managed_camelid_production` | 水、能源和运输 | 仪表、发票、燃料和行程日志 | 来源/载体；数量；活动；货物；质量；距离；车辆；日期 | 仪表、发票、储罐和路线记录 | m3；kg；L；kWh；MJ；t*km | 每月/每次行程/每次事件 | 完整期间 | 所有相关活动 | 直接归属，否则使用文件化驱动因素 | 校准、发票、行程和分配记录 |
-| `cp_outputs_losses` | managed_camelid_production | milk, fibre, mortality and other outputs/losses | output, transfer, mortality and waste records | identity; species; mass; basis; class; date; destination; cause; fate | weigh/meter; matching-class estimate only for mortality | kg; L; head | event | full period | all groups/gates | aggregate by identity and hand-off; separate internal use, product and waste | scale/meter, transfer and loss logs |
-| `cp_manure_emissions` | `managed_camelid_production` | 粪污路径和排放 | 群体、饲料、排泄、路径和气候记录 | 物种/类别；动物日；饲料/能量；N；路径；贮存；气候；层级；因子 | 记录加已声明并审查的公式 | kg 粪污；kg CH4；kg N2O；kg NH3 | 每月/每阶段 | 所有阶段/路径 | 沉积、收集、贮存、施用、外运 | 按物种/类别/期间/路径计算并核对物料 | 源记录、工作表、因子溯源 |
+| `cp_herd_events` | managed_camelid_production | entries, births, class changes, transfers, deaths and reference output | herd, weight and transfer records | id; species; class; sex; purpose; event; date; head; weight; scale; origin/destination | calibrated weighing linked to herd records；原始汇总要求：reconcile opening + entries + births = closing + transfers + deaths; normalize transferred mass。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | head; kg | each event | complete cohort/period | all represented groups | 每参考流 | calibration, signed transfer, reconciliation；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_feed_movement` | managed_camelid_production | feed, browse, grazing and managed movement | invoice, ration, land and movement log | identity; source; as-fed; dry matter; class; parcel; distance; duration; refusals | weigh supply; declare method for unmeasured intake；原始汇总要求：sum by identity/class; preserve estimation and movement。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; animal-days; km | event/period | all phases | group, land and shelter | 每参考流 | invoice, analysis, land/movement logs；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_health_inputs` | `managed_camelid_production` | 保健投入 | 治疗和采购记录 | 产品；配方；剂量；数量；物种/类别；日期；用途；废弃量 | 核对治疗、采购和库存；原始汇总要求：按配方汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 剂；kg；L | 每次治疗 | 完整期间 | 所有动物组 | 每参考流 | 签字日志、发票、库存平衡；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_water_energy_transport` | `managed_camelid_production` | 水、能源和运输 | 仪表、发票、燃料和行程日志 | 来源/载体；数量；活动；货物；质量；距离；车辆；日期 | 仪表、发票、储罐和路线记录；原始汇总要求：直接归属，否则使用文件化驱动因素。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | m3；kg；L；kWh；MJ；t*km | 每月/每次行程/每次事件 | 完整期间 | 所有相关活动 | 每参考流 | 校准、发票、行程和分配记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_outputs_losses` | managed_camelid_production | milk, fibre, mortality and other outputs/losses | output, transfer, mortality and waste records | identity; species; mass; basis; class; date; destination; cause; fate | weigh/meter; matching-class estimate only for mortality；原始汇总要求：aggregate by identity and hand-off; separate internal use, product and waste。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; L; head | event | full period | all groups/gates | 每参考流 | scale/meter, transfer and loss logs；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure_emissions` | `managed_camelid_production` | 粪污路径和排放 | 群体、饲料、排泄、路径和气候记录 | 物种/类别；动物日；饲料/能量；N；路径；贮存；气候；层级；因子 | 记录加已声明并审查的公式；原始汇总要求：按物种/类别/期间/路径计算并核对物料。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 粪污；kg CH4；kg N2O；kg NH3 | 每月/每阶段 | 所有阶段/路径 | 沉积、收集、贮存、施用、外运 | 每参考流 | 源记录、工作表、因子溯源；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

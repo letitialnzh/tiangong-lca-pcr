@@ -14,7 +14,7 @@ functional_unit:
   how_much: "1 kg measured living-bee biomass, excluding hive, comb, syrup and container. Queen-only count requires a separately measured lot-specific count-to-mass bridge or remains a count result outside this mass comparison."
   how_well: "Species, queen condition, worker/brood status, colony strength and live acceptance state disclosed; equal kg does not mean equivalent colony or pollination function."
   how_long_or_cycle: "The actual breeding, capture, grading and producer-handover periods, with reusable assets allocated over their service periods."
-  reference_flow_link: "Broad multi-configuration/multi-gate living-bee reference is intentionally UUID-unresolved."
+  reference_flow_link: "reference_product_handover"
 system_boundary:
   rules:
     - rule_id: b_scope
@@ -34,6 +34,10 @@ system_boundary:
       rule: "Stop at the actual producer gate. Include pre-gate presentation, feed and losses; exclude buyer installation and downstream distribution. Farm-gate and capture-site outputs are distinct."
       source_ids:
         - fao-practical-bees
+    - rule_id: reference_handover_linkage
+      applies_to: "actual reference-product boundary"
+      rule: "Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again."
+      source_ids: []
 boundary_abstraction:
   declared_starting_condition: "Purchased or opening managed colony/queen, or evidenced lawful wild source; identify species and status."
   starting_condition_role: "Recursive same-category live-bee inputs retain their upstream burden; opening owned stock is a disclosed starting inventory."
@@ -44,7 +48,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
-    name: "Living bees, configuration and gate qualified (UUID unresolved)"
+    name: "Living bees, configuration and gate qualified"
     uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
@@ -84,6 +88,20 @@ measurement_rules:
       uuid: ""
     required_unit: "day or reporting period"
     rule: "Link donor colony, split, capture, grading and handover events to actual periods; never count the same bees at two output gates."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
 process_map:
   - id: colony
     name: "Managed colony and queen propagation"
@@ -109,6 +127,12 @@ process_map:
     inclusion_condition: "Live sale lot is packaged or presented before actual gate"
     role: "Packaging and pre-gate feed only; hand over viable bees, not downstream transport"
     quantitative_reference: "kg bee-only living biomass at gate"
+  - id: reference_handover
+    name: "Actual producer reference-product handover"
+    inclusion: "required"
+    inclusion_condition: "One actual declared route, state and producer gate per foreground package"
+    role: "Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution"
+    quantitative_reference: "1 kg accepted product at the declared handover"
 process_inventory:
   - id: colony
     label: "Managed colony and queen propagation"
@@ -119,16 +143,16 @@ process_inventory:
           name: "Living bees, configuration-specific (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Purchased queen, nucleus or colony enters with its upstream burden; opening owned stock is disclosed separately."
+          description: "Purchased queen, nucleus or colony enters with its upstream burden; opening owned stock is disclosed separately. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: received living-bee biomass; count and configuration recorded Original collection denominator kind: process_output."
           amount:
-            expression: "received living-bee biomass; count and configuration recorded"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_live_stock
               source_ids: []
             ranges:
@@ -145,16 +169,16 @@ process_inventory:
           name: "Supplemental bee feed (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record purchased syrup or substitute feed actually supplied; natural floral forage is not a purchased Product exchange."
+          description: "Record purchased syrup or substitute feed actually supplied; natural floral forage is not a purchased Product exchange. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: issued feed less stock change and losses Original collection denominator kind: process_output."
           amount:
-            expression: "issued feed less stock change and losses"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_feed
               source_ids: []
             ranges:
@@ -171,16 +195,16 @@ process_inventory:
           name: "Supplied water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record supplied water for apiary care or cleaning when crossing the foreground boundary; natural forage water is not assumed purchased."
+          description: "Record supplied water for apiary care or cleaning when crossing the foreground boundary; natural forage water is not assumed purchased. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: metered or logged supplied water Original collection denominator kind: process_output."
           amount:
-            expression: "metered or logged supplied water"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -197,16 +221,16 @@ process_inventory:
           name: "Hive and frame equipment (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record amortized hive and frame manufacture or repair used by managed production; exclude a sold hive as bee biomass."
+          description: "Record amortized hive and frame manufacture or repair used by managed production; exclude a sold hive as bee biomass. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: asset and repair burden allocated by service period and use Original collection denominator kind: process_output."
           amount:
-            expression: "asset and repair burden allocated by service period and use"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_assets
               source_ids: []
             ranges:
@@ -229,16 +253,16 @@ process_inventory:
           name: "Living propagated bees (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record only viable live states transferred to grading; distinguish queen-only, nucleus, worker package and whole-colony routes."
+          description: "Record only viable live states transferred to grading; distinguish queen-only, nucleus, worker package and whole-colony routes. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured living-bee biomass at propagation hand-off Original collection denominator kind: process_output."
           amount:
-            expression: "measured living-bee biomass at propagation hand-off"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_live_stock
               source_ids: []
             ranges:
@@ -255,16 +279,16 @@ process_inventory:
           name: "Honey or wax, to be split into distinct foreground exchanges (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "This is a conditional foreground expansion slot, not one exchange or one fixed UUID. If honey and wax are both independently recovered and handed over, create separate concrete Product exchanges with their own mass, identity, gate and attribution. Apply each product's own method."
+          description: "This is a conditional foreground expansion slot, not one exchange or one fixed UUID. If honey and wax are both independently recovered and handed over, create separate concrete Product exchanges with their own mass, identity, gate and attribution. Apply each product's own method. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: separately measure honey mass and wax mass at their distinct handovers, if any Original collection denominator kind: process_output."
           amount:
-            expression: "separately measure honey mass and wax mass at their distinct handovers, if any"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_outputs
               source_ids: []
             ranges:
@@ -282,16 +306,16 @@ process_inventory:
           name: "Dead bees and unusable residue (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Dead bees and unsaleable comb are losses or waste, not viable live products; expand them into distinct concrete waste exchanges by material, destination and treatment."
+          description: "Dead bees and unsaleable comb are losses or waste, not viable live products; expand them into distinct concrete waste exchanges by material, destination and treatment. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured loss mass and destination Original collection denominator kind: process_output."
           amount:
-            expression: "measured loss mass and destination"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses
               source_ids: []
             ranges:
@@ -314,16 +338,16 @@ process_inventory:
           name: "Live-capture materials (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Include traps or containers actually consumed or amortized for an evidenced lawful capture event."
+          description: "Include traps or containers actually consumed or amortized for an evidenced lawful capture event. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: recorded material and asset use per event Original collection denominator kind: process_output."
           amount:
-            expression: "recorded material and asset use per event"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_assets
               source_ids: []
             ranges:
@@ -346,16 +370,16 @@ process_inventory:
           name: "Captured living bees (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "A capture node exists only with species, authorization, location, source colony, collected live state and hand-off evidence; releases are logged, not saleable output."
+          description: "A capture node exists only with species, authorization, location, source colony, collected live state and hand-off evidence; releases are logged, not saleable output. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured live biomass accepted from capture Original collection denominator kind: process_output."
           amount:
-            expression: "measured live biomass accepted from capture"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_capture
               source_ids: []
             ranges:
@@ -373,16 +397,16 @@ process_inventory:
           name: "Capture mortality (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record dead bees and incidental non-bee material separately; no invented live production from capture loss."
+          description: "Record dead bees and incidental non-bee material separately; no invented live production from capture loss. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured dead-bee mass Original collection denominator kind: process_output."
           amount:
-            expression: "measured dead-bee mass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses
               source_ids: []
             ranges:
@@ -405,16 +429,16 @@ process_inventory:
           name: "Living bees entering grading (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Identify source node and configuration before viability, queen status and strength assessment."
+          description: "Identify source node and configuration before viability, queen status and strength assessment. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured incoming living-bee biomass Original collection denominator kind: process_output."
           amount:
-            expression: "measured incoming living-bee biomass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_live_stock
               source_ids: []
             ranges:
@@ -437,16 +461,16 @@ process_inventory:
           name: "Accepted living bees (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Accept viable bees against declared configuration and condition; hand accepted lot to presentation."
+          description: "Accept viable bees against declared configuration and condition; hand accepted lot to presentation. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured accepted living-bee biomass Original collection denominator kind: process_output."
           amount:
-            expression: "measured accepted living-bee biomass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -463,16 +487,16 @@ process_inventory:
           name: "Downgraded living bees (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "If still viable and independently handed over or rerouted, record a distinct downgraded live state; do not double count as accepted grade."
+          description: "If still viable and independently handed over or rerouted, record a distinct downgraded live state; do not double count as accepted grade. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured downgraded live biomass Original collection denominator kind: process_output."
           amount:
-            expression: "measured downgraded live biomass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -490,16 +514,16 @@ process_inventory:
           name: "Nonviable bee rejects (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Rejects with no viable live-bee destination are waste or losses with their actual disposal route."
+          description: "Rejects with no viable live-bee destination are waste or losses with their actual disposal route. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured reject mass Original collection denominator kind: process_output."
           amount:
-            expression: "measured reject mass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses
               source_ids: []
             ranges:
@@ -522,16 +546,16 @@ process_inventory:
           name: "Graded living bees (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Bring accepted or explicitly downgraded viable lots into configuration-specific presentation, with no second production credit."
+          description: "Bring accepted or explicitly downgraded viable lots into configuration-specific presentation, with no second production credit. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured input living-bee biomass Original collection denominator kind: process_output."
           amount:
-            expression: "measured input living-bee biomass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -548,16 +572,16 @@ process_inventory:
           name: "Ventilated packaging (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Include disposable screened box, cage or liner only when supplied; reusable hives or boxes use service-period attribution."
+          description: "Include disposable screened box, cage or liner only when supplied; reusable hives or boxes use service-period attribution. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: recorded packaging mass or reusable service share Original collection denominator kind: process_output."
           amount:
-            expression: "recorded packaging mass or reusable service share"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_package
               source_ids: []
             ranges:
@@ -574,16 +598,16 @@ process_inventory:
           name: "Package feed (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record syrup or other feed placed in a package before producer handover; downstream transport and buyer feeding are outside boundary."
+          description: "Record syrup or other feed placed in a package before producer handover; downstream transport and buyer feeding are outside boundary. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured feed placed before gate Original collection denominator kind: process_output."
           amount:
-            expression: "measured feed placed before gate"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_package
               source_ids: []
             ranges:
@@ -608,16 +632,16 @@ process_inventory:
           flow_ref:
             uuid: "0be7ee1d-758e-458f-9dba-56d8c5298875"
           property_unit: "Mass / kg"
-          description: "Only an unprocessed living-bee mass lot at an actual managed-apiary farm gate can use the confirmed farm-gate identity; exclude container, comb and syrup mass."
+          description: "Only an unprocessed living-bee mass lot at an actual managed-apiary farm gate can use the confirmed farm-gate identity; exclude container, comb and syrup mass. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured living-bee biomass at farm gate Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
           amount:
-            expression: "measured living-bee biomass at farm gate"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -634,16 +658,16 @@ process_inventory:
           name: "Living bees, declared non-farm gate (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Capture-site and other non-farm producer handovers remain separately identified and unbound; do not count the same lot again at farm gate."
+          description: "Capture-site and other non-farm producer handovers remain separately identified and unbound; do not count the same lot again at farm gate. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured living-bee biomass at actual handover Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
           amount:
-            expression: "measured living-bee biomass at actual handover"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -660,16 +684,16 @@ process_inventory:
           name: "Living queen bees, individual (UUID unresolved)"
           flow_type: "product"
           property_unit: "Number of items / item"
-          description: "Count independently sold viable queens only when the lot lacks a measured count-to-mass bridge and is therefore outside the kg reference result. If a bridge exists, record queen count as metadata on exactly one mass output instead of a second Product exchange. Do not infer queen mass from colony or package weights."
+          description: "Count independently sold viable queens only when the lot lacks a measured count-to-mass bridge and is therefore outside the kg reference result. If a bridge exists, record queen count as metadata on exactly one mass output instead of a second Product exchange. Do not infer queen mass from colony or package weights. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: count accepted queen individuals; mass bridge separately measured Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
           amount:
-            expression: "count accepted queen individuals; mass bridge separately measured"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -687,16 +711,16 @@ process_inventory:
           name: "Packaging reject and bee mortality (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "This card is a conditional foreground expansion slot: record damaged package materials and dead bees as distinct concrete waste exchanges with their destinations. It cannot take one shared fixed UUID; viability failure blocks live output."
+          description: "This card is a conditional foreground expansion slot: record damaged package materials and dead bees as distinct concrete waste exchanges with their destinations. It cannot take one shared fixed UUID; viability failure blocks live output. Denominator and scope requirements：per kg living bees received or produced by this process; queen-only card is a count supplement Raw quantity and calculation requirements: measured waste mass by class Original collection denominator kind: process_output."
           amount:
-            expression: "measured waste mass by class"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg living bees received or produced by this process; queen-only card is a count supplement"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses
               source_ids: []
             ranges:
@@ -708,6 +732,72 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
+      elementary:
+        []
+  - id: reference_handover
+    label: "Actual producer reference-product handover"
+    inputs:
+      product:
+        - row_id: reference_handover_input
+          role: "Living bees, configuration and gate qualified for actual producer-handover linkage"
+          name: "Living bees, configuration and gate qualified for actual producer-handover linkage"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This input matches the accepted goods represented by farm_live_mass, other_live_gate, queen_count under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. For queen-only goods retain the original measured count-to-mass bridge; count-only results without that bridge remain outside the mass comparison. Selected source/interface rows: farm_live_mass, other_live_gate, queen_count Required product-instance qualifiers: species; managed or lawful capture route; whole colony/nucleus/worker package/queen-only; queen, worker and brood status; count or colony strength; actual gate; non-bee packaging mass"
+          amount:
+            expression: "Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_handover
+          role: "Living bees, configuration and gate qualified"
+          name: "Living bees, configuration and gate qualified"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. For queen-only goods retain the original measured count-to-mass bridge; count-only results without that bridge remain outside the mass comparison. Selected source/interface rows: farm_live_mass, other_live_gate, queen_count Required product-instance qualifiers: species; managed or lawful capture route; whole colony/nucleus/worker package/queen-only; queen, worker and brood status; count or colony strength; actual gate; non-bee packaging mass"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
       elementary:
         []
 allocation_rules:
@@ -738,121 +828,133 @@ dataset_production:
       flow_role: "live bees"
       record_type: "lot weigh/count"
       raw_fields: "species;configuration;queen_count;worker_status;brood;live_mass;date;origin"
-      collection_method: "weigh lot and document counts"
+      collection_method: "weigh lot and document counts; Raw aggregation requirements: sum by lot and avoid internal double count. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;item"
       frequency: "each lot"
       temporal_coverage: "full production period"
       site_scope: "all source and grading lots"
-      aggregation_rule: "sum by lot and avoid internal double count"
-      quality_evidence: "scale record;lot identity"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale record;lot identity; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_feed
       process_id: "colony"
       flow_role: "supplemental feed"
       record_type: "issue ledger"
       raw_fields: "feed_type;received;issued;stock_change;loss"
-      collection_method: "weigh purchased feed and reconcile stores"
+      collection_method: "weigh purchased feed and reconcile stores; Raw aggregation requirements: net issue by period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each issue"
       temporal_coverage: "full production period"
       site_scope: "all managed colonies"
-      aggregation_rule: "net issue by period"
-      quality_evidence: "purchase and stock logs"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "purchase and stock logs; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_utilities
       process_id: "colony"
       flow_role: "water"
       record_type: "meter log"
       raw_fields: "meter_start;meter_end;use_node;date"
-      collection_method: "meter or supplier bill with node split"
+      collection_method: "meter or supplier bill with node split; Raw aggregation requirements: meter delta by node. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "at least monthly"
       temporal_coverage: "full production period"
       site_scope: "all managed apiaries"
-      aggregation_rule: "meter delta by node"
-      quality_evidence: "meter or bill"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter or bill; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_assets
       process_id: "colony_capture"
       flow_role: "hives frames traps"
       record_type: "asset register"
       raw_fields: "asset_id;mass;service_period;consumer_node;use_share"
-      collection_method: "record acquisition, repair and service"
+      collection_method: "record acquisition, repair and service; Raw aggregation requirements: allocate recorded service once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;day"
       frequency: "at purchase and annually"
       temporal_coverage: "asset service periods"
       site_scope: "all shared assets"
-      aggregation_rule: "allocate recorded service once"
-      quality_evidence: "invoice;asset log"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice;asset log; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_outputs
       process_id: "colony"
       flow_role: "independent co-output"
       record_type: "handover record"
       raw_fields: "product_type;mass;recipient;gate;date"
-      collection_method: "weigh and receipt"
+      collection_method: "weigh and receipt; Raw aggregation requirements: sum distinct output lots. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each handover"
       temporal_coverage: "full production period"
       site_scope: "all independent outputs"
-      aggregation_rule: "sum distinct output lots"
-      quality_evidence: "weigh ticket;receipt"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "weigh ticket;receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_losses
       process_id: "colony_capture_grade_present"
       flow_role: "mortality and waste"
       record_type: "loss log"
       raw_fields: "lot;material_class;mass;destination;date"
-      collection_method: "weigh loss by class"
+      collection_method: "weigh loss by class; Raw aggregation requirements: sum once by class and destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each loss event"
       temporal_coverage: "full production period"
       site_scope: "all nodes"
-      aggregation_rule: "sum once by class and destination"
-      quality_evidence: "disposal record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "disposal record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_capture
       process_id: "capture"
       flow_role: "lawful live capture"
       record_type: "event record"
       raw_fields: "species;permit;location;source;captured_live_mass;released_mass;dead_mass;date"
-      collection_method: "weigh and inspect at capture hand-off"
+      collection_method: "weigh and inspect at capture hand-off; Raw aggregation requirements: event mass balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each event"
       temporal_coverage: "capture periods"
       site_scope: "all lawful events"
-      aggregation_rule: "event mass balance"
-      quality_evidence: "permit;field log"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "permit;field log; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_grade
       process_id: "grade_present"
       flow_role: "accepted and downgraded bees"
       record_type: "grade record"
       raw_fields: "lot;species;configuration;queen_status;strength;accepted_mass;downgraded_mass;reject_mass"
-      collection_method: "inspect and weigh each destination"
+      collection_method: "inspect and weigh each destination; Raw aggregation requirements: reconcile destination masses. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each lot"
       temporal_coverage: "full production period"
       site_scope: "all graded lots"
-      aggregation_rule: "reconcile destination masses"
-      quality_evidence: "inspection sheet;scale record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "inspection sheet;scale record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_package
       process_id: "present"
       flow_role: "package materials and feed"
       record_type: "packaging issue"
       raw_fields: "lot;container_type;container_mass;reuse_share;feed_mass;date"
-      collection_method: "weigh and log materials"
+      collection_method: "weigh and log materials; Raw aggregation requirements: sum material by lot, reusable share once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each lot"
       temporal_coverage: "full production period"
       site_scope: "all presentation lots"
-      aggregation_rule: "sum material by lot, reusable share once"
-      quality_evidence: "issue log;asset record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "issue log;asset record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_handover
       process_id: "present"
       flow_role: "live goods by gate"
       record_type: "handover certificate"
       raw_fields: "lot;species;configuration;gate;bee_mass;queen_count;count_mass_bridge;buyer;date"
-      collection_method: "weigh bee-only mass, inspect viability, count and sign receipt"
+      collection_method: "weigh bee-only mass, inspect viability, count and sign receipt; Raw aggregation requirements: one final gate per lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;item"
       frequency: "each handover"
       temporal_coverage: "full production period"
       site_scope: "all delivered lots"
-      aggregation_rule: "one final gate per lot"
-      quality_evidence: "scale certificate;receipt"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale certificate;receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_reference_handover
+      process_id: "reference_handover"
+      flow_role: "accepted product and matched internal source transfer"
+      record_type: "producer handover ledger"
+      raw_fields: "lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link"
+      collection_method: "Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed."
+      unit: "kg; native source quantities"
+      frequency: "each actual handover"
+      temporal_coverage: "matched source and handover periods"
+      site_scope: "declared producer gate only"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet"
   calculation_rules:
     - id: c_bee_mass
       applies_to: "reference and handover"
@@ -952,21 +1054,21 @@ data_sources:
     used_for: "Managed queen rearing and queen condition."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:13b6cfaa83a6ba28237c5a3932dbb81ff23b9ff1b8efa28ee662cbe679f4fe54"
+  source_sha256: "sha256:1546f7a4d3a84276d0ed86721eb5f464b14372bd570b40adb7d140d17a367af9"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_3925"
+    - unit_id: "normative_7086"
       family: "system_boundary"
       span:
         start:
-          offset: 3925
-          line: 52
+          offset: 7086
+          line: 56
           column: 1
         end:
-          offset: 5884
-          line: 73
+          offset: 9802
+          line: 78
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased or opening managed colony/queen, or evidenced lawful wild source; identify species and status. |\n| starting_condition_role | Recursive same-category live-bee inputs retain their upstream burden; opening owned stock is a disclosed starting inventory. |\n| product_classification_scope | CPC 3.0 02196 living bees; listed Apis are examples, other taxa require specific route evidence. |\n| recursive_input_rule | When an acquired live-bee input is itself the reference category, import its upstream dataset once and do not treat internal transfers as new production. |\n| upstream_dataset_requirement | Require source, species/configuration, gate and upstream burden for purchased bees and separately purchased feed, packaging and services. |\n| disclosure | Report route, species, configuration, queen/brood/worker condition, authorization for capture, bee-only mass, count bridge, co-output handovers, periods and shared assets. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_scope | all routes | Include managed propagation or lawful live capture only when operated, then distinct grading and packaging nodes when the goods are assessed/presented before producer handover. | un-cpc-3;fao-value-bees |\n| b_route | managed parent and capture | Queen rearing, nucleus splitting and worker-package shaking are managed-production variants only when they change brood/queen inputs, split accounting or validation. Wild capture is an independent route, not a managed variant; do not infer one route's inventory from another. | fao-value-bees;fao-queen-rearing |\n| b_gate | handover | Stop at the actual producer gate. Include pre-gate presentation, feed and losses; exclude buyer installation and downstream distribution. Farm-gate and capture-site outputs are distinct. | fao-practical-bees |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased or opening managed colony/queen, or evidenced lawful wild source; identify species and status. |\n| starting_condition_role | Recursive same-category live-bee inputs retain their upstream burden; opening owned stock is a disclosed starting inventory. |\n| product_classification_scope | CPC 3.0 02196 living bees; listed Apis are examples, other taxa require specific route evidence. |\n| recursive_input_rule | When an acquired live-bee input is itself the reference category, import its upstream dataset once and do not treat internal transfers as new production. |\n| upstream_dataset_requirement | Require source, species/configuration, gate and upstream burden for purchased bees and separately purchased feed, packaging and services. |\n| disclosure | Report route, species, configuration, queen/brood/worker condition, authorization for capture, bee-only mass, count bridge, co-output handovers, periods and shared assets. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_scope | all routes | Include managed propagation or lawful live capture only when operated, then distinct grading and packaging nodes when the goods are assessed/presented before producer handover. | un-cpc-3;fao-value-bees |\n| b_route | managed parent and capture | Queen rearing, nucleus splitting and worker-package shaking are managed-production variants only when they change brood/queen inputs, split accounting or validation. Wild capture is an independent route, not a managed variant; do not infer one route's inventory from another. | fao-value-bees;fao-queen-rearing |\n| b_gate | handover | Stop at the actual producer gate. Include pre-gate presentation, feed and losses; exclude buyer installation and downstream distribution. Farm-gate and capture-site outputs are distinct. | fao-practical-bees |\n| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -983,12 +1085,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 3925
-              line: 52
+              offset: 7086
+              line: 56
               column: 1
             end:
-              offset: 3946
-              line: 52
+              offset: 7107
+              line: 56
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1003,16 +1105,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_32218"
+    - unit_id: "normative_50365"
       family: "allocation"
       span:
         start:
-          offset: 32218
-          line: 623
+          offset: 50365
+          line: 797
           column: 1
         end:
-          offset: 33467
-          line: 632
+          offset: 51614
+          line: 806
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_avoid | all nodes | Separate independent output processes or records first. Internal split, graded transfer and package handover of the same bees are one lineage, not three final product credits. | fao-value-bees |\n| a_outputs | propagation and grading | Declare each actual independently handed-over live queen, colony, nucleus, worker package, honey, wax or service; treat mortality and unusable residues as waste. Do not allocate a pollination-service burden without an evidenced service output. | fao-value-bees |\n| a_choice | true joint production | When separation is impossible, document a PCR-specific physical causal attribution if supported; otherwise document economic allocation with contemporaneous value evidence and sensitivity. No universal honey/live-bee split is prescribed. | fao-value-bees |\n| a_period | shared colony and assets | Index breeder establishment, queen rearing, splits, feeding, capture, grading and handover by reporting period. Allocate shared hive, frame and equipment service to consuming nodes and periods using recorded use/occupation, with one owner for each burden. | fao-practical-bees |\n\n"
       headings:
@@ -1031,12 +1133,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 32218
-              line: 623
+              offset: 50365
+              line: 797
               column: 1
             end:
-              offset: 32258
-              line: 623
+              offset: 50405
+              line: 797
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1051,16 +1153,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_38269"
+    - unit_id: "normative_61124"
       family: "validation"
       span:
         start:
-          offset: 38269
-          line: 666
+          offset: 61124
+          line: 841
           column: 1
         end:
-          offset: 39473
-          line: 676
+          offset: 62328
+          line: 851
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_identity | every delivered lot | Reject missing species, viable state, sale configuration, queen/brood/worker status, actual producer gate or separation of bee-only biomass from hive/feed/package mass. | un-cpc-3 |\n| v_count | queen-only sale | A queen-by-count lot without measured lot-specific mass is reported only as count and is not pooled with kg biomass comparison; no colony-strength equivalence is inferred. | fao-queen-rearing |\n| v_route | managed and capture | Require managed parent plus variant-specific route delta evidence, or lawful capture authorization and capture-to-grading mass balance. Reject assumed non-Apis husbandry by analogy alone. | un-cpc-3;fao-value-bees |\n| v_balance | all phases | Reconcile incoming, accepted, downgraded, dead, released and final live states by lot and gate; trace co-products, periods and shared assets once; no duplicate final live output. | fao-value-bees |\n| v_binding | flow identities | A UUID supports only an exact card. The platform farm-gate Mass bee product must not bind queen count, capture-site handover or broad reference. | un-cpc-3 |\n\n"
       headings:
@@ -1079,12 +1181,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 38269
-              line: 666
+              offset: 61124
+              line: 841
               column: 1
             end:
-              offset: 38291
-              line: 666
+              offset: 61146
+              line: 841
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1103,207 +1205,220 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "b_scope"
       identity_kind: "explicit"
-      unit_id: "normative_3925"
+      unit_id: "normative_7086"
       source_span:
         start:
-          offset: 5067
-          line: 69
+          offset: 8228
+          line: 73
           column: 1
         end:
-          offset: 5296
-          line: 69
+          offset: 8457
+          line: 73
           column: 230
     - pointer: "/system_boundary/rules/1"
       rule_id: "b_route"
       identity_kind: "explicit"
-      unit_id: "normative_3925"
+      unit_id: "normative_7086"
       source_span:
         start:
-          offset: 5297
-          line: 70
+          offset: 8458
+          line: 74
           column: 1
         end:
-          offset: 5650
-          line: 70
+          offset: 8811
+          line: 74
           column: 354
     - pointer: "/system_boundary/rules/2"
       rule_id: "b_gate"
       identity_kind: "explicit"
-      unit_id: "normative_3925"
+      unit_id: "normative_7086"
       source_span:
         start:
-          offset: 5651
-          line: 71
+          offset: 8812
+          line: 75
           column: 1
         end:
-          offset: 5882
-          line: 71
+          offset: 9043
+          line: 75
           column: 232
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "reference_handover_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_7086"
+      source_span:
+        start:
+          offset: 9044
+          line: 76
+          column: 1
+        end:
+          offset: 9800
+          line: 76
+          column: 757
     - pointer: "/allocation_rules/0"
       rule_id: "a_avoid"
       identity_kind: "explicit"
-      unit_id: "normative_32218"
+      unit_id: "normative_50365"
       source_span:
         start:
-          offset: 32331
-          line: 627
+          offset: 50478
+          line: 801
           column: 1
         end:
-          offset: 32549
-          line: 627
+          offset: 50696
+          line: 801
           column: 219
     - pointer: "/allocation_rules/1"
       rule_id: "a_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_32218"
+      unit_id: "normative_50365"
       source_span:
         start:
-          offset: 32550
-          line: 628
+          offset: 50697
+          line: 802
           column: 1
         end:
-          offset: 32852
-          line: 628
+          offset: 50999
+          line: 802
           column: 303
     - pointer: "/allocation_rules/2"
       rule_id: "a_choice"
       identity_kind: "explicit"
-      unit_id: "normative_32218"
+      unit_id: "normative_50365"
       source_span:
         start:
-          offset: 32853
-          line: 629
+          offset: 51000
+          line: 803
           column: 1
         end:
-          offset: 33146
-          line: 629
+          offset: 51293
+          line: 803
           column: 294
     - pointer: "/allocation_rules/3"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_32218"
+      unit_id: "normative_50365"
       source_span:
         start:
-          offset: 33147
-          line: 630
+          offset: 51294
+          line: 804
           column: 1
         end:
-          offset: 33465
-          line: 630
+          offset: 51612
+          line: 804
           column: 319
     - pointer: "/validation_rules/0"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_38269"
+      unit_id: "normative_61124"
       source_span:
         start:
-          offset: 38364
-          line: 670
+          offset: 61219
+          line: 845
           column: 1
         end:
-          offset: 38582
-          line: 670
+          offset: 61437
+          line: 845
           column: 219
     - pointer: "/validation_rules/1"
       rule_id: "v_count"
       identity_kind: "explicit"
-      unit_id: "normative_38269"
+      unit_id: "normative_61124"
       source_span:
         start:
-          offset: 38583
-          line: 671
+          offset: 61438
+          line: 846
           column: 1
         end:
-          offset: 38806
-          line: 671
+          offset: 61661
+          line: 846
           column: 224
     - pointer: "/validation_rules/2"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_38269"
+      unit_id: "normative_61124"
       source_span:
         start:
-          offset: 38807
-          line: 672
+          offset: 61662
+          line: 847
           column: 1
         end:
-          offset: 39056
-          line: 672
+          offset: 61911
+          line: 847
           column: 250
     - pointer: "/validation_rules/3"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_38269"
+      unit_id: "normative_61124"
       source_span:
         start:
-          offset: 39057
-          line: 673
+          offset: 61912
+          line: 848
           column: 1
         end:
-          offset: 39281
-          line: 673
+          offset: 62136
+          line: 848
           column: 225
     - pointer: "/validation_rules/4"
       rule_id: "v_binding"
       identity_kind: "explicit"
-      unit_id: "normative_38269"
+      unit_id: "normative_61124"
       source_span:
         start:
-          offset: 39282
-          line: 674
+          offset: 62137
+          line: 849
           column: 1
         end:
-          offset: 39471
-          line: 674
+          offset: 62326
+          line: 849
           column: 190
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_3925"
+      unit_id: "normative_7086"
       source_span:
         start:
-          offset: 3925
-          line: 52
-          column: 1
-        end:
-          offset: 3946
-          line: 52
-          column: 22
-    - code: "NON_RULE_TABLE"
-      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_3925"
-      source_span:
-        start:
-          offset: 3974
+          offset: 7086
           line: 56
           column: 1
         end:
-          offset: 4974
-          line: 63
+          offset: 7107
+          line: 56
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_7086"
+      source_span:
+        start:
+          offset: 7135
+          line: 60
+          column: 1
+        end:
+          offset: 8135
+          line: 67
           column: 189
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_32218"
+      unit_id: "normative_50365"
       source_span:
         start:
-          offset: 32218
-          line: 623
+          offset: 50365
+          line: 797
           column: 1
         end:
-          offset: 32258
-          line: 623
+          offset: 50405
+          line: 797
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_38269"
+      unit_id: "normative_61124"
       source_span:
         start:
-          offset: 38269
-          line: 666
+          offset: 61124
+          line: 841
           column: 1
         end:
-          offset: 38291
-          line: 666
+          offset: 61146
+          line: 841
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1312,5 +1427,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:13b6cfaa83a6ba28237c5a3932dbb81ff23b9ff1b8efa28ee662cbe679f4fe54"
-  generated_content_sha256: "sha256:5486c25b84bda9dfe2bb565887be09a468c2a596b95dec52a02be364262faaa5"
+    sha256: "sha256:1546f7a4d3a84276d0ed86721eb5f464b14372bd570b40adb7d140d17a367af9"
+  generated_content_sha256: "sha256:40675b0d871196b8606de9c1bed0b2a8fe25cf22f4ea570feebe883856bf4791"

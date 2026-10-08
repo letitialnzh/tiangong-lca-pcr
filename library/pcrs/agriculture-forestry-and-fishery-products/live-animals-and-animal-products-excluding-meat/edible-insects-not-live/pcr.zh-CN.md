@@ -50,6 +50,8 @@ sync_with: pcr.en-US.md
 | m_moisture | 干燥或盐水保存 | Mass and moisture fraction | kg and kg/kg | 测量前后状态；只算批次特定换算，不用通用湿干或整虫到粉的系数。 |
 | m_fraction | 部位和粉 | Mass | kg | 分别称量可食原料、合格产物和拒收物；协调同一实物批次，不把连续状态计为额外生产。 |
 | m_period | 批次和共用服务 | Time | reporting period | 将实际投入、产出和服务关联至唯一期间。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -102,14 +104,18 @@ sync_with: pcr.en-US.md
 
 记录适配物种的实际饲料或基质及供应负担，并核验食用来源资格。
 
+分母与范围要求：每 kg 受控昆虫养殖 节点产出
+
+原始数量及计算要求：记录适配物种的实际饲料或基质及供应负担，并核验食用来源资格。 原始采集分母类型：process_output。
+
 - 选定流: 实际养殖饲料或基质 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录适配物种的实际饲料或基质及供应负担，并核验食用来源资格。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 受控昆虫养殖 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rear`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -124,14 +130,18 @@ sync_with: pcr.en-US.md
 
 计量实际供应水；野采路线不得虚构养殖用水。
 
+分母与范围要求：每 kg 受控昆虫养殖 节点产出
+
+原始数量及计算要求：计量实际供应水；野采路线不得虚构养殖用水。 原始采集分母类型：process_output。
+
 - 选定流: 供水
 - 流属性/单位: Mass / kg
-- 数量规则: 计量实际供应水；野采路线不得虚构养殖用水。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 受控昆虫养殖 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rear`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -154,14 +164,18 @@ sync_with: pcr.en-US.md
 
 仅作为交给收集环节的中间批次，不是 02931 上市产品。
 
+分母与范围要求：每 kg 受控昆虫养殖 节点产出
+
+原始数量及计算要求：仅作为交给收集环节的中间批次，不是 02931 上市产品。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定活体昆虫生物量 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅作为交给收集环节的中间批次，不是 02931 上市产品。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 受控昆虫养殖 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rear`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -176,14 +190,18 @@ sync_with: pcr.en-US.md
 
 仅在独立符合条件并出售时记录其交付，不能把同一虫粪再列为废物。
 
+分母与范围要求：每 kg 受控昆虫养殖 节点产出
+
+原始数量及计算要求：仅在独立符合条件并出售时记录其交付，不能把同一虫粪再列为废物。 原始采集分母类型：process_output。
+
 - 选定流: 实际可售虫粪衍生副产品 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅在独立符合条件并出售时记录其交付，不能把同一虫粪再列为废物。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 受控昆虫养殖 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rear`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -200,14 +218,18 @@ sync_with: pcr.en-US.md
 
 核实实际残余物去向；独立出售的肥料属于另一产品而非废物流。
 
+分母与范围要求：每 kg 受控昆虫养殖 节点产出
+
+原始数量及计算要求：核实实际残余物去向；独立出售的肥料属于另一产品而非废物流。 原始采集分母类型：process_output。
+
 - 选定流: 实际养殖残余物至处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 核实实际残余物去向；独立出售的肥料属于另一产品而非废物流。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 受控昆虫养殖 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rear`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -230,14 +252,18 @@ sync_with: pcr.en-US.md
 
 仅记录养殖产出；野采作基本资源投入，外购死虫跳过收集节点。
 
+分母与范围要求：每 kg 独立收集与致死 节点产出
+
+原始数量及计算要求：仅记录养殖产出；野采作基本资源投入，外购死虫跳过收集节点。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定养殖活体昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅记录养殖产出；野采作基本资源投入，外购死虫跳过收集节点。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 独立收集与致死 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_collect`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -256,14 +282,18 @@ sync_with: pcr.en-US.md
 
 仅野采路线：记录合法物种、地点和移出量；同一生物量不得再作养殖产品投入。
 
+分母与范围要求：每 kg 独立收集与致死 节点产出
+
+原始数量及计算要求：仅野采路线：记录合法物种、地点和移出量；同一生物量不得再作养殖产品投入。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定的野生昆虫生物资源 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅野采路线：记录合法物种、地点和移出量；同一生物量不得再作养殖产品投入。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 独立收集与致死 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_collect`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -282,14 +312,18 @@ sync_with: pcr.en-US.md
 
 在收集交接点计量死虫整虫或部位，并记录物种与虫态。
 
+分母与范围要求：每 kg 独立收集与致死 节点产出
+
+原始数量及计算要求：在收集交接点计量死虫整虫或部位，并记录物种与虫态。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定已致死昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 在收集交接点计量死虫整虫或部位，并记录物种与虫态。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 独立收集与致死 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_collect`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -306,14 +340,18 @@ sync_with: pcr.en-US.md
 
 计量杂质、不宜食用物种及未获食品接收的损失。
 
+分母与范围要求：每 kg 独立收集与致死 节点产出
+
+原始数量及计算要求：计量杂质、不宜食用物种及未获食品接收的损失。 原始采集分母类型：process_output。
+
 - 选定流: 收集残余物至实际处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 计量杂质、不宜食用物种及未获食品接收的损失。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 独立收集与致死 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_collect`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -336,14 +374,18 @@ sync_with: pcr.en-US.md
 
 外购死虫承接上游负担；自产收集物仅转移一次。
 
+分母与范围要求：每 kg 首次卫生整理 节点产出
+
+原始数量及计算要求：外购死虫承接上游负担；自产收集物仅转移一次。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定原始非活体昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 外购死虫承接上游负担；自产收集物仅转移一次。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 首次卫生整理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_condition`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -358,14 +400,18 @@ sync_with: pcr.en-US.md
 
 按批次计量实际清洗或消毒用水；不得预设必有清洗。
 
+分母与范围要求：每 kg 首次卫生整理 节点产出
+
+原始数量及计算要求：按批次计量实际清洗或消毒用水；不得预设必有清洗。 原始采集分母类型：process_output。
+
 - 选定流: 供水
 - 流属性/单位: Mass / kg
-- 数量规则: 按批次计量实际清洗或消毒用水；不得预设必有清洗。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 首次卫生整理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_condition`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -388,14 +434,18 @@ sync_with: pcr.en-US.md
 
 记录实际清洁、除杂或修整后的接收质量并交给独立分级环节。
 
+分母与范围要求：每 kg 首次卫生整理 节点产出
+
+原始数量及计算要求：记录实际清洁、除杂或修整后的接收质量并交给独立分级环节。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定初整可食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录实际清洁、除杂或修整后的接收质量并交给独立分级环节。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 首次卫生整理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_condition`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -412,14 +462,18 @@ sync_with: pcr.en-US.md
 
 记录不可食部位和受污染拒收物的处置；不得作为食品副产品。
 
+分母与范围要求：每 kg 首次卫生整理 节点产出
+
+原始数量及计算要求：记录不可食部位和受污染拒收物的处置；不得作为食品副产品。 原始采集分母类型：process_output。
+
 - 选定流: 实际整理拒收物至处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录不可食部位和受污染拒收物的处置；不得作为食品副产品。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 首次卫生整理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_condition`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -442,14 +496,18 @@ sync_with: pcr.en-US.md
 
 保持来源、物种、虫态与形态追溯。
 
+分母与范围要求：每 kg 食用等级分选 节点产出
+
+原始数量及计算要求：保持来源、物种、虫态与形态追溯。 原始采集分母类型：process_output。
+
 - 选定流: 初整可食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 保持来源、物种、虫态与形态追溯。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 食用等级分选 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -472,14 +530,18 @@ sync_with: pcr.en-US.md
 
 按真实路线仅转移一次至保藏、粉碎或包装。
 
+分母与范围要求：每 kg 食用等级分选 节点产出
+
+原始数量及计算要求：按真实路线仅转移一次至保藏、粉碎或包装。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定合格食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 按真实路线仅转移一次至保藏、粉碎或包装。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 食用等级分选 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -494,14 +556,18 @@ sync_with: pcr.en-US.md
 
 仅纳入仍符合食品资格且独立销售、拥有单独去向的次级品。
 
+分母与范围要求：每 kg 食用等级分选 节点产出
+
+原始数量及计算要求：仅纳入仍符合食品资格且独立销售、拥有单独去向的次级品。 原始采集分母类型：process_output。
+
 - 选定流: 确实上市的次级食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅纳入仍符合食品资格且独立销售、拥有单独去向的次级品。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 食用等级分选 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -518,14 +584,18 @@ sync_with: pcr.en-US.md
 
 记录去向；饲料级或污染拒收物不得混入参考产品。
 
+分母与范围要求：每 kg 食用等级分选 节点产出
+
+原始数量及计算要求：记录去向；饲料级或污染拒收物不得混入参考产品。 原始采集分母类型：process_output。
+
 - 选定流: 非食品等级拒收物至处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录去向；饲料级或污染拒收物不得混入参考产品。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 食用等级分选 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -548,14 +618,18 @@ sync_with: pcr.en-US.md
 
 仅盐渍、盐水或烟熏路线：称量实际保藏介质并承接供应负担；冷藏及干燥路线不得虚构投入。
 
+分母与范围要求：每 kg 可选保藏处理 节点产出
+
+原始数量及计算要求：仅盐渍、盐水或烟熏路线：称量实际保藏介质并承接供应负担；冷藏及干燥路线不得虚构投入。 原始采集分母类型：process_output。
+
 - 选定流: 实际食品级盐或烟熏介质 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅盐渍、盐水或烟熏路线：称量实际保藏介质并承接供应负担；冷藏及干燥路线不得虚构投入。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 可选保藏处理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_preserve`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -570,14 +644,18 @@ sync_with: pcr.en-US.md
 
 合格等级仅转移一次，标明整虫或部位状态。
 
+分母与范围要求：每 kg 可选保藏处理 节点产出
+
+原始数量及计算要求：合格等级仅转移一次，标明整虫或部位状态。 原始采集分母类型：process_output。
+
 - 选定流: 保藏前合格食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 合格等级仅转移一次，标明整虫或部位状态。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 可选保藏处理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_preserve`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -592,14 +670,18 @@ sync_with: pcr.en-US.md
 
 按冷藏、冷冻、干燥或烟熏实际记录选载能体，不套通用工艺。
 
+分母与范围要求：每 kg 可选保藏处理 节点产出
+
+原始数量及计算要求：按冷藏、冷冻、干燥或烟熏实际记录选载能体，不套通用工艺。 原始采集分母类型：process_output。
+
 - 选定流: 保藏能源载体
 - 流属性/单位: Mass / kg
-- 数量规则: 按冷藏、冷冻、干燥或烟熏实际记录选载能体，不套通用工艺。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 可选保藏处理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_preserve`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -622,14 +704,18 @@ sync_with: pcr.en-US.md
 
 记录实际符合分类的冷藏、冷冻、干燥、烟熏、盐渍或盐水状态及净质量。
 
+分母与范围要求：每 kg 可选保藏处理 节点产出
+
+原始数量及计算要求：记录实际符合分类的冷藏、冷冻、干燥、烟熏、盐渍或盐水状态及净质量。 原始采集分母类型：process_output。
+
 - 选定流: 状态限定保藏食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录实际符合分类的冷藏、冷冻、干燥、烟熏、盐渍或盐水状态及净质量。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 可选保藏处理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_preserve`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -646,14 +732,18 @@ sync_with: pcr.en-US.md
 
 将水分损失与固体拒收物、废水分别核算。
 
+分母与范围要求：每 kg 可选保藏处理 节点产出
+
+原始数量及计算要求：将水分损失与固体拒收物、废水分别核算。 原始采集分母类型：process_output。
+
 - 选定流: 实际保藏拒收物至处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 将水分损失与固体拒收物、废水分别核算。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 可选保藏处理 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_preserve`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -676,14 +766,18 @@ sync_with: pcr.en-US.md
 
 仅转移一个分级或保藏批次，记录原料形态与含水率。
 
+分母与范围要求：每 kg 条件性粉碎成粉或粗粉 节点产出
+
+原始数量及计算要求：仅转移一个分级或保藏批次，记录原料形态与含水率。 原始采集分母类型：process_output。
+
 - 选定流: 粉碎前合格食用昆虫 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 仅转移一个分级或保藏批次，记录原料形态与含水率。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 条件性粉碎成粉或粗粉 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_mill`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -706,14 +800,18 @@ sync_with: pcr.en-US.md
 
 称量实际粉碎产物，记录细度及人类食品适宜性。
 
+分母与范围要求：每 kg 条件性粉碎成粉或粗粉 节点产出
+
+原始数量及计算要求：称量实际粉碎产物，记录细度及人类食品适宜性。 原始采集分母类型：process_output。
+
 - 选定流: 物种限定食用昆虫粉或粗粉 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 称量实际粉碎产物，记录细度及人类食品适宜性。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 条件性粉碎成粉或粗粉 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_mill`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -730,14 +828,18 @@ sync_with: pcr.en-US.md
 
 记录实际拒收处置；回磨料为内部返工，不是另一产品。
 
+分母与范围要求：每 kg 条件性粉碎成粉或粗粉 节点产出
+
+原始数量及计算要求：记录实际拒收处置；回磨料为内部返工，不是另一产品。 原始采集分母类型：process_output。
+
 - 选定流: 实际粉碎拒收物至处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录实际拒收处置；回磨料为内部返工，不是另一产品。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 条件性粉碎成粉或粗粉 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_mill`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -760,14 +862,18 @@ sync_with: pcr.en-US.md
 
 在鲜品、保藏品或粉/粗粉中选一种批次；不得累加同一实物批次的连续状态。
 
+分母与范围要求：每 kg 防护包装与交付 节点产出
+
+原始数量及计算要求：在鲜品、保藏品或粉/粗粉中选一种批次；不得累加同一实物批次的连续状态。 原始采集分母类型：process_output。
+
 - 选定流: 包装前指定食用昆虫形态 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 在鲜品、保藏品或粉/粗粉中选一种批次；不得累加同一实物批次的连续状态。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 防护包装与交付 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_pack`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -782,14 +888,18 @@ sync_with: pcr.en-US.md
 
 记录一次性包装质量或可重复使用周转次数及食品接触适宜性。
 
+分母与范围要求：每 kg 防护包装与交付 节点产出
+
+原始数量及计算要求：记录一次性包装质量或可重复使用周转次数及食品接触适宜性。 原始采集分母类型：process_output。
+
 - 选定流: 食品接触包装功能
 - 流属性/单位: Mass / kg
-- 数量规则: 记录一次性包装质量或可重复使用周转次数及食品接触适宜性。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 防护包装与交付 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_pack`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -812,14 +922,18 @@ sync_with: pcr.en-US.md
 
 在实际交付点记录单一物种、虫态、形态及含水率的 1 kg 净产品；扣除包装皮重。
 
+参考产出的原始记录：在实际交付点记录单一物种、虫态、形态及含水率的 1 kg 净产品；扣除包装皮重。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流: 按物种、虫态、形态和交付点限定的非活体食用昆虫
 - 流属性/单位: Mass / kg
-- 数量规则: 在实际交付点记录单一物种、虫态、形态及含水率的 1 kg 净产品；扣除包装皮重。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 防护包装与交付 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_pack`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -836,14 +950,18 @@ sync_with: pcr.en-US.md
 
 记录变质、拒收物及包装处置，不重复计入已出售的次级品。
 
+分母与范围要求：每 kg 防护包装与交付 节点产出
+
+原始数量及计算要求：记录变质、拒收物及包装处置，不重复计入已出售的次级品。 原始采集分母类型：process_output。
+
 - 选定流: 实际拒收物至处理 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则: 记录变质、拒收物及包装处置，不重复计入已出售的次级品。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 防护包装与交付 节点产出
-- 基准类型: 过程输出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_pack`
 - 数量范围: 宽泛暂定批次完整性筛查，并非经验因子
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -871,13 +989,13 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_rear | rear | 批次和管理 | 批次台账 | 物种；虫态；饲料；水；活体质量；虫粪；副产品；损失；服务；期间 | 饲料票、仪表和秤 | kg; m3; period | 每批 | 实际阶段 | 养殖场 | 产品和残余物各关联一次 | 采购、计量和批次记录 |
-| cp_collect | collect | 致死和收集 | 事件台账 | 来源；合法证明；虫态；活体质量；死虫质量；损失；方法；期间 | 许可和秤 | kg | 每事件 | 收集季 | 养殖场或野采地 | 核对采集物和死虫 | 许可、秤和事件记录 |
-| cp_condition | condition | 首次整理 | 卫生批次 | 来源；原料质量；水；初整质量；拒收；方法 | 批次秤和清洁记录 | kg; m3 | 每批 | 批次期间 | 整理场址 | 仅实际干预 | 卫生和称量记录 |
-| cp_grade | grade | 食品等级 | 分级台账 | 初整质量；合格；次级；拒收；食品资格；去向 | 分级和销售票 | kg | 每批 | 批次期间 | 分级场址 | 核对去向 | 等级、销售和拒收记录 |
-| cp_preserve | preserve | 前后状态 | 处理台账 | 投入；产出；前含水率；后含水率；状态；能源；保藏介质；残余物 | 秤、含水检测和仪表 | kg; kg/kg; kWh | 处理批次 | 处理期间 | 处理场址 | 仅处理批次 | 检测和计量记录 |
-| cp_mill | mill | 粉或粗粉 | 粉碎台账 | 投入；产品；细度；含水率；拒收；返工 | 秤和质量记录 | kg; kg/kg | 粉碎批次 | 粉碎期间 | 粉碎场址 | 一次产出和返工环 | 秤和食品放行 |
-| cp_pack | pack | 净出售产品 | 交付台账 | 物种；虫态；形态；状态；毛重；皮重；游离盐水；包装；周转；交付点 | 秤和交付票据 | kg; turn | 每次销售 | 销售期间 | 交付点 | 一个上市批次 | 资格和票据 |
+| cp_rear | rear | 批次和管理 | 批次台账 | 物种；虫态；饲料；水；活体质量；虫粪；副产品；损失；服务；期间 | 饲料票、仪表和秤；原始汇总要求：产品和残余物各关联一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; m3; period | 每批 | 实际阶段 | 养殖场 | 每参考流 | 采购、计量和批次记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_collect | collect | 致死和收集 | 事件台账 | 来源；合法证明；虫态；活体质量；死虫质量；损失；方法；期间 | 许可和秤；原始汇总要求：核对采集物和死虫。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每事件 | 收集季 | 养殖场或野采地 | 每参考流 | 许可、秤和事件记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_condition | condition | 首次整理 | 卫生批次 | 来源；原料质量；水；初整质量；拒收；方法 | 批次秤和清洁记录；原始汇总要求：仅实际干预。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; m3 | 每批 | 批次期间 | 整理场址 | 每参考流 | 卫生和称量记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_grade | grade | 食品等级 | 分级台账 | 初整质量；合格；次级；拒收；食品资格；去向 | 分级和销售票；原始汇总要求：核对去向。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每批 | 批次期间 | 分级场址 | 每参考流 | 等级、销售和拒收记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_preserve | preserve | 前后状态 | 处理台账 | 投入；产出；前含水率；后含水率；状态；能源；保藏介质；残余物 | 秤、含水检测和仪表；原始汇总要求：仅处理批次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; kg/kg; kWh | 处理批次 | 处理期间 | 处理场址 | 每参考流 | 检测和计量记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_mill | mill | 粉或粗粉 | 粉碎台账 | 投入；产品；细度；含水率；拒收；返工 | 秤和质量记录；原始汇总要求：一次产出和返工环。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; kg/kg | 粉碎批次 | 粉碎期间 | 粉碎场址 | 每参考流 | 秤和食品放行；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_pack | pack | 净出售产品 | 交付台账 | 物种；虫态；形态；状态；毛重；皮重；游离盐水；包装；周转；交付点 | 秤和交付票据；原始汇总要求：一个上市批次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; turn | 每次销售 | 销售期间 | 交付点 | 每参考流 | 资格和票据；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### Calculation Rules
 

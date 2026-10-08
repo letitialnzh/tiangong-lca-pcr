@@ -58,6 +58,8 @@ No compatible Product flow has been verified for this farm-gate mass identity, s
 | `water_basis` | drinking and service water | Volume or mass | m3 or kg | Separate animal drinking water from cleaning, cooling, and manure-management water and preserve source and measurement method. |
 | `energy_basis` | electricity, heat, and fuel carriers | Energy or carrier quantity | kWh, MJ, L, or kg | Retain the carrier-specific quantity before conversion and allocate shared meters using documented service evidence. |
 | `gas_species_basis` | enteric and manure emissions | Pollutant mass | kg species | Report CH4, N2O, NH3 and other species separately; retain activity data, factor tier, climate or manure-system category, and molecular conversion basis. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -106,14 +108,18 @@ Post-transfer transport, slaughter, dressing, hide removal, meat processing, and
 
 Record every animal entering the managed system with origin, class, age or phase, count, live mass, intended role, prior burden treatment, and admission date.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output and by admitted cohort
+
+Raw quantity and calculation requirements: measured admitted live mass and count by cohort and phase Original collection denominator kind: process_output.
+
 - Selected flow: Live cattle starting stock
 - Flow property / unit: Mass and parallel count / kg and head
-- Amount rule: measured admitted live mass and count by cohort and phase
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output and by admitted cohort
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animal_events`
 - Sources: `fao-leap-large-ruminants-2016`
 - Range: Provisional starting-stock screen
@@ -129,13 +135,17 @@ Record every animal entering the managed system with origin, class, age or phase
 
 Record every consumed or issued feed product by identity, source, as-fed mass, dry matter, composition, cattle class and feeding period; grazing intake may be calculated from measured pasture and animal records.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output and by cohort-period
+
+Raw quantity and calculation requirements: measured net feed issued or calculated intake by feed identity, cohort and phase Original collection denominator kind: process_output.
+
 - Selected flow: Cattle feed and forage products
 - Flow property / unit: Mass / kg as-fed and kg dry matter
-- Amount rule: measured net feed issued or calculated intake by feed identity, cohort and phase
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output and by cohort-period
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_feed_and_grazing`
 - Sources: `fao-leap-large-ruminants-2016`; `ipcc-2019-livestock-manure`
@@ -152,14 +162,18 @@ Record every consumed or issued feed product by identity, source, as-fed mass, d
 
 This conditional umbrella card covers supplied drinking, cleaning and cooling water. Foreground records determine concrete water exchanges and keep service water distinct from ambient rainfall.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output
+
+Raw quantity and calculation requirements: measured or calculated supplied water by purpose, source, cattle class and period Original collection denominator kind: process_output.
+
 - Selected flow: Process water supply
 - Flow property / unit: Volume or mass / m3 or kg
-- Amount rule: measured or calculated supplied water by purpose, source, cattle class and period
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_water_records`
 - Range: Provisional herd water screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -174,14 +188,18 @@ This conditional umbrella card covers supplied drinking, cleaning and cooling wa
 
 Record carrier-specific electricity, heat and fuels used for feeding, ventilation, cooling, milking when shared with the cattle system, fencing, pasture management and mobile machinery.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output
+
+Raw quantity and calculation requirements: meter, invoice or equipment log by carrier, consuming node and service period Original collection denominator kind: process_output.
+
 - Selected flow: Energy supply for herd production
 - Flow property / unit: Energy or carrier quantity / kWh, MJ, L, or kg
-- Amount rule: meter, invoice or equipment log by carrier, consuming node and service period
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_and_infrastructure`
 - Range: Provisional herd-energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -196,14 +214,18 @@ Record carrier-specific electricity, heat and fuels used for feeding, ventilatio
 
 Record medicines, vaccines, disinfectants and other health products actually used; veterinary services are recorded separately from physical products and are not the cattle reference product.
 
+Denominator and scope requirements：per treated cohort and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: treatment and purchase records by product, dose, animal class and event Original collection denominator kind: process_output.
+
 - Selected flow: Veterinary and animal-health products
 - Flow property / unit: Mass, volume, dose, or item / native unit with product identity
-- Amount rule: treatment and purchase records by product, dose, animal class and event
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per treated cohort and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_health_records`
 - Range: Provisional health-product screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -218,13 +240,17 @@ Record medicines, vaccines, disinfectants and other health products actually use
 
 Include only movements under foreground control between admitted animals or feed origin and the farm; supplier-delivered transport already represented upstream must not be counted again.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output
+
+Raw quantity and calculation requirements: shipment mass in tonnes multiplied by controlled loaded distance; preserve animal and feed movements separately Original collection denominator kind: transport_service.
+
 - Selected flow: Inbound road freight transport service
 - Flow property / unit: Transport service / tonne-kilometre
-- Amount rule: shipment mass in tonnes multiplied by controlled loaded distance; preserve animal and feed movements separately
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output
-- Basis kind: Transport service (`transport_service`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_transport_records`
 - Range: Provisional inbound transport screen
@@ -252,14 +278,18 @@ No default elementary input is prescribed. Grazing land occupation, water withdr
 
 This internal output carries eligible live cattle from herd production to selection and weighing with cohort, class, count and measured live mass preserved.
 
+Denominator and scope requirements：per production cohort before gate selection
+
+Raw quantity and calculation requirements: measured live mass and count entering farm-gate selection Original collection denominator kind: process_output.
+
 - Selected flow: Live cattle before farm-gate selection
 - Flow property / unit: Mass and parallel count / kg and head
-- Amount rule: measured live mass and count entering farm-gate selection
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per production cohort before gate selection
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animal_events`
 - Range: Herd-to-gate live-mass balance
   - Range role: QA guardrail (`qa_guardrail`)
@@ -275,14 +305,18 @@ This internal output carries eligible live cattle from herd production to select
 
 Record milk, breeding animals, culled animals or other intended outputs only when separately intended and transferred, with a distinct handover, quantity and destination. This umbrella row is expanded into concrete exchanges from foreground records.
 
+Denominator and scope requirements：per herd reporting period and per 1,000 kg reference output after attribution
+
+Raw quantity and calculation requirements: measured amount at each independently documented handover Original collection denominator kind: process_output.
+
 - Selected flow: Independently intended cattle-system co-product
 - Flow property / unit: Product-specific property and unit
-- Amount rule: measured amount at each independently documented handover
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per herd reporting period and per 1,000 kg reference output after attribution
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_outputs_and_allocation`
 - Sources: `fao-leap-large-ruminants-2016`
 - Range: Provisional intended-output screen
@@ -300,13 +334,17 @@ Record milk, breeding animals, culled animals or other intended outputs only whe
 
 Record deaths and unusable biological losses by animal class, count, estimated or measured mass, cause, date and disposal or recovery path; they are not automatic co-products.
 
+Denominator and scope requirements：per cohort and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: measured or calculated mortality mass with fate and count retained Original collection denominator kind: process_output.
+
 - Selected flow: Cattle mortality waste
 - Flow property / unit: Mass and count / kg and head
-- Amount rule: measured or calculated mortality mass with fate and count retained
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per cohort and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animal_events`
 - Range: Mortality mass-balance guardrail
@@ -323,13 +361,17 @@ Record deaths and unusable biological losses by animal class, count, estimated o
 
 Record excreted manure entering each collection, pasture deposition, storage, treatment or direct-use pathway with animal class, period, volatile solids, nitrogen basis and bedding included separately where possible.
 
+Denominator and scope requirements：per manure pathway and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: measured manure or calculated excretion by animal population, intake, digestibility and period Original collection denominator kind: process_output.
+
 - Selected flow: Cattle manure requiring management
 - Flow property / unit: Mass, volatile solids, and nitrogen / kg
-- Amount rule: measured manure or calculated excretion by animal population, intake, digestibility and period
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure pathway and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Sources: `fao-leap-nutrient-flows-2018`; `ipcc-2019-livestock-manure`
@@ -348,14 +390,18 @@ Record excreted manure entering each collection, pasture deposition, storage, tr
 
 Calculate methane by cattle category, diet, intake or energy basis, production phase, factor tier, geography and reporting period; use the verified biogenic-methane identity for emissions to unspecified air.
 
+Denominator and scope requirements：per cohort-period and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: IPCC-consistent calculation from collected animal-category and feed activity data or measured farm evidence Original collection denominator kind: process_output.
+
 - Selected flow: methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
-- Amount rule: IPCC-consistent calculation from collected animal-category and feed activity data or measured farm evidence
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per cohort-period and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Sources: `ipcc-2019-livestock-manure`
@@ -378,14 +424,18 @@ Calculate methane by cattle category, diet, intake or energy basis, production p
 
 Record energy for scraping, pumping, separation, storage, aeration, treatment and land application under farm control.
 
+Denominator and scope requirements：per kg manure handled and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: carrier-specific meter, invoice or equipment log assigned to manure pathways Original collection denominator kind: process_output.
+
 - Selected flow: Energy supply for manure management
 - Flow property / unit: Energy or carrier quantity / kWh, MJ, L, or kg
-- Amount rule: carrier-specific meter, invoice or equipment log assigned to manure pathways
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per kg manure handled and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_and_infrastructure`
 - Range: Provisional manure-energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -400,14 +450,18 @@ Record energy for scraping, pumping, separation, storage, aeration, treatment an
 
 Record wash, dilution and treatment water separately from drinking water and rainfall.
 
+Denominator and scope requirements：per kg manure handled and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: metered or calculated supplied water by manure pathway Original collection denominator kind: process_output.
+
 - Selected flow: Process water supply
 - Flow property / unit: Volume or mass / m3 or kg
-- Amount rule: metered or calculated supplied water by manure pathway
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg manure handled and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_water_records`
 - Range: Provisional manure-water screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -424,13 +478,17 @@ Record wash, dilution and treatment water separately from drinking water and rai
 
 This internal waste input must reconcile with manure transferred from herd production by pathway and period.
 
+Denominator and scope requirements：per manure pathway and reporting period
+
+Raw quantity and calculation requirements: equal to manure transferred into each declared pathway after documented pasture deposition and stock changes Original collection denominator kind: process_output.
+
 - Selected flow: Cattle manure requiring management
 - Flow property / unit: Mass, volatile solids, and nitrogen / kg
-- Amount rule: equal to manure transferred into each declared pathway after documented pasture deposition and stock changes
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure pathway and reporting period
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Range: Manure transfer reconciliation
@@ -455,14 +513,18 @@ No default elementary input is prescribed. Add land, water or material elementar
 
 Treat manure as a product only when it is intentionally recovered and transferred with a measured quantity, composition, recipient, handover and upstream burden treatment.
 
+Denominator and scope requirements：per manure pathway and per 1,000 kg farm-gate live output after attribution
+
+Raw quantity and calculation requirements: measured exported mass with dry matter, nitrogen and other declared nutrient content Original collection denominator kind: process_output.
+
 - Selected flow: Exported cattle manure or recovered nutrient product
 - Flow property / unit: Mass and nutrient content / kg
-- Amount rule: measured exported mass with dry matter, nitrogen and other declared nutrient content
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per manure pathway and per 1,000 kg farm-gate live output after attribution
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_outputs_and_allocation`
 - Sources: `fao-leap-nutrient-flows-2018`
 - Range: Exported-manure mass-balance guardrail
@@ -481,13 +543,17 @@ Treat manure as a product only when it is intentionally recovered and transferre
 
 Record manure, sludge, bedding residue or treatment residue not intentionally transferred as a product, including actual fate and treatment destination.
 
+Denominator and scope requirements：per manure pathway and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: measured or reconciled waste mass by pathway and destination Original collection denominator kind: process_output.
+
 - Selected flow: Unusable cattle manure and treatment residue
 - Flow property / unit: Mass / kg wet and dry basis
-- Amount rule: measured or reconciled waste mass by pathway and destination
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure pathway and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Range: Residue mass-balance guardrail
@@ -506,14 +572,18 @@ Record manure, sludge, bedding residue or treatment residue not intentionally tr
 
 Calculate methane by manure management system, volatile solids, temperature or climate, storage duration, methane recovery and reporting period.
 
+Denominator and scope requirements：per manure pathway and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: IPCC-consistent calculation from collected animal and manure-system activity data, adjusted for measured recovery where applicable Original collection denominator kind: process_output.
+
 - Selected flow: methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
-- Amount rule: IPCC-consistent calculation from collected animal and manure-system activity data, adjusted for measured recovery where applicable
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure pathway and per 1,000 kg farm-gate live output
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Sources: `ipcc-2019-livestock-manure`
@@ -530,14 +600,18 @@ Calculate methane by manure management system, volatile solids, temperature or c
 
 Calculate N2O by nitrogen excretion, manure pathway, field deposition or application, volatilization and leaching assumptions, keeping direct and indirect components traceable.
 
+Denominator and scope requirements：per manure pathway and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: IPCC-consistent calculation from collected nitrogen and manure-pathway activity data Original collection denominator kind: n_input.
+
 - Selected flow: nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O
-- Amount rule: IPCC-consistent calculation from collected nitrogen and manure-pathway activity data
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure pathway and per 1,000 kg farm-gate live output
-- Basis kind: N input (`n_input`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Sources: `ipcc-2019-livestock-manure`
@@ -554,13 +628,17 @@ Calculate N2O by nitrogen excretion, manure pathway, field deposition or applica
 
 Record NH3, NOx, nitrate, nitrogen runoff and other reported nitrogen species separately by receiving medium before final identity binding.
 
+Denominator and scope requirements：per manure pathway and per 1,000 kg farm-gate live output
+
+Raw quantity and calculation requirements: measured amount or method calculation with species, elemental basis, receiving medium and pathway retained Original collection denominator kind: n_input.
+
 - Selected flow: Reported nitrogen loss species from cattle manure
 - Flow property / unit: Mass of named species or nitrogen / kg
-- Amount rule: measured amount or method calculation with species, elemental basis, receiving medium and pathway retained
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure pathway and per 1,000 kg farm-gate live output
-- Basis kind: N input (`n_input`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_and_emissions`
 - Sources: `fao-leap-nutrient-flows-2018`; `ipcc-2019-livestock-manure`
@@ -584,14 +662,18 @@ Record NH3, NOx, nitrate, nitrogen runoff and other reported nitrogen species se
 
 Carry cattle from herd production with unchanged cohort, class and traceability; record selection outcome and measured pre-transfer live mass.
 
+Denominator and scope requirements：per transfer lot
+
+Raw quantity and calculation requirements: measured input live mass and count by transfer lot Original collection denominator kind: process_output.
+
 - Selected flow: Live cattle before farm-gate selection
 - Flow property / unit: Mass and parallel count / kg and head
-- Amount rule: measured input live mass and count by transfer lot
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per transfer lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate_transfer`
 - Range: Gate-input reconciliation
   - Range role: QA guardrail (`qa_guardrail`)
@@ -606,14 +688,18 @@ Carry cattle from herd production with unchanged cohort, class and traceability;
 
 Record electricity or fuel for short holding, handling, weighing and loading before the handover; exclude transport after transfer.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output
+
+Raw quantity and calculation requirements: meter, invoice or equipment runtime assigned to gate operations Original collection denominator kind: reference_flow.
+
 - Selected flow: Energy supply for farm-gate handling
 - Flow property / unit: Energy or carrier quantity / kWh, MJ, L, or kg
-- Amount rule: meter, invoice or equipment runtime assigned to gate operations
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_and_infrastructure`
 - Range: Provisional gate-energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -628,14 +714,18 @@ Record electricity or fuel for short holding, handling, weighing and loading bef
 
 Record supplied water for animal drinking during short holding and gate cleaning, separated by purpose.
 
+Denominator and scope requirements：per 1,000 kg farm-gate live cattle output
+
+Raw quantity and calculation requirements: metered or calculated supplied water during gate operations Original collection denominator kind: reference_flow.
+
 - Selected flow: Process water supply
 - Flow property / unit: Volume or mass / m3 or kg
-- Amount rule: metered or calculated supplied water during gate operations
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg farm-gate live cattle output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_water_records`
 - Range: Provisional gate-water screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -662,14 +752,18 @@ No default elementary input is prescribed.
 
 This is the reference product: live cattle measured immediately before farm-gate ownership or control transfer. Post-transfer vehicle movement is excluded.
 
+Raw reference-output records: measured accepted transfer mass on the declared live-weight basis Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Live cattle at producing farm gate
 - Flow property / unit: Mass / kg
-- Amount rule: measured accepted transfer mass on the declared live-weight basis
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: reference flow
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate_transfer`
 - Range: Reference product normalization
   - Range role: QA guardrail (`qa_guardrail`)
@@ -687,12 +781,16 @@ This is the reference product: live cattle measured immediately before farm-gate
 
 Record rejected animals, deaths and any measured short-holding mass loss separately from accepted product, with fate and reason.
 
+Denominator and scope requirements：per transfer lot and per kg reference output
+
+Raw quantity and calculation requirements: input live mass minus accepted reference output and separately documented retained or returned cattle, reconciled with measured loss Original collection denominator kind: reference_flow.
+
 - Selected flow: Gate cattle rejects and biological losses
 - Flow property / unit: Mass and count / kg and head
-- Amount rule: input live mass minus accepted reference output and separately documented retained or returned cattle, reconciled with measured loss
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per transfer lot and per kg reference output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate_transfer`
@@ -726,15 +824,15 @@ No default elementary output is prescribed. Add direct emissions from gate equip
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_animal_events` | `herd_production` | starting stock, births, transfers, deaths, culls and cattle sent to gate | herd register, movement record, scale ticket, veterinary mortality record | animal or cohort id; class; sex; purpose; breed; event; date; count; live mass; origin; destination; phase | electronic herd register and calibrated scale or documented representative weighing | head and kg | each event | complete cohort and reporting period | named farm, herd and cohort | reconcile beginning stock + births + purchases = transfers + deaths + culls + ending stock by class and period | movement documents, scale calibration, signed herd register |
-| `cp_feed_and_grazing` | `herd_production` | feed, forage and grazing intake | purchase, ration, feed issue, pasture and residue records | feed identity; source; as-fed mass; dry matter; nutrient or energy composition; leftovers; pasture area and period; cattle class | invoices, feed inventory, ration logs, pasture records and documented intake calculation | kg as-fed, kg dry matter, ha-day | daily issue or period summary | all feeding and grazing phases | feed store, pasture parcel, housing group and cohort | net issued feed or calculated intake by feed, class and period; preserve conversion basis | supplier specification, moisture result, inventory reconciliation |
-| `cp_water_records` | `herd_production`; `manure_management`; `farm_gate_transfer` | drinking, cleaning, cooling and manure water | meter, tank, pump runtime and allocation record | source; purpose; opening and closing reads; volume; runtime; shared users; period | calibrated meter or documented pump/runtime calculation | m3 or kg | daily, monthly or batch | complete reporting period | source, process and consuming node | sum by purpose and allocate shared readings once | meter calibration, bill and allocation worksheet |
-| `cp_energy_and_infrastructure` | `herd_production`; `manure_management`; `farm_gate_transfer` | energy and shared assets | meter, invoice, fuel, equipment and asset register | carrier; quantity; meter; equipment; service; users; operating hours; asset life; service period; allocation driver | submeter, invoice, tank record, runtime log and asset register | kWh, MJ, L, kg, hours | monthly and each major operation | full reporting and asset service period | process, herd group and shared farm system | direct meter assignment first; allocate residual shared amount once by documented causal driver | invoices, meter calibration, equipment log, allocation worksheet |
-| `cp_health_records` | `herd_production` | animal-health products and interventions | medicine register, purchase and treatment record | product; active substance; dose; unit; animal class; count; date; reason; withdrawal status | farm treatment register and supplier record | native product unit and event | each treatment | complete reporting period | herd, cohort and treatment group | sum product quantity by identity and class; retain services separately | invoice, veterinarian or treatment record |
-| `cp_transport_records` | `herd_production` | controlled inbound cattle and feed movements | shipment and route record | cargo; mass; origin; destination; mode; vehicle; loaded distance; empty return convention; control boundary | weigh ticket, delivery record and route log | t, km, tkm | each trip | complete reporting period | controlled inbound route | sum tonnes multiplied by loaded kilometres by cargo and mode | manifest, scale ticket and route evidence |
-| `cp_manure_and_emissions` | `herd_production`; `manure_management` | excretion, manure pathways, methane and nitrogen losses | animal, feed, manure, storage, treatment, recovery and application record | animal category; population; days; intake; digestibility; volatile solids; nitrogen; system; storage days; climate; recovery; export; application; factor tier | measurements plus IPCC-consistent calculation from collected activity data | kg manure, kg VS, kg N, kg gas species | monthly or management event | every animal phase and manure pathway | barn, pasture, storage, treatment and field pathway | calculate by category-pathway-period; reconcile manure and nitrogen transfers; aggregate after retaining components | laboratory or supplier data, logs, factor table and calculation workbook |
-| `cp_outputs_and_allocation` | `herd_production`; `manure_management` | intended outputs, handovers and attribution | sales, milk, breeding, cull, manure export and allocation record | product; quantity; property; handover; recipient; date; direct burden; shared pool; allocation driver; price if used | invoice, meter, scale and allocation worksheet | product-specific | each handover and reporting-period close | complete period | all product nodes and recipients | direct assignment first; allocate only residual pools; shares sum to one | signed handover, measured quantity, reviewed worksheet |
-| `cp_gate_transfer` | `farm_gate_transfer` | selection, pre-transfer weighing and handover | selection list, calibrated scale ticket, health or market document and transfer record | lot; animal class; sex; route; count; live mass; weighing time; scale; gut-fill or shrink convention; accept/reject; retained; destination; handover time | calibrated scale and signed transfer record | kg and head | each transfer lot | full gate operation | producing farm gate | reconcile input, accepted output, retained or returned cattle, rejects, deaths and measured loss | scale calibration, signed ticket and transfer document |
+| `cp_animal_events` | `herd_production` | starting stock, births, transfers, deaths, culls and cattle sent to gate | herd register, movement record, scale ticket, veterinary mortality record | animal or cohort id; class; sex; purpose; breed; event; date; count; live mass; origin; destination; phase | electronic herd register and calibrated scale or documented representative weighing; Raw aggregation requirements: reconcile beginning stock + births + purchases = transfers + deaths + culls + ending stock by class and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head and kg | each event | complete cohort and reporting period | named farm, herd and cohort | per reference flow | movement documents, scale calibration, signed herd register; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed_and_grazing` | `herd_production` | feed, forage and grazing intake | purchase, ration, feed issue, pasture and residue records | feed identity; source; as-fed mass; dry matter; nutrient or energy composition; leftovers; pasture area and period; cattle class | invoices, feed inventory, ration logs, pasture records and documented intake calculation; Raw aggregation requirements: net issued feed or calculated intake by feed, class and period; preserve conversion basis. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg as-fed, kg dry matter, ha-day | daily issue or period summary | all feeding and grazing phases | feed store, pasture parcel, housing group and cohort | per reference flow | supplier specification, moisture result, inventory reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_water_records` | `herd_production`; `manure_management`; `farm_gate_transfer` | drinking, cleaning, cooling and manure water | meter, tank, pump runtime and allocation record | source; purpose; opening and closing reads; volume; runtime; shared users; period | calibrated meter or documented pump/runtime calculation; Raw aggregation requirements: sum by purpose and allocate shared readings once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | m3 or kg | daily, monthly or batch | complete reporting period | source, process and consuming node | per reference flow | meter calibration, bill and allocation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_energy_and_infrastructure` | `herd_production`; `manure_management`; `farm_gate_transfer` | energy and shared assets | meter, invoice, fuel, equipment and asset register | carrier; quantity; meter; equipment; service; users; operating hours; asset life; service period; allocation driver | submeter, invoice, tank record, runtime log and asset register; Raw aggregation requirements: direct meter assignment first; allocate residual shared amount once by documented causal driver. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kWh, MJ, L, kg, hours | monthly and each major operation | full reporting and asset service period | process, herd group and shared farm system | per reference flow | invoices, meter calibration, equipment log, allocation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_health_records` | `herd_production` | animal-health products and interventions | medicine register, purchase and treatment record | product; active substance; dose; unit; animal class; count; date; reason; withdrawal status | farm treatment register and supplier record; Raw aggregation requirements: sum product quantity by identity and class; retain services separately. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | native product unit and event | each treatment | complete reporting period | herd, cohort and treatment group | per reference flow | invoice, veterinarian or treatment record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_transport_records` | `herd_production` | controlled inbound cattle and feed movements | shipment and route record | cargo; mass; origin; destination; mode; vehicle; loaded distance; empty return convention; control boundary | weigh ticket, delivery record and route log; Raw aggregation requirements: sum tonnes multiplied by loaded kilometres by cargo and mode. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | t, km, tkm | each trip | complete reporting period | controlled inbound route | per reference flow | manifest, scale ticket and route evidence; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure_and_emissions` | `herd_production`; `manure_management` | excretion, manure pathways, methane and nitrogen losses | animal, feed, manure, storage, treatment, recovery and application record | animal category; population; days; intake; digestibility; volatile solids; nitrogen; system; storage days; climate; recovery; export; application; factor tier | measurements plus IPCC-consistent calculation from collected activity data; Raw aggregation requirements: calculate by category-pathway-period; reconcile manure and nitrogen transfers; aggregate after retaining components. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg manure, kg VS, kg N, kg gas species | monthly or management event | every animal phase and manure pathway | barn, pasture, storage, treatment and field pathway | per reference flow | laboratory or supplier data, logs, factor table and calculation workbook; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_outputs_and_allocation` | `herd_production`; `manure_management` | intended outputs, handovers and attribution | sales, milk, breeding, cull, manure export and allocation record | product; quantity; property; handover; recipient; date; direct burden; shared pool; allocation driver; price if used | invoice, meter, scale and allocation worksheet; Raw aggregation requirements: direct assignment first; allocate only residual pools; shares sum to one. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | product-specific | each handover and reporting-period close | complete period | all product nodes and recipients | per reference flow | signed handover, measured quantity, reviewed worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_gate_transfer` | `farm_gate_transfer` | selection, pre-transfer weighing and handover | selection list, calibrated scale ticket, health or market document and transfer record | lot; animal class; sex; route; count; live mass; weighing time; scale; gut-fill or shrink convention; accept/reject; retained; destination; handover time | calibrated scale and signed transfer record; Raw aggregation requirements: reconcile input, accepted output, retained or returned cattle, rejects, deaths and measured loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg and head | each transfer lot | full gate operation | producing farm gate | per reference flow | scale calibration, signed ticket and transfer document; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

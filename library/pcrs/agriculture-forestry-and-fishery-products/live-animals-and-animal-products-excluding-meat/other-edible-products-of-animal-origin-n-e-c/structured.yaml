@@ -95,6 +95,20 @@ measurement_rules:
       uuid: ""
     required_unit: "period"
     rule: "Assign source, collection, replacement and shared-service events to their actual period once."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
 process_map:
   - id: collect
     name: "Source-qualified collection"
@@ -136,16 +150,16 @@ process_inventory:
           name: "Source-qualified animal-origin material (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "One concrete edible animal-origin good at a documented animal, colony or nest source; upstream source production is not recounted."
+          description: "One concrete edible animal-origin good at a documented animal, colony or nest source; upstream source production is not recounted. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_collect
               source_ids: []
             ranges:
@@ -168,16 +182,16 @@ process_inventory:
           name: "Collected source-qualified edible product (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Hand off the weighed collected state once, including source and actual period."
+          description: "Hand off the weighed collected state once, including source and actual period. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_collect
               source_ids: []
             ranges:
@@ -195,16 +209,16 @@ process_inventory:
           name: "Non-food collection residue (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Separate unusable material from marketed co-products and document its destination."
+          description: "Separate unusable material from marketed co-products and document its destination. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_reject
               source_ids: []
             ranges:
@@ -227,16 +241,16 @@ process_inventory:
           name: "Collected edible animal-origin material (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Conditional on actual cleaning or separation; otherwise bypass to grading."
+          description: "Conditional on actual cleaning or separation; otherwise bypass to grading. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_prepare
               source_ids: []
             ranges:
@@ -253,16 +267,16 @@ process_inventory:
           name: "Actual supplied cleaning water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Meter Product water only if wet cleaning is performed; trace wastewater destination."
+          description: "Meter Product water only if wet cleaning is performed; trace wastewater destination. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_prepare
               source_ids: []
             ranges:
@@ -285,16 +299,16 @@ process_inventory:
           name: "First-prepared source-qualified edible product (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record measured prepared state and next handoff; no cross-product yield."
+          description: "Record measured prepared state and next handoff; no cross-product yield. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_prepare
               source_ids: []
             ranges:
@@ -312,16 +326,16 @@ process_inventory:
           name: "Non-food preparation residue (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Classify inedible contamination, debris and actual destination; do not call it edible output."
+          description: "Classify inedible contamination, debris and actual destination; do not call it edible output. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_reject
               source_ids: []
             ranges:
@@ -344,16 +358,16 @@ process_inventory:
           name: "Source-qualified product before preservation (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Use the actual collected or prepared input when a bounded preservation step occurs."
+          description: "Use the actual collected or prepared input when a bounded preservation step occurs. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_stabilize
               source_ids: []
             ranges:
@@ -370,16 +384,16 @@ process_inventory:
           name: "Actual energy carrier (UUID unresolved)"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Meter actual energy carrier for performed chilling, drying or other lawful stabilization."
+          description: "Meter actual energy carrier for performed chilling, drying or other lawful stabilization. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_stabilize
               source_ids: []
             ranges:
@@ -402,16 +416,16 @@ process_inventory:
           name: "Stabilized source-qualified edible product (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Measure after-state and moisture, then hand off to grading."
+          description: "Measure after-state and moisture, then hand off to grading. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_stabilize
               source_ids: []
             ranges:
@@ -429,16 +443,16 @@ process_inventory:
           name: "Non-food preservation reject (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record spoiled/rejected matter by legal destination; evaporation is a separate balance term."
+          description: "Record spoiled/rejected matter by legal destination; evaporation is a separate balance term. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_reject
               source_ids: []
             ranges:
@@ -461,16 +475,16 @@ process_inventory:
           name: "Source-qualified edible product before grade (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Select exactly one actual collected, prepared or stabilized predecessor state."
+          description: "Select exactly one actual collected, prepared or stabilized predecessor state. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -493,16 +507,16 @@ process_inventory:
           name: "Accepted source-qualified edible product (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Declare food status, state and destination to handover."
+          description: "Declare food status, state and destination to handover. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -519,16 +533,16 @@ process_inventory:
           name: "Food-eligible downgraded product (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Only if independently marketable and food-eligible; otherwise classify as reject."
+          description: "Only if independently marketable and food-eligible; otherwise classify as reject. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -546,16 +560,16 @@ process_inventory:
           name: "Food-ineligible animal-origin reject (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Document legal non-food disposition, never an edible grade."
+          description: "Document legal non-food disposition, never an edible grade. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_reject
               source_ids: []
             ranges:
@@ -578,16 +592,16 @@ process_inventory:
           name: "Accepted source-qualified edible product (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Transfer accepted grade once to protective presentation."
+          description: "Transfer accepted grade once to protective presentation. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -604,16 +618,16 @@ process_inventory:
           name: "Actual food-contact package or reusable service (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record package material, tare and reuse or single-use service."
+          description: "Record package material, tare and reuse or single-use service. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -636,16 +650,16 @@ process_inventory:
           name: "Source-, state- and gate-qualified other edible animal-origin good"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Net mass excludes package at the real production or first-collection gate."
+          description: "Net mass excludes package at the real production or first-collection gate. Raw reference-output records: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
           amount:
-            expression: "Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled."
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg output of the corresponding process"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -683,73 +697,73 @@ dataset_production:
       flow_role: "source and collected good"
       record_type: "source ledger"
       raw_fields: "good, species, legal/food status, real outputs, mass, gate, period"
-      collection_method: "source ticket and calibrated scale"
+      collection_method: "source ticket and calibrated scale; Raw aggregation requirements: once per output/lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot"
       temporal_coverage: "source and collection periods"
       site_scope: "source and collector"
-      aggregation_rule: "once per output/lot"
-      quality_evidence: "source, legal and scale records"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "source, legal and scale records; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_prepare
       process_id: "prepare"
       flow_role: "first cleaning and prepared good"
       record_type: "batch ledger"
       raw_fields: "state, mass in/out, water, service, rejects"
-      collection_method: "ticket, scale and meter"
+      collection_method: "ticket, scale and meter; Raw aggregation requirements: measured state balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each performed lot"
       temporal_coverage: "preparation period"
       site_scope: "site"
-      aggregation_rule: "measured state balance"
-      quality_evidence: "ticket and calibration"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_stabilize
       process_id: "stabilize"
       flow_role: "optional preservation"
       record_type: "preservation ledger"
       raw_fields: "pre/post state, mass, moisture, temperature, energy, losses"
-      collection_method: "meter, scale and assay"
+      collection_method: "meter, scale and assay; Raw aggregation requirements: before/after balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;MJ"
       frequency: "each performed lot"
       temporal_coverage: "preservation period"
       site_scope: "site"
-      aggregation_rule: "before/after balance"
-      quality_evidence: "meter and assay"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter and assay; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_grade
       process_id: "grade"
       flow_role: "grades and destinations"
       record_type: "grade ledger"
       raw_fields: "accepted, downgrade, reject, food decision, destinations"
-      collection_method: "grade ticket and scale"
+      collection_method: "grade ticket and scale; Raw aggregation requirements: disjoint output set. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each lot"
       temporal_coverage: "grading period"
       site_scope: "site"
-      aggregation_rule: "disjoint output set"
-      quality_evidence: "grade/destination records"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "grade/destination records; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_handover
       process_id: "handover"
       flow_role: "net sale, package, gate"
       record_type: "dispatch ledger"
       raw_fields: "state, moisture, gross, tare, net, package reuse, gate"
-      collection_method: "dispatch ticket and scale"
+      collection_method: "dispatch ticket and scale; Raw aggregation requirements: one net handover/lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each lot"
       temporal_coverage: "handover period"
       site_scope: "site"
-      aggregation_rule: "one net handover/lot"
-      quality_evidence: "ticket and calibration"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_reject
       process_id: "collect_prepare_stabilize_grade"
       flow_role: "residue/waste"
       record_type: "disposition ledger"
       raw_fields: "lot, type, mass, legal status, destination"
-      collection_method: "weighing and transfer ticket"
+      collection_method: "weighing and transfer ticket; Raw aggregation requirements: once per terminal destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each event"
       temporal_coverage: "relevant period"
       site_scope: "site"
-      aggregation_rule: "once per terminal destination"
-      quality_evidence: "transfer record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: c_net
       applies_to: "sale lot"
@@ -846,19 +860,19 @@ data_sources:
     used_for: "Candidate examples and food-use checks, not universal CPC classification."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:533bb51064096000d63e64362ed55f53d5ea79411351f7970aceeabdffd10c1d"
+  source_sha256: "sha256:3fae83f2035597ce5be00aa6e66efcac03ee69e68e83e5dfd87a240d7a289b1b"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_4010"
+    - unit_id: "normative_6719"
       family: "system_boundary"
       span:
         start:
-          offset: 4010
-          line: 55
+          offset: 6719
+          line: 57
           column: 1
         end:
-          offset: 6015
-          line: 78
+          offset: 8724
+          line: 80
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | A named lawful animal, colony or nest-source good at actual collection, or documented purchased material in its entering state. |\n| starting_condition_role | Compatible source-specific upstream dataset carries source production, phases and actual co-products; foreground begins at independent collection or purchased handoff. |\n| product_classification_scope | CPC 02939 only after checking exclusions and all more specific CPC positions for the named good. |\n| recursive_input_rule | Purchased same-category goods retain upstream burden and enter their true later node, never a second fictitious collection. |\n| upstream_dataset_requirement | Source/species, legal chain, source periods, real output set, incoming state and burden coverage. |\n| disclosure | Named good, classification rationale, legal/food status, actual route, periods, output set, gate and unresolved identities. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_identity | each lot | Require concrete good, lawful provenance, food eligibility and residual CPC classification; examples do not prove 02939. | un-cpc-3;eu-residual |\n| b_collect | source collection | Distinguish actual animal, colony or nest production from independent removal, incidental losses and collected handoff; purchased goods bypass collection. | eu-residual |\n| b_prepare | first preparation | Include actual first cleaning/separation, water or service inputs, collected/prepared handoff and non-food rejects; bypass when absent. | eu-residual |\n| b_preserve | preservation | Identify usable before/after state, actual energy and services, residues, evaporation and rejects; bypass when absent. | eu-residual |\n| b_grade | grades and gate | Enumerate accepted, separately saleable downgrade and ineligible reject with distinct destinations; protect to actual gate, excluding freight. | un-cpc-3 |\n\n"
       headings:
@@ -877,12 +891,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 4010
-              line: 55
+              offset: 6719
+              line: 57
               column: 1
             end:
-              offset: 4031
-              line: 55
+              offset: 6740
+              line: 57
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -897,16 +911,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_26181"
+    - unit_id: "normative_34622"
       family: "allocation"
       span:
         start:
-          offset: 26181
-          line: 582
+          offset: 34622
+          line: 656
           column: 1
         end:
-          offset: 26998
-          line: 590
+          offset: 35439
+          line: 664
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual source output set | Enumerate each intended product, amount and gate. Use measured causal attribution when supported; otherwise document period-specific economic allocation with sensitivity. Do not assign automatic zero or entire source burden to 02939. | eu-residual |\n| a_grade | grades and residue | Accepted and separately saleable downgraded goods have disjoint masses/destinations; non-food rejects and incidental residue are not extra edible products. | un-cpc-3 |\n| a_period | phases and shared service | Index source establishment/productive/replacement/termination periods; assign observed shared-service time or throughput to consuming nodes/lots once with evidence. |  |\n\n"
       headings:
@@ -925,12 +939,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 26181
-              line: 582
+              offset: 34622
+              line: 656
               column: 1
             end:
-              offset: 26221
-              line: 582
+              offset: 34662
+              line: 656
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -945,16 +959,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_30599"
+    - unit_id: "normative_41386"
       family: "validation"
       span:
         start:
-          offset: 30599
-          line: 621
+          offset: 41386
+          line: 695
           column: 1
         end:
-          offset: 31479
-          line: 631
+          offset: 42266
+          line: 705
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject generic other-animal averages, insects, honey, ordinary eggs, raw milk, meat, snails, non-food goods and elsewhere-classified food; require legal and food evidence. | un-cpc-3;eu-residual |\n| v_route | source | Require real source or documented purchased input; reject fictitious common biology, duplicate collection and unperformed treatment. | eu-residual |\n| v_balance | each lot | Reconcile performed states, additions/removals, grade/reject destinations and net dispatch. |  |\n| v_allocation | periods/outputs | Reject omitted real co-products, duplicate grades, zero/full automatic burden and duplicate shared service. |  |\n| v_identity | final exchange | Verify named good, source, state, gate, direction/type and property/unit support. |  |\n\n"
       headings:
@@ -973,12 +987,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 30599
-              line: 621
+              offset: 41386
+              line: 695
               column: 1
             end:
-              offset: 30621
-              line: 621
+              offset: 41408
+              line: 695
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -997,220 +1011,220 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "b_identity"
       identity_kind: "explicit"
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 5100
-          line: 72
+          offset: 7809
+          line: 74
           column: 1
         end:
-          offset: 5271
-          line: 72
+          offset: 7980
+          line: 74
           column: 172
     - pointer: "/system_boundary/rules/1"
       rule_id: "b_collect"
       identity_kind: "explicit"
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 5272
-          line: 73
+          offset: 7981
+          line: 75
           column: 1
         end:
-          offset: 5476
-          line: 73
+          offset: 8185
+          line: 75
           column: 205
     - pointer: "/system_boundary/rules/2"
       rule_id: "b_prepare"
       identity_kind: "explicit"
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 5477
-          line: 74
+          offset: 8186
+          line: 76
           column: 1
         end:
-          offset: 5662
-          line: 74
+          offset: 8371
+          line: 76
           column: 186
     - pointer: "/system_boundary/rules/3"
       rule_id: "b_preserve"
       identity_kind: "explicit"
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 5663
-          line: 75
+          offset: 8372
+          line: 77
           column: 1
         end:
-          offset: 5827
-          line: 75
+          offset: 8536
+          line: 77
           column: 165
     - pointer: "/system_boundary/rules/4"
       rule_id: "b_grade"
       identity_kind: "explicit"
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 5828
-          line: 76
+          offset: 8537
+          line: 78
           column: 1
         end:
-          offset: 6013
-          line: 76
+          offset: 8722
+          line: 78
           column: 186
     - pointer: "/allocation_rules/0"
       rule_id: "a_source"
       identity_kind: "explicit"
-      unit_id: "normative_26181"
+      unit_id: "normative_34622"
       source_span:
         start:
-          offset: 26294
-          line: 586
+          offset: 34735
+          line: 660
           column: 1
         end:
-          offset: 26583
-          line: 586
+          offset: 35024
+          line: 660
           column: 290
     - pointer: "/allocation_rules/1"
       rule_id: "a_grade"
       identity_kind: "explicit"
-      unit_id: "normative_26181"
+      unit_id: "normative_34622"
       source_span:
         start:
-          offset: 26584
-          line: 587
+          offset: 35025
+          line: 661
           column: 1
         end:
-          offset: 26785
-          line: 587
+          offset: 35226
+          line: 661
           column: 202
     - pointer: "/allocation_rules/2"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_26181"
+      unit_id: "normative_34622"
       source_span:
         start:
-          offset: 26786
-          line: 588
+          offset: 35227
+          line: 662
           column: 1
         end:
-          offset: 26996
-          line: 588
+          offset: 35437
+          line: 662
           column: 211
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_30599"
+      unit_id: "normative_41386"
       source_span:
         start:
-          offset: 30694
-          line: 625
+          offset: 41481
+          line: 699
           column: 1
         end:
-          offset: 30918
-          line: 625
+          offset: 41705
+          line: 699
           column: 225
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_30599"
+      unit_id: "normative_41386"
       source_span:
         start:
-          offset: 30919
-          line: 626
+          offset: 41706
+          line: 700
           column: 1
         end:
-          offset: 31088
-          line: 626
+          offset: 41875
+          line: 700
           column: 170
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_30599"
+      unit_id: "normative_41386"
       source_span:
         start:
-          offset: 31089
-          line: 627
+          offset: 41876
+          line: 701
           column: 1
         end:
-          offset: 31210
-          line: 627
+          offset: 41997
+          line: 701
           column: 122
     - pointer: "/validation_rules/3"
       rule_id: "v_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_30599"
+      unit_id: "normative_41386"
       source_span:
         start:
-          offset: 31211
-          line: 628
+          offset: 41998
+          line: 702
           column: 1
         end:
-          offset: 31358
-          line: 628
+          offset: 42145
+          line: 702
           column: 148
     - pointer: "/validation_rules/4"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_30599"
+      unit_id: "normative_41386"
       source_span:
         start:
-          offset: 31359
-          line: 629
+          offset: 42146
+          line: 703
           column: 1
         end:
-          offset: 31477
-          line: 629
+          offset: 42264
+          line: 703
           column: 119
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 4010
-          line: 55
+          offset: 6719
+          line: 57
           column: 1
         end:
-          offset: 4031
-          line: 55
+          offset: 6740
+          line: 57
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_4010"
+      unit_id: "normative_6719"
       source_span:
         start:
-          offset: 4059
-          line: 59
+          offset: 6768
+          line: 61
           column: 1
         end:
-          offset: 5007
-          line: 66
+          offset: 7716
+          line: 68
           column: 141
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_26181"
+      unit_id: "normative_34622"
       source_span:
         start:
-          offset: 26181
-          line: 582
+          offset: 34622
+          line: 656
           column: 1
         end:
-          offset: 26221
-          line: 582
+          offset: 34662
+          line: 656
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_30599"
+      unit_id: "normative_41386"
       source_span:
         start:
-          offset: 30599
-          line: 621
+          offset: 41386
+          line: 695
           column: 1
         end:
-          offset: 30621
-          line: 621
+          offset: 41408
+          line: 695
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1219,5 +1233,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:533bb51064096000d63e64362ed55f53d5ea79411351f7970aceeabdffd10c1d"
-  generated_content_sha256: "sha256:9262ffd6a771c2c4099b6defe5612a218a17d7c89bb7a14ab6f4a3169d8f827a"
+    sha256: "sha256:3fae83f2035597ce5be00aa6e66efcac03ee69e68e83e5dfd87a240d7a289b1b"
+  generated_content_sha256: "sha256:720354c109bfaf80358ca6837f94052cb5504c3344a59a5e26bac22b9b57c710"

@@ -14,7 +14,7 @@ functional_unit:
   how_much: "1 kg net weighed handed-over milk"
   how_well: "Unprocessed, species and warm/chilled state declared"
   how_long_or_cycle: "Herd reporting period linked to lactation, dry, pregnancy and replacement phases"
-  reference_flow_link: "Exactly one actual final handover card; broad UUID unresolved"
+  reference_flow_link: "reference_product_handover"
 system_boundary:
   rules:
     - rule_id: gate
@@ -39,6 +39,10 @@ system_boundary:
       rule: "Allocate well, pump, vehicle, shelter, milking equipment or cooler to actual consumers and service periods once."
       source_ids:
         - fao-camel-dairy
+    - rule_id: reference_handover_linkage
+      applies_to: "actual reference-product boundary"
+      rule: "Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again."
+      source_ids: []
 boundary_abstraction:
   declared_starting_condition: "Managed breeding and lactating herd at actual camp/pasture or fixed farm; acquired animals and feed disclosed."
   starting_condition_role: "Biological milk production, not dairy processing."
@@ -49,7 +53,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
-    name: "Raw camel milk at mobile-camp or fixed-farm herd gate (UUID unresolved)"
+    name: "Raw camel milk at mobile-camp or fixed-farm herd gate"
     uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
@@ -88,6 +92,20 @@ measurement_rules:
       uuid: ""
     required_unit: "row unit"
     rule: "Link animal-days, services and outputs to actual route and phase before per-kg normalization."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
 process_map:
   - id: herd_management
     name: "Camel herd management"
@@ -119,6 +137,12 @@ process_map:
     inclusion_condition: "actual mobile or fixed gate"
     role: "one final raw product output"
     quantitative_reference: "1 kg net gate milk"
+  - id: reference_handover
+    name: "Actual producer reference-product handover"
+    inclusion: "required"
+    inclusion_condition: "One actual declared route, state and producer gate per foreground package"
+    role: "Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution"
+    quantitative_reference: "1 kg accepted product at the declared handover"
 process_inventory:
   - id: herd_management
     label: "Camel herd management"
@@ -129,16 +153,16 @@ process_inventory:
           name: "Camel feed or grazed biomass (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg dry matter"
-          description: "Actual dry-matter intake by route and animal phase."
+          description: "Actual dry-matter intake by route and animal phase. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg DM/kg milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg DM/kg milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_herd
               source_ids:
                 - fao-camel-production
@@ -156,16 +180,16 @@ process_inventory:
           name: "Herd water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Volume / m3"
-          description: "Carried water at mobile camp or pumped water at farm, not assumed universal camel schedule."
+          description: "Carried water at mobile camp or pumped water at farm, not assumed universal camel schedule. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to m3/kg milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to m3/kg milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_herd
               source_ids:
                 - fao-camel-production
@@ -183,16 +207,16 @@ process_inventory:
           name: "Herd energy (UUID unresolved)"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Fuel or electricity used for producer-side water and herd operations, shared service assigned once."
+          description: "Fuel or electricity used for producer-side water and herd operations, shared service assigned once. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to MJ/kg milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to MJ/kg milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_herd
               source_ids: []
             ranges:
@@ -215,16 +239,16 @@ process_inventory:
           name: "Live camel outputs by class (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg live weight"
-          description: "Independent live animals at actual handover; replacements retained in herd are internal."
+          description: "Independent live animals at actual handover; replacements retained in herd are internal. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg live weight/kg milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg live weight/kg milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_herd
               source_ids:
                 - fao-camel-dairy
@@ -243,16 +267,16 @@ process_inventory:
           name: "Herd residues by destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record manure by destination; marketed dung is a co-product, not waste. Dead stock is a separate waste card."
+          description: "Record manure by destination; marketed dung is a co-product, not waste. Dead stock is a separate waste card. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_herd
               source_ids:
                 - ipcc-livestock-2019
@@ -270,16 +294,16 @@ process_inventory:
           name: "Dead camel stock by disposal route (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record non-marketable deaths with cause, mass and disposal destination; they are not cull co-products."
+          description: "Record non-marketable deaths with cause, mass and disposal destination; they are not cull co-products. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Weigh or use class-specific documented estimate per death. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Weigh or use class-specific documented estimate per death."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_herd
               source_ids: []
             ranges:
@@ -299,13 +323,13 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate from recorded animal-days, feed and declared method; UUID is not an emission factor."
+          description: "Calculate from recorded animal-days, feed and declared method; UUID is not an emission factor. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg CH4/kg milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg CH4/kg milk."
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -328,13 +352,13 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate methane from actual manure management system, volatile solids and herd class; keep distinct from enteric methane."
+          description: "Calculate methane from actual manure management system, volatile solids and herd class; keep distinct from enteric methane. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Apply selected method to herd-class and manure-stage records, normalized to net milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Apply selected method to herd-class and manure-stage records, normalized to net milk."
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -357,13 +381,13 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate direct manure-system N2O from actual nitrogen excretion, system and IPCC method; avoid double counting managed soils."
+          description: "Calculate direct manure-system N2O from actual nitrogen excretion, system and IPCC method; avoid double counting managed soils. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Apply selected method to herd-class and manure-stage records, normalized to net milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Apply selected method to herd-class and manure-stage records, normalized to net milk."
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -386,13 +410,13 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Record only where method or measurements establish volatilized NH3 by handling stage; keep any indirect N2O calculation separate."
+          description: "Record only where method or measurements establish volatilized NH3 by handling stage; keep any indirect N2O calculation separate. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Apply selected method to herd-class and manure-stage records, normalized to net milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Apply selected method to herd-class and manure-stage records, normalized to net milk."
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -417,16 +441,16 @@ process_inventory:
           name: "Milking process water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Volume / m3"
-          description: "Measure udder, vessel and equipment cleaning water for hand or mechanical milking."
+          description: "Measure udder, vessel and equipment cleaning water for hand or mechanical milking. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to m3/kg collected milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to m3/kg collected milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_milking
               source_ids: []
             ranges:
@@ -449,16 +473,16 @@ process_inventory:
           name: "Warm raw camel milk (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Captured raw milk before conditioning, distinct from calf-consumed milk."
+          description: "Captured raw milk before conditioning, distinct from calf-consumed milk. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg accounted milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg accounted milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_milking
               source_ids:
                 - fao-camel-production
@@ -476,16 +500,16 @@ process_inventory:
           name: "Camel milk consumed by calf (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Observe or estimate suckling before or during milking; internal biological use, not marketed milk."
+          description: "Observe or estimate suckling before or during milking; internal biological use, not marketed milk. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg accounted milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg accounted milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_milking
               source_ids:
                 - fao-camel-production
@@ -504,16 +528,16 @@ process_inventory:
           name: "Discarded raw camel milk by destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record spilled or rejected milk and its destination; cleaning effluent is a separate waste card."
+          description: "Record spilled or rejected milk and its destination; cleaning effluent is a separate waste card. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg collected milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg collected milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_milking
               source_ids: []
             ranges:
@@ -530,16 +554,16 @@ process_inventory:
           name: "Milking wastewater by destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Volume / m3"
-          description: "Record used cleaning water leaving the milking node by treatment or discharge route; it is not milk loss."
+          description: "Record used cleaning water leaving the milking node by treatment or discharge route; it is not milk loss. Denominator and scope requirements：per kg collected milk Raw quantity and calculation requirements: Meter discharge or use inlet less measured retained water, with destination. Original collection denominator kind: process_output."
           amount:
-            expression: "Meter discharge or use inlet less measured retained water, with destination."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg collected milk"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_milking
               source_ids: []
             ranges:
@@ -562,16 +586,16 @@ process_inventory:
           name: "Collected warm raw camel milk (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Transfer raw collected milk only if actual straining occurs; no second production credit."
+          description: "Transfer raw collected milk only if actual straining occurs; no second production credit. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg prepared milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg prepared milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_conditioning
               source_ids: []
             ranges:
@@ -594,16 +618,16 @@ process_inventory:
           name: "Prepared warm raw camel milk (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Weigh retained milk after non-transformative straining, to warm handover or cooling."
+          description: "Weigh retained milk after non-transformative straining, to warm handover or cooling. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg prepared milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg prepared milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_conditioning
               source_ids: []
             ranges:
@@ -622,16 +646,16 @@ process_inventory:
           name: "Conditioning rejects (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record retained debris and rejected milk separately, excluding both from usable output."
+          description: "Record retained debris and rejected milk separately, excluding both from usable output. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg input milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg input milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_conditioning
               source_ids: []
             ranges:
@@ -654,16 +678,16 @@ process_inventory:
           name: "Usable warm raw camel milk (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Only usable raw milk enters conditional preservation."
+          description: "Only usable raw milk enters conditional preservation. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg chilled milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg chilled milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_cooling
               source_ids: []
             ranges:
@@ -680,16 +704,16 @@ process_inventory:
           name: "Cooling energy supply (UUID unresolved)"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Meter on-herd refrigerator electricity or fuel, including one share of generator service."
+          description: "Meter on-herd refrigerator electricity or fuel, including one share of generator service. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to MJ/kg chilled milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to MJ/kg chilled milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_cooling
               source_ids: []
             ranges:
@@ -712,16 +736,16 @@ process_inventory:
           name: "Chilled raw camel milk internal (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Internal transfer before final handover, not yet the fixed farm-gate flow."
+          description: "Internal transfer before final handover, not yet the fixed farm-gate flow. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg chilled milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg chilled milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_cooling
               source_ids: []
             ranges:
@@ -740,16 +764,16 @@ process_inventory:
           name: "Cooling milk loss (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record rejected batches and spills by cause and disposal."
+          description: "Record rejected batches and spills by cause and disposal. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg cooling input. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg cooling input."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_cooling
               source_ids: []
             ranges:
@@ -772,16 +796,16 @@ process_inventory:
           name: "Raw camel milk ready for handover (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Transfer either warm or chilled state once, from the last active upstream node."
+          description: "Transfer either warm or chilled state once, from the last active upstream node. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg delivered milk. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg delivered milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -804,16 +828,16 @@ process_inventory:
           name: "Warm raw camel milk at producer gate (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Final warm output at declared mobile camp or fixed farm; chilled identity inapplicable."
+          description: "Final warm output at declared mobile camp or fixed farm; chilled identity inapplicable. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg delivered milk. Original collection denominator kind: reference_flow. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg delivered milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -830,16 +854,16 @@ process_inventory:
           name: "Chilled raw camel milk at mobile-camp gate (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Conditional final output where cooling is actually performed at a mobile pastoral camp. It remains unbound because the verified chilled UUID requires a fixed farm gate."
+          description: "Conditional final output where cooling is actually performed at a mobile pastoral camp. It remains unbound because the verified chilled UUID requires a fixed farm gate. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Net weighed chilled milk at actual mobile camp; mutually exclusive with other final outputs. Original collection denominator kind: reference_flow. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
           amount:
-            expression: "Net weighed chilled milk at actual mobile camp; mutually exclusive with other final outputs."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -859,16 +883,16 @@ process_inventory:
           flow_ref:
             uuid: "c20da2ab-1dac-40ad-9206-43996d07bcff"
           property_unit: "Mass / kg"
-          description: "Final chilled output only at a fixed producing farm; chilled mobile-camp output remains unbound."
+          description: "Final chilled output only at a fixed producing farm; chilled mobile-camp output remains unbound. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg/kg delivered milk. Original collection denominator kind: reference_flow. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
           amount:
-            expression: "Obtain by event, route and period, then normalize to kg/kg delivered milk."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg net producer-gate milk"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -879,6 +903,72 @@ process_inventory:
                 basis: "chilled raw milk at fixed farm gate per stated denominator"
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: reference_handover
+    label: "Actual producer reference-product handover"
+    inputs:
+      product:
+        - row_id: reference_handover_input
+          role: "Raw camel milk at mobile-camp or fixed-farm herd gate for actual producer-handover linkage"
+          name: "Raw camel milk at mobile-camp or fixed-farm herd gate for actual producer-handover linkage"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This input matches the accepted goods represented by warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk Required product-instance qualifiers: species; mobile or fixed gate; warm/chilled temperature; conditioning; milking method; period; measured density if converting volume"
+          amount:
+            expression: "Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_handover
+          role: "Raw camel milk at mobile-camp or fixed-farm herd gate"
+          name: "Raw camel milk at mobile-camp or fixed-farm herd gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk Required product-instance qualifiers: species; mobile or fixed gate; warm/chilled temperature; conditioning; milking method; period; measured density if converting volume"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
                 source_ids: []
       waste:
         []
@@ -912,61 +1002,73 @@ dataset_production:
       flow_role: "herd inputs and outputs"
       record_type: "herd log"
       raw_fields: "species; class; route; phase; animal-days; feed; grazing; water; fuel; births; culls; manure; mortality"
-      collection_method: "weigh, meter, dated register"
+      collection_method: "weigh, meter, dated register; Raw aggregation requirements: partition by route and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; m3; MJ; head; day"
       frequency: "daily/event"
       temporal_coverage: "full supporting period"
       site_scope: "actual camps and farms"
-      aggregation_rule: "partition by route and period"
-      quality_evidence: "invoices, calibration, method version"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoices, calibration, method version; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_milking
       process_id: "milk_capture"
       flow_role: "collected, calf and loss"
       record_type: "event sheet"
       raw_fields: "dam; method; collected mass; calf suckling; water; waste"
-      collection_method: "scale, meter, observation"
+      collection_method: "scale, meter, observation; Raw aggregation requirements: reconcile, then sum. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; m3"
       frequency: "each event"
       temporal_coverage: "milk period"
       site_scope: "milking point"
-      aggregation_rule: "reconcile, then sum"
-      quality_evidence: "calibrated scale and observation notes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibrated scale and observation notes; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_conditioning
       process_id: "first_conditioning"
       flow_role: "raw, prepared, rejects"
       record_type: "batch log"
       raw_fields: "input; straining; retained; rejects; destination"
-      collection_method: "scale and filter log"
+      collection_method: "scale and filter log; Raw aggregation requirements: input = retained + loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each applicable batch"
       temporal_coverage: "milk period"
       site_scope: "herd point"
-      aggregation_rule: "input = retained + loss"
-      quality_evidence: "scale and batch ID"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale and batch ID; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_cooling
       process_id: "farm_cooling"
       flow_role: "warm, energy, chilled, loss"
       record_type: "cooler log"
       raw_fields: "mass; time; temperature; fuel/electricity; reject"
-      collection_method: "scale, thermometer, meter"
+      collection_method: "scale, thermometer, meter; Raw aggregation requirements: input = chilled + loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; °C; MJ"
       frequency: "each applicable batch"
       temporal_coverage: "milk period"
       site_scope: "actual cooler"
-      aggregation_rule: "input = chilled + loss"
-      quality_evidence: "calibrated instruments"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibrated instruments; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_handover
       process_id: "producer_handover"
       flow_role: "final product"
       record_type: "handover ticket"
       raw_fields: "mobile/fixed location; buyer; state; temperature; net mass"
-      collection_method: "weighed signed ticket"
+      collection_method: "weighed signed ticket; Raw aggregation requirements: exactly one state per batch. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; °C"
       frequency: "each delivery"
       temporal_coverage: "milk period"
       site_scope: "actual herd gate"
-      aggregation_rule: "exactly one state per batch"
-      quality_evidence: "ticket and scale check"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "ticket and scale check; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_reference_handover
+      process_id: "reference_handover"
+      flow_role: "accepted product and matched internal source transfer"
+      record_type: "producer handover ledger"
+      raw_fields: "lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link"
+      collection_method: "Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed."
+      unit: "kg; native source quantities"
+      frequency: "each actual handover"
+      temporal_coverage: "matched source and handover periods"
+      site_scope: "declared producer gate only"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet"
   calculation_rules:
     - id: net_yield
       applies_to: "final milk"
@@ -1089,21 +1191,21 @@ data_sources:
     used_for: "milk QA identity"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:d47b74834a1eefe84a1b304a767374b63e0c46c92365ce12e01648d1240ffe30"
+  source_sha256: "sha256:6fda6d85078fafc7eeb1005257563bf4801e2e5ed487491dca4c905818ab631e"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_2918"
+    - unit_id: "normative_6109"
       family: "system_boundary"
       span:
         start:
-          offset: 2918
-          line: 53
+          offset: 6109
+          line: 57
           column: 1
         end:
-          offset: 4487
-          line: 75
+          offset: 8435
+          line: 80
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed breeding and lactating herd at actual camp/pasture or fixed farm; acquired animals and feed disclosed. |\n| starting_condition_role | Biological milk production, not dairy processing. |\n| product_classification_scope | CPC 3.0 `02293`. |\n| recursive_input_rule | Purchased raw camel milk remains a traced upstream input, not merged with own-herd yield. |\n| upstream_dataset_requirement | Distinct datasets for purchased animals, feed, energy, water service and materials with origin. |\n| disclosure | Species, route, actual gate, herd phases, calf share, manure, losses, cooling and independent outputs. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `gate` | all routes | End at actual herd-to-buyer handover; mobile camp is not assumed fixed farm. Exclude later transport and centre work. | `un-cpc-3`; `fao-camel-dairy` |\n| `route_delta` | herd | Mobile management records grazing and moved water/fuel; housed management records delivered feed, pumping, shelter and managed manure. Partition mixed-herd days. | `fao-camel-dairy`; `fao-camel-production` |\n| `raw_state` | milk | Separate collected warm, prepared warm and cooled milk. Straining and cooling occur only with batch evidence; no heat treatment. | `fao-camel-production` |\n| `shared_asset` | nodes | Allocate well, pump, vehicle, shelter, milking equipment or cooler to actual consumers and service periods once. | `fao-camel-dairy` |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed breeding and lactating herd at actual camp/pasture or fixed farm; acquired animals and feed disclosed. |\n| starting_condition_role | Biological milk production, not dairy processing. |\n| product_classification_scope | CPC 3.0 `02293`. |\n| recursive_input_rule | Purchased raw camel milk remains a traced upstream input, not merged with own-herd yield. |\n| upstream_dataset_requirement | Distinct datasets for purchased animals, feed, energy, water service and materials with origin. |\n| disclosure | Species, route, actual gate, herd phases, calf share, manure, losses, cooling and independent outputs. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `gate` | all routes | End at actual herd-to-buyer handover; mobile camp is not assumed fixed farm. Exclude later transport and centre work. | `un-cpc-3`; `fao-camel-dairy` |\n| `route_delta` | herd | Mobile management records grazing and moved water/fuel; housed management records delivered feed, pumping, shelter and managed manure. Partition mixed-herd days. | `fao-camel-dairy`; `fao-camel-production` |\n| `raw_state` | milk | Separate collected warm, prepared warm and cooled milk. Straining and cooling occur only with batch evidence; no heat treatment. | `fao-camel-production` |\n| `shared_asset` | nodes | Allocate well, pump, vehicle, shelter, milking equipment or cooler to actual consumers and service periods once. | `fao-camel-dairy` |\n| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1120,12 +1222,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 2918
-              line: 53
+              offset: 6109
+              line: 57
               column: 1
             end:
-              offset: 2939
-              line: 53
+              offset: 6130
+              line: 57
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1140,16 +1242,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_31859"
+    - unit_id: "normative_51265"
       family: "allocation"
       span:
         start:
-          offset: 31859
-          line: 767
+          offset: 51265
+          line: 961
           column: 1
         end:
-          offset: 33152
-          line: 776
+          offset: 52558
+          line: 970
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_set` | herd and handover | Enumerate raw milk, independently sold/transferred calves and culls, and any marketed manure, dung fuel or fibre at first external handover. Own-herd suckling and retained replacements are internal; dead stock and discarded milk are waste. | `fao-camel-dairy` |\n| `allocation_precedence` | inseparable herd burden | Subdivide directly measured milking and calf-rearing services first. For inseparable herd burdens use a defensible documented biophysical relation, otherwise period-specific economic allocation with prices and sensitivity. Never assign all breeding/dry-period burden to milk or silently expand the system. | `fao-camel-dairy` |\n| `period_attribution` | herd periods | Link lactation, dry, pregnancy, calf-rearing and replacement periods to inputs, assets, births, deaths and outputs; allocate supporting-period burden once, with no universal annualization factor. | `fao-camel-production` |\n| `shared_service` | shared assets | List all consumers and service periods of wells, pumps, vehicles, shelters, milking devices and coolers. Apportion measured water, energy or runtime once and disclose proxies. | `fao-camel-dairy` |\n\n"
       headings:
@@ -1168,12 +1270,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 31859
-              line: 767
+              offset: 51265
+              line: 961
               column: 1
             end:
-              offset: 31899
-              line: 767
+              offset: 51305
+              line: 961
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1188,16 +1290,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36992"
+    - unit_id: "normative_59151"
       family: "validation"
       span:
         start:
-          offset: 36992
-          line: 807
+          offset: 59151
+          line: 1002
           column: 1
         end:
-          offset: 38004
-          line: 817
+          offset: 60163
+          line: 1012
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_gate` | reference milk | Reject the fixed chilled-farm UUID for warm, mobile, unspecified-gate or processed milk. Broad reference remains unbound. | `un-cpc-3`; `fao-camel-dairy` |\n| `v_mass` | milk stages | Reconcile collected, calf-consumed, conditioned, chilled, rejected and handed-over milk, with one final output per batch. | `fao-camel-production`; `mass-balance-identity` |\n| `v_route` | mixed herd | Verify route-specific feed, water, energy, manure and mutually exclusive animal-days; conditional interventions need batch records. | `fao-camel-dairy`; `fao-camel-production` |\n| `v_attribution` | co-products and assets | Verify independent calves/culls, supporting periods and shared consumers; reject duplicate burdens. | `fao-camel-dairy` |\n| `v_range` | amount QA | Provisional reasoned ranges are screening guardrails only, not measured defaults or acceptance limits. | `mass-balance-identity` |\n\n"
       headings:
@@ -1216,12 +1318,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36992
-              line: 807
+              offset: 59151
+              line: 1002
               column: 1
             end:
-              offset: 37014
-              line: 807
+              offset: 59173
+              line: 1002
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1240,220 +1342,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "gate"
       identity_kind: "explicit"
-      unit_id: "normative_2918"
+      unit_id: "normative_6109"
       source_span:
         start:
-          offset: 3736
-          line: 70
+          offset: 6927
+          line: 74
           column: 1
         end:
-          offset: 3911
-          line: 70
+          offset: 7102
+          line: 74
           column: 176
     - pointer: "/system_boundary/rules/1"
       rule_id: "route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_2918"
+      unit_id: "normative_6109"
       source_span:
         start:
-          offset: 3912
-          line: 71
+          offset: 7103
+          line: 75
           column: 1
         end:
-          offset: 4144
-          line: 71
+          offset: 7335
+          line: 75
           column: 233
     - pointer: "/system_boundary/rules/2"
       rule_id: "raw_state"
       identity_kind: "explicit"
-      unit_id: "normative_2918"
+      unit_id: "normative_6109"
       source_span:
         start:
-          offset: 4145
-          line: 72
+          offset: 7336
+          line: 76
           column: 1
         end:
-          offset: 4323
-          line: 72
+          offset: 7514
+          line: 76
           column: 179
     - pointer: "/system_boundary/rules/3"
       rule_id: "shared_asset"
       identity_kind: "explicit"
-      unit_id: "normative_2918"
+      unit_id: "normative_6109"
       source_span:
         start:
-          offset: 4324
-          line: 73
+          offset: 7515
+          line: 77
           column: 1
         end:
-          offset: 4485
-          line: 73
+          offset: 7676
+          line: 77
           column: 162
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "reference_handover_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_6109"
+      source_span:
+        start:
+          offset: 7677
+          line: 78
+          column: 1
+        end:
+          offset: 8433
+          line: 78
+          column: 757
     - pointer: "/allocation_rules/0"
       rule_id: "output_set"
       identity_kind: "explicit"
-      unit_id: "normative_31859"
+      unit_id: "normative_51265"
       source_span:
         start:
-          offset: 31972
-          line: 771
+          offset: 51378
+          line: 965
           column: 1
         end:
-          offset: 32270
-          line: 771
+          offset: 51676
+          line: 965
           column: 299
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_precedence"
       identity_kind: "explicit"
-      unit_id: "normative_31859"
+      unit_id: "normative_51265"
       source_span:
         start:
-          offset: 32271
-          line: 772
+          offset: 51677
+          line: 966
           column: 1
         end:
-          offset: 32652
-          line: 772
+          offset: 52058
+          line: 966
           column: 382
     - pointer: "/allocation_rules/2"
       rule_id: "period_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_31859"
+      unit_id: "normative_51265"
       source_span:
         start:
-          offset: 32653
-          line: 773
+          offset: 52059
+          line: 967
           column: 1
         end:
-          offset: 32915
-          line: 773
+          offset: 52321
+          line: 967
           column: 263
     - pointer: "/allocation_rules/3"
       rule_id: "shared_service"
       identity_kind: "explicit"
-      unit_id: "normative_31859"
+      unit_id: "normative_51265"
       source_span:
         start:
-          offset: 32916
-          line: 774
+          offset: 52322
+          line: 968
           column: 1
         end:
-          offset: 33150
-          line: 774
+          offset: 52556
+          line: 968
           column: 235
     - pointer: "/validation_rules/0"
       rule_id: "v_gate"
       identity_kind: "explicit"
-      unit_id: "normative_36992"
+      unit_id: "normative_59151"
       source_span:
         start:
-          offset: 37087
-          line: 811
+          offset: 59246
+          line: 1006
           column: 1
         end:
-          offset: 37272
-          line: 811
+          offset: 59431
+          line: 1006
           column: 186
     - pointer: "/validation_rules/1"
       rule_id: "v_mass"
       identity_kind: "explicit"
-      unit_id: "normative_36992"
+      unit_id: "normative_59151"
       source_span:
         start:
-          offset: 37273
-          line: 812
+          offset: 59432
+          line: 1007
           column: 1
         end:
-          offset: 37473
-          line: 812
+          offset: 59632
+          line: 1007
           column: 201
     - pointer: "/validation_rules/2"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_36992"
+      unit_id: "normative_59151"
       source_span:
         start:
-          offset: 37474
-          line: 813
+          offset: 59633
+          line: 1008
           column: 1
         end:
-          offset: 37678
-          line: 813
+          offset: 59837
+          line: 1008
           column: 205
     - pointer: "/validation_rules/3"
       rule_id: "v_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_36992"
+      unit_id: "normative_59151"
       source_span:
         start:
-          offset: 37679
-          line: 814
+          offset: 59838
+          line: 1009
           column: 1
         end:
-          offset: 37845
-          line: 814
+          offset: 60004
+          line: 1009
           column: 167
     - pointer: "/validation_rules/4"
       rule_id: "v_range"
       identity_kind: "explicit"
-      unit_id: "normative_36992"
+      unit_id: "normative_59151"
       source_span:
         start:
-          offset: 37846
-          line: 815
+          offset: 60005
+          line: 1010
           column: 1
         end:
-          offset: 38002
-          line: 815
+          offset: 60161
+          line: 1010
           column: 157
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_2918"
+      unit_id: "normative_6109"
       source_span:
         start:
-          offset: 2918
-          line: 53
-          column: 1
-        end:
-          offset: 2939
-          line: 53
-          column: 22
-    - code: "NON_RULE_TABLE"
-      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_2918"
-      source_span:
-        start:
-          offset: 2967
+          offset: 6109
           line: 57
           column: 1
         end:
-          offset: 3643
-          line: 64
+          offset: 6130
+          line: 57
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6109"
+      source_span:
+        start:
+          offset: 6158
+          line: 61
+          column: 1
+        end:
+          offset: 6834
+          line: 68
           column: 120
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_31859"
+      unit_id: "normative_51265"
       source_span:
         start:
-          offset: 31859
-          line: 767
+          offset: 51265
+          line: 961
           column: 1
         end:
-          offset: 31899
-          line: 767
+          offset: 51305
+          line: 961
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36992"
+      unit_id: "normative_59151"
       source_span:
         start:
-          offset: 36992
-          line: 807
+          offset: 59151
+          line: 1002
           column: 1
         end:
-          offset: 37014
-          line: 807
+          offset: 59173
+          line: 1002
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1462,5 +1577,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:d47b74834a1eefe84a1b304a767374b63e0c46c92365ce12e01648d1240ffe30"
-  generated_content_sha256: "sha256:df1b78ea7743d357ea1215a0e8f8924c25d1b5be953c873d028a976e228c339a"
+    sha256: "sha256:6fda6d85078fafc7eeb1005257563bf4801e2e5ed487491dca4c905818ab631e"
+  generated_content_sha256: "sha256:6f9f60cab03757a397a25e871ce7a26ae9f8979fdd7ff53a6adb3926ec932d9b"

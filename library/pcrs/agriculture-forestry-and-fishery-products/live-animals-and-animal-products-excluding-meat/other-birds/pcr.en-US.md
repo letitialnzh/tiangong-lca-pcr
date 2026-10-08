@@ -49,6 +49,7 @@ Cover living, species-qualified birds in residual CPC 02194, including pigeons, 
 | `m_live` | Live reference and transfers | Mass | kg | Weigh each actual live lot by species and class, and reconcile count; no universal kg/bird factor. |
 | `m_period` | Cohorts, campaigns and shared assets | Time | declared period | Link stock, input, mortality, output and shared service to actual period and phase. |
 | `m_energy` | Fuel and electricity cards | Energy or mass | kWh or kg | Keep each actual carrier in its native unit; convert fuel to kWh-equivalent only for the provisional QA screen using a disclosed supplier calorific value, never as an invented fixed exchange. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -93,12 +94,14 @@ Managed rearing follows breeder stock, feed and period-specific care through liv
 
 Record introduced live breeding or young birds for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Species-qualified purchased or opening live birds
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh introduced birds by species, class and source
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -115,12 +118,14 @@ Record introduced live breeding or young birds for the actual species, state and
 
 Record feed for the managed bird cohort for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Actual species- and stage-specific feed
 - Flow property / unit: Mass / kg
 - Amount rule: Reconcile delivered feed with opening and closing inventory
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -137,12 +142,14 @@ Record feed for the managed bird cohort for the actual species, state and gate.
 
 Record supplied bird drinking and cleaning water for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Supplied husbandry water
 - Flow property / unit: Mass / kg
 - Amount rule: Meter water attributable to this node
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -159,12 +166,14 @@ Record supplied bird drinking and cleaning water for the actual species, state a
 
 Record aviary energy supply for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Actual electricity or fuel carrier
 - Flow property / unit: Energy or mass / kWh or kg
 - Amount rule: Meter energy by node and service period
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -190,12 +199,14 @@ Record aviary energy supply for the actual species, state and gate.
 
 Record reared live birds entering handover for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Species-qualified reared live birds
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh live internal transfer once
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -212,12 +223,14 @@ Record reared live birds entering handover for the actual species, state and gat
 
 Record independently sold eggs only when actually present for the specified species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Species-qualified eggs actually sold
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh separately sold eggs at their own egg gate
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -234,12 +247,14 @@ Record independently sold eggs only when actually present for the specified spec
 
 Record independently sold feathers only when actually present for the specified species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Species-qualified feathers actually sold
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh separately sold feathers at their own feather gate
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_rear`
@@ -258,12 +273,14 @@ Record independently sold feathers only when actually present for the specified 
 
 Record dead birds from rearing only when actually present for the specified species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Dead birds from managed cohort
 - Flow property / unit: Mass / kg
 - Amount rule: Count and weigh deaths by period and disposal route
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_losses`
@@ -280,12 +297,14 @@ Record dead birds from rearing only when actually present for the specified spec
 
 Record spent litter from rearing only when actually present for the specified species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Spent bird-housing litter for actual waste route
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh spent litter leaving the managed node
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_losses`
@@ -310,12 +329,14 @@ Record spent litter from rearing only when actually present for the specified sp
 
 Record water supplied during actual short holding only when actually present for the specified species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Actual supplied holding water
 - Flow property / unit: Mass / kg
 - Amount rule: Meter water if short holding is used
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -332,12 +353,14 @@ Record water supplied during actual short holding only when actually present for
 
 Record single-use capture and holding consumables only when actually present for the specified species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Actual used liners or gloves
 - Flow property / unit: Mass / kg
 - Amount rule: Count or weigh consumed material, excluding reusable gear
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -353,12 +376,14 @@ Record single-use capture and holding consumables only when actually present for
 
 Record capture and holding energy for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Actual capture fuel or electricity
 - Flow property / unit: Energy or mass / kWh or kg
 - Amount rule: Record campaign energy actually used before source gate
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -383,12 +408,14 @@ Record capture and holding energy for the actual species, state and gate.
 
 Record captured live birds entering handover for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Species-qualified lawfully captured live birds
 - Flow property / unit: Mass / kg
 - Amount rule: Count and weigh retained live birds at short-holding exit
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -407,12 +434,14 @@ Record captured live birds entering handover for the actual species, state and g
 
 Record capture or holding mortality for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Dead birds from lawful capture campaign
 - Flow property / unit: Mass / kg
 - Amount rule: Record death event, species, count and mass
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_losses`
@@ -437,12 +466,14 @@ Record capture or holding mortality for the actual species, state and gate.
 
 Record live birds received for acceptance for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Actual live bird transfer from one source node
 - Flow property / unit: Mass / kg
 - Amount rule: Match one rearing or capture lot to acceptance
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover`
@@ -467,14 +498,18 @@ Record live birds received for acceptance for the actual species, state and gate
 
 Record accepted live other birds for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
+Raw reference-output records: Weigh living accepted lot; reference is one kg Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
 - Selected flow: Species-qualified live other birds
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh living accepted lot; reference is one kg
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Reference mass consistency
   - Range role: QA guardrail (`qa_guardrail`)
@@ -492,12 +527,14 @@ Record accepted live other birds for the actual species, state and gate.
 
 Record birds dead before acceptance for the actual species, state and gate.
 
+Denominator and scope requirements：per kg final live-bird handover
+
 - Selected flow: Dead rejected bird material
 - Flow property / unit: Mass / kg
 - Amount rule: Record mass and disposal; do not count as live output
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live-bird handover
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_losses`
@@ -526,10 +563,10 @@ Record birds dead before acceptance for the actual species, state and gate.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_rear` | `rear` | stock, feed, utilities and outputs | cohort ledger, invoices, meters and scale | species, class, source, count, mass, feed, water, energy, period, independent sales | reconcile each event and opening/closing stock | kg; bird; kWh | event and period | full cohort | breeder site | sum by cohort and product gate | invoice, calibrated scale, meter, sale record |
-| `cp_capture` | `capture` | lawful capture, energy and live transfer | permit and campaign log | permit, species, site, dates, count captured/released/dead, mass, energy | authorized event record and weighing | kg; bird; kWh | each campaign | full campaign | capture site | sum only retained live birds | permission and custody chain |
-| `cp_handover` | `handover` | live acceptance | acceptance and scale log | species, source lot, count, mass, condition, gate, date | weigh and inspect actual living lot | kg; bird | each lot | source-gate period | each source gate | sum accepted live mass by species | scale, health and provenance record |
-| `cp_losses` | `rear`; `capture`; `handover` | mortality | death and disposition log | species, count, mass, stage, date, route | record death at occurrence | kg; bird | each event | full cohort/campaign | actual node | exclude from live acceptance | loss and disposal record |
+| `cp_rear` | `rear` | stock, feed, utilities and outputs | cohort ledger, invoices, meters and scale | species, class, source, count, mass, feed, water, energy, period, independent sales | reconcile each event and opening/closing stock; Raw aggregation requirements: sum by cohort and product gate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; bird; kWh | event and period | full cohort | breeder site | per reference flow | invoice, calibrated scale, meter, sale record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_capture` | `capture` | lawful capture, energy and live transfer | permit and campaign log | permit, species, site, dates, count captured/released/dead, mass, energy | authorized event record and weighing; Raw aggregation requirements: sum only retained live birds. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; bird; kWh | each campaign | full campaign | capture site | per reference flow | permission and custody chain; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_handover` | `handover` | live acceptance | acceptance and scale log | species, source lot, count, mass, condition, gate, date | weigh and inspect actual living lot; Raw aggregation requirements: sum accepted live mass by species. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; bird | each lot | source-gate period | each source gate | per reference flow | scale, health and provenance record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_losses` | `rear`; `capture`; `handover` | mortality | death and disposition log | species, count, mass, stage, date, route | record death at occurrence; Raw aggregation requirements: exclude from live acceptance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; bird | each event | full cohort/campaign | actual node | per reference flow | loss and disposal record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

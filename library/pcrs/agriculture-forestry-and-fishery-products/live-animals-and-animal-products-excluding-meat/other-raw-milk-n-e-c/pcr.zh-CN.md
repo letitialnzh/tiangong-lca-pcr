@@ -54,6 +54,8 @@ sync_with: pcr.en-US.md
 | `composition` | 各批次 | 实测脂肪和固形物 | 报告质量分数 | 保留采样依据及温度；按实际批次判断 CPC 排除条件，不进行标准化。 |
 | `phase_link` | 畜群 | 质量和时间 | kg、animal-days | 将繁殖、替换、泌乳、干乳、淘汰关联至报告期；吸食与挤出乳分开。 |
 | `volume_to_mass` | 体积记录 | 批次适用的实测密度 | kg/L | 按实测温度换算或直接称重，并披露不确定性。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -103,14 +105,18 @@ sync_with: pcr.en-US.md
 
 区分外购、自种和放牧生物质，使用实测干物质，不套用牛日粮。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：按动物日记录饲料台账和有依据的放牧摄入。 原始采集分母类型：reference_flow。
+
 - 选定流：声明物种的饲料与牧草
 - 流属性/单位：Mass / kg dry matter
-- 数量规则：按动物日记录饲料台账和有依据的放牧摄入。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定饲料 QA 筛查，非默认日粮
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -125,14 +131,18 @@ sync_with: pcr.en-US.md
 
 只计饮水和管理用水，不含降雨或饲料水。实际用水功能和具体交换由畜群记录决定，因此此总括卡推迟选择组。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：只归于畜群的水表或交付记录。 原始采集分母类型：reference_flow。
+
 - 选定流：畜群供水
 - 流属性/单位：Mass / kg
-- 数量规则：只归于畜群的水表或交付记录。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定供水 QA 筛查，非默认用水量
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -147,14 +157,18 @@ sync_with: pcr.en-US.md
 
 只计有上游数据集的外购动物，自留幼畜仍属内部。
 
+分母与范围要求：每 kg 验收乳，同时保留畜群报告期追溯事件
+
+原始数量及计算要求：按年龄和期间记录进入事件。 原始采集分母类型：reference_flow。
+
 - 选定流：声明物种的购入替换动物
 - 流属性/单位：Number / head
-- 数量规则：按年龄和期间记录进入事件。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳，同时保留畜群报告期追溯事件
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定替换事件 QA 筛查，非替换率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -173,14 +187,18 @@ sync_with: pcr.en-US.md
 
 只包括实际独立转出，不包括自留替换。
 
+分母与范围要求：每 kg 验收乳，同时保留畜群报告期追溯事件
+
+原始数量及计算要求：按阶段记录销售台账和交付去向。 原始采集分母类型：reference_flow。
+
 - 选定流：声明物种的出售活畜
 - 流属性/单位：Number / head
-- 数量规则：按阶段记录销售台账和交付去向。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳，同时保留畜群报告期追溯事件
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定销售事件 QA 筛查，非产率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -195,14 +213,18 @@ sync_with: pcr.en-US.md
 
 仅当粪肥作为独立材料在有记录交接点实际出售时才用产品身份；否则保持内部材料或废物。同一质量不得又计入 `manure_waste`。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：单独称量并保留买方/用途证据。 原始采集分母类型：reference_flow。
+
 - 选定流：声明物种畜群出售的粪肥
 - 流属性/单位：Mass / kg wet
-- 数量规则：单独称量并保留买方/用途证据。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定出售粪肥 QA 筛查，非产率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -219,14 +241,18 @@ sync_with: pcr.en-US.md
 
 记录废物去向；放牧沉积和单独销售的粪肥不在此卡。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：按去向称量离场废粪肥。 原始采集分母类型：reference_flow。
+
 - 选定流：需废物处理的收集粪肥
 - 流属性/单位：Mass / kg wet
-- 数量规则：按去向称量离场废粪肥。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定粪肥 QA 筛查，非产率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -243,14 +269,18 @@ sync_with: pcr.en-US.md
 
 使用实测或有物种和日粮依据的因子，不自动借用牛因子。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：核实因子乘动物日或直接测量。 原始采集分母类型：reference_flow。
+
 - 选定流：声明物种肠道发酵排入空气的甲烷
 - 流属性/单位：Mass / kg CH4
-- 数量规则：核实因子乘动物日或直接测量。
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd`
 - 数量范围：暂定排放 QA 筛查，非通用因子
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -271,14 +301,18 @@ sync_with: pcr.en-US.md
 
 只计物理挤乳能源，与冷却及共用房间服务分开。
 
+分母与范围要求：每 kg 挤出总乳
+
+原始数量及计算要求：按实际挤乳时段分配表计。 原始采集分母类型：process_output。
+
 - 选定流：挤乳用能源载体
 - 流属性/单位：Energy / kWh 或实际载体单位
-- 数量规则：按实际挤乳时段分配表计。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 挤出总乳
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_milking`
 - 数量范围：暂定挤乳能源 QA 筛查，非默认能耗
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -297,14 +331,18 @@ sync_with: pcr.en-US.md
 
 验收前从动物挤出的实测乳，不包括幼畜吸食乳。
 
+分母与范围要求：每 kg 挤出总乳
+
+原始数量及计算要求：每批仅称重一次。 原始采集分母类型：process_output。
+
 - 选定流：声明物种的挤出全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：每批仅称重一次。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 挤出总乳
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_milking`
 - 数量范围：挤乳批次恒等式
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -325,14 +363,18 @@ sync_with: pcr.en-US.md
 
 同一挤出批次只转入一次；洒漏在批次平衡中核算。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：称量扣除挤乳洒漏后的输入批次。 原始采集分母类型：reference_flow。
+
 - 选定流：验收前收集的全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：称量扣除挤乳洒漏后的输入批次。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning`
 - 数量范围：暂定验收输入 QA 筛查，非损失率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -347,14 +389,18 @@ sync_with: pcr.en-US.md
 
 计入实际过滤设备或卫生用水，不作乳配料。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：不含挤乳用水的调理表计。 原始采集分母类型：reference_flow。
+
 - 选定流：生乳调理过程用水
 - 流属性/单位：Mass / kg
-- 数量规则：不含挤乳用水的调理表计。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning`
 - 数量范围：暂定调理用水 QA 筛查，非默认水量
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -373,14 +419,18 @@ sync_with: pcr.en-US.md
 
 作为内部状态进入冷却或直接交接，不作第二次销售。
 
+分母与范围要求：每 kg 验收温态乳
+
+原始数量及计算要求：输入减去记录的拒收和采样损失。 原始采集分母类型：process_output。
+
 - 选定流：声明物种的验收温态全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：输入减去记录的拒收和采样损失。
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收温态乳
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning`
 - 数量范围：验收温态乳恒等式
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -397,14 +447,18 @@ sync_with: pcr.en-US.md
 
 失败批次和去向只记录一次，不混入验收全脂乳。
 
+分母与范围要求：每 kg 验收乳
+
+原始数量及计算要求：按原因和去向称量拒收。 原始采集分母类型：reference_flow。
+
 - 选定流：初次调理拒收生乳
 - 流属性/单位：Mass / kg
-- 数量规则：按原因和去向称量拒收。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 验收乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning`
 - 数量范围：暂定拒收 QA 筛查，非默认损失因子
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -425,14 +479,18 @@ sync_with: pcr.en-US.md
 
 仅实际冷却份额进入；温态直交乳绕过本节点。
 
+分母与范围要求：每 kg 冷却乳
+
+原始数量及计算要求：按批称量冷却罐输入。 原始采集分母类型：process_output。
+
 - 选定流：声明物种的验收温态全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：按批称量冷却罐输入。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 冷却乳
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_cooling`
 - 数量范围：暂定冷却平衡 QA 筛查，非损失率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -447,14 +505,18 @@ sync_with: pcr.en-US.md
 
 只计实际冷却期间的制冷表计，不含交接后配送。
 
+分母与范围要求：每 kg 冷却乳
+
+原始数量及计算要求：按真实批次和时间计量或分配能源。 原始采集分母类型：process_output。
+
 - 选定流：全脂生乳冷却能源载体
 - 流属性/单位：Energy / kWh 或实际载体单位
-- 数量规则：按真实批次和时间计量或分配能源。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 冷却乳
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_cooling`
 - 数量范围：暂定冷却能源 QA 筛查，非默认能耗
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -473,14 +535,18 @@ sync_with: pcr.en-US.md
 
 冷却后仍为生乳，只内部转交接，不重复出售。
 
+分母与范围要求：每 kg 冷却乳
+
+原始数量及计算要求：称量罐输出并计量损失。 原始采集分母类型：process_output。
+
 - 选定流：声明物种的冷却全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：称量罐输出并计量损失。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 冷却乳
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_cooling`
 - 数量范围：冷却输出恒等式
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -501,14 +567,18 @@ sync_with: pcr.en-US.md
 
 按批合计互斥的温态直交和冷却路线，不混物种或重复记内部状态。
 
+分母与范围要求：每 kg 可售净乳
+
+原始数量及计算要求：合计互斥的温态直交及冷却转移质量。 原始采集分母类型：reference_flow。
+
 - 选定流：交接前声明物种的验收全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：合计互斥的温态直交及冷却转移质量。
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 可售净乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_gate`
 - 数量范围：暂定交接平衡 QA 筛查，非损失率
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -523,14 +593,18 @@ sync_with: pcr.en-US.md
 
 记录交接前容器、内衬、封口及复用次数。
 
+分母与范围要求：每 kg 可售净乳
+
+原始数量及计算要求：称重一次性材料，或按有据次数分配复用服务。 原始采集分母类型：reference_flow。
+
 - 选定流：生乳卫生交接容器或内衬
 - 流属性/单位：Mass / kg material 或有据服务量
-- 数量规则：称重一次性材料，或按有据次数分配复用服务。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 可售净乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_gate`
 - 数量范围：暂定包装 QA 筛查，非默认包装量
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -549,14 +623,18 @@ sync_with: pcr.en-US.md
 
 唯一参考销售为声明物种的全脂生乳净重，不含包装皮重。
 
+参考产出的原始记录：连同物种、脂肪、温度及交接证据称量可售净乳。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流： 已声明物种在实际初始交接点的全脂生乳
 - 流属性/单位：Mass / kg
-- 数量规则：连同物种、脂肪、温度及交接证据称量可售净乳。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 参考乳
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_gate`
 - 数量范围：参考恒等式
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -583,11 +661,11 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd` | `herd` | 饲料、水、动物、粪肥、甲烷 | 畜群与供应台账 | 物种、动物编号、阶段日期、动物日、饲料干重、水、购入替换、吸食乳、出售动物、粪肥、有据 CH4 因子 | 对账畜群登记、发票和表计 | head、days、kg | 事件及每月 | 全泌乳/替换 | 产乳畜群 | 按物种/阶段求和且只归属一次 | 发票、校准和因子来源 |
-| `cp_milking` | `milking` | 挤出乳和能源 | 挤乳批次 | 批号、总重、洒漏、吸食依据、挤乳能源 | 批次称重和表计 | kg、kWh | 每批 | 所有挤乳 | 挤乳站 | 对账总乳和转移 | 秤校准及批次记录 |
-| `cp_conditioning` | `conditioning` | 生乳输入、验收、拒收、用水 | 批次验收 | 输入、采样损失、拒收、验收、脂肪/固形物、生乳状态、水 | 称重和采样 | kg、质量分数 | 每批 | 所有批次 | 初次调理站 | 按批平衡 | 实验室、秤和拒收记录 |
-| `cp_cooling` | `cooling` | 温态输入、冷却输出、能源 | 罐体表计 | 批次、前后质量、时间、温度、能源 | 称重及表计 | kg、°C、kWh | 冷却批 | 实际冷却 | 声明罐体 | 输入减损失等于输出 | 表计/温度计校准 |
-| `cp_gate` | `presentation` | 净乳与容器 | 交接记录 | 批次、物种、净乳、皮重、脂肪、温度、交接点、包装质量/复用、损失 | 净重称量与容器检查 | kg、°C | 每次销售 | 所有参考销售 | 农场/第一收集交接点 | 只计验收净重 | 签字交接和实验室记录 |
+| `cp_herd` | `herd` | 饲料、水、动物、粪肥、甲烷 | 畜群与供应台账 | 物种、动物编号、阶段日期、动物日、饲料干重、水、购入替换、吸食乳、出售动物、粪肥、有据 CH4 因子 | 对账畜群登记、发票和表计；原始汇总要求：按物种/阶段求和且只归属一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | head、days、kg | 事件及每月 | 全泌乳/替换 | 产乳畜群 | 每参考流 | 发票、校准和因子来源；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_milking` | `milking` | 挤出乳和能源 | 挤乳批次 | 批号、总重、洒漏、吸食依据、挤乳能源 | 批次称重和表计；原始汇总要求：对账总乳和转移。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、kWh | 每批 | 所有挤乳 | 挤乳站 | 每参考流 | 秤校准及批次记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_conditioning` | `conditioning` | 生乳输入、验收、拒收、用水 | 批次验收 | 输入、采样损失、拒收、验收、脂肪/固形物、生乳状态、水 | 称重和采样；原始汇总要求：按批平衡。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、质量分数 | 每批 | 所有批次 | 初次调理站 | 每参考流 | 实验室、秤和拒收记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_cooling` | `cooling` | 温态输入、冷却输出、能源 | 罐体表计 | 批次、前后质量、时间、温度、能源 | 称重及表计；原始汇总要求：输入减损失等于输出。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、°C、kWh | 冷却批 | 实际冷却 | 声明罐体 | 每参考流 | 表计/温度计校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_gate` | `presentation` | 净乳与容器 | 交接记录 | 批次、物种、净乳、皮重、脂肪、温度、交接点、包装质量/复用、损失 | 净重称量与容器检查；原始汇总要求：只计验收净重。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、°C | 每次销售 | 所有参考销售 | 农场/第一收集交接点 | 每参考流 | 签字交接和实验室记录；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

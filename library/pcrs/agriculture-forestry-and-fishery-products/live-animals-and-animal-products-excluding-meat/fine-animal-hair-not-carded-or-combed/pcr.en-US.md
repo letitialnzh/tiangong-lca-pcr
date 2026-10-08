@@ -50,6 +50,8 @@ This PCR covers detached raw fine animal hair, not textile-carded or combed, at 
 | m_moisture | raw and cleaned states | mass fraction | kg/kg | Sample moisture by lot; use measured dry solids for comparisons between states, preserving original as-sold masses. |
 | m_quality | grade assignment | fibre diameter/length or documented grade | µm;mm;grade | Preserve actual test method, species and thresholds; do not equate grades across species solely by a label. |
 | m_period | animal service and shared assets | time | reporting period | Link animal-care burden and actual hair, milk, meat or other outputs to the same animal, phase and reporting period. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -96,14 +98,18 @@ Harvest is independent of animal production and first conditioning: animal servi
 
 Record compatible upstream husbandry burden for identified species, cohort and period; this is an attribution link, not a fictitious kg of mixed feed and care.
 
+Denominator and scope requirements：per kg raw fibre harvested
+
+Raw quantity and calculation requirements: One documented share of actual upstream animal service per harvest event. Original collection denominator kind: process_output.
+
 - Selected flow: Species- and period-specific attributed animal production service (UUID unresolved)
 - Flow property / unit: Service / attributed cohort-period
-- Amount rule: One documented share of actual upstream animal service per harvest event.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg raw fibre harvested
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animal_service`
 - Range: Attribution-share audit interval, not an animal yield
   - Range role: QA guardrail (`qa_guardrail`)
@@ -126,14 +132,18 @@ Record compatible upstream husbandry burden for identified species, cohort and p
 
 Record mass removed by actual combing, shearing or shed-fibre collection; the animal is not itself a fibre output.
 
+Denominator and scope requirements：per kg collected raw fibre
+
+Raw quantity and calculation requirements: Weigh collected fibre before skirting; carry lot id to conditioning. Original collection denominator kind: process_output.
+
 - Selected flow: Detached raw fine animal hair by species and harvest event (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh collected fibre before skirting; carry lot id to conditioning.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected raw fibre
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lot_mass`
 - Range: Transfer completeness on measured output basis
   - Range role: QA guardrail (`qa_guardrail`)
@@ -150,14 +160,18 @@ Record mass removed by actual combing, shearing or shed-fibre collection; the an
 
 Separate unrecoverable hair and foreign matter from usable raw hair by physical material and treatment.
 
+Denominator and scope requirements：per kg collected raw fibre
+
+Raw quantity and calculation requirements: Weigh separately collected waste; report unmeasurable loss as uncertainty. Original collection denominator kind: process_output.
+
 - Selected flow: Harvest loss or debris by material and destination (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh separately collected waste; report unmeasurable loss as uncertainty.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected raw fibre
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rejects`
 - Range: Provisional waste screen, not a loss factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -180,14 +194,18 @@ Separate unrecoverable hair and foreign matter from usable raw hair by physical 
 
 This is the harvest transfer or separately purchased raw hair with upstream burden; count it once.
 
+Denominator and scope requirements：per kg raw fibre received
+
+Raw quantity and calculation requirements: Weigh incoming net fibre with origin, moisture and tare. Original collection denominator kind: process_output.
+
 - Selected flow: Raw fine animal hair by species, state and supplier (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh incoming net fibre with origin, moisture and tare.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg raw fibre received
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lot_mass`
 - Range: Incoming lot completeness on own basis
   - Range role: QA guardrail (`qa_guardrail`)
@@ -202,14 +220,18 @@ This is the harvest transfer or separately purchased raw hair with upstream burd
 
 Only supplied water for performed first wet cleaning; no assumed washing for every species or lot.
 
+Denominator and scope requirements：per kg raw fibre received
+
+Raw quantity and calculation requirements: Meter supplied water by lot net of separately measured return. Original collection denominator kind: process_output.
+
 - Selected flow: Supplied process water (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Meter supplied water by lot net of separately measured return.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg raw fibre received
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utility`
 - Range: Provisional water-use screen, not a recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -224,14 +246,18 @@ Only supplied water for performed first wet cleaning; no assumed washing for eve
 
 Expand actual electricity, thermal energy or fuel by carrier only for powered operations performed.
 
+Denominator and scope requirements：per kg raw fibre received
+
+Raw quantity and calculation requirements: Meter actual carrier; allocate shared use by service record. Original collection denominator kind: process_output.
+
 - Selected flow: Site-specific energy carrier (UUID unresolved)
 - Flow property / unit: Energy / MJ
-- Amount rule: Meter actual carrier; allocate shared use by service record.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg raw fibre received
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_utility`
 - Range: Provisional energy-use screen, not a default efficiency
   - Range role: QA guardrail (`qa_guardrail`)
@@ -254,14 +280,18 @@ Expand actual electricity, thermal energy or fuel by carrier only for powered op
 
 First-cleaned or skirted hair transfers to grade assignment without textile carding or combing.
 
+Denominator and scope requirements：per kg raw fibre received
+
+Raw quantity and calculation requirements: Weigh output and record moisture, guard-hair and contamination change. Original collection denominator kind: process_output.
+
 - Selected flow: Prepared raw fine animal hair, species/state qualified (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh output and record moisture, guard-hair and contamination change.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg raw fibre received
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lot_mass`
 - Range: Provisional prepared-mass screen, not a clean-yield factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -278,14 +308,18 @@ First-cleaned or skirted hair transfers to grade assignment without textile card
 
 Record by material and disposal destination. Independently marketed coarse guard hair is a separate product, never this waste row.
 
+Denominator and scope requirements：per kg raw fibre received
+
+Raw quantity and calculation requirements: Weigh removed solids; water/evaporation are separate balance terms. Original collection denominator kind: process_output.
+
 - Selected flow: Conditioning rejects by material and fate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh removed solids; water/evaporation are separate balance terms.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg raw fibre received
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rejects`
 - Range: Provisional solid-reject screen, not a cleaning yield
   - Range role: QA guardrail (`qa_guardrail`)
@@ -307,14 +341,18 @@ Record by material and disposal destination. Independently marketed coarse guard
 
 Receive the identified prepared lot, not a second purchase of the same fibre.
 
+Denominator and scope requirements：per kg prepared fibre graded
+
+Raw quantity and calculation requirements: Weigh input once at grade boundary; carry source-lot id. Original collection denominator kind: process_output.
+
 - Selected flow: Prepared uncarded fine animal hair (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh input once at grade boundary; carry source-lot id.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg prepared fibre graded
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Input completeness on own measured basis
   - Range role: QA guardrail (`qa_guardrail`)
@@ -337,14 +375,18 @@ Receive the identified prepared lot, not a second purchase of the same fibre.
 
 The accepted grade transfers once to packing with measured or documented fineness/length, colour, contamination and moisture.
 
+Denominator and scope requirements：per kg prepared fibre graded
+
+Raw quantity and calculation requirements: Weigh accepted material, excluding downgraded and rejected masses. Original collection denominator kind: process_output.
+
 - Selected flow: Accepted raw fine animal hair, species and grade qualified (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh accepted material, excluding downgraded and rejected masses.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg prepared fibre graded
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Physical grade share, not universal acceptance fraction
   - Range role: QA guardrail (`qa_guardrail`)
@@ -359,14 +401,18 @@ The accepted grade transfers once to packing with measured or documented finenes
 
 Record an actual separately sold lower grade only if it remains raw fine hair; coarse hair or another class needs its own identity and allocation disclosure.
 
+Denominator and scope requirements：per kg prepared fibre graded
+
+Raw quantity and calculation requirements: Weigh each separately marketed grade; zero when none sold. Original collection denominator kind: process_output.
+
 - Selected flow: Downgraded saleable raw fine hair by species, grade and destination (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh each separately marketed grade; zero when none sold.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg prepared fibre graded
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Physical downgraded share, not universal co-product ratio
   - Range role: QA guardrail (`qa_guardrail`)
@@ -383,14 +429,18 @@ Record an actual separately sold lower grade only if it remains raw fine hair; c
 
 Record non-marketed reject only after distinguishing saleable downgraded fibre and actual treatment fate.
 
+Denominator and scope requirements：per kg prepared fibre graded
+
+Raw quantity and calculation requirements: Weigh rejects and samples independently of sold products. Original collection denominator kind: process_output.
+
 - Selected flow: Unsaleable grading reject by material and fate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh rejects and samples independently of sold products.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg prepared fibre graded
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_rejects`
 - Range: Physical reject share, not a disposal factor
   - Range role: QA guardrail (`qa_guardrail`)
@@ -413,14 +463,18 @@ Record non-marketed reject only after distinguishing saleable downgraded fibre a
 
 Pack only the accepted identified grade; repacking purchased hair is not a new harvest.
 
+Denominator and scope requirements：per kg net packed fine hair
+
+Raw quantity and calculation requirements: Net fibre mass transferred from grading to packing. Original collection denominator kind: process_output.
+
 - Selected flow: Accepted raw fine hair, species and grade qualified (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Net fibre mass transferred from grading to packing.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg net packed fine hair
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Input completeness on net packed-fibre basis
   - Range role: QA guardrail (`qa_guardrail`)
@@ -435,14 +489,18 @@ Pack only the accepted identified grade; repacking purchased hair is not a new h
 
 Select actual clean flexible sack or other documented compatible protective packaging; record reuse and avoid fibre contamination.
 
+Denominator and scope requirements：per kg net packed fine hair
+
+Raw quantity and calculation requirements: Weigh new package mass; allocate reusable package burden by evidenced turns. Original collection denominator kind: process_output.
+
 - Selected flow: Flexible protective fibre packaging (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh new package mass; allocate reusable package burden by evidenced turns.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg net packed fine hair
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Provisional package screen, not a sack-size default
   - Range role: QA guardrail (`qa_guardrail`)
@@ -464,14 +522,18 @@ Select actual clean flexible sack or other documented compatible protective pack
 
 Sole reference handover for an identified species, grade, state and farm/collection gate; package mass excluded.
 
+Raw reference-output records: Gross package minus measured tare and removed matter gives net as-sold fibre. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Raw fine animal hair, uncarded/uncombed, species/state/gate qualified
 - Flow property / unit: Mass / kg
-- Amount rule: Gross package minus measured tare and removed matter gives net as-sold fibre.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg net as-sold fine hair at declared gate
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Reference-output completeness on own net basis
   - Range role: QA guardrail (`qa_guardrail`)
@@ -501,12 +563,12 @@ Sole reference handover for an identified species, grade, state and farm/collect
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_animal_service` | harvest | animal upstream service | cohort and allocation ledger | species; animal/cohort; phase; upstream source; other actual outputs; period; share | link upstream and sale ledger | share;kg | event and period | complete phases | source farms | assign one evidenced share per event | dataset and output ledger |
-| `cp_lot_mass` | harvest;condition | fibre transfer | tagged lot scale ticket | animal/cohort; source; method; input/output mass; moisture; guard hair; time | calibrated weighing and sample | kg;kg/kg | each lot | harvest through condition | each lot | net mass by state | calibration, samples, transfer signature |
-| `cp_utility` | condition | optional water and energy | meter/fuel record | lot; cleaning route; water; carrier; energy; meter; period | meter and operation log | kg;MJ | each operation | conditioning period | each site | assign carrier/lot once | meter and operation ticket |
-| `cp_grade` | grade | product grades | assay and sale ticket | lot; species; fineness; length; colour; moisture; accepted; downgraded; buyer | test and calibrated weighing | µm;mm;kg | each lot | grade to sale | all lots | reconcile grades by destination | test and buyer record |
-| `cp_rejects` | harvest;condition;grade | waste/loss | material destination log | lot; stage; material; mass; sample; treatment | segregate, weigh and retain receipt | kg | each removal | full route | all sites | sum material by fate once | weigh/disposal receipt |
-| `cp_handover` | present | final fibre and package | sale/pack ledger | lot; species; grade; state; gross; tare; net; package; reuse; moisture; buyer; gate | gross/tare weighing and receipt | kg;item | handover | grade to gate | each seller | net as-sold mass | pack and signed receipt |
+| `cp_animal_service` | harvest | animal upstream service | cohort and allocation ledger | species; animal/cohort; phase; upstream source; other actual outputs; period; share | link upstream and sale ledger; Raw aggregation requirements: assign one evidenced share per event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | share;kg | event and period | complete phases | source farms | per reference flow | dataset and output ledger; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_lot_mass` | harvest;condition | fibre transfer | tagged lot scale ticket | animal/cohort; source; method; input/output mass; moisture; guard hair; time | calibrated weighing and sample; Raw aggregation requirements: net mass by state. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;kg/kg | each lot | harvest through condition | each lot | per reference flow | calibration, samples, transfer signature; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_utility` | condition | optional water and energy | meter/fuel record | lot; cleaning route; water; carrier; energy; meter; period | meter and operation log; Raw aggregation requirements: assign carrier/lot once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;MJ | each operation | conditioning period | each site | per reference flow | meter and operation ticket; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_grade` | grade | product grades | assay and sale ticket | lot; species; fineness; length; colour; moisture; accepted; downgraded; buyer | test and calibrated weighing; Raw aggregation requirements: reconcile grades by destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | µm;mm;kg | each lot | grade to sale | all lots | per reference flow | test and buyer record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_rejects` | harvest;condition;grade | waste/loss | material destination log | lot; stage; material; mass; sample; treatment | segregate, weigh and retain receipt; Raw aggregation requirements: sum material by fate once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each removal | full route | all sites | per reference flow | weigh/disposal receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_handover` | present | final fibre and package | sale/pack ledger | lot; species; grade; state; gross; tare; net; package; reuse; moisture; buyer; gate | gross/tare weighing and receipt; Raw aggregation requirements: net as-sold mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;item | handover | grade to gate | each seller | per reference flow | pack and signed receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

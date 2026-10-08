@@ -50,6 +50,8 @@ sync_with: pcr.en-US.md
 | m_moisture | 原态与清洁状态 | 质量分数 | kg/kg | 各批测定含水率；跨状态比较使用实测干物质，同时保留原销售状态质量。 |
 | m_quality | 等级判定 | 纤维直径／长度或有记录的等级 | µm;mm;grade | 保存实际检测方法、物种和阈值；不得仅凭等级名称跨物种等同。 |
 | m_period | 动物服务与共用资产 | 时间 | 报告期间 | 将动物养护负担及实际产毛、奶、肉或其他产出关联到同一动物、阶段和报告期间。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -96,14 +98,18 @@ sync_with: pcr.en-US.md
 
 记录已识别物种、动物群和期间的兼容上游饲养负担；这是归属链接，不是虚构的混合饲料与护理 kg。
 
+分母与范围要求：每 kg 已采原纤维
+
+原始数量及计算要求：每次采毛事件记录实际上游动物服务的一个有证据份额。 原始采集分母类型：process_output。
+
 - 选定流: 按物种及期间归属的动物生产服务 （UUID 未解析）
 - 流属性/单位: 服务 / 已归属动物群期间
-- 数量规则: 每次采毛事件记录实际上游动物服务的一个有证据份额。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已采原纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_animal_service`
 - 数量范围: 归属份额核查区间，不是动物产率
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -126,14 +132,18 @@ sync_with: pcr.en-US.md
 
 记录实际梳取、剪取或收集脱落纤维的质量；动物本身不是纤维产出。
 
+分母与范围要求：每 kg 已采原纤维
+
+原始数量及计算要求：挑拣前称量已采纤维，并将批次 id 传递至整理节点。 原始采集分母类型：process_output。
+
 - 选定流: 按物种及采集事件区分的已脱离原细动物毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 挑拣前称量已采纤维，并将批次 id 传递至整理节点。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已采原纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_lot_mass`
 - 数量范围: 按实测产出基础核查移交完整性
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -150,14 +160,18 @@ sync_with: pcr.en-US.md
 
 按物理材料和处理去向，将不可回收毛及杂物与可用原毛分开。
 
+分母与范围要求：每 kg 已采原纤维
+
+原始数量及计算要求：单独称量收集的废物；无法计量的损失作为不确定性报告。 原始采集分母类型：process_output。
+
 - 选定流: 按材料和去向区分的采毛损失或杂物 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 单独称量收集的废物；无法计量的损失作为不确定性报告。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已采原纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rejects`
 - 数量范围: 暂定废物筛查范围，不是损失系数
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -180,14 +194,18 @@ sync_with: pcr.en-US.md
 
 这是采毛移交或另行购入且携带上游负担的原毛，只计一次。
 
+分母与范围要求：每 kg 原纤维来料
+
+原始数量及计算要求：称量来料净纤维并记录来源、含水率和皮重。 原始采集分母类型：process_output。
+
 - 选定流: 按物种、状态和供应商区分的原细动物毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 称量来料净纤维并记录来源、含水率和皮重。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 原纤维来料
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_lot_mass`
 - 数量范围: 来料批次在自身基础上的完整性
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -202,14 +220,18 @@ sync_with: pcr.en-US.md
 
 仅记录实际首次湿洗所供应的水；不假定每个物种或批次均须洗涤。
 
+分母与范围要求：每 kg 原纤维来料
+
+原始数量及计算要求：按批次计量供应水量，单独实测的回流水另列。 原始采集分母类型：process_output。
+
 - 选定流: 供应的过程用水 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 按批次计量供应水量，单独实测的回流水另列。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 原纤维来料
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_utility`
 - 数量范围: 暂定用水筛查范围，不是洗涤配方
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -224,14 +246,18 @@ sync_with: pcr.en-US.md
 
 仅对实际实施的动力操作按载体展开电、热或燃料。
 
+分母与范围要求：每 kg 原纤维来料
+
+原始数量及计算要求：计量实际载体，并依据服务记录分摊共用量。 原始采集分母类型：process_output。
+
 - 选定流: 场址特定的能源载体 （UUID 未解析）
 - 流属性/单位: 能源 / MJ
-- 数量规则: 计量实际载体，并依据服务记录分摊共用量。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 原纤维来料
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_utility`
 - 数量范围: 暂定能源筛查范围，不是默认效率
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -254,14 +280,18 @@ sync_with: pcr.en-US.md
 
 首次清洁或挑拣的毛移交分级，未经纺织梳理或精梳。
 
+分母与范围要求：每 kg 原纤维来料
+
+原始数量及计算要求：称量产出并记录含水率、粗外层毛及污染物的变化。 原始采集分母类型：process_output。
+
 - 选定流: 按物种／状态限定的已整理原细动物毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 称量产出并记录含水率、粗外层毛及污染物的变化。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 原纤维来料
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_lot_mass`
 - 数量范围: 暂定整理质量筛查范围，不是净毛产率
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -278,14 +308,18 @@ sync_with: pcr.en-US.md
 
 按材料及处置去向记录。独立销售的粗外层毛是另一产品，绝不可放入此废物卡。
 
+分母与范围要求：每 kg 原纤维来料
+
+原始数量及计算要求：称量去除固体；水或蒸发量为另列平衡项。 原始采集分母类型：process_output。
+
 - 选定流: 按材料和去向区分的整理剔除物 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 称量去除固体；水或蒸发量为另列平衡项。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 原纤维来料
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rejects`
 - 数量范围: 暂定固体剔除物筛查范围，不是清洁产率
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -307,14 +341,18 @@ sync_with: pcr.en-US.md
 
 接收已识别的整理批次，不得将同一纤维再次作为购入品。
 
+分母与范围要求：每 kg 已分级的整理纤维
+
+原始数量及计算要求：分级边界只称量一次来料，并保留来源批次 id。 原始采集分母类型：process_output。
+
 - 选定流: 已整理且未梳理的细动物毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 分级边界只称量一次来料，并保留来源批次 id。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已分级的整理纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 按自身实测基础核查来料完整性
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -337,14 +375,18 @@ sync_with: pcr.en-US.md
 
 合格等级携带实测或记录的细度／长度、颜色、污染物和含水率，只向包装移交一次。
 
+分母与范围要求：每 kg 已分级的整理纤维
+
+原始数量及计算要求：称量合格材料，不含降级及剔除质量。 原始采集分母类型：process_output。
+
 - 选定流: 按物种和等级限定的合格原细动物毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 称量合格材料，不含降级及剔除质量。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已分级的整理纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 物理等级份额，不是通用合格率
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -359,14 +401,18 @@ sync_with: pcr.en-US.md
 
 仅当仍属原细毛时记录实际单独销售的较低等级；粗毛或其他类别须另具身份与分配披露。
 
+分母与范围要求：每 kg 已分级的整理纤维
+
+原始数量及计算要求：分别称量各销售等级；未销售时为零。 原始采集分母类型：process_output。
+
 - 选定流: 按物种、等级和去向区分的可售降级原细毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 分别称量各销售等级；未销售时为零。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已分级的整理纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_grade`
 - 数量范围: 物理降级份额，不是通用联产品比例
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -383,14 +429,18 @@ sync_with: pcr.en-US.md
 
 先分清可售降级纤维与实际处置去向，再记录未销售剔除物。
 
+分母与范围要求：每 kg 已分级的整理纤维
+
+原始数量及计算要求：剔除物与样品独立于销售产品称量。 原始采集分母类型：process_output。
+
 - 选定流: 按材料与去向区分的不可售分级剔除物 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 剔除物与样品独立于销售产品称量。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 已分级的整理纤维
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_rejects`
 - 数量范围: 物理剔除份额，不是处置系数
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -413,14 +463,18 @@ sync_with: pcr.en-US.md
 
 仅包装已识别的合格等级；重新包装购入毛不构成新采毛。
 
+分母与范围要求：每 kg 净包装细毛
+
+原始数量及计算要求：从分级移交包装的净纤维质量。 原始采集分母类型：process_output。
+
 - 选定流: 按物种和等级限定的合格原细毛 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 从分级移交包装的净纤维质量。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 净包装细毛
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_handover`
 - 数量范围: 按净包装纤维基础核查来料完整性
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -435,14 +489,18 @@ sync_with: pcr.en-US.md
 
 选择实际清洁的软袋或其他有记录且兼容的保护包装；记录重复使用并避免纤维污染。
 
+分母与范围要求：每 kg 净包装细毛
+
+原始数量及计算要求：称量新包装质量；按有证据的周转次数分摊可复用包装负担。 原始采集分母类型：process_output。
+
 - 选定流: 软质保护性纤维包装 （UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则: 称量新包装质量；按有证据的周转次数分摊可复用包装负担。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 净包装细毛
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_handover`
 - 数量范围: 暂定包装筛查范围，不是袋规格默认值
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -464,14 +522,18 @@ sync_with: pcr.en-US.md
 
 已识别物种、等级、状态及农场／收集点的唯一参考交付；不含包装质量。
 
+参考产出的原始记录：包装毛重减去实测皮重及去除物，得到销售净纤维。 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流: 按物种／状态／门槛限定的未梳理／精梳原细动物毛
 - 流属性/单位: 质量 / kg
-- 数量规则: 包装毛重减去实测皮重及去除物，得到销售净纤维。
-- 数值来源模式: 前景记录 (`foreground_record`)
+- 数量规则：1 千克
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
-- 归一化基准: 每 kg 声明交付点销售净细毛
-- 基准类型: 过程产出 (`process_output`)
-- 证据类型: 采集记录 (`collected_record`)
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议: `cp_handover`
 - 数量范围: 按自身净质量基础核查参考产出完整性
   - 范围角色: QA 校验 (`qa_guardrail`)
@@ -501,12 +563,12 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_animal_service` | harvest | 动物上游服务 | 动物群与分摊台账 | 物种；动物／群；阶段；上游来源；其他实际产出；期间；份额 | 关联上游与销售台账 | 份额;kg | 事件及期间 | 全部生产阶段 | 来源农场 | 各事件只归属一个有证据的份额 | 数据集与产出台账 |
-| `cp_lot_mass` | harvest;condition | 纤维移交 | 带批号称重单 | 动物／群；来源；方法；来料／产出质量；含水率；粗外层毛；时间 | 校准称重与抽样 | kg;kg/kg | 每批 | 采毛至整理 | 各批次 | 按批次和状态核算净质量 | 校准、样品及交接签字 |
-| `cp_utility` | condition | 可选水与能源 | 表计／燃料记录 | 批次；清洁路线；水；载体；能源；表计；期间 | 表计及操作日志 | kg;MJ | 每次操作 | 整理期间 | 各场址 | 实际载体／批次只归属一次 | 表计及操作单 |
-| `cp_grade` | grade | 产品等级 | 检测与销售单 | 批次；物种；细度；长度；颜色；含水率；合格；降级；买方 | 检测与校准称重 | µm;mm;kg | 每批 | 分级至销售 | 所有批次 | 按去向核对等级 | 检测与买方记录 |
-| `cp_rejects` | harvest;condition;grade | 废物与损失 | 材料去向日志 | 批次；阶段；材料；质量；样品；处理 | 分流、称量并保留单据 | kg | 每次移出 | 完整路线 | 所有场址 | 各材料按去向只累计一次 | 称重／处置单 |
-| `cp_handover` | present | 最终纤维及包装 | 销售／包装台账 | 批次；物种；等级；状态；毛重；皮重；净重；包装；复用；含水率；买方；门槛 | 毛重／皮重称量及交接单 | kg;item | 每次交付 | 分级至交付 | 各销售方 | 销售净质量 | 包装单及签收单 |
+| `cp_animal_service` | harvest | 动物上游服务 | 动物群与分摊台账 | 物种；动物／群；阶段；上游来源；其他实际产出；期间；份额 | 关联上游与销售台账；原始汇总要求：各事件只归属一个有证据的份额。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 份额;kg | 事件及期间 | 全部生产阶段 | 来源农场 | 每参考流 | 数据集与产出台账；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_lot_mass` | harvest;condition | 纤维移交 | 带批号称重单 | 动物／群；来源；方法；来料／产出质量；含水率；粗外层毛；时间 | 校准称重与抽样；原始汇总要求：按批次和状态核算净质量。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;kg/kg | 每批 | 采毛至整理 | 各批次 | 每参考流 | 校准、样品及交接签字；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_utility` | condition | 可选水与能源 | 表计／燃料记录 | 批次；清洁路线；水；载体；能源；表计；期间 | 表计及操作日志；原始汇总要求：实际载体／批次只归属一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;MJ | 每次操作 | 整理期间 | 各场址 | 每参考流 | 表计及操作单；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_grade` | grade | 产品等级 | 检测与销售单 | 批次；物种；细度；长度；颜色；含水率；合格；降级；买方 | 检测与校准称重；原始汇总要求：按去向核对等级。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | µm;mm;kg | 每批 | 分级至销售 | 所有批次 | 每参考流 | 检测与买方记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_rejects` | harvest;condition;grade | 废物与损失 | 材料去向日志 | 批次；阶段；材料；质量；样品；处理 | 分流、称量并保留单据；原始汇总要求：各材料按去向只累计一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每次移出 | 完整路线 | 所有场址 | 每参考流 | 称重／处置单；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_handover` | present | 最终纤维及包装 | 销售／包装台账 | 批次；物种；等级；状态；毛重；皮重；净重；包装；复用；含水率；买方；门槛 | 毛重／皮重称量及交接单；原始汇总要求：销售净质量。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;item | 每次交付 | 分级至交付 | 各销售方 | 每参考流 | 包装单及签收单；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 

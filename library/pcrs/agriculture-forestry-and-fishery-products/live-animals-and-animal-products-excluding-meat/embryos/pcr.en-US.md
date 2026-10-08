@@ -37,19 +37,22 @@ This PCR covers viable animal embryos released as breeding material at an embryo
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | Viable animal embryo at collection or production-lab release |
-| Reference flow property | Count of embryos (UUID unresolved). |
-| Reference unit group | Embryo count unit group (UUID unresolved). |
-| Reference unit | embryo |
+| Reference flow property | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` |
+| Reference unit group | Units of items `5beb6eed-33a9-47b8-9ede-1dfe8f679159` |
+| Reference unit | item |
 | Required qualifiers | Species; donor; route; batch; stage; grade; fresh/chilled/frozen state; container; gate; reporting period. |
 
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
-| `count` | reference product | Count (UUID unresolved) | embryo | Count each accepted embryo once, not each container, oocyte or transfer attempt. |
+| `count` | reference product | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` | item | Count each accepted embryo once; one item is one viable graded embryo, not a container, oocyte or transfer attempt. |
 | `yield` | route transitions | Count | embryo, oocyte | Reconcile raw collection/retrieval, preparation, grading, preservation, reject and release counts by donor and route. |
 | `media` | fluids and consumables | Mass or calibrated volume | kg, L | Convert volume to mass only with documented composition and density. |
 | `period` | donor and shared services | Time and count | donor-day, h, embryo | Align input, output and asset service periods; retain failed attempts. |
+| `accepted_item_count` | reference product and its output card | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` | item | The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted viable embryo of the declared species, state, grade and release specification. Preserve native embryo counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -97,14 +100,18 @@ This PCR covers viable animal embryos released as breeding material at an embryo
 
 Measure species-specific feed for the donor's attributable service period.
 
+Denominator and scope requirements：per released embryo
+
+Raw quantity and calculation requirements: Sum observed intake over donor-days linked to actual embryo lots. Original collection denominator kind: reference_flow.
+
 - Selected flow: Donor feed (UUID unresolved)
 - Flow property / unit: Mass / kg dry matter
-- Amount rule: Sum observed intake over donor-days linked to actual embryo lots.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per released embryo
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Provisional donor-feed screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -119,14 +126,18 @@ Measure species-specific feed for the donor's attributable service period.
 
 Meter drinking and care water, resolving its actual source and use from records.
 
+Denominator and scope requirements：per released embryo
+
+Raw quantity and calculation requirements: Sum observed donor-period supply. Original collection denominator kind: reference_flow.
+
 - Selected flow: Donor water supply (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Sum observed donor-period supply.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per released embryo
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Provisional donor-water screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -151,14 +162,18 @@ Meter drinking and care water, resolving its actual source and use from records.
 
 Classify as waste only when not independently handed over as useful material.
 
+Denominator and scope requirements：per donor service period
+
+Raw quantity and calculation requirements: Record collection mass and actual destination by period. Original collection denominator kind: process_output.
+
 - Selected flow: Donor manure to treatment (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Record collection mass and actual destination by period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per donor service period
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
 - Range: Provisional manure screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -181,14 +196,18 @@ Classify as waste only when not independently handed over as useful material.
 
 Record actual collection or aspiration medium and its lot-specific composition.
 
+Denominator and scope requirements：per recovery event
+
+Raw quantity and calculation requirements: Measure issued and returned medium per event. Original collection denominator kind: process_output.
+
 - Selected flow: Embryo or oocyte recovery medium (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure issued and returned medium per event.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per recovery event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_recovery`
 - Range: Provisional recovery-medium screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -211,14 +230,18 @@ Record actual collection or aspiration medium and its lot-specific composition.
 
 This internal handoff applies only to in-vivo collection, before laboratory washing and grading.
 
+Denominator and scope requirements：per in-vivo recovery event
+
+Raw quantity and calculation requirements: Count recovered embryos, including later rejects, by donor event. Original collection denominator kind: process_output.
+
 - Selected flow: Raw in-vivo collected embryos (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count recovered embryos, including later rejects, by donor event.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per in-vivo recovery event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_recovery`
 - Range: Provisional embryo-recovery count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -233,14 +256,18 @@ This internal handoff applies only to in-vivo collection, before laboratory wash
 
 This internal handoff applies only to in-vitro production; oocytes are not the reference product.
 
+Denominator and scope requirements：per in-vitro retrieval event
+
+Raw quantity and calculation requirements: Count retrieved oocytes, including immature material, by donor event. Original collection denominator kind: process_output.
+
 - Selected flow: Retrieved animal oocytes (UUID unresolved)
 - Flow property / unit: Count / oocyte
-- Amount rule: Count retrieved oocytes, including immature material, by donor event.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per in-vitro retrieval event
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_recovery`
 - Range: Provisional oocyte-retrieval count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -265,14 +292,18 @@ This internal handoff applies only to in-vitro production; oocytes are not the r
 
 Only in-vivo lots receive recovered embryos from the recovery node; retain donor and event identity.
 
+Denominator and scope requirements：per preparation lot
+
+Raw quantity and calculation requirements: Count received embryos against recovery-event output. Original collection denominator kind: process_output.
+
 - Selected flow: Raw in-vivo collected embryos (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count received embryos against recovery-event output.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per preparation lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lab`
 - Range: Provisional raw in-vivo input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -287,14 +318,18 @@ Only in-vivo lots receive recovered embryos from the recovery node; retain donor
 
 Only in-vitro lots receive retrieved oocytes, before fertilisation and culture.
 
+Denominator and scope requirements：per preparation lot
+
+Raw quantity and calculation requirements: Count received oocytes against retrieval-event output. Original collection denominator kind: process_output.
+
 - Selected flow: Retrieved animal oocytes (UUID unresolved)
 - Flow property / unit: Count / oocyte
-- Amount rule: Count received oocytes against retrieval-event output.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per preparation lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lab`
 - Range: Provisional oocyte input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -309,14 +344,18 @@ Only in-vitro lots receive retrieved oocytes, before fertilisation and culture.
 
 Record washing, fertilisation and culture media only when actually used in the selected route.
 
+Denominator and scope requirements：per prepared embryo
+
+Raw quantity and calculation requirements: Sum lot-specific issued medium less unused returns. Original collection denominator kind: process_output.
+
 - Selected flow: Embryo laboratory media (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Sum lot-specific issued medium less unused returns.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per prepared embryo
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lab`
 - Range: Provisional laboratory-media screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -331,14 +370,18 @@ Record washing, fertilisation and culture media only when actually used in the s
 
 Only an in-vitro lot that uses semen records it as upstream input, not final embryo output.
 
+Denominator and scope requirements：per in-vitro preparation lot
+
+Raw quantity and calculation requirements: Record source lot and used quantity, net of returns. Original collection denominator kind: process_output.
+
 - Selected flow: Species-matched fertilising semen (UUID unresolved)
 - Flow property / unit: Dose count or calibrated volume / dose or mL
-- Amount rule: Record source lot and used quantity, net of returns.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per in-vitro preparation lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lab`
 - Range: Provisional semen-use screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -361,14 +404,18 @@ Only an in-vitro lot that uses semen records it as upstream input, not final emb
 
 Hand route-identified assessable embryos to grading; failed fertilisation or washing is a loss, not output.
 
+Denominator and scope requirements：per preparation lot
+
+Raw quantity and calculation requirements: Count assessable embryos by donor, route and lot. Original collection denominator kind: process_output.
+
 - Selected flow: Prepared animal embryos before grading (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count assessable embryos by donor, route and lot.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per preparation lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lab`
 - Range: Provisional prepared-count screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -385,14 +432,18 @@ Hand route-identified assessable embryos to grading; failed fertilisation or was
 
 Record spent medium and biological losses by actual treatment destination.
 
+Denominator and scope requirements：per preparation lot
+
+Raw quantity and calculation requirements: Weigh or measure media sent to treatment by lot. Original collection denominator kind: process_output.
+
 - Selected flow: Spent embryo laboratory media to treatment (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh or measure media sent to treatment by lot.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per preparation lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_lab`
 - Range: Provisional spent-media screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -415,14 +466,18 @@ Record spent medium and biological losses by actual treatment destination.
 
 Receive assessable embryos from first preparation with donor, route and lot preserved.
 
+Denominator and scope requirements：per graded lot
+
+Raw quantity and calculation requirements: Count receipts against preparation output and all grade destinations. Original collection denominator kind: process_output.
+
 - Selected flow: Prepared animal embryos before grading (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count receipts against preparation output and all grade destinations.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per graded lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional prepared input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -445,14 +500,18 @@ Receive assessable embryos from first preparation with donor, route and lot pres
 
 Hand only grade-accepted viable embryos to fresh packing or preservation.
 
+Denominator and scope requirements：per graded lot
+
+Raw quantity and calculation requirements: Count by developmental stage, grade, donor and next destination. Original collection denominator kind: process_output.
+
 - Selected flow: Grade-accepted viable animal embryos (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count by developmental stage, grade, donor and next destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per graded lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional accepted-count screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -467,14 +526,18 @@ Hand only grade-accepted viable embryos to fresh packing or preservation.
 
 Product only if a lower-grade viable embryo has an actual separate handover; otherwise record hold or rejection.
 
+Denominator and scope requirements：per graded lot
+
+Raw quantity and calculation requirements: Count separately handed-over lower grade by destination. Original collection denominator kind: process_output.
+
 - Selected flow: Downgraded viable animal embryos (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count separately handed-over lower grade by destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per graded lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional downgrade screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -491,14 +554,18 @@ Product only if a lower-grade viable embryo has an actual separate handover; oth
 
 Non-viable embryos and failed oocytes are rejects, not reference output.
 
+Denominator and scope requirements：per graded lot
+
+Raw quantity and calculation requirements: Count by reason, retained test sample and treatment destination. Original collection denominator kind: process_output.
+
 - Selected flow: Rejected embryo or oocyte material to treatment (UUID unresolved)
 - Flow property / unit: Count / item
-- Amount rule: Count by reason, retained test sample and treatment destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per graded lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional rejection screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -521,14 +588,18 @@ Non-viable embryos and failed oocytes are rejects, not reference output.
 
 Only chilled or frozen lots receive grade-accepted viable embryos here; fresh lots bypass this node.
 
+Denominator and scope requirements：per preserved lot
+
+Raw quantity and calculation requirements: Count receipts against grading's accepted handoff. Original collection denominator kind: process_output.
+
 - Selected flow: Grade-accepted viable animal embryos (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count receipts against grading's accepted handoff.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per preserved lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preserve`
 - Range: Provisional preservation input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -543,14 +614,18 @@ Only chilled or frozen lots receive grade-accepted viable embryos here; fresh lo
 
 Only actual chilled or frozen lots use this node; fresh lots bypass it.
 
+Denominator and scope requirements：per accepted preserved embryo
+
+Raw quantity and calculation requirements: Meter energy over actual intervention and storage period. Original collection denominator kind: process_output.
+
 - Selected flow: Preservation energy supply (UUID unresolved)
 - Flow property / unit: Energy / kWh
-- Amount rule: Meter energy over actual intervention and storage period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per accepted preserved embryo
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preserve`
 - Range: Provisional preservation-energy screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -565,14 +640,18 @@ Only actual chilled or frozen lots use this node; fresh lots bypass it.
 
 Record liquid nitrogen only for routes and tanks that actually use it.
 
+Denominator and scope requirements：per accepted frozen embryo
+
+Raw quantity and calculation requirements: Reconcile deliveries, inventory and boil-off by tank service period. Original collection denominator kind: process_output.
+
 - Selected flow: Liquid nitrogen supply (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Reconcile deliveries, inventory and boil-off by tank service period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per accepted frozen embryo
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preserve`
 - Range: Provisional cryogen screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -595,14 +674,18 @@ Record liquid nitrogen only for routes and tanks that actually use it.
 
 Count viable embryos after intervention, not merely those entering storage.
 
+Denominator and scope requirements：per preserved lot
+
+Raw quantity and calculation requirements: Count post-intervention accepted embryos by state, grade and lot. Original collection denominator kind: process_output.
+
 - Selected flow: Chilled or frozen viable embryos before packing (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count post-intervention accepted embryos by state, grade and lot.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per preserved lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preserve`
 - Range: Provisional preserved-count screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -619,14 +702,18 @@ Count viable embryos after intervention, not merely those entering storage.
 
 Identify failed viability, contamination or packing damage and actual destination.
 
+Denominator and scope requirements：per preserved lot
+
+Raw quantity and calculation requirements: Count post-intervention rejects by reason and destination. Original collection denominator kind: process_output.
+
 - Selected flow: Non-viable embryos after preservation to treatment (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count post-intervention rejects by reason and destination.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per preserved lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_preserve`
 - Range: Provisional preservation-reject screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -649,14 +736,18 @@ Identify failed viability, contamination or packing damage and actual destinatio
 
 Receive accepted fresh embryos directly from grading or viable chilled/frozen embryos from preservation, never both for the same item.
 
+Denominator and scope requirements：per release lot
+
+Raw quantity and calculation requirements: Count stage-, route- and state-matched receipts against prior-node handoffs. Original collection denominator kind: process_output.
+
 - Selected flow: Viable animal embryos before final packing (UUID unresolved)
 - Flow property / unit: Count / embryo
-- Amount rule: Count stage-, route- and state-matched receipts against prior-node handoffs.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per release lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_release`
 - Range: Provisional packing input count
   - Range role: QA guardrail (`qa_guardrail`)
@@ -671,14 +762,18 @@ Receive accepted fresh embryos directly from grading or viable chilled/frozen em
 
 Record actual straw, vial or ampoule and its new or reusable status; distinguish product enclosure from post-gate shipping.
 
+Denominator and scope requirements：per released embryo
+
+Raw quantity and calculation requirements: Measure new materials and uniquely attributed reusable-container service. Original collection denominator kind: reference_flow.
+
 - Selected flow: Embryo protective packaging (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure new materials and uniquely attributed reusable-container service.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per released embryo
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_release`
 - Range: Provisional packaging screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -701,14 +796,20 @@ Record actual straw, vial or ampoule and its new or reusable status; distinguish
 
 This is the sole reference product; no transfer or pregnancy outcome is implied.
 
+Raw reference-output records: Count signed quality-released embryos by route, state and grade. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted viable embryo of the declared species, state, grade and release specification. Preserve native embryo counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Viable animal embryo at collection or production-lab release
-- Flow property / unit: Count / embryo
-- Amount rule: Count signed quality-released embryos by route, state and grade.
-- Value mode: Foreground record (`foreground_record`)
+- Flow property / unit: Number of items / item
+- Amount rule: 1 item
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: 1 released viable embryo
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_release`
 - Range: Reference-count identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -741,12 +842,12 @@ This is the sole reference product; no transfer or pregnancy outcome is implied.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_donor` | `donor` | feed, water, manure, donor service | husbandry ledger | donor_id, species, period, donor_days, feed_DM, water_kg, manure_kg, replacement, room_hours | weigh, meter, event log | day, kg, h | daily/event | full linked donor period | all donors | sum by donor-period and lot | dated signed ledger |
-| `cp_recovery` | `recovery` | medium and raw embryo/oocyte | event register | event_id, donor_id, route, medium_kg, raw_embryo_count, oocyte_count, losses, room_hours | issue sheet, count, weigh | kg, item, h | event | all attempts | collection unit | reconcile each event | chain of custody |
-| `cp_lab` | `preparation` | media, semen, prepared embryos, spent media | laboratory batch log | lot_id, route, media_kg, semen_lot, dose_count, retrieved_count, fertilised_count, prepared_count, waste_kg, incubator_hours | issue and assay log | kg, dose, item, h | lot | all batches | laboratory | route-specific balance | assay and lot record |
-| `cp_grade` | `grading` | accepted, downgraded, held, rejected | grade register | lot_id, stage, grade, accepted, downgraded, held, rejected, destination | qualified examination | item | lot | all assessed material | laboratory | reconcile all destinations | signed grade sheet |
-| `cp_preserve` | `preservation` | energy, nitrogen, stable count, rejects | cold-chain log | lot_id, state, kWh, nitrogen_kg, storage_days, tank_hours, pre_count, accepted, rejected | meter, stock balance, logger | kWh, kg, day, item | lot/day | full intervention and storage | cold room/tank | route-specific count and occupancy | logger and QC |
-| `cp_release` | `release` | container and released embryo | release ledger | lot_id, route, stage, grade, state, new_package_kg, reuse_cycles, released, gate_time | issue count and QA sign-off | kg, embryo | lot | every handover | laboratory gate | count signed releases | label and signed receipt |
+| `cp_donor` | `donor` | feed, water, manure, donor service | husbandry ledger | donor_id, species, period, donor_days, feed_DM, water_kg, manure_kg, replacement, room_hours | weigh, meter, event log; Raw aggregation requirements: sum by donor-period and lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | day, kg, h | daily/event | full linked donor period | all donors | per reference flow | dated signed ledger; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_recovery` | `recovery` | medium and raw embryo/oocyte | event register | event_id, donor_id, route, medium_kg, raw_embryo_count, oocyte_count, losses, room_hours | issue sheet, count, weigh; Raw aggregation requirements: reconcile each event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, item, h | event | all attempts | collection unit | per reference flow | chain of custody; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_lab` | `preparation` | media, semen, prepared embryos, spent media | laboratory batch log | lot_id, route, media_kg, semen_lot, dose_count, retrieved_count, fertilised_count, prepared_count, waste_kg, incubator_hours | issue and assay log; Raw aggregation requirements: route-specific balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, dose, item, h | lot | all batches | laboratory | per reference flow | assay and lot record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_grade` | `grading` | accepted, downgraded, held, rejected | grade register | lot_id, stage, grade, accepted, downgraded, held, rejected, destination | qualified examination; Raw aggregation requirements: reconcile all destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | item | lot | all assessed material | laboratory | per reference flow | signed grade sheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_preserve` | `preservation` | energy, nitrogen, stable count, rejects | cold-chain log | lot_id, state, kWh, nitrogen_kg, storage_days, tank_hours, pre_count, accepted, rejected | meter, stock balance, logger; Raw aggregation requirements: route-specific count and occupancy. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kWh, kg, day, item | lot/day | full intervention and storage | cold room/tank | per reference flow | logger and QC; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_release` | `release` | container and released embryo | release ledger | lot_id, route, stage, grade, state, new_package_kg, reuse_cycles, released, gate_time | issue count and QA sign-off; Raw aggregation requirements: count signed releases. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, embryo | lot | every handover | laboratory gate | per reference flow | label and signed receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

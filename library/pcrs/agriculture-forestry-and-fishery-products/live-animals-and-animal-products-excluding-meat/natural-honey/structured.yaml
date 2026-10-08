@@ -108,6 +108,13 @@ measurement_rules:
       uuid: ""
     required_unit: "MJ, kWh, kg*km"
     rule: "Preserve carrier/mode; convert using recorded factors and exclude post-gate distribution."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
 process_map:
   - id: managed
     name: "Managed colony production"
@@ -143,13 +150,13 @@ process_inventory:
           name: "Supplementary bee feed (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Feed used for managed colonies only, net of returns; natural nectar is not purchased feed."
+          description: "Feed used for managed colonies only, net of returns; natural nectar is not purchased feed. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -169,13 +176,13 @@ process_inventory:
           name: "Supplied apiary water"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Meter actual supplied water; no imputed management water for wild harvest."
+          description: "Meter actual supplied water; no imputed management water for wild harvest. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -195,13 +202,13 @@ process_inventory:
           name: "Hive replacement materials (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Allocate hive and frame replacements over observed service periods."
+          description: "Allocate hive and frame replacements over observed service periods. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -227,13 +234,13 @@ process_inventory:
           name: "Mature honey-bearing comb (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg gross comb"
-          description: "Transfer mature comb to independent harvest; record honey and wax fractions."
+          description: "Transfer mature comb to independent harvest; record honey and wax fractions. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -261,13 +268,13 @@ process_inventory:
           name: "Mature honey-bearing comb (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg gross comb"
-          description: "Conditional internal transfer for managed route only; wild capture has a declared natural source instead."
+          description: "Conditional internal transfer for managed route only; wild capture has a declared natural source instead. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -287,13 +294,13 @@ process_inventory:
           name: "Road freight service"
           flow_type: "product"
           property_unit: "Mass / kg*km"
-          description: "Only actual managed migratory hive freight; exclude post-gate distribution."
+          description: "Only actual managed migratory hive freight; exclude post-gate distribution. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -319,13 +326,13 @@ process_inventory:
           name: "Harvested honey-bearing comb (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg gross comb"
-          description: "Weigh separately harvested comb and sampled honey/wax fractions; hand over for comb sale or extraction."
+          description: "Weigh separately harvested comb and sampled honey/wax fractions; hand over for comb sale or extraction. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -346,13 +353,13 @@ process_inventory:
           name: "Rejected comb (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record brood-contaminated or spoiled comb and actual waste destination."
+          description: "Record brood-contaminated or spoiled comb and actual waste destination. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -378,13 +385,13 @@ process_inventory:
           name: "Harvested honey-bearing comb (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg gross comb"
-          description: "Activate pressing, draining or centrifuging only for non-comb sale."
+          description: "Activate pressing, draining or centrifuging only for non-comb sale. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -404,13 +411,13 @@ process_inventory:
           name: "Extraction energy carriers"
           flow_type: "product"
           property_unit: "Mass / MJ"
-          description: "Meter electricity or fuel for extraction and primary straining."
+          description: "Meter electricity or fuel for extraction and primary straining. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -430,13 +437,13 @@ process_inventory:
           name: "Process cleaning water"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record actual food-contact cleaning water."
+          description: "Record actual food-contact cleaning water. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -464,13 +471,13 @@ process_inventory:
           flow_ref:
             uuid: "fec12529-d2e9-429f-8adb-aaa39b2e88b1"
           property_unit: "Mass / kg honey"
-          description: "Fixed identity applies only to raw honey transferred at the producing farm gate, not every presentation."
+          description: "Fixed identity applies only to raw honey transferred at the producing farm gate, not every presentation. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -490,13 +497,13 @@ process_inventory:
           name: "Prepared natural honey at producer extraction room (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg honey"
-          description: "This alternative applies when the actual gate or state is not the verified raw farm-honey state. Never reuse the raw farm UUID for it."
+          description: "This alternative applies when the actual gate or state is not the verified raw farm-honey state. Never reuse the raw farm UUID for it. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Weigh prepared output and account for stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -516,13 +523,13 @@ process_inventory:
           name: "Recovered beeswax (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg wax"
-          description: "Only separated and independently transferred wax is a co-product; wax retained in sold comb is excluded."
+          description: "Only separated and independently transferred wax is a co-product; wax retained in sold comb is excluded. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -543,13 +550,13 @@ process_inventory:
           name: "Honey-extraction reject waste (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record spoiled honey, dirty wax and removed debris as waste unless independently accepted as a product."
+          description: "Record spoiled honey, dirty wax and removed debris as waste unless independently accepted as a product. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Weigh rejects and record their destination."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -575,13 +582,13 @@ process_inventory:
           name: "Natural honey before grade (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg honey-equivalent"
-          description: "Declare extracted or comb presentation and reconcile input honey and wax."
+          description: "Declare extracted or comb presentation and reconcile input honey and wax. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -606,17 +613,17 @@ process_inventory:
           role: "Saleable natural honey at producer gate"
           name: "Natural honey at producer gate"
           flow_type: "product"
-          property_unit: "Mass / kg honey"
-          description: "Reference output is honey constituent. Comb gross sale weight includes wax, which is sampled separately and excluded from denominator."
+          property_unit: "Mass / kg"
+          description: "Reference output is honey constituent. Comb gross sale weight includes wax, which is sampled separately and excluded from denominator. Denominator and scope requirements：per 1 kg saleable honey constituent Raw reference-output records: Collect by lot and reconcile with actual handovers and stock changes. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit."
           amount:
-            expression: "Collect by lot and reconcile with actual handovers and stock changes."
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grading
               source_ids: []
             ranges:
@@ -634,13 +641,13 @@ process_inventory:
           name: "Downgraded honey (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg honey"
-          description: "Record grade, mass and independent destination; otherwise classify unsuitable matter as reject."
+          description: "Record grade, mass and independent destination; otherwise classify unsuitable matter as reject. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -661,13 +668,13 @@ process_inventory:
           name: "Rejected honey or comb waste (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Weigh spoiled or unrecoverable material and record destination."
+          description: "Weigh spoiled or unrecoverable material and record destination. Denominator and scope requirements：per 1 kg saleable honey constituent"
           amount:
             expression: "Collect by lot and reconcile with actual handovers and stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable honey constituent"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -713,73 +720,73 @@ dataset_production:
       flow_role: "managed feed, water, comb"
       record_type: "hive log"
       raw_fields: "colony id; route; feed issue/return; water; season; mature comb"
-      collection_method: "dated hive logs and invoices"
+      collection_method: "dated hive logs and invoices; Raw aggregation requirements: sum by colony-season. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each event"
       temporal_coverage: "full harvest season"
       site_scope: "apiary"
-      aggregation_rule: "sum by colony-season"
-      quality_evidence: "hive logs and stock reconciliation"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "hive logs and stock reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_assets
       process_id: "managed"
       flow_role: "hive and shared assets"
       record_type: "asset register"
       raw_fields: "asset id; mass; service life; user node; hours"
-      collection_method: "invoice and service log"
+      collection_method: "invoice and service log; Raw aggregation requirements: assign once by use. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, h"
       frequency: "purchase and annual"
       temporal_coverage: "complete service life"
       site_scope: "all consumers"
-      aggregation_rule: "assign once by use"
-      quality_evidence: "asset register"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "asset register; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_migration
       process_id: "harvest"
       flow_role: "hive freight"
       record_type: "trip log"
       raw_fields: "hive load; origin; destination; distance; mode"
-      collection_method: "dispatch/odometer"
+      collection_method: "dispatch/odometer; Raw aggregation requirements: load times distance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, km"
       frequency: "each trip"
       temporal_coverage: "represented season"
       site_scope: "migratory apiary"
-      aggregation_rule: "load times distance"
-      quality_evidence: "trip evidence"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "trip evidence; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_harvest
       process_id: "harvest"
       flow_role: "comb and rejects"
       record_type: "lot log"
       raw_fields: "managed or wild source; date; gross comb; sampled honey; wax; loss; destination"
-      collection_method: "calibrated scale and sample"
+      collection_method: "calibrated scale and sample; Raw aggregation requirements: reconcile harvested and lost. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg"
       frequency: "each lot"
       temporal_coverage: "full season"
       site_scope: "producer/source"
-      aggregation_rule: "reconcile harvested and lost"
-      quality_evidence: "ticket and sample log"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "ticket and sample log; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_extraction
       process_id: "extraction"
       flow_role: "honey, wax, utilities"
       record_type: "batch log"
       raw_fields: "comb input; honey; wax; rejects; water; energy; moisture"
-      collection_method: "scales, meters and assay"
+      collection_method: "scales, meters and assay; Raw aggregation requirements: reconcile material and utility. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, MJ"
       frequency: "each batch"
       temporal_coverage: "full season"
       site_scope: "producer room"
-      aggregation_rule: "reconcile material and utility"
-      quality_evidence: "batch sheet/calibration"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "batch sheet/calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_grading
       process_id: "grading"
       flow_role: "reference and grade outputs"
       record_type: "sale lot"
       raw_fields: "presentation; sale gross; sampled honey/wax/other fractions; accepted; downgrade; reject; gate; prices"
-      collection_method: "weighed sale plus representative destructive comb sample"
+      collection_method: "weighed sale plus representative destructive comb sample; Raw aggregation requirements: gross less wax/other = honey constituent. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg, fraction"
       frequency: "each lot and sample"
       temporal_coverage: "full season"
       site_scope: "producer gate"
-      aggregation_rule: "gross less wax/other = honey constituent"
-      quality_evidence: "sale ticket and sample method"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "sale ticket and sample method; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: comb_honey_conversion
       applies_to: "comb lots"
@@ -890,19 +897,19 @@ data_sources:
     used_for: "Managed production, seasonal records and service attribution."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:4660eecd144ba4e9ea9ea9ff47d714349f694f81f21d9a4eda43bcc78efac260"
+  source_sha256: "sha256:805caf64334fce216b7a9930248cfe0afd97f34c9f7db40a08d7afd3209f7f96"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_4247"
+    - unit_id: "normative_5353"
       family: "system_boundary"
       span:
         start:
-          offset: 4247
-          line: 56
+          offset: 5353
+          line: 57
           column: 1
         end:
-          offset: 6897
-          line: 80
+          offset: 8003
+          line: 81
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed route: admitted colony, hive and incoming feed/materials at apiary. Wild route: identified natural colony/location and access/harvest services, without imputed managed inputs. |\n| starting_condition_role | Managed production hands mature comb to independent harvest; wild capture begins at its documented natural source. Harvested comb enters optional extraction or direct comb sale, then producer grading/handover. |\n| product_classification_scope | CPC 3.0 02910 natural honey; wax, propolis or queens are distinct products only on independent transfer. |\n| recursive_input_rule | Purchased honey keeps its supplier dataset and is not counted as newly produced honey; disclose incoming source and mass. |\n| upstream_dataset_requirement | Match feed, hive material, supplied water, energy and actual inbound freight datasets to state, provider and geography. |\n| disclosure | Route, origin/colony, season, nectar/honeydew source, harvest/extraction, presentation, moisture, producer gate, comb honey/wax sampling, grades, co-products and shared-asset attribution. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `natural_boundary` | all routes | Include natural honey through producer-controlled handover; exclude sweetener addition, industrial processing and post-gate distribution. | `codex-honey-2022`; `fao-bee-products` |\n| `route_delta` | managed and wild | Stationary and migratory managed colonies share a biological parent; migration adds actual hive freight and alters service/forage records. Wild capture is mutually exclusive and has no managed-colony feed, hive or replacement burdens. | `fao-bee-products`; `fao-beekeeping-2021` |\n| `capture_handover` | harvest | Distinguish honey/comb in colony from physically harvested comb, incidental material and loss. Record an independent harvest handover. | `fao-bee-products` |\n| `first_conditioning` | extracted presentation | Pressing, draining, centrifuging and simple straining are conditional. Record input comb, prepared honey, separated wax and rejects; comb sale bypasses this node. | `fao-bee-products`; `codex-honey-2022` |\n| `grade_handover` | producer gate | If grading produces multiple quality/destination states, record accepted, downgraded and rejected handovers separately. | `codex-honey-2022` |\n| `period_and_assets` | multi-season service | Link colony buildup, wintering, harvest, replacement, hive/vehicle/extractor service to consumers and periods; book each burden once. | `fao-beekeeping-2021` |\n\n"
       headings:
@@ -921,12 +928,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 4247
-              line: 56
+              offset: 5353
+              line: 57
               column: 1
             end:
-              offset: 4268
-              line: 56
+              offset: 5374
+              line: 57
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -941,16 +948,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_28265"
+    - unit_id: "normative_30654"
       family: "allocation"
       span:
         start:
-          offset: 28265
-          line: 609
+          offset: 30654
+          line: 650
           column: 1
         end:
-          offset: 29540
-          line: 618
+          offset: 31929
+          line: 659
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_set` | colony, harvest, extraction | List every independently transferred honey, wax, propolis, queen or colony product at its actual handover. Wax retained in sold comb honey is part of the sale presentation, not independently transferred wax. Incidental matter and rejects are not products without evidence. | `fao-bee-products`; `codex-honey-2022` |\n| `allocation_precedence` | genuinely joint burdens | Separate directly metered processes first. Allocate inseparable joint burdens to independently transferred outputs by measured economic value at the same gate and period; retain prices, masses and sensitivity. Do not also apply substitution or a second mass allocation. | `fao-bee-products` |\n| `period_attribution` | managed colony | Assign overwintering, colony buildup, carry-over stores, replacement and termination to dated service/harvest periods based on observed service and output; no double booking across seasons. | `fao-beekeeping-2021` |\n| `shared_asset` | hive, transport, extractor | Identify each consuming node and service period. Attribute shared burdens once by observed hours, trips or throughput. | `fao-beekeeping-2021` |\n\n"
       headings:
@@ -969,12 +976,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 28265
-              line: 609
+              offset: 30654
+              line: 650
               column: 1
             end:
-              offset: 28305
-              line: 609
+              offset: 30694
+              line: 650
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -989,16 +996,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_33413"
+    - unit_id: "normative_38148"
       family: "validation"
       span:
         start:
-          offset: 33413
-          line: 649
+          offset: 38148
+          line: 690
           column: 1
         end:
-          offset: 34858
-          line: 662
+          offset: 39593
+          line: 703
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | severity |\n| --- | --- | --- | --- |\n| `natural_identity` | reference | Reject artificial/adulterated or sweetener-added product; require origin, moisture, presentation and gate. | error |\n| `comb_reference_mass` | comb sale | Require sample-derived honey constituent and retained wax; gross comb mass cannot be used silently as reference. | error |\n| `wax_no_double_count` | comb and wax | Reject the same wax mass retained in sold comb and independently exported as recovered wax. | error |\n| `terminal_output_once` | raw farm honey and saleable honey | If the raw farm-gate output is the saleable reference lot, treat the final handover card as a reporting roll-up, not a second physical product exchange; otherwise do not activate the raw farm card. | error |\n| `route_exclusivity` | all lots | One managed stationary, managed migratory or wild route per lot; wild lots cannot bear managed feed/hive/migration. | error |\n| `states_and_destinations` | all outputs | Check harvested, conditioned, downgraded, rejected and saleable states plus actual gate and destination. | error |\n| `period_once` | multi-season/shared | Reject duplicated colony or shared-asset burdens across periods and nodes. | error |\n| `concrete_binding` | all exchanges | Expand conditional flow identities from actual records and confirm every final exchange UUID; unresolved identities remain blank. | error |\n\n"
       headings:
@@ -1017,12 +1024,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 33413
-              line: 649
+              offset: 38148
+              line: 690
               column: 1
             end:
-              offset: 33435
-              line: 649
+              offset: 38170
+              line: 690
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1041,285 +1048,285 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "natural_boundary"
       identity_kind: "explicit"
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 5527
-          line: 73
+          offset: 6633
+          line: 74
           column: 1
         end:
-          offset: 5743
-          line: 73
+          offset: 6849
+          line: 74
           column: 217
     - pointer: "/system_boundary/rules/1"
       rule_id: "route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 5744
-          line: 74
+          offset: 6850
+          line: 75
           column: 1
         end:
-          offset: 6061
-          line: 74
+          offset: 7167
+          line: 75
           column: 318
     - pointer: "/system_boundary/rules/2"
       rule_id: "capture_handover"
       identity_kind: "explicit"
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 6062
-          line: 75
+          offset: 7168
+          line: 76
           column: 1
         end:
-          offset: 6252
-          line: 75
+          offset: 7358
+          line: 76
           column: 191
     - pointer: "/system_boundary/rules/3"
       rule_id: "first_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 6253
-          line: 76
+          offset: 7359
+          line: 77
           column: 1
         end:
-          offset: 6508
-          line: 76
+          offset: 7614
+          line: 77
           column: 256
     - pointer: "/system_boundary/rules/4"
       rule_id: "grade_handover"
       identity_kind: "explicit"
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 6509
-          line: 77
+          offset: 7615
+          line: 78
           column: 1
         end:
-          offset: 6688
-          line: 77
+          offset: 7794
+          line: 78
           column: 180
     - pointer: "/system_boundary/rules/5"
       rule_id: "period_and_assets"
       identity_kind: "explicit"
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 6689
-          line: 78
+          offset: 7795
+          line: 79
           column: 1
         end:
-          offset: 6895
-          line: 78
+          offset: 8001
+          line: 79
           column: 207
     - pointer: "/allocation_rules/0"
       rule_id: "output_set"
       identity_kind: "explicit"
-      unit_id: "normative_28265"
+      unit_id: "normative_30654"
       source_span:
         start:
-          offset: 28378
-          line: 613
+          offset: 30767
+          line: 654
           column: 1
         end:
-          offset: 28740
-          line: 613
+          offset: 31129
+          line: 654
           column: 363
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_precedence"
       identity_kind: "explicit"
-      unit_id: "normative_28265"
+      unit_id: "normative_30654"
       source_span:
         start:
-          offset: 28741
-          line: 614
+          offset: 31130
+          line: 655
           column: 1
         end:
-          offset: 29087
-          line: 614
+          offset: 31476
+          line: 655
           column: 347
     - pointer: "/allocation_rules/2"
       rule_id: "period_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_28265"
+      unit_id: "normative_30654"
       source_span:
         start:
-          offset: 29088
-          line: 615
+          offset: 31477
+          line: 656
           column: 1
         end:
-          offset: 29345
-          line: 615
+          offset: 31734
+          line: 656
           column: 258
     - pointer: "/allocation_rules/3"
       rule_id: "shared_asset"
       identity_kind: "explicit"
-      unit_id: "normative_28265"
+      unit_id: "normative_30654"
       source_span:
         start:
-          offset: 29346
-          line: 616
+          offset: 31735
+          line: 657
           column: 1
         end:
-          offset: 29538
-          line: 616
+          offset: 31927
+          line: 657
           column: 193
     - pointer: "/validation_rules/0"
       rule_id: "natural_identity"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 33506
-          line: 653
+          offset: 38241
+          line: 694
           column: 1
         end:
-          offset: 33657
-          line: 653
+          offset: 38392
+          line: 694
           column: 152
     - pointer: "/validation_rules/1"
       rule_id: "comb_reference_mass"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 33658
-          line: 654
+          offset: 38393
+          line: 695
           column: 1
         end:
-          offset: 33818
-          line: 654
+          offset: 38553
+          line: 695
           column: 161
     - pointer: "/validation_rules/2"
       rule_id: "wax_no_double_count"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 33819
-          line: 655
+          offset: 38554
+          line: 696
           column: 1
         end:
-          offset: 33961
-          line: 655
+          offset: 38696
+          line: 696
           column: 143
     - pointer: "/validation_rules/3"
       rule_id: "terminal_output_once"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 33962
-          line: 656
+          offset: 38697
+          line: 697
           column: 1
         end:
-          offset: 34232
-          line: 656
+          offset: 38967
+          line: 697
           column: 271
     - pointer: "/validation_rules/4"
       rule_id: "route_exclusivity"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 34233
-          line: 657
+          offset: 38968
+          line: 698
           column: 1
         end:
-          offset: 34393
-          line: 657
+          offset: 39128
+          line: 698
           column: 161
     - pointer: "/validation_rules/5"
       rule_id: "states_and_destinations"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 34394
-          line: 658
+          offset: 39129
+          line: 699
           column: 1
         end:
-          offset: 34552
-          line: 658
+          offset: 39287
+          line: 699
           column: 159
     - pointer: "/validation_rules/6"
       rule_id: "period_once"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 34553
-          line: 659
+          offset: 39288
+          line: 700
           column: 1
         end:
-          offset: 34677
-          line: 659
+          offset: 39412
+          line: 700
           column: 125
     - pointer: "/validation_rules/7"
       rule_id: "concrete_binding"
       identity_kind: "explicit"
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 34678
-          line: 660
+          offset: 39413
+          line: 701
           column: 1
         end:
-          offset: 34856
-          line: 660
+          offset: 39591
+          line: 701
           column: 179
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 4247
-          line: 56
+          offset: 5353
+          line: 57
           column: 1
         end:
-          offset: 4268
-          line: 56
+          offset: 5374
+          line: 57
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_4247"
+      unit_id: "normative_5353"
       source_span:
         start:
-          offset: 4296
-          line: 60
+          offset: 5402
+          line: 61
           column: 1
         end:
-          offset: 5434
-          line: 67
+          offset: 6540
+          line: 68
           column: 205
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_28265"
+      unit_id: "normative_30654"
       source_span:
         start:
-          offset: 28265
-          line: 609
+          offset: 30654
+          line: 650
           column: 1
         end:
-          offset: 28305
-          line: 609
+          offset: 30694
+          line: 650
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_33413"
+      unit_id: "normative_38148"
       source_span:
         start:
-          offset: 33413
-          line: 649
+          offset: 38148
+          line: 690
           column: 1
         end:
-          offset: 33435
-          line: 649
+          offset: 38170
+          line: 690
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1328,5 +1335,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:4660eecd144ba4e9ea9ea9ff47d714349f694f81f21d9a4eda43bcc78efac260"
-  generated_content_sha256: "sha256:00688f0170b1308fc7bb251fa8abecb769babf906e1c46d5b8d1fcc4fecaab6a"
+    sha256: "sha256:805caf64334fce216b7a9930248cfe0afd97f34c9f7db40a08d7afd3209f7f96"
+  generated_content_sha256: "sha256:5c617da6d331e73ac93495c3f0665faeaa6efb7cbacb7910906a34db35119737"

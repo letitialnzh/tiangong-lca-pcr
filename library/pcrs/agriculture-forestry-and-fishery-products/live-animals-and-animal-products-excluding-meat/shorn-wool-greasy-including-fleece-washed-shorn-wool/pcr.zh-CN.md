@@ -7,11 +7,11 @@ sync_with: pcr.en-US.md
 
 # 生产农场门口的剪取原毛
 
-## 范围与适用性
+## 1. 范围与适用性
 
 本规则覆盖从活羊/羔羊身上剪取并在生产农场门口移交的油脂未脱除原毛。可选的“羊体洗毛”必须在剪毛前、羊毛仍长在活羊身上时进行。剪后洗毛、脱脂、制条、屠宰毛皮拔毛，以及山羊或骆驼科动物毛均不属于本范围。CPC 02941 名称结合 WCO 第 51 章对 sheep/lamb wool 与其他细动物毛的区分解释（`un-cpc-2025`；`wco-hs-2017`）。
 
-## 产品类别识别
+## 2. 产品类别识别
 
 | Field | Value |
 | --- | --- |
@@ -23,7 +23,7 @@ sync_with: pcr.en-US.md
 | production_route | 管理羊群 → 可选羊体洗毛 → 剪毛 → 晾置和剔边 → 分级 → 打包与农场交付；每批羊毛洗/未洗路线互斥，洗毛路线单独记录水、废水和晾干 |
 | market_state | 未脱脂原毛；记录水分、植物杂质、等级和包装状态 |
 
-## 参考流
+## 3. 参考流
 
 | Field | Value |
 | --- | --- |
@@ -42,15 +42,17 @@ sync_with: pcr.en-US.md
 | Reference unit | kg |
 | Required qualifiers | 羊/羔羊品种与群组；农场；羊群年度；剪毛日期；未洗或羊体洗毛；水分；植物杂质；等级；净包重；农场交付 |
 
-## 计量与单位规则
+## 4. 计量与单位规则
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `net_greasy_mass` | 羊毛输出 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | 以扣包皮重的原毛现状质量计量，不能代用净毛得率（`iwto-wool-lca-2016`）。 |
 | `moisture_state` | 羊毛 | 质量分数 | % | 记录水分测试方法、日期和干湿基；羊体洗毛并非工业洗净毛。 |
 | `flock_period` | 羊群活动 | 原活动属性 | 原单位 | 先按羊群/群组与年度归属事件，再按 kg 归一。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
-## 系统边界
+## 5. 系统边界
 
 纳入管理羊群、饲草和牧地、粪污、可选剪前羊体洗毛、剪毛、农场晾置/剔边、分级、打包与生产农场交付。外购羊、饲料、能源、水、肥料和包装的上游数据集只计一次。跨年度追踪繁育、更新、淘汰和共享设施。边界止于农场交付，不包括拍卖、农场后运输、剪后工业洗毛、提取羊毛脂及纺织制造（`iwto-wool-lca-2016`）。
 
@@ -71,7 +73,7 @@ sync_with: pcr.en-US.md
 | `wash_gate` | 可选洗毛 | 在活羊身上且剪毛前清洗；记录水、废水及晾干，输出仍为原毛。 | `wco-hs-2017` |
 | `route_delta` | 洗/未洗路线 | 两路线共享羊群饲养；一批毛只能走一路。洗毛增加独立节点及清单，不重复归属。 | `iwto-wool-lca-2016` |
 
-## 过程清单结构
+## 6. 过程清单结构
 
 ### 过程图
 
@@ -94,14 +96,18 @@ sync_with: pcr.en-US.md
 
 按群组、饲料种类、干物质和年度量化外购饲料与放牧；自有牧地饲料生产仅链接一次。
 
+分母与范围要求：按羊群年度归属后每 kg 原毛
+
+原始数量及计算要求：由购买、牧草和存货记录计算摄入 原始采集分母类型：reference_flow。
+
 - 选定流：按实际身份确定的羊饲料与放牧生物质
 - 流属性/单位：Mass / kg 干物质
-- 数量规则：由购买、牧草和存货记录计算摄入
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：按羊群年度归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_flock_feed`
 - 来源：`iwto-wool-lca-2016`
 - 数量范围：暂定饲料筛查
@@ -117,14 +123,18 @@ sync_with: pcr.en-US.md
 
 按用途和来源区分饮水与清洁用水，具体流由记录展开。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：按用途及年度抄表或记载取水量 原始采集分母类型：reference_flow。
+
 - 选定流：羊群运营供水
 - 流属性/单位：Volume / m3
-- 数量规则：按用途及年度抄表或记载取水量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_water_energy`
 - 数量范围：暂定羊群用水筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -139,14 +149,18 @@ sync_with: pcr.en-US.md
 
 自有牧地生产纳入边界时，以一张整合卡涵盖矿物与有机肥，并按实际产品及氮磷组成展开。
 
+分母与范围要求：地块归属后每 kg 原毛
+
+原始数量及计算要求：按产品、养分、地块年度记录施用 原始采集分母类型：reference_flow。
+
 - 选定流：农业养分供应
 - 流属性/单位：Mass / kg 产品及 kg N/P
-- 数量规则：按产品、养分、地块年度记录施用
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：地块归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_flock_feed`
 - 数量范围：暂定养分产品筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -161,14 +175,18 @@ sync_with: pcr.en-US.md
 
 按用途和服务年度从电表/燃料记录展开载体，含共用羊舍和粪污设备。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：按载体及年度记录电表和燃料 原始采集分母类型：reference_flow。
+
 - 选定流：羊群运营能源供应
 - 流属性/单位：Energy 或载体量 / kWh、MJ、L 或 kg
-- 数量规则：按载体及年度记录电表和燃料
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_water_energy`
 - 数量范围：暂定能源筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -187,14 +205,18 @@ sync_with: pcr.en-US.md
 
 记录出售或淘汰羊的头数、活重、去向；不能与另一个活羊数据集重复承担全部负担。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：按群组和日期计净移交量 原始采集分母类型：reference_flow。
+
 - 选定流：按实际群组与门口确定的活羊
 - 流属性/单位：Mass 与数量 / kg 与头
-- 数量规则：按群组和日期计净移交量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_flock_outputs`
 - 来源：`iwto-wool-lca-2016`
 - 数量范围：暂定活羊输出筛查
@@ -210,14 +232,18 @@ sync_with: pcr.en-US.md
 
 仅独立转移且有生产用途的粪肥作为联产品；否则仍归于废物管理。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：扣除场内使用及库存变动后的净转移量 原始采集分母类型：reference_flow。
+
 - 选定流：按真实干湿状态确定的羊粪肥
 - 流属性/单位：Mass / kg
-- 数量规则：扣除场内使用及库存变动后的净转移量
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定出口粪肥筛查
@@ -235,15 +261,19 @@ sync_with: pcr.en-US.md
 
 按羊群、日粮和年度核算肠道甲烷；不合并粪污甲烷。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：按声明的 IPCC 层级处理群组年度活动 原始采集分母类型：reference_flow。
+
 - 选定流：生物源甲烷入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg CH4
 - 绑定：固定（`fixed`）
-- 数量规则：按声明的 IPCC 层级处理群组年度活动
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定肠道甲烷筛查
@@ -259,15 +289,19 @@ sync_with: pcr.en-US.md
 
 报告直接粪污管理 N2O；适用时将田间土壤和间接路径另列。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：排泄 N × 管理份额 × 声明因子及 N 到 N2O 换算 原始采集分母类型：reference_flow。
+
 - 选定流：氧化亚氮入空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：Mass / kg N2O
 - 绑定：固定（`fixed`）
-- 数量规则：排泄 N × 管理份额 × 声明因子及 N 到 N2O 换算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定粪污 N2O 筛查
@@ -283,15 +317,19 @@ sync_with: pcr.en-US.md
 
 按有记录的储存或施用路径计 NH3，并核对氮平衡。
 
+分母与范围要求：归属后每 kg 原毛
+
+原始数量及计算要求：粪污 N × 记录的挥发计算方法 原始采集分母类型：reference_flow。
+
 - 选定流：氨入空气 `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - 流属性/单位：Mass / kg NH3
 - 绑定：固定（`fixed`）
-- 数量规则：粪污 N × 记录的挥发计算方法
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：归属后每 kg 原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定氨筛查
@@ -313,14 +351,18 @@ sync_with: pcr.en-US.md
 
 仅在活羊身上用水，记录水源、收集或排放去向及洗毛事件。
 
+分母与范围要求：每 kg 羊体洗毛原毛
+
+原始数量及计算要求：按事件计量或估算 原始采集分母类型：process_output。
+
 - 选定流：羊体洗毛供水
 - 流属性/单位：Volume / m3
-- 数量规则：按事件计量或估算
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 羊体洗毛原毛
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_wash_shear`
 - 数量范围：暂定羊体洗毛用水筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -339,14 +381,18 @@ sync_with: pcr.en-US.md
 
 收集时记录体积和接收方；直接环境排放须按介质建具体基本流，不能猜测废物流 UUID。
 
+分母与范围要求：每 kg 羊体洗毛原毛
+
+原始数量及计算要求：按事件测得的收集出水 原始采集分母类型：process_output。
+
 - 选定流：收集的羊体洗毛废水
 - 流属性/单位：Volume / m3
-- 数量规则：按事件测得的收集出水
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 羊体洗毛原毛
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_wash_shear`
 - 数量范围：暂定废水筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -369,14 +415,18 @@ sync_with: pcr.en-US.md
 
 按载体和事件记录电动或燃油剪毛机及相关设备。
 
+分母与范围要求：每 kg 剪取羊毛
+
+原始数量及计算要求：每事件电表或设备日志 原始采集分母类型：process_output。
+
 - 选定流：剪毛能源
 - 流属性/单位：Energy 或载体 / kWh、MJ 或 L
-- 数量规则：每事件电表或设备日志
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 剪取羊毛
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_wash_shear`
 - 数量范围：暂定剪毛能源筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -395,14 +445,18 @@ sync_with: pcr.en-US.md
 
 分动物/群组和剪毛事件称重，保留羊体洗毛状态。
 
+分母与范围要求：每 kg 最终原毛
+
+原始数量及计算要求：扣收集容器皮重的剪取质量 原始采集分母类型：reference_flow。
+
 - 选定流：剪后即刻的油脂羊毛
 - 流属性/单位：Mass / kg
-- 数量规则：扣收集容器皮重的剪取质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 最终原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_wash_shear`
 - 来源：`iwto-wool-lca-2016`
 - 数量范围：剪取到交付质量筛查
@@ -426,14 +480,18 @@ sync_with: pcr.en-US.md
 
 在分级前记录未脱脂羊毛质量与水分。
 
+分母与范围要求：每 kg 最终原毛
+
+原始数量及计算要求：实测整理后羊毛 原始采集分母类型：reference_flow。
+
 - 选定流：剔边后未洗净原毛
 - 流属性/单位：Mass / kg
-- 数量规则：实测整理后羊毛
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 最终原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_bale`
 - 数量范围：剔边后质量筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -450,14 +508,18 @@ sync_with: pcr.en-US.md
 
 区分不可销售的土壤、植物残留和羊毛，与独立出售的低级羊毛不同；记录处置或回收目的地。
 
+分母与范围要求：每 kg 剪取羊毛
+
+原始数量及计算要求：实测拒收质量 原始采集分母类型：process_output。
+
 - 选定流：按物料与去向确定的农场剔边拒收物
 - 流属性/单位：Mass / kg
-- 数量规则：实测拒收质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 剪取羊毛
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_bale`
 - 数量范围：拒收比例筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -480,14 +542,18 @@ sync_with: pcr.en-US.md
 
 计量转往农场打包的各合格等级净质量。
 
+分母与范围要求：每 kg 最终原毛
+
+原始数量及计算要求：实测各等级质量 原始采集分母类型：reference_flow。
+
 - 选定流：分等级合格油脂羊毛
 - 流属性/单位：Mass / kg
-- 数量规则：实测各等级质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 kg 最终原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_bale`
 - 数量范围：合格等级份额筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -502,14 +568,18 @@ sync_with: pcr.en-US.md
 
 单独销售时保留等级、买方门口和质量；不可销售者为拒收物。
 
+分母与范围要求：每 kg 最终原毛
+
+原始数量及计算要求：按去向记录降级净质量 原始采集分母类型：reference_flow。
+
 - 选定流：降级但可销售的油脂羊毛
 - 流属性/单位：Mass / kg
-- 数量规则：按去向记录降级净质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 kg 最终原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_bale`
 - 数量范围：降级份额筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -532,14 +602,18 @@ sync_with: pcr.en-US.md
 
 记录实际纺织袋、薄膜、扎带和标签；从农场记录确定复用次数。
 
+分母与范围要求：农场门口每 kg 净原毛
+
+原始数量及计算要求：按毛包净材料消耗扣除经证实的复用 原始采集分母类型：reference_flow。
+
 - 选定流：打包和呈现材料
 - 流属性/单位：Mass 或数量 / kg 或件
-- 数量规则：按毛包净材料消耗扣除经证实的复用
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
-- 归一化基准：农场门口每 kg 净原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_bale`
 - 数量范围：包装材料筛查
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -558,14 +632,18 @@ sync_with: pcr.en-US.md
 
 按等级、毛包和洗毛状态的最终净质量是参考输出。平台工厂门口 Raw Wool 候选不能绑定此卡。
 
+参考产出的原始记录：合格和可销售降级原毛的交付量，扣毛包皮重 保留实测合格批次数量及全部必需限定项。下方数量是归一化参考交换，并不表示实际批次只有一个单位。
+
+分母与范围要求：每参考流
+
 - 选定流： 生产农场门口剪取油脂羊毛
 - 流属性/单位：Mass / kg
-- 数量规则：合格和可销售降级原毛的交付量，扣毛包皮重
+- 数量规则：1 千克
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
-- 归一化基准：农场门口 1 kg 净原毛
+- 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：根据采集数据计算（`calculated_from_collection`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_bale`
 - 来源：`un-cpc-2025`; `iwto-wool-lca-2016`
 - 数量范围：参考输出身份
@@ -577,7 +655,7 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：根据采集数据计算（`calculated_from_collection`）
 
-## 分配与联产品处理
+## 7. 分配与联产品处理
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
@@ -586,18 +664,18 @@ sync_with: pcr.en-US.md
 | `shared_assets` | 牧地、羊舍、供水、剪毛棚和设备 | 指明羊群/剪毛/打包使用者及服务年度；先按有记录工时、面积或羊时分配共用负担，再分配产品；节点间不重复。 | `iwto-wool-lca-2016` |
 | `grade_accounting` | 合格、降级、拒收羊毛 | 分列等级输出和去向；可售降级是产品，不可售剔边是废物，同一纤维不可兼为二者。 | `iwto-wool-lca-2016` |
 
-## 前景数据采集、计算与质量规则
+## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_flock_feed` | `flock` | 饲料、养分 | 羊群/地块/发票 | 群组、牧地面积、日粮、干物质、养分、日期、库存 | 农场记录与有文件的摄入模型 | kg、ha | 月/事件 | 羊群与饲养年度 | 农场 | 核对购入、种植和消耗 | 票据、饲料测试 |
-| `cp_water_energy` | `flock` | 水、能源 | 电表/发票 | 来源、载体、用途、期间、共用者 | 仪表及发票 | m3、kWh、L | 月 | 羊群年度 | 农场 | 按使用者分配 | 仪表照片、票据 |
-| `cp_flock_outputs` | `flock` | 活羊 | 销售/存栏簿 | 群组、头数、活重、日期、门口 | 地磅与点数 | kg、头 | 事件 | 羊群年度 | 农场 | 期初+新增-移出=期末 | 销售单、登记簿 |
-| `cp_manure` | `flock` | 粪污与排放 | 活动簿 | 群组、N 摄入/排泄、管理、储存、转移、因子 | 采集活动并声明 IPCC 层级 | kg N、kg 粪 | 月/事件 | 羊群年度 | 农场 | 分立 CH4、N2O、NH3 路径 | 活动和因子表 |
-| `cp_wash_shear` | `fleece_wash`, `shearing` | 清洗与剪毛 | 事件簿 | 羊、洗毛日期/水/废水/晾干、剪毛日期、原毛质量、能源 | 事件表、秤、仪表 | kg、m3、kWh | 事件 | 剪毛季 | 农场 | 一份羊毛对应一路线 | 事件和校准表 |
-| `cp_grade_bale` | `conditioning`, `grading`, `baling` | 质量/呈现 | 等级/毛包簿 | 剪取、剔边、等级、水分、皮重、包装复用、交付 | 秤及买方单据 | kg、件 | 每包 | 剪毛季 | 农场 | 剪取=等级+拒收+变化/损失 | 称重单、分级记录 |
+| `cp_flock_feed` | `flock` | 饲料、养分 | 羊群/地块/发票 | 群组、牧地面积、日粮、干物质、养分、日期、库存 | 农场记录与有文件的摄入模型；原始汇总要求：核对购入、种植和消耗。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、ha | 月/事件 | 羊群与饲养年度 | 农场 | 每参考流 | 票据、饲料测试；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_water_energy` | `flock` | 水、能源 | 电表/发票 | 来源、载体、用途、期间、共用者 | 仪表及发票；原始汇总要求：按使用者分配。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | m3、kWh、L | 月 | 羊群年度 | 农场 | 每参考流 | 仪表照片、票据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_flock_outputs` | `flock` | 活羊 | 销售/存栏簿 | 群组、头数、活重、日期、门口 | 地磅与点数；原始汇总要求：期初+新增-移出=期末。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、头 | 事件 | 羊群年度 | 农场 | 每参考流 | 销售单、登记簿；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure` | `flock` | 粪污与排放 | 活动簿 | 群组、N 摄入/排泄、管理、储存、转移、因子 | 采集活动并声明 IPCC 层级；原始汇总要求：分立 CH4、N2O、NH3 路径。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg N、kg 粪 | 月/事件 | 羊群年度 | 农场 | 每参考流 | 活动和因子表；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_wash_shear` | `fleece_wash`, `shearing` | 清洗与剪毛 | 事件簿 | 羊、洗毛日期/水/废水/晾干、剪毛日期、原毛质量、能源 | 事件表、秤、仪表；原始汇总要求：一份羊毛对应一路线。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、m3、kWh | 事件 | 剪毛季 | 农场 | 每参考流 | 事件和校准表；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_grade_bale` | `conditioning`, `grading`, `baling` | 质量/呈现 | 等级/毛包簿 | 剪取、剔边、等级、水分、皮重、包装复用、交付 | 秤及买方单据；原始汇总要求：剪取=等级+拒收+变化/损失。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、件 | 每包 | 剪毛季 | 农场 | 每参考流 | 称重单、分级记录；可追溯分子、合格参考产出分母及归一化计算表 |
 
 ### 计算规则
 
@@ -617,7 +695,7 @@ sync_with: pcr.en-US.md
 | `temporal` | 多年度羊群 | 将年龄、事件和共用资产链接服务年度；披露缺口。 | 群组和资产簿 |
 | `measurement` | 质量/水分/能源 | 保存校准与原单位；披露估算。 | 秤及仪表记录 |
 
-## 验证规则
+## 9. 验证规则
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
@@ -639,7 +717,7 @@ sync_with: pcr.en-US.md
 | required_quality_disclosure | 实测/计算值、因子层级、缺口、暂定范围、联产品敏感性 |
 | update_trigger | 路线、物种、门口、等级、分配、因子或身份依据变化 |
 
-## 数据来源
+## 11. 数据来源
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |

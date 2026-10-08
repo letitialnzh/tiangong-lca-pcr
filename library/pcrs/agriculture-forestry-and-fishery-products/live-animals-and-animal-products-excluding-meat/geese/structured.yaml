@@ -98,6 +98,20 @@ measurement_rules:
       uuid: ""
     required_unit: "days or cycles"
     rule: "Link each input, output, replacement and asset use to its service period before normalization."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
 process_map:
   - id: breeder
     name: "Manage breeder flock and collect eggs"
@@ -133,16 +147,16 @@ process_inventory:
           name: "Breeder feed and purchased forage (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Include only measured feed crossing the boundary; keep grazed forage and related land management separately evidenced."
+          description: "Include only measured feed crossing the boundary; keep grazed forage and related land management separately evidenced. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: delivery minus stock change and recorded feed waste Original collection denominator kind: process_output."
           amount:
-            expression: "delivery minus stock change and recorded feed waste"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_feed
               source_ids: []
             ranges:
@@ -159,16 +173,16 @@ process_inventory:
           name: "Supplied water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Measure supplied drinking and cleaning water by use; exclude rainfall on pasture from this Product exchange."
+          description: "Measure supplied drinking and cleaning water by use; exclude rainfall on pasture from this Product exchange. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: metered net supplied water Original collection denominator kind: process_output."
           amount:
-            expression: "metered net supplied water"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -191,16 +205,16 @@ process_inventory:
           name: "Goose eggs for hatching (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Count and weigh eligible shell eggs at the breeder-to-hatchery or customer handover; separately record sold non-hatching eggs and rejects."
+          description: "Count and weigh eligible shell eggs at the breeder-to-hatchery or customer handover; separately record sold non-hatching eggs and rejects. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: weighed eligible hatching eggs Original collection denominator kind: process_output."
           amount:
-            expression: "weighed eligible hatching eggs"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -218,16 +232,16 @@ process_inventory:
           name: "Other goose shell eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record by weighed batch only where sold for another purpose; rejected eggs are waste unless actual sale is evidenced."
+          description: "Record by weighed batch only where sold for another purpose; rejected eggs are waste unless actual sale is evidenced. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: weighed independently sold eggs Original collection denominator kind: process_output."
           amount:
-            expression: "weighed independently sold eggs"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -244,16 +258,16 @@ process_inventory:
           name: "Exported breeder goose manure (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Include only weighed breeder manure deliberately transferred for use; manure remaining on pasture is not this Product output."
+          description: "Include only weighed breeder manure deliberately transferred for use; manure remaining on pasture is not this Product output. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: weighed usable manure handed to recipient Original collection denominator kind: process_output."
           amount:
-            expression: "weighed usable manure handed to recipient"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -271,16 +285,16 @@ process_inventory:
           name: "Breeder residues to treatment (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record rejected eggs and breeder deaths by measured mass, count and disposal destination; do not turn a loss into a co-product by assumption."
+          description: "Record rejected eggs and breeder deaths by measured mass, count and disposal destination; do not turn a loss into a co-product by assumption. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: measured residue and mortality mass by destination Original collection denominator kind: process_output."
           amount:
-            expression: "measured residue and mortality mass by destination"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -297,16 +311,16 @@ process_inventory:
           name: "Breeder goose manure to treatment (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record manure leaving the breeder node for disposal or treatment by mass and destination; exclude exported usable manure and manure remaining on pasture."
+          description: "Record manure leaving the breeder node for disposal or treatment by mass and destination; exclude exported usable manure and manure remaining on pasture. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: measured manure sent to treatment Original collection denominator kind: process_output."
           amount:
-            expression: "measured manure sent to treatment"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -326,14 +340,14 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate only for breeder manure with a recorded housing, storage or grazing pathway and selected IPCC inputs."
+          description: "Calculate only for breeder manure with a recorded housing, storage or grazing pathway and selected IPCC inputs. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: pathway-specific IPCC calculation from breeder manure activity Original collection denominator kind: process_output."
           amount:
-            expression: "pathway-specific IPCC calculation from breeder manure activity"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
@@ -355,14 +369,14 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate for an evidenced breeder manure pathway with appropriate direct or indirect N2O method inputs; avoid double counting pasture-soil emissions."
+          description: "Calculate for an evidenced breeder manure pathway with appropriate direct or indirect N2O method inputs; avoid double counting pasture-soil emissions. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: pathway-specific IPCC N2O calculation from collected manure activity Original collection denominator kind: process_output."
           amount:
-            expression: "pathway-specific IPCC N2O calculation from collected manure activity"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
@@ -384,16 +398,16 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Include only a measured breeder-manure ammonia release or an independently reviewed pathway factor; the UUID is identity, not an emission factor."
+          description: "Include only a measured breeder-manure ammonia release or an independently reviewed pathway factor; the UUID is identity, not an emission factor. Denominator and scope requirements：per kg eligible hatching eggs Raw quantity and calculation requirements: measured ammonia release; otherwise require reviewed pathway method before modelling Original collection denominator kind: process_output."
           amount:
-            expression: "measured ammonia release; otherwise require reviewed pathway method before modelling"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg eligible hatching eggs"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -414,16 +428,16 @@ process_inventory:
           name: "Goose eggs for hatching (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Weigh and count eggs set, identifying internal breeder transfer versus purchased eggs and linking one upstream burden."
+          description: "Weigh and count eggs set, identifying internal breeder transfer versus purchased eggs and linking one upstream burden. Denominator and scope requirements：per kg live goslings produced Raw quantity and calculation requirements: weighed eggs actually set Original collection denominator kind: process_output."
           amount:
-            expression: "weighed eggs actually set"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live goslings produced"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -440,16 +454,16 @@ process_inventory:
           name: "Incubation energy carrier (UUID unresolved)"
           flow_type: "product"
           property_unit: "Energy / kWh or MJ"
-          description: "Record metered electricity and fuels by actual carrier and period, including an allocated share of shared utilities."
+          description: "Record metered electricity and fuels by actual carrier and period, including an allocated share of shared utilities. Denominator and scope requirements：per kg live goslings produced Raw quantity and calculation requirements: metered carrier consumption Original collection denominator kind: process_output."
           amount:
-            expression: "metered carrier consumption"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live goslings produced"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -472,16 +486,16 @@ process_inventory:
           name: "Live goslings at hatchery gate (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Count and weigh viable living goslings; disclose internal rearing transfer versus hatchery sale, never both as final output."
+          description: "Count and weigh viable living goslings; disclose internal rearing transfer versus hatchery sale, never both as final output. Denominator and scope requirements：per kg live goslings produced Raw quantity and calculation requirements: measured live mass and reconciled count Original collection denominator kind: process_output."
           amount:
-            expression: "measured live mass and reconciled count"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live goslings produced"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -500,16 +514,16 @@ process_inventory:
           name: "Hatchery residues to treatment (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record measured hatch residues, mortality and actual treatment destination, separate from breeder rejects."
+          description: "Record measured hatch residues, mortality and actual treatment destination, separate from breeder rejects. Denominator and scope requirements：per kg live goslings produced Raw quantity and calculation requirements: measured residue and mortality mass by destination Original collection denominator kind: process_output."
           amount:
-            expression: "measured residue and mortality mass by destination"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live goslings produced"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -532,16 +546,16 @@ process_inventory:
           name: "Live goslings entering farm (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record internal hatch transfer or purchased goslings at one upstream burden, with mass, count, age and origin."
+          description: "Record internal hatch transfer or purchased goslings at one upstream burden, with mass, count, age and origin. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: measured received mass Original collection denominator kind: process_output."
           amount:
-            expression: "measured received mass"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -558,16 +572,16 @@ process_inventory:
           name: "Goose feed and purchased forage (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record feed composition, purchased mass, losses and grazed forage separately to reflect actual pasture or housed system."
+          description: "Record feed composition, purchased mass, losses and grazed forage separately to reflect actual pasture or housed system. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: delivered feed minus stock change and recorded waste Original collection denominator kind: process_output."
           amount:
-            expression: "delivered feed minus stock change and recorded waste"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_feed
               source_ids: []
             ranges:
@@ -584,16 +598,16 @@ process_inventory:
           name: "Supplied process water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record drinking and cleaning water by actual supply and purpose; document a separate source if off-grid or untreated."
+          description: "Record drinking and cleaning water by actual supply and purpose; document a separate source if off-grid or untreated. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: metered water supplied to rearing Original collection denominator kind: process_output."
           amount:
-            expression: "metered water supplied to rearing"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -610,16 +624,16 @@ process_inventory:
           name: "Rearing energy carrier (UUID unresolved)"
           flow_type: "product"
           property_unit: "Energy / kWh or MJ"
-          description: "Record carrier-specific heat, electricity and fuel where used; pasture and housed routes need separate actual records."
+          description: "Record carrier-specific heat, electricity and fuel where used; pasture and housed routes need separate actual records. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: metered or invoiced carrier consumption Original collection denominator kind: process_output."
           amount:
-            expression: "metered or invoiced carrier consumption"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -642,16 +656,16 @@ process_inventory:
           name: "Living domestic geese at rearing exit (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Weigh and count living growing birds and separately classify any breeder culls sold live."
+          description: "Weigh and count living growing birds and separately classify any breeder culls sold live. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: measured live mass entering catching Original collection denominator kind: process_output."
           amount:
-            expression: "measured live mass entering catching"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -669,16 +683,16 @@ process_inventory:
           name: "Exported goose manure (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Include only usable manure measured and handed to another user; otherwise retain actual on-site or waste pathway."
+          description: "Include only usable manure measured and handed to another user; otherwise retain actual on-site or waste pathway. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: weighed saleable manure removed Original collection denominator kind: process_output."
           amount:
-            expression: "weighed saleable manure removed"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -696,16 +710,16 @@ process_inventory:
           name: "Rearing residues to treatment (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record dead birds and discarded manure by type, mass, date and destination; manure left on pasture is not exported waste."
+          description: "Record dead birds and discarded manure by type, mass, date and destination; manure left on pasture is not exported waste. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: weighed or documented losses by destination Original collection denominator kind: process_output."
           amount:
-            expression: "weighed or documented losses by destination"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -725,14 +739,14 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Derive this only for the recorded storage or grazing pathway and IPCC method inputs; no generic emission factor is prescribed."
+          description: "Derive this only for the recorded storage or grazing pathway and IPCC method inputs; no generic emission factor is prescribed. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: calculate from collected manure activity and selected pathway factor Original collection denominator kind: process_output."
           amount:
-            expression: "calculate from collected manure activity and selected pathway factor"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
@@ -754,14 +768,14 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate for evidenced rearing manure management with direct or indirect N2O method inputs, excluding any breeder or double-counted grazing-soil share."
+          description: "Calculate for evidenced rearing manure management with direct or indirect N2O method inputs, excluding any breeder or double-counted grazing-soil share. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: pathway-specific IPCC N2O calculation from rearing manure activity Original collection denominator kind: process_output."
           amount:
-            expression: "pathway-specific IPCC N2O calculation from rearing manure activity"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
@@ -783,16 +797,16 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Include measured ammonia or a separately reviewed pathway estimate; do not borrow the N2O or CH4 emission factor."
+          description: "Include measured ammonia or a separately reviewed pathway estimate; do not borrow the N2O or CH4 emission factor. Denominator and scope requirements：per kg live geese leaving rearing Raw quantity and calculation requirements: measured ammonia release; otherwise require reviewed pathway method before modelling Original collection denominator kind: process_output."
           amount:
-            expression: "measured ammonia release; otherwise require reviewed pathway method before modelling"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg live geese leaving rearing"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -813,13 +827,13 @@ process_inventory:
           name: "Living geese entering producer catching (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "The input is either hatchery goslings or farm birds for one final lot, with earlier burden transferred once."
+          description: "The input is either hatchery goslings or farm birds for one final lot, with earlier burden transferred once. Denominator and scope requirements：per kg accepted live birds handed over Raw quantity and calculation requirements: reconciled count times measured mean live mass Original collection denominator kind: reference_flow."
           amount:
-            expression: "reconciled count times measured mean live mass"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg accepted live birds handed over"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -845,16 +859,16 @@ process_inventory:
           name: "Live domestic goose, producer handover"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Measure accepted live weight at the actual producing hatchery or farm gate; disclose count and bird class."
+          description: "Measure accepted live weight at the actual producing hatchery or farm gate; disclose count and bird class. Raw reference-output records: measured accepted live mass Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
           amount:
-            expression: "measured accepted live mass"
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg live reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_birds_eggs
               source_ids: []
             ranges:
@@ -873,16 +887,16 @@ process_inventory:
           name: "Capture losses to treatment (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record unsold dead or injured birds by count, mass and destination; saleable live culls remain product if separately transferred."
+          description: "Record unsold dead or injured birds by count, mass and destination; saleable live culls remain product if separately transferred. Denominator and scope requirements：per kg accepted live birds handed over Raw quantity and calculation requirements: measured unsold bird mass by destination Original collection denominator kind: reference_flow."
           amount:
-            expression: "measured unsold bird mass by destination"
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg accepted live birds handed over"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_losses_manure
               source_ids: []
             ranges:
@@ -925,49 +939,49 @@ dataset_production:
       flow_role: "Feed and pasture"
       record_type: "invoices, stock and grazing records"
       raw_fields: "opening/closing feed stock; deliveries; forage origin; grazing area/days; flock count"
-      collection_method: "weighbridge, feed ledger and pasture log"
+      collection_method: "weighbridge, feed ledger and pasture log; Raw aggregation requirements: deliveries less stock change and recorded waste. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; bird-days; ha-days"
       frequency: "each receipt and cycle"
       temporal_coverage: "full breeder or rearing cohort"
       site_scope: "all houses and pasture"
-      aggregation_rule: "deliveries less stock change and recorded waste"
-      quality_evidence: "invoices, scales, pasture records"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoices, scales, pasture records; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_utilities
       process_id: "breeder_hatchery_rearing"
       flow_role: "Water and energy"
       record_type: "meter and fuel logs"
       raw_fields: "meter start/end; carrier; quantity; node; period"
-      collection_method: "meter read or invoice; allocate shared use by documented key"
+      collection_method: "meter read or invoice; allocate shared use by documented key; Raw aggregation requirements: difference readings, convert units, assign once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg water; kWh; MJ"
       frequency: "each meter period"
       temporal_coverage: "all operated nodes and seasons"
       site_scope: "all meters"
-      aggregation_rule: "difference readings, convert units, assign once"
-      quality_evidence: "meter images and receipts"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter images and receipts; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_birds_eggs
       process_id: "all"
       flow_role: "Eggs, live birds and transfers"
       record_type: "egg batch and flock logs"
       raw_fields: "eggs by purpose/count/mass; hatch results; opening/received/sold/dead bird counts; sampled weights; gate"
-      collection_method: "weigh and count each batch; reconcile transfers"
+      collection_method: "weigh and count each batch; reconcile transfers; Raw aggregation requirements: count balance and class-specific mean mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; eggs; birds"
       frequency: "every batch/movement"
       temporal_coverage: "full reported cycle"
       site_scope: "all producer gates"
-      aggregation_rule: "count balance and class-specific mean mass"
-      quality_evidence: "batch sheets and calibrated scales"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "batch sheets and calibrated scales; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_losses_manure
       process_id: "all"
       flow_role: "Mortality, residue and manure pathways"
       record_type: "disposal, manure and emissions-monitoring logs"
       raw_fields: "dead mass/count; egg residues; manure storage/grazing/export mass; destination; volatile solids data; measured NH3 if claimed"
-      collection_method: "weigh or sample; retain destination and emission-monitoring records"
+      collection_method: "weigh or sample; retain destination and emission-monitoring records; Raw aggregation requirements: reconcile by origin and destination, calculate pathway emissions only with supported method. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; bird-days"
       frequency: "each event and period"
       temporal_coverage: "every operated phase"
       site_scope: "all houses, pasture and treatment"
-      aggregation_rule: "reconcile by origin and destination, calculate pathway emissions only with supported method"
-      quality_evidence: "receipts, manure analysis, field and monitoring logs"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "receipts, manure analysis, field and monitoring logs; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: calc_live_mass
       applies_to: "Live transfers"
@@ -1087,19 +1101,19 @@ data_sources:
     used_for: "Manure pathway calculation method"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:0b8711b2f3b2bdc3319ca038d494b7d98e577200ba35b6e8697c3ed3318833f9"
+  source_sha256: "sha256:ee4236d2a78757cb0fcc3f9107f3fdb6f614474584217ead6f2d80180dbbd7bd"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_3773"
+    - unit_id: "normative_6482"
       family: "system_boundary"
       span:
         start:
-          offset: 3773
-          line: 56
+          offset: 6482
+          line: 58
           column: 1
         end:
-          offset: 5766
-          line: 78
+          offset: 8475
+          line: 80
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Opening live flock, breeder egg or externally supplied gosling at the first operated node, with origin, age, mass, count and carried burden |\n| starting_condition_role | Foreground starting stock or upstream Product input, never zero burden by default |\n| product_classification_scope | CPC 3.0 `02153`, live domestic geese |\n| recursive_input_rule | For live geese received from another producer, use one upstream dataset for the received birds; do not recursively reproduce that same stage or count an internal transfer as new final output. |\n| upstream_dataset_requirement | Feed, purchased eggs/goslings, fuels, electricity, water and services require matching upstream identities and datasets. |\n| disclosure | Final gate, operated nodes, pasture or housed route, breeder and asset periods, output destinations, mortalities and manure pathway. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_live` | All routes | Include operated breeder, incubation, brooding/rearing and independent live catching only through producer handover; exclude slaughter and downstream distribution. | `un-cpc-2025`; `fao-goose-production`; `fao-leap-poultry-2016` |\n| `boundary_gate` | Hatchery or farm route | Hatchery-gate goslings and farm-gate older geese are alternative final gates. Internal hatch-to-rearing transfer passes accumulated burden only once. | `fao-goose-production`; `fao-leap-poultry-2016` |\n| `boundary_manure` | Housing or pasture | Record actual storage, grazing, export and treatment destination and pathway-specific emissions; do not assume one universal manure pathway. | `ipcc-livestock-2019` |\n| `boundary_shared` | Shared infrastructure | Identify incubators, houses, water/energy systems and catching equipment shared by nodes or periods and attribute each measured burden once. | `fao-leap-poultry-2016` |\n\n"
       headings:
@@ -1118,12 +1132,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 3773
-              line: 56
+              offset: 6482
+              line: 58
               column: 1
             end:
-              offset: 3794
-              line: 56
+              offset: 6503
+              line: 58
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1138,16 +1152,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_34731"
+    - unit_id: "normative_45982"
       family: "allocation"
       span:
         start:
-          offset: 34731
-          line: 771
+          offset: 45982
+          line: 881
           column: 1
         end:
-          offset: 36038
-          line: 780
+          offset: 47289
+          line: 890
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_subdivide` | All routes | First subdivide measured breeder, hatchery, rearing and catching operations by their own records. Do not allocate directly attributable burdens. | `fao-leap-poultry-2016` |\n| `allocation_outputs` | Eggs, live birds, independently removed feathers/down, exported manure | Enumerate each intended output and handover. Where subdivision is impossible, allocate by documented physical causality; if unavailable, use contemporaneous economic values and disclose prices and sensitivity. Residue and disposal waste receive no product credit without independent use and transfer. | `fao-leap-poultry-2016` |\n| `allocation_periods` | Breeder and cohort cycles | Link breeder establishment, laying seasons, hatch batches, rearing cycles, replacements and culls to benefiting cohorts; never assign the same burden to internal transfer and final sale twice. | `fao-goose-production`; `fao-leap-poultry-2016` |\n| `allocation_shared` | Shared buildings, incubators and utilities | Attribute one measured burden to consuming nodes and service periods by meter use, capacity-days or documented operating time, with keys and shares retained. | `fao-leap-poultry-2016` |\n\n"
       headings:
@@ -1166,12 +1180,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 34731
-              line: 771
+              offset: 45982
+              line: 881
               column: 1
             end:
-              offset: 34771
-              line: 771
+              offset: 46022
+              line: 881
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1186,16 +1200,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_40288"
+    - unit_id: "normative_53103"
       family: "validation"
       span:
         start:
-          offset: 40288
-          line: 810
+          offset: 53103
+          line: 920
           column: 1
         end:
-          offset: 41449
-          line: 820
+          offset: 54264
+          line: 930
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | Final output | Reject a reference without measured kg, reconciled count, age/class and one declared hatchery or farm producer gate; do not use the count/at-plant candidate as a Mass reference. | `un-cpc-2025` |\n| `validate_route` | Process map | Require evidence for each operated node and pasture/housed inventory delta; prohibit hatchery and farm final output for the same internal lot. | `fao-goose-production`; `fao-leap-poultry-2016` |\n| `validate_outputs` | Co-products and losses | Reconcile live birds, eggs, any separately removed feathers/down, exported manure, mortality and residues by handover; record explicit allocation and prevent duplicate output. | `fao-leap-poultry-2016` |\n| `validate_period` | Periods and shared assets | Verify breeder/asset service time, replacements, culls, consuming nodes and attribution keys sum without duplicate burden. | `fao-leap-poultry-2016` |\n| `validate_manure` | Manure pathway | Verify actual destination and selected IPCC inputs before calculating emissions. | `ipcc-livestock-2019` |\n\n"
       headings:
@@ -1214,12 +1228,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 40288
-              line: 810
+              offset: 53103
+              line: 920
               column: 1
             end:
-              offset: 40310
-              line: 810
+              offset: 53125
+              line: 920
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1238,220 +1252,220 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_live"
       identity_kind: "explicit"
-      unit_id: "normative_3773"
+      unit_id: "normative_6482"
       source_span:
         start:
-          offset: 4829
-          line: 73
+          offset: 7538
+          line: 75
           column: 1
         end:
-          offset: 5092
-          line: 73
+          offset: 7801
+          line: 75
           column: 264
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_gate"
       identity_kind: "explicit"
-      unit_id: "normative_3773"
+      unit_id: "normative_6482"
       source_span:
         start:
-          offset: 5093
-          line: 74
+          offset: 7802
+          line: 76
           column: 1
         end:
-          offset: 5339
-          line: 74
+          offset: 8048
+          line: 76
           column: 247
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_manure"
       identity_kind: "explicit"
-      unit_id: "normative_3773"
+      unit_id: "normative_6482"
       source_span:
         start:
-          offset: 5340
-          line: 75
+          offset: 8049
+          line: 77
           column: 1
         end:
-          offset: 5549
-          line: 75
+          offset: 8258
+          line: 77
           column: 210
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_shared"
       identity_kind: "explicit"
-      unit_id: "normative_3773"
+      unit_id: "normative_6482"
       source_span:
         start:
-          offset: 5550
-          line: 76
+          offset: 8259
+          line: 78
           column: 1
         end:
-          offset: 5764
-          line: 76
+          offset: 8473
+          line: 78
           column: 215
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_subdivide"
       identity_kind: "explicit"
-      unit_id: "normative_34731"
+      unit_id: "normative_45982"
       source_span:
         start:
-          offset: 34844
-          line: 775
+          offset: 46095
+          line: 885
           column: 1
         end:
-          offset: 35056
-          line: 775
+          offset: 46307
+          line: 885
           column: 213
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_34731"
+      unit_id: "normative_45982"
       source_span:
         start:
-          offset: 35057
-          line: 776
+          offset: 46308
+          line: 886
           column: 1
         end:
-          offset: 35483
-          line: 776
+          offset: 46734
+          line: 886
           column: 427
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_periods"
       identity_kind: "explicit"
-      unit_id: "normative_34731"
+      unit_id: "normative_45982"
       source_span:
         start:
-          offset: 35484
-          line: 777
+          offset: 46735
+          line: 887
           column: 1
         end:
-          offset: 35781
-          line: 777
+          offset: 47032
+          line: 887
           column: 298
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_shared"
       identity_kind: "explicit"
-      unit_id: "normative_34731"
+      unit_id: "normative_45982"
       source_span:
         start:
-          offset: 35782
-          line: 778
+          offset: 47033
+          line: 888
           column: 1
         end:
-          offset: 36036
-          line: 778
+          offset: 47287
+          line: 888
           column: 255
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference"
       identity_kind: "explicit"
-      unit_id: "normative_40288"
+      unit_id: "normative_53103"
       source_span:
         start:
-          offset: 40383
-          line: 814
+          offset: 53198
+          line: 924
           column: 1
         end:
-          offset: 40618
-          line: 814
+          offset: 53433
+          line: 924
           column: 236
     - pointer: "/validation_rules/1"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_40288"
+      unit_id: "normative_53103"
       source_span:
         start:
-          offset: 40619
-          line: 815
+          offset: 53434
+          line: 925
           column: 1
         end:
-          offset: 40848
-          line: 815
+          offset: 53663
+          line: 925
           column: 230
     - pointer: "/validation_rules/2"
       rule_id: "validate_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_40288"
+      unit_id: "normative_53103"
       source_span:
         start:
-          offset: 40849
-          line: 816
+          offset: 53664
+          line: 926
           column: 1
         end:
-          offset: 41100
-          line: 816
+          offset: 53915
+          line: 926
           column: 252
     - pointer: "/validation_rules/3"
       rule_id: "validate_period"
       identity_kind: "explicit"
-      unit_id: "normative_40288"
+      unit_id: "normative_53103"
       source_span:
         start:
-          offset: 41101
-          line: 817
+          offset: 53916
+          line: 927
           column: 1
         end:
-          offset: 41301
-          line: 817
+          offset: 54116
+          line: 927
           column: 201
     - pointer: "/validation_rules/4"
       rule_id: "validate_manure"
       identity_kind: "explicit"
-      unit_id: "normative_40288"
+      unit_id: "normative_53103"
       source_span:
         start:
-          offset: 41302
-          line: 818
+          offset: 54117
+          line: 928
           column: 1
         end:
-          offset: 41447
-          line: 818
+          offset: 54262
+          line: 928
           column: 146
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_3773"
+      unit_id: "normative_6482"
       source_span:
         start:
-          offset: 3773
-          line: 56
+          offset: 6482
+          line: 58
           column: 1
         end:
-          offset: 3794
-          line: 56
+          offset: 6503
+          line: 58
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_3773"
+      unit_id: "normative_6482"
       source_span:
         start:
-          offset: 3822
-          line: 60
+          offset: 6531
+          line: 62
           column: 1
         end:
-          offset: 4736
-          line: 67
+          offset: 7445
+          line: 69
           column: 150
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_34731"
+      unit_id: "normative_45982"
       source_span:
         start:
-          offset: 34731
-          line: 771
+          offset: 45982
+          line: 881
           column: 1
         end:
-          offset: 34771
-          line: 771
+          offset: 46022
+          line: 881
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_40288"
+      unit_id: "normative_53103"
       source_span:
         start:
-          offset: 40288
-          line: 810
+          offset: 53103
+          line: 920
           column: 1
         end:
-          offset: 40310
-          line: 810
+          offset: 53125
+          line: 920
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1460,5 +1474,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:0b8711b2f3b2bdc3319ca038d494b7d98e577200ba35b6e8697c3ed3318833f9"
-  generated_content_sha256: "sha256:77653c19a04d8b8f994624391c6723500fccd14e375ed6be84ccfef497529a66"
+    sha256: "sha256:ee4236d2a78757cb0fcc3f9107f3fdb6f614474584217ead6f2d80180dbbd7bd"
+  generated_content_sha256: "sha256:114be5fb84404c69feca2e22d2e0d531201f0ecdcf2f7da36e481dd7ffa4995e"

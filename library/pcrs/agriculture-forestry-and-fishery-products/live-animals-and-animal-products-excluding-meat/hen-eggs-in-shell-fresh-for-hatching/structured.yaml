@@ -14,7 +14,7 @@ functional_unit:
   how_much: "1 kg shell-on egg mass; retain count and measured average mass"
   how_well: "Declare breeder flock age and mating management, collection and selection, shell condition, storage time/temperature, measured quality tests if available; do not infer fertility or hatchability"
   how_long_or_cycle: "Declared flock productive period with replacement and storage periods linked"
-  reference_flow_link: "Final farm_gate_hatching_eggs output; internal egg states are reconciliation, not duplicate final output"
+  reference_flow_link: "farm_gate_hatching_eggs"
 system_boundary:
   rules:
     - rule_id: farm_gate_cut
@@ -97,6 +97,13 @@ measurement_rules:
       uuid: ""
     required_unit: "kg substance"
     rule: "CH4, N2O and NH3 are separate named substances; convert N2O-N and NH3-N factor bases before reporting molecular mass."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
 process_map:
   - id: breeder_flock
     name: "Managed breeder flock and laying"
@@ -144,13 +151,13 @@ process_inventory:
           name: "Replacement breeder birds (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg liveweight"
-          description: "Record received birds and period; link upstream burden once."
+          description: "Record received birds and period; link upstream burden once. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record received birds and period; link upstream burden once."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -170,13 +177,13 @@ process_inventory:
           name: "Breeder feed (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg as-fed"
-          description: "Record purchased and separately produced feed net of stock changes."
+          description: "Record purchased and separately produced feed net of stock changes. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record purchased and separately produced feed net of stock changes."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -196,13 +203,13 @@ process_inventory:
           name: "Supplied farm water"
           flow_type: "product"
           property_unit: "Mass / L"
-          description: "Meter drinking and cleaning water by use."
+          description: "Meter drinking and cleaning water by use. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Meter drinking and cleaning water by use."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -222,13 +229,13 @@ process_inventory:
           name: "Energy carriers and utilities"
           flow_type: "product"
           property_unit: "Mass / MJ"
-          description: "Record electricity, heat and fuels by actual carrier."
+          description: "Record electricity, heat and fuels by actual carrier. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record electricity, heat and fuels by actual carrier."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -254,13 +261,13 @@ process_inventory:
           name: "Newly laid hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Reconcile gross laid eggs to collection and loss; internal state, not final product."
+          description: "Reconcile gross laid eggs to collection and loss; internal state, not final product. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Reconcile gross laid eggs to collection and loss; internal state, not final product."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -280,13 +287,13 @@ process_inventory:
           name: "Spent breeder birds (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg liveweight"
-          description: "Record only independently sold culls; mortality is waste."
+          description: "Record only independently sold culls; mortality is waste. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record only independently sold culls; mortality is waste."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -306,13 +313,13 @@ process_inventory:
           name: "Marketed breeder manure (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg wet and dry"
-          description: "Use this conditional product output only when manure is independently transferred for value; exclude the same material from manure_waste."
+          description: "Use this conditional product output only when manure is independently transferred for value; exclude the same material from manure_waste. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record measured sold mass, composition, gate and buyer by flock period."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -333,13 +340,13 @@ process_inventory:
           name: "Breeder manure and litter (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg wet"
-          description: "Record one actual manure-management handoff; separately sold manure is a co-product."
+          description: "Record one actual manure-management handoff; separately sold manure is a co-product. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record one actual manure-management handoff; separately sold manure is a co-product."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -362,13 +369,13 @@ process_inventory:
           flow_ref:
             uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
           property_unit: "Mass / kg CH4"
-          description: "Model documented manure CH4 pathway from records."
+          description: "Model documented manure CH4 pathway from records. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Model documented manure CH4 pathway from records."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -391,13 +398,13 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass / kg N2O"
-          description: "Model documented manure N2O; convert N2O-N to N2O."
+          description: "Model documented manure N2O; convert N2O-N to N2O. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Model documented manure N2O; convert N2O-N to N2O."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -420,13 +427,13 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
           property_unit: "Mass / kg NH3"
-          description: "Record only a documented NH3 volatilization pathway."
+          description: "Record only a documented NH3 volatilization pathway. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record only a documented NH3 volatilization pathway."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -451,13 +458,13 @@ process_inventory:
           name: "Newly laid hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Link to the same flock-period laid-egg output."
+          description: "Link to the same flock-period laid-egg output. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Link to the same flock-period laid-egg output."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -483,13 +490,13 @@ process_inventory:
           name: "Collected raw hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Weigh batches before conditioning."
+          description: "Weigh batches before conditioning. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Weigh batches before conditioning."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -510,13 +517,13 @@ process_inventory:
           name: "Collection egg loss (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record broken/uncollected eggs and destination."
+          description: "Record broken/uncollected eggs and destination. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record broken/uncollected eggs and destination."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -542,13 +549,13 @@ process_inventory:
           name: "Collected raw hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Link one incoming batch to collection; do not assume washing."
+          description: "Link one incoming batch to collection; do not assume washing. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Link one incoming batch to collection; do not assume washing."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -574,13 +581,13 @@ process_inventory:
           name: "Prepared hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Record shell-intact prepared mass and hand off to grading."
+          description: "Record shell-intact prepared mass and hand off to grading. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record shell-intact prepared mass and hand off to grading."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -601,13 +608,13 @@ process_inventory:
           name: "Conditioning egg rejects (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record damaged/contaminated mass and disposal."
+          description: "Record damaged/contaminated mass and disposal. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record damaged/contaminated mass and disposal."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -633,13 +640,13 @@ process_inventory:
           name: "Prepared hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Link to first conditioning; candling only if actually performed."
+          description: "Link to first conditioning; candling only if actually performed. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Link to first conditioning; candling only if actually performed."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -665,13 +672,13 @@ process_inventory:
           name: "Selected hatching hen eggs (UUID unresolved internal state)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Weigh accepted eggs; designation alone does not prove fertility."
+          description: "Weigh accepted eggs; designation alone does not prove fertility. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Weigh accepted eggs; designation alone does not prove fertility."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -691,13 +698,13 @@ process_inventory:
           name: "Fresh non-hatching hen eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Include only if actually sold as a separate co-product."
+          description: "Include only if actually sold as a separate co-product. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Include only if actually sold as a separate co-product."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -718,13 +725,13 @@ process_inventory:
           name: "Rejected eggs (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record unsafe/broken eggs and destination; not a co-product."
+          description: "Record unsafe/broken eggs and destination; not a co-product. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record unsafe/broken eggs and destination; not a co-product."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -750,13 +757,13 @@ process_inventory:
           name: "Selected hatching eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Record lot, time and temperature; omit node when no storage intervention occurs."
+          description: "Record lot, time and temperature; omit node when no storage intervention occurs. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record lot, time and temperature; omit node when no storage intervention occurs."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -776,13 +783,13 @@ process_inventory:
           name: "Energy carriers and utilities"
           flow_type: "product"
           property_unit: "Mass / MJ"
-          description: "Measure actual cooling/ventilation use by lot or shared room."
+          description: "Measure actual cooling/ventilation use by lot or shared room. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Measure actual cooling/ventilation use by lot or shared room."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -808,13 +815,13 @@ process_inventory:
           name: "Farm-stored hatching eggs (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Record outgoing mass and full storage history."
+          description: "Record outgoing mass and full storage history. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record outgoing mass and full storage history."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -835,13 +842,13 @@ process_inventory:
           name: "Storage egg rejects (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Reconcile accepted, rejected and inventory change."
+          description: "Reconcile accepted, rejected and inventory change. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Reconcile accepted, rejected and inventory change."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -867,13 +874,13 @@ process_inventory:
           name: "Selected hatching eggs (UUID unresolved internal state)"
           flow_type: "product"
           property_unit: "Mass / kg shell-on"
-          description: "Take one direct-from-grade or stored route, never both."
+          description: "Take one direct-from-grade or stored route, never both. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Take one direct-from-grade or stored route, never both."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -893,13 +900,13 @@ process_inventory:
           name: "Protective trays/packaging by actual material"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record new and reusable materials, owner and evidenced use cycles."
+          description: "Record new and reusable materials, owner and evidenced use cycles. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record new and reusable materials, owner and evidenced use cycles."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -926,17 +933,17 @@ process_inventory:
           flow_type: "product"
           flow_ref:
             uuid: "e5791c05-2fe6-4cb4-aec8-30adb5e85b0b"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg shell-on"
-          description: "Weigh final accepted shell-on mass at actual breeder-farm handover."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh final accepted shell-on mass at actual breeder-farm handover. Raw reference-output records: Weigh final accepted shell-on mass at actual breeder-farm handover. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
           amount:
-            expression: "Weigh final accepted shell-on mass at actual breeder-farm handover."
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -955,13 +962,13 @@ process_inventory:
           name: "Breakage and discarded packaging by material (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record breakage and non-reused package discard by actual destination."
+          description: "Record breakage and non-reused package discard by actual destination. Denominator and scope requirements：per kg saleable shell-on hatching eggs at breeder-farm gate"
           amount:
             expression: "Record breakage and non-reused package discard by actual destination."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per kg saleable shell-on hatching eggs at breeder-farm gate"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
@@ -1002,97 +1009,97 @@ dataset_production:
       flow_role: "replacement, culls, age, route"
       record_type: "flock register"
       raw_fields: "cohort, species, age, head, mass, entry/exit, mortality, mating, housing/collection route"
-      collection_method: "register and calibrated sample weighing"
+      collection_method: "register and calibrated sample weighing; Raw aggregation requirements: cohort-period ledger. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "head; kg"
       frequency: "event/monthly"
       temporal_coverage: "full productive/replacement phases"
       site_scope: "all houses"
-      aggregation_rule: "cohort-period ledger"
-      quality_evidence: "invoice, scale and mortality logs"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice, scale and mortality logs; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_inputs
       process_id: "breeder_flock"
       flow_role: "feed, water, energy"
       record_type: "invoices, stock, meters"
       raw_fields: "supplier, feed, dry matter, stock, water, carrier, meter, period, shared use"
-      collection_method: "invoice, meter and stock reconciliation"
+      collection_method: "invoice, meter and stock reconciliation; Raw aggregation requirements: net measured use by cohort. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; L; kWh; MJ"
       frequency: "monthly/close"
       temporal_coverage: "full flock period"
       site_scope: "all houses"
-      aggregation_rule: "net measured use by cohort"
-      quality_evidence: "invoice, meter check, stock sheet"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice, meter check, stock sheet; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_eggs
       process_id: "breeder_flock_egg_collection_first_conditioning"
       flow_role: "laid, collected, prepared, loss"
       record_type: "batch register"
       raw_fields: "collection time, count, sampled mass, shell condition, accepted/rejected mass, destination"
-      collection_method: "count and calibrated weighing"
+      collection_method: "count and calibrated weighing; Raw aggregation requirements: state mass balance by batch. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "count; kg"
       frequency: "each batch"
       temporal_coverage: "full period"
       site_scope: "all lines"
-      aggregation_rule: "state mass balance by batch"
-      quality_evidence: "batch sheet, calibration"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "batch sheet, calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_grading
       process_id: "hatching_grade"
       flow_role: "hatching, table, reject grades"
       record_type: "grade log"
       raw_fields: "grade rules, candling if done, count, kg, tests, destination"
-      collection_method: "grading and weighing"
+      collection_method: "grading and weighing; Raw aggregation requirements: mutually exclusive destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "count; kg"
       frequency: "each batch"
       temporal_coverage: "full period"
       site_scope: "all grading lines"
-      aggregation_rule: "mutually exclusive destinations"
-      quality_evidence: "grade/test sheet"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "grade/test sheet; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_manure
       process_id: "breeder_flock"
       flow_role: "manure and air pathways"
       record_type: "management log"
       raw_fields: "bedding, moisture, nitrogen, pathway, dates, factors"
-      collection_method: "observation, assay, method worksheet"
+      collection_method: "observation, assay, method worksheet; Raw aggregation requirements: one ledger per material batch. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; kg N"
       frequency: "monthly/event"
       temporal_coverage: "flock/manure period"
       site_scope: "all pathways"
-      aggregation_rule: "one ledger per material batch"
-      quality_evidence: "log, lab and factor citation"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "log, lab and factor citation; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_storage
       process_id: "egg_storage"
       flow_role: "stored eggs and energy"
       record_type: "lot/room log"
       raw_fields: "kg in/out, timestamps, temperature, humidity, meter, rejects"
-      collection_method: "room logger, meter, weighing"
+      collection_method: "room logger, meter, weighing; Raw aggregation requirements: batch inventory and shared energy. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; h; C; kWh"
       frequency: "each lot/daily"
       temporal_coverage: "actual farm storage"
       site_scope: "all rooms"
-      aggregation_rule: "batch inventory and shared energy"
-      quality_evidence: "logger, meter, scale"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "logger, meter, scale; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_packaging
       process_id: "egg_presentation"
       flow_role: "trays and discard"
       record_type: "package/reuse log"
       raw_fields: "material, new/reused item, mass, owner, cycles, disposal"
-      collection_method: "count/sample weighing"
+      collection_method: "count/sample weighing; Raw aggregation requirements: net material by evidenced reuse. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "item; kg"
       frequency: "each dispatch"
       temporal_coverage: "full period"
       site_scope: "farm packing points"
-      aggregation_rule: "net material by evidenced reuse"
-      quality_evidence: "purchase/return log"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "purchase/return log; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_handover
       process_id: "egg_presentation"
       flow_role: "final reference"
       record_type: "dispatch register"
       raw_fields: "lot, count, kg, grade, gate, buyer, collection/storage history, tests"
-      collection_method: "calibrated dispatch weighing"
+      collection_method: "calibrated dispatch weighing; Raw aggregation requirements: accepted kg once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg; count"
       frequency: "each handover"
       temporal_coverage: "full period"
       site_scope: "farm gates"
-      aggregation_rule: "accepted kg once"
-      quality_evidence: "dispatch and calibration"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "dispatch and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: egg_balance
       applies_to: "egg states"
@@ -1214,19 +1221,19 @@ data_sources:
     used_for: "state reconciliation and normalization"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:02a7de3b42ce56e39528032cd5c109625b93678a05c340e52ceffda8ea90047e"
+  source_sha256: "sha256:a3285bdae2cd1f976dda0d0d86a14d3aeaaa1c25585c304dc958f1085adc4af3"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_3811"
+    - unit_id: "normative_4836"
       family: "system_boundary"
       span:
         start:
-          offset: 3811
-          line: 54
+          offset: 4836
+          line: 55
           column: 1
         end:
-          offset: 6122
-          line: 77
+          offset: 7147
+          line: 78
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased replacement breeders/pullets, feed, water, energy and package materials enter at recorded farm receipt; internally produced replacements or feed require separately traced foreground. |\n| starting_condition_role | Breeder-farm incoming stock before the declared productive flock period. |\n| product_classification_scope | CPC 3.0 02311 applies to final fresh shell-on hatching eggs, not internal states or table-egg co-products. |\n| recursive_input_rule | Purchased hatching eggs used upstream of this flock carry one upstream dataset at receipt; do not recursively credit the resulting eggs or include hatchery incubation twice. |\n| upstream_dataset_requirement | Trace purchased birds, feed, energy and packaging to upstream datasets; farm-only inventory must not be represented as cradle-to-gate. |\n| disclosure | Gate, cohort and period, breeding/collection route, egg grade and quality evidence, conditioning, storage, package reuse, losses and co-product allocation. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `farm_gate_cut` | all routes | Include breeder-farm laying, independent collection, first conditioning, grading, on-farm stabilization and presentation; exclude hatchery incubation, chicks and post-gate transport. | `fao-egg-production`; `aviagen-egg-handling-2015` |\n| `quality_not_fertility` | final product | Hatching use is not a measured fertility or hatchability claim; record tests and rejected destinations rather than assuming quality. | `aviagen-egg-handling-2015` |\n| `route_delta` | breeder route | Declare managed biological parent and actual route changes to topology, inventory categories, measurement or validation; a route label alone is insufficient. | `fao-leap-poultry-2016` |\n| `handoff_once` | internal eggs | Capture, prepared, graded and stored states reconcile one cohort; a mass transfer between nodes does not create another independently saleable final product. | `mass-balance-identity` |\n| `shared_asset_boundary` | house, nests, store and reusable trays | Identify consumers and service periods; record each shared burden only once at actual service handover. | `fao-leap-poultry-2016` |\n\n"
       headings:
@@ -1245,12 +1252,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 3811
-              line: 54
+              offset: 4836
+              line: 55
               column: 1
             end:
-              offset: 3832
-              line: 54
+              offset: 4857
+              line: 55
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1265,16 +1272,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_37841"
+    - unit_id: "normative_40655"
       family: "allocation"
       span:
         start:
-          offset: 37841
-          line: 879
+          offset: 40655
+          line: 940
           column: 1
         end:
-          offset: 38927
-          line: 887
+          offset: 41741
+          line: 948
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_priority` | hatching eggs, marketed table eggs, cull birds, exported manure | Enumerate intended outputs at their actual gates. Attribute separable activities directly. For inseparable flock-period burdens use documented physical causality if supportable, otherwise period-matched farm-gate economic allocation with prices, masses and sensitivity. Waste and mortality receive no product share. | `fao-leap-poultry-2016` |\n| `period_shared` | flock, house, nest equipment, store, trays | Index replacement, productive, storage and reuse periods; link input events and outputs to period. Attribute shared assets to measured users or justified service duration/capacity once, avoiding duplicate burden. | `fao-leap-poultry-2016`; `aviagen-egg-handling-2015` |\n| `internal_states` | laid through stored eggs | Internal transfers are mass reconciliation, not co-products; allocate only when a separate product exits the declared boundary. | `mass-balance-identity` |\n\n"
       headings:
@@ -1293,12 +1300,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 37841
-              line: 879
+              offset: 40655
+              line: 940
               column: 1
             end:
-              offset: 37881
-              line: 879
+              offset: 40695
+              line: 940
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1313,16 +1320,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_43848"
+    - unit_id: "normative_49790"
       family: "validation"
       span:
         start:
-          offset: 43848
-          line: 920
+          offset: 49790
+          line: 981
           column: 1
         end:
-          offset: 45154
-          line: 931
+          offset: 51096
+          line: 992
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_gate` | reference | Reject table, incubated, chick or hatchery-gate substitution; confirm fresh shell-on farm-gate mass and lot. | `cpc-3-2025`; `fao-egg-production` |\n| `validate_quality` | hatching grade | Require recorded selection criteria and rejects; never infer fertility or hatchability from intended use alone. | `aviagen-egg-handling-2015` |\n| `validate_route` | breeder and storage | Route delta requires evidence of topology/inventory/measurement change. Storage is conditional; final receives direct or stored route, never both. | `fao-leap-poultry-2016`; `aviagen-egg-handling-2015` |\n| `validate_balance` | egg stages and co-products | Reconcile all internal mass states; distinguish marketed table eggs/culls from waste and document allocation precedence. | `mass-balance-identity` |\n| `validate_shared` | periods/assets | Attribute breeder replacements, house, nests, storage and reusable trays by evidenced consumer and period once. | `fao-leap-poultry-2016` |\n| `validate_bindings` | inventory | QA Ranges are provisional unless reviewed. Resolve every final TIDAS exchange to a verified concrete UUID with compatible type, property, medium and gate. | `mass-balance-identity` |\n\n"
       headings:
@@ -1341,12 +1348,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 43848
-              line: 920
+              offset: 49790
+              line: 981
               column: 1
             end:
-              offset: 43870
-              line: 920
+              offset: 49812
+              line: 981
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1365,233 +1372,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "farm_gate_cut"
       identity_kind: "explicit"
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 5000
-          line: 71
+          offset: 6025
+          line: 72
           column: 1
         end:
-          offset: 5269
-          line: 71
+          offset: 6294
+          line: 72
           column: 270
     - pointer: "/system_boundary/rules/1"
       rule_id: "quality_not_fertility"
       identity_kind: "explicit"
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 5270
-          line: 72
+          offset: 6295
+          line: 73
           column: 1
         end:
-          offset: 5478
-          line: 72
+          offset: 6503
+          line: 73
           column: 209
     - pointer: "/system_boundary/rules/2"
       rule_id: "route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 5479
-          line: 73
+          offset: 6504
+          line: 74
           column: 1
         end:
-          offset: 5698
-          line: 73
+          offset: 6723
+          line: 74
           column: 220
     - pointer: "/system_boundary/rules/3"
       rule_id: "handoff_once"
       identity_kind: "explicit"
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 5699
-          line: 74
+          offset: 6724
+          line: 75
           column: 1
         end:
-          offset: 5919
-          line: 74
+          offset: 6944
+          line: 75
           column: 221
     - pointer: "/system_boundary/rules/4"
       rule_id: "shared_asset_boundary"
       identity_kind: "explicit"
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 5920
-          line: 75
+          offset: 6945
+          line: 76
           column: 1
         end:
-          offset: 6120
-          line: 75
+          offset: 7145
+          line: 76
           column: 201
     - pointer: "/allocation_rules/0"
       rule_id: "output_priority"
       identity_kind: "explicit"
-      unit_id: "normative_37841"
+      unit_id: "normative_40655"
       source_span:
         start:
-          offset: 37954
-          line: 883
+          offset: 40768
+          line: 944
           column: 1
         end:
-          offset: 38385
-          line: 883
+          offset: 41199
+          line: 944
           column: 432
     - pointer: "/allocation_rules/1"
       rule_id: "period_shared"
       identity_kind: "explicit"
-      unit_id: "normative_37841"
+      unit_id: "normative_40655"
       source_span:
         start:
-          offset: 38386
-          line: 884
+          offset: 41200
+          line: 945
           column: 1
         end:
-          offset: 38720
-          line: 884
+          offset: 41534
+          line: 945
           column: 335
     - pointer: "/allocation_rules/2"
       rule_id: "internal_states"
       identity_kind: "explicit"
-      unit_id: "normative_37841"
+      unit_id: "normative_40655"
       source_span:
         start:
-          offset: 38721
-          line: 885
+          offset: 41535
+          line: 946
           column: 1
         end:
-          offset: 38925
-          line: 885
+          offset: 41739
+          line: 946
           column: 205
     - pointer: "/validation_rules/0"
       rule_id: "validate_gate"
       identity_kind: "explicit"
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 43943
-          line: 924
+          offset: 49885
+          line: 985
           column: 1
         end:
-          offset: 44122
-          line: 924
+          offset: 50064
+          line: 985
           column: 180
     - pointer: "/validation_rules/1"
       rule_id: "validate_quality"
       identity_kind: "explicit"
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 44123
-          line: 925
+          offset: 50065
+          line: 986
           column: 1
         end:
-          offset: 44306
-          line: 925
+          offset: 50248
+          line: 986
           column: 184
     - pointer: "/validation_rules/2"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 44307
-          line: 926
+          offset: 50249
+          line: 987
           column: 1
         end:
-          offset: 44553
-          line: 926
+          offset: 50495
+          line: 987
           column: 247
     - pointer: "/validation_rules/3"
       rule_id: "validate_balance"
       identity_kind: "explicit"
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 44554
-          line: 927
+          offset: 50496
+          line: 988
           column: 1
         end:
-          offset: 44754
-          line: 927
+          offset: 50696
+          line: 988
           column: 201
     - pointer: "/validation_rules/4"
       rule_id: "validate_shared"
       identity_kind: "explicit"
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 44755
-          line: 928
+          offset: 50697
+          line: 989
           column: 1
         end:
-          offset: 44933
-          line: 928
+          offset: 50875
+          line: 989
           column: 179
     - pointer: "/validation_rules/5"
       rule_id: "validate_bindings"
       identity_kind: "explicit"
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 44934
-          line: 929
+          offset: 50876
+          line: 990
           column: 1
         end:
-          offset: 45152
-          line: 929
+          offset: 51094
+          line: 990
           column: 219
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 3811
-          line: 54
+          offset: 4836
+          line: 55
           column: 1
         end:
-          offset: 3832
-          line: 54
+          offset: 4857
+          line: 55
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_3811"
+      unit_id: "normative_4836"
       source_span:
         start:
-          offset: 3860
-          line: 58
+          offset: 4885
+          line: 59
           column: 1
         end:
-          offset: 4907
-          line: 65
+          offset: 5932
+          line: 66
           column: 173
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_37841"
+      unit_id: "normative_40655"
       source_span:
         start:
-          offset: 37841
-          line: 879
+          offset: 40655
+          line: 940
           column: 1
         end:
-          offset: 37881
-          line: 879
+          offset: 40695
+          line: 940
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_43848"
+      unit_id: "normative_49790"
       source_span:
         start:
-          offset: 43848
-          line: 920
+          offset: 49790
+          line: 981
           column: 1
         end:
-          offset: 43870
-          line: 920
+          offset: 49812
+          line: 981
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1600,5 +1607,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:02a7de3b42ce56e39528032cd5c109625b93678a05c340e52ceffda8ea90047e"
-  generated_content_sha256: "sha256:86d6811c7f9e5bf5be31b4ad505a281126a02272fb61e9231748cd0b03ef3d98"
+    sha256: "sha256:a3285bdae2cd1f976dda0d0d86a14d3aeaaa1c25585c304dc958f1085adc4af3"
+  generated_content_sha256: "sha256:309699d9fbccaedbd99519d54584c550cf36b958293675bb45d3da33eee98a7f"

@@ -56,6 +56,7 @@ The broad fixed identity requires every qualifier above; it cannot substitute fo
 | `feed_dry_matter` | forage, browse, concentrates and supplements | Mass | kg dry matter and kg as-fed | Preserve as-fed mass and dry-matter fraction; identify the reviewed method for unmeasured intake. |
 | `water_basis` | supplied water | Mass or volume | kg or m3 | Separate managed supply from rainfall or unmanaged access and disclose meter coverage or estimation. |
 | `emission_basis` | CH4, N2O and NH3 | Mass of named substance | kg CH4, kg N2O or N2O-N, kg NH3 or NH3-N | Keep substance and element bases explicit and document molecular conversions. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -96,12 +97,14 @@ The broad fixed identity requires every qualifier above; it cannot substitute fo
 ###### Incoming breeding and replacement animals (`incoming_animals`)
 
 Record live animals admitted from outside the represented herd history, without duplicating animals born and retained inside the cohort.
+Denominator and scope requirements：per kg reference live weight and period
+
 - Selected flow: Live incoming camel or camelid by actual species/class (UUID unresolved)
 - Flow property / unit: Mass / kg live weight; head retained
 - Amount rule: Record species, class, origin, entry, purpose, head and live weight; attribute burden over actual service/output periods.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight and period
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd_events`
@@ -118,12 +121,14 @@ Record live animals admitted from outside the represented herd history, without 
 ###### Feed, forage and browse (`feed_browse`)
 
 Record managed feed, forage, browse and supplements by actual source, state, species group and biological phase.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: Actual feed, forage or browse identity (UUID unresolved)
 - Flow property / unit: Mass / kg dry matter and kg as-fed
 - Amount rule: Record intake by species, class, phase, source and dry-matter basis; retain estimation method and refusals.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_feed_movement`
@@ -140,12 +145,14 @@ Record managed feed, forage, browse and supplements by actual source, state, spe
 ###### Animal-health products (`health_products`)
 
 Record medicines, vaccines, disinfectants and other health products that cross the foreground boundary.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: Health product by actual formulation (UUID unresolved)
 - Flow property / unit: Mass, volume or dose / kg, L or dose
 - Amount rule: Record formulation, administered/discarded quantity, species/class, date and purpose; zero when unused.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_health_inputs`
@@ -162,12 +169,14 @@ Record medicines, vaccines, disinfectants and other health products that cross t
 ###### Supplied water (`supplied_water`)
 
 Record managed drinking and service water supplied to the represented animals and activities.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: Supplied process water
 - Flow property / unit: Mass or volume / kg or m3
 - Amount rule: Meter or estimate documented supply by use, species, location and period.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_water_energy_transport`
@@ -183,12 +192,14 @@ Record managed drinking and service water supplied to the represented animals an
 ###### Energy carriers (`energy_supply`)
 
 Record purchased electricity, fuels, heat and other energy carriers by actual use and reporting period.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: Energy carrier supply
 - Flow property / unit: Energy or carrier quantity / kWh, MJ, L or kg
 - Amount rule: Record each carrier by activity, meter/allocation and period.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_water_energy_transport`
@@ -204,12 +215,14 @@ Record purchased electricity, fuels, heat and other energy carriers by actual us
 ###### Included inbound transport (`inbound_transport`)
 
 Record freight transport for material inputs only when that service lies inside the declared foreground boundary.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: Inbound road-freight service by vehicle/cargo
 - Flow property / unit: Goods transport / t*km
 - Amount rule: Multiply transported tonnes by included one-way kilometres; retain vehicle, cargo, load and route.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Transport service (`transport_service`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_water_energy_transport`
@@ -233,15 +246,19 @@ Record freight transport for material inputs only when that service lies inside 
 ###### Live camel or camelid reference output (`live_camelid_reference_output`)
 
 Record live animal mass at the producing-farm handover, retaining species group, class, route and weighing evidence.
+Denominator and scope requirements：1 kg live weight at farm gate
+
+Raw reference-output records: Record accepted live weight and head by species, class, route, lot, weighing point and transfer date; normalize to 1 kg. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
 - Selected flow: Camels and camelids `d5b8e5ed-dfcc-4755-a7fb-d51316970d8b`
 - Binding: Fixed (`fixed`)
-- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; unit group `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Amount rule: Record accepted live weight and head by species, class, route, lot, weighing point and transfer date; normalize to 1 kg.
-- Value mode: Foreground record (`foreground_record`)
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: 1 kg live weight at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_herd_events`
 - Sources: `fao-gleam`
 - Range: Reference normalization
@@ -256,13 +273,15 @@ Record live animal mass at the producing-farm handover, retaining species group,
 ###### Camel milk co-product (`camel_milk`)
 
 Record camel milk only when it is independently intended and transferred; this card is inapplicable to South American camelid routes.
+Denominator and scope requirements：per kg reference live weight and period
+
 - Selected flow: Raw milk of camel `c20da2ab-1dac-40ad-9206-43996d07bcff`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Record transferred mass, species, period, composition and hand-off; inapplicable to South American camelid routes and milk consumed internally.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg reference live weight and period
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs_losses`
@@ -279,12 +298,14 @@ Record camel milk only when it is independently intended and transferred; this c
 ###### Fibre or hair co-product (`fibre_hair`)
 
 Record fibre or hair only when it is independently intended and transferred in a declared species- and state-specific form.
+Denominator and scope requirements：per kg reference live weight and period
+
 - Selected flow: Camelid fibre or hair by species and state (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record recovered mass, species, group, method, moisture/greasy basis, grade and hand-off; inapplicable where not intended.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg reference live weight and period
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs_losses`
@@ -301,12 +322,14 @@ Record fibre or hair only when it is independently intended and transferred in a
 ###### Exported manure (`exported_manure`)
 
 Record manure as a Product output only when it is intentionally transferred to an identified recipient.
+Denominator and scope requirements：per kg reference live weight and period
+
 - Selected flow: Exported camelid manure by managed state (UUID unresolved)
 - Flow property / unit: Mass / kg wet mass plus dry matter or nutrient content
 - Amount rule: Record mass, moisture, nitrogen where available, species, state, destination and date; do not duplicate deposition or waste.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight and period
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure_emissions`
@@ -325,12 +348,14 @@ Record manure as a Product output only when it is intentionally transferred to a
 ###### Mortalities and unusable material (`mortality_waste`)
 
 Record animal mortalities and unusable material as destination-specific waste rather than intended output.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: Camelid mortality waste by treatment route (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record head, species/class, mass, date, cause where known and treatment/destination.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_outputs_losses`
@@ -349,13 +374,15 @@ Record animal mortalities and unusable material as destination-specific waste ra
 ###### Enteric methane to air (`enteric_ch4`)
 
 Calculate biogenic methane released to air from enteric fermentation by species group, class and phase.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - Amount rule: Calculate by species/category and period from population, feed/gross energy and reviewed factors.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_emissions`
@@ -372,13 +399,15 @@ Calculate biogenic methane released to air from enteric fermentation by species 
 ###### Manure methane to air (`manure_ch4`)
 
 Calculate biogenic methane released to air from managed manure pathways separately from enteric methane.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - Amount rule: Calculate by species, volatile solids, pathway, climate and storage; keep separate from enteric CH4.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_emissions`
@@ -395,13 +424,15 @@ Calculate biogenic methane released to air from managed manure pathways separate
 ###### Direct nitrous oxide to air (`direct_n2o`)
 
 Calculate direct nitrous oxide released to air from manure management and deposited excreta within the boundary.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O or kg N2O-N
 - Amount rule: Calculate by species/class, nitrogen excretion, period and manure/deposition pathway; retain basis conversion.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_emissions`
@@ -418,13 +449,15 @@ Calculate direct nitrous oxide released to air from manure management and deposi
 ###### Indirect nitrous oxide to air (`indirect_n2o`)
 
 Calculate indirect nitrous oxide only from documented volatilization or leaching and runoff precursors.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O or kg N2O-N
 - Amount rule: Calculate only for documented volatilization or leaching/runoff precursors; do not duplicate direct N2O.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_emissions`
@@ -441,13 +474,15 @@ Calculate indirect nitrous oxide only from documented volatilization or leaching
 ###### Ammonia to air (`ammonia_air`)
 
 Calculate ammonia released to air from the represented manure-nitrogen pathways while preserving the molecular basis.
+Denominator and scope requirements：per kg reference live weight
+
 - Selected flow: ammonia `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Binding: Fixed (`fixed`)
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg NH3 or kg NH3-N
 - Amount rule: Calculate by manure nitrogen pathway and reviewed factors; preserve basis and precursor linkage.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg reference live weight
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_manure_emissions`
@@ -477,12 +512,12 @@ Calculate ammonia released to air from the represented manure-nitrogen pathways 
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd_events` | managed_camelid_production | entries, births, class changes, transfers, deaths and reference output | herd, weight and transfer records | id; species; class; sex; purpose; event; date; head; weight; scale; origin/destination | calibrated weighing linked to herd records | head; kg | each event | complete cohort/period | all represented groups | reconcile opening + entries + births = closing + transfers + deaths; normalize transferred mass | calibration, signed transfer, reconciliation |
-| `cp_feed_movement` | managed_camelid_production | feed, browse, grazing and managed movement | invoice, ration, land and movement log | identity; source; as-fed; dry matter; class; parcel; distance; duration; refusals | weigh supply; declare method for unmeasured intake | kg; animal-days; km | event/period | all phases | group, land and shelter | sum by identity/class; preserve estimation and movement | invoice, analysis, land/movement logs |
-| `cp_health_inputs` | managed_camelid_production | health inputs | treatment and purchase record | product; formulation; dose; quantity; species/class; date; purpose; discard | reconcile treatments, purchases and stock | dose; kg; L | treatment | full period | all groups | sum by formulation | signed log, invoice, stock balance |
-| `cp_water_energy_transport` | managed_camelid_production | water, energy and transport | meter, invoice, fuel and trip logs | source/carrier; quantity; activity; cargo; mass; distance; vehicle; date | meters, invoices, tanks and route records | m3; kg; L; kWh; MJ; t*km | month/trip/event | full period | all relevant activities | direct assignment, otherwise documented driver | calibration, invoice, trip and allocation records |
-| `cp_outputs_losses` | managed_camelid_production | milk, fibre, mortality and other outputs/losses | output, transfer, mortality and waste records | identity; species; mass; basis; class; date; destination; cause; fate | weigh/meter; matching-class estimate only for mortality | kg; L; head | event | full period | all groups/gates | aggregate by identity and hand-off; separate internal use, product and waste | scale/meter, transfer and loss logs |
-| `cp_manure_emissions` | managed_camelid_production | manure pathways and emissions | population, feed, excretion, pathway and climate records | species/class; animal-days; feed/energy; N; pathway; storage; climate; tier; factors | records plus declared reviewed equations | kg manure; kg CH4; kg N2O; kg NH3 | month/phase | all phases/pathways | deposition, collection, storage, application, export | calculate by species/class/period/pathway and reconcile material | source records, worksheet, factor provenance |
+| `cp_herd_events` | managed_camelid_production | entries, births, class changes, transfers, deaths and reference output | herd, weight and transfer records | id; species; class; sex; purpose; event; date; head; weight; scale; origin/destination | calibrated weighing linked to herd records; Raw aggregation requirements: reconcile opening + entries + births = closing + transfers + deaths; normalize transferred mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | each event | complete cohort/period | all represented groups | per reference flow | calibration, signed transfer, reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed_movement` | managed_camelid_production | feed, browse, grazing and managed movement | invoice, ration, land and movement log | identity; source; as-fed; dry matter; class; parcel; distance; duration; refusals | weigh supply; declare method for unmeasured intake; Raw aggregation requirements: sum by identity/class; preserve estimation and movement. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; animal-days; km | event/period | all phases | group, land and shelter | per reference flow | invoice, analysis, land/movement logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_health_inputs` | managed_camelid_production | health inputs | treatment and purchase record | product; formulation; dose; quantity; species/class; date; purpose; discard | reconcile treatments, purchases and stock; Raw aggregation requirements: sum by formulation. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | dose; kg; L | treatment | full period | all groups | per reference flow | signed log, invoice, stock balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_water_energy_transport` | managed_camelid_production | water, energy and transport | meter, invoice, fuel and trip logs | source/carrier; quantity; activity; cargo; mass; distance; vehicle; date | meters, invoices, tanks and route records; Raw aggregation requirements: direct assignment, otherwise documented driver. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | m3; kg; L; kWh; MJ; t*km | month/trip/event | full period | all relevant activities | per reference flow | calibration, invoice, trip and allocation records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_outputs_losses` | managed_camelid_production | milk, fibre, mortality and other outputs/losses | output, transfer, mortality and waste records | identity; species; mass; basis; class; date; destination; cause; fate | weigh/meter; matching-class estimate only for mortality; Raw aggregation requirements: aggregate by identity and hand-off; separate internal use, product and waste. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; L; head | event | full period | all groups/gates | per reference flow | scale/meter, transfer and loss logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure_emissions` | managed_camelid_production | manure pathways and emissions | population, feed, excretion, pathway and climate records | species/class; animal-days; feed/energy; N; pathway; storage; climate; tier; factors | records plus declared reviewed equations; Raw aggregation requirements: calculate by species/class/period/pathway and reconcile material. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg manure; kg CH4; kg N2O; kg NH3 | month/phase | all phases/pathways | deposition, collection, storage, application, export | per reference flow | source records, worksheet, factor provenance; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

@@ -49,6 +49,7 @@ This PCR covers living, identified reptiles, including eligible snakes, lizards,
 | `m_live_mass` | Reference and live transfers | Mass | kg | Weigh live animals at actual handover; preserve count and size class. Do not use a universal kg/animal conversion across taxa. |
 | `m_input_mass` | Feed, stock and waste | Mass | kg | Use measured wet/as-purchased state and disclose any dry-matter conversion separately. |
 | `m_time` | Cohorts, capture campaigns and shared facilities | Time | day or declared period | Assign inputs, mortality, output and assets to actual periods; no default lifetime is assumed. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -93,12 +94,14 @@ The captive node manages named stock through real feeding, water, species-specif
 
 Record species, source, count, mass and upstream burden; no double booking of opening stock.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified living reptile stock
 - Flow property / unit: Mass / kg
 - Amount rule: measured stock received or opening inventory apportioned to cohort
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_stock`
@@ -115,12 +118,14 @@ Record species, source, count, mass and upstream burden; no double booking of op
 
 Record actual feed identity, including procured prey only where genuinely used; no universal reptile diet is assumed.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Actual feed or prey supplied to named cohort
 - Flow property / unit: Mass / kg
 - Amount rule: measured supplies net of closing inventory and separately recorded loss
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
@@ -137,12 +142,14 @@ Record actual feed identity, including procured prey only where genuinely used; 
 
 Record water actually supplied, separating functions where records allow.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Water supplied to reptile facility
 - Flow property / unit: Mass / kg
 - Amount rule: meter or reconcile supplied water by cohort and period
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
@@ -159,12 +166,14 @@ Record water actually supplied, separating functions where records allow.
 
 Record actual carrier for heating, lighting, filtration or humidity control where required by selected species and site.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Energy carrier supplied to reptile facility
 - Flow property / unit: Energy / MJ
 - Amount rule: metered carrier energy attributed to cohort and service period
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
@@ -193,12 +202,14 @@ No routine elementary input is assumed; distinguish direct extraction from suppl
 
 Internal cohort transfer is measured once and is not an additional final sale.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified live reptiles leaving rearing
 - Flow property / unit: Mass / kg
 - Amount rule: measured live mass and count at transfer
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -215,12 +226,14 @@ Internal cohort transfer is measured once and is not an additional final sale.
 
 Only record real separately marketed reptile eggs with their own identity and gate. They are not part of the live reference.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified reptile eggs sold separately
 - Flow property / unit: Mass / kg
 - Amount rule: separately measured sale quantity and gate
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -237,12 +250,14 @@ Only record real separately marketed reptile eggs with their own identity and ga
 
 Only record real separately marketed shed material at its own documented product gate, separate from reptile eggs.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified reptile shed material sold separately
 - Flow property / unit: Mass / kg
 - Amount rule: separately weighed and invoiced shed material
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -261,12 +276,14 @@ Only record real separately marketed shed material at its own documented product
 
 Record dead animals by species and disposal route, never as accepted live output.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Dead reptile bodies from captive rearing
 - Flow property / unit: Mass / kg
 - Amount rule: weigh or reconcile each disposal event
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -283,12 +300,14 @@ Record dead animals by species and disposal route, never as accepted live output
 
 Record discarded reptile eggs separately from bodies and shed material; split actual exchanges further by treatment destination.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Unsold reptile eggs for documented treatment
 - Flow property / unit: Mass / kg
 - Amount rule: measured discarded material by state and treatment route
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -305,12 +324,14 @@ Record discarded reptile eggs separately from bodies and shed material; split ac
 
 Record discarded shed material separately from reptile bodies and eggs, with its actual treatment destination.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Unsold reptile shed material for documented treatment
 - Flow property / unit: Mass / kg
 - Amount rule: measured discarded shed mass by treatment route
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -327,12 +348,14 @@ Record discarded shed material separately from reptile bodies and eggs, with its
 
 Record wastewater crossing facility boundary to treatment or sewer; direct release to the environment is elementary instead.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Reptile-facility wastewater to treatment
 - Flow property / unit: Mass / kg
 - Amount rule: measured or water-balance-derived discharged mass
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_resources`
@@ -351,12 +374,14 @@ Record wastewater crossing facility boundary to treatment or sewer; direct relea
 
 Only record a named substance and receiving medium actually measured or source-modelled; no generic emission UUID.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Named direct pollutant to specified environmental medium
 - Flow property / unit: Mass / kg
 - Amount rule: substance-specific measurement or documented calculation
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_emission`
@@ -379,12 +404,14 @@ Only record a named substance and receiving medium actually measured or source-m
 
 Record actual nets, traps, safe containers or purchased consumables; reusable equipment is attributed by use period.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Actual capture and holding materials
 - Flow property / unit: Mass / kg
 - Amount rule: issue records and shared-equipment attribution
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
@@ -401,12 +428,14 @@ Record actual nets, traps, safe containers or purchased consumables; reusable eq
 
 Count actual short-holding water if supplied; no assumed common water need for all reptiles.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Water supplied during live collection/holding
 - Flow property / unit: Mass / kg
 - Amount rule: metered or recorded supplied water
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
@@ -435,12 +464,14 @@ No generic wild-population depletion exchange is assigned; document legal extrac
 
 Count living animals leaving capture/holding by species, condition and permit; internal transfer, not second final sale.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified lawfully captured living reptiles
 - Flow property / unit: Mass / kg
 - Amount rule: measured live mass and count leaving holding
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -459,12 +490,14 @@ Count living animals leaving capture/holding by species, condition and permit; i
 
 Record actual deaths and disposition; dead animals never become live output.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Dead reptile bodies from capture
 - Flow property / unit: Mass / kg
 - Amount rule: event count and mass by disposal route
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -481,12 +514,14 @@ Record actual deaths and disposition; dead animals never become live output.
 
 Record spent nets, traps or containment materials only if actually discarded at this node, separate from animal mortality.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Spent capture and holding supplies for documented treatment
 - Flow property / unit: Mass / kg
 - Amount rule: weighed or reconciled discarded consumables by material and treatment
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -513,12 +548,14 @@ No unmeasured release is assumed.
 
 Record exactly one internal transfer from chosen route; never count captive and capture output for same lot.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified living reptiles from source node
 - Flow property / unit: Mass / kg
 - Amount rule: measured arrivals and count reconciled to source-node departures
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -535,12 +572,14 @@ Record exactly one internal transfer from chosen route; never count captive and 
 
 Include disposable enclosure material handed with lot or consumed before gate; reusable cages are shared assets.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Actual live-animal containment material
 - Flow property / unit: Mass / kg
 - Amount rule: measured material issued and attributed reuse if applicable
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
@@ -569,12 +608,16 @@ No routine elementary input is assumed.
 
 One declared eligible species, alive and legally documented. Record count and measured mass; never substitute species-free UUID.
 
+Denominator and scope requirements：per 1 kg accepted live reptile
+
+Raw reference-output records: 1 kg reference from measured accepted live mass Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
 - Selected flow: Species-qualified live reptile
 - Flow property / unit: Mass / kg
-- Amount rule: 1 kg reference from measured accepted live mass
+- Amount rule: 1 kg
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per 1 kg accepted live reptile
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_live`
@@ -592,12 +635,14 @@ One declared eligible species, alive and legally documented. Record count and me
 
 Only record a real live return to captive or capture holding, not a sale, death or waste; reconcile against arrivals and accepted output. Returning through the same gate must not count the animal or burden twice. If further production occurs after return, document that separate responsibility rather than silently treating it as another acceptance pass.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Species-qualified living reptile returned to source
 - Flow property / unit: Mass / kg
 - Amount rule: measured live returned mass and count
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -616,12 +661,14 @@ Only record a real live return to captive or capture holding, not a sale, death 
 
 Only dead animals at handover are Waste; living rejects returned to source are the separate Product transfer above.
 
+Denominator and scope requirements：per kg accepted live output
+
 - Selected flow: Dead reptile bodies at source gate for documented treatment
 - Flow property / unit: Mass / kg
 - Amount rule: actual rejected count/mass and disposition by category
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg accepted live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -652,11 +699,11 @@ No generic direct emission is assumed at handover.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_stock` | `captive` | opening/purchased reptiles | animal inventory and provenance | species, source, permit, count, mass, class, date, supplier, carried burden | reconcile intake and opening ledger | kg, head | receipt and period opening | full cohort | breeder site | attribute stock once | permits, supplier and scale records |
-| `cp_resources` | `captive`, `capture`, `handover` | feed, water, energy, consumables, shared cages | meter, invoice, issue/service logs | input identity, amount, unit, node, cohort, period, reuse, water discharge | meter or reconcile invoices and stock | kg, MJ, day | each issue and monthly | full cohort/campaign | foreground nodes | attribute actual consumption once | logs, invoices, meters, allocation worksheet |
-| `cp_live` | `captive`, `capture`, `handover` | live transfers and accepted output | count, weighing, acceptance | species, source, authorization, animal ID, count, size, mass, health, date, gate | weigh and inspect living animals | kg, head | each handover | all cohorts/campaigns | source site | normalize accepted mass to 1 kg | scale, identity and health records |
-| `cp_outputs` | `captive`, `capture`, `handover` | co-product, mortality and rejects | sale, incident and disposal | species, event, mass, count, fate, date, gate | measure or reconcile event logs | kg, head | each event | all periods | site/campaign | distinguish product, waste, internal return | receipts and incident logs |
-| `cp_emission` | `captive` | direct releases | monitoring or method | named substance, receiving medium, mass, period, method | direct monitoring or source-backed calculation | kg | monitored interval | full cohort | facility | normalize by output | test report and calibration |
+| `cp_stock` | `captive` | opening/purchased reptiles | animal inventory and provenance | species, source, permit, count, mass, class, date, supplier, carried burden | reconcile intake and opening ledger; Raw aggregation requirements: attribute stock once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | receipt and period opening | full cohort | breeder site | per reference flow | permits, supplier and scale records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_resources` | `captive`, `capture`, `handover` | feed, water, energy, consumables, shared cages | meter, invoice, issue/service logs | input identity, amount, unit, node, cohort, period, reuse, water discharge | meter or reconcile invoices and stock; Raw aggregation requirements: attribute actual consumption once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, MJ, day | each issue and monthly | full cohort/campaign | foreground nodes | per reference flow | logs, invoices, meters, allocation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_live` | `captive`, `capture`, `handover` | live transfers and accepted output | count, weighing, acceptance | species, source, authorization, animal ID, count, size, mass, health, date, gate | weigh and inspect living animals; Raw aggregation requirements: normalize accepted mass to 1 kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | each handover | all cohorts/campaigns | source site | per reference flow | scale, identity and health records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_outputs` | `captive`, `capture`, `handover` | co-product, mortality and rejects | sale, incident and disposal | species, event, mass, count, fate, date, gate | measure or reconcile event logs; Raw aggregation requirements: distinguish product, waste, internal return. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | each event | all periods | site/campaign | per reference flow | receipts and incident logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_emission` | `captive` | direct releases | monitoring or method | named substance, receiving medium, mass, period, method | direct monitoring or source-backed calculation; Raw aggregation requirements: normalize by output. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | monitored interval | full cohort | facility | per reference flow | test report and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

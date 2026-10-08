@@ -31,16 +31,18 @@ sync_with: pcr.en-US.md
 | 数量 | 1 kg 实测活重，并报告只数与类别特定体重 |
 | 品质 | 活体、未加工且物种明确；披露类别及状况 |
 | 时间或周期 | 声明的繁殖/育成批次或合法捕获行动及真实服务期间 |
-| reference_flow_link | 按互斥路线选择 `live_handover` 或 `hare_capture_output` |
+| reference_flow_link | `reference_product_handover` |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1 |
-| 参考产品流 | 农场或合法捕获交付门的活兔或野兔（UUID 未解析） |
+| 参考产品流 | 农场或合法捕获交付门的活兔或野兔 |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必要限定条件 | 物种；家养/野生；日龄/类别；只数；状况；实测活重；路线；真实交付门；捕获辖区及许可；期间 |
+
+从实际交付批次实例化一个前景参考，声明全部必需限定项。类别可以覆盖不同状态及生产者交付门，但每个数据包只有一个声明物种／状态／交付门／等级分层，以及一个实测合格参考产出分母。不得汇总不相容状态，也不得以质量相同推定服务等价。路线专属来源行与 reference_handover 描述同一实际边界事件；关联内部移交不是另一次销售，也不是新增实体操作。
 
 已核实的平台产品流仅为农场门生产组合，不能代表跨农场或捕获门的宽口径参考流。
 
@@ -52,6 +54,8 @@ sync_with: pcr.en-US.md
 | `animal_ledger` | 所有动物批次 | Count | 只 | 按物种、类别及期间核对期初、出生或捕获、购入、转移、释放、死亡及交付。 |
 | `period_basis` | 种兔、更新与资产 | Time | 天或周期 | 将妊娠、哺乳、断奶、育成、更新和共享服务关联受益期间；捕获使用真实服务天数。 |
 | `manure_basis` | 收集的粪污 | Mass | kg | 按一致的收到时或含水修正基准报告外运产品和废物；沉积物不是外运产品。 |
+| `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 这些数量是最终前景数据包的贡献量，不替代阶段定量参考或阶段原生单位过程数据集；阶段记录单独保留。归一化数量 = 可归属原始数量 × 声明参考数量 / 实测合格最终参考产出数量。归一化恰执行一次。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -75,6 +79,7 @@ sync_with: pcr.en-US.md
 | `boundary_housing` | 受管理圈养变体 | 兔繁殖/育成是生物生产母路线。笼养与地面/垫料方式改变垫料、清洗、圈舍能源及粪污管理；记录真实份额而不设通用产率。 | `fao-rabbit-housing` |
 | `boundary_capture` | 活野兔 | 仅纳入有证据的合法活体诱捕、福利处理和真实捕获交付；不虚构种兔、饲料或农场门。缺少合法证据则路线不合格。 | `vic-hare-control` |
 | `boundary_shared` | 共享资产 | 将兔舍、饲喂器、供水系统、陷阱和车辆在使用节点及服务期间归属一次；避免重复转移。 | `fao-rabbit-housing`; `vic-hare-control` |
+| `reference_handover_linkage` | 实际参考产品边界 | reference_handover 是来源行已经表示的同一实际生产者交付，不得延长交付门，或增加加工、捕获、储存、运输、服务及资本负担。单位过程投影保留实际运作的阶段参考；交付记录可以是最终前景数据包的边界接口，而非虚构独立操作。选择一个实际且限定完整的路线／产出分层，将匹配来源及输入追溯为内部移交，仅暴露一次合格参考产品。若来源已经在本交付门结束，应拆分其已有交付核算职责，不能再次计数。 |  |
 
 ## 6. 过程清单结构
 
@@ -86,6 +91,7 @@ sync_with: pcr.en-US.md
 | `rearing` | 将家兔育成至生产者类别 | conditional | 实际育成；否则外购动物保留上游负担 | 生物生长，具有圈养方式特定投入和粪污 | 每 kg 离开育成的活兔 |
 | `farm_handover` | 筛选、称重并交付活养殖兔 | conditional | 家兔农场路线 | 独立收集/健康筛查及真实农场门 | 每 kg 合格农场门活兔 |
 | `hare_capture` | 合法捕获并交付活野兔 | conditional | 已核实许可和实际活体捕获路线 | 独立捕获节点及真实捕获门 | 每 kg 捕获交付处的合格活野兔 |
+| `reference_handover` | 实际生产者参考产品交付 | required | 每个前景数据包选择一个实际路线、状态及生产者交付门 | 同一实际边界交付只记录一次；为关联／核算职责，不增加处理或流通 | 声明交付门的 1 kg 合格产品 |
 
 每只动物的农场与捕获路线互斥。笼养和地面/垫料方式可按群体/期间共存。捕获不是受管理生产的变体。活体收集独立于生物生长，因为验收、称重和交付发生在生产之后；损失或释放不是预期活体产出。按期间索引繁殖、断奶、育成、更新、资产服务和捕获事件。
 
@@ -99,14 +105,18 @@ sync_with: pcr.en-US.md
 
 外购种兔携带上游负担进入；自有期初种兔单独申报。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：计量引入活体质量 原始采集分母类型：process_output。
+
 - 选定流：活种兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量引入活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -121,14 +131,18 @@ sync_with: pcr.en-US.md
 
 记录供应饲料、粗饲料和库存变动；采食牧草不算外购饲料。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：供应量扣除库存变动与实测损失 原始采集分母类型：process_output。
+
 - 选定流：兔饲料与粗饲料（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：供应量扣除库存变动与实测损失
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_feed`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -143,14 +157,18 @@ sync_with: pcr.en-US.md
 
 按实际用途区分饮水与清洗用水；水组待确定。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：计量或记录供水 原始采集分母类型：process_output。
+
 - 选定流：供应水（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量或记录供水
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -165,14 +183,18 @@ sync_with: pcr.en-US.md
 
 按实际载能形式和用途记录供暖、通风、照明及泵送。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：按载能形式计量或票据记录能源 原始采集分母类型：process_output。
+
 - 选定流：能源供应（UUID 未解析）
 - 流属性/单位：Energy / MJ
-- 数量规则：按载能形式计量或票据记录能源
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -187,14 +209,18 @@ sync_with: pcr.en-US.md
 
 按实际物质分别记录路线相关垫料和兽医用品。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：按物质身份计量供应量 原始采集分母类型：process_output。
+
 - 选定流：垫料与兽医用品（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按物质身份计量供应量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_materials`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -217,14 +243,18 @@ sync_with: pcr.en-US.md
 
 核对活体数量与质量；内部转移不是第二次最终销售。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：计量活断奶兔质量 原始采集分母类型：process_output。
+
 - 选定流：活断奶兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量活断奶兔质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：活体产出平衡
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -239,14 +269,18 @@ sync_with: pcr.en-US.md
 
 仅实际活体出售时才是独立产品；否则按真实处置状态分类。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：计量售出活体质量 原始采集分母类型：process_output。
+
 - 选定流：活体淘汰种兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量售出活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -261,14 +295,18 @@ sync_with: pcr.en-US.md
 
 仅有可利用交付凭证时列作产品；放牧沉积和处置物不属于此项。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：在披露含水基准下称量外运质量 原始采集分母类型：process_output。
+
 - 选定流：可利用兔粪肥（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：在披露含水基准下称量外运质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -285,14 +323,18 @@ sync_with: pcr.en-US.md
 
 按真实身份和去向记录死亡动物及处置垫料、粪便。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：按身份与去向计量废物流质量 原始采集分母类型：process_output。
+
 - 选定流：种兔死亡及处置物（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按身份与去向计量废物流质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_waste`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -309,15 +351,19 @@ sync_with: pcr.en-US.md
 
 根据实际储存和处理核算粪污途径甲烷，不采用通用单兔系数。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：按场址粪污途径计算 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，排入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：按场址粪污途径计算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定完整性筛查（非默认值）
@@ -333,15 +379,19 @@ sync_with: pcr.en-US.md
 
 仅对观察到的储存/处理途径和氮活动计算粪污管理直接 N2O；不得对捕获野兔套用农场因子。
 
+分母与范围要求：每 kg 离开种兔阶段的活断奶兔
+
+原始数量及计算要求：根据实测氮量和途径计算粪污管理 N2O 原始采集分母类型：process_output。
+
 - 选定流：氧化亚氮，排入空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：根据实测氮量和途径计算粪污管理 N2O
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开种兔阶段的活断奶兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定 N2O 调查筛查，非排放因子
@@ -363,14 +413,18 @@ sync_with: pcr.en-US.md
 
 对转入或外购幼兔计量一次并承接其既有负担。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：接收活体质量 原始采集分母类型：process_output。
+
 - 选定流：活幼兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：接收活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -385,14 +439,18 @@ sync_with: pcr.en-US.md
 
 按群批次计量供应日粮及损失，不预设料肉比。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：供应质量扣除库存变动及损失 原始采集分母类型：process_output。
+
 - 选定流：育成兔饲料（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：供应质量扣除库存变动及损失
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_feed`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -407,14 +465,18 @@ sync_with: pcr.en-US.md
 
 按真实用途拆分饮水和清洗，合并卡暂不定组。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：计量供应水 原始采集分母类型：process_output。
+
 - 选定流：供应水（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量供应水
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -429,14 +491,18 @@ sync_with: pcr.en-US.md
 
 记录通风、温控和照明的真实能源消耗。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：计量或票据记录能源 原始采集分母类型：process_output。
+
 - 选定流：能源供应（UUID 未解析）
 - 流属性/单位：Energy / MJ
-- 数量规则：计量或票据记录能源
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_utilities`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -451,14 +517,18 @@ sync_with: pcr.en-US.md
 
 针对实际圈养方式分别记录垫料与护理材料。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：计量供应材料 原始采集分母类型：process_output。
+
 - 选定流：垫料与兽医用品（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量供应材料
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_materials`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -481,14 +551,18 @@ sync_with: pcr.en-US.md
 
 将合格活体转入最终交付，并核对数量及质量。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：计量转出活体质量 原始采集分母类型：process_output。
+
 - 选定流：活育成兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量转出活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：活体产出平衡
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -503,14 +577,18 @@ sync_with: pcr.en-US.md
 
 仅有独立利用接收方和实测质量时列为产品。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：在披露含水基准下称量外运质量 原始采集分母类型：process_output。
+
 - 选定流：可利用兔粪肥（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：在披露含水基准下称量外运质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -527,14 +605,18 @@ sync_with: pcr.en-US.md
 
 死亡动物及处置垫料、粪便按真实废物去向记录。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：按身份及去向计量废物质量 原始采集分母类型：process_output。
+
 - 选定流：育成死亡及处置物（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按身份及去向计量废物质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_waste`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -551,15 +633,19 @@ sync_with: pcr.en-US.md
 
 根据观察到的育成粪污途径及储存期计算。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：按场址粪污途径计算 原始采集分母类型：process_output。
+
 - 选定流：生物源甲烷，排入空气 `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：按场址粪污途径计算
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定完整性筛查（非默认值）
@@ -575,15 +661,19 @@ sync_with: pcr.en-US.md
 
 仅对观察到的储存/处理途径和氮活动计算粪污管理直接 N2O；不得对捕获野兔套用农场因子。
 
+分母与范围要求：每 kg 离开育成的活兔
+
+原始数量及计算要求：根据实测氮量和途径计算粪污管理 N2O 原始采集分母类型：process_output。
+
 - 选定流：氧化亚氮，排入空气 `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：根据实测氮量和途径计算粪污管理 N2O
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 离开育成的活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集计算（`calculated_from_collection`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure`
 - 来源：`ipcc-livestock-2019`
 - 数量范围：暂定 N2O 调查筛查，非排放因子
@@ -605,14 +695,18 @@ sync_with: pcr.en-US.md
 
 养殖阶段活体及其既有负担仅进入一次。
 
+分母与范围要求：每 kg 合格农场门活兔
+
+原始数量及计算要求：计量接收活体质量 原始采集分母类型：process_output。
+
 - 选定流：活养殖兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量接收活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 合格农场门活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -635,15 +729,21 @@ sync_with: pcr.en-US.md
 
 此活体未加工农场门产出符合已核实的平台产品/质量流身份。
 
+分母与范围要求：每 kg 合格农场门活兔
+
+原始数量及计算要求：称量合格活体质量 原始采集分母类型：process_output。
+
+生产者交付关联：仅当本状态／交付门专属行被选为实际路线的最终来源时，才向 reference_handover_input 提供同一批实际合格产品。此时它是内部交付记录，不是第二次对外参考产品销售；否则保留原有中间移交角色。保留确切身份及原有路线条件，只选实际最终来源，不汇总所有连续移交；匹配同批次及相容的物种／状态／交付门证据。较窄固定身份的交付门或物种不得扩大。交付接口不增加加工、运输、产率假设或重复处理负担。
+
 - 选定流：兔与野兔，农场门生产组合，活体未加工 `e501d3c2-f4f4-4fa0-9d52-ce0947f69797`
 - 流属性/单位：Mass / kg
 - 绑定：固定（`fixed`）
-- 数量规则：称量合格活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 合格农场门活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animals`
 - 数量范围：活体产出平衡
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -660,14 +760,18 @@ sync_with: pcr.en-US.md
 
 仅观察到的非活体损失为废物；留场活体不合格兔仍在台账。
 
+分母与范围要求：每 kg 合格农场门活兔
+
+原始数量及计算要求：计量处置质量 原始采集分母类型：process_output。
+
 - 选定流：农场交付死亡物（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量处置质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 合格农场门活兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_waste`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -690,14 +794,18 @@ sync_with: pcr.en-US.md
 
 记录实际耗用的陷阱和福利材料；可复用设备按服务分摊，不逐次视为消耗。
 
+分母与范围要求：每 kg 捕获交付处的合格活野兔
+
+原始数量及计算要求：按物质计量实际耗用质量 原始采集分母类型：process_output。
+
 - 选定流：捕获和暂养耗材（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按物质计量实际耗用质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 捕获交付处的合格活野兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_capture`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -712,14 +820,18 @@ sync_with: pcr.en-US.md
 
 按载能形式和真实服务记录巡查陷阱及短时暂养所用燃料或电力。
 
+分母与范围要求：每 kg 捕获交付处的合格活野兔
+
+原始数量及计算要求：计量行动燃料和电力 原始采集分母类型：process_output。
+
 - 选定流：能源供应（UUID 未解析）
 - 流属性/单位：Energy / MJ
-- 数量规则：计量行动燃料和电力
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 捕获交付处的合格活野兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_capture`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -742,14 +854,20 @@ sync_with: pcr.en-US.md
 
 在真实获许可的捕获交付处称量活 Lepus 野兔；不附农场门 UUID。
 
+分母与范围要求：每 kg 捕获交付处的合格活野兔
+
+原始数量及计算要求：计量合格活体质量 原始采集分母类型：process_output。
+
+生产者交付关联：仅当本状态／交付门专属行被选为实际路线的最终来源时，才向 reference_handover_input 提供同一批实际合格产品。此时它是内部交付记录，不是第二次对外参考产品销售；否则保留原有中间移交角色。保留确切身份及原有路线条件，只选实际最终来源，不汇总所有连续移交；匹配同批次及相容的物种／状态／交付门证据。较窄固定身份的交付门或物种不得扩大。交付接口不增加加工、运输、产率假设或重复处理负担。
+
 - 选定流：合法捕获交付的活野兔（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：计量合格活体质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 捕获交付处的合格活野兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_capture`
 - 数量范围：活体产出平衡
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -766,14 +884,18 @@ sync_with: pcr.en-US.md
 
 记录死亡野兔及处置材料；释放的活体单独入账，不作产品或废物。
 
+分母与范围要求：每 kg 捕获交付处的合格活野兔
+
+原始数量及计算要求：按类别计量废物质量 原始采集分母类型：process_output。
+
 - 选定流：捕获死亡及处置物（UUID 未解析）
 - 流属性/单位：Mass / kg
-- 数量规则：按类别计量废物质量
-- 数值来源模式：前景记录（`foreground_record`）
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 kg 捕获交付处的合格活野兔
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_capture`
 - 数量范围：暂定完整性筛查（非默认值）
   - 范围角色：QA 校验（`qa_guardrail`）
@@ -783,6 +905,84 @@ sync_with: pcr.en-US.md
   - 基准：每 kg 捕获交付处的合格活野兔
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+##### 基本流
+
+### Process: 实际生产者参考产品交付（`reference_handover`）
+
+从实际交付批次实例化一个前景参考，声明全部必需限定项。类别可以覆盖不同状态及生产者交付门，但每个数据包只有一个声明物种／状态／交付门／等级分层，以及一个实测合格参考产出分母。不得汇总不相容状态，也不得以质量相同推定服务等价。路线专属来源行与 reference_handover 描述同一实际边界事件；关联内部移交不是另一次销售，也不是新增实体操作。
+
+#### 输入
+
+##### 产品流
+
+###### 农场或合法捕获交付门的活兔或野兔（实际生产者交付关联） (`reference_handover_input`)
+
+本输入在原有路线条件下匹配 `live_handover`, `hare_capture_output` 所表示的合格产品。它是来源至交付的内部关联，不是新购同类别产品，也不是额外生产；匹配来源与输入在数据包边界抵消。
+
+实际路线／状态／交付门由前景交付证据确定，保留全部必需限定项；使用同一实际合格批次的最终来源，不汇总所有连续阶段移交。固定来源身份仅适用于其确切物种／状态／交付门；其他覆盖路线使用相容的未绑定来源角色，在创建最终数据集前解析真实前景交换。
+
+选定来源／接口行：`live_handover`, `hare_capture_output`
+
+必需产品实例限定项：物种；家养/野生；日龄/类别；只数；状况；实测活重；路线；真实交付门；捕获辖区及许可；期间
+
+- 选定流：农场或合法捕获交付门的活兔或野兔（实际生产者交付关联）
+- 流属性 / 单位：质量 / kg
+- 数量规则：使用与关联来源行核对的同批实测合格数量，仅对声明参考流归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 数据特异性：场址特异（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reference_handover`
+
+- 数量范围：归一化后的确切身份核对，不是生产产率默认值
+  - 范围角色：质量检查边界（`qa_guardrail`）
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - 基准：声明参考数量；输入与输出为同一交付台账中的同一实际合格产品
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### 废物流
+
+##### 基本流
+
+#### 输出
+
+##### 产品流
+
+###### 农场或合法捕获交付门的活兔或野兔 (`reference_product_handover`)
+
+本卡为声明生产者边界的实际合格参考产品，依 cp_reference_handover 测量；它是唯一对外参考产出。依据真实批次实例化身份，不套用广义固定 UUID。
+
+实际路线／状态／交付门由前景交付证据确定，保留全部必需限定项；使用同一实际合格批次的最终来源，不汇总所有连续阶段移交。固定来源身份仅适用于其确切物种／状态／交付门；其他覆盖路线使用相容的未绑定来源角色，在创建最终数据集前解析真实前景交换。
+
+选定来源／接口行：`live_handover`, `hare_capture_output`
+
+必需产品实例限定项：物种；家养/野生；日龄/类别；只数；状况；实测活重；路线；真实交付门；捕获辖区及许可；期间
+
+- 选定流：农场或合法捕获交付门的活兔或野兔
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值来源模式：计算值（`calculated_value`）
+- 数据特异性：场址特异（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reference_handover`
+
+- 数量范围：归一化后的确切身份核对，不是生产产率默认值
+  - 范围角色：质量检查边界（`qa_guardrail`）
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - 基准：声明参考数量；输入与输出为同一交付台账中的同一实际合格产品
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### 废物流
 
 ##### 基本流
 
@@ -801,13 +1001,14 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_animals` | `breeder`, `rearing`, `farm_handover` | 活体引入、转移、淘汰及最终交付 | 存栏/称重台账 | 物种、类别、只数、质量、来源、去向、日期 | 批次计数及校准秤或有记录的类别抽样 | 只；kg | 每次事件 | 完整群体 | 实际农场 | 期初＋出生＋购入－死亡－销售－转移＝期末；按合格活重归一 | 称重单、存栏台账、秤校准 |
-| `cp_feed` | `breeder`, `rearing` | 饲料和粗饲料 | 采购/日粮台账 | 物质、质量、库存变化、损失、群体 | 交货单及日粮记录 | kg | 批次及周期 | 运行期间 | 兔舍/牧地 | 供应减库存变化及记录损失，按群体汇总 | 发票及饲料记录 |
-| `cp_utilities` | `breeder`, `rearing` | 水及能源 | 仪表/票据 | 水源/用途、载能形式、读数、共享使用者 | 仪表读数与用途拆分 | kg；MJ | 仪表间隔 | 运行期间 | 所有供应接口 | 单位换算后按实测使用一次归属 | 仪表照片、发票 |
-| `cp_materials` | `breeder`, `rearing` | 垫料及护理 | 物料领用 | 身份、剂量、质量、动物群、日期、圈养方式 | 领用及兽医记录 | kg | 每次使用 | 运行期间 | 兔舍 | 按物质/群体汇总真实消耗 | 库存及护理记录 |
-| `cp_manure` | `breeder`, `rearing` | 粪污产品/排放 | 路径台账 | 收集质量、含水量、含氮量、储存、处理、外运、期间 | 称重、抽样、交付及储存记录 | kg；天 | 清运/周期 | 运行期间 | 粪污系统 | 区分利用产品、处置和沉积；按途径计算排放 | 称重单、氮分析、接收方及方法输入 |
-| `cp_waste` | `breeder`, `rearing`, `farm_handover` | 死亡/处置 | 损失台账 | 物种、只数、质量、材料、去向、日期 | 计数称重或有依据估计 | 只；kg | 事件 | 完整群体 | 运行节点 | 按废物身份/去向汇总 | 处置凭证、死亡记录 |
-| `cp_capture` | `hare_capture` | 许可、动物、材料、能源及损失 | 许可/行动台账 | 辖区、许可、陷阱、巡查、物种、捕获/释放/死亡/交付数量和质量、材料、能源、去向 | 法律文件核查及事件/仪表记录 | 只；kg；MJ | 事件 | 完整合法行动 | 获准地点/交付门 | 捕获＝释放＋死亡＋交付＋暂养；共享设备按服务归属 | 许可、福利记录、秤、行程/燃料记录 |
+| `cp_animals` | `breeder`, `rearing`, `farm_handover` | 活体引入、转移、淘汰及最终交付 | 存栏/称重台账 | 物种、类别、只数、质量、来源、去向、日期 | 批次计数及校准秤或有记录的类别抽样；原始汇总要求：期初＋出生＋购入－死亡－销售－转移＝期末；按合格活重归一。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 只；kg | 每次事件 | 完整群体 | 实际农场 | 每参考流 | 称重单、存栏台账、秤校准；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_feed` | `breeder`, `rearing` | 饲料和粗饲料 | 采购/日粮台账 | 物质、质量、库存变化、损失、群体 | 交货单及日粮记录；原始汇总要求：供应减库存变化及记录损失，按群体汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 批次及周期 | 运行期间 | 兔舍/牧地 | 每参考流 | 发票及饲料记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_utilities` | `breeder`, `rearing` | 水及能源 | 仪表/票据 | 水源/用途、载能形式、读数、共享使用者 | 仪表读数与用途拆分；原始汇总要求：单位换算后按实测使用一次归属。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg；MJ | 仪表间隔 | 运行期间 | 所有供应接口 | 每参考流 | 仪表照片、发票；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_materials` | `breeder`, `rearing` | 垫料及护理 | 物料领用 | 身份、剂量、质量、动物群、日期、圈养方式 | 领用及兽医记录；原始汇总要求：按物质/群体汇总真实消耗。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每次使用 | 运行期间 | 兔舍 | 每参考流 | 库存及护理记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure` | `breeder`, `rearing` | 粪污产品/排放 | 路径台账 | 收集质量、含水量、含氮量、储存、处理、外运、期间 | 称重、抽样、交付及储存记录；原始汇总要求：区分利用产品、处置和沉积；按途径计算排放。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg；天 | 清运/周期 | 运行期间 | 粪污系统 | 每参考流 | 称重单、氮分析、接收方及方法输入；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_waste` | `breeder`, `rearing`, `farm_handover` | 死亡/处置 | 损失台账 | 物种、只数、质量、材料、去向、日期 | 计数称重或有依据估计；原始汇总要求：按废物身份/去向汇总。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 只；kg | 事件 | 完整群体 | 运行节点 | 每参考流 | 处置凭证、死亡记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_capture` | `hare_capture` | 许可、动物、材料、能源及损失 | 许可/行动台账 | 辖区、许可、陷阱、巡查、物种、捕获/释放/死亡/交付数量和质量、材料、能源、去向 | 法律文件核查及事件/仪表记录；原始汇总要求：捕获＝释放＋死亡＋交付＋暂养；共享设备按服务归属。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 只；kg；MJ | 事件 | 完整合法行动 | 获准地点/交付门 | 每参考流 | 许可、福利记录、秤、行程/燃料记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_reference_handover` | `reference_handover` | 合格产品及匹配的内部来源移交 | 生产者交付台账 | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | 在同一实际交付门测量合格净产品，将列出的状态／交付门专属来源行及关联输入与唯一实际产出核对。拒收、库存变化及其他销售单独记录；不假设新增处理或运输。 | kg；原生来源数量 | 每次实际交付 | 匹配来源及交付期间 | 仅声明生产者交付门 | 每参考流 | 可追溯验收记录、同批来源至产出台账、校准数量方法及归一化计算表 |
 
 ### 计算规则
 

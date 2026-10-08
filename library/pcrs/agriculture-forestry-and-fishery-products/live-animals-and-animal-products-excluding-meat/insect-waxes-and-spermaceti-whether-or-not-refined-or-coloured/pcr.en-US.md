@@ -52,6 +52,8 @@ The insect route collects actual comb/cappings or another documented insect secr
 | m_state | each process state | Mass | kg | Measure before/after separation and optional treatment; account for added colourant and removed material without generic yield. |
 | m_balance | each source-qualified lot | Mass | kg | Reconcile source material, additions, wax grades, residues and stock change. |
 | m_period | source and shared services | Time | period | Assign source, collection and shared asset events to actual periods without duplicate annualization. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -99,14 +101,18 @@ The source ledger records only real independent outputs: honey only when bee hon
 
 Actual comb, cappings or other documented insect secretion; never spermaceti.
 
+Denominator and scope requirements：per kg collected material
+
+Raw quantity and calculation requirements: Measure actual insect-origin wax-bearing material and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Insect-source wax-bearing material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual insect-origin wax-bearing material and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected material
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collect`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -121,14 +127,18 @@ Actual comb, cappings or other documented insect secretion; never spermaceti.
 
 Use only lawful traceable pre-existing material with a marketable Product role and upstream burden, never a hypothetical new capture. Legally Waste material uses the separate card, not both.
 
+Denominator and scope requirements：per kg collected material
+
+Raw quantity and calculation requirements: Measure actual lawfully acquired spermaceti-bearing material and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Lawful-source spermaceti-bearing material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual lawfully acquired spermaceti-bearing material and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected material
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collect`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -145,14 +155,18 @@ Use only lawful traceable pre-existing material with a marketable Product role a
 
 Use only when documented existing material is legally Waste and recovery is permitted; no Product input is also booked for the same material.
 
+Denominator and scope requirements：per kg collected material
+
+Raw quantity and calculation requirements: Weigh lawful Waste input; retain legal status, upstream burden and terminal alternative. Original collection denominator kind: process_output.
+
 - Selected flow: Lawful-source recoverable spermaceti-bearing Waste (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Weigh lawful Waste input; retain legal status, upstream burden and terminal alternative.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected material
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collect`
 - Range: Conditional Waste-input ledger QA, not a recovery yield
   - Range role: QA guardrail (`qa_guardrail`)
@@ -173,14 +187,18 @@ Use only when documented existing material is legally Waste and recovery is perm
 
 Hand off source-qualified collected material to first separation once.
 
+Denominator and scope requirements：per kg collected material
+
+Raw quantity and calculation requirements: Measure actual collected wax-bearing material and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified collected wax-bearing material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual collected wax-bearing material and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected material
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_collect`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -197,14 +215,18 @@ Hand off source-qualified collected material to first separation once.
 
 Non-saleable incidental debris follows an actual waste destination; no invented honey or whale output.
 
+Denominator and scope requirements：per kg collected material
+
+Raw quantity and calculation requirements: Measure actual collection rejects and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Non-saleable source-specific collection residue (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual collection rejects and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg collected material
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -227,14 +249,18 @@ Non-saleable incidental debris follows an actual waste destination; no invented 
 
 Link to source collection; no repeat colony or stock burden.
 
+Denominator and scope requirements：per kg first-prepared wax
+
+Raw quantity and calculation requirements: Measure actual collected material for first separation and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified collected wax-bearing material (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual collected material for first separation and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg first-prepared wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_condition`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -249,14 +275,18 @@ Link to source collection; no repeat colony or stock burden.
 
 Meter actual carrier used in melting or separation; no default heat recipe.
 
+Denominator and scope requirements：per kg first-prepared wax
+
+Raw quantity and calculation requirements: Measure actual conditioning energy and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Actual energy carrier for first wax separation (UUID unresolved)
 - Flow property / unit: Energy / MJ
-- Amount rule: Measure actual conditioning energy and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg first-prepared wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_condition`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -271,14 +301,18 @@ Meter actual carrier used in melting or separation; no default heat recipe.
 
 Record water supplied as a Product input when actual on-site washing or aqueous cleaning occurs; dry separation has no water input. Identify the source and account for wastewater or evaporation by its actual destination and receiving medium.
 
+Denominator and scope requirements：per kg first-prepared wax
+
+Raw quantity and calculation requirements: Meter water crossing the conditioning boundary by source and batch; do not infer a default washing rate. Original collection denominator kind: process_output.
+
 - Selected flow: Actual water supplied for first wax cleaning (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Meter water crossing the conditioning boundary by source and batch; do not infer a default washing rate.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg first-prepared wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_condition`
 - Range: Conditional water-input ledger QA, not a wash recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -301,14 +335,18 @@ Record water supplied as a Product input when actual on-site washing or aqueous 
 
 Weigh wax after first separation and cleaning, before optional refining or colouring.
 
+Denominator and scope requirements：per kg first-prepared wax
+
+Raw quantity and calculation requirements: Measure actual first-prepared wax and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified first-prepared wax (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual first-prepared wax and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg first-prepared wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_condition`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -325,14 +363,18 @@ Weigh wax after first separation and cleaning, before optional refining or colou
 
 Record filter solids and other non-saleable residue by treatment destination.
 
+Denominator and scope requirements：per kg first-prepared wax
+
+Raw quantity and calculation requirements: Measure actual separation residue and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Non-saleable first-separation residue (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual separation residue and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg first-prepared wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -355,14 +397,18 @@ Record filter solids and other non-saleable residue by treatment destination.
 
 Only refined or coloured lots enter; raw lots bypass this node.
 
+Denominator and scope requirements：per kg treated wax
+
+Raw quantity and calculation requirements: Measure actual wax entering optional treatment and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified first-prepared wax (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual wax entering optional treatment and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg treated wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_treat`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -377,14 +423,18 @@ Only refined or coloured lots enter; raw lots bypass this node.
 
 Measure actual material and retained colourant; no addition for untreated lots.
 
+Denominator and scope requirements：per kg treated wax
+
+Raw quantity and calculation requirements: Measure actual refining aid or colourant and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Material-specific refining aid or wax colourant (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual refining aid or colourant and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg treated wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_treat`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -407,14 +457,18 @@ Measure actual material and retained colourant; no addition for untreated lots.
 
 Hand off measured treated wax with purity and colour state.
 
+Denominator and scope requirements：per kg treated wax
+
+Raw quantity and calculation requirements: Measure actual refined or coloured wax and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-qualified refined or coloured wax (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual refined or coloured wax and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg treated wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_treat`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -431,14 +485,18 @@ Hand off measured treated wax with purity and colour state.
 
 Spent aid and nonmarketable residue follow actual waste destination.
 
+Denominator and scope requirements：per kg treated wax
+
+Raw quantity and calculation requirements: Measure actual treatment residue and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Non-saleable refining or colouring residue (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual treatment residue and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg treated wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -461,14 +519,18 @@ Spent aid and nonmarketable residue follow actual waste destination.
 
 Receive one physical lot from raw prepared or treated wax, never both.
 
+Denominator and scope requirements：per kg saleable graded wax
+
+Raw quantity and calculation requirements: Measure actual wax entering grade and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source- and state-qualified wax before grade (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual wax entering grade and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable graded wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -491,14 +553,18 @@ Receive one physical lot from raw prepared or treated wax, never both.
 
 Record each accepted and independently marketed downgraded grade at one destination.
 
+Denominator and scope requirements：per kg saleable graded wax
+
+Raw quantity and calculation requirements: Measure actual saleable accepted or downgraded grade and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-, state- and grade-qualified saleable wax (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual saleable accepted or downgraded grade and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable graded wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -515,14 +581,18 @@ Record each accepted and independently marketed downgraded grade at one destinat
 
 Non-saleable rejected wax follows actual waste handling, not a second product.
 
+Denominator and scope requirements：per kg saleable graded wax
+
+Raw quantity and calculation requirements: Measure actual rejected wax and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Non-saleable rejected wax (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual rejected wax and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg saleable graded wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -545,14 +615,18 @@ Non-saleable rejected wax follows actual waste handling, not a second product.
 
 Receive one source-, state- and grade-qualified lot from sorting.
 
+Denominator and scope requirements：per kg net sold wax
+
+Raw quantity and calculation requirements: Measure actual saleable wax before packing and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Source-, state- and grade-qualified saleable wax (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual saleable wax before packing and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg net sold wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -567,14 +641,18 @@ Receive one source-, state- and grade-qualified lot from sorting.
 
 Count actual consumed material or measured reusable package service, not later freight.
 
+Denominator and scope requirements：per kg net sold wax
+
+Raw quantity and calculation requirements: Measure actual protective packaging and link lot, source, state and period. Original collection denominator kind: process_output.
+
 - Selected flow: Actual protective wax package or reusable service (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual protective packaging and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg net sold wax
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Provisional nonnegative ledger QA, not a yield or recipe
   - Range role: QA guardrail (`qa_guardrail`)
@@ -597,14 +675,18 @@ Count actual consumed material or measured reusable package service, not later f
 
 One reference role instantiated by real source, sold state and gate; no broad fixed UUID is assumed.
 
+Raw reference-output records: Measure actual net wax at actual gate and link lot, source, state and period. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Source-, state- and gate-qualified insect wax or spermaceti
 - Flow property / unit: Mass / kg
-- Amount rule: Measure actual net wax at actual gate and link lot, source, state and period.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg net reference wax
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover`
 - Range: Measured normalization identity
   - Range role: QA guardrail (`qa_guardrail`)
@@ -634,12 +716,12 @@ One reference role instantiated by real source, sold state and gate; no broad fi
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_collect | collect | source and collected material | source ledger | source/species, legal chain, route, material mass, real outputs, event, period | source ticket and calibrated scale | kg;period | each lot | source and collection periods | supplier and collection site | exclusive route; once per lot | tickets, calibration, legal chain |
-| cp_condition | condition | material, energy, conditional wash water and prepared wax | separation ledger | lot, mass in/out, method, carrier, energy, water source/input, wastewater or evaporation destination, purity, moisture | scale, meter and assay | kg;MJ | each lot | conditioning period | facility | before/after and water balance by source | scale, meter, assay |
-| cp_treat | treat | optional refining or colouring | treatment ledger | lot, input/output mass, added material, colour, purity, rejects | batch sheet, scale and assay | kg | each treated lot | treatment period | facility | once; raw bypass | sheet and assay |
-| cp_grade | grade | accepted, downgrade and reject | grade ledger | source, state, grade, mass, destination | grade ticket and scale | kg | each lot | grade period | facility | disjoint grades | grade and reject tickets |
-| cp_handover | handover | wax, package and gate | dispatch ledger | source, state, colourant, purity, moisture, gross, tare, net, package reuse, gate | dispatch ticket and scale | kg | each sale lot | handover period | facility | one net sale per lot | ticket and calibration |
-| cp_residue | collect;condition;treat;grade | waste | treatment ledger | lot, type, mass, destination, period | scale and transfer record | kg | each event | relevant period | origin site | once per material/destination | transfer record |
+| cp_collect | collect | source and collected material | source ledger | source/species, legal chain, route, material mass, real outputs, event, period | source ticket and calibrated scale; Raw aggregation requirements: exclusive route; once per lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;period | each lot | source and collection periods | supplier and collection site | per reference flow | tickets, calibration, legal chain; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_condition | condition | material, energy, conditional wash water and prepared wax | separation ledger | lot, mass in/out, method, carrier, energy, water source/input, wastewater or evaporation destination, purity, moisture | scale, meter and assay; Raw aggregation requirements: before/after and water balance by source. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;MJ | each lot | conditioning period | facility | per reference flow | scale, meter, assay; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_treat | treat | optional refining or colouring | treatment ledger | lot, input/output mass, added material, colour, purity, rejects | batch sheet, scale and assay; Raw aggregation requirements: once; raw bypass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each treated lot | treatment period | facility | per reference flow | sheet and assay; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_grade | grade | accepted, downgrade and reject | grade ledger | source, state, grade, mass, destination | grade ticket and scale; Raw aggregation requirements: disjoint grades. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | grade period | facility | per reference flow | grade and reject tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_handover | handover | wax, package and gate | dispatch ledger | source, state, colourant, purity, moisture, gross, tare, net, package reuse, gate | dispatch ticket and scale; Raw aggregation requirements: one net sale per lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each sale lot | handover period | facility | per reference flow | ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_residue | collect;condition;treat;grade | waste | treatment ledger | lot, type, mass, destination, period | scale and transfer record; Raw aggregation requirements: once per material/destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each event | relevant period | origin site | per reference flow | transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

@@ -102,6 +102,20 @@ measurement_rules:
       uuid: ""
     required_unit: "period; service unit"
     rule: "Link animal phases, output events and shared service to actual periods without duplicate burden."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
 process_map:
   - id: source
     name: "Animal source, slaughter or lawful recovery"
@@ -149,16 +163,16 @@ process_inventory:
           name: "Live sheep or lamb received for actual slaughter (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Only slaughter route; trace prior breeding, wool and milk periods and supplier burden."
+          description: "Only slaughter route; trace prior breeding, wool and milk periods and supplier burden. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_source
               source_ids: []
             ranges:
@@ -181,16 +195,16 @@ process_inventory:
           name: "Sheep/lamb carcass or portion with raw skin attached (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "From actual slaughter or lawful fallen-animal recovery only after quality acceptance as a raw-skin source. Rejected recovered carcass remains in the separately documented waste/treatment route; do not invent meat on fallen route."
+          description: "From actual slaughter or lawful fallen-animal recovery only after quality acceptance as a raw-skin source. Rejected recovered carcass remains in the separately documented waste/treatment route; do not invent meat on fallen route. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_source
               source_ids: []
             ranges:
@@ -207,16 +221,16 @@ process_inventory:
           name: "Actually marketable meat, detached wool, milk and other goods (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record only existing outputs at their own phase and gate; attached fleece is not detached wool."
+          description: "Record only existing outputs at their own phase and gate; attached fleece is not detached wool. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_source
               source_ids: []
             ranges:
@@ -241,16 +255,16 @@ process_inventory:
           name: "Skin-bearing sheep/lamb carcass or portion (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Transfer from source once; flaying is independent of animal production and first cleaning."
+          description: "Transfer from source once; flaying is independent of animal production and first cleaning. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_remove
               source_ids: []
             ranges:
@@ -273,16 +287,16 @@ process_inventory:
           name: "Untanned sheep/lamb raw skin immediately after removal (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Measure adult/lamb class, intactness and fleece-on status."
+          description: "Measure adult/lamb class, intactness and fleece-on status. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_remove
               source_ids: []
             ranges:
@@ -300,16 +314,16 @@ process_inventory:
           name: "Nonsaleable flaying residue by actual destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Separate intended skin from loss, tissue and damaged rejected skin."
+          description: "Separate intended skin from loss, tissue and damaged rejected skin. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residues
               source_ids: []
             ranges:
@@ -332,16 +346,16 @@ process_inventory:
           name: "Fresh untanned sheep/lamb skin (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Match removal ticket and retain lot/fleece identity."
+          description: "Match removal ticket and retain lot/fleece identity. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_condition
               source_ids: []
             ranges:
@@ -358,16 +372,16 @@ process_inventory:
           name: "Supplied process water (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Use only when actual cleaning is performed; meter by node and period."
+          description: "Use only when actual cleaning is performed; meter by node and period. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -390,16 +404,16 @@ process_inventory:
           name: "First-conditioned untanned sheep/lamb skin (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Hand to grading after actual cleaning, fleshing or trim; no dehairing or tanning."
+          description: "Hand to grading after actual cleaning, fleshing or trim; no dehairing or tanning. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_condition
               source_ids: []
             ranges:
@@ -417,16 +431,16 @@ process_inventory:
           name: "Tissue and nonsaleable trim by destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Identify separately marketed material, waste and measured loss."
+          description: "Identify separately marketed material, waste and measured loss. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residues
               source_ids: []
             ranges:
@@ -449,16 +463,16 @@ process_inventory:
           name: "First-conditioned sheep/lamb raw skin (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Inspect age, fleece, defects and buyer criteria."
+          description: "Inspect age, fleece, defects and buyer criteria. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -481,16 +495,16 @@ process_inventory:
           name: "Raw sheep/lamb skin by actual marketable grade (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Name every saleable grade and handover; downgraded sale product is not waste."
+          description: "Name every saleable grade and handover; downgraded sale product is not waste. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_grade
               source_ids: []
             ranges:
@@ -508,16 +522,16 @@ process_inventory:
           name: "Unsaleable rejected sheep/lamb skin (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Record actual treatment destination, distinct from marketable downgrade."
+          description: "Record actual treatment destination, distinct from marketable downgrade. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residues
               source_ids: []
             ranges:
@@ -540,16 +554,16 @@ process_inventory:
           name: "Saleable fresh sheep/lamb raw skin (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Fresh-sale lots bypass this node entirely."
+          description: "Fresh-sale lots bypass this node entirely. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_preserve
               source_ids: []
             ranges:
@@ -566,16 +580,16 @@ process_inventory:
           name: "Actual salt or brine constituent (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record only for relevant salted/brined batches and actual concentration; no default dose."
+          description: "Record only for relevant salted/brined batches and actual concentration; no default dose. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_preserve
               source_ids: []
             ranges:
@@ -592,16 +606,16 @@ process_inventory:
           name: "Actual energy carrier for chilling, drying or curing (UUID unresolved)"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Meter by carrier, preservation node and service period."
+          description: "Meter by carrier, preservation node and service period. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_utilities
               source_ids: []
             ranges:
@@ -624,16 +638,16 @@ process_inventory:
           name: "Method-specific preserved untanned sheep/lamb skin (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Measure post-treatment mass, moisture, adhering salt and free media separately."
+          description: "Measure post-treatment mass, moisture, adhering salt and free media separately. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_preserve
               source_ids: []
             ranges:
@@ -651,16 +665,16 @@ process_inventory:
           name: "Spent salt/brine and rejected skin by destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Distinguish waste from evaporated water and incorporated salt."
+          description: "Distinguish waste from evaporated water and incorporated salt. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residues
               source_ids: []
             ranges:
@@ -683,16 +697,16 @@ process_inventory:
           name: "Raw sheep/lamb skin in declared incoming state (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Receive one lot from grading or preservation, not twice."
+          description: "Receive one lot from grading or preservation, not twice. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -709,16 +723,16 @@ process_inventory:
           name: "Actual wrap, crate or pallet material (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record material and reuse; exclude later freight service."
+          description: "Record material and reuse; exclude later freight service. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -741,16 +755,16 @@ process_inventory:
           name: "Condition- and gate-qualified sheep/lamb raw skin"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Reference output excludes packaging and separable free salt/brine."
+          description: "Reference output excludes packaging and separable free salt/brine. Raw reference-output records: Measure actual lot and reconcile node inputs, outputs and destinations. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "1 kg"
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg net reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_handover
               source_ids: []
             ranges:
@@ -768,16 +782,16 @@ process_inventory:
           name: "Rejected skin or packaging by actual destination (UUID unresolved)"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Keep product and package rejects distinct with disposal destinations."
+          description: "Keep product and package rejects distinct with disposal destinations. Denominator and scope requirements：per kg node output Raw quantity and calculation requirements: Measure actual lot and reconcile node inputs, outputs and destinations. Original collection denominator kind: process_output."
           amount:
-            expression: "Measure actual lot and reconcile node inputs, outputs and destinations."
-            value_mode: "foreground_record"
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per kg node output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residues
               source_ids: []
             ranges:
@@ -819,97 +833,97 @@ dataset_production:
       flow_role: "cohort, actual slaughter or lawful recovery, independently marketable outputs by phase"
       record_type: "lot ledger"
       raw_fields: "cohort, actual slaughter or lawful recovery, independently marketable outputs by phase"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_remove
       process_id: "remove"
       flow_role: "source event, intact raw skin, fleece and loss"
       record_type: "lot ledger"
       raw_fields: "source event, intact raw skin, fleece and loss"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_condition
       process_id: "condition"
       flow_role: "incoming, water, prepared skin, trim"
       record_type: "lot ledger"
       raw_fields: "incoming, water, prepared skin, trim"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_grade
       process_id: "grade"
       flow_role: "accepted, downgraded, rejected grades and destination"
       record_type: "lot ledger"
       raw_fields: "accepted, downgraded, rejected grades and destination"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_preserve
       process_id: "preserve"
       flow_role: "method, input/output mass, salt/brine, moisture, energy"
       record_type: "lot ledger"
       raw_fields: "method, input/output mass, salt/brine, moisture, energy"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_utilities
       process_id: "condition_preserve_handover"
       flow_role: "carrier, meter, node, asset and service period"
       record_type: "lot ledger"
       raw_fields: "carrier, meter, node, asset and service period"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_handover
       process_id: "handover"
       flow_role: "net/gross, package tare, state and gate"
       record_type: "lot ledger"
       raw_fields: "net/gross, package tare, state and gate"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
     - protocol_id: cp_residues
       process_id: "source_remove_condition_grade_preserve_handover"
       flow_role: "material, mass, reason and actual destination"
       record_type: "lot ledger"
       raw_fields: "material, mass, reason and actual destination"
-      collection_method: "calibrated scale, meter and tickets"
+      collection_method: "calibrated scale, meter and tickets; Raw aggregation requirements: sum once by lot and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
       unit: "kg;period"
       frequency: "each lot/period"
       temporal_coverage: "all relevant events"
       site_scope: "actual site"
-      aggregation_rule: "sum once by lot and period"
-      quality_evidence: "calibration, source and dispatch record"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, source and dispatch record; traceable numerator, accepted reference-output denominator and normalization worksheet"
   calculation_rules:
     - id: c_net
       applies_to: "final lot"
@@ -1022,19 +1036,19 @@ data_sources:
     used_for: "pre-tannery boundary"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:f4e83008ce55d1779a88eba067477785db1e2d86aa34145f8c27e9d047f92132"
+  source_sha256: "sha256:4039d890fded44b33e2184f1c23fdd1956273ce55371f360fd11d3fd04945f69"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_3307"
+    - unit_id: "normative_6016"
       family: "system_boundary"
       span:
         start:
-          offset: 3307
-          line: 54
+          offset: 6016
+          line: 56
           column: 1
         end:
-          offset: 5814
-          line: 77
+          offset: 8523
+          line: 79
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Traceable cohort and actual slaughter, or lawful fallen-animal recovery event. |\n| starting_condition_role | Prefer compatible upstream husbandry through live-animal arrival with actual slaughter/dressing foreground here. If an upstream dataset already includes slaughter, the source node is only a traceable interface/allocation record and repeats no slaughter exchanges. Fallen-animal recovery starts from documented lawful source and separately accounts for its actual terminal treatment. Purchased materials/services are Product inputs only where used. |\n| product_classification_scope | Fresh or first-stage preserved, not further prepared sheep/lamb raw skin. |\n| recursive_input_rule | Purchased same-category raw skin retains upstream burden, not recounted as newly flayed. |\n| upstream_dataset_requirement | Traceable husbandry, slaughter or recovery and actual material/service data; no automatic zero-burden hide. |\n| disclosure | Age, fleece, source legality, state, grade, gate, periods, allocation and shared services. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_source | animal source | Include traceable husbandry and actual slaughter/dressing, including real meat, detached wool and milk at distinct phases; do not duplicate slaughter exchanges already covered by an upstream dataset. Lawful fallen-animal recovery follows actual terminal-treatment route, not fictional meat. Only a quality-accepted recovered skin-bearing material exits the source interface as Product; nonaccepted recovered carcass material follows its actual waste/treatment path, not the Product card. | fao-hides-statistics;fao-hides-skins |\n| b_remove | removal | Independent flaying hands intact untanned skin to first preparation; separate incidental tissue and damage. | fao-small-ruminant-slaughter |\n| b_condition | first handling | Include actual cleaning, fleshing and trimming before sorting; exclude dehairing, liming and tanning. | fao-small-ruminant-slaughter |\n| b_preserve | preserved lots | Fresh lots bypass treatment. For preserved lots measure method, energy, salt/brine, before/after state and residues without universal recipe. | fao-hides-skins |\n| b_gate | handover | Protect raw skin to actual removal-site or curing handover; exclude tannery transformation and downstream transport. | un-cpc-3-notes;unido-leather-framework |\n\n"
       headings:
@@ -1053,12 +1067,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 3307
-              line: 54
+              offset: 6016
+              line: 56
               column: 1
             end:
-              offset: 3328
-              line: 54
+              offset: 6037
+              line: 56
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1073,16 +1087,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_28615"
+    - unit_id: "normative_38352"
       family: "allocation"
       span:
         start:
-          offset: 28615
-          line: 684
+          offset: 38352
+          line: 774
           column: 1
         end:
-          offset: 29867
-          line: 693
+          offset: 39604
+          line: 783
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_slaughter | slaughter route | Enumerate each genuinely marketable meat, skin, detached wool, milk or other output at its real phase and gate. Use documented causal physical attribution if defensible; otherwise document economic allocation with period-specific prices and sensitivity. Never assign all animal burden to the skin or automatic zero burden. | fao-hides-skins |\n| a_fallen | fallen route | Document pre-existing animal burden, lawful recovery and terminal-treatment counterfactual; justify burden attribution and any separately reported avoided-treatment credit without invented meat. | fao-hides-statistics |\n| a_grade | grades and cure | Count every saleable grade at one handover only; separately sold trim requires its own product decision. Moisture/salt mass changes do not create extra skin. | fao-hides-skins |\n| a_period | phases and shared assets | Index breeding, lactation, shearing, finishing, slaughter/recovery and replacement across actual periods. Charge shared slaughter floor, cleaning, cold room and curing assets once using evidenced service time, throughput or other causal driver. | fao-hides-skins |\n\n"
       headings:
@@ -1101,12 +1115,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 28615
-              line: 684
+              offset: 38352
+              line: 774
               column: 1
             end:
-              offset: 28655
-              line: 684
+              offset: 38392
+              line: 774
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1121,16 +1135,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_34455"
+    - unit_id: "normative_47320"
       family: "validation"
       span:
         start:
-          offset: 34455
-          line: 726
+          offset: 47320
+          line: 816
           column: 1
         end:
-          offset: 35548
-          line: 736
+          offset: 48413
+          line: 826
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject non-sheep/lamb, tanned or further prepared goods or missing age, fleece, state, gate or net mass. | un-cpc-3-notes |\n| v_route | source and removal | Require an independent skin-removal handoff; slaughter route lists real co-products; fallen route has lawful recovery and no invented meat. | fao-hides-statistics;fao-small-ruminant-slaughter |\n| v_balance | each batch | Reconcile accepted, downgraded and rejected skin, residue, stock and moisture/salt change, investigating residual against site measurement uncertainty. | fao-hides-skins |\n| v_attribution | products, phases and shared services | Reject unsupported zero-burden skin, duplicated attached fleece/detached wool, repeated animal phase or shared plant burden, or absent allocation evidence. | fao-hides-skins |\n| v_uuid | concrete dataset exchanges | Unresolved cards cannot become final exchanges; CPC label alone cannot make tanned sheepskin or manufactured leather an exact raw Mass flow. |  |\n\n"
       headings:
@@ -1149,12 +1163,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 34455
-              line: 726
+              offset: 47320
+              line: 816
               column: 1
             end:
-              offset: 34477
-              line: 726
+              offset: 47342
+              line: 816
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1173,233 +1187,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "b_source"
       identity_kind: "explicit"
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 4547
-          line: 71
+          offset: 7256
+          line: 73
           column: 1
         end:
-          offset: 5104
-          line: 71
+          offset: 7813
+          line: 73
           column: 558
     - pointer: "/system_boundary/rules/1"
       rule_id: "b_remove"
       identity_kind: "explicit"
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 5105
-          line: 72
+          offset: 7814
+          line: 74
           column: 1
         end:
-          offset: 5268
-          line: 72
+          offset: 7977
+          line: 74
           column: 164
     - pointer: "/system_boundary/rules/2"
       rule_id: "b_condition"
       identity_kind: "explicit"
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 5269
-          line: 73
+          offset: 7978
+          line: 75
           column: 1
         end:
-          offset: 5436
-          line: 73
+          offset: 8145
+          line: 75
           column: 168
     - pointer: "/system_boundary/rules/3"
       rule_id: "b_preserve"
       identity_kind: "explicit"
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 5437
-          line: 74
+          offset: 8146
+          line: 76
           column: 1
         end:
-          offset: 5630
-          line: 74
+          offset: 8339
+          line: 76
           column: 194
     - pointer: "/system_boundary/rules/4"
       rule_id: "b_gate"
       identity_kind: "explicit"
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 5631
-          line: 75
+          offset: 8340
+          line: 77
           column: 1
         end:
-          offset: 5812
-          line: 75
+          offset: 8521
+          line: 77
           column: 182
     - pointer: "/allocation_rules/0"
       rule_id: "a_slaughter"
       identity_kind: "explicit"
-      unit_id: "normative_28615"
+      unit_id: "normative_38352"
       source_span:
         start:
-          offset: 28728
-          line: 688
+          offset: 38465
+          line: 778
           column: 1
         end:
-          offset: 29104
-          line: 688
+          offset: 38841
+          line: 778
           column: 377
     - pointer: "/allocation_rules/1"
       rule_id: "a_fallen"
       identity_kind: "explicit"
-      unit_id: "normative_28615"
+      unit_id: "normative_38352"
       source_span:
         start:
-          offset: 29105
-          line: 689
+          offset: 38842
+          line: 779
           column: 1
         end:
-          offset: 29352
-          line: 689
+          offset: 39089
+          line: 779
           column: 248
     - pointer: "/allocation_rules/2"
       rule_id: "a_grade"
       identity_kind: "explicit"
-      unit_id: "normative_28615"
+      unit_id: "normative_38352"
       source_span:
         start:
-          offset: 29353
-          line: 690
+          offset: 39090
+          line: 780
           column: 1
         end:
-          offset: 29560
-          line: 690
+          offset: 39297
+          line: 780
           column: 208
     - pointer: "/allocation_rules/3"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_28615"
+      unit_id: "normative_38352"
       source_span:
         start:
-          offset: 29561
-          line: 691
+          offset: 39298
+          line: 781
           column: 1
         end:
-          offset: 29865
-          line: 691
+          offset: 39602
+          line: 781
           column: 305
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_34455"
+      unit_id: "normative_47320"
       source_span:
         start:
-          offset: 34550
-          line: 730
+          offset: 47415
+          line: 820
           column: 1
         end:
-          offset: 34701
-          line: 730
+          offset: 47566
+          line: 820
           column: 152
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_34455"
+      unit_id: "normative_47320"
       source_span:
         start:
-          offset: 34702
-          line: 731
+          offset: 47567
+          line: 821
           column: 1
         end:
-          offset: 34928
-          line: 731
+          offset: 47793
+          line: 821
           column: 227
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_34455"
+      unit_id: "normative_47320"
       source_span:
         start:
-          offset: 34929
-          line: 732
+          offset: 47794
+          line: 822
           column: 1
         end:
-          offset: 35127
-          line: 732
+          offset: 47992
+          line: 822
           column: 199
     - pointer: "/validation_rules/3"
       rule_id: "v_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_34455"
+      unit_id: "normative_47320"
       source_span:
         start:
-          offset: 35128
-          line: 733
+          offset: 47993
+          line: 823
           column: 1
         end:
-          offset: 35360
-          line: 733
+          offset: 48225
+          line: 823
           column: 233
     - pointer: "/validation_rules/4"
       rule_id: "v_uuid"
       identity_kind: "explicit"
-      unit_id: "normative_34455"
+      unit_id: "normative_47320"
       source_span:
         start:
-          offset: 35361
-          line: 734
+          offset: 48226
+          line: 824
           column: 1
         end:
-          offset: 35546
-          line: 734
+          offset: 48411
+          line: 824
           column: 186
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 3307
-          line: 54
+          offset: 6016
+          line: 56
           column: 1
         end:
-          offset: 3328
-          line: 54
+          offset: 6037
+          line: 56
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_3307"
+      unit_id: "normative_6016"
       source_span:
         start:
-          offset: 3356
-          line: 58
+          offset: 6065
+          line: 60
           column: 1
         end:
-          offset: 4454
-          line: 65
+          offset: 7163
+          line: 67
           column: 108
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_28615"
+      unit_id: "normative_38352"
       source_span:
         start:
-          offset: 28615
-          line: 684
+          offset: 38352
+          line: 774
           column: 1
         end:
-          offset: 28655
-          line: 684
+          offset: 38392
+          line: 774
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_34455"
+      unit_id: "normative_47320"
       source_span:
         start:
-          offset: 34455
-          line: 726
+          offset: 47320
+          line: 816
           column: 1
         end:
-          offset: 34477
-          line: 726
+          offset: 47342
+          line: 816
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1408,5 +1422,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:f4e83008ce55d1779a88eba067477785db1e2d86aa34145f8c27e9d047f92132"
-  generated_content_sha256: "sha256:1eb22769a83db4066c9468a27bccc2b18b4cceaf5294957b5d49317e51ab4eeb"
+    sha256: "sha256:4039d890fded44b33e2184f1c23fdd1956273ce55371f360fd11d3fd04945f69"
+  generated_content_sha256: "sha256:25a4de599a5c0e9fe4a674d34437c74dd44d6356d8df550d3e262d2edf987b7e"

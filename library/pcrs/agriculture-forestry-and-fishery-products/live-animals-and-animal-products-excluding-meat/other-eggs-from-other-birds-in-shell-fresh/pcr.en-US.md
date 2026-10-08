@@ -51,6 +51,7 @@ The verified CPC 02322 Product/Mass UUID matches this explicitly farm-gate, shel
 | `mass` | reference eggs | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Weigh shell-on mass excluding package and reconcile nodes and stocks by species/lot. |
 | `count` | conversion of recorded egg counts to measured lot mass | Count plus measured Mass | eggs; kg | Retain count as a separate observed quantity. Use lot measurement or representative sample mean only to derive this lot's mass; no cross-species mean or claim that count itself has Mass property. |
 | `feed` | feed | Mass | kg as-fed; kg dry matter | Retain measured conversion and source before combining as-fed/dry-matter feed. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -97,12 +98,14 @@ The verified CPC 02322 Product/Mass UUID matches this explicitly farm-gate, shel
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Admitted layer birds
 - Flow property / unit: Mass / kg live mass
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_flock`
@@ -120,12 +123,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Feed and supplements
 - Flow property / unit: Mass / kg as-fed
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_feed`
@@ -143,12 +148,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Supplied water
 - Flow property / unit: Volume / L
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_utilities`
@@ -166,12 +173,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Housing energy carriers
 - Flow property / unit: Energy / MJ
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_utilities`
@@ -201,12 +210,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Newly laid shell eggs
 - Flow property / unit: Mass / kg; count retained
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_lots`
@@ -224,12 +235,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Independently sold spent birds
 - Flow property / unit: Mass / kg live mass
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_flock`
@@ -249,12 +262,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Manure not independently sold
 - Flow property / unit: Mass / kg wet; N retained
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_manure`
@@ -282,12 +297,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Eggs received from laying
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_lots`
@@ -317,12 +334,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Intact collected eggs
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_lots`
@@ -342,12 +361,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Broken or unsafe collection eggs
 - Flow property / unit: Mass / kg
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_lots`
@@ -375,12 +396,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Intact eggs entering sorting
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_sort`
@@ -410,12 +433,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Accepted non-hatching eggs
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_sort`
@@ -433,12 +458,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Independently accepted diverted eggs
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_sort`
@@ -458,12 +485,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Unsafe unaccepted egg rejects
 - Flow property / unit: Mass / kg
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_sort`
@@ -491,12 +520,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Accepted eggs entering packing
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_pack`
@@ -514,12 +545,14 @@ Record physical identity and destination by species, lot and actual node; do not
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Protective packaging materials
 - Flow property / unit: Mass or count / kg or pieces
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_pack`
@@ -549,12 +582,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Protected eggs after packing
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_pack`
@@ -586,12 +621,14 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
 - Selected flow: Eggs received for farm-gate transfer
 - Flow property / unit: Mass / kg shell-on
 - Amount rule: Measure actual species, lot and node; reconcile adjacent nodes and stock.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_gate`
@@ -621,15 +658,19 @@ No prescribed exchange; verify any actual exchange.
 
 Record physical identity and destination by species, lot and actual node; do not infer another state from a name.
 
+Denominator and scope requirements：per kg farm-gate transferred fresh non-hatching other-bird eggs
+
+Raw reference-output records: Measure transferred fresh shell-on mass, normalize to 1 kg and retain count. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
 - Selected flow: Fresh non-hatching other-bird eggs at farm gate `c533a91e-a111-484e-a6a5-8fb8d3c41363`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Binding: Fixed (`fixed`)
-- Amount rule: Measure transferred fresh shell-on mass, normalize to 1 kg and retain count.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg farm-gate transferred fresh non-hatching other-bird eggs
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate`
 - Sources: `fao-codex-eggs`
 - Range: Reference normalization identity
@@ -665,14 +706,14 @@ No prescribed exchange; verify any actual exchange.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_flock` | `laying` | flock entry/exit and transfer | source ledger | flock entry/exit and transfer | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_feed` | `laying` | feed and dry matter | source ledger | feed and dry matter | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_utilities` | `laying` | water and energy | source ledger | water and energy | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_manure` | `laying` | manure mass, N and fate | source ledger | manure mass, N and fate | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_lots` | `collection` | lot count, mass and broken eggs | source ledger | lot count, mass and broken eggs | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_sort` | `sorting` | accepted, diverted and rejected grade mass | source ledger | accepted, diverted and rejected grade mass | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_pack` | `packing` | package material and reuse | source ledger | package material and reuse | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
-| `cp_gate` | `handover` | species, use, count, mass and gate | source ledger | species, use, count, mass and gate | ledger, calibrated scale, meters and transfer tickets | kg; count; use-specific | each lot/month | full reporting period | producer farm | aggregate by species, flock, node and period, divide by measured reference kg | dated ticket, calibration and balance |
+| `cp_flock` | `laying` | flock entry/exit and transfer | source ledger | flock entry/exit and transfer | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed` | `laying` | feed and dry matter | source ledger | feed and dry matter | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_utilities` | `laying` | water and energy | source ledger | water and energy | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `laying` | manure mass, N and fate | source ledger | manure mass, N and fate | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_lots` | `collection` | lot count, mass and broken eggs | source ledger | lot count, mass and broken eggs | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_sort` | `sorting` | accepted, diverted and rejected grade mass | source ledger | accepted, diverted and rejected grade mass | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_pack` | `packing` | package material and reuse | source ledger | package material and reuse | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_gate` | `handover` | species, use, count, mass and gate | source ledger | species, use, count, mass and gate | ledger, calibrated scale, meters and transfer tickets; Raw aggregation requirements: aggregate by species, flock, node and period, divide by measured reference kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; count; use-specific | each lot/month | full reporting period | producer farm | per reference flow | dated ticket, calibration and balance; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

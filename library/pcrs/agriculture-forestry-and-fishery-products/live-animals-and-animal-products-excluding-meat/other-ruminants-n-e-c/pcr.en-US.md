@@ -48,6 +48,7 @@ This PCR covers living, species-qualified residual Ruminantia at actual farm or 
 | --- | --- | --- | --- | --- |
 | `m_live` | Live reference and transfers | Mass | kg | Weigh living animals at each actual gate and reconcile counts by species and class; never use universal kg/head. |
 | `m_period` | Herd, campaign and shared assets | Time | day or declared period | Link inputs, outputs, deaths and shared service to actual cohort, campaign and service period. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -92,12 +93,14 @@ The farm node begins with opening or purchased animals and tracks feed, care, co
 
 Purchased animals carry upstream burden; opening animals need cohort and prior-burden disclosure.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Species-qualified living breeding or young stock
 - Flow property / unit: Mass / kg
 - Amount rule: weigh by species, class and purchase/opening event
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -114,12 +117,14 @@ Purchased animals carry upstream burden; opening animals need cohort and prior-b
 
 Record species-specific ration and grazing/purchased shares by cohort.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Actual species-specific feed and forage
 - Flow property / unit: Mass / kg
 - Amount rule: delivered mass less documented stock change and loss
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_inputs`
@@ -136,12 +141,14 @@ Record species-specific ration and grazing/purchased shares by cohort.
 
 Record drinking and cleaning water actually supplied, not rainfall.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Supplied water
 - Flow property / unit: Mass / kg
 - Amount rule: meter or reconcile supplied water
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_inputs`
@@ -158,12 +165,14 @@ Record drinking and cleaning water actually supplied, not rainfall.
 
 Record actual fuel or electricity used for husbandry, water supply and handling.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Actual facility energy carrier
 - Flow property / unit: Energy or mass / kWh or kg
 - Amount rule: meter or reconcile energy by service period
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_inputs`
@@ -188,12 +197,14 @@ Record actual fuel or electricity used for husbandry, water supply and handling.
 
 An internal live transfer, not a second final sale.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Species-qualified living ruminant
 - Flow property / unit: Mass / kg
 - Amount rule: weigh live transfer by species and count
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -210,12 +221,14 @@ An internal live transfer, not a second final sale.
 
 Conditional umbrella for actual separate antler/velvet, milk, breeding services or other lawful output; expand into concrete identity/unit by foreground records. Never infer a product merely from species.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Actual separately marketed farm product or service
 - Flow property / unit: Product-specific mass, count or service unit
 - Amount rule: measure each sold product at its independent gate
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -234,12 +247,14 @@ Conditional umbrella for actual separate antler/velvet, milk, breeding services 
 
 Record dead animals by cause, cohort and actual disposal destination; these are not living stock or meat products.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Herd mortality carcass at actual disposal gate
 - Flow property / unit: Mass / kg
 - Amount rule: measure carcass disposal mass by cohort and destination
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -256,12 +271,14 @@ Record dead animals by cause, cohort and actual disposal destination; these are 
 
 Use only manure actually discarded as Waste at its disposal gate; separately sold usable manure is a distinct Product output with its own identity and quantity.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Discarded manure at actual disposal gate
 - Flow property / unit: Mass / kg
 - Amount rule: measure discarded manure by cohort and destination
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -286,12 +303,14 @@ Use only manure actually discarded as Waste at its disposal gate; separately sol
 
 Actual capture and short holding energy only; no invented farm feeding years.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Actual capture energy carrier
 - Flow property / unit: Energy or mass / kWh or kg
 - Amount rule: meter or log actual authorized campaign energy
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -308,12 +327,14 @@ Actual capture and short holding energy only; no invented farm feeding years.
 
 Include only measured water supplied during actual short holding; record zero only when the campaign has no such holding or supplied-water use and that condition is documented.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Supplied water for actual live holding
 - Flow property / unit: Mass / kg
 - Amount rule: meter or document supplied water by capture campaign
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -330,12 +351,14 @@ Include only measured water supplied during actual short holding; record zero on
 
 Record actual purchased restraint or temporary-holding consumables only where used; documented no-use is zero. Durable shared equipment is assigned through its service ledger, not counted again here.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Actual capture or holding consumable by material identity
 - Flow property / unit: Mass / kg
 - Amount rule: record purchased consumable use by campaign and material
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
@@ -360,12 +383,14 @@ Record actual purchased restraint or temporary-holding consumables only where us
 
 Require species, permit, capture campaign and living condition at transfer.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Species-qualified lawfully captured living ruminant
 - Flow property / unit: Mass / kg
 - Amount rule: weigh live capture transfers and reconcile head count
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -384,12 +409,14 @@ Require species, permit, capture campaign and living condition at transfer.
 
 Actual dead animals have documented lawful disposition, not live reference output.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Capture mortality carcass at actual disposal gate
 - Flow property / unit: Mass / kg
 - Amount rule: record death mass by campaign and destination
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_outputs`
@@ -414,12 +441,14 @@ Actual dead animals have documented lawful disposition, not live reference outpu
 
 Link exactly once to either managed herd or lawful capture, never both for one lot.
 
+Denominator and scope requirements：per kg final live output
+
 - Selected flow: Species-qualified living residual ruminant
 - Flow property / unit: Mass / kg
 - Amount rule: weigh source transfer and reconcile accepted and rejected heads
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live`
@@ -444,14 +473,18 @@ Link exactly once to either managed herd or lawful capture, never both for one l
 
 The single final reference gate requires species, class, count, mass, condition and legal origin.
 
+Denominator and scope requirements：per kg final live output
+
+Raw reference-output records: measured accepted live mass normalized to 1 kg Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
 - Selected flow: Species-qualified living residual ruminant
 - Flow property / unit: Mass / kg
-- Amount rule: measured accepted live mass normalized to 1 kg
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg final live output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_live`
 - Range: Provisional non-negative final-output screen
   - Range role: QA guardrail (`qa_guardrail`)
@@ -481,10 +514,10 @@ The single final reference gate requires species, class, count, mass, condition 
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_live` | `herd`; `capture`; `handover` | Live stock and transfers | individual register and weigh ticket | species; sex; age; permit; count; mass; health; source; destination; gate; date | individual identification and calibrated scale | head; kg | every transfer | whole cohort/campaign | every included site | sum accepted measured mass at one gate | signed ticket; scale calibration; permit link |
-| `cp_inputs` | `herd` | Feed, water and energy | invoices, meters and stock ledger | type; quantity; stock change; supplier; node; period | meter and purchase reconciliation | kg; kWh; m3 | delivery/meter cycle | all operated periods | all managed sites | assign actual use to cohort/node then normalize | invoice; meter; allocation ledger |
-| `cp_capture` | `capture` | Lawful capture inputs | authorization and campaign log | permit; species; jurisdiction; dates; method; fuel; count; survival | permit inspection and campaign records | kWh; kg; head | each campaign | authorization to handover | authorized capture/holding site | total actual campaign once | permit; log; weigh ticket |
-| `cp_outputs` | `herd`; `capture` | Sold outputs and losses | sale and disposal register | identity; quantity; destination; date; mortality; manure; cohort | invoice, scale and disposal record | declared unit | each event | whole cohort/campaign | each node | split product, internal stock and waste | invoice; disposal manifest; register |
+| `cp_live` | `herd`; `capture`; `handover` | Live stock and transfers | individual register and weigh ticket | species; sex; age; permit; count; mass; health; source; destination; gate; date | individual identification and calibrated scale; Raw aggregation requirements: sum accepted measured mass at one gate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | every transfer | whole cohort/campaign | every included site | per reference flow | signed ticket; scale calibration; permit link; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_inputs` | `herd` | Feed, water and energy | invoices, meters and stock ledger | type; quantity; stock change; supplier; node; period | meter and purchase reconciliation; Raw aggregation requirements: assign actual use to cohort/node then normalize. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kWh; m3 | delivery/meter cycle | all operated periods | all managed sites | per reference flow | invoice; meter; allocation ledger; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_capture` | `capture` | Lawful capture inputs | authorization and campaign log | permit; species; jurisdiction; dates; method; fuel; count; survival | permit inspection and campaign records; Raw aggregation requirements: total actual campaign once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kWh; kg; head | each campaign | authorization to handover | authorized capture/holding site | per reference flow | permit; log; weigh ticket; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_outputs` | `herd`; `capture` | Sold outputs and losses | sale and disposal register | identity; quantity; destination; date; mortality; manure; cohort | invoice, scale and disposal record; Raw aggregation requirements: split product, internal stock and waste. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | declared unit | each event | whole cohort/campaign | each node | per reference flow | invoice; disposal manifest; register; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 

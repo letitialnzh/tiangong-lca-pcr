@@ -49,6 +49,7 @@ This rule covers separately recovered, fresh or first-stage preserved, untanned 
 | `net_sale_mass` | reference and marketable intermediate skins | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Weigh net skin at each actual state and gate; exclude removable package and free brine. |
 | `state_mass` | fresh to preserved comparison | Mass | kg | Measure before/after skin mass, water loss and retained salt; never apply a universal fresh-to-cured factor. |
 | `period_meter` | shared energy and upstream animal service | Energy and time | kWh, h | Keep carrier meters and service hours by actual reporting period before per-kg normalization. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
 
 ## 5. System Boundary
 
@@ -95,13 +96,15 @@ This rule covers separately recovered, fresh or first-stage preserved, untanned 
 
 Live goat or kid entering actual slaughter.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Live goat or kid entering actual slaughter (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Match live animal ID and mass to a compatible upstream husbandry dataset; include the terminal event once.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_removal`
 - Range: Provisional completeness screen, not a default yield
@@ -119,13 +122,15 @@ Live goat or kid entering actual slaughter.
 
 Fallen goat or kid body legally managed as waste.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Fallen goat or kid body legally managed as waste (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Use only when actual legal role is Waste, quality permits recovery and no meat product is invented.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_removal`
 - Range: Provisional completeness screen, not a default yield
@@ -147,13 +152,15 @@ Fallen goat or kid body legally managed as waste.
 
 Fresh untanned goat or kid skin after independent flaying.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Fresh untanned goat or kid skin after independent flaying (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh separately only if skin is actually recovered; skin retained on carcass is not a separate product.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_removal`
 - Range: Provisional completeness screen, not a default yield
@@ -169,13 +176,15 @@ Fresh untanned goat or kid skin after independent flaying.
 
 Real saleable meat or carcass from slaughter.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Real saleable meat or carcass from slaughter (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record actual independent sale handovers only; none is presumed for fallen recovery.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_removal`
 - Range: Provisional completeness screen, not a default yield
@@ -191,13 +200,15 @@ Real saleable meat or carcass from slaughter.
 
 Other actually marketed terminal products, if any.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Other actually marketed terminal products, if any (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Disaggregate material identity and handover; do not combine milk, fibre or breeding service with slaughter outputs.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_removal`
 - Range: Provisional completeness screen, not a default yield
@@ -215,13 +226,15 @@ Other actually marketed terminal products, if any.
 
 Unmarketable slaughter or fallen-body residues for documented treatment.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Unmarketable slaughter or fallen-body residues for documented treatment (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh residues and record legal treatment; never count them as saleable skin.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_removal`
 - Range: Provisional completeness screen, not a default yield
@@ -246,13 +259,15 @@ Unmarketable slaughter or fallen-body residues for documented treatment.
 
 Wet raw goat or kid skin from removal.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Wet raw goat or kid skin from removal (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Match lot and mass once to removal output; purchased hide needs compatible upstream dataset.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning`
 - Range: Provisional completeness screen, not a default yield
@@ -268,13 +283,15 @@ Wet raw goat or kid skin from removal.
 
 Process water for first cleaning, only when applied.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Process water for first cleaning, only when applied (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Meter actual water use; absent washing means zero exchange.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning`
 - Range: Provisional completeness screen, not a default yield
@@ -298,13 +315,15 @@ Process water for first cleaning, only when applied.
 
 Untanned cleaned and trimmed goat or kid raw skin.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Untanned cleaned and trimmed goat or kid raw skin (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh prepared skin before grade sorting; record retained moisture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning`
 - Range: Provisional completeness screen, not a default yield
@@ -322,13 +341,15 @@ Untanned cleaned and trimmed goat or kid raw skin.
 
 Non-saleable flesh, trimmings and wash solids.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Non-saleable flesh, trimmings and wash solids (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record mass and actual treatment destination separately from prepared skin.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning`
 - Range: Provisional completeness screen, not a default yield
@@ -353,13 +374,15 @@ Non-saleable flesh, trimmings and wash solids.
 
 First-conditioned goat or kid skin entering sort.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: First-conditioned goat or kid skin entering sort (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Trace incoming lot and mass once from conditioning.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 - Range: Provisional completeness screen, not a default yield
@@ -383,13 +406,15 @@ First-conditioned goat or kid skin entering sort.
 
 Accepted saleable goat or kid raw skin.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Accepted saleable goat or kid raw skin (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record each declared grade and onward preservation or direct handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 - Range: Provisional completeness screen, not a default yield
@@ -405,13 +430,15 @@ Accepted saleable goat or kid raw skin.
 
 Lower-grade but independently saleable goat or kid raw skin.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Lower-grade but independently saleable goat or kid raw skin (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Use only when sold as raw skin; state buyer and gate.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 - Range: Provisional completeness screen, not a default yield
@@ -429,13 +456,15 @@ Lower-grade but independently saleable goat or kid raw skin.
 
 Rejected skin portions not sold as raw skin.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Rejected skin portions not sold as raw skin (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record rejection reason, mass and treatment; no automatic recycling credit.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 - Range: Provisional completeness screen, not a default yield
@@ -460,13 +489,15 @@ Rejected skin portions not sold as raw skin.
 
 Accepted or downgraded raw skin entering actual preservation.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Accepted or downgraded raw skin entering actual preservation (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Omit this process for fresh direct handover; trace state and mass on entry.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preservation`
 - Range: Provisional completeness screen, not a default yield
@@ -482,13 +513,15 @@ Accepted or downgraded raw skin entering actual preservation.
 
 Actually used salt, brine constituent or other permitted medium.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Actually used salt, brine constituent or other permitted medium (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Identify substance and measure input; no universal salt dose or fixed flow identity.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preservation`
 - Range: Provisional completeness screen, not a default yield
@@ -504,13 +537,15 @@ Actually used salt, brine constituent or other permitted medium.
 
 Actual electricity, fuel or other energy carrier for preservation.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Actual electricity, fuel or other energy carrier for preservation (UUID unresolved)
 - Flow property / unit: Energy / kWh
 - Amount rule: Meter by carrier and period; omit when no energy intervention occurs.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preservation`
 - Range: Provisional completeness screen, not a default yield
@@ -534,13 +569,15 @@ Actual electricity, fuel or other energy carrier for preservation.
 
 Chilled, dried, salted or brined raw goat or kid skin, not tanned.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Chilled, dried, salted or brined raw goat or kid skin, not tanned (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Measure as-sold state mass and retained salt and moisture before presentation.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preservation`
 - Range: Provisional completeness screen, not a default yield
@@ -558,13 +595,15 @@ Chilled, dried, salted or brined raw goat or kid skin, not tanned.
 
 Spent brine, rejected skin and other actual preservation residues.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Spent brine, rejected skin and other actual preservation residues (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Separate liquid and solid treatment and record mass without hiding moisture loss.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preservation`
 - Range: Provisional completeness screen, not a default yield
@@ -589,13 +628,15 @@ Spent brine, rejected skin and other actual preservation residues.
 
 Actually saleable raw goat/kid skin from removal, grading or preservation, at the declared gate.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Actually saleable raw goat/kid skin from removal, grading or preservation at the declared gate (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Take one route-specific recovered, graded or preserved output per lot; never count alternatives together.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_gate`
 - Range: Provisional completeness screen, not a default yield
@@ -611,13 +652,15 @@ Actually saleable raw goat/kid skin from removal, grading or preservation, at th
 
 Actually used reusable or single-use protective packaging.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Actually used reusable or single-use protective packaging (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record material and reuse count; package mass is excluded from net skin reference.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_gate`
 - Range: Provisional completeness screen, not a default yield
@@ -641,14 +684,18 @@ Actually used reusable or single-use protective packaging.
 
 Net as-sold fresh or preserved untanned raw goat or kid skin.
 
+Raw reference-output records: Exactly one final output per sold lot at its actual removal, slaughterhouse, recovery or curing gate; branch-specific upstream steps may be omitted. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit.
+
+Denominator and scope requirements：per reference flow
+
 - Selected flow: Raw goat or kid skin at actual handover
 - Flow property / unit: Mass / kg
-- Amount rule: Exactly one final output per sold lot at its actual removal, slaughterhouse, recovery or curing gate; branch-specific upstream steps may be omitted.
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_gate`
 - Range: Normalized reference amount
   - Range role: Allowed range (`allowed_range`)
@@ -665,13 +712,15 @@ Net as-sold fresh or preserved untanned raw goat or kid skin.
 
 Non-reused protective material and presentation rejects.
 
+Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
+
 - Selected flow: Non-reused protective material and presentation rejects (UUID unresolved)
 - Flow property / unit: Mass / kg
 - Amount rule: Record actual disposal separately from the skin product.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Route-specific (`route_specific`)
-- Normalization basis: per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
-- Basis kind: Process output (`process_output`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_gate`
 - Range: Provisional completeness screen, not a default yield
@@ -701,11 +750,11 @@ Non-reused protective material and presentation rejects.
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_removal` | `removal` | actual terminal event and independent skin | animal-event ticket | animal and lot ID, species, source route, legal status, live/body mass, skin removal, skin/meat/other products, Waste, gate, period | slaughter/recovery tickets, calibrated scales, upstream dataset linkage | kg, event | each event | animal service and terminal periods | actual source and removal site | match one body input to real outputs and recorded loss | tickets, scales, legal records |
-| `cp_conditioning` | `conditioning` | first prepared-skin state | processing batch | incoming skin, water, prepared skin, trims, moisture, lot, time | batch sheet, water meter and calibrated scale | kg, h | each batch | reference production period | actual conditioning site | reconcile mass by state and treatment | meter and scale calibration |
-| `cp_grading` | `grading` | accepted/downgraded/rejected destinations | grade ledger | incoming lot, grade, accepted, downgraded, rejected masses and destinations | scale and sale/dispatch documents | kg | each lot | reference production period | grading site | partition actual grade and reject destinations | grade and dispatch evidence |
-| `cp_preservation` | `preservation` | actual curing or chilling | preservation batch | inlet state and mass, salt/medium, utility carrier, output state/mass, moisture, retained salt, spent liquor, time | batch sheet, meter and laboratory/scale records | kg, kWh, h | each preserved batch | actual preservation periods | curing site | separate fresh bypass and each intervention | batch, calibration and sample record |
-| `cp_gate` | `gate` | net saleable skin and package | dispatch lot | incoming state, grade, gross mass, free brine, package tare/reuse, net skin mass, gate, destination | dispatch scale, container ledger and invoice | kg, event | each dispatch | reference handover period | actual handover site | one final net-skin output per sold lot | dispatch and tare tickets |
+| `cp_removal` | `removal` | actual terminal event and independent skin | animal-event ticket | animal and lot ID, species, source route, legal status, live/body mass, skin removal, skin/meat/other products, Waste, gate, period | slaughter/recovery tickets, calibrated scales, upstream dataset linkage; Raw aggregation requirements: match one body input to real outputs and recorded loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, event | each event | animal service and terminal periods | actual source and removal site | per reference flow | tickets, scales, legal records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_conditioning` | `conditioning` | first prepared-skin state | processing batch | incoming skin, water, prepared skin, trims, moisture, lot, time | batch sheet, water meter and calibrated scale; Raw aggregation requirements: reconcile mass by state and treatment. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, h | each batch | reference production period | actual conditioning site | per reference flow | meter and scale calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_grading` | `grading` | accepted/downgraded/rejected destinations | grade ledger | incoming lot, grade, accepted, downgraded, rejected masses and destinations | scale and sale/dispatch documents; Raw aggregation requirements: partition actual grade and reject destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | reference production period | grading site | per reference flow | grade and dispatch evidence; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_preservation` | `preservation` | actual curing or chilling | preservation batch | inlet state and mass, salt/medium, utility carrier, output state/mass, moisture, retained salt, spent liquor, time | batch sheet, meter and laboratory/scale records; Raw aggregation requirements: separate fresh bypass and each intervention. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, kWh, h | each preserved batch | actual preservation periods | curing site | per reference flow | batch, calibration and sample record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_gate` | `gate` | net saleable skin and package | dispatch lot | incoming state, grade, gross mass, free brine, package tare/reuse, net skin mass, gate, destination | dispatch scale, container ledger and invoice; Raw aggregation requirements: one final net-skin output per sold lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, event | each dispatch | reference handover period | actual handover site | per reference flow | dispatch and tare tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
 
 ### Calculation Rules
 
