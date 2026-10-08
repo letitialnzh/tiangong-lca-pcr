@@ -5,83 +5,80 @@ status: candidate
 sync_with: pcr.zh-CN.md
 ---
 
-# Asses
+# Living asses
 
 ## 1. Scope and Applicability
 
-This PCR guides foreground data package construction for live asses, also called donkeys, produced and transferred as live animals at a declared farm gate, holding gate, or delivered gate. It covers breeding or replacement-stock entry, foal or young animal rearing, grow-out and husbandry, feed and water use, bedding where used, manure and excreta management, farm energy, animal health inputs, mortality or cull handling, and farm-gate live-animal handling.
-
-Excluded products are live horses, mules and hinnies, meat of equines, hides and skins, milk, semen, embryos, manure products marketed as separate fertilizers, transport work performed by the animal after sale, and downstream slaughter or working-animal use.
+This PCR covers living asses (donkeys) produced by a breeder or rearer and handed over alive at the actual producer gate. A breeder may sell a foal, while a rearer may sell an older animal; these are distinct final handovers, not successive sales credited as two outputs of one lot. It excludes horses, mules, hinnies, dead animals, meat, milk and downstream draft, transport or riding services. Declare species/lineage, sex, age or production class, head count, measured live mass, intended use, condition, route, period and actual gate. Purchased animals carry their preceding production burden. Retained animals used for farm work are a separately evidenced service case, not an assumed co-product.
 
 ## 2. Product Category Identity
 
 | Field | Value |
 | --- | --- |
 | canonical_pcr_id | `pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.asses` |
-| classification_refs | CPC 3.0 `02132`, `Asses` |
-| covered_products | live asses or donkeys sold or transferred as live animals for breeding, draught or pack use, further rearing, companion use, conservation herds, or other non-slaughter live-animal purposes |
-| excluded_products | horses; mules and hinnies; equine meat; hides and skins; milk; semen; embryos; manure products; services delivered by working animals after sale |
-| representative_product | live ass at declared live weight and health status, ready for transfer at farm gate |
-| production_route | breeding or replacement-stock entry, animal rearing and husbandry, manure management, and farm-gate handling |
-| market_state | live animal, unprocessed, at declared age class, sex, breed or type, live weight, health status, and transfer gate |
+| classification_refs | CPC 3.0 `02132`, Asses |
+| covered_products | Living asses at breeder-foal or rearer/seller producer handover |
+| excluded_products | Horses; mules and hinnies; carcasses, meat and milk; downstream animal work or transport services |
+| representative_product | An alive, weighed ass at its declared producer gate |
+| production_route | Managed breeding and foaling, conditional young-animal rearing, followed by independent live gathering, inspection and handover. Grazing-led and stable/feed-led management share the biological parent but change feed sourcing, bedding, housing energy, water and manure placement/measurement. Both may operate within one cohort or period; disclose their measured shares rather than assign a label. |
+| market_state | Living, unprocessed ass with condition, class, sex, count and live mass declared |
 
 ## 3. Reference Flow
 
 | Field | Value |
 | --- | --- |
-| What | live ass at declared transfer gate |
-| How much | 1 kg live weight |
-| How well | declared age class, sex, breed or type, intended use, health status, live-weight measurement basis, and production system |
-| How long or cycle | one animal rearing cycle from declared starting condition to transfer gate; herd maintenance period declared when breeding herd burdens are included |
-| reference_flow_link | Reference amount and product flow below |
+| What | Living ass at actual breeder, rearer or seller producer handover |
+| How much | 1 kg measured live mass; also report head count and measured class-specific kg/head |
+| How well | Alive and unprocessed with lineage, class, sex, intended use and condition recorded |
+| How long or cycle | Declared mating/foaling season or rearing cohort; index breeder, young-animal and shared-asset service periods |
+| reference_flow_link | `reference_product_handover` |
 
 | Field | Value |
 | --- | --- |
-| Reference amount | 1 kg |
-| Reference product flow | Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3` |
+| Reference amount | 1 |
+| Reference product flow | Living ass at declared producer gate |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
-| Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
-| Reference unit | kg live weight |
-| Required qualifiers | age class; sex; breed or type; intended use; live-weight measurement method; production system; health or certification status; geography and declared gate; transport inclusion status |
+| Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
+| Reference unit | kg |
+| Required qualifiers | Lineage/species; sex; foal/young/adult class; head count; measured kg/head; condition; intended use; breeding or rearing route; actual producer gate; geography and cohort period |
 
-When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete for that data package.
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
 
-Mass live weight is the primary reference flow basis. Head-count records may be used only when a measured or documented live-weight conversion is provided.
+The reference intentionally spans producer gates. The confirmed CPC 02132 farm-gate Product identity is restricted to a matching farm-gate final output card, never a generic foal transfer or the multi-gate reference.
 
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
-| `reference_live_weight` | reference product | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg live weight | The reference flow must be expressed as kg live ass at the declared transfer gate. |
-| `head_count_conversion` | count-based animal records | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg live weight | Count-based receiving, birth, sale, mortality, or inventory records must include measured live weight or a documented conversion by age class and sex. |
-| `feed_dry_matter_basis` | feed and forage inputs | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg dry matter and kg as-fed | Feed records must state whether quantities are dry matter or as-fed; moisture conversion must be disclosed when normalizing feed intake. |
-| `water_volume_conversion` | drinking and cleaning water | Mass or Volume | kg, L, or m3 | Water volume may be recorded in L or m3 and converted to kg when needed; water source and allocation to animal class must be declared. |
-| `manure_n_basis` | manure, excreta, nitrogen, and nitrogen emissions | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg manure, kg volatile solids, and kg N where applicable | Manure and excreta records must preserve enough information to calculate CH4, N2O, NH3, and nitrogen loss methods when these emissions are in scope. |
-| `energy_inventory` | electricity, fuel, and farm machinery energy | Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` | MJ or kWh | State whether each energy value is final electricity, fuel lower heating value, or delivered service energy. |
+| `live_mass` | Reference and animal transfers | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Weigh the lot or a documented representative class sample; reconcile head count and kg/head. Never infer mass from count using a universal ass weight. |
+| `head_balance` | Breeding and rearing cohorts | Count | head | Reconcile opening, purchased, born, transferred, sold, dead and closing animals by class and period. |
+| `period_basis` | Breeders and shared assets | Time | days or seasons | Date mating, gestation, foaling, growth, replacement and final handover; apportion recurring loads only over actual service. |
+| `manure_basis` | Exported manure and managed waste | Mass | kg | Distinguish sold/used manure, collected disposal and grazing deposition, recording wet/dry basis and destination. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
-
-The default boundary is foreground data collection to the declared live-animal transfer gate:
-
-1. Breeding herd, purchased foals or replacement animals, feed, forage, bedding, water, veterinary inputs, fuel, electricity, and purchased services when they are part of the foreground data package.
-2. Animal housing, grazing or yard management, feeding, watering, health management, bedding management, weighing, identification, and routine husbandry.
-3. Manure, urine, bedding, and excreta collection, storage, treatment, deposition during grazing, field application controlled by the farm, or transfer to a manure handler.
-4. Farm-gate sorting, quarantine or pre-sale holding, loading, and short-distance delivery when the declared gate is delivered live animal.
-
-The completed foreground package represents live-animal production to the declared gate. Downstream work service, transport service performed by the animal, slaughter, hide recovery, milk production, and product use after sale are outside the default boundary unless a study explicitly expands scope.
-
-This boundary is a data-production abstraction. Declared breeding stock, purchased foals, or replacement animals are starting-condition records for the foreground package. Same-category live-ass inputs are not recursively traced as a new live-ass PCR inside the same package; their identity, mass, source, and prior-burden treatment are disclosed.
 
 ### Boundary Abstraction
 
 | Field | Value |
 | --- | --- |
-| declared_starting_condition | breeding_herd_or_live_ass_stock_entry |
-| starting_condition_role | animal_identity_and_reproduction_condition |
-| product_classification_scope | current CPC 3.0 product category `02132`, `Asses` |
-| recursive_input_rule | input flow in the same product category that causes recursive tracing is recorded as declared starting condition or purchased stock entry, with prior-burden treatment disclosed |
-| upstream_dataset_requirement | disclose source, live weight, age class, sex, breed or type, health status, acquisition date, and whether upstream live-animal burdens are included, excluded, or represented by secondary data |
-| disclosure | record production system, herd or lot boundary, live-weight basis, animal movement, mortality and cull fate, manure-management system, grazing or housing split, and declared gate |
+| declared_starting_condition | Opening breeding asses or purchased foals/young asses entering the first operated node, with origin, age, count, live mass and inherited burden |
+| starting_condition_role | An opening foreground herd or upstream Product input, never a presumed zero-burden animal |
+| product_classification_scope | CPC 3.0 `02132` living asses only |
+| recursive_input_rule | Link purchased live asses once to an upstream dataset at the true preceding gate; an internal foal transfer is not a second final sale or fresh external input. |
+| upstream_dataset_requirement | Match purchased animals, feed, water, energy, materials and services to actual source, unit, technology and geography. |
+| disclosure | Operated nodes, pasture/stable shares, breeder and rearing periods, shared assets, animal deaths/culls, manure destinations and the precise live handover gate. |
+
+### Boundary Rules
+
+| rule_id | Applies to | Rule | source_ids |
+| --- | --- | --- | --- |
+| `boundary_live_ass` | All routes | Stop at living-ass producer handover; exclude slaughter, meat/milk processing and post-handover work services. A lost or dead animal is not a live product. | `un-cpc-2025`; `fao-working-equids` |
+| `boundary_breeding` | Operated breeder | Include jack/jenny upkeep, mating, gestation, foaling and nursing when performed; purchased breeding animals retain prior burden. | `fao-working-equids` |
+| `boundary_route` | Grazing and stabled management | Disclose actual feed, grazing, bedding, energy, water and manure pathways by mode and period; a stabled label alone is not a changed inventory. | `fao-working-equids`; `ipcc-livestock-2019` |
+| `boundary_shared` | Shared infrastructure | Assign shelter, fencing, water and handling assets to all consuming breeder, rearing and handover nodes/periods by metered use or documented animal-days; prevent double attribution. | `fao-working-equids` |
+| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |
 
 ## 6. Process Inventory Structure
 
@@ -89,625 +86,839 @@ This boundary is a data-production abstraction. Declared breeding stock, purchas
 
 | process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
-| stock_entry_and_breeding_basis | Stock Entry and Breeding Basis | required |  | foreground | live ass stock entering the foreground system |
-| rearing_and_husbandry | Rearing and Husbandry | required |  | foreground | live-weight gain and maintained live animal |
-| manure_and_excreta_management | Manure and Excreta Management | required |  | foreground | manure, urine, bedding, and grazing excreta generated by the foreground animals |
-| farm_gate_handling_and_delivery | Farm-gate Handling and Delivery | conditional | include when sorting, quarantine, holding, loading, or delivery materially affects the declared gate | foreground/downstream | live ass transferred at declared gate |
+| `breeding` | Breed and nurse live ass foals | conditional | Operated jack/jenny breeding and foaling; otherwise upstream purchased young ass | Managed biological production with foal handoff | per kg live foals leaving breeder |
+| `rearing` | Rear living asses | conditional | Older-ass producer handover or purchased-foal growth | Managed growth with grazing/stable inventory delta | per kg living asses leaving rearer |
+| `handover` | Gather, assess and hand over living asses | required | Final breeder-foal or rearing-farm sale | Independent live collection and acceptance, loss reconciliation and gate measurement | per kg accepted living ass at final gate |
+| `reference_handover` | Actual producer reference-product handover | required | One actual declared route, state and producer gate per foreground package | Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution | 1 kg accepted product at the declared handover |
 
-### Process: Stock Entry and Breeding Basis (`stock_entry_and_breeding_basis`)
+Gathering and acceptance are independent from growth: they establish the final live product state and gate, and separate rejected/dead animals from saleable animals. Each lot has one final route, although pasture and housed management can coexist within its history. Record mating/gestation, foaling, nursing, rearing, asset service, replacement and disposition periods.
+
+### Process: Breed and nurse live ass foals (`breeding`)
 
 #### Inputs
 
 ##### Product flows
 
-###### Declared breeding herd or purchased stock entry (`declared_breeding_herd_or_purchased_stock_entry`)
+###### Purchased breeding asses (`breeder_stock`)
 
-Declared breeding herd, foals, or purchased replacement animals are recorded as the live-animal starting condition for the foreground package.
+Count purchased jennies and jacks only when they cross into this breeding boundary; opening owned stock is the declared starting condition.
 
-- Selected flow: Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
-- Flow property / unit: Mass / kg live weight
-- Amount rule: measured live weight and head count at system entry
-- Value mode: Foreground record (`foreground_record`)
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured received live mass with upstream burden and count Original collection denominator kind: process_output.
+
+- Selected flow: Purchased live breeding asses (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per animal lot or herd entering the foreground system
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_stock_entry_records`
-- Range: Stock entry mass reconciliation
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Nonnegative breeder-stock completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper is a permissive data-error screen, not a typical value
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Breeding-herd feed and supplied forage (`breeder_feed`)
+
+Measure purchased and own-produced feed separately; grazed forage is not automatically a purchased Product input.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: issued feed minus inventory change and recorded losses, disaggregated by kind Original collection denominator kind: process_output.
+
+- Selected flow: Breeding-ass feed and forage (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_feed`
+- Range: Nonnegative feed completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Supplied breeder water (`breeder_water`)
+
+Record delivered drinking and cleaning water; rainfall on pasture is not a purchased Product input.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: meter or delivery records allocated to breeder animal-days Original collection denominator kind: process_output.
+
+- Selected flow: Supplied water (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_utilities`
+- Range: Nonnegative water completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Breeder shelter energy (`breeder_energy`)
+
+Record actual electricity, heat or fuel by carrier only where the shelter or water system uses it.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: meter or purchased carrier quantity converted to energy by recorded carrier factor Original collection denominator kind: process_output.
+
+- Selected flow: Breeder energy carrier (UUID unresolved)
+- Flow property / unit: Energy / kWh or MJ
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_utilities`
+- Range: Nonnegative energy completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kWh/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+No routine purchased waste input is prescribed; record any imported waste actually used with separate authorization and identity.
+
+##### Elementary flows
+
+Pasture occupation is recorded as land-use activity with location, area and time; it is not invented as a purchased feed flow.
+
+#### Outputs
+
+##### Product flows
+
+###### Live foals leaving breeder (`breeder_foals`)
+
+Track living foals leaving the breeder stage. An internal transfer enters rearing once; a direct breeder-gate sale is the final product only after the handover node.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: measured accepted live mass with foal head count Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
+- Selected flow: Living ass foals at breeder stage (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Foal output mass balance screen
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1
-  - Unit: kg/kg live-weight output
-  - Basis: live-ass mass brought in as declared starting condition or purchased live stock
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; output is 1 when this node is operated and denominator nonzero
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Purchased feed and forage for breeding basis (`purchased_feed_and_forage_for_breeding_basis`)
+###### Independently sold live breeder culls (`breeder_culls`)
 
-Feed and forage used to maintain breeding or replacement stock before allocation to marketable animals are recorded by feed type and moisture basis.
+Only an actual live cull sold separately is a co-product; mortality is not.
 
-- Selected flow: Assorted Feed `cb2b142b-0ed1-4d6f-9283-cfef94451a75`
-- Flow property / unit: Mass / kg dry matter and kg as-fed
-- Amount rule: measured purchased or produced feed mass, converted to dry matter where needed
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per herd maintenance period or allocated kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_feed_and_forage_records`
-- Sources: `fao-leap-animal-feeds-2016`
-- Range: Provisional breeding-basis feed screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 50
-  - Unit: kg dry matter/kg live-weight output
-  - Basis: broad first-pass feed dry matter assigned to live-ass production
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Denominator and scope requirements：per kg live foals leaving breeder
 
-##### Waste flows
+Raw quantity and calculation requirements: weighed live culls at their own handover, zero if absent Original collection denominator kind: process_output.
 
-No waste input is normally required for stock entry. Include recovered bedding, recovered feed, or waste-derived feed only when it crosses the foreground boundary as a declared input.
-
-##### Elementary flows
-
-###### Grazing or housing land occupation (`grazing_or_housing_land_occupation`)
-
-Land occupation is recorded when grazing area, yard area, housing area, or feedlot occupation is included in the foreground scope.
-
-- Selected flow: Select applicable land occupation elementary flow
-- Flow property / unit: Area-time / ha a or m2 a
-- Amount rule: measured area and occupation duration
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per herd maintenance period or animal lot
-- Basis kind: Crop cycle (`crop_cycle`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_land_and_housing_records`
-
-#### Outputs
-
-##### Product flows
-
-###### Live ass stock entering rearing (`live_ass_stock_entering_rearing`)
-
-Live ass stock entering rearing is recorded as the product output from stock entry and breeding basis.
-
-- Selected flow: Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
-- Flow property / unit: Mass / kg live weight
-- Amount rule: measured live weight at transfer into rearing or husbandry process
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: stock entry process output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_stock_entry_records`
-
-##### Waste flows
-
-###### Non-marketable mortality or cull from stock entry (`non_marketable_mortality_or_cull_from_stock_entry`)
-
-Mortality or non-marketable cull animals are recorded with mass and fate when they occur before rearing allocation.
-
-- Selected flow: Select applicable animal mortality, carcass, or biological waste flow
+- Selected flow: Living culled breeding asses (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured or estimated live weight or carcass mass and disposal route
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per animal lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_mortality_and_cull_records`
-- Range: Provisional stock-entry mortality screening estimate
-  - Range role: Default estimate (`default_estimate`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Nonnegative cull balance screen
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
-  - Upper: 0.2
-  - Unit: kg/kg live-weight output
-  - Basis: broad first-pass mortality or cull mass before rearing allocation
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+###### Breeder manure sent to waste treatment (`breeder_manure_waste`)
+
+Record only collected manure sent to disposal/treatment as waste; export as a documented useful product is a separate actual output and cannot share this row.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: weighed or measured as-received collected manure with destination Original collection denominator kind: process_output.
+
+- Selected flow: Collected ass manure waste (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_manure`
+- Range: Nonnegative manure transfer screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Elementary flows
 
-Record enteric and manure emissions under the manure and excreta management process to avoid double counting.
+###### Breeder-enteric methane to air (`breeder_ch4`)
 
-### Process: Rearing and Husbandry (`rearing_and_husbandry`)
+Calculate only for the actual ass classes and feeding/productivity regime, using a documented applicable method. IPCC Mules/Asses parameters are stratified, not a universal factor.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: animal-days by class multiplied by a justified class and regime factor Original collection denominator kind: process_output.
+
+- Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_emissions`
+- Sources: `ipcc-livestock-2019`
+- Range: Nonnegative calculated emission screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Breeder manure methane to air (`breeder_manure_ch4`)
+
+Calculate for on-site stored or treated manure only where its actual management path produces methane; externally transferred manure emissions belong to the treatment dataset.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: class-specific excretion activity times justified manure-system methane factor Original collection denominator kind: process_output.
+
+- Selected flow: Methane, biogenic, to air from manure `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_emissions`
+- Sources: `ipcc-livestock-2019`
+- Range: Nonnegative manure methane screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Breeder manure nitrous oxide to air (`breeder_manure_n2o`)
+
+Calculate direct nitrous oxide from recorded storage, treatment or grazing deposition where the chosen method covers it; keep indirect nitrogen pathways separate and avoid double counting exported manure.
+
+Denominator and scope requirements：per kg live foals leaving breeder
+
+Raw quantity and calculation requirements: pathway-specific nitrogen or excretion activity times justified direct N2O factor Original collection denominator kind: process_output.
+
+- Selected flow: Nitrous oxide to air from manure `08a91e70-3ddc-11dd-94c3-0050c2490048`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_emissions`
+- Sources: `ipcc-livestock-2019`
+- Range: Nonnegative manure nitrous-oxide screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live foals
+  - Basis: per kg live foals leaving breeder; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+### Process: Rear living asses (`rearing`)
 
 #### Inputs
 
 ##### Product flows
 
-###### Live ass stock for rearing (`live_ass_stock_for_rearing`)
+###### Live young asses entering rearing (`young_ass_input`)
 
-Live ass stock for rearing is the animal input from breeding, purchase, or stock entry records.
+Accept internal foals once or purchased young animals with their upstream burdens and actual preceding gate.
 
-- Selected flow: Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
-- Flow property / unit: Mass / kg live weight
-- Amount rule: measured live weight entering the rearing period
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per animal lot
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_live_weight_records`
+Denominator and scope requirements：per kg live asses leaving rearing
 
-###### Feed and forage consumed during rearing (`feed_and_forage_consumed_during_rearing`)
+Raw quantity and calculation requirements: weighed incoming live mass, by class and source Original collection denominator kind: process_output.
 
-Feed, forage, crop residues, grazing intake estimates, concentrates, mineral supplements, and purchased feed are recorded separately when records allow.
-
-- Selected flow: Assorted Feed `cb2b142b-0ed1-4d6f-9283-cfef94451a75`
-- Flow property / unit: Mass / kg dry matter and kg as-fed
-- Amount rule: measured feed issue, grazing estimate, or feed balance by animal class
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live-weight output or animal-day
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_feed_and_forage_records`
-- Sources: `fao-leap-animal-feeds-2016`
-- Range: Provisional rearing feed screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 80
-  - Unit: kg dry matter/kg live-weight output
-  - Basis: broad first-pass feed dry matter assigned to live-ass rearing
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Drinking and husbandry water (`drinking_and_husbandry_water`)
-
-Water used for drinking, cleaning, cooling, and animal handling is recorded by source and use where possible.
-
-- Selected flow: Process water `ec205030-248c-496f-9cf2-06d9d26dc6ff`
-- Flow property / unit: Mass or volume / kg, L, or m3
-- Amount rule: measured water meter, tank fill, well pump, or estimated drinking-water use by animal class
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live-weight output or animal-day
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_water_records`
-- Range: Provisional water screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 0.5
-  - Unit: m3/kg live-weight output
-  - Basis: broad first-pass drinking and husbandry water assigned to live-ass production
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Bedding and housing materials (`bedding_and_housing_materials`)
-
-Bedding, litter, disinfectants, and housing consumables are recorded when they cross the foreground boundary.
-
-- Selected flow: Select applicable bedding or housing material flow
+- Selected flow: Living young asses entering rearing (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured purchased or produced bedding mass and bedding replacement frequency
-- Value mode: Foreground record (`foreground_record`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per animal-day or kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_bedding_and_housing_records`
-
-###### Veterinary and animal health inputs (`veterinary_and_animal_health_inputs`)
-
-Veterinary products, vaccines, medicines, disinfectants, ear tags, and identification materials are recorded when material to the study goal and scope.
-
-- Selected flow: Select applicable veterinary, medicine, disinfectant, or identification material flow
-- Flow property / unit: Mass, volume, or number of items
-- Amount rule: measured product amount, dose, or item count by animal lot
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Product-specific (`product_specific`)
-- Normalization basis: per animal lot or kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_veterinary_and_health_records`
-
-###### Farm energy for husbandry (`farm_energy_for_husbandry`)
-
-Electricity and fuel used for pumping, lighting, housing, feed handling, manure movement, weighing, and internal transport are recorded by carrier.
-
-- Selected flow: Electricity `f872677d-2f66-428a-a94e-f0fba61231df`; Diesel oil `9d258d75-6792-4f1c-9856-81602ed8f816` where used
-- Flow property / unit: Net calorific value / MJ or kWh
-- Amount rule: measured meter, fuel invoice, equipment log, or allocation to animal class
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per animal lot or kg live-weight output
-- Basis kind: Fuel inventory (`fuel_inventory`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy_records`
-- Range: Provisional husbandry energy screening estimate
-  - Range role: Default estimate (`default_estimate`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Nonnegative incoming-animal screen
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
-  - Upper: 20
-  - Unit: MJ/kg live-weight output
-  - Basis: broad first-pass farm energy assigned to live-ass husbandry
-  - Basis kind: Fuel inventory (`fuel_inventory`)
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Rearing feed and forage (`rearing_feed`)
+
+Separate delivered concentrate and harvested forage from pasture intake; document any own-grown feed upstream allocation.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: issued feed by class and period, adjusted for stocks and losses Original collection denominator kind: process_output.
+
+- Selected flow: Young-ass feed and forage (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_feed`
+- Range: Nonnegative feed completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Supplied rearing water (`rearing_water`)
+
+Measure drinking and cleaning water delivered to the rearing animals by actual route and period.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: metered or recorded supplied water attributed by animal-days Original collection denominator kind: process_output.
+
+- Selected flow: Supplied water (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_utilities`
+- Range: Nonnegative water completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Housing bedding and care materials (`rearing_materials`)
+
+Record bedding and veterinary consumables by material when stabling or treatment actually occurs; no universal per-head package is assumed.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: materials issued to rearing lot and period Original collection denominator kind: process_output.
+
+- Selected flow: Ass bedding and care material (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_materials`
+- Range: Nonnegative material completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Rearing shelter energy (`rearing_energy`)
+
+Record actual energy carrier and shared shelter service; pasture-only periods may have zero shelter energy.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: meter or carrier purchase and actual service allocation Original collection denominator kind: process_output.
+
+- Selected flow: Rearing energy carrier (UUID unresolved)
+- Flow property / unit: Energy / kWh or MJ
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_utilities`
+- Range: Nonnegative energy completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kWh/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Waste flows
 
-No waste input is normally required for rearing and husbandry. Include waste-derived feed or recovered bedding only when used as an input under the declared scope.
+No imported waste feedstock is prescribed for young asses.
 
 ##### Elementary flows
 
-###### Water withdrawal for animal production (`water_withdrawal_for_animal_production`)
-
-Water withdrawal is calculated from drinking and husbandry water records when the data package reports elementary water flows.
-
-- Selected flow: water `419682fe-60fb-4b43-be89-bf2824b51104`
-- Flow property / unit: Mass / kg
-- Amount rule: calculated from water source and quantity records
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_water_records`
-- Range: Provisional water withdrawal screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 500
-  - Unit: kg water/kg live-weight output
-  - Basis: broad first-pass water withdrawal assigned to live-ass production
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Record grazing land occupation by area, place and time where relevant; do not infer it from feed purchase alone.
 
 #### Outputs
 
 ##### Product flows
 
-###### Marketable live ass at farm gate (`marketable_live_ass_at_farm_gate`)
+###### Rearing-stage living asses (`reared_asses`)
 
-Marketable live ass at farm gate is the reference product output.
+The live animal at the rearing-stage exit proceeds to final inspection and handover, not a separate final lot credit.
 
-- Selected flow: Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
-- Flow property / unit: Mass / kg live weight
-- Amount rule: measured live weight at declared gate
-- Value mode: Foreground record (`foreground_record`)
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: weighed living exit animals and head count Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
+- Selected flow: Living asses leaving rearing (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: PCR reference output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_live_weight_records`
-- Range: Live-ass reference output identity
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Rearing output mass balance screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; output is 1 when node operated
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+###### Rearing manure sent to waste treatment (`rearing_manure_waste`)
+
+Only collected manure sent as waste belongs here; document grazing deposits and any actually sold useful manure separately.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: collected as-received manure with destination and moisture basis Original collection denominator kind: process_output.
+
+- Selected flow: Collected ass manure waste (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_manure`
+- Range: Nonnegative manure transfer screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Elementary flows
+
+###### Rearing enteric methane to air (`rearing_ch4`)
+
+Calculate for actual young-ass animal-days, diet and productivity class; do not reuse an unqualified species-aggregate number.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: animal-days times justified Mules/Asses category and regime factor Original collection denominator kind: process_output.
+
+- Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_emissions`
+- Sources: `ipcc-livestock-2019`
+- Range: Nonnegative calculated emission screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Rearing manure methane to air (`rearing_manure_ch4`)
+
+Calculate for actual on-site manure storage or treatment, with climate and management system recorded; do not claim off-site treatment emissions here.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: pathway-specific excretion activity times justified methane factor Original collection denominator kind: process_output.
+
+- Selected flow: Methane, biogenic, to air from manure `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_emissions`
+- Sources: `ipcc-livestock-2019`
+- Range: Nonnegative manure methane screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Rearing manure nitrous oxide to air (`rearing_manure_n2o`)
+
+Calculate direct nitrous oxide from documented manure storage and grazing deposition with the relevant nitrogen and climate/pathway data; do not treat ammonia or indirect N2O as this direct flow.
+
+Denominator and scope requirements：per kg live asses leaving rearing
+
+Raw quantity and calculation requirements: pathway-specific excretion nitrogen times justified direct N2O factor Original collection denominator kind: process_output.
+
+- Selected flow: Nitrous oxide to air from manure `08a91e70-3ddc-11dd-94c3-0050c2490048`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_emissions`
+- Sources: `ipcc-livestock-2019`
+- Range: Nonnegative manure nitrous-oxide screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg live asses
+  - Basis: per kg live asses leaving rearing; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+### Process: Gather, assess and hand over living asses (`handover`)
+
+#### Inputs
+
+##### Product flows
+
+###### Living asses arriving for final inspection (`handover_animals`)
+
+Accept foals directly from breeding or older asses from rearing, once per lot, with actual mass and history.
+
+Denominator and scope requirements：per kg accepted living ass at final gate
+
+Raw quantity and calculation requirements: measured arriving live mass and count Original collection denominator kind: process_output.
+
+- Selected flow: Living asses before producer handover (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Nonnegative arrival balance screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg accepted living ass
+  - Basis: per kg accepted living ass at final gate; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Handling water (`handover_water`)
+
+Record only separately metered or defensibly allocated water used during gathering, inspection and holding.
+
+Denominator and scope requirements：per kg accepted living ass at final gate
+
+Raw quantity and calculation requirements: allocated actual supplied water by accepted live mass Original collection denominator kind: process_output.
+
+- Selected flow: Handover supplied water (UUID unresolved)
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_utilities`
+- Range: Nonnegative utility completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg accepted living ass
+  - Basis: per kg accepted living ass at final gate; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Handling energy (`handover_energy`)
+
+Record electricity or other measured carrier actually used for gathering, inspection or holding, without assuming powered equipment exists at every site.
+
+Denominator and scope requirements：per kg accepted living ass at final gate
+
+Raw quantity and calculation requirements: allocated metered carrier energy by accepted live mass Original collection denominator kind: process_output.
+
+- Selected flow: Handover energy carrier (UUID unresolved)
+- Flow property / unit: Energy / kWh or MJ
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_utilities`
+- Range: Nonnegative energy completeness screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kWh/kg accepted living ass
+  - Basis: per kg accepted living ass at final gate; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+No routine waste input is prescribed at the live handover node.
+
+##### Elementary flows
+
+No default elementary input is assumed for inspection; record actual direct resource occupation separately where material.
+
+#### Outputs
+
+##### Product flows
+
+###### Accepted living asses at producer farm gate (`live_ass_handover`)
+
+This card is the concrete farm-gate case. For a nonmatching breeder/seller gate, keep the flow UUID unresolved and identify the actual gate in the foreground package.
+
+Denominator and scope requirements：per kg accepted living ass at final gate
+
+Raw quantity and calculation requirements: accepted weighed live mass, with reconciled head count and class Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
+- Selected flow: Asses, live and unprocessed, production mix at farm gate `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_animals`
+- Range: Final live output normalization check
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg PCR reference output
-  - Basis: live-ass reference output
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Method formula (`method_formula`)
-  - Sources: `mass-balance-identity`
-
-##### Waste flows
-
-###### Mortality and non-marketable culls (`mortality_and_non_marketable_culls`)
-
-Mortality and non-marketable culls are recorded with mass, cause category when available, and fate.
-
-- Selected flow: Select applicable animal mortality, carcass, or biological waste flow
-- Flow property / unit: Mass / kg
-- Amount rule: measured or estimated mass by event and disposal route
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_mortality_and_cull_records`
-- Range: Provisional rearing mortality screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 0.2
-  - Unit: kg/kg live-weight output
-  - Basis: broad first-pass mortality and non-marketable cull mass during rearing
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Elementary flows
-
-###### Fossil carbon dioxide from farm energy (`fossil_carbon_dioxide_from_farm_energy`)
-
-Fossil carbon dioxide from farm energy is calculated from fuel and electricity records with declared emission factors.
-
-- Selected flow: carbon dioxide (fossil), emissions to air unspecified `08a91e70-3ddc-11dd-923d-0050c2490048`
-- Flow property / unit: Mass / kg
-- Amount rule: energy quantity multiplied by declared fuel or electricity emission factor
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Generic (`generic`)
-- Normalization basis: per fuel inventory
-- Basis kind: Fuel inventory (`fuel_inventory`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_energy_records`
-- Range: Provisional farm energy fossil CO2 screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 5
-  - Unit: kg CO2/kg live-weight output
-  - Basis: broad first-pass fossil CO2 from farm energy
-  - Basis kind: Fuel inventory (`fuel_inventory`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-### Process: Manure and Excreta Management (`manure_and_excreta_management`)
-
-#### Inputs
-
-##### Product flows
-
-###### Manure, urine, and bedding entering management (`manure_urine_and_bedding_entering_management`)
-
-Manure, urine, bedding, and excreta are tracked from housing, yards, storage, grazing deposition, or collection systems into the declared management route.
-
-- Selected flow: Fecal fertilizer `e7f0099e-ecb6-48b5-a683-c0da022022b4`
-- Flow property / unit: Mass / kg wet mass, kg dry matter, kg volatile solids, and kg N where applicable
-- Amount rule: measured manure mass, bedding mass, manure storage records, or calculated excretion by animal class
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per animal lot or kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_manure_and_excreta_records`
-- Sources: `ipcc-2019-livestock-manure`, `emep-eea-2023-manure-management`
-- Range: Provisional manure and excreta screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg wet manure/kg live-weight output
-  - Basis: broad first-pass manure, urine, and bedding mass entering management
+  - Unit: kg/kg accepted living ass
+  - Basis: per kg accepted living ass at matching farm gate
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Waste flows
 
-No waste input is normally required unless recovered manure, sludge, or bedding from another system enters the foreground management route.
+###### Dead or rejected animals requiring disposal (`handover_losses`)
 
-##### Elementary flows
+Only dead animals or material requiring disposal are waste; a living rejected animal returned to rearing remains an internal animal transfer.
 
-No elementary input is normally required beyond water, land, and air exchange already represented in site records.
+Denominator and scope requirements：per kg accepted living ass at final gate
 
-#### Outputs
+Raw quantity and calculation requirements: measured disposed mass, fate and reason Original collection denominator kind: process_output.
 
-##### Product flows
-
-###### Marketable manure or nutrient co-product (`marketable_manure_or_nutrient_coproduct`)
-
-Manure, compost, or nutrient products are product outputs only when sold, transferred, or intentionally used as a co-product outside the live-animal reference flow.
-
-- Selected flow: Fecal fertilizer `e7f0099e-ecb6-48b5-a683-c0da022022b4`
-- Flow property / unit: Mass / kg and kg N where applicable
-- Amount rule: measured manure product mass and nutrient content when marketed or transferred
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure product output and kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_manure_and_excreta_records`
-- Range: Provisional marketable manure screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg manure product/kg live-weight output
-  - Basis: broad first-pass manure product mass when manure is marketed or transferred
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-###### Manure sent to treatment or disposal (`manure_sent_to_treatment_or_disposal`)
-
-Manure, soiled bedding, and deadstock residues sent to treatment or disposal are waste outputs when no co-product credit is claimed.
-
-- Selected flow: Select applicable manure, bedding, or biological waste flow
+- Selected flow: Dead-animal disposal waste (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: measured waste mass and fate by management route
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_manure_and_excreta_records`
-- Range: Provisional manure disposal screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg manure waste/kg live-weight output
-  - Basis: broad first-pass manure, bedding, or biological waste sent to treatment or disposal
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Elementary flows
-
-###### Enteric methane to air (`enteric_methane_to_air`)
-
-Enteric methane is calculated using the declared IPCC tier or reviewed regional method for non-ruminant equines.
-
-- Selected flow: methane (biogenic) `fe0acd60-3ddc-11dd-a8ea-0050c2490048`
-- Flow property / unit: Mass / kg
-- Amount rule: calculate from animal population, animal class, live weight, feed intake, and declared IPCC or regional emission factor
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Generic (`generic`)
-- Normalization basis: per animal-year or kg live-weight output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Method formula (`method_formula`)
-- Collection protocol: `cp_live_weight_records`
-- Sources: `ipcc-2019-livestock-manure`
-- Range: Provisional enteric methane screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 5
-  - Unit: kg CH4/kg live-weight output
-  - Basis: broad first-pass enteric methane after applying declared livestock method
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Manure methane to air (`manure_methane_to_air`)
-
-Manure methane is calculated from manure-management system, climate, volatile solids, and storage or deposition route.
-
-- Selected flow: methane (biogenic) `fe0acd60-3ddc-11dd-a8ea-0050c2490048`
-- Flow property / unit: Mass / kg
-- Amount rule: calculate from volatile solids and declared manure-management methane method
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure-management route
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Method formula (`method_formula`)
-- Collection protocol: `cp_manure_and_excreta_records`
-- Sources: `ipcc-2019-livestock-manure`
-- Range: Provisional manure methane screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 2
-  - Unit: kg CH4/kg live-weight output
-  - Basis: broad first-pass manure methane after applying declared manure-management method
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Manure nitrous oxide to air (`manure_nitrous_oxide_to_air`)
-
-Manure nitrous oxide is calculated from nitrogen excretion, manure-management system, and direct or indirect N2O method.
-
-- Selected flow: nitrous oxide, emissions to air unspecified `08a91e70-3ddc-11dd-94c3-0050c2490048`
-- Flow property / unit: Mass / kg
-- Amount rule: calculate from manure nitrogen and declared direct or indirect N2O method
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure-management route or N input
-- Basis kind: Nitrogen input (`n_input`)
-- Evidence kind: Method formula (`method_formula`)
-- Collection protocol: `cp_manure_and_excreta_records`
-- Sources: `ipcc-2019-livestock-manure`
-- Range: Provisional manure nitrous oxide screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 0.5
-  - Unit: kg N2O/kg live-weight output
-  - Basis: broad first-pass manure N2O after applying declared manure-management method
-  - Basis kind: Nitrogen input (`n_input`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Ammonia volatilization from manure (`ammonia_volatilization_from_manure`)
-
-Ammonia volatilization is calculated or recorded for housing, storage, field application under farm control, and grazing deposition where in scope.
-
-- Selected flow: ammonia, emissions to air unspecified `08a91e70-3ddc-11dd-a2a9-0050c2490048`
-- Flow property / unit: Mass / kg
-- Amount rule: calculate from manure nitrogen, management route, climate or storage condition, and declared NH3 method
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per manure-management route or N input
-- Basis kind: Nitrogen input (`n_input`)
-- Evidence kind: Method formula (`method_formula`)
-- Collection protocol: `cp_manure_and_excreta_records`
-- Sources: `emep-eea-2023-manure-management`
-
-### Process: Farm-gate Handling and Delivery (`farm_gate_handling_and_delivery`)
-
-#### Inputs
-
-##### Product flows
-
-###### Live ass entering farm-gate handling (`live_ass_entering_farm_gate_handling`)
-
-Live animals entering pre-sale holding, quarantine, sorting, loading, or delivery are recorded when those activities are inside the declared gate.
-
-- Selected flow: Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
-- Flow property / unit: Mass / kg live weight
-- Amount rule: measured live weight entering handling or delivery period
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: handling process input
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_live_weight_records`
-
-###### Handling energy and delivery transport (`handling_energy_and_delivery_transport`)
-
-Electricity, fuel, loading equipment, and route-specific transport service are recorded when the declared gate includes handling or delivery beyond normal farm-gate transfer.
-
-- Selected flow: Diesel oil `9d258d75-6792-4f1c-9856-81602ed8f816`; electricity or transport service selected from route records
-- Flow property / unit: Net calorific value or transport service / MJ, kWh, or tonne-km
-- Amount rule: measured fuel, electricity, carrier invoice, or route-specific transport service
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Route-specific (`route_specific`)
-- Normalization basis: per delivered kg live weight
-- Basis kind: Transport service (`transport_service`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_gate_handling_and_transport_records`
-- Range: Provisional handling and delivery energy screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 10
-  - Unit: MJ/kg delivered live weight
-  - Basis: broad first-pass handling and route energy inside declared gate
-  - Basis kind: Transport service (`transport_service`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-No waste input is normally required.
-
-##### Elementary flows
-
-Include direct combustion emissions from farm-gate handling and delivery when fuel is combusted inside the foreground system.
-
-#### Outputs
-
-##### Product flows
-
-###### Declared transferred live ass (`declared_transferred_live_ass`)
-
-Declared transferred live ass is the live animal output at the declared gate.
-
-- Selected flow: Asses `40fd68b3-1ea0-4828-8532-f64140fc3ea3`
-- Flow property / unit: Mass / kg live weight
-- Amount rule: measured live weight at declared transfer gate
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: PCR reference output
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_live_weight_records`
-
-##### Waste flows
-
-Declare bedding waste, manure, mortalities, or rejected animals from handling separately when they occur during pre-sale holding, quarantine, or delivery.
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_losses`
+- Range: Nonnegative disposal screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1000000
+  - Unit: kg/kg accepted living ass
+  - Basis: per kg accepted living ass at final gate; upper flags unit errors only
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Elementary flows
 
-###### Fossil carbon dioxide from handling and delivery energy (`fossil_carbon_dioxide_from_handling_and_delivery_energy`)
+No default emission is generated by a living sale. Continue to record actual direct emissions from any on-site handling fuel in its operating node.
 
-Fossil carbon dioxide from handling and delivery energy is calculated from fuel and energy records.
+### Process: Actual producer reference-product handover (`reference_handover`)
 
-- Selected flow: carbon dioxide (fossil), emissions to air unspecified `08a91e70-3ddc-11dd-923d-0050c2490048`
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
+
+#### Inputs
+
+##### Product flows
+
+###### Living ass at declared producer gate for actual producer-handover linkage (`reference_handover_input`)
+
+This input matches the accepted goods represented by `breeder_foals`, `reared_asses`, `live_ass_handover` under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `breeder_foals`, `reared_asses`, `live_ass_handover`
+
+Required product-instance qualifiers: Lineage/species; sex; foal/young/adult class; head count; measured kg/head; condition; intended use; breeding or rearing route; actual producer gate; geography and cohort period
+
+- Selected flow: Living ass at declared producer gate for actual producer-handover linkage
 - Flow property / unit: Mass / kg
-- Amount rule: energy or transport fuel quantity multiplied by declared emission factor
+- Amount rule: Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow.
 - Value mode: Calculated value (`calculated_value`)
-- Specificity: Route-specific (`route_specific`)
-- Normalization basis: per delivery or handling energy inventory
-- Basis kind: Fuel inventory (`fuel_inventory`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_gate_handling_and_transport_records`
-- Range: Provisional handling and delivery fossil CO2 screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 5
-  - Unit: kg CO2/kg delivered live weight
-  - Basis: broad first-pass fossil CO2 from handling and delivery energy
-  - Basis kind: Fuel inventory (`fuel_inventory`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Collection protocol: `cp_reference_handover`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
+
+#### Outputs
+
+##### Product flows
+
+###### Living ass at declared producer gate (`reference_product_handover`)
+
+This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `breeder_foals`, `reared_asses`, `live_ass_handover`
+
+Required product-instance qualifiers: Lineage/species; sex; foal/young/adult class; head count; measured kg/head; condition; intended use; breeding or rearing route; actual producer gate; geography and cohort period
+
+- Selected flow: Living ass at declared producer gate
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
 
 ## 7. Allocation and Co-product Handling
 
-No allocation is required when the only product output is the transferred live ass and manure or mortalities are treated as wastes with declared treatment. If manure, compost, draught service during the rearing period, milk, hide, breeding service, or another co-product is intentionally marketed inside the foreground boundary, allocation must be declared before publication.
+### Allocation Rules
 
-Preferred hierarchy:
-
-1. Subdivide processes when records separate live-animal production from manure product preparation, milk production, work service, or another co-product route.
-2. Use physical allocation only when a causal physical relationship is documented, such as nutrient content for marketed manure products.
-3. Use economic allocation when physical allocation is not defensible and market values are available.
-4. Report system expansion or substitution only as an additional scenario, with substituted product, geography, and avoided-burden dataset disclosed.
+| rule_id | Applies to | Rule | source_ids |
+| --- | --- | --- | --- |
+| `alloc_live_outputs` | Breeder and rearer | Keep foal, older ass and independently sold live cull as distinct output lots at their own gates. First attempt process subdivision and measured burden assignment; if inseparable joint burden remains, disclose a justified physical causal key (animal-days, feed use or live-mass gain) and sensitivity to another plausible key. Never count an internal transfer twice. | `fao-working-equids`; `iso-14044` |
+| `alloc_manure` | Manure | Collected exported useful manure is a co-product only with actual quality, quantity and handover evidence; disposal manure is waste and grazing deposition is an in-situ pathway. Avoid assumed credit for all excretion. | `ipcc-livestock-2019`; `iso-14044` |
+| `alloc_period` | Breeder herd | Allocate jack/jenny upkeep across measured service periods and foal cohorts, including replacements, deaths and culls; state treatment of cohorts spanning reporting years. Never amortize by an assumed universal lifespan. | `fao-working-equids`; `iso-14044` |
+| `alloc_shared` | Shelter, fence, water and handling assets | Identify each consuming breeder/rearing/handover node and service period. Use metered service or documented animal-days/occupied capacity as a causal key, with one shared burden ledger and no duplicate assignment. | `iso-14044` |
+| `alloc_work` | Retained working ass | If on-farm work is actually delivered, measure its service and partition only causally attributable feed/asset burdens from saleable live-animal production. Downstream third-party work after sale is excluded. | `fao-working-equids`; `iso-14044` |
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -715,75 +926,62 @@ Preferred hierarchy:
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_stock_entry_records | stock_entry_and_breeding_basis | declared breeding herd or purchased stock entry | animal receiving, birth, purchase, or herd inventory record | animal or lot id; source; age class; sex; breed or type; intended use; live weight; acquisition or birth date; health status; upstream burden treatment | scale record, veterinary certificate, herd book, purchase invoice, or birth record | head and kg live weight | per birth, purchase, transfer, or inventory period | rearing cycle or herd maintenance period | declared herd, farm, or lot | sum live weight by animal class and allocate breeding-basis burdens to live-weight output when included | scale calibration, herd book, animal movement record, purchase invoice, health certificate |
-| cp_live_weight_records | rearing_and_husbandry; farm_gate_handling_and_delivery | live ass weight and output | weighing, sale, dispatch, or animal movement record | animal or lot id; age class; sex; breed or type; weighing date; live weight; gate; buyer or destination; health status | calibrated scale, weigh tape with conversion, sale ticket, or animal movement record | kg live weight and head | per weighing, sale, or dispatch event | rearing cycle and delivery period | animal lot, farm, and transfer gate | sum live weight at declared gate and reconcile with entries, births, purchases, deaths, and sales | scale calibration, sale ticket, movement certificate, dispatch note |
-| cp_feed_and_forage_records | stock_entry_and_breeding_basis; rearing_and_husbandry | feed and forage | feed purchase, grazing, feed issue, or feed balance record | feed type; source; dry matter or as-fed basis; quantity; moisture; animal class; feeding period | invoice, feed issue log, pasture allocation record, feed inventory, or nutrition record | kg as-fed and kg dry matter | daily, batch, month, or feeding period | rearing cycle or herd maintenance period | farm, pasture, housing unit, or animal class | convert to dry matter where needed; allocate by animal-days, live weight, or documented ration group | invoice, feed analysis, inventory reconciliation, pasture record |
-| cp_water_records | rearing_and_husbandry | drinking and husbandry water | water meter, tank fill, pump, well, or use estimate record | source; volume; period; animal class; use type; allocation method | meter reading, pump log, water invoice, tank record, or documented estimate | L, m3, or kg | daily, month, batch, or reporting period | rearing cycle | water source, housing unit, pasture, or animal lot | sum by source and convert to kg where needed; allocate by animal-days or live weight | meter calibration, pump log, water invoice, documented estimate |
-| cp_bedding_and_housing_records | rearing_and_husbandry | bedding and housing materials | bedding purchase, issue, or replacement record | material type; quantity; moisture where relevant; replacement frequency; housing unit; fate | invoice, stock issue log, housing operation record, or bedding balance | kg | per delivery, replacement, or reporting period | rearing cycle | housing unit or animal lot | sum bedding input and assign to manure or waste route where relevant | invoice, inventory log, housing record |
-| cp_veterinary_and_health_records | rearing_and_husbandry | veterinary and animal health inputs | treatment, vaccine, medicine, disinfectant, or identification record | product; active ingredient if applicable; dose; item count; treated animals; date; reason | veterinary log, invoice, product label, treatment certificate, or farm health record | kg, L, dose, item, or product-specific unit | per treatment event or reporting period | rearing cycle | animal lot or farm | sum product amount by animal lot and normalize to live-weight output when material | veterinary record, invoice, treatment log, product label |
-| cp_energy_records | rearing_and_husbandry | farm energy | electricity, fuel, equipment, or service energy record | carrier; quantity; meter or invoice id; operation; period; allocation method | utility bill, meter reading, fuel invoice, equipment log, or telematics | kWh, MJ, L, or kg fuel | month, batch, or operation | rearing cycle | farm, housing unit, pump, feed system, or manure system | convert to MJ or kWh and allocate to live-ass production using documented basis | invoice, meter record, fuel log, equipment record |
-| cp_manure_and_excreta_records | manure_and_excreta_management | manure, urine, bedding, and excreta | manure collection, storage, grazing, field application, transfer, or treatment record | animal class; manure-management system; mass or volume; dry matter; volatile solids; N content where available; storage duration; climate or temperature; fate | scale, storage volume estimate, manure analysis, farm log, grazing record, or transfer ticket | kg wet mass, kg dry matter, kg VS, kg N, m3 | daily, batch, storage cycle, application event, or reporting period | rearing cycle and manure storage period | housing, yard, pasture, storage, field, or transfer point | reconcile manure generated, stored, treated, deposited, transferred, sold, or disposed; calculate emissions by declared method | manure analysis, storage log, transfer ticket, application record, IPCC or EMEP method documentation |
-| cp_mortality_and_cull_records | stock_entry_and_breeding_basis; rearing_and_husbandry | mortality and non-marketable culls | animal death, cull, disposal, or rendering record | animal id or lot; date; age class; estimated live weight or carcass mass; cause category when available; fate | farm mortality log, veterinary record, disposal ticket, rendering receipt, or burial/compost record | head and kg | per event or reporting period | rearing cycle | farm or animal lot | sum mortality and cull mass by fate and normalize to live-weight output | veterinary note, disposal ticket, mortality log |
-| cp_land_and_housing_records | stock_entry_and_breeding_basis; rearing_and_husbandry | land occupation and housing area | pasture, yard, housing, or GIS area record | area; duration; animal class; stocking period; housing or grazing system | GIS record, pasture map, farm record, housing plan, or stocking log | ha a, m2 a, ha, or m2 | season, month, or rearing cycle | rearing cycle | pasture, yard, housing unit, or farm | multiply area by occupation duration and allocate by animal-days or live weight | GIS file, farm map, stocking log |
-| cp_gate_handling_and_transport_records | farm_gate_handling_and_delivery | handling and delivery | pre-sale holding, loading, quarantine, carrier, or transport record | gate; holding duration; live weight; route; distance; vehicle; fuel; electricity; carrier invoice; tonne-km | dispatch note, carrier invoice, route log, fuel log, or meter record | kg live weight, km, tonne-km, L fuel, kWh, MJ | per shipment or handling period | delivery period | declared gate, holding area, and delivery route | normalize handling and route-specific energy to delivered kg live weight | dispatch record, carrier invoice, route record, fuel or energy record |
+| `cp_animals` | breeding; rearing; handover | animal input, transfer, final output, cull | herd and sale ledger | animal id, lineage, sex, age/class, source, destination, status, count, weighed mass, date | scale and reconciled movement register; Raw aggregation requirements: reconcile head and mass by class, gate and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | each event | full cohort | all operated nodes | per reference flow | calibrated scale, sale records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed` | breeding; rearing | feed input | ration/stock ledger | feed kind, purchased/own origin, opening, issued, closing, waste, route, animal-days | weigh or verified purchase/stock reconciliation; Raw aggregation requirements: assign issued feed by class/animal-days. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each delivery; monthly close | full season/cohort | all managed animals | per reference flow | receipts, stock counts; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_utilities` | breeding; rearing; handover | water and energy input | meter and service ledger | carrier, meter, water function, node, shared service, period | meter and documented allocation; Raw aggregation requirements: carrier-specific totals allocated once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kWh; MJ | meter interval | full operating period | all relevant nodes | per reference flow | invoices, meter logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_materials` | rearing | bedding/care inputs | issue and treatment log | material, mass, treatment, animal lot, date | weigh and medicine records; Raw aggregation requirements: sum by actual lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each use | full cohort | housed and treated animals | per reference flow | issue and veterinarian logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | breeding; rearing | waste/product manure | manure pathway ledger | collected mass, wet/dry basis, destination, grazing deposition, treatment | weigh and pathway records; Raw aggregation requirements: separate sale, disposal and in-situ fate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each removal; monthly | full period | all husbandry nodes | per reference flow | removal ticket, land and sale log; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_emissions` | breeding; rearing | calculated enteric/manure emissions | activity and factor file | animal-days, class, diet/productivity, climate, manure system, source factor, factor unit | regime-specific calculation from measured herd/pathway data; Raw aggregation requirements: calculate per class/pathway before sum. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head-day; kg gas | each reporting period | full breeding/rearing period | each cohort and manure route | per reference flow | source version and arithmetic audit; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_losses` | handover | rejected/dead animal | disposition log | animal id, cause, live/dead, mass, date, disposal/return destination | event log and mass record; Raw aggregation requirements: distinguish returned live animals from waste. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | each event | full handover period | final lot | per reference flow | disposition record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
 
 ### Calculation Rules
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| normalize_live_weight_output | reference product | kg transferred live weight at declared gate / PCR reference amount | cp_live_weight_records | kg live ass per reference output | `mass-balance-identity` |
-| calculate_live_weight_gain | growth and herd reconciliation | final live weight + deaths + transfers out - starting live weight - purchases in, by animal class | cp_stock_entry_records; cp_live_weight_records; cp_mortality_and_cull_records | live-weight gain and herd mass balance | `mass-balance-identity` |
-| normalize_feed_dry_matter | feed inputs | convert as-fed feed to dry matter using measured or declared moisture, then allocate by animal-days, ration group, live-weight gain, or documented farm basis | cp_feed_and_forage_records; cp_live_weight_records | kg feed dry matter per reference output | `fao-leap-animal-feeds-2016` |
-| calculate_enteric_ch4 | enteric methane | apply declared IPCC tier or reviewed regional method using animal class, live weight, feed intake, and population-time | cp_live_weight_records; cp_feed_and_forage_records | kg CH4 per reference output | `ipcc-2019-livestock-manure` |
-| calculate_manure_ch4_n2o | manure CH4 and N2O | apply declared IPCC manure-management method using volatile solids, nitrogen excretion, management system, storage route, and climate where required | cp_manure_and_excreta_records; cp_live_weight_records; cp_feed_and_forage_records | kg CH4 and kg N2O per reference output | `ipcc-2019-livestock-manure` |
-| calculate_manure_nh3 | manure ammonia | apply declared EMEP/EEA or regional ammonia method using manure nitrogen, housing, storage, field application, grazing deposition, and climate or management data where required | cp_manure_and_excreta_records | kg NH3 per reference output | `emep-eea-2023-manure-management` |
-| calculate_energy_co2 | farm energy fossil CO2 | energy or fuel quantity multiplied by declared emission factor and normalized to live-weight output | cp_energy_records; cp_gate_handling_and_transport_records | kg fossil CO2 per reference output |  |
-| allocate_breeding_basis | breeding herd burdens | allocate breeding herd maintenance burdens to marketable live-ass output using documented herd output basis when breeding herd is inside scope | cp_stock_entry_records; cp_feed_and_forage_records; cp_live_weight_records | breeding-basis burden per kg live-weight output |  |
+| `calc_mass` | Live outputs | Sum measured kg by accepted animal/class at the declared gate; use measured sample mean × head count only with sample frame and uncertainty disclosed. | `cp_animals` | kg live reference and head/kg reconciliation | `fao-working-equids` |
+| `calc_feed` | Managed production | Issued feed = opening + receipts − closing − documented losses; allocate own feed production once to the consuming node. | `cp_feed` | kg feed by class and period | `fao-working-equids` |
+| `calc_emissions` | Enteric/manure pathways | Animal-days or measured excretion × explicitly selected Mules/Asses factor by productivity, climate and manure pathway, using consistent units; report uncertainty and do not substitute a flow UUID for a factor. | `cp_emissions`; `cp_manure` | kg specified substance to specified medium | `ipcc-livestock-2019` |
+| `calc_shared` | Shared assets | One asset burden × measured consumer service share / sum of all service shares in each service period. | `cp_utilities`; `cp_animals` | nonduplicated burden by node | `iso-14044` |
 
 ### Data Quality Requirements
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| dq_animal_identity | live animal identity | Age class, sex, breed or type, intended use, health status, production system, geography, and declared gate must be stated for the reference flow and major animal lots. | herd book, animal movement record, health certificate, sale note |
-| dq_live_weight | live-weight records | Live weight must identify weighing date, animal or lot, method, unit, gate, and device or conversion method. | scale calibration, weigh ticket, sale ticket, documented weigh-tape conversion |
-| dq_feed_basis | feed and forage | Feed records must preserve feed type, source, quantity, dry matter or moisture basis, animal class allocation, and time period. | invoice, feed analysis, feed log, pasture record |
-| dq_manure_method | manure and emissions | Manure-management system, housing/grazing split, storage duration, fate, and nitrogen or volatile-solids basis must be documented before CH4, N2O, or NH3 values are treated as final. | manure log, storage record, analysis, IPCC or EMEP calculation sheet |
-| dq_temporal_coverage | rearing cycle | Foreground records should cover the complete declared rearing cycle or explain use of annualized herd records for multi-year breeding systems. | herd inventory, annual farm records, sale records |
-| dq_completeness | material flows | Feed, water, bedding where used, energy, animal health inputs when material, manure, mortalities, and farm-gate handling must be addressed or explicitly excluded with rationale. | collection protocol checklist and data quality review |
+| `dq_identity` | Every animal lot | Verify ass, not horse or hybrid, with class, sex, count, condition and actual producer gate. | herd, veterinary and handover records |
+| `dq_mass` | Reference and transfers | Preserve scale calibration, sampling frame and head-to-mass reconciliation; no generic count conversion. | calibration and movement reconciliation |
+| `dq_period` | Multi-period herd and assets | Cover breeder, gestation, foaling, rearing, cull and final output periods and all shared service consumers. | dated ledgers and burden schedule |
+| `dq_factors` | Emissions | Name the exact IPCC or other justified factor stratum, version, gas/medium and compatible animal activity; identify missing data. | factor record and calculation audit |
+| `dq_completeness` | All nodes | Explain zero or omitted flows, losses, manure destinations and any co-products or working service; reconcile internal transfers once. | inventory and output balance |
 
 ## 9. Validation Rules
 
-Before publishing a foreground data package using this PCR, check:
-
-- reference flow is expressed as kg live ass and includes age class, sex, breed or type, intended use, production system, health status, geography, and declared gate
-- live-ass product is not confused with horses, mules and hinnies, equine meat, hides, milk, semen, embryos, or animal work service
-- starting-condition treatment for breeding herd, foals, purchased stock, and same-category live-ass inputs is declared
-- feed quantities preserve dry matter or as-fed basis and animal class allocation
-- water, bedding where used, veterinary inputs when material, energy, land occupation when in scope, and handling or delivery transport are addressed
-- manure-management system, grazing deposition, storage, transfer, and field application under farm control are declared
-- enteric CH4, manure CH4, manure N2O, manure NH3, and fossil CO2 from energy are calculated only with declared methods and source references
-- mortality, culls, manure products, bedding waste, and other outputs have declared fates
-- allocation or subdivision is declared when manure, milk, work service, breeding service, or other co-products are credited
-- values outside provisional screening ranges include source notes, corrected data, or method rationale
+| rule_id | Applies to | Rule | source_ids |
+| --- | --- | --- | --- |
+| `validate_ass_identity` | Reference | Reject horse/hybrid or unqualified live-animal mass, missing class/count/gate, and assumed kg/head conversion. | `un-cpc-2025` |
+| `validate_route` | Process map | Require operated breeder or purchased young animal, conditional rearing, final handover and measured pasture/housed route fractions; reject route label without inventory delta or double final gate. | `fao-working-equids` |
+| `validate_balance` | Herd and output set | Reconcile opening + purchase + birth − death − sale − closing by class/period; classify live culls, useful manure and work service only on actual evidence. | `fao-working-equids`; `iso-14044` |
+| `validate_period_shared` | Herd and infrastructure | Link every phase, replacement and shared shelter/water/handling consumer to service periods; prevent duplicated burden on two cohorts or nodes. | `iso-14044` |
+| `validate_emissions` | Direct gases | Require gas substance, receiving medium, actual animal productivity, climate/manure route and factor source. A generic Mules/Asses factor without stratum is insufficient. | `ipcc-livestock-2019` |
+| `validate_bindings` | Concrete exchanges | Expand unresolved inputs from actual foreground records. Require verified exact UUID/property/unit/gate for every published exchange; an unresolved semantic card is not permission to fabricate an identity. | `iso-14044` |
 
 ## 10. Published Dataset Profile
 
 | Field | Value |
 | --- | --- |
-| dataset_role | unit_process |
-| downstream_use | secondary_dataset; background_dataset |
-| allowed_use | downstream live-animal supply chain, working-animal service model, equine product, farm input, or livestock inventory modelling where live-ass qualifiers, geography, production route, and declared gate match the dataset metadata |
-| excluded_use | horses, mules and hinnies, equine meat, hides, milk, semen, embryos, manure fertilizer products, and transport or draught service after sale unless separately modelled |
-| required_metadata | reference flow; geography; rearing cycle; age class; sex; breed or type; intended use; live-weight measurement method; production system; health status; manure-management system; declared gate; transport inclusion; collection protocol coverage; DQR |
-| required_quality_disclosure | record coverage, allocation choices, starting-condition treatment, calculation rules, emission methods, measurement devices or primary records, unresolved omissions, and data quality scores |
-| update_trigger | material change in production system, breed or animal type, age class, geography, feed basis, manure-management system, declared gate, transport inclusion, emission method, collection protocol coverage, or data quality score |
+| dataset_role | Foreground production package for living asses at declared producer gate |
+| downstream_use | `secondary_dataset` and, where appropriate, `background_dataset` for process/lifecyclemodel construction |
+| allowed_use | Matching ass lineage, animal class, producer gate, management route and geography with transparent period and burden attribution |
+| excluded_use | Horse or hybrid production, meat/milk, downstream working service, slaughter-plant gate, or unspecified count-to-mass conversion |
+| required_metadata | Ass lineage, sex, age/class, animal count, measured mass, condition, intended use, actual gate, site, period, pasture/housed mix, factor strata, upstream animal origins and co-output treatment |
+| required_quality_disclosure | Measurement/sampling uncertainty, missing records, allocation choices, output/manure balance, emission factor applicability, exact flow binding coverage and unresolved identities |
+| update_trigger | Changed animal boundary, handover gate, route mix, measured factors, source guidance or verified flow identities |
 
 ## 11. Data Sources
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `ipcc-2019-livestock-manure` | official_guidance | <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf> | enteric CH4, manure CH4, manure N2O, volatile solids, nitrogen excretion, and manure-management method context |
-| `fao-leap-guidelines` | official_guidance | <https://www.fao.org/partnerships/leap/resources/publications/fao-leap-guidelines/en> | livestock LCA boundary, data quality, and supply-chain assessment context |
-| `fao-leap-animal-feeds-2016` | official_guidance | <https://openknowledge.fao.org/handle/20.500.14283/i6433e> | animal feed supply-chain assessment and feed data collection basis |
-| `emep-eea-2023-manure-management` | official_guidance | <https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023/part-b-sectoral-guidance-chapters/3-agriculture/3-b-manure-management-2023/@@download/file> | ammonia and air-pollutant process decomposition for manure management |
-| `mass-balance-identity` | method_factor | Conservation of mass applied as a PCR calculation identity for live-weight output, animal inventory reconciliation, and process reference outputs. | QA guardrails for reference outputs and animal mass-balance checks |
+| `un-cpc-2025` | official_guidance | [UN CPC Ver. 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | Ass product identity and exclusions |
+| `fao-working-equids` | handbook | [FAO horses, donkeys and mules husbandry](https://www.fao.org/4/t0690e/t0690e07.htm) | Breeding, foaling, rearing, feed and animal care route |
+| `ipcc-livestock-2019` | method_factor | [IPCC 2019 Refinement, Volume 4, Chapter 10](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf) | Conditional Mules/Asses gas and manure methods, not universal quantities |
+| `iso-14044` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | Allocation, completeness and data-quality decision order |

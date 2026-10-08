@@ -4,6 +4,7 @@ import path from 'node:path';
 import { createRequire, registerHooks } from 'node:module';
 import { Index } from 'flexsearch';
 import { searchTerms } from '../../lib/search-terms.ts';
+import { encodeSearchEntries } from '../../lib/search-codec.ts';
 import type { SearchResult } from '../../lib/types.ts';
 
 const workerUrl = new URL('../../lib/search-worker.ts', import.meta.url);
@@ -64,7 +65,24 @@ async function main(scenario: string): Promise<void> {
   await import(workerUrl.href);
   assert.equal(requests.length, 0, 'Import alone must not fetch or initialize an index');
 
-  if (scenario === 'english-rank') {
+  if (scenario === 'compact') {
+    await install([[document(0, 'Wheat', 'wheat pcr_rule_boundary')], [document(1, '小麦', 'wheat 小麦 550e8400-e29b-41d4-a716-446655440000')]]);
+    for (const [url, response] of responses) {
+      if (!url.includes('shard-')) continue;
+      const shard = response.body as Shard;
+      response.body = {schemaVersion: 2, entries: encodeSearchEntries(shard.entries), records: shard.records};
+    }
+    assert.deepEqual(valid(await query('wheat')).map(item => item.content), ['Wheat', '小麦']);
+    assert.equal(valid(await query('pcr_rule_boundary'))[0]?.content, 'Wheat');
+    assert.equal(valid(await query('小麦'))[0]?.content, '小麦');
+    assert.equal(valid(await query('550e8400-e29b-41d4-a716-446655440000'))[0]?.content, '小麦');
+  } else if (scenario === 'compact-retry') {
+    const url = root + 'shard-0.json', original = responses.get(url)!.body as Shard;
+    responses.set(url, {status: 200, body: {schemaVersion: 2, entries: {'1.map': [['wheat', 1, 9, [0]]]}, records: original.records}});
+    assert.equal((await query('wheat')).error, 'Invalid serialized search data.');
+    responses.set(url, {status: 200, body: {schemaVersion: 2, entries: encodeSearchEntries(original.entries), records: original.records}});
+    assert.equal(valid(await query('wheat')).length, 4);
+  } else if (scenario === 'english-rank') {
     assert.deepEqual(valid(await query('wheat')).map(item => item.content), ['Wheat', 'Wheat seed', 'Organic wheat', 'Field protocol']);
     assert.equal(valid(await query('unrelated-keyword')).length, 0);
   } else if (scenario === 'chinese') {

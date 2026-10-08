@@ -1,10 +1,1327 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02959"
-  title: "Raw skins of other animals"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-skins-of-other-animals"
+  classification_refs: "CPC 3.0 02959 subject to species, use and state review"
+  covered_products: "Fresh or first-stage preserved raw non-furrier skins outside 02951–02954."
+  excluded_products: "02951–02955 skins, unsupported feather-on bird skins, tanned or manufactured skins, detached coverings and whole bodies."
+  representative_product: "Accepted species-qualified raw skin sold by measured net mass at its real handover."
+  production_route: "Actual production/capture or lawful recovery; distinct removal, cleaning, grading, optional preservation and presentation."
+  market_state: "Untanned raw skin with species, part, use, state, grade, moisture/salt and gate declared."
+functional_unit:
+  what: "Accepted raw skin of the declared species, part, use and state at actual handover."
+  how_much: "1 kg net as-sold skin excluding packaging and separable free brine or loose salt."
+  how_well: "Record legal source, species, part, use, grade, state, moisture/adhering salt and gate."
+  how_long_or_cycle: "Index source/capture, removal, cure and shared service to actual output and reporting period once."
+  reference_flow_link: "raw_skin_product"
+system_boundary:
+  rules:
+    - rule_id: b_source
+      applies_to: "source routes"
+      rule: "Match upstream production, capture, slaughter or lawful recovery to real species and handoff; no invented farm for wild capture, meat for fallen animals, or automatic zero-burden skin."
+      source_ids:
+        - un-cpc-3-notes
+        - fao-hides-skins
+    - rule_id: b_remove
+      applies_to: "removal"
+      rule: "Remove actual skin independently from source production/capture and first conditioning; separate incidental tissue and damage."
+      source_ids:
+        - fao-hides-skins
+    - rule_id: b_prepare
+      applies_to: "first conditioning and grade"
+      rule: "Include actual first cleaning/fleshing and grading; exclude liming, tanning, dressing and leather manufacture."
+      source_ids:
+        - fao-hides-skins
+        - un-cpc-3-notes
+    - rule_id: b_preserve
+      applies_to: "cured lots"
+      rule: "Fresh sale bypasses cure; record actual chill/dry/salt/brine method, before/after masses, inputs, service and residues without generic recipe."
+      source_ids:
+        - fao-hides-skins
+    - rule_id: b_gate
+      applies_to: "handover"
+      rule: "Include only necessary protection to the actual removal/recovery/curing handover; exclude post-gate freight and transformation."
+      source_ids:
+        - fao-hides-skins
+boundary_abstraction:
+  declared_starting_condition: "Identified commercial skin-bearing animal body/part or lawful recoverable material, with upstream source event and boundary documented."
+  starting_condition_role: "Compatible upstream dataset supplies species-specific production/capture, slaughter or recovery burdens to skin-bearing material handoff; foreground begins at distinct removal. Do not repeat upstream removal exchanges."
+  product_classification_scope: "Non-furrier raw skin of another animal, excluding 02951–02955 and bird-skin 39110 where applicable."
+  recursive_input_rule: "Purchased same-category raw skin keeps upstream burden and enters only the later applicable node, never as newly removed skin."
+  upstream_dataset_requirement: "Actual animal/capture/recovery source, real output set, legal status, co-product and period attribution."
+  disclosure: "Species, part, use, source, route, grade, state, gate, legal status, allocation, periods, rejections and shared services."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Species-, state- and gate-qualified raw skin of other animal"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - "body part"
+    - "intended use"
+    - "legal source"
+    - "fresh/preserved state"
+    - grade
+    - "moisture/adhering salt"
+    - "net/tare"
+    - gate
+    - period
+reference_flows:
+  []
+measurement_rules:
+  - id: m_net
+    applies_to: "reference lot"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Calibrated gross less package tare and separable free cure medium yields net skin; disclose retained moisture and adhering salt."
+  - id: m_state
+    applies_to: "fresh and cured lots"
+    required_property_ref:
+      name: "Mass; moisture/salt fraction"
+      uuid: ""
+    required_unit: "kg; kg/kg"
+    rule: "Convert states only from lot-measured before/after mass and fractions; no universal multiplier."
+  - id: m_balance
+    applies_to: "each lot"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile source skin, grades, rejects, added cure medium and measured water/stock change."
+  - id: m_period
+    applies_to: "source and shared services"
+    required_property_ref:
+      name: "Time; service measure"
+      uuid: ""
+    required_unit: "period; service unit"
+    rule: "Link actual source phases and shared floor, cold-room or cure services to periods once."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: remove
+    name: "Species-qualified skin removal"
+    inclusion: "required"
+    inclusion_condition: "newly sourced skin lots"
+    role: "Distinct skin removal from commercial or lawful recovered body."
+    quantitative_reference: "kg removed skin"
+  - id: condition
+    name: "First raw-skin conditioning"
+    inclusion: "required"
+    inclusion_condition: "untreated skin lots"
+    role: "First cleaning and trim before grade."
+    quantitative_reference: "kg prepared skin"
+  - id: grade
+    name: "Quality and destination sorting"
+    inclusion: "required"
+    inclusion_condition: "prepared lots"
+    role: "Accepted and saleable downgrade versus rejection."
+    quantitative_reference: "kg saleable grade"
+  - id: preserve
+    name: "Optional raw preservation"
+    inclusion: "conditional"
+    inclusion_condition: "cured lots"
+    role: "Actual stabilization; fresh lots bypass."
+    quantitative_reference: "kg preserved skin"
+  - id: handover
+    name: "Protective presentation and handover"
+    inclusion: "required"
+    inclusion_condition: "saleable fresh or cured grade"
+    role: "One net sold state at actual gate."
+    quantitative_reference: "kg net sold skin"
+process_inventory:
+  - id: remove
+    label: "Species-qualified skin removal"
+    inputs:
+      product:
+        - row_id: commercial_body
+          role: "Commercial skin-bearing body"
+          name: "Species-qualified commercial skin-bearing body or portion (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only an actually marketed body or portion of the declared species; upstream source data stop at this handoff. Denominator and scope requirements：per kg removed skin Raw quantity and calculation requirements: Weigh actual input and record source, species and body part. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_remove
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg removed skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: recovered_body
+          role: "Lawful recovered skin-bearing material"
+          name: "Species-qualified recoverable body material with documented Waste status (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Use only when the actual source is legally Waste and recovery is permitted; a marketable Product source uses the other card, not both. Denominator and scope requirements：per kg removed skin Raw quantity and calculation requirements: Weigh recovered input; retain authorization and terminal-treatment alternative. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_remove
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg removed skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: removed_skin
+          role: "Fresh removed skin"
+          name: "Fresh removed raw skin of the declared species (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Hand off the species- and part-qualified untanned skin to first cleaning exactly once. Denominator and scope requirements：per kg removed skin Raw quantity and calculation requirements: Weigh before cleaning and link source event. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_remove
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg removed skin"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: removal_reject
+          role: "Removal damage and incidental tissue"
+          name: "Nonsaleable removal residue by destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Nonsaleable cuts/tissue go to actual treatment; a separately sold part needs a separate Product decision. Denominator and scope requirements：per kg removed skin Raw quantity and calculation requirements: Weigh residue separately from saleable skin. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg removed skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: condition
+    label: "First raw-skin conditioning"
+    inputs:
+      product:
+        - row_id: raw_in
+          role: "Raw skin before first cleaning"
+          name: "Species-qualified raw skin before cleaning (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use removed-skin handoff or purchased same-category untreated skin with upstream burden, not a second removal. Denominator and scope requirements：per kg prepared skin Raw quantity and calculation requirements: Measure incoming mass and source ticket once. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg prepared skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: clean_water
+          role: "Cleaning water supply"
+          name: "Water supplied for first skin cleaning (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual supplied water by source and subtype; no default wash rate. Denominator and scope requirements：per kg prepared skin Raw quantity and calculation requirements: Meter actual water supplied to this node. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg prepared skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_skin
+          role: "First-cleaned raw skin"
+          name: "Species-qualified first-cleaned raw skin (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Prepare only by first cleaning/fleshing/trimming, not tannery treatment. Denominator and scope requirements：per kg prepared skin Raw quantity and calculation requirements: Weigh skin at grade handoff. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg prepared skin"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: clean_trim
+          role: "First-cleaning trim"
+          name: "Nonsaleable cleaning trim by waste destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate actual skin/tissue trim from wastewater; report wastewater in its own treatment ledger. Denominator and scope requirements：per kg prepared skin Raw quantity and calculation requirements: Weigh non-saleable trim and identify destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg prepared skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade
+    label: "Quality and destination sorting"
+    inputs:
+      product:
+        - row_id: grade_in
+          role: "Prepared skin for grading"
+          name: "Species-qualified first-cleaned raw skin (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Match prepared lot to actual species, body part and use before grade partition. Denominator and scope requirements：per kg saleable graded skin Raw quantity and calculation requirements: Weigh received lot and match cleaning ticket. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg saleable graded skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: grade_accepted
+          role: "Accepted-grade skin"
+          name: "Species-qualified accepted raw-skin grade (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Direct each actual accepted lot either to fresh handover or cure, never both. Denominator and scope requirements：per kg saleable graded skin Raw quantity and calculation requirements: Weigh grade lot and document unique destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg saleable graded skin"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: grade_downgrade
+          role: "Saleable downgraded skin"
+          name: "Species-qualified saleable lower-grade raw skin (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only separately saleable lower grade is Product; if unsaleable, use rejected Waste instead. Denominator and scope requirements：per kg saleable graded skin Raw quantity and calculation requirements: Weigh lower grade with real price and destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg saleable graded skin"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Unsaleable rejected skin"
+          name: "Species-qualified rejected raw skin by destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record actual treatment destination, not fictitious co-product credit. Denominator and scope requirements：per kg saleable graded skin Raw quantity and calculation requirements: Weigh rejection and document cause. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg saleable graded skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: preserve
+    label: "Optional raw preservation"
+    inputs:
+      product:
+        - row_id: cure_in
+          role: "Saleable skin before cure"
+          name: "Species-qualified graded raw skin before actual cure (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Fresh sale bypasses this node; only saleable grade chosen for cure enters. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Weigh pre-cure lot and grade. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg cured skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cure_medium
+          role: "Actual preservation medium"
+          name: "Method-specific raw-preservation medium (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only actual salt, brine or other legally used raw-state medium; never assume every species is salted. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Weigh added medium; split retained and spent mass. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg cured skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cure_energy
+          role: "Preservation energy supply"
+          name: "Actual preservation energy carrier (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Meter actual electricity, fuel or other energy carrier for chilling/drying/curing and shared service once. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Meter real carrier energy by method, lot and node. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "MJ/kg"
+                basis: "per kg cured skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: cured_skin
+          role: "Preserved still-raw skin"
+          name: "Species-qualified preserved untanned skin (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Declare measured after-state, moisture and adhering salt without liming, tanning or dressing. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Weigh after cure and reconcile actual input, added medium, losses and rejects. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg cured skin"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: cure_residue
+          role: "Spent cure medium or rejects"
+          name: "Spent medium or rejected skin by waste destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Track actual waste destination; water evaporation is not a solid waste skin. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Weigh spent/rejected material and measure water loss separately. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg cured skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: handover
+    label: "Protective presentation and handover"
+    inputs:
+      product:
+        - row_id: handover_in
+          role: "One incoming saleable skin state"
+          name: "Species-qualified saleable fresh or preserved raw skin (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Each physical lot arrives once from fresh grading or preserved output, never both. Denominator and scope requirements：per kg net sold skin Raw quantity and calculation requirements: Match grade, state and source ticket to actual gate. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg net sold skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: protective_package
+          role: "Protective package"
+          name: "Actual protective package material or reusable presentation item (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual wrap/crate or reusable support before gate; later distribution is excluded. Denominator and scope requirements：per kg net sold skin Raw quantity and calculation requirements: Weigh consumed material or allocate measured reuse service by actual uses. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg net sold skin"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_skin_product
+          role: "Net raw skin at actual gate"
+          name: "Species-, state- and gate-qualified raw skin of other animal"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One broad reference-output role instantiated by actual species, part, grade, state and gate; one UUID is not assumed to represent all variants. Raw reference-output records: Weigh net sold skin excluding package and separable free cure medium. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per 1 kg net reference skin"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_source
+    applies_to: "actual upstream output set"
+    rule: "Enumerate only real separate meat, fish-body, breeding, eggs, fibre or other saleable products for the declared species and phase. Prefer defensible causal physical allocation; otherwise document economic allocation with period prices and sensitivity. Never give skin automatic zero or all animal burden."
+    source_ids:
+      - fao-hides-skins
+  - rule_id: a_recovery
+    applies_to: "lawful recovery"
+    rule: "Document pre-existing source burden, legal recovery and actual terminal-treatment alternative; justify burden and separately report any avoided-treatment credit without fictional meat."
+    source_ids:
+      - fao-hides-skins
+  - rule_id: a_grade
+    applies_to: "sale grades and cure"
+    rule: "Attribute each accepted or downgraded marketable grade at one real handover, with rejects and retained salt/moisture distinct; cure mass does not create extra skin."
+    source_ids:
+      - fao-hides-skins
+  - rule_id: a_period
+    applies_to: "source phases and shared assets"
+    rule: "Index relevant husbandry/aquaculture/capture, slaughter/recovery, cold-room and cure periods. Divide actual flaying, washing, chilling and cure service among consuming nodes and periods by measured use or supported causal driver exactly once."
+    source_ids:
+      - fao-hides-skins
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_remove
+      process_id: "remove"
+      flow_role: "source body and removed skin"
+      record_type: "source/removal ledger"
+      raw_fields: "species, part, lawful source, Product/Waste status, event, body/skin mass, real co-products, period"
+      collection_method: "source ticket and calibrated scale; Raw aggregation requirements: source and removal once per skin lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;period"
+      frequency: "each event"
+      temporal_coverage: "source and removal periods"
+      site_scope: "supplier and removal site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "authorization, ticket, calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_condition
+      process_id: "condition"
+      flow_role: "raw in, water, cleaned skin"
+      record_type: "preparation ledger"
+      raw_fields: "source lot, water subtype, mass, cleaning action, trim"
+      collection_method: "meter and scale; Raw aggregation requirements: input/output by lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "preparation period"
+      site_scope: "actual site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter, scale and work ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_grade
+      process_id: "grade"
+      flow_role: "accepted, downgrade and reject"
+      record_type: "grade ledger"
+      raw_fields: "species, part, grade, mass, reason, destination"
+      collection_method: "grade ticket and scale; Raw aggregation requirements: disjoint grade sums. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "grade period"
+      site_scope: "actual site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "dispatch/reject tickets; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_preserve
+      process_id: "preserve"
+      flow_role: "optional cure inputs/outputs"
+      record_type: "cure ledger"
+      raw_fields: "lot, method, input/output mass, salt/brine, moisture, energy, residue, service time"
+      collection_method: "scale, test and meter; Raw aggregation requirements: linked before/after and service sum. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;MJ;period"
+      frequency: "each cured lot"
+      temporal_coverage: "cure/service periods"
+      site_scope: "actual site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "recipe, test and meter; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_handover
+      process_id: "handover"
+      flow_role: "net skin, package and gate"
+      record_type: "dispatch ledger"
+      raw_fields: "species, part, use, source, state, grade, gross/tare, net, package reuse, gate"
+      collection_method: "dispatch ticket and scale; Raw aggregation requirements: one net mass per physical lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each sale lot"
+      temporal_coverage: "actual gate event"
+      site_scope: "actual site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_residue
+      process_id: "remove_condition_grade_preserve"
+      flow_role: "reject and waste"
+      record_type: "treatment ledger"
+      raw_fields: "lot, material, mass, classification, destination, period"
+      collection_method: "scale and transfer record; Raw aggregation requirements: once by route/material. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "relevant periods"
+      site_scope: "origin site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "transfer record and scale; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_net
+      applies_to: "handover lot"
+      rule: "net raw skin = gross sale mass minus package tare and separable free brine/loose salt; disclose retained moisture/adhering salt"
+      inputs:
+        - cp_handover
+        - cp_preserve
+      output: "kg net sold skin"
+      source_ids:
+        - fao-hides-skins
+    - id: c_balance
+      applies_to: "removal to handover"
+      rule: "skin input plus added cure medium = sale grades plus rejects/residue plus measured moisture/stock change and documented residual"
+      inputs:
+        - cp_remove
+        - cp_condition
+        - cp_grade
+        - cp_preserve
+        - cp_handover
+      output: "kg residual"
+      source_ids:
+        - fao-hides-skins
+    - id: c_period
+      applies_to: "source and shared service"
+      rule: "attribute each actual phase, flaying/cleaning/cold-room/curing service once to consuming lot and period"
+      inputs:
+        - cp_remove
+        - cp_condition
+        - cp_preserve
+      output: "burden/kg"
+      source_ids:
+        - fao-hides-skins
+    - id: c_norm
+      applies_to: "final exchange"
+      rule: "attributable quantity divided by positive net mass of same species, state and gate lot"
+      inputs:
+        - cp_handover
+        - cp_remove
+        - cp_condition
+        - cp_preserve
+      output: "unit/kg skin"
+      source_ids: []
+  data_quality_requirements:
+    - id: q_identity
+      applies_to: "every lot"
+      requirement: "Confirm species, part, use, raw condition, CPC exclusion review, lawful source and actual gate."
+      evidence: "source, grade and dispatch records"
+    - id: q_mass
+      applies_to: "every lot"
+      requirement: "Calibrate net/tare; measure cure state, moisture/salt and mass residual without universal yield."
+      evidence: "scale, test and balance worksheet"
+    - id: q_route
+      applies_to: "every lot"
+      requirement: "Preserve real source/capture/slaughter/recovery route, actual products/periods and nonduplicated upstream removal."
+      evidence: "route and allocation ledger"
+    - id: q_uuid
+      applies_to: "final dataset"
+      requirement: "Resolve exact flow type, species, state, property/unit, gate and destination for each exchange before TIDAS construction."
+      evidence: "verified flow evidence"
+validation_rules:
+  - rule_id: v_scope
+    applies_to: "reference lot"
+    rule: "Reject species/use assigned to 02951–02955, tannage/further preparation, whole animals, and unsupported feather-on bird-skin 02959 claims."
+    source_ids:
+      - un-cpc-3-notes
+      - un-cpc-39110
+  - rule_id: v_route
+    applies_to: "source/removal"
+    rule: "Require lawful species-specific source and removal distinct from source production/capture and first preparation; no invented farm for wild animal or meat for recovered animal."
+    source_ids:
+      - fao-hides-skins
+  - rule_id: v_balance
+    applies_to: "each lot"
+    rule: "Reconcile fresh, accepted, downgrade, reject, cure medium and net sold states to measured uncertainty; investigate unexplained residual."
+    source_ids:
+      - fao-hides-skins
+  - rule_id: v_allocation
+    applies_to: "phases and shared assets"
+    rule: "Reject unsupported zero/whole-animal burden, duplicate product, repeated asset period or arbitrary universal co-product rule."
+    source_ids:
+      - fao-hides-skins
+  - rule_id: v_identity
+    applies_to: "concrete final exchange"
+    rule: "A broad unresolved card is not a final UUID; verify species, part, raw state, property, actual gate and direction. Goat skin, furskin or whole fish cannot substitute."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Species-, route-, part-, grade-, state- and gate-qualified raw-other-animal-skin foreground dataset."
+  downstream_use: "Candidate secondary_dataset or background_dataset only after concrete identities, review and publication."
+  allowed_use: "Same species/use/state/gate comparison or measured lot-specific state conversion."
+  excluded_use: "Cross-species substitution, goat/furskin/feather-on-bird automatic mapping, tanning/leather, universal yield/cure, unsupported zero burden."
+  required_metadata: "Species, part, use, lawful source, route, grade, state, net mass, moisture/salt, gate, periods, real output set and allocation."
+  required_quality_disclosure: "Co-product/period attribution, grade/cure mass balance, rejects, shared-service driver and unresolved UUIDs."
+  update_trigger: "Exact platform flow confirmation, changed species/route/classification, new measured state or allocation evidence."
+data_sources:
+  - id: "un-cpc-3-notes"
+    type: "official_guidance"
+    reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "raw-skin scope and exclusions"
+  - id: "un-cpc-39110"
+    type: "official_guidance"
+    reference: "[UNSD CPC 39110](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/39110)"
+    used_for: "feather-on bird-skin classification check"
+  - id: "fao-hides-skins"
+    type: "official_guidance"
+    reference: "[FAO Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf)"
+    used_for: "first preparation, cure and route method"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:62f373ca8fe861b38dd0a2e7637b1225300d6ccf73b626a8f861745691cf413a"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6618"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6618
+          line: 58
+          column: 1
+        end:
+          offset: 8750
+          line: 81
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified commercial skin-bearing animal body/part or lawful recoverable material, with upstream source event and boundary documented. |\n| starting_condition_role | Compatible upstream dataset supplies species-specific production/capture, slaughter or recovery burdens to skin-bearing material handoff; foreground begins at distinct removal. Do not repeat upstream removal exchanges. |\n| product_classification_scope | Non-furrier raw skin of another animal, excluding 02951–02955 and bird-skin 39110 where applicable. |\n| recursive_input_rule | Purchased same-category raw skin keeps upstream burden and enters only the later applicable node, never as newly removed skin. |\n| upstream_dataset_requirement | Actual animal/capture/recovery source, real output set, legal status, co-product and period attribution. |\n| disclosure | Species, part, use, source, route, grade, state, gate, legal status, allocation, periods, rejections and shared services. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_source | source routes | Match upstream production, capture, slaughter or lawful recovery to real species and handoff; no invented farm for wild capture, meat for fallen animals, or automatic zero-burden skin. | un-cpc-3-notes;fao-hides-skins |\n| b_remove | removal | Remove actual skin independently from source production/capture and first conditioning; separate incidental tissue and damage. | fao-hides-skins |\n| b_prepare | first conditioning and grade | Include actual first cleaning/fleshing and grading; exclude liming, tanning, dressing and leather manufacture. | fao-hides-skins;un-cpc-3-notes |\n| b_preserve | cured lots | Fresh sale bypasses cure; record actual chill/dry/salt/brine method, before/after masses, inputs, service and residues without generic recipe. | fao-hides-skins |\n| b_gate | handover | Include only necessary protection to the actual removal/recovery/curing handover; exclude post-gate freight and transformation. | fao-hides-skins |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 196
+              line: 8
+              column: 1
+            end:
+              offset: 224
+              line: 8
+              column: 29
+          text: "# Raw skins of other animals"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6618
+              line: 58
+              column: 1
+            end:
+              offset: 6639
+              line: 58
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_35356"
+      family: "allocation"
+      span:
+        start:
+          offset: 35356
+          line: 705
+          column: 1
+        end:
+          offset: 36605
+          line: 714
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual upstream output set | Enumerate only real separate meat, fish-body, breeding, eggs, fibre or other saleable products for the declared species and phase. Prefer defensible causal physical allocation; otherwise document economic allocation with period prices and sensitivity. Never give skin automatic zero or all animal burden. | fao-hides-skins |\n| a_recovery | lawful recovery | Document pre-existing source burden, legal recovery and actual terminal-treatment alternative; justify burden and separately report any avoided-treatment credit without fictional meat. | fao-hides-skins |\n| a_grade | sale grades and cure | Attribute each accepted or downgraded marketable grade at one real handover, with rejects and retained salt/moisture distinct; cure mass does not create extra skin. | fao-hides-skins |\n| a_period | source phases and shared assets | Index relevant husbandry/aquaculture/capture, slaughter/recovery, cold-room and cure periods. Divide actual flaying, washing, chilling and cure service among consuming nodes and periods by measured use or supported causal driver exactly once. | fao-hides-skins |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 196
+              line: 8
+              column: 1
+            end:
+              offset: 224
+              line: 8
+              column: 29
+          text: "# Raw skins of other animals"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 35356
+              line: 705
+              column: 1
+            end:
+              offset: 35396
+              line: 705
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_42850"
+      family: "validation"
+      span:
+        start:
+          offset: 42850
+          line: 745
+          column: 1
+        end:
+          offset: 43956
+          line: 755
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject species/use assigned to 02951–02955, tannage/further preparation, whole animals, and unsupported feather-on bird-skin 02959 claims. | un-cpc-3-notes;un-cpc-39110 |\n| v_route | source/removal | Require lawful species-specific source and removal distinct from source production/capture and first preparation; no invented farm for wild animal or meat for recovered animal. | fao-hides-skins |\n| v_balance | each lot | Reconcile fresh, accepted, downgrade, reject, cure medium and net sold states to measured uncertainty; investigate unexplained residual. | fao-hides-skins |\n| v_allocation | phases and shared assets | Reject unsupported zero/whole-animal burden, duplicate product, repeated asset period or arbitrary universal co-product rule. | fao-hides-skins |\n| v_identity | concrete final exchange | A broad unresolved card is not a final UUID; verify species, part, raw state, property, actual gate and direction. Goat skin, furskin or whole fish cannot substitute. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 196
+              line: 8
+              column: 1
+            end:
+              offset: 224
+              line: 8
+              column: 29
+          text: "# Raw skins of other animals"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 42850
+              line: 745
+              column: 1
+            end:
+              offset: 42872
+              line: 745
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_source"
+      identity_kind: "explicit"
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 7778
+          line: 75
+          column: 1
+        end:
+          offset: 8026
+          line: 75
+          column: 249
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_remove"
+      identity_kind: "explicit"
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 8027
+          line: 76
+          column: 1
+        end:
+          offset: 8196
+          line: 76
+          column: 170
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_prepare"
+      identity_kind: "explicit"
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 8197
+          line: 77
+          column: 1
+        end:
+          offset: 8387
+          line: 77
+          column: 191
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_preserve"
+      identity_kind: "explicit"
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 8388
+          line: 78
+          column: 1
+        end:
+          offset: 8578
+          line: 78
+          column: 191
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "b_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 8579
+          line: 79
+          column: 1
+        end:
+          offset: 8748
+          line: 79
+          column: 170
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_source"
+      identity_kind: "explicit"
+      unit_id: "normative_35356"
+      source_span:
+        start:
+          offset: 35469
+          line: 709
+          column: 1
+        end:
+          offset: 35835
+          line: 709
+          column: 367
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_recovery"
+      identity_kind: "explicit"
+      unit_id: "normative_35356"
+      source_span:
+        start:
+          offset: 35836
+          line: 710
+          column: 1
+        end:
+          offset: 36073
+          line: 710
+          column: 238
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_grade"
+      identity_kind: "explicit"
+      unit_id: "normative_35356"
+      source_span:
+        start:
+          offset: 36074
+          line: 711
+          column: 1
+        end:
+          offset: 36293
+          line: 711
+          column: 220
+    - pointer: "/allocation_rules/3"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_35356"
+      source_span:
+        start:
+          offset: 36294
+          line: 712
+          column: 1
+        end:
+          offset: 36603
+          line: 712
+          column: 310
+    - pointer: "/validation_rules/0"
+      rule_id: "v_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_42850"
+      source_span:
+        start:
+          offset: 42945
+          line: 749
+          column: 1
+        end:
+          offset: 43143
+          line: 749
+          column: 199
+    - pointer: "/validation_rules/1"
+      rule_id: "v_route"
+      identity_kind: "explicit"
+      unit_id: "normative_42850"
+      source_span:
+        start:
+          offset: 43144
+          line: 750
+          column: 1
+        end:
+          offset: 43369
+          line: 750
+          column: 226
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_42850"
+      source_span:
+        start:
+          offset: 43370
+          line: 751
+          column: 1
+        end:
+          offset: 43551
+          line: 751
+          column: 182
+    - pointer: "/validation_rules/3"
+      rule_id: "v_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_42850"
+      source_span:
+        start:
+          offset: 43552
+          line: 752
+          column: 1
+        end:
+          offset: 43741
+          line: 752
+          column: 190
+    - pointer: "/validation_rules/4"
+      rule_id: "v_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_42850"
+      source_span:
+        start:
+          offset: 43742
+          line: 753
+          column: 1
+        end:
+          offset: 43954
+          line: 753
+          column: 213
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 6618
+          line: 58
+          column: 1
+        end:
+          offset: 6639
+          line: 58
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6618"
+      source_span:
+        start:
+          offset: 6667
+          line: 62
+          column: 1
+        end:
+          offset: 7685
+          line: 69
+          column: 139
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_35356"
+      source_span:
+        start:
+          offset: 35356
+          line: 705
+          column: 1
+        end:
+          offset: 35396
+          line: 705
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_42850"
+      source_span:
+        start:
+          offset: 42850
+          line: 745
+          column: 1
+        end:
+          offset: 42872
+          line: 745
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:62f373ca8fe861b38dd0a2e7637b1225300d6ccf73b626a8f861745691cf413a"
+  generated_content_sha256: "sha256:fbea2f997d506eee5b676e52b018b6cbe97f2601695d64118c5fe6b3d3a9bfc2"

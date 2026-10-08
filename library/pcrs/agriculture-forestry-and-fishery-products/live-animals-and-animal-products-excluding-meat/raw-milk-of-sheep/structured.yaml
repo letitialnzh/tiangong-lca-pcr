@@ -1,10 +1,1811 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02291"
-  title: "Raw milk of sheep"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-sheep"
+  classification_refs: "CPC 3.0 02291 Raw milk of sheep"
+  covered_products: "Unprocessed raw sheep milk at producing-farm handover, warm or chilled on farm."
+  excluded_products: "Pasteurized, heat-treated, formulated, independently skimmed or partly skimmed milk; downstream dairy products."
+  representative_product: "1 kg measured raw sheep milk at actual producing-farm gate."
+  production_route: "Managed dairy ewe biological production, independent milking/collection, optional first straining/filtration, optional on-farm chilling, then one final handover. Pasture and housed/concentrate management are evidence-specific alternatives of the same managed herd parent."
+  market_state: "Raw liquid sheep milk, warm or chilled at producing-farm gate."
+functional_unit:
+  what: "Raw liquid sheep milk from the producing dairy herd at actual farm handover."
+  how_much: "1 kg measured accepted milk; retain measured volume and density if converting."
+  how_well: "Unheated, unformulated, unseparated; disclose temperature and first filtration/chilling."
+  how_long_or_cycle: "Milking batch and linked ewe lactation, breeding and replacement periods."
+  reference_flow_link: "reference_product_handover"
+system_boundary:
+  rules:
+    - rule_id: one_final_state
+      applies_to: "Final lot"
+      rule: "Choose exactly one warm or chilled final producing-farm milk state; intermediate transfers are not additional final sold milk."
+      source_ids:
+        - un-cpc-3-2025
+    - rule_id: milking_capture
+      applies_to: "Ewe milk"
+      rule: "Separate milking from herd biological production because collection establishes measured saleable milk versus spill/reject before conditioning."
+      source_ids:
+        - fao-small-ruminant-dairy
+    - rule_id: first_conditioning
+      applies_to: "Optional straining"
+      rule: "Include only actually operated first filtration with warm collected input, prepared raw output, material input and rejects; no heat treatment."
+      source_ids:
+        - fao-small-ruminant-dairy
+    - rule_id: farm_chilling
+      applies_to: "Optional cooling"
+      rule: "Include only actual farm cooling, recording warm input, energy, chilled raw output, losses and final temperature."
+      source_ids:
+        - fao-small-ruminant-dairy
+    - rule_id: pasture_housed_delta
+      applies_to: "Alternative herd regimes"
+      rule: "Both retain managed ewe production; pasture changes grazed-feed measurement and manure placement, while housed/concentrate management changes feed sourcing, housing water and manure storage. Choose evidenced categories and calculation per flock-period, splitting documented mixed periods."
+      source_ids:
+        - fao-small-ruminant-dairy
+    - rule_id: period_shared
+      applies_to: "Herd and milk nodes"
+      rule: "Link breeding, lactation, dry and replacement periods and shared parlour/tank/pump services to beneficiary output batches once."
+      source_ids:
+        - fao-leap-small-ruminants-2016
+    - rule_id: reference_handover_linkage
+      applies_to: "actual reference-product boundary"
+      rule: "Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Dairy ewe herd with documented replacement stock, feed/forage, water, milking services and any operated conditioning/chilling equipment."
+  starting_condition_role: "Biological production starting point and purchased input/service provenance."
+  product_classification_scope: "CPC 3.0 02291 raw sheep milk; lambs, culls, wool and independently transferred manure are distinct products where actually sold."
+  recursive_input_rule: "Purchased raw sheep milk from another farm carries upstream burden once; internal milk transfers link to producing nodes and are not re-imported as external input."
+  upstream_dataset_requirement: "Link purchased feed, replacement stock, water, energy, filter media and services to source-specific upstream data; disclose missing inputs."
+  disclosure: "Declare farm/herd/breed, pasture or housed period, lactation and replacement, lamb suckling/retained milk, milking/filter/chilling route, final state/gate, manure fate, co-outputs and shared facilities."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Raw sheep milk at producing-farm handover, warm or chilled"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "sheep species and dairy breed"
+    - "herd/farm"
+    - "milking batch"
+    - "warm/chilled state"
+    - "actual temperature"
+    - "first filtration/chilling"
+    - "actual producer gate"
+    - "lactation period"
+    - "mass or volume-density method"
+reference_flows:
+  []
+measurement_rules:
+  - id: milk_mass
+    applies_to: "Final raw milk"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure accepted mass at producing-farm gate; record density and temperature for volume conversion."
+  - id: milk_state
+    applies_to: "Warm/chilled route"
+    required_property_ref:
+      name: "Mass and temperature"
+      uuid: ""
+    required_unit: "kg; °C"
+    rule: "Preserve actual state; never infer chilled identity from a generic raw-milk name."
+  - id: feed_basis
+    applies_to: "Ewe feed/forage"
+    required_property_ref:
+      name: "As-fed or dry basis"
+      uuid: ""
+    required_unit: "kg"
+    rule: "State feed moisture and pasture-intake method before aggregation."
+  - id: energy_basis
+    applies_to: "Milking/chilling energy"
+    required_property_ref:
+      name: "Carrier-specific property"
+      uuid: ""
+    required_unit: "supplier unit"
+    rule: "Preserve carrier, unit and documented conversion."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: ewe_herd
+    name: "Dairy ewe herd"
+    inclusion: "required"
+    inclusion_condition: "Always for milk-producing sheep."
+    role: "Managed breeding, lactation and dry-period biological production."
+    quantitative_reference: "per 1 kg final raw sheep milk"
+  - id: milking
+    name: "Milking and raw collection"
+    inclusion: "required"
+    inclusion_condition: "Actual collection of raw milk."
+    role: "Independent milk harvest and hygienic first handover."
+    quantitative_reference: "per 1 kg final raw sheep milk"
+  - id: primary_conditioning
+    name: "First straining or filtration"
+    inclusion: "conditional"
+    inclusion_condition: "Only when first on-farm filtration is operated."
+    role: "Raw collected milk to prepared raw milk, not heat treatment."
+    quantitative_reference: "per 1 kg final raw sheep milk"
+  - id: farm_chilling
+    name: "On-farm raw-milk chilling"
+    inclusion: "conditional"
+    inclusion_condition: "Only for actual chilled final route."
+    role: "Usable warm state to stabilized chilled raw state."
+    quantitative_reference: "per 1 kg final raw sheep milk"
+  - id: farm_handover
+    name: "Producing-farm milk handover"
+    inclusion: "required"
+    inclusion_condition: "One warm or chilled final gate per lot."
+    role: "Accepted final milk and losses at actual producing farm."
+    quantitative_reference: "per 1 kg final raw sheep milk"
+  - id: reference_handover
+    name: "Actual producer reference-product handover"
+    inclusion: "required"
+    inclusion_condition: "One actual declared route, state and producer gate per foreground package"
+    role: "Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution"
+    quantitative_reference: "1 kg accepted product at the declared handover"
+process_inventory:
+  - id: ewe_herd
+    label: "Dairy ewe herd"
+    inputs:
+      product:
+        - row_id: herd_feed
+          role: "Ewe feed and forage"
+          name: "Ewe feed/forage; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual grazed, harvested and purchased feed by origin and basis. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Calculate delivered plus opening minus closing stock, with separately evidenced pasture intake. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: herd_water
+          role: "Ewe drinking and service water"
+          name: "Ewe-herd water by actual use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Actual drinking and service uses are split from foreground records; group deferred. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Meter water assigned to ewe herd and period. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: milk_to_milking
+          role: "Biological milk transferred to milking"
+          name: "Internal warm sheep milk; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This internal herd output is measured by the matching milking lot and is not final sold milk. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Assign collected milk mass to the ewe period once. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sold_lambs
+          role: "Independently sold lambs"
+          name: "Live lambs; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only actual lamb handovers are co-products; record live mass and count. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure lamb mass/count at their own handover. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: culled_ewes
+          role: "Independently sold culled ewes"
+          name: "Live culled ewes; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate sold living ewes from mortality. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure live mass/count at separate transfer. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sold_manure
+          role: "Sold manure product"
+          name: "Sheep manure product; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only intentionally transferred manure with product handover evidence. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Weigh manure at independent sale/transfer. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: unsold_manure
+          role: "Unsold manure"
+          name: "Sheep manure residue/waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Manure not sold remains residue/waste by fate; do not duplicate sold fraction. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Weigh/reconcile manure and disposal destination. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ewe_mortality
+          role: "Ewe mortality"
+          name: "Dead ewe biological waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record dead ewes separately from independently sold live culls and document their disposal route. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Count mortalities and calculate mass from observed class-specific weights or weigh removals. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_herd_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: enteric_ch4
+          role: "Enteric biogenic methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use the ewe enteric pathway and air receiving medium, not a factor from the UUID. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Calculate from observed ewe class/feed and documented enteric method. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_records
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_ch4
+          role: "Manure biogenic methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Identify manure storage/treatment pathway separately from enteric methane. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Calculate from observed manure system and documented method. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_records
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_n2o
+          role: "Manure nitrous oxide to air"
+          name: "Nitrous oxide, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Identify specific manure nitrogen pathway and air medium. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Calculate from observed nitrogen/system and documented method tier. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_records
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_nh3
+          role: "Manure ammonia to air"
+          name: "Ammonia, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use independent NH3 measurement or separately sourced factor, not IPCC CH4/N2O factor. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Record measured NH3 for actual manure/housing pathway. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_records
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: milking
+    label: "Milking and raw collection"
+    inputs:
+      product:
+        - row_id: milk_at_udder
+          role: "Biological ewe milk entering collection"
+          name: "Warm raw sheep milk before collection; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal herd milk crosses into collection once, measured at this milking lot. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure milk from lactating ewes, including retained lamb milk disclosure. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: milking_water
+          role: "Milking hygiene process water"
+          name: "Milking process water"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Teat and equipment cleaning water is distinct from ewe drinking water. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Meter milking-cleaning water. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_services
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: milking_energy
+          role: "Milking pump energy"
+          name: "Milking energy carriers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual energy carrier and assigned service period. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Meter/invoice energy attributable to milking. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_services
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: warm_collected_milk
+          role: "Collected warm raw milk"
+          name: "Warm collected raw sheep milk; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This usable milk is before optional filtration/chilling or warm final gate. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure hygienically accepted warm milk. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: milking_rejects
+          role: "Milking rejects and spills"
+          name: "Rejected sheep milk waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate rejected milk from saleable collected milk. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Reconcile input versus accepted milk and disposal. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: milking_wastewater
+          role: "Milking cleaning wastewater"
+          name: "Milking wastewater; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Track cleaning effluent and its destination, separate from milk rejects. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Reconcile discharge with supplied cleaning water. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_milking_services
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: primary_conditioning
+    label: "First straining or filtration"
+    inputs:
+      product:
+        - row_id: conditioning_milk
+          role: "Warm milk entering first filtration"
+          name: "Warm raw sheep milk for filtration; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collected warm milk enters one bounded non-thermal filtering step. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure transferred warm milk mass. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: filter_media
+          role: "Filter material"
+          name: "Filter medium by actual material; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only the actual single-use media; reusable equipment is shared service. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Weigh media issued per lot. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: conditioned_warm_milk
+          role: "Prepared warm raw milk"
+          name: "Filtered warm raw sheep milk; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "First filtered milk remains unheated/raw and transfers to chilling or handover. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure net prepared milk mass. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_rejects
+          role: "Filter residue and milk rejects"
+          name: "Filter residue/milk waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record solids/media and retained milk loss by actual disposal route. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Reconcile filtering input, prepared output and residual. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_conditioning_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: farm_chilling
+    label: "On-farm raw-milk chilling"
+    inputs:
+      product:
+        - row_id: chilling_milk
+          role: "Usable warm milk before chilling"
+          name: "Warm raw sheep milk before chilling; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive milk from milking or conditioning once for this physical lot. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure warm milk and starting temperature. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_chilling_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: chilling_energy
+          role: "Refrigeration energy"
+          name: "Farm chilling energy carriers"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual carrier and meter; no universal refrigeration factor. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Assign metered energy to milk lot. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_chilling_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: chilled_internal_milk
+          role: "Chilled raw milk before farm gate"
+          name: "Internal chilled raw sheep milk; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Milk remains raw after cooling; internal transfer is not the farm-gate identity. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure chilled mass and ending temperature. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_chilling_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: chilling_losses
+          role: "Chilling losses and rejects"
+          name: "Chilling rejected milk; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate spills/rejected milk from usable chilled milk. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Reconcile input versus accepted output and disposal. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_chilling_lot
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: farm_handover
+    label: "Producing-farm milk handover"
+    inputs:
+      product:
+        - row_id: warm_for_gate
+          role: "Warm raw milk for farm handover"
+          name: "Warm raw sheep milk before gate; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only non-chilled route, from milking or conditioning once. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure warm milk presented for handover. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_farm_handover
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: chilled_for_gate
+          role: "Chilled raw milk for farm handover"
+          name: "Chilled raw sheep milk before gate; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only chilled route, from farm-chilling node once. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Measure chilled milk presented for handover. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_farm_handover
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: warm_final_milk
+          role: "Warm raw sheep milk at farm gate"
+          name: "Warm raw sheep milk at producing-farm gate; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Final warm/unprocessed milk; chilled UUID is incompatible. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: 1 kg measured accepted warm milk if warm route selected. Original collection denominator kind: reference_flow. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_farm_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: chilled_final_milk
+          role: "Chilled raw sheep milk at farm gate"
+          name: "Raw milk of sheep, chilled, farm gate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8b3a0949-2be7-413b-bdc3-0f1f8942eb61"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Exact chilled unprocessed sheep-milk Product at producing farm gate. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: 1 kg measured accepted chilled milk if chilled route selected. Original collection denominator kind: reference_flow. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_farm_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: gate_losses
+          role: "Final milk losses and rejects"
+          name: "Rejected sheep milk waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Do not count rejected milk as final saleable raw milk. Denominator and scope requirements：per 1 kg final raw sheep milk Raw quantity and calculation requirements: Presented minus accepted sold mass, reconciled with disposal. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_farm_handover
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final raw sheep milk"
+                basis: "per 1 kg final raw sheep milk"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: reference_handover
+    label: "Actual producer reference-product handover"
+    inputs:
+      product:
+        - row_id: reference_handover_input
+          role: "Raw sheep milk at producing-farm handover, warm or chilled for actual producer-handover linkage"
+          name: "Raw sheep milk at producing-farm handover, warm or chilled for actual producer-handover linkage"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This input matches the accepted goods represented by warm_final_milk, chilled_final_milk under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_final_milk, chilled_final_milk Required product-instance qualifiers: sheep species and dairy breed; herd/farm; milking batch; warm/chilled state; actual temperature; first filtration/chilling; actual producer gate; lactation period; mass or volume-density method"
+          amount:
+            expression: "Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_handover
+          role: "Raw sheep milk at producing-farm handover, warm or chilled"
+          name: "Raw sheep milk at producing-farm handover, warm or chilled"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_final_milk, chilled_final_milk Required product-instance qualifiers: sheep species and dairy breed; herd/farm; milking batch; warm/chilled state; actual temperature; first filtration/chilling; actual producer gate; lactation period; mass or volume-density method"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: output_census
+    applies_to: "Ewe herd"
+    rule: "Enumerate raw milk, independently sold lambs/culls, wool if shorn and sold, and exported manure at actual handovers. Mortality and unsold manure remain waste/residue. A sold-wool exchange must be added from actual records."
+    source_ids:
+      - fao-small-ruminant-dairy
+  - rule_id: allocation_precedence
+    applies_to: "Joint herd outputs"
+    rule: "Subdivide measured activity where possible; otherwise use documented physical causality where defensible, then contemporaneous economic value with period and sensitivity. No default substitution credit."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: period_attribution
+    applies_to: "Breeding/lactation/replacement"
+    rule: "Attribute feed, service, milk, lambs, culls and events to observed periods; carry cross-period burden once and disclose lamb milk retention."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: shared_attribution
+    applies_to: "Parlour, tank, pump, meter"
+    rule: "List every herd/milking/conditioning/chilling consumer and service period; allocate by metered use or documented time/throughput and reconcile to total without duplication."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_herd_inputs
+      process_id: "ewe_herd"
+      flow_role: "Feed, forage, water"
+      record_type: "Feed stock/grazing and meter"
+      raw_fields: "herd; period; feed type; stocks; pasture method; water source/meter"
+      collection_method: "Reconcile intake by ewe class and period; Raw aggregation requirements: one measured share per period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "per feed/meter interval"
+      temporal_coverage: "full lactation and dry periods"
+      site_scope: "ewe herd"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "feed ledger; grazing estimate; meter; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_herd_outputs
+      process_id: "ewe_herd"
+      flow_role: "Lambs, culls, manure, mortality"
+      record_type: "Birth/movement/sales/death"
+      raw_fields: "herd; period; lamb/cull/death count and mass; manure mass; gate; destination"
+      collection_method: "Count/weigh separate output, loss and mortality; Raw aggregation requirements: product versus waste by handover. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; head"
+      frequency: "per event"
+      temporal_coverage: "reproductive/replacement period"
+      site_scope: "ewe herd"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "birth/death register; scale; sales/disposal; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_manure_records
+      process_id: "ewe_herd"
+      flow_role: "Manure and air species"
+      record_type: "Manure/N/enteric records"
+      raw_fields: "ewe class; period; feed; manure pathway; volatile solids; N; CH4/N2O factor; independent NH3 observation"
+      collection_method: "CH4/N2O by actual method; NH3 only measured or separately sourced; Raw aggregation requirements: one pathway per manure fraction. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg substance"
+      frequency: "per herd period"
+      temporal_coverage: "full housing/grazing/manure period"
+      site_scope: "ewe herd/manure node"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "analysis; method worksheet; NH3 record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_milking_lot
+      process_id: "milking"
+      flow_role: "Biological/collected/rejected milk"
+      record_type: "Milking sheet and tank"
+      raw_fields: "herd; ewe count; time; volume; density; temperature; mass; rejects"
+      collection_method: "Meter each lot and reconcile retained/spilled milk; Raw aggregation requirements: sum accepted and loss by lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; L"
+      frequency: "per milking"
+      temporal_coverage: "full milking period"
+      site_scope: "parlour"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "tank calibration; milking log; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_milking_services
+      process_id: "milking"
+      flow_role: "Hygiene water, energy, wastewater"
+      record_type: "Meter/invoice and washdown"
+      raw_fields: "lot; water; carrier; cleaning interval; wastewater destination"
+      collection_method: "Assign shared services to lots; Raw aggregation requirements: reconcile water in/out. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; kWh; MJ"
+      frequency: "per meter interval"
+      temporal_coverage: "full milking period"
+      site_scope: "parlour"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter; cleaning log; invoice; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_conditioning_lot
+      process_id: "primary_conditioning"
+      flow_role: "Milk, filter, rejects"
+      record_type: "Filter/lot sheet"
+      raw_fields: "lot; input mass; filter mass; accepted mass; residue; destination"
+      collection_method: "Weigh/reconcile input, output and rejects; Raw aggregation requirements: one physical milk transfer. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "per lot"
+      temporal_coverage: "full conditioning"
+      site_scope: "farm conditioning"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale; filter log; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_chilling_lot
+      process_id: "farm_chilling"
+      flow_role: "Warm/chilled milk, energy, loss"
+      record_type: "Tank/meter"
+      raw_fields: "lot; warm mass/temp; chilled mass/temp; energy; reject"
+      collection_method: "Measure before/after state and carrier energy; Raw aggregation requirements: reconcile milk balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; °C; kWh; MJ"
+      frequency: "per lot"
+      temporal_coverage: "full chilling"
+      site_scope: "farm chilling"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "tank; meter log; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_farm_handover
+      process_id: "farm_handover"
+      flow_role: "Warm/chilled final milk and loss"
+      record_type: "Farm-gate acceptance"
+      raw_fields: "lot; gate; raw status; mass; temp; sold/returned/lost"
+      collection_method: "Weigh accepted milk and record one route; Raw aggregation requirements: normalize accepted milk to 1 kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; °C"
+      frequency: "per lot"
+      temporal_coverage: "milking to gate"
+      site_scope: "producing farm"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "delivery note; scale; temperature log; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_reference_handover
+      process_id: "reference_handover"
+      flow_role: "accepted product and matched internal source transfer"
+      record_type: "producer handover ledger"
+      raw_fields: "lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link"
+      collection_method: "Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed."
+      unit: "kg; native source quantities"
+      frequency: "each actual handover"
+      temporal_coverage: "matched source and handover periods"
+      site_scope: "declared producer gate only"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet"
+  calculation_rules:
+    - id: feed_consumed
+      applies_to: "Ewe feed"
+      rule: "Opening stock + deliveries/harvest − closing stock − returns; pasture intake separately evidenced."
+      inputs:
+        - stocks
+        - supply
+        - grazing
+      output: "kg feed by type/period"
+      source_ids:
+        - mass-balance-identity
+    - id: milk_volume_mass
+      applies_to: "Volume records"
+      rule: "Milk kg = measured L × lot-measured density, not a universal density."
+      inputs:
+        - L
+        - density
+        - temp
+      output: "kg raw milk"
+      source_ids:
+        - mass-balance-identity
+    - id: milk_balance
+      applies_to: "Milking to handover"
+      rule: "At each node input milk = accepted output + rejected/lost milk within meter uncertainty; internal transfer not sale twice."
+      inputs:
+        - input
+        - accepted
+        - rejects
+      output: "kg accepted and lost"
+      source_ids:
+        - mass-balance-identity
+    - id: herd_ch4_n2o
+      applies_to: "Enteric/manure emissions"
+      rule: "Use observed ewe class, feed, volatile solids/N and manure pathway with documented method tier; UUID is not a factor."
+      inputs:
+        - herd
+        - feed
+        - VS
+        - N
+        - pathway
+        - factor
+      output: "kg CH4/N2O separately"
+      source_ids:
+        - ipcc-livestock-2019
+    - id: nh3_measurement
+      applies_to: "Manure NH3"
+      rule: "Use independent measured NH3 or separately sourced compatible method, not CH4/N2O factor."
+      inputs:
+        - "NH3 observation/method"
+      output: "kg NH3"
+      source_ids: []
+    - id: shared_reconcile
+      applies_to: "Shared parlour/chiller"
+      rule: "Node-period shares sum to measured service total within uncertainty."
+      inputs:
+        - meter
+        - "time/throughput"
+      output: "allocated service"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Final milk"
+      requirement: "Record ovine herd/breed, farm/gate, batch, raw/warm/chilled state, temperature and mass."
+      evidence: "herd register; acceptance note; tank log"
+    - id: dq_route
+      applies_to: "All nodes"
+      requirement: "Identify pasture/housed periods, actual conditioning/chilling, lamb suckling/retention, purchased/internal inputs."
+      evidence: "enterprise map; herd/milk ledger"
+    - id: dq_complete
+      applies_to: "Milk, feed, water, energy, manure"
+      requirement: "Reconcile whole-period inputs/outputs, missing data, losses, manure fate and co-output handovers."
+      evidence: "stock, meter, sales/disposal"
+    - id: dq_attribution
+      applies_to: "Joint and shared"
+      requirement: "Archive period, physical/economic allocation basis, shares and sensitivity; prevent duplicate burden."
+      evidence: "attribution worksheet"
+validation_rules:
+  - rule_id: validate_raw_state
+    applies_to: "Final reference"
+    rule: "Verify unheated, unseparated ovine raw milk and exactly one warm/chilled farm-gate product; chilled UUID cannot fill broad reference or warm output."
+    source_ids:
+      - un-cpc-3-2025
+  - rule_id: validate_balance
+    applies_to: "Milk nodes"
+    rule: "Reconcile collected, filtered, chilled and accepted lots with rejects; no intermediate milk sold-final twice."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_outputs
+    applies_to: "Herd allocation"
+    rule: "Check milk, sold lambs/culls, actual wool/manure transfer, mortality and unsold manure status/gates before allocation."
+    source_ids:
+      - fao-small-ruminant-dairy
+  - rule_id: validate_periods
+    applies_to: "Herd/milking"
+    rule: "Link breeding, lactation, dry and replacement periods/events to benefiting milk and animals once."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: validate_shared
+    applies_to: "Shared assets"
+    rule: "Identify all parlour, tank, pump, chiller and meter consumers/periods; reconcile allocated shares to totals."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: validate_route
+    applies_to: "Pasture/housed"
+    rule: "Require actual feed, water and manure evidence; never stack incompatible route assumptions."
+    source_ids:
+      - fao-small-ruminant-dairy
+published_dataset_profile:
+  dataset_role: "Foreground package for one producing-farm raw sheep-milk lot."
+  downstream_use: "After review, may become secondary_dataset or background_dataset for process/lifecyclemodel projection."
+  allowed_use: "Declared ovine raw milk state and farm gate with measured mass, herd/period, inputs, emissions, losses and co-outputs."
+  excluded_use: "Processed/skimmed milk, inferred chilled state, collection-centre gate or undeclared joint-output assumptions."
+  required_metadata: "Farm/gate, herd/breed, milking lot, warm/chilled state, temperature, raw conditioning, period and verified concrete flow selection."
+  required_quality_disclosure: "Feed/pasture measurement, lamb milk retention, milk loss, manure pathway, emission method, allocations and unresolved identities/ranges."
+  update_trigger: "Changed product state/gate, herd route, manure system, allocation basis or verified UUID."
+data_sources:
+  - id: "un-cpc-3-2025"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Raw sheep milk classification/exclusion."
+  - id: "fao-small-ruminant-dairy"
+    type: "official_guidance"
+    reference: "https://www.fao.org/dairy-production-products/dairy/small-ruminants/en"
+    used_for: "Dairy sheep routes and output context."
+  - id: "fao-leap-small-ruminants-2016"
+    type: "official_guidance"
+    reference: "https://openknowledge.fao.org/handle/20.500.14283/i6434en"
+    used_for: "Small-ruminant LCA boundary, allocation and activity data."
+  - id: "ipcc-livestock-2019"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf"
+    used_for: "Enteric and manure CH4/N2O methods."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of measured milk, material and service quantities"
+    used_for: "QA identity, not empirical sheep-milk factor."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:161c5a53ff3c4f1f2de9d3e32801d50ffb112acd66868540329e287525223757"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6946"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6946
+          line: 60
+          column: 1
+        end:
+          offset: 10278
+          line: 85
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Dairy ewe herd with documented replacement stock, feed/forage, water, milking services and any operated conditioning/chilling equipment. |\n| starting_condition_role | Biological production starting point and purchased input/service provenance. |\n| product_classification_scope | CPC 3.0 02291 raw sheep milk; lambs, culls, wool and independently transferred manure are distinct products where actually sold. |\n| recursive_input_rule | Purchased raw sheep milk from another farm carries upstream burden once; internal milk transfers link to producing nodes and are not re-imported as external input. |\n| upstream_dataset_requirement | Link purchased feed, replacement stock, water, energy, filter media and services to source-specific upstream data; disclose missing inputs. |\n| disclosure | Declare farm/herd/breed, pasture or housed period, lactation and replacement, lamb suckling/retained milk, milking/filter/chilling route, final state/gate, manure fate, co-outputs and shared facilities. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `one_final_state` | Final lot | Choose exactly one warm or chilled final producing-farm milk state; intermediate transfers are not additional final sold milk. | `un-cpc-3-2025` |\n| `milking_capture` | Ewe milk | Separate milking from herd biological production because collection establishes measured saleable milk versus spill/reject before conditioning. | `fao-small-ruminant-dairy` |\n| `first_conditioning` | Optional straining | Include only actually operated first filtration with warm collected input, prepared raw output, material input and rejects; no heat treatment. | `fao-small-ruminant-dairy` |\n| `farm_chilling` | Optional cooling | Include only actual farm cooling, recording warm input, energy, chilled raw output, losses and final temperature. | `fao-small-ruminant-dairy` |\n| `pasture_housed_delta` | Alternative herd regimes | Both retain managed ewe production; pasture changes grazed-feed measurement and manure placement, while housed/concentrate management changes feed sourcing, housing water and manure storage. Choose evidenced categories and calculation per flock-period, splitting documented mixed periods. | `fao-small-ruminant-dairy` |\n| `period_shared` | Herd and milk nodes | Link breeding, lactation, dry and replacement periods and shared parlour/tank/pump services to beneficiary output batches once. | `fao-leap-small-ruminants-2016` |\n| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 187
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 20
+          text: "# Raw milk of sheep"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6946
+              line: 60
+              column: 1
+            end:
+              offset: 6967
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_55098"
+      family: "allocation"
+      span:
+        start:
+          offset: 55098
+          line: 1057
+          column: 1
+        end:
+          offset: 56283
+          line: 1066
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_census` | Ewe herd | Enumerate raw milk, independently sold lambs/culls, wool if shorn and sold, and exported manure at actual handovers. Mortality and unsold manure remain waste/residue. A sold-wool exchange must be added from actual records. | `fao-small-ruminant-dairy` |\n| `allocation_precedence` | Joint herd outputs | Subdivide measured activity where possible; otherwise use documented physical causality where defensible, then contemporaneous economic value with period and sensitivity. No default substitution credit. | `fao-leap-small-ruminants-2016` |\n| `period_attribution` | Breeding/lactation/replacement | Attribute feed, service, milk, lambs, culls and events to observed periods; carry cross-period burden once and disclose lamb milk retention. | `fao-leap-small-ruminants-2016` |\n| `shared_attribution` | Parlour, tank, pump, meter | List every herd/milking/conditioning/chilling consumer and service period; allocate by metered use or documented time/throughput and reconcile to total without duplication. | `fao-leap-small-ruminants-2016` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 187
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 20
+          text: "# Raw milk of sheep"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 55098
+              line: 1057
+              column: 1
+            end:
+              offset: 55138
+              line: 1057
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_65477"
+      family: "validation"
+      span:
+        start:
+          offset: 65477
+          line: 1102
+          column: 1
+        end:
+          offset: 66666
+          line: 1113
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_raw_state` | Final reference | Verify unheated, unseparated ovine raw milk and exactly one warm/chilled farm-gate product; chilled UUID cannot fill broad reference or warm output. | `un-cpc-3-2025` |\n| `validate_balance` | Milk nodes | Reconcile collected, filtered, chilled and accepted lots with rejects; no intermediate milk sold-final twice. | `mass-balance-identity` |\n| `validate_outputs` | Herd allocation | Check milk, sold lambs/culls, actual wool/manure transfer, mortality and unsold manure status/gates before allocation. | `fao-small-ruminant-dairy` |\n| `validate_periods` | Herd/milking | Link breeding, lactation, dry and replacement periods/events to benefiting milk and animals once. | `fao-leap-small-ruminants-2016` |\n| `validate_shared` | Shared assets | Identify all parlour, tank, pump, chiller and meter consumers/periods; reconcile allocated shares to totals. | `fao-leap-small-ruminants-2016` |\n| `validate_route` | Pasture/housed | Require actual feed, water and manure evidence; never stack incompatible route assumptions. | `fao-small-ruminant-dairy` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 187
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 20
+          text: "# Raw milk of sheep"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 65477
+              line: 1102
+              column: 1
+            end:
+              offset: 65499
+              line: 1102
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "one_final_state"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 8147
+          line: 77
+          column: 1
+        end:
+          offset: 8327
+          line: 77
+          column: 181
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "milking_capture"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 8328
+          line: 78
+          column: 1
+        end:
+          offset: 8535
+          line: 78
+          column: 208
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "first_conditioning"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 8536
+          line: 79
+          column: 1
+        end:
+          offset: 8755
+          line: 79
+          column: 220
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "farm_chilling"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 8756
+          line: 80
+          column: 1
+        end:
+          offset: 8939
+          line: 80
+          column: 184
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "pasture_housed_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 8940
+          line: 81
+          column: 1
+        end:
+          offset: 9313
+          line: 81
+          column: 374
+    - pointer: "/system_boundary/rules/5"
+      rule_id: "period_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 9314
+          line: 82
+          column: 1
+        end:
+          offset: 9519
+          line: 82
+          column: 206
+    - pointer: "/system_boundary/rules/6"
+      rule_id: "reference_handover_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 9520
+          line: 83
+          column: 1
+        end:
+          offset: 10276
+          line: 83
+          column: 757
+    - pointer: "/allocation_rules/0"
+      rule_id: "output_census"
+      identity_kind: "explicit"
+      unit_id: "normative_55098"
+      source_span:
+        start:
+          offset: 55211
+          line: 1061
+          column: 1
+        end:
+          offset: 55495
+          line: 1061
+          column: 285
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_precedence"
+      identity_kind: "explicit"
+      unit_id: "normative_55098"
+      source_span:
+        start:
+          offset: 55496
+          line: 1062
+          column: 1
+        end:
+          offset: 55783
+          line: 1062
+          column: 288
+    - pointer: "/allocation_rules/2"
+      rule_id: "period_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_55098"
+      source_span:
+        start:
+          offset: 55784
+          line: 1063
+          column: 1
+        end:
+          offset: 56018
+          line: 1063
+          column: 235
+    - pointer: "/allocation_rules/3"
+      rule_id: "shared_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_55098"
+      source_span:
+        start:
+          offset: 56019
+          line: 1064
+          column: 1
+        end:
+          offset: 56281
+          line: 1064
+          column: 263
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_raw_state"
+      identity_kind: "explicit"
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 65572
+          line: 1106
+          column: 1
+        end:
+          offset: 65783
+          line: 1106
+          column: 212
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 65784
+          line: 1107
+          column: 1
+        end:
+          offset: 65957
+          line: 1107
+          column: 174
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 65958
+          line: 1108
+          column: 1
+        end:
+          offset: 66148
+          line: 1108
+          column: 191
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_periods"
+      identity_kind: "explicit"
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 66149
+          line: 1109
+          column: 1
+        end:
+          offset: 66320
+          line: 1109
+          column: 172
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 66321
+          line: 1110
+          column: 1
+        end:
+          offset: 66503
+          line: 1110
+          column: 183
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_route"
+      identity_kind: "explicit"
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 66504
+          line: 1111
+          column: 1
+        end:
+          offset: 66664
+          line: 1111
+          column: 161
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 6946
+          line: 60
+          column: 1
+        end:
+          offset: 6967
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6946"
+      source_span:
+        start:
+          offset: 6995
+          line: 64
+          column: 1
+        end:
+          offset: 8054
+          line: 71
+          column: 220
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_55098"
+      source_span:
+        start:
+          offset: 55098
+          line: 1057
+          column: 1
+        end:
+          offset: 55138
+          line: 1057
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_65477"
+      source_span:
+        start:
+          offset: 65477
+          line: 1102
+          column: 1
+        end:
+          offset: 65499
+          line: 1102
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:161c5a53ff3c4f1f2de9d3e32801d50ffb112acd66868540329e287525223757"
+  generated_content_sha256: "sha256:d66d38e1639ba2354d0e8d2a2ebffc6fc6e6e2ca5a8a7c375f2b394200dabbb6"

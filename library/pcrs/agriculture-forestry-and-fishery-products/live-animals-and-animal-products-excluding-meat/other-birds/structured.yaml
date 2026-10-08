@@ -1,10 +1,1108 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02194"
-  title: "Other birds"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.other-birds"
+  classification_refs: "CPC 3.0 02194"
+  covered_products: "Living eligible other birds with identified species and documented source"
+  excluded_products: "Separately classified poultry and ratites including rhea; eggs, meat, dead birds and downstream transport"
+  representative_product: "One kg measured live mass of one declared eligible species at source gate"
+  production_route: "Managed breeder/aviary rearing or independently lawful live capture, mutually exclusive per lot"
+  market_state: "Alive, unprocessed and accepted at the actual source gate"
+functional_unit:
+  what: "Species-qualified living other birds"
+  how_much: "1 kg measured live mass, with head count"
+  how_well: "Declared species, age/sex class, health, live condition and lawful source"
+  how_long_or_cycle: "Declared rearing cohort or capture campaign and shared-service periods"
+  reference_flow_link: "live_handover"
+system_boundary:
+  rules:
+    - rule_id: b_scope
+      applies_to: "Every lot"
+      rule: "Verify species, residual classification and lawful source. No protected-species commerce follows from a CPC example."
+      source_ids:
+        - un-cpc-2025
+        - woah-wildlife-2021
+    - rule_id: b_route
+      applies_to: "Production source"
+      rule: "Managed rearing includes real stock, care and losses; lawful capture includes actual capture, short holding and losses, but no invented breeding. Stop at accepted live source handover."
+      source_ids:
+        - un-cpc-2025
+        - woah-wildlife-2021
+    - rule_id: b_shared
+      applies_to: "Shared assets"
+      rule: "Attribute aviary, enclosure, water and handling services to actual consuming nodes and periods once; exclude slaughter and buyer transport."
+      source_ids:
+        - iso-14044-2006
+boundary_abstraction:
+  declared_starting_condition: "Managed route: opening/purchased breeding or young birds and prior burden. Capture route: authorized source campaign, without fictional breeder stock."
+  starting_condition_role: "Managed biological stock/upstream Product, or documented lawful capture context."
+  product_classification_scope: "CPC 3.0 02194, after exclusion of other live-bird classes."
+  recursive_input_rule: "Link purchased same-category birds to one upstream dataset; internal transfers are not second sales."
+  upstream_dataset_requirement: "Match purchased birds, feed and energy by supplier, identity, geography and gate; retain capture authorization."
+  disclosure: "Species, legal origin, route, count/mass, cohort/campaign, mortality, co-products, gate and shared-service periods."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Species-qualified live other birds"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Species/taxon"
+    - "residual classification"
+    - "source route"
+    - "jurisdiction and lawful provenance"
+    - count
+    - mass
+    - "sex/age class"
+    - health
+    - "cohort/campaign"
+    - "handover gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: m_live
+    applies_to: "Live reference and transfers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh each actual live lot by species and class, and reconcile count; no universal kg/bird factor."
+  - id: m_period
+    applies_to: "Cohorts, campaigns and shared assets"
+    required_property_ref:
+      name: "Time"
+      uuid: ""
+    required_unit: "declared period"
+    rule: "Link stock, input, mortality, output and shared service to actual period and phase."
+  - id: m_energy
+    applies_to: "Fuel and electricity cards"
+    required_property_ref:
+      name: "Energy or mass"
+      uuid: ""
+    required_unit: "kWh or kg"
+    rule: "Keep each actual carrier in its native unit; convert fuel to kWh-equivalent only for the provisional QA screen using a disclosed supplier calorific value, never as an invented fixed exchange."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
+process_map:
+  - id: rear
+    name: "Breed and rear eligible birds"
+    inclusion: "conditional"
+    inclusion_condition: "documented managed source"
+    role: "managed biological production"
+    quantitative_reference: "per kg live-bird handover"
+  - id: capture
+    name: "Lawfully capture and briefly hold wild birds"
+    inclusion: "conditional"
+    inclusion_condition: "documented lawful wild source; alternative to rearing"
+    role: "independent live capture"
+    quantitative_reference: "per kg live-bird handover"
+  - id: handover
+    name: "Select, weigh and hand over live birds"
+    inclusion: "required"
+    inclusion_condition: "actual source gate"
+    role: "final live acceptance"
+    quantitative_reference: "per kg live-bird handover"
+process_inventory:
+  - id: rear
+    label: "Breed and rear eligible birds"
+    inputs:
+      product:
+        - row_id: rear_stock
+          role: "Introduced live breeding or young birds"
+          name: "Species-qualified purchased or opening live birds"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record introduced live breeding or young birds for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Weigh introduced birds by species, class and source"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rear_feed
+          role: "Feed for the managed bird cohort"
+          name: "Actual species- and stage-specific feed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record feed for the managed bird cohort for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Reconcile delivered feed with opening and closing inventory"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rear_water
+          role: "Supplied bird drinking and cleaning water"
+          name: "Supplied husbandry water"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record supplied bird drinking and cleaning water for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Meter water attributable to this node"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rear_energy
+          role: "Aviary energy supply"
+          name: "Actual electricity or fuel carrier"
+          flow_type: "product"
+          property_unit: "Energy or mass / kWh or kg"
+          description: "Record aviary energy supply for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Meter energy by node and service period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kWh-equivalent/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: rear_live
+          role: "Reared live birds entering handover"
+          name: "Species-qualified reared live birds"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record reared live birds entering handover for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Weigh live internal transfer once"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rear_eggs
+          role: "Independently sold eggs"
+          name: "Species-qualified eggs actually sold"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record independently sold eggs only when actually present for the specified species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Weigh separately sold eggs at their own egg gate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rear_feathers
+          role: "Independently sold feathers"
+          name: "Species-qualified feathers actually sold"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record independently sold feathers only when actually present for the specified species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Weigh separately sold feathers at their own feather gate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rear_deaths
+          role: "Dead birds from rearing"
+          name: "Dead birds from managed cohort"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record dead birds from rearing only when actually present for the specified species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Count and weigh deaths by period and disposal route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_losses
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rear_litter_waste
+          role: "Spent litter from rearing"
+          name: "Spent bird-housing litter for actual waste route"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record spent litter from rearing only when actually present for the specified species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Weigh spent litter leaving the managed node"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_losses
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: capture
+    label: "Lawfully capture and briefly hold wild birds"
+    inputs:
+      product:
+        - row_id: capture_water
+          role: "Water supplied during actual short holding"
+          name: "Actual supplied holding water"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record water supplied during actual short holding only when actually present for the specified species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Meter water if short holding is used"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_capture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: capture_consumables
+          role: "Single-use capture and holding consumables"
+          name: "Actual used liners or gloves"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record single-use capture and holding consumables only when actually present for the specified species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Count or weigh consumed material, excluding reusable gear"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_capture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: capture_energy
+          role: "Capture and holding energy"
+          name: "Actual capture fuel or electricity"
+          flow_type: "product"
+          property_unit: "Energy or mass / kWh or kg"
+          description: "Record capture and holding energy for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Record campaign energy actually used before source gate"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_capture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kWh-equivalent/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: capture_live
+          role: "Captured live birds entering handover"
+          name: "Species-qualified lawfully captured live birds"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record captured live birds entering handover for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Count and weigh retained live birds at short-holding exit"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_capture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: capture_deaths
+          role: "Capture or holding mortality"
+          name: "Dead birds from lawful capture campaign"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record capture or holding mortality for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Record death event, species, count and mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_losses
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: handover
+    label: "Select, weigh and hand over live birds"
+    inputs:
+      product:
+        - row_id: handover_in
+          role: "Live birds received for acceptance"
+          name: "Actual live bird transfer from one source node"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record live birds received for acceptance for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Match one rearing or capture lot to acceptance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: live_handover
+          role: "Accepted live other birds"
+          name: "Species-qualified live other birds"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted live other birds for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover Raw reference-output records: Weigh living accepted lot; reference is one kg Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit."
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - iso-14044-2006
+      waste:
+        - row_id: handover_deaths
+          role: "Birds dead before acceptance"
+          name: "Dead rejected bird material"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record birds dead before acceptance for the actual species, state and gate. Denominator and scope requirements：per kg final live-bird handover"
+          amount:
+            expression: "Record mass and disposal; do not count as live output"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_losses
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live-bird handover"
+                basis: "per kg final live-bird handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_outputs
+    applies_to: "Independent product sales"
+    rule: "Distinguish live birds from independently sold eggs or feathers at their own gate. Prefer process separation and causal attribution; if inseparable, allocate shared burdens by measured same-period economic value with price evidence. Unsold residues and deaths are waste, not co-products."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: a_period
+    applies_to: "Cohorts and campaigns"
+    rule: "Attribute stock, replacement, input and output to observed cohort/campaign and service period; reconcile opening/closing stock and never charge replacement twice."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: a_shared
+    applies_to: "Shared assets and services"
+    rule: "Allocate common aviary, water or handling service by metered consumption or measured use time for each node and period; disclose any proxy and prevent a second charge."
+    source_ids:
+      - iso-14044-2006
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_rear
+      process_id: "rear"
+      flow_role: "stock, feed, utilities and outputs"
+      record_type: "cohort ledger, invoices, meters and scale"
+      raw_fields: "species, class, source, count, mass, feed, water, energy, period, independent sales"
+      collection_method: "reconcile each event and opening/closing stock; Raw aggregation requirements: sum by cohort and product gate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; bird; kWh"
+      frequency: "event and period"
+      temporal_coverage: "full cohort"
+      site_scope: "breeder site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice, calibrated scale, meter, sale record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_capture
+      process_id: "capture"
+      flow_role: "lawful capture, energy and live transfer"
+      record_type: "permit and campaign log"
+      raw_fields: "permit, species, site, dates, count captured/released/dead, mass, energy"
+      collection_method: "authorized event record and weighing; Raw aggregation requirements: sum only retained live birds. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; bird; kWh"
+      frequency: "each campaign"
+      temporal_coverage: "full campaign"
+      site_scope: "capture site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "permission and custody chain; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_handover
+      process_id: "handover"
+      flow_role: "live acceptance"
+      record_type: "acceptance and scale log"
+      raw_fields: "species, source lot, count, mass, condition, gate, date"
+      collection_method: "weigh and inspect actual living lot; Raw aggregation requirements: sum accepted live mass by species. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; bird"
+      frequency: "each lot"
+      temporal_coverage: "source-gate period"
+      site_scope: "each source gate"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale, health and provenance record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_losses
+      process_id: "rear_capture_handover"
+      flow_role: "mortality"
+      record_type: "death and disposition log"
+      raw_fields: "species, count, mass, stage, date, route"
+      collection_method: "record death at occurrence; Raw aggregation requirements: exclude from live acceptance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; bird"
+      frequency: "each event"
+      temporal_coverage: "full cohort/campaign"
+      site_scope: "actual node"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "loss and disposal record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_balance
+      applies_to: "Source and handover"
+      rule: "Reconcile opening + born/purchased/captured - released - dead - closing = transferred count, by species and period; reconcile measured mass separately."
+      inputs:
+        - "dated cohort/campaign and scale records"
+      output: "count and mass balance"
+      source_ids:
+        - woah-transport
+    - id: c_normalize
+      applies_to: "Each inventory"
+      rule: "Divide attributed input or output by accepted live kg; never use a species-free kg/bird conversion."
+      inputs:
+        - "attributed amount and accepted mass"
+      output: "per kg live output"
+      source_ids:
+        - iso-14044-2006
+    - id: c_shared
+      applies_to: "Shared service"
+      rule: "Sum node/period shares to the one measured total; no duplicate service attribution."
+      inputs:
+        - "meter and use ledger"
+      output: "attributed service"
+      source_ids:
+        - iso-14044-2006
+  data_quality_requirements:
+    - id: q_species
+      applies_to: "Each lot"
+      requirement: "Identify species, residual code and legitimate source before inventory assembly."
+      evidence: "species and custody/permit record"
+    - id: q_live
+      applies_to: "Reference"
+      requirement: "Accepted output must be alive and have reconciled count and measured mass."
+      evidence: "scale, health and mortality logs"
+    - id: q_period
+      applies_to: "Multi-period and shared service"
+      requirement: "Explain stock changes, phase boundaries and shared-use fractions."
+      evidence: "cohort/campaign and service ledgers"
+    - id: q_identity
+      applies_to: "Concrete exchange"
+      requirement: "Resolve each unbound card or unresolved input to compatible, verified flow/property/unit identity before release."
+      evidence: "candidate/detail/support verification"
+validation_rules:
+  - rule_id: v_scope
+    applies_to: "Every lot"
+    rule: "Reject separated poultry/ratites, dead output, missing species or source, and unauthorized protected-species trade."
+    source_ids:
+      - un-cpc-2025
+      - woah-wildlife-2021
+  - rule_id: v_balance
+    applies_to: "Source and gate"
+    rule: "Reconcile birds born, purchased, captured, released, transferred, dead and closing by species and period; no internal transfer as second sale."
+    source_ids:
+      - woah-transport
+  - rule_id: v_outputs
+    applies_to: "Multi-output cohort"
+    rule: "Check independent product gates, allocation method, period alignment and no allocation to waste."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: v_shared
+    applies_to: "Shared service"
+    rule: "Check actual consumers, periods and fraction sum against one measured burden."
+    source_ids:
+      - iso-14044-2006
+  - rule_id: v_binding
+    applies_to: "Concrete exchange"
+    rule: "No unresolved UUID or conditional flow identities alone is a final flow identity; verify type, species/state, property/unit and gate."
+    source_ids:
+      - un-cpc-2025
+published_dataset_profile:
+  dataset_role: "Species- and source-qualified live-bird foreground dataset"
+  downstream_use: "Reviewed secondary/background dataset, process and lifecycle-model projection after concrete identity resolution"
+  allowed_use: "Matching species, lawful source, route, condition and source gate"
+  excluded_use: "Other poultry, ratites, dead birds, slaughter, buyer transport or cross-species averages"
+  required_metadata: "Species, provenance, jurisdiction, route, count, mass, health, cohort/campaign, gate, co-product and allocation record"
+  required_quality_disclosure: "Mortality, provisional QA Ranges, shared-service proxies, missing measurement and unresolved identities"
+  update_trigger: "Species, gate, law, husbandry, UUID verification or material evidence change"
+data_sources:
+  - id: "un-cpc-2025"
+    type: "official_guidance"
+    reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "Bird boundary and exclusions"
+  - id: "woah-wildlife-2021"
+    type: "official_guidance"
+    reference: "[WOAH wildlife trade review](https://www.woah.org/app/uploads/2022/08/a-oie-review-wildlife-trade-march2021.pdf)"
+    used_for: "Lawful provenance and wildlife-source caution"
+  - id: "woah-transport"
+    type: "official_guidance"
+    reference: "[WOAH land animal transport chapter](https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/current/en_chapitre_aw_land_transpt.htm)"
+    used_for: "Live fitness and handling questions where applicable"
+  - id: "iso-14044-2006"
+    type: "standard"
+    reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines"
+    used_for: "Allocation consistency"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:053fe6ba4761d9efe65c6adcd3db8711bce3f191237f9c578ce30970d09f1e0b"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4157"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4157
+          line: 54
+          column: 1
+        end:
+          offset: 5765
+          line: 75
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed route: opening/purchased breeding or young birds and prior burden. Capture route: authorized source campaign, without fictional breeder stock. |\n| starting_condition_role | Managed biological stock/upstream Product, or documented lawful capture context. |\n| product_classification_scope | CPC 3.0 `02194`, after exclusion of other live-bird classes. |\n| recursive_input_rule | Link purchased same-category birds to one upstream dataset; internal transfers are not second sales. |\n| upstream_dataset_requirement | Match purchased birds, feed and energy by supplier, identity, geography and gate; retain capture authorization. |\n| disclosure | Species, legal origin, route, count/mass, cohort/campaign, mortality, co-products, gate and shared-service periods. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `b_scope` | Every lot | Verify species, residual classification and lawful source. No protected-species commerce follows from a CPC example. | `un-cpc-2025`; `woah-wildlife-2021` |\n| `b_route` | Production source | Managed rearing includes real stock, care and losses; lawful capture includes actual capture, short holding and losses, but no invented breeding. Stop at accepted live source handover. | `un-cpc-2025`; `woah-wildlife-2021` |\n| `b_shared` | Shared assets | Attribute aviary, enclosure, water and handling services to actual consuming nodes and periods once; exclude slaughter and buyer transport. | `iso-14044-2006` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 181
+              line: 8
+              column: 1
+            end:
+              offset: 200
+              line: 8
+              column: 20
+          text: "# Other birds, live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4157
+              line: 54
+              column: 1
+            end:
+              offset: 4178
+              line: 54
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_24085"
+      family: "allocation"
+      span:
+        start:
+          offset: 24085
+          line: 552
+          column: 1
+        end:
+          offset: 25008
+          line: 560
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_outputs` | Independent product sales | Distinguish live birds from independently sold eggs or feathers at their own gate. Prefer process separation and causal attribution; if inseparable, allocate shared burdens by measured same-period economic value with price evidence. Unsold residues and deaths are waste, not co-products. | `iso-14044-2006` |\n| `a_period` | Cohorts and campaigns | Attribute stock, replacement, input and output to observed cohort/campaign and service period; reconcile opening/closing stock and never charge replacement twice. | `iso-14044-2006` |\n| `a_shared` | Shared assets and services | Allocate common aviary, water or handling service by metered consumption or measured use time for each node and period; disclose any proxy and prevent a second charge. | `iso-14044-2006` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 181
+              line: 8
+              column: 1
+            end:
+              offset: 200
+              line: 8
+              column: 20
+          text: "# Other birds, live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 24085
+              line: 552
+              column: 1
+            end:
+              offset: 24125
+              line: 552
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_29786"
+      family: "validation"
+      span:
+        start:
+          offset: 29786
+          line: 588
+          column: 1
+        end:
+          offset: 30737
+          line: 598
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_scope` | Every lot | Reject separated poultry/ratites, dead output, missing species or source, and unauthorized protected-species trade. | `un-cpc-2025`; `woah-wildlife-2021` |\n| `v_balance` | Source and gate | Reconcile birds born, purchased, captured, released, transferred, dead and closing by species and period; no internal transfer as second sale. | `woah-transport` |\n| `v_outputs` | Multi-output cohort | Check independent product gates, allocation method, period alignment and no allocation to waste. | `iso-14044-2006` |\n| `v_shared` | Shared service | Check actual consumers, periods and fraction sum against one measured burden. | `iso-14044-2006` |\n| `v_binding` | Concrete exchange | No unresolved UUID or conditional flow identities alone is a final flow identity; verify type, species/state, property/unit and gate. | `un-cpc-2025` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 181
+              line: 8
+              column: 1
+            end:
+              offset: 200
+              line: 8
+              column: 20
+          text: "# Other birds, live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 29786
+              line: 588
+              column: 1
+            end:
+              offset: 29808
+              line: 588
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_4157"
+      source_span:
+        start:
+          offset: 5130
+          line: 71
+          column: 1
+        end:
+          offset: 5312
+          line: 71
+          column: 183
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_route"
+      identity_kind: "explicit"
+      unit_id: "normative_4157"
+      source_span:
+        start:
+          offset: 5313
+          line: 72
+          column: 1
+        end:
+          offset: 5571
+          line: 72
+          column: 259
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_4157"
+      source_span:
+        start:
+          offset: 5572
+          line: 73
+          column: 1
+        end:
+          offset: 5763
+          line: 73
+          column: 192
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_24085"
+      source_span:
+        start:
+          offset: 24198
+          line: 556
+          column: 1
+        end:
+          offset: 24550
+          line: 556
+          column: 353
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_24085"
+      source_span:
+        start:
+          offset: 24551
+          line: 557
+          column: 1
+        end:
+          offset: 24773
+          line: 557
+          column: 223
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_24085"
+      source_span:
+        start:
+          offset: 24774
+          line: 558
+          column: 1
+        end:
+          offset: 25006
+          line: 558
+          column: 233
+    - pointer: "/validation_rules/0"
+      rule_id: "v_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_29786"
+      source_span:
+        start:
+          offset: 29881
+          line: 592
+          column: 1
+        end:
+          offset: 30062
+          line: 592
+          column: 182
+    - pointer: "/validation_rules/1"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_29786"
+      source_span:
+        start:
+          offset: 30063
+          line: 593
+          column: 1
+        end:
+          offset: 30260
+          line: 593
+          column: 198
+    - pointer: "/validation_rules/2"
+      rule_id: "v_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_29786"
+      source_span:
+        start:
+          offset: 30261
+          line: 594
+          column: 1
+        end:
+          offset: 30416
+          line: 594
+          column: 156
+    - pointer: "/validation_rules/3"
+      rule_id: "v_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_29786"
+      source_span:
+        start:
+          offset: 30417
+          line: 595
+          column: 1
+        end:
+          offset: 30547
+          line: 595
+          column: 131
+    - pointer: "/validation_rules/4"
+      rule_id: "v_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_29786"
+      source_span:
+        start:
+          offset: 30548
+          line: 596
+          column: 1
+        end:
+          offset: 30735
+          line: 596
+          column: 188
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4157"
+      source_span:
+        start:
+          offset: 4157
+          line: 54
+          column: 1
+        end:
+          offset: 4178
+          line: 54
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4157"
+      source_span:
+        start:
+          offset: 4206
+          line: 58
+          column: 1
+        end:
+          offset: 5037
+          line: 65
+          column: 133
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_24085"
+      source_span:
+        start:
+          offset: 24085
+          line: 552
+          column: 1
+        end:
+          offset: 24125
+          line: 552
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_29786"
+      source_span:
+        start:
+          offset: 29786
+          line: 588
+          column: 1
+        end:
+          offset: 29808
+          line: 588
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:053fe6ba4761d9efe65c6adcd3db8711bce3f191237f9c578ce30970d09f1e0b"
+  generated_content_sha256: "sha256:156d925127c0a9e1b18fcd291a4ed9de9249d78c936f310dd2a5f32901743c0c"

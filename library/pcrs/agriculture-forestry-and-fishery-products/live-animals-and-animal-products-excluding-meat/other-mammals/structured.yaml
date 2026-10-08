@@ -1,10 +1,1213 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02192"
-  title: "Other mammals"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.other-mammals"
+  classification_refs: "CPC 3.0 02192, Other mammals"
+  covered_products: "Species-resolved living residual-class mammals of lawful captive or lawful live-capture origin"
+  excluded_products: "Specifically classified live mammals; dead animals; meat/fur; undocumented wildlife trade; post-gate use"
+  representative_product: "One declared species/class of living mammal, not a cross-species mix"
+  production_route: "Managed breeding/rearing followed by selection, or separately documented lawful live capture; never fictional breeding on capture route"
+  market_state: "Alive and unprocessed at real producer/capture handover, with count, mass and condition"
+functional_unit:
+  what: "Living mammal of a declared residual-category species at its real handover"
+  how_much: "1 kg measured live mass, plus individual count"
+  how_well: "Alive, species-resolved, lawful origin and condition established"
+  how_long_or_cycle: "Actual breeding/rearing cohort and service periods, or documented capture campaign"
+  reference_flow_link: "reference_product_handover"
+system_boundary:
+  rules:
+    - rule_id: boundary_identity
+      applies_to: "Every lot"
+      rule: "Species-level residual classification and lawful origin are prerequisites; CPC examples are not permits."
+      source_ids:
+        - un-cpc-2025
+        - woah-wildlife-trade-2021
+    - rule_id: boundary_managed
+      applies_to: "Captive route"
+      rule: "Include actual stock, husbandry inputs, care, mortality and pre-gate selection; purchased stock carries upstream burden."
+      source_ids:
+        - woah-wildlife-trade-2021
+    - rule_id: boundary_capture
+      applies_to: "Capture route"
+      rule: "Include only authorized campaign, equipment, temporary holding, welfare and capture handover; without legal evidence this route is ineligible."
+      source_ids:
+        - woah-wildlife-trade-2021
+    - rule_id: boundary_gate
+      applies_to: "Both"
+      rule: "End at real live handover; exclude post-gate delivery, buyer use, slaughter and corpse processing."
+      source_ids:
+        - un-cpc-2025
+    - rule_id: boundary_shared
+      applies_to: "Shared enclosure/equipment"
+      rule: "Record consuming nodes and service periods; charge common burden once."
+      source_ids: []
+    - rule_id: reference_handover_linkage
+      applies_to: "actual reference-product boundary"
+      rule: "Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Documented captive opening/purchased stock and prior burden, or lawful pre-capture campaign context"
+  starting_condition_role: "Managed biological stock or authorized wild-source context; no fictional lifetime farming on capture route"
+  product_classification_scope: "CPC 3.0 02192 after exclusion of more specific live-mammal leaves"
+  recursive_input_rule: "Link purchased same-category animals once to preceding-gate data; internal rearing/selection transfer is not another final product."
+  upstream_dataset_requirement: "Match incoming stock, feed, water, energy and materials to species, supplier, geography, unit and gate."
+  disclosure: "Species, lawful source and protected status, permit, welfare, lot/cohort/campaign, asset periods, death/release, outputs and actual gate."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Species-qualified live other mammal at actual gate"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Scientific species"
+    - "count/class"
+    - "live condition"
+    - "mass method"
+    - route
+    - origin
+    - "protected status"
+    - permit
+    - jurisdiction
+    - "actual gate"
+    - period
+reference_flows:
+  []
+measurement_rules:
+  - id: live_mass
+    applies_to: "Incoming and outgoing animals"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh individuals or validate species/class sampling and reconcile with counts."
+  - id: count_balance
+    applies_to: "Each lot and period"
+    required_property_ref:
+      name: "Count"
+      uuid: ""
+    required_unit: "head"
+    rule: "Opening + births + purchases + captures − transfers − releases − deaths = closing; identify animals once."
+  - id: period_index
+    applies_to: "Cohorts and assets"
+    required_property_ref:
+      name: "Time"
+      uuid: ""
+    required_unit: "days or cycle"
+    rule: "Link inputs, outputs, replacements and assets to real benefited periods; do not assume lifespan."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: managed
+    name: "Managed breeding and rearing"
+    inclusion: "conditional"
+    inclusion_condition: "Lawful species-resolved captive operation"
+    role: "Biological production, stock, feed, welfare, mortality, real co-products"
+    quantitative_reference: "per kg live mammals leaving managed rearing"
+  - id: selection
+    name: "Live selection and handover"
+    inclusion: "conditional"
+    inclusion_condition: "Captive route only"
+    role: "Independent health/condition screen, weighing and producer gate"
+    quantitative_reference: "per kg accepted producer-gate live mammal"
+  - id: capture
+    name: "Lawful live capture and handover"
+    inclusion: "conditional"
+    inclusion_condition: "Documented authorized campaign only"
+    role: "Independent capture, short holding and actual capture gate; no farm production"
+    quantitative_reference: "per kg accepted capture-gate live mammal"
+  - id: reference_handover
+    name: "Actual producer reference-product handover"
+    inclusion: "required"
+    inclusion_condition: "One actual declared route, state and producer gate per foreground package"
+    role: "Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution"
+    quantitative_reference: "1 kg accepted product at the declared handover"
+process_inventory:
+  - id: managed
+    label: "Managed breeding and rearing"
+    inputs:
+      product:
+        - row_id: stock
+          role: "Purchased living stock"
+          name: "Species-qualified live stock (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: feed
+          role: "Species-appropriate feed"
+          name: "Feed by actual identity (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: water
+          role: "Supplied husbandry water"
+          name: "Water by actual use (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: energy
+          role: "Housing energy"
+          name: "Energy by actual carrier (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "MJ/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: assets
+          role: "Shared enclosure service"
+          name: "Shared asset service (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Time / h"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_assets
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "h/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reared
+          role: "Live animals leaving rearing"
+          name: "Species-qualified live animals (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+        - row_id: other_output
+          role: "Real independent co-products"
+          name: "Co-product by actual identity (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: death
+          role: "Pre-gate animal mortality"
+          name: "Dead animal material by destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: selection
+    label: "Live selection and handover"
+    inputs:
+      product:
+        - row_id: selected_in
+          role: "Live animals entering selection"
+          name: "Species-qualified live animals (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: handover
+          role: "Live animal at producer handover"
+          name: "Species-qualified live mammal at producer gate (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: selection_death
+          role: "Deaths during selection"
+          name: "Dead animal material by destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: capture
+    label: "Lawful live capture and handover"
+    inputs:
+      product:
+        - row_id: capture_energy
+          role: "Capture and temporary holding energy"
+          name: "Energy by actual carrier (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "MJ/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: capture_materials
+          role: "Capture and welfare materials"
+          name: "Actual capture consumables (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: captured_live
+          role: "Live animal at lawful capture handover"
+          name: "Species-qualified live mammal at capture gate (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: capture_death
+          role: "Capture mortality"
+          name: "Dead animal material by destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record only real exchanges, resolved by species, gate, use and destination. Denominator and scope requirements：per kg live output of this process Raw quantity and calculation requirements: Measure the actual exchange for one process, lot and period; do not double count internal transfers. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg"
+                basis: "per kg live output of this process"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: reference_handover
+    label: "Actual producer reference-product handover"
+    inputs:
+      product:
+        - row_id: reference_handover_input
+          role: "Species-qualified live other mammal at actual gate for actual producer-handover linkage"
+          name: "Species-qualified live other mammal at actual gate for actual producer-handover linkage"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This input matches the accepted goods represented by handover, captured_live under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: handover, captured_live Required product-instance qualifiers: Scientific species; count/class; live condition; mass method; route; origin; protected status; permit; jurisdiction; actual gate; period"
+          amount:
+            expression: "Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_handover
+          role: "Species-qualified live other mammal at actual gate"
+          name: "Species-qualified live other mammal at actual gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: handover, captured_live Required product-instance qualifiers: Scientific species; count/class; live condition; mass method; route; origin; protected status; permit; jurisdiction; actual gate; period"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_outputs
+    applies_to: "Managed output set"
+    rule: "Enumerate only real independent products and their handovers. Subdivide separable processes; otherwise allocate inseparable burdens by documented handover economic value, disclose prices/period and mass-allocation sensitivity. No hypothetical credit."
+    source_ids: []
+  - rule_id: allocation_capture
+    applies_to: "Capture campaign"
+    rule: "Attribute actual campaign burdens to lawfully transferred intended outputs; releases are non-sale and mortality follows actual disposal."
+    source_ids: []
+  - rule_id: allocation_periods
+    applies_to: "Cohorts and replacements"
+    rule: "Attribute inputs and replacement stock to benefited periods with opening/closing reconciliation; internal animal transfer has one burden."
+    source_ids: []
+  - rule_id: allocation_assets
+    applies_to: "Shared enclosures/equipment"
+    rule: "Allocate by recorded service hours/capacity across consuming nodes and periods; do not double count."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_animals
+      process_id: "managed_selection_capture"
+      flow_role: "live stock, handover, mortality"
+      record_type: "animal ledger"
+      raw_fields: "species; ID; count; mass; origin; law/permit; status; gate; date; death; release"
+      collection_method: "weighing and custody/health records; Raw aggregation requirements: unique event sum. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; head"
+      frequency: "each event"
+      temporal_coverage: "full cohort/campaign"
+      site_scope: "site/campaign"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale calibration; permits; vet/transfer records; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_inputs
+      process_id: "managed_capture"
+      flow_role: "feed, water, energy, material"
+      record_type: "meter/invoice ledger"
+      raw_fields: "identity; carrier; amount; period; node; stock change"
+      collection_method: "invoices, meters and inventory; Raw aggregation requirements: net use by node/period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; MJ"
+      frequency: "each receipt/meter period"
+      temporal_coverage: "full cycle/campaign"
+      site_scope: "site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice; calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_assets
+      process_id: "managed_selection_capture"
+      flow_role: "shared asset"
+      record_type: "service log"
+      raw_fields: "asset; node; service hours/capacity; period; burden"
+      collection_method: "enclosure/equipment log; Raw aggregation requirements: once by observed use. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "h"
+      frequency: "each service period"
+      temporal_coverage: "full asset window"
+      site_scope: "site/campaign"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "asset and maintenance records; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_outputs
+      process_id: "managed"
+      flow_role: "other real intended output"
+      record_type: "transfer record"
+      raw_fields: "identity; quantity; recipient; price; legal basis; date"
+      collection_method: "actual transfer document; Raw aggregation requirements: by output and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each transfer"
+      temporal_coverage: "full cohort"
+      site_scope: "site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "sales/transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_reference_handover
+      process_id: "reference_handover"
+      flow_role: "accepted product and matched internal source transfer"
+      record_type: "producer handover ledger"
+      raw_fields: "lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link"
+      collection_method: "Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed."
+      unit: "kg; native source quantities"
+      frequency: "each actual handover"
+      temporal_coverage: "matched source and handover periods"
+      site_scope: "declared producer gate only"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet"
+  calculation_rules:
+    - id: calc_reference
+      applies_to: "Accepted live output"
+      rule: "Sum measured accepted live kg / 1 kg; retain head count, species and unique gate."
+      inputs:
+        - cp_animals
+      output: "reference mass/count"
+      source_ids: []
+    - id: calc_balance
+      applies_to: "Animal events"
+      rule: "Reconcile opening, birth, purchase, capture, transfer, release, death and closing by species/class/period; growth mass is measured, not conserved by assumption."
+      inputs:
+        - cp_animals
+      output: "balanced ledger"
+      source_ids: []
+    - id: calc_inputs
+      applies_to: "Supplies"
+      rule: "Net measured supply assigned to node/period / accepted live kg; do not combine captive and capture routes."
+      inputs:
+        - cp_inputs
+        - cp_animals
+      output: "card intensities"
+      source_ids: []
+    - id: calc_shared
+      applies_to: "Shared asset"
+      rule: "Asset burden × observed node/period share; shares sum to one or unused capacity is disclosed."
+      inputs:
+        - cp_assets
+      output: "nonduplicate burden"
+      source_ids: []
+    - id: calc_allocation
+      applies_to: "Multi-output"
+      rule: "After subdivision allocate inseparable burden by documented handover value, with mass sensitivity."
+      inputs:
+        - cp_outputs
+        - cp_animals
+      output: "output burden"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_species_law
+      applies_to: "Each lot"
+      requirement: "Species, source, conservation status, permissions and custody chain for exact date/jurisdiction must be established."
+      evidence: "taxonomy; permits; custody"
+    - id: dq_gate
+      applies_to: "Live output"
+      requirement: "Alive status, count, measured mass, condition and actual gate must reconcile."
+      evidence: "scale; transfer; veterinary records"
+    - id: dq_completeness
+      applies_to: "Both routes"
+      requirement: "Reconcile inputs, outputs, deaths/releases, cohorts and campaign."
+      evidence: "ledgers; invoices; discrepancy log"
+    - id: dq_periods
+      applies_to: "Shared and multi-period"
+      requirement: "Link asset/cohort burden once to real service periods."
+      evidence: "asset and cohort ledgers"
+validation_rules:
+  - rule_id: validate_classification
+    applies_to: "All"
+    rule: "Reject species-free, wrong residual classification, undocumented origin or unresolved legal/protected status."
+    source_ids:
+      - un-cpc-2025
+      - woah-wildlife-trade-2021
+  - rule_id: validate_route
+    applies_to: "Each lot"
+    rule: "Exactly one captive or lawful-capture source; capture cannot claim farm stock, captive route cannot claim wild capture."
+    source_ids: []
+  - rule_id: validate_live
+    applies_to: "Final output"
+    rule: "Mass, count, live condition and gate reconcile; deaths/releases and post-gate animals cannot inflate output."
+    source_ids: []
+  - rule_id: validate_allocation
+    applies_to: "Outputs/periods"
+    rule: "Each co-product has real handover; asset/period shares and internal transfers cannot double count."
+    source_ids: []
+  - rule_id: validate_uuid
+    applies_to: "Concrete exchanges"
+    rule: "Before final exchange, confirm exact flow species, role, gate, property and unit; semantic unresolved cards are not executable UUIDs."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground package for one lawful species/class, route and live gate"
+  downstream_use: "Compatible secondary_dataset or background_dataset"
+  allowed_use: "Same species, route, geography, law, class, period and gate after exact identity review"
+  excluded_use: "Generic mammal mix; unlicensed capture; protected trade without authority; slaughter, meat/fur or post-gate use"
+  required_metadata: "species; count/mass; route; protected/legal status; permits; site; cohort/campaign; gate; outputs; periods; UUID state"
+  required_quality_disclosure: "weighing, animal balance, welfare/legal chain, allocation, missing data, shared service and binding gaps"
+  update_trigger: "species, legal state, route, gate, inventory, allocation or platform identity changes"
+data_sources:
+  - id: "un-cpc-2025"
+    type: "official_guidance"
+    reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "residual category and exclusions"
+  - id: "woah-wildlife-trade-2021"
+    type: "official_guidance"
+    reference: "[WOAH review of wildlife trade](https://www.woah.org/app/uploads/2022/08/a-oie-review-wildlife-trade-march2021.pdf)"
+    used_for: "legal/welfare/traceability risk questions"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:cb5d055f74eba99179682d3b578efc52bbbc10235ace50e461a45a3c57c199d6"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6743"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6743
+          line: 59
+          column: 1
+        end:
+          offset: 9363
+          line: 83
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Documented captive opening/purchased stock and prior burden, or lawful pre-capture campaign context |\n| starting_condition_role | Managed biological stock or authorized wild-source context; no fictional lifetime farming on capture route |\n| product_classification_scope | CPC 3.0 `02192` after exclusion of more specific live-mammal leaves |\n| recursive_input_rule | Link purchased same-category animals once to preceding-gate data; internal rearing/selection transfer is not another final product. |\n| upstream_dataset_requirement | Match incoming stock, feed, water, energy and materials to species, supplier, geography, unit and gate. |\n| disclosure | Species, lawful source and protected status, permit, welfare, lot/cohort/campaign, asset periods, death/release, outputs and actual gate. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_identity` | Every lot | Species-level residual classification and lawful origin are prerequisites; CPC examples are not permits. | `un-cpc-2025`; `woah-wildlife-trade-2021` |\n| `boundary_managed` | Captive route | Include actual stock, husbandry inputs, care, mortality and pre-gate selection; purchased stock carries upstream burden. | `woah-wildlife-trade-2021` |\n| `boundary_capture` | Capture route | Include only authorized campaign, equipment, temporary holding, welfare and capture handover; without legal evidence this route is ineligible. | `woah-wildlife-trade-2021` |\n| `boundary_gate` | Both | End at real live handover; exclude post-gate delivery, buyer use, slaughter and corpse processing. | `un-cpc-2025` |\n| `boundary_shared` | Shared enclosure/equipment | Record consuming nodes and service periods; charge common burden once. |  |\n| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 183
+              line: 8
+              column: 1
+            end:
+              offset: 204
+              line: 8
+              column: 22
+          text: "# Other mammals, live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6743
+              line: 59
+              column: 1
+            end:
+              offset: 6764
+              line: 59
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_36705"
+      family: "allocation"
+      span:
+        start:
+          offset: 36705
+          line: 623
+          column: 1
+        end:
+          offset: 37662
+          line: 632
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_outputs` | Managed output set | Enumerate only real independent products and their handovers. Subdivide separable processes; otherwise allocate inseparable burdens by documented handover economic value, disclose prices/period and mass-allocation sensitivity. No hypothetical credit. |  |\n| `allocation_capture` | Capture campaign | Attribute actual campaign burdens to lawfully transferred intended outputs; releases are non-sale and mortality follows actual disposal. |  |\n| `allocation_periods` | Cohorts and replacements | Attribute inputs and replacement stock to benefited periods with opening/closing reconciliation; internal animal transfer has one burden. |  |\n| `allocation_assets` | Shared enclosures/equipment | Allocate by recorded service hours/capacity across consuming nodes and periods; do not double count. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 183
+              line: 8
+              column: 1
+            end:
+              offset: 204
+              line: 8
+              column: 22
+          text: "# Other mammals, live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 36705
+              line: 623
+              column: 1
+            end:
+              offset: 36745
+              line: 623
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_43328"
+      family: "validation"
+      span:
+        start:
+          offset: 43328
+          line: 663
+          column: 1
+        end:
+          offset: 44250
+          line: 673
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_classification` | All | Reject species-free, wrong residual classification, undocumented origin or unresolved legal/protected status. | `un-cpc-2025`; `woah-wildlife-trade-2021` |\n| `validate_route` | Each lot | Exactly one captive or lawful-capture source; capture cannot claim farm stock, captive route cannot claim wild capture. |  |\n| `validate_live` | Final output | Mass, count, live condition and gate reconcile; deaths/releases and post-gate animals cannot inflate output. |  |\n| `validate_allocation` | Outputs/periods | Each co-product has real handover; asset/period shares and internal transfers cannot double count. |  |\n| `validate_uuid` | Concrete exchanges | Before final exchange, confirm exact flow species, role, gate, property and unit; semantic unresolved cards are not executable UUIDs. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 183
+              line: 8
+              column: 1
+            end:
+              offset: 204
+              line: 8
+              column: 22
+          text: "# Other mammals, live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 43328
+              line: 663
+              column: 1
+            end:
+              offset: 43350
+              line: 663
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 7743
+          line: 76
+          column: 1
+        end:
+          offset: 7929
+          line: 76
+          column: 187
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_managed"
+      identity_kind: "explicit"
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 7930
+          line: 77
+          column: 1
+        end:
+          offset: 8120
+          line: 77
+          column: 191
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_capture"
+      identity_kind: "explicit"
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 8121
+          line: 78
+          column: 1
+        end:
+          offset: 8333
+          line: 78
+          column: 213
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 8334
+          line: 79
+          column: 1
+        end:
+          offset: 8477
+          line: 79
+          column: 144
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "boundary_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 8478
+          line: 80
+          column: 1
+        end:
+          offset: 8604
+          line: 80
+          column: 127
+    - pointer: "/system_boundary/rules/5"
+      rule_id: "reference_handover_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 8605
+          line: 81
+          column: 1
+        end:
+          offset: 9361
+          line: 81
+          column: 757
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_36705"
+      source_span:
+        start:
+          offset: 36818
+          line: 627
+          column: 1
+        end:
+          offset: 37119
+          line: 627
+          column: 302
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_capture"
+      identity_kind: "explicit"
+      unit_id: "normative_36705"
+      source_span:
+        start:
+          offset: 37120
+          line: 628
+          column: 1
+        end:
+          offset: 37305
+          line: 628
+          column: 186
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_periods"
+      identity_kind: "explicit"
+      unit_id: "normative_36705"
+      source_span:
+        start:
+          offset: 37306
+          line: 629
+          column: 1
+        end:
+          offset: 37500
+          line: 629
+          column: 195
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_36705"
+      source_span:
+        start:
+          offset: 37501
+          line: 630
+          column: 1
+        end:
+          offset: 37660
+          line: 630
+          column: 160
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_classification"
+      identity_kind: "explicit"
+      unit_id: "normative_43328"
+      source_span:
+        start:
+          offset: 43423
+          line: 667
+          column: 1
+        end:
+          offset: 43614
+          line: 667
+          column: 192
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_route"
+      identity_kind: "explicit"
+      unit_id: "normative_43328"
+      source_span:
+        start:
+          offset: 43615
+          line: 668
+          column: 1
+        end:
+          offset: 43771
+          line: 668
+          column: 157
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_live"
+      identity_kind: "explicit"
+      unit_id: "normative_43328"
+      source_span:
+        start:
+          offset: 43772
+          line: 669
+          column: 1
+        end:
+          offset: 43920
+          line: 669
+          column: 149
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_43328"
+      source_span:
+        start:
+          offset: 43921
+          line: 670
+          column: 1
+        end:
+          offset: 44068
+          line: 670
+          column: 148
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_uuid"
+      identity_kind: "explicit"
+      unit_id: "normative_43328"
+      source_span:
+        start:
+          offset: 44069
+          line: 671
+          column: 1
+        end:
+          offset: 44248
+          line: 671
+          column: 180
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 6743
+          line: 59
+          column: 1
+        end:
+          offset: 6764
+          line: 59
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6743"
+      source_span:
+        start:
+          offset: 6792
+          line: 63
+          column: 1
+        end:
+          offset: 7650
+          line: 70
+          column: 155
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_36705"
+      source_span:
+        start:
+          offset: 36705
+          line: 623
+          column: 1
+        end:
+          offset: 36745
+          line: 623
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_43328"
+      source_span:
+        start:
+          offset: 43328
+          line: 663
+          column: 1
+        end:
+          offset: 43350
+          line: 663
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:cb5d055f74eba99179682d3b578efc52bbbc10235ace50e461a45a3c57c199d6"
+  generated_content_sha256: "sha256:e565a70f466abfb8c2888ea63030ef485d4246872f0db6756c7eaa2282d184f3"

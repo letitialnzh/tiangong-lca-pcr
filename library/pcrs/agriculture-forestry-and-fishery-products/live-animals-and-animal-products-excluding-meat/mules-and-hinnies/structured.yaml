@@ -1,10 +1,1463 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02133"
-  title: "Mules and hinnies"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.mules-and-hinnies"
+  classification_refs: "CPC 3.0 02133, Mules and hinnies"
+  covered_products: "Living horse–ass hybrid mule or hinny at observed producer handover"
+  excluded_products: "Parent horse or ass, carcass, meat, slaughter and work service"
+  representative_product: "Accepted live hybrid with declared type and class, measured in kg live mass"
+  production_route: "Parent management and mating → foaling/nursing → optional growth → independent live selection/handover; or purchased hybrid young stock → growth → handover"
+  market_state: "Living and unprocessed; type, class, count, live mass, condition and gate stated"
+functional_unit:
+  what: "Living mule or hinny of declared type at actual producer handover"
+  how_much: "1 kg weighed accepted live mass, reconciled with animal count"
+  how_well: "Verified mare/jack or jenny/stallion parentage, type, age/class and condition"
+  how_long_or_cycle: "State breeding, gestation, nursing, growth and handover periods actually included; no universal cycle length"
+  reference_flow_link: "reference_product_handover"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "Include upstream purchased animals, feed, forage, water, bedding, electricity, fuel, care materials and services where used, together with parental management, mating, gestation, foaling, nursing, hybrid growth, manure handling, selection and actual live handover. Declare grazing rather than treating it as purchased feed. Attribute shared stables, water infrastructure and equipment once across nodes and periods. Saleable parent culls or manure are independent products only with actual handover; otherwise stock change, residue or waste. Do not claim a hybrid breeding-parent output or universal infertility outcome. Mating/gestation is managed biological production; birth and surviving-foal transfer are independent because they establish a live output with a measured handoff, while final selection is an independent acceptance gate (fao-equine-1994)."
+      source_ids: []
+    - rule_id: boundary_identity
+      applies_to: "all routes"
+      rule: "Only living horse–ass hybrids enter the reference output; horse, ass and work-service identities cannot substitute."
+      source_ids:
+        - fao-equine-1994
+    - rule_id: boundary_maternal_route
+      applies_to: "breeding"
+      rule: "Record mare × jack or jenny × stallion as mutually exclusive per offspring, with actual maternal inputs and periods."
+      source_ids:
+        - fao-equine-1994
+    - rule_id: boundary_gate
+      applies_to: "handover"
+      rule: "End at observed live acceptance and exclude downstream work, transport service and slaughter."
+      source_ids:
+        - fao-equine-1994
+    - rule_id: reference_handover_linkage
+      applies_to: "actual reference-product boundary"
+      rule: "Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Opening parent and hybrid stock by species/type, age/class, ownership, count, mass and period; identify purchased stock and first foreground stage."
+  starting_condition_role: "Declared foreground start, not zero-burden acquisition."
+  product_classification_scope: "Living horse–ass hybrids only; parent animals keep their own upstream identities."
+  recursive_input_rule: "Purchased mule/hinny young stock carries one upstream dataset to its purchase gate; do not recursively count earlier growth twice."
+  upstream_dataset_requirement: "Purchased animals, feed, materials, utilities and services need compatible upstream datasets or disclosed gaps."
+  disclosure: "Maternal route, actual gate, periods, animal ledger, upstream coverage, co-products and shared-asset attribution."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Living mules and hinnies at actual producer handover"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "mule or hinny"
+    - "verified parent species/sex"
+    - "age/class"
+    - count
+    - "measured live mass"
+    - condition
+    - "actual gate"
+    - "production period"
+reference_flows:
+  []
+measurement_rules:
+  - id: live_mass
+    applies_to: "reference and live transfers"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh live animals at each real gate and reconcile lot mass with identified head count."
+  - id: stock_balance
+    applies_to: "each hybrid route"
+    required_property_ref:
+      name: "Mass and count"
+      uuid: ""
+    required_unit: "kg; head"
+    rule: "Reconcile opening, birth/purchase, transfers, deaths, sales and closing stock by period; do not double-count a transfer."
+  - id: parent_service
+    applies_to: "parent cohorts"
+    required_property_ref:
+      name: "animal-days and resource quantities"
+      uuid: ""
+    required_unit: "head-day; kg"
+    rule: "Assign actual gestation/nursing to mare or jenny and allocate sire/shared-parent service by recorded use."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: parents
+    name: "Manage parents and mate species-identified pair"
+    inclusion: "conditional"
+    inclusion_condition: "Foreground breeding"
+    role: "Maternal gestation and sire service, split by route"
+    quantitative_reference: "per kg surviving hybrid young leaving birth stage"
+  - id: birth
+    name: "Foal, nurse and transfer live hybrid young"
+    inclusion: "conditional"
+    inclusion_condition: "Foreground birth/nursing"
+    role: "Independent live birth and acceptance, losses distinguished"
+    quantitative_reference: "per kg surviving hybrid young transferred"
+  - id: growth
+    name: "Rear hybrid young"
+    inclusion: "conditional"
+    inclusion_condition: "Foreground growth, including purchased stock"
+    role: "Managed growth, resources and manure"
+    quantitative_reference: "per kg living hybrid leaving growth"
+  - id: handover
+    name: "Select, weigh and hand over living hybrid"
+    inclusion: "required"
+    inclusion_condition: "Every route"
+    role: "Independent acceptance and true producer gate"
+    quantitative_reference: "per kg accepted live hybrid at gate"
+  - id: reference_handover
+    name: "Actual producer reference-product handover"
+    inclusion: "required"
+    inclusion_condition: "One actual declared route, state and producer gate per foreground package"
+    role: "Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution"
+    quantitative_reference: "1 kg accepted product at the declared handover"
+process_inventory:
+  - id: parents
+    label: "Manage parents and mate species-identified pair"
+    inputs:
+      product:
+        - row_id: parent_input
+          role: "Parent animal or mating service acquired"
+          name: "Parent animal or mating service by actual species (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass or service / kg or declared service unit"
+          description: "Document horse/ass species, sex, ownership and upstream burden; neither parent is the hybrid product. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: recorded acquisition or service attributable to hybrid cohort Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg surviving young; service separately"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_feed
+          role: "Maternal and sire feed"
+          name: "Equine feed and forage by actual material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separate mare from jenny gestation/nursing records and attribute shared sire care by actual service. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: delivered feed less stock change and loss by parent cohort and period Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_feed
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_water
+          role: "Parent water supply"
+          name: "Supplied water (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Meter or record drinking and care water by actual use and parent cohort. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: measured water by use and period Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_energy
+          role: "Parent housing and care energy"
+          name: "Energy supply (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Record only actually consumed electricity and fuel by carrier, meter and service period; select concrete carrier later. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: metered or invoiced energy attributed to parent cohort Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: maternal_service
+          role: "Maternal care transferred to birth stage"
+          name: "Internal maternal animal service (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Service / head-day"
+          description: "Carry measured gestation and nursing service once to the appropriate mule or hinny cohort; no parent animal sale is implied. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: actual maternal animal-days and resource attribution Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "head-day/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: parent_manure
+          role: "Parent manure to actual handling"
+          name: "Equine manure to documented handling (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record actual manure management path; manure independently sold is a product, not this waste. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: measured or documented path-specific mass Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: parent_enteric_ch4
+          role: "Parent enteric methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate only when parent animal-days, productivity and compatible equine method are documented; specify methane substance and air destination. This is not a fixed species factor. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: documented parent animal activity × compatible route-specific enteric factor Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_manure_ch4
+          role: "Parent manure methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate methane only for documented parent manure pathway, animal activity and climate; keep enteric and manure methane separate. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: documented parent manure activity × compatible path-specific CH4 method Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: parent_manure_n2o
+          role: "Parent manure nitrous oxide to air"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate only for observed manure nitrogen and management path, avoiding duplicate emissions in an upstream treatment dataset. Denominator and scope requirements：per kg surviving hybrid young leaving birth stage Raw quantity and calculation requirements: observed manure nitrogen × climate/path-compatible N2O method Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young leaving birth stage"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: birth
+    label: "Foal, nurse and transfer live hybrid young"
+    inputs:
+      product:
+        - row_id: birth_supplies
+          role: "Foaling and nursing materials"
+          name: "Foaling and nursing supplies by actual material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only actual bedding, veterinary and other consumed supplies are included; route and period are recorded. Denominator and scope requirements：per kg surviving hybrid young transferred Raw quantity and calculation requirements: consumed material from issue records Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_supplies
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: young_output
+          role: "Surviving live hybrid young"
+          name: "Living mule or hinny young at internal transfer (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh actual live mule or hinny young at transfer to growth or direct handover; losses are separate. Denominator and scope requirements：per kg surviving hybrid young transferred Raw quantity and calculation requirements: measured surviving live mass at transfer Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young transferred"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: birth_waste
+          role: "Foaling mortality or disposal"
+          name: "Foaling loss to actual disposal (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only observed non-live disposal is waste; surviving young remain product or stock. Denominator and scope requirements：per kg surviving hybrid young transferred Raw quantity and calculation requirements: observed disposed mass by destination Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg surviving young"
+                basis: "per kg surviving hybrid young transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: growth
+    label: "Rear hybrid young"
+    inputs:
+      product:
+        - row_id: growth_stock
+          role: "Living hybrid entering rearing"
+          name: "Living mule or hinny young at growth entry (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal or purchased young enter once; purchased stock retains its upstream dataset and measured mass. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: weighed incoming live mass Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: growth_feed
+          role: "Hybrid growth feed"
+          name: "Equine feed and forage by actual material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record hybrid-cohort ration and forage separately from parent feed, with inventory and loss adjustment. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: delivered feed less stock change and measured loss Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_feed
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: growth_water
+          role: "Hybrid growth water"
+          name: "Supplied water (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Meter or record drinking and care water by actual use. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: measured water by cohort and use Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: growth_energy
+          role: "Hybrid growth housing energy"
+          name: "Energy supply (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Meter or invoice actual electricity and fuel by carrier and service; allocate shared equipment only once. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: measured energy by carrier and growth cohort Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "MJ/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: grown_hybrid
+          role: "Living hybrid leaving growth"
+          name: "Living mule or hinny at internal growth transfer (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh actual live mass at transfer to selection; this is not automatically external farm gate. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: weighed living hybrid mass at transfer Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: growth_manure
+          role: "Growth manure to actual handling"
+          name: "Equine manure to documented handling (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate actual management paths from independent manure sale; no generic equine factor is imposed. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: measured or documented path-specific mass Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: growth_enteric_ch4
+          role: "Hybrid growth enteric methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate only for recorded hybrid animal activity and a compatible equine method; do not treat the parent species as the hybrid flow identity. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: hybrid animal activity × compatible route-specific enteric factor Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: growth_manure_ch4
+          role: "Hybrid growth manure methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate only for observed hybrid manure management, climate and pathway; do not duplicate external treatment. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: documented hybrid manure activity × compatible path-specific CH4 method Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: growth_manure_n2o
+          role: "Hybrid growth manure nitrous oxide to air"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate for observed manure nitrogen and real management path, without double counting external treatment. Denominator and scope requirements：per kg living hybrid leaving growth Raw quantity and calculation requirements: observed manure nitrogen × climate/path-compatible N2O method Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg living hybrid"
+                basis: "per kg living hybrid leaving growth"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: handover
+    label: "Select, weigh and hand over living hybrid"
+    inputs:
+      product:
+        - row_id: handover_stock
+          role: "Living hybrid entering selection"
+          name: "Living mule or hinny before handover (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Carry previous breeding or growth burden once; rejected living animals remain stock. Denominator and scope requirements：per kg accepted live hybrid at gate Raw quantity and calculation requirements: weighed incoming live mass Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg accepted live hybrid"
+                basis: "per kg accepted live hybrid at gate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: live_hybrid_handover
+          role: "Accepted living mule or hinny at farm gate"
+          name: "Mules and hinnies, production mix at farm gate, live animal unprocessed"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e80a7596-d6b5-4958-9370-05f2834def0e"
+          property_unit: "Mass / kg"
+          description: "The confirmed CPC 02133 Product/Mass identity applies only to observed unprocessed living hybrids at matching farm gate; other gates remain unbound. Denominator and scope requirements：per kg accepted live hybrid at farm gate Raw quantity and calculation requirements: measured accepted live mass at matching farm gate Original collection denominator kind: process_output. Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animals
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg accepted live hybrid"
+                basis: "per kg accepted live hybrid at farm gate"
+                basis_kind: "process_output"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        - row_id: handover_waste
+          role: "Handover mortality to disposal"
+          name: "Hybrid mortality to actual disposal (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record only observed non-live loss with actual destination; living rejected stock is not waste. Denominator and scope requirements：per kg accepted live hybrid at gate Raw quantity and calculation requirements: weighed disposed mass Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg accepted live hybrid"
+                basis: "per kg accepted live hybrid at gate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: reference_handover
+    label: "Actual producer reference-product handover"
+    inputs:
+      product:
+        - row_id: reference_handover_input
+          role: "Living mules and hinnies at actual producer handover for actual producer-handover linkage"
+          name: "Living mules and hinnies at actual producer handover for actual producer-handover linkage"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This input matches the accepted goods represented by young_output, grown_hybrid, live_hybrid_handover under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: young_output, grown_hybrid, live_hybrid_handover Required product-instance qualifiers: mule or hinny; verified parent species/sex; age/class; count; measured live mass; condition; actual gate; production period"
+          amount:
+            expression: "Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_handover
+          role: "Living mules and hinnies at actual producer handover"
+          name: "Living mules and hinnies at actual producer handover"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: young_output, grown_hybrid, live_hybrid_handover Required product-instance qualifiers: mule or hinny; verified parent species/sex; age/class; count; measured live mass; condition; actual gate; production period"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: alloc_parents
+    applies_to: "mare, jenny, jack, stallion"
+    rule: "Assign actual maternal gestation/nursing to its offspring route; share sire care by documented service and period, not by assumed equal head count."
+    source_ids:
+      - fao-equine-1994
+  - rule_id: alloc_outputs
+    applies_to: "independent culls or sold manure"
+    rule: "First subdivide actual handovers; if inseparable, disclose complete product set and justified physical-causality or economic basis consistently; no product credit to death or waste."
+    source_ids:
+      - fao-equine-1994
+  - rule_id: alloc_assets
+    applies_to: "shared stable, water system, pasture equipment"
+    rule: "Index consuming nodes and service periods; assign each burden once by observed animal-days, area-time or metered use appropriate to the asset."
+    source_ids:
+      - fao-equine-1994
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_animals
+      process_id: "parents_birth_growth_handover"
+      flow_role: "parent, birth, transfers and accepted live output"
+      record_type: "identified animal ledger and weigh tickets"
+      raw_fields: "dam/sire species and sex; hybrid ID/type; age/class; count; kg; event date; gate"
+      collection_method: "animal ID and calibrated live scale; Raw aggregation requirements: reconcile stock events, sum accepted kg by gate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "head; kg; date"
+      frequency: "each event"
+      temporal_coverage: "all included periods"
+      site_scope: "each site/cohort"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "breeding register, scale and sale ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_feed
+      process_id: "parents_growth"
+      flow_role: "feed and forage"
+      record_type: "invoice and issue ledger"
+      raw_fields: "type, delivery, stock, loss, parent or hybrid cohort, date"
+      collection_method: "invoice and weighed issue; Raw aggregation requirements: delivery minus stock change and loss. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each issue"
+      temporal_coverage: "all included periods"
+      site_scope: "each site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoices and store balance; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_utilities
+      process_id: "parents_growth"
+      flow_role: "water and energy"
+      record_type: "meter/invoice"
+      raw_fields: "water, electricity/fuel carrier, cohort and meter period"
+      collection_method: "meter and billing record; Raw aggregation requirements: sum by carrier, allocate shared service once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; MJ"
+      frequency: "monthly"
+      temporal_coverage: "all included periods"
+      site_scope: "each site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibrated meter/bill; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_supplies
+      process_id: "birth"
+      flow_role: "foaling materials"
+      record_type: "care/material ledger"
+      raw_fields: "material, mass, cohort, date"
+      collection_method: "weighed material issue; Raw aggregation requirements: sum consumed material. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "foaling and nursing periods"
+      site_scope: "each site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "inventory and care record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_manure
+      process_id: "parents_growth"
+      flow_role: "managed manure"
+      record_type: "handling ledger"
+      raw_fields: "mass or activity basis, period, treatment and destination"
+      collection_method: "weighed path or documented estimate; Raw aggregation requirements: sum once per path. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each handling event"
+      temporal_coverage: "all included periods"
+      site_scope: "each site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "treatment/recipient receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_waste
+      process_id: "birth_handover"
+      flow_role: "death or disposal"
+      record_type: "incident log"
+      raw_fields: "animal ID, mass, cause, destination, date"
+      collection_method: "observation and weighing; Raw aggregation requirements: sum disposed mass by destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "all included periods"
+      site_scope: "each site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "veterinary and disposal evidence; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_reference_handover
+      process_id: "reference_handover"
+      flow_role: "accepted product and matched internal source transfer"
+      record_type: "producer handover ledger"
+      raw_fields: "lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link"
+      collection_method: "Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed."
+      unit: "kg; native source quantities"
+      frequency: "each actual handover"
+      temporal_coverage: "matched source and handover periods"
+      site_scope: "declared producer gate only"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet"
+  calculation_rules:
+    - id: calc_stock
+      applies_to: "hybrid type and period"
+      rule: "opening + births/purchases − transfers/sales/deaths = closing in heads; separately reconcile each weighed gate mass"
+      inputs:
+        - IDs
+        - events
+        - head
+        - kg
+        - date
+      output: "stock balance and accepted reference kg"
+      source_ids:
+        - fao-equine-1994
+    - id: calc_maternal
+      applies_to: "parent phase"
+      rule: "attribute measured maternal animal-days and resources to documented offspring cohort by mare or jenny route; sire service by actual use"
+      inputs:
+        - parents
+        - events
+        - resources
+        - periods
+      output: "route-specific parent burden"
+      source_ids:
+        - fao-equine-1994
+    - id: calc_manure
+      applies_to: "manure path"
+      rule: "sum measured mass; any model uses observed animal activity and documented climate/path-specific method rather than a universal hybrid factor"
+      inputs:
+        - animal-days
+        - "measured mass"
+        - path
+      output: "manure by path"
+      source_ids:
+        - ipcc-livestock-2019
+    - id: calc_normalize
+      applies_to: "all nodes"
+      rule: "attributable recorded amount divided by measured node output kg; link each transfer once to accepted reference kg"
+      inputs:
+        - records
+        - "output kg"
+        - shares
+      output: "quantity per kg accepted hybrid"
+      source_ids:
+        - fao-equine-1994
+  data_quality_requirements:
+    - id: dq_parentage
+      applies_to: "hybrid route"
+      requirement: "Verify dam and sire species/sex; uncertain parentage blocks exact mule/hinny route assignment."
+      evidence: "breeding register"
+    - id: dq_mass_gate
+      applies_to: "reference"
+      requirement: "Live weighed mass, head count and actual producer gate reconcile."
+      evidence: "calibrated scale and transaction"
+    - id: dq_period
+      applies_to: "all phases"
+      requirement: "Dated inputs, assets, outputs, replacements and closing stock link to reporting periods."
+      evidence: "animal and resource logs"
+    - id: dq_destination
+      applies_to: "manure, deaths, culls"
+      requirement: "Product handover and waste destination must be distinct."
+      evidence: "recipient/disposal evidence"
+validation_rules:
+  - rule_id: validate_parentage
+    applies_to: "all routes"
+    rule: "Require species/sex evidence and one maternal route per hybrid; a hinny cannot be recorded as mare-borne."
+    source_ids:
+      - fao-equine-1994
+  - rule_id: validate_stock
+    applies_to: "all periods"
+    rule: "Check head and mass ledger, live accepted output, losses and closing stock without duplicate transfers or mixed gates."
+    source_ids:
+      - fao-equine-1994
+  - rule_id: validate_allocation
+    applies_to: "co-products and assets"
+    rule: "Require complete actual handover product set and period/service attribution; no double parent or infrastructure burden."
+    source_ids:
+      - fao-equine-1994
+  - rule_id: validate_factor
+    applies_to: "modeled manure/emissions"
+    rule: "IPCC Mules/Asses categories require compatible animal activity, productivity, climate and manure path; never apply one generic factor to all hybrids."
+    source_ids:
+      - ipcc-livestock-2019
+published_dataset_profile:
+  dataset_role: "Foreground data package for a living mule or hinny at producer handover"
+  downstream_use: "secondary_dataset or background_dataset after gate/UUID resolution; process and lifecyclemodel projection"
+  allowed_use: "Declared hybrid type, maternal route, class, period, live mass and matching gate"
+  excluded_use: "Parent animal, work service, slaughter/meat, assumed head weight or unverified gate/UUID as concrete exchange"
+  required_metadata: "parent species/sex; hybrid type; cohort; count; weighed live mass; age/class; gate; periods; upstream burden; attribution"
+  required_quality_disclosure: "parentage, scale/stock balance, maternal route, manure path, shared allocation and unresolved identity"
+  update_trigger: "New verified route, measured performance change, handover change or confirmed platform flow identity"
+data_sources:
+  - id: "fao-equine-1994"
+    type: "official_guidance"
+    reference: "FAO, *A Manual for the Primary Animal Health Care Worker*, Chapter 5, https://www.fao.org/4/t0690e/t0690e07.htm"
+    used_for: "parentage, gestation/foaling, husbandry and route boundary"
+  - id: "ipcc-livestock-2019"
+    type: "official_guidance"
+    reference: "IPCC 2019 Refinement, Volume 4 Chapter 10, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf"
+    used_for: "pathway-specific manure method applicability, not a universal factor"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:3cb7157e63473a4fa35397d8ef1d5ee3f061cd49db86d17a20351f7117dedcbb"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6804"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6804
+          line: 57
+          column: 1
+        end:
+          offset: 9900
+          line: 79
+          column: 1
+      markdown: "## 5. System Boundary\n\nInclude upstream purchased animals, feed, forage, water, bedding, electricity, fuel, care materials and services where used, together with parental management, mating, gestation, foaling, nursing, hybrid growth, manure handling, selection and actual live handover. Declare grazing rather than treating it as purchased feed. Attribute shared stables, water infrastructure and equipment once across nodes and periods. Saleable parent culls or manure are independent products only with actual handover; otherwise stock change, residue or waste. Do not claim a hybrid breeding-parent output or universal infertility outcome. Mating/gestation is managed biological production; birth and surviving-foal transfer are independent because they establish a live output with a measured handoff, while final selection is an independent acceptance gate (`fao-equine-1994`).\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Opening parent and hybrid stock by species/type, age/class, ownership, count, mass and period; identify purchased stock and first foreground stage. |\n| starting_condition_role | Declared foreground start, not zero-burden acquisition. |\n| product_classification_scope | Living horse–ass hybrids only; parent animals keep their own upstream identities. |\n| recursive_input_rule | Purchased mule/hinny young stock carries one upstream dataset to its purchase gate; do not recursively count earlier growth twice. |\n| upstream_dataset_requirement | Purchased animals, feed, materials, utilities and services need compatible upstream datasets or disclosed gaps. |\n| disclosure | Maternal route, actual gate, periods, animal ledger, upstream coverage, co-products and shared-asset attribution. |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_identity` | all routes | Only living horse–ass hybrids enter the reference output; horse, ass and work-service identities cannot substitute. | `fao-equine-1994` |\n| `boundary_maternal_route` | breeding | Record mare × jack or jenny × stallion as mutually exclusive per offspring, with actual maternal inputs and periods. | `fao-equine-1994` |\n| `boundary_gate` | handover | End at observed live acceptance and exclude downstream work, transport service and slaughter. | `fao-equine-1994` |\n| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 187
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 20
+          text: "# Mules and hinnies"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6804
+              line: 57
+              column: 1
+            end:
+              offset: 6825
+              line: 57
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_51185"
+      family: "allocation"
+      span:
+        start:
+          offset: 51185
+          line: 886
+          column: 1
+        end:
+          offset: 52011
+          line: 894
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `alloc_parents` | mare, jenny, jack, stallion | Assign actual maternal gestation/nursing to its offspring route; share sire care by documented service and period, not by assumed equal head count. | `fao-equine-1994` |\n| `alloc_outputs` | independent culls or sold manure | First subdivide actual handovers; if inseparable, disclose complete product set and justified physical-causality or economic basis consistently; no product credit to death or waste. | `fao-equine-1994` |\n| `alloc_assets` | shared stable, water system, pasture equipment | Index consuming nodes and service periods; assign each burden once by observed animal-days, area-time or metered use appropriate to the asset. | `fao-equine-1994` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 187
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 20
+          text: "# Mules and hinnies"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 51185
+              line: 886
+              column: 1
+            end:
+              offset: 51225
+              line: 886
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_59102"
+      family: "validation"
+      span:
+        start:
+          offset: 59102
+          line: 926
+          column: 1
+        end:
+          offset: 59958
+          line: 935
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_parentage` | all routes | Require species/sex evidence and one maternal route per hybrid; a hinny cannot be recorded as mare-borne. | `fao-equine-1994` |\n| `validate_stock` | all periods | Check head and mass ledger, live accepted output, losses and closing stock without duplicate transfers or mixed gates. | `fao-equine-1994` |\n| `validate_allocation` | co-products and assets | Require complete actual handover product set and period/service attribution; no double parent or infrastructure burden. | `fao-equine-1994` |\n| `validate_factor` | modeled manure/emissions | IPCC Mules/Asses categories require compatible animal activity, productivity, climate and manure path; never apply one generic factor to all hybrids. | `ipcc-livestock-2019` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 187
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 20
+          text: "# Mules and hinnies"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 59102
+              line: 926
+              column: 1
+            end:
+              offset: 59124
+              line: 926
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "system_boundary_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 6827
+          line: 59
+          column: 1
+        end:
+          offset: 7687
+          line: 59
+          column: 861
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 8640
+          line: 74
+          column: 1
+        end:
+          offset: 8814
+          line: 74
+          column: 175
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_maternal_route"
+      identity_kind: "explicit"
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 8815
+          line: 75
+          column: 1
+        end:
+          offset: 8994
+          line: 75
+          column: 180
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 8995
+          line: 76
+          column: 1
+        end:
+          offset: 9141
+          line: 76
+          column: 147
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "reference_handover_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 9142
+          line: 77
+          column: 1
+        end:
+          offset: 9898
+          line: 77
+          column: 757
+    - pointer: "/allocation_rules/0"
+      rule_id: "alloc_parents"
+      identity_kind: "explicit"
+      unit_id: "normative_51185"
+      source_span:
+        start:
+          offset: 51298
+          line: 890
+          column: 1
+        end:
+          offset: 51517
+          line: 890
+          column: 220
+    - pointer: "/allocation_rules/1"
+      rule_id: "alloc_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_51185"
+      source_span:
+        start:
+          offset: 51518
+          line: 891
+          column: 1
+        end:
+          offset: 51776
+          line: 891
+          column: 259
+    - pointer: "/allocation_rules/2"
+      rule_id: "alloc_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_51185"
+      source_span:
+        start:
+          offset: 51777
+          line: 892
+          column: 1
+        end:
+          offset: 52009
+          line: 892
+          column: 233
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_parentage"
+      identity_kind: "explicit"
+      unit_id: "normative_59102"
+      source_span:
+        start:
+          offset: 59197
+          line: 930
+          column: 1
+        end:
+          offset: 59362
+          line: 930
+          column: 166
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_stock"
+      identity_kind: "explicit"
+      unit_id: "normative_59102"
+      source_span:
+        start:
+          offset: 59363
+          line: 931
+          column: 1
+        end:
+          offset: 59538
+          line: 931
+          column: 176
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_59102"
+      source_span:
+        start:
+          offset: 59539
+          line: 932
+          column: 1
+        end:
+          offset: 59731
+          line: 932
+          column: 193
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_factor"
+      identity_kind: "explicit"
+      unit_id: "normative_59102"
+      source_span:
+        start:
+          offset: 59732
+          line: 933
+          column: 1
+        end:
+          offset: 59956
+          line: 933
+          column: 225
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 6804
+          line: 57
+          column: 1
+        end:
+          offset: 6825
+          line: 57
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6804"
+      source_span:
+        start:
+          offset: 7715
+          line: 63
+          column: 1
+        end:
+          offset: 8567
+          line: 70
+          column: 131
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_51185"
+      source_span:
+        start:
+          offset: 51185
+          line: 886
+          column: 1
+        end:
+          offset: 51225
+          line: 886
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_59102"
+      source_span:
+        start:
+          offset: 59102
+          line: 926
+          column: 1
+        end:
+          offset: 59124
+          line: 926
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:3cb7157e63473a4fa35397d8ef1d5ee3f061cd49db86d17a20351f7117dedcbb"
+  generated_content_sha256: "sha256:2cd888d5cdaa3087e1e2367abfb932efedfa77e0ac83f106034da6a5f7a23d3c"

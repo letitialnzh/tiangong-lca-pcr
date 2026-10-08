@@ -1,37 +1,87 @@
 schema_version: 1
-id: pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.turkeys
+id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.turkeys"
 title:
   en-US: "Turkeys"
-  zh-CN: null
-status: scaffold
-pcr_kind: product_category_rule
-content_maturity: empty_scaffold
+  zh-CN: "活火鸡"
+version: "0.1.0"
+status: "candidate"
+pcr_kind: "product_category_rule"
+content_maturity: "authored_methodology"
 domains:
   - "agriculture-forestry-and-fishery-products"
 modules:
-  core:
-    - pcr-minimum-content
-    - unit-of-analysis
-    - reference-flow
-    - inventory-flow-taxonomy
-    - system-boundary
-    - allocation
-    - data-quality
-    - validation-rules
+  core: []
 target_entities:
-  - flow
-  - process
-  - lifecyclemodel
+  - "flow"
+  - "process"
+  - "lifecyclemodel"
+  - "dataset"
 languages:
-  canonical: en-US
+  canonical: "en-US"
   available:
-    - en-US
-    - zh-CN
+    - "en-US"
+    - "zh-CN"
 translation_status:
-  zh-CN: scaffold_pending_translation
+  zh-CN: "aligned"
 classification_refs:
-  - system: CPC
+  - system: "CPC"
     version: "3.0"
     code: "02152"
     title: "Turkeys"
-    mapping_type: exact
+    mapping_type: "exact"
+review_metadata:
+  unresolved_uuid_references:
+    - "breeder_energy: actual flow identity must be confirmed from foreground records before final exchange creation"
+    - "breeder_water: actual flow identity must be confirmed from foreground records before final exchange creation"
+    - "hatchery_water: actual flow identity must be confirmed from foreground records before final exchange creation"
+    - "incubation_energy: actual flow identity must be confirmed from foreground records before final exchange creation"
+    - "rearing_energy: actual flow identity must be confirmed from foreground records before final exchange creation"
+    - "rearing_water: actual flow identity must be confirmed from foreground records before final exchange creation"
+  unresolved_flow_uuids:
+    - "The broad hatchery-or-farm-gate live turkey Mass reference is unbound; the two verified UUIDs apply only to their exact route outputs."
+    - "Hatching eggs, received poults, feed, hatch residues, mortalities and manure transfers need state-specific identity evidence."
+  unresolved_flow_identities:
+    - row_id: reference_product_handover
+      reason: No single exact UUID has been confirmed for this route/state/gate-qualified semantic role. Resolve the actual physical product and its support identities from the foreground lot; never broaden a state/gate-specific UUID.
+    - row_id: reference_handover_input
+      reason: No single exact UUID has been confirmed for this route/state/gate-qualified semantic role. Resolve the actual physical product and its support identities from the foreground lot; never broaden a state/gate-specific UUID.
+  reference_flow_identity:
+    status: unresolved
+    unresolved_support_fields:
+      - reference_product_flow_uuid
+    reference_output_rows:
+      - reference_product_handover
+    source_interface_rows:
+      - day_old_poults
+      - farm_live_turkeys
+    association_status: actual_qualified_handover
+    resolution_rule: The output card is the actual measured producer-boundary product of one declared route/state/gate/grade stratum. Existing state/gate-specific source identities stay exact and feed a matched internal interface; they do not bind the broad reference. No physical activity or second reference sale is added.
+    support_review:
+      status: confirmed_mass_support
+      flow_property_uuid: 93a60a56-a3c8-11da-a746-0800200b9a66
+      unit_group_uuid: 93a60a57-a4c8-11da-a746-0800200c9a66
+      reference_unit: kg
+    lookup_review:
+      status: searched_unresolved
+      initial_lookups_per_new_card: 1
+      refinement_lookups_per_new_card: 0
+      searched_rows:
+        - reference_product_handover
+        - reference_handover_input
+      new_fixed_bindings: 0
+      reason: Returned farm-gate, hatchery-gate or slaughter-gate candidates do not establish one exact identity for the preserved alternative producer-gate/state role.
+      review_requirement: Select and verify the actual qualified lot identity before final exchange creation. Candidate check success does not verify unresolved UUIDs or publication readiness.
+  measurement_remediation:
+    reference_output_row: reference_product_handover
+    raw_reference_output_records: Original raw quantity, stage denominator and aggregation instructions remain in bilingual cards and collection methods; final package projection is explicitly separate.
+    normalized_basis_scope: Final foreground-package contributions only. Stage-native process quantitative references, records, units, allocations and ranges are retained; throughput links and actual accepted final output are required.
+    review_status: candidate_review_pending
+    handover_interface: One actual measured producer-boundary handover; source rows and matched input are internal interfaces, not additional external sales.
+    automated_check:
+      command: pcr:check
+      status: pass
+      measurement_status: pass
+      measurement_complete: true
+      measurement_findings: 0
+      check_version: 1
+updated_at_utc: "2026-10-08T09:33:35.000Z"

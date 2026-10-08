@@ -1,10 +1,1326 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02960"
-  title: "Insect waxes and spermaceti, whether or not refined or coloured"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.insect-waxes-and-spermaceti-whether-or-not-refined-or-coloured"
+  classification_refs: "CPC 3.0 02960, animal-wax component of HS 1521.90"
+  covered_products: "Source-qualified insect wax and lawful-source spermaceti as wax, raw, refined or coloured."
+  excluded_products: "Vegetable/mineral/synthetic wax, degras, formulations and manufactured articles."
+  representative_product: "One identified source and declared sold wax state at its actual handover."
+  production_route: "Insect collection or lawful existing spermaceti-material recovery; first conditioning, optional treatment, grading, presentation."
+  market_state: "Net wax with source, raw/refined/coloured state, purity/grade, colourant, moisture/impurities and gate."
+functional_unit:
+  what: "Identified insect wax or lawful-source spermaceti in its declared sold state, not an aggregate of sources."
+  how_much: "1 kg net sold wax excluding package and separately removable foreign material."
+  how_well: "Declare species/source, lawful provenance where relevant, treatment, colour, purity/grade, moisture/impurities and gate."
+  how_long_or_cycle: "Attribute source, collection, conditioning, treatment and shared service to actual lots and periods once."
+  reference_flow_link: "sold_wax"
+system_boundary:
+  rules:
+    - rule_id: b_source
+      applies_to: "source route"
+      rule: "Instantiate one route per lot. Spermaceti requires lawful traceable existing input and compatible burden, never hypothetical new capture. Honey applies only to actual bee production."
+      source_ids:
+        - un-cpc-3-notes
+        - fao-beeswax
+    - rule_id: b_collect
+      applies_to: "collection"
+      rule: "Record comb/cappings/other insect secretion collection or lawful spermaceti-material recovery distinctly from source production and later melting."
+      source_ids:
+        - fao-beeswax
+        - fao-beekeeping
+    - rule_id: b_condition
+      applies_to: "first separation"
+      rule: "Include actual melting, separation and cleaning to first prepared wax with measured service and residues; no default recipe."
+      source_ids:
+        - fao-beeswax
+        - fao-beekeeping
+    - rule_id: b_treat
+      applies_to: "optional treatment"
+      rule: "Include performed refining or colouring with before/after mass, input and residual; raw lots bypass."
+      source_ids:
+        - un-cpc-3-notes
+        - fao-beeswax
+    - rule_id: b_gate
+      applies_to: "grade and handover"
+      rule: "Sort accepted, saleable downgrade and rejects; protect wax to actual production or first-refining handover; exclude formulation and freight."
+      source_ids:
+        - un-cpc-3-notes
+boundary_abstraction:
+  declared_starting_condition: "Identified insect production source or lawful pre-existing spermaceti-bearing material at actual collection/recovery interface."
+  starting_condition_role: "Compatible upstream dataset carries colony/insect production or legal spermaceti-source burden to this interface; foreground collection does not recount upstream production."
+  product_classification_scope: "Animal wax of CPC 02960, not vegetable wax or a manufactured wax article."
+  recursive_input_rule: "Purchased same-category wax keeps its upstream burden and enters only the applicable later node, never a fictitious new harvest."
+  upstream_dataset_requirement: "Route-, source-, real-output- and period-qualified burden; legal chain for spermaceti; actual honey output only for bee operations."
+  disclosure: "Wax source, lawful acquisition, source handoff, real co-products, collection and processing route, state, quality, gate, periods and shared assets."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Source-, state- and gate-qualified insect wax or spermaceti"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "insect species or lawful spermaceti source"
+    - route
+    - "raw/refined/coloured state"
+    - colourant
+    - "purity/grade"
+    - "moisture/impurities"
+    - "net/tare"
+    - gate
+    - period
+reference_flows:
+  []
+measurement_rules:
+  - id: m_net
+    applies_to: "sale lot"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Determine net wax from calibrated gross and package tare; exclude separable foreign matter and disclose retained impurities."
+  - id: m_state
+    applies_to: "each process state"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Measure before/after separation and optional treatment; account for added colourant and removed material without generic yield."
+  - id: m_balance
+    applies_to: "each source-qualified lot"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile source material, additions, wax grades, residues and stock change."
+  - id: m_period
+    applies_to: "source and shared services"
+    required_property_ref:
+      name: "Time"
+      uuid: ""
+    required_unit: "period"
+    rule: "Assign source, collection and shared asset events to actual periods without duplicate annualization."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: collect
+    name: "Source-qualified wax-material collection"
+    inclusion: "required"
+    inclusion_condition: "newly sourced wax-bearing material"
+    role: "Independent collection/recovery and first handoff."
+    quantitative_reference: "kg collected material"
+  - id: condition
+    name: "First wax separation and conditioning"
+    inclusion: "required"
+    inclusion_condition: "collected raw material"
+    role: "First melting, separation and cleaning to prepared wax."
+    quantitative_reference: "kg first-prepared wax"
+  - id: treat
+    name: "Optional refining or colouring"
+    inclusion: "conditional"
+    inclusion_condition: "refined or coloured sold state"
+    role: "Actual material treatment with distinct before/after state."
+    quantitative_reference: "kg treated wax"
+  - id: grade
+    name: "Wax grade and destination sorting"
+    inclusion: "required"
+    inclusion_condition: "prepared or treated wax"
+    role: "Separate accepted, saleable downgrade and waste reject."
+    quantitative_reference: "kg saleable graded wax"
+  - id: handover
+    name: "Protective presentation and handover"
+    inclusion: "required"
+    inclusion_condition: "saleable wax"
+    role: "Pack once and hand off at declared gate."
+    quantitative_reference: "kg net sold wax"
+process_inventory:
+  - id: collect
+    label: "Source-qualified wax-material collection"
+    inputs:
+      product:
+        - row_id: insect_source
+          role: "Insect-origin wax-bearing material"
+          name: "Insect-source wax-bearing material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Actual comb, cappings or other documented insect secretion; never spermaceti. Denominator and scope requirements：per kg collected material Raw quantity and calculation requirements: Measure actual insect-origin wax-bearing material and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg collected material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sperm_source
+          role: "Lawfully acquired, traceable existing spermaceti-bearing material"
+          name: "Lawful-source spermaceti-bearing material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only lawful traceable pre-existing material with a marketable Product role and upstream burden, never a hypothetical new capture. Legally Waste material uses the separate card, not both. Denominator and scope requirements：per kg collected material Raw quantity and calculation requirements: Measure actual lawfully acquired spermaceti-bearing material and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg collected material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: sperm_waste
+          role: "Lawfully recoverable spermaceti-bearing Waste"
+          name: "Lawful-source recoverable spermaceti-bearing Waste (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Use only when documented existing material is legally Waste and recovery is permitted; no Product input is also booked for the same material. Denominator and scope requirements：per kg collected material Raw quantity and calculation requirements: Weigh lawful Waste input; retain legal status, upstream burden and terminal alternative. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg collected material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected
+          role: "Collected wax-bearing material"
+          name: "Source-qualified collected wax-bearing material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Hand off source-qualified collected material to first separation once. Denominator and scope requirements：per kg collected material Raw quantity and calculation requirements: Measure actual collected wax-bearing material and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg collected material"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: collect_reject
+          role: "Collection rejects"
+          name: "Non-saleable source-specific collection residue (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Non-saleable incidental debris follows an actual waste destination; no invented honey or whale output. Denominator and scope requirements：per kg collected material Raw quantity and calculation requirements: Measure actual collection rejects and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg collected material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: condition
+    label: "First wax separation and conditioning"
+    inputs:
+      product:
+        - row_id: condition_in
+          role: "Collected material for first separation"
+          name: "Source-qualified collected wax-bearing material (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Link to source collection; no repeat colony or stock burden. Denominator and scope requirements：per kg first-prepared wax Raw quantity and calculation requirements: Measure actual collected material for first separation and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg first-prepared wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: energy
+          role: "Conditioning energy"
+          name: "Actual energy carrier for first wax separation (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Meter actual carrier used in melting or separation; no default heat recipe. Denominator and scope requirements：per kg first-prepared wax Raw quantity and calculation requirements: Measure actual conditioning energy and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "MJ/kg"
+                basis: "per kg first-prepared wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_water
+          role: "Conditional wash or cleaning water"
+          name: "Actual water supplied for first wax cleaning (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record water supplied as a Product input when actual on-site washing or aqueous cleaning occurs; dry separation has no water input. Identify the source and account for wastewater or evaporation by its actual destination and receiving medium. Denominator and scope requirements：per kg first-prepared wax Raw quantity and calculation requirements: Meter water crossing the conditioning boundary by source and batch; do not infer a default washing rate. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg first-prepared wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared
+          role: "First-prepared wax"
+          name: "Source-qualified first-prepared wax (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh wax after first separation and cleaning, before optional refining or colouring. Denominator and scope requirements：per kg first-prepared wax Raw quantity and calculation requirements: Measure actual first-prepared wax and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg first-prepared wax"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: separation_reject
+          role: "Separation residue"
+          name: "Non-saleable first-separation residue (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record filter solids and other non-saleable residue by treatment destination. Denominator and scope requirements：per kg first-prepared wax Raw quantity and calculation requirements: Measure actual separation residue and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg first-prepared wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: treat
+    label: "Optional refining or colouring"
+    inputs:
+      product:
+        - row_id: treat_in
+          role: "Wax entering optional treatment"
+          name: "Source-qualified first-prepared wax (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only refined or coloured lots enter; raw lots bypass this node. Denominator and scope requirements：per kg treated wax Raw quantity and calculation requirements: Measure actual wax entering optional treatment and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_treat
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg treated wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: additive
+          role: "Actual refining aid or colourant"
+          name: "Material-specific refining aid or wax colourant (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure actual material and retained colourant; no addition for untreated lots. Denominator and scope requirements：per kg treated wax Raw quantity and calculation requirements: Measure actual refining aid or colourant and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_treat
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg treated wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: treated
+          role: "Refined or coloured wax"
+          name: "Source-qualified refined or coloured wax (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Hand off measured treated wax with purity and colour state. Denominator and scope requirements：per kg treated wax Raw quantity and calculation requirements: Measure actual refined or coloured wax and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_treat
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg treated wax"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: treat_reject
+          role: "Treatment residue"
+          name: "Non-saleable refining or colouring residue (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Spent aid and nonmarketable residue follow actual waste destination. Denominator and scope requirements：per kg treated wax Raw quantity and calculation requirements: Measure actual treatment residue and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg treated wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade
+    label: "Wax grade and destination sorting"
+    inputs:
+      product:
+        - row_id: grade_in
+          role: "Wax entering grade"
+          name: "Source- and state-qualified wax before grade (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive one physical lot from raw prepared or treated wax, never both. Denominator and scope requirements：per kg saleable graded wax Raw quantity and calculation requirements: Measure actual wax entering grade and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg saleable graded wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: saleable
+          role: "Saleable accepted or downgraded grade"
+          name: "Source-, state- and grade-qualified saleable wax (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record each accepted and independently marketed downgraded grade at one destination. Denominator and scope requirements：per kg saleable graded wax Raw quantity and calculation requirements: Measure actual saleable accepted or downgraded grade and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg saleable graded wax"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Rejected wax"
+          name: "Non-saleable rejected wax (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Non-saleable rejected wax follows actual waste handling, not a second product. Denominator and scope requirements：per kg saleable graded wax Raw quantity and calculation requirements: Measure actual rejected wax and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg saleable graded wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: handover
+    label: "Protective presentation and handover"
+    inputs:
+      product:
+        - row_id: handover_in
+          role: "Saleable wax before packing"
+          name: "Source-, state- and grade-qualified saleable wax (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive one source-, state- and grade-qualified lot from sorting. Denominator and scope requirements：per kg net sold wax Raw quantity and calculation requirements: Measure actual saleable wax before packing and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg net sold wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: package
+          role: "Protective packaging"
+          name: "Actual protective wax package or reusable service (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Count actual consumed material or measured reusable package service, not later freight. Denominator and scope requirements：per kg net sold wax Raw quantity and calculation requirements: Measure actual protective packaging and link lot, source, state and period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg net sold wax"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: sold_wax
+          role: "Net wax at actual gate"
+          name: "Source-, state- and gate-qualified insect wax or spermaceti"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One reference role instantiated by real source, sold state and gate; no broad fixed UUID is assumed. Raw reference-output records: Measure actual net wax at actual gate and link lot, source, state and period. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per 1 kg net reference wax"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_source
+    applies_to: "actual source output set"
+    rule: "Enumerate wax and each real independently marketed output at its own handoff. Honey is a co-product only for actual bee honey. Prefer supported causal physical attribution; if unavailable, disclose period-specific economic allocation and sensitivity. Never assign wax automatic zero or whole-source burden."
+    source_ids:
+      - fao-beeswax
+      - fao-beekeeping
+  - rule_id: a_sperm
+    applies_to: "lawful spermaceti source"
+    rule: "Require legal chain, compatible upstream burden, real other outputs and justified treatment of pre-existing material and terminal alternative. No new capture or fictional co-product."
+    source_ids:
+      - un-cpc-3-notes
+  - rule_id: a_state
+    applies_to: "process and grades"
+    rule: "Attribute actual wax states and disjoint saleable grades once. Colourant addition or purification does not make another original-wax output; waste is not marketed wax."
+    source_ids:
+      - fao-beeswax
+  - rule_id: a_period
+    applies_to: "source phases and shared services"
+    rule: "Index colony/source, collection, melting, filtration, storage and packaging periods; allocate shared tanks/filters/energy and package services by observed throughput/time across actual consumers once. Record replacement/termination."
+    source_ids:
+      - fao-beeswax
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_collect
+      process_id: "collect"
+      flow_role: "source and collected material"
+      record_type: "source ledger"
+      raw_fields: "source/species, legal chain, route, material mass, real outputs, event, period"
+      collection_method: "source ticket and calibrated scale; Raw aggregation requirements: exclusive route; once per lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;period"
+      frequency: "each lot"
+      temporal_coverage: "source and collection periods"
+      site_scope: "supplier and collection site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "tickets, calibration, legal chain; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_condition
+      process_id: "condition"
+      flow_role: "material, energy, conditional wash water and prepared wax"
+      record_type: "separation ledger"
+      raw_fields: "lot, mass in/out, method, carrier, energy, water source/input, wastewater or evaporation destination, purity, moisture"
+      collection_method: "scale, meter and assay; Raw aggregation requirements: before/after and water balance by source. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;MJ"
+      frequency: "each lot"
+      temporal_coverage: "conditioning period"
+      site_scope: "facility"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale, meter, assay; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_treat
+      process_id: "treat"
+      flow_role: "optional refining or colouring"
+      record_type: "treatment ledger"
+      raw_fields: "lot, input/output mass, added material, colour, purity, rejects"
+      collection_method: "batch sheet, scale and assay; Raw aggregation requirements: once; raw bypass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each treated lot"
+      temporal_coverage: "treatment period"
+      site_scope: "facility"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "sheet and assay; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_grade
+      process_id: "grade"
+      flow_role: "accepted, downgrade and reject"
+      record_type: "grade ledger"
+      raw_fields: "source, state, grade, mass, destination"
+      collection_method: "grade ticket and scale; Raw aggregation requirements: disjoint grades. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "grade period"
+      site_scope: "facility"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "grade and reject tickets; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_handover
+      process_id: "handover"
+      flow_role: "wax, package and gate"
+      record_type: "dispatch ledger"
+      raw_fields: "source, state, colourant, purity, moisture, gross, tare, net, package reuse, gate"
+      collection_method: "dispatch ticket and scale; Raw aggregation requirements: one net sale per lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each sale lot"
+      temporal_coverage: "handover period"
+      site_scope: "facility"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_residue
+      process_id: "collect_condition_treat_grade"
+      flow_role: "waste"
+      record_type: "treatment ledger"
+      raw_fields: "lot, type, mass, destination, period"
+      collection_method: "scale and transfer record; Raw aggregation requirements: once per material/destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "relevant period"
+      site_scope: "origin site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_net
+      applies_to: "sold lot"
+      rule: "Net sold wax = gross mass - package tare - separately removable foreign matter; disclose retained moisture and impurity."
+      inputs:
+        - cp_handover
+      output: "kg net sold wax"
+      source_ids: []
+    - id: c_balance
+      applies_to: "source to handover"
+      rule: "Source material plus actual additions = saleable wax, residues, measured removals and stock change within observed uncertainty. No universal wax yield."
+      inputs:
+        - cp_collect
+        - cp_condition
+        - cp_treat
+        - cp_grade
+        - cp_handover
+        - cp_residue
+      output: "kg balance residual"
+      source_ids:
+        - fao-beeswax
+    - id: c_period
+      applies_to: "source and shared service"
+      rule: "Attribute source phase and each shared tank, filter, energy, storage or package use once to consuming lots/periods."
+      inputs:
+        - cp_collect
+        - cp_condition
+        - cp_treat
+        - cp_handover
+      output: "burden/kg wax"
+      source_ids:
+        - fao-beeswax
+    - id: c_norm
+      applies_to: "final exchange"
+      rule: "Divide attributable exchange by positive net mass of the same source/state/gate lot."
+      inputs:
+        - cp_handover
+      output: "unit/kg wax"
+      source_ids: []
+  data_quality_requirements:
+    - id: q_identity
+      applies_to: "each lot"
+      requirement: "Prove source/species, legal status of spermaceti, state, grade, colourant, purity and gate."
+      evidence: "source/legal, batch, dispatch records"
+    - id: q_mass
+      applies_to: "each lot"
+      requirement: "Calibrate net/tare and before/after mass; assay impurity/moisture."
+      evidence: "scale, assay, balance"
+    - id: q_allocation
+      applies_to: "source and shared service"
+      requirement: "Record real output set, periods, driver and nonduplicated asset service."
+      evidence: "source-output and service-period ledgers"
+    - id: q_uuid
+      applies_to: "final exchange"
+      requirement: "Confirm exact source/state/role/gate and property/unit support before concrete exchange."
+      evidence: "verified identity evidence"
+validation_rules:
+  - rule_id: v_scope
+    applies_to: "reference lot"
+    rule: "Reject vegetable/mineral/synthetic wax, degras, articles and source-free averages; require source and sold raw/refined/coloured state."
+    source_ids:
+      - un-cpc-3-notes
+  - rule_id: v_route
+    applies_to: "source"
+    rule: "Require mutually exclusive insect or lawful existing spermaceti source and upstream burden; no fictitious whale capture or non-bee honey."
+    source_ids:
+      - fao-beeswax
+      - fao-beekeeping
+  - rule_id: v_balance
+    applies_to: "lot"
+    rule: "Reconcile collected material, additions, prepared/treated wax, grades, rejects and net mass; investigate residual."
+    source_ids:
+      - fao-beeswax
+  - rule_id: v_allocation
+    applies_to: "source and shared services"
+    rule: "Reject automatic zero/full wax burden, duplicate honey/wax or shared-asset period."
+    source_ids:
+      - fao-beeswax
+  - rule_id: v_identity
+    applies_to: "concrete exchange"
+    rule: "Verify flow type, direction, source, state, gate, Mass property and unit group; beeswax-only flow cannot identify the broad reference."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Source-, route-, grade-, state- and gate-qualified animal-wax foreground dataset."
+  downstream_use: "Candidate secondary_dataset or background_dataset only after concrete identities, review and publication."
+  allowed_use: "Same-source/state wax comparison or measured state conversion."
+  excluded_use: "Cross-source proxy, fictitious capture, unsupported honey, downstream articles or universal yield."
+  required_metadata: "Source/species, legal chain, route, state, colourant, purity, moisture, net mass, gate, periods and real outputs."
+  required_quality_disclosure: "Co-product/period attribution, balance, rejects, shared-service driver and unresolved UUIDs."
+  update_trigger: "Exact platform flow verification, changed legal/source route, measured method evidence or classification."
+data_sources:
+  - id: "un-cpc-3-notes"
+    type: "official_guidance"
+    reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "wax scope and sold states"
+  - id: "fao-beeswax"
+    type: "official_guidance"
+    reference: "[FAO beeswax production/refining](https://www.fao.org/4/i0842e/i0842e12.pdf)"
+    used_for: "bee route and separation"
+  - id: "fao-beekeeping"
+    type: "official_guidance"
+    reference: "[FAO beekeeping wax products](https://www.fao.org/4/w0076e/w0076e12.htm)"
+    used_for: "comb/cappings and honey context"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:b89e7cd84b51d47cce43aa7b8aa44210b082d3ab54a47e4a103e4a78d29365ef"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6941"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6941
+          line: 58
+          column: 1
+        end:
+          offset: 9073
+          line: 81
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified insect production source or lawful pre-existing spermaceti-bearing material at actual collection/recovery interface. |\n| starting_condition_role | Compatible upstream dataset carries colony/insect production or legal spermaceti-source burden to this interface; foreground collection does not recount upstream production. |\n| product_classification_scope | Animal wax of CPC 02960, not vegetable wax or a manufactured wax article. |\n| recursive_input_rule | Purchased same-category wax keeps its upstream burden and enters only the applicable later node, never a fictitious new harvest. |\n| upstream_dataset_requirement | Route-, source-, real-output- and period-qualified burden; legal chain for spermaceti; actual honey output only for bee operations. |\n| disclosure | Wax source, lawful acquisition, source handoff, real co-products, collection and processing route, state, quality, gate, periods and shared assets. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_source | source route | Instantiate one route per lot. Spermaceti requires lawful traceable existing input and compatible burden, never hypothetical new capture. Honey applies only to actual bee production. | un-cpc-3-notes;fao-beeswax |\n| b_collect | collection | Record comb/cappings/other insect secretion collection or lawful spermaceti-material recovery distinctly from source production and later melting. | fao-beeswax;fao-beekeeping |\n| b_condition | first separation | Include actual melting, separation and cleaning to first prepared wax with measured service and residues; no default recipe. | fao-beeswax;fao-beekeeping |\n| b_treat | optional treatment | Include performed refining or colouring with before/after mass, input and residual; raw lots bypass. | un-cpc-3-notes;fao-beeswax |\n| b_gate | grade and handover | Sort accepted, saleable downgrade and rejects; protect wax to actual production or first-refining handover; exclude formulation and freight. | un-cpc-3-notes |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 232
+              line: 8
+              column: 1
+            end:
+              offset: 297
+              line: 8
+              column: 66
+          text: "# Insect waxes and spermaceti, whether or not refined or coloured"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6941
+              line: 58
+              column: 1
+            end:
+              offset: 6962
+              line: 58
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_36861"
+      family: "allocation"
+      span:
+        start:
+          offset: 36861
+          line: 704
+          column: 1
+        end:
+          offset: 38109
+          line: 713
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual source output set | Enumerate wax and each real independently marketed output at its own handoff. Honey is a co-product only for actual bee honey. Prefer supported causal physical attribution; if unavailable, disclose period-specific economic allocation and sensitivity. Never assign wax automatic zero or whole-source burden. | fao-beeswax;fao-beekeeping |\n| a_sperm | lawful spermaceti source | Require legal chain, compatible upstream burden, real other outputs and justified treatment of pre-existing material and terminal alternative. No new capture or fictional co-product. | un-cpc-3-notes |\n| a_state | process and grades | Attribute actual wax states and disjoint saleable grades once. Colourant addition or purification does not make another original-wax output; waste is not marketed wax. | fao-beeswax |\n| a_period | source phases and shared services | Index colony/source, collection, melting, filtration, storage and packaging periods; allocate shared tanks/filters/energy and package services by observed throughput/time across actual consumers once. Record replacement/termination. | fao-beeswax |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 232
+              line: 8
+              column: 1
+            end:
+              offset: 297
+              line: 8
+              column: 66
+          text: "# Insect waxes and spermaceti, whether or not refined or coloured"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 36861
+              line: 704
+              column: 1
+            end:
+              offset: 36901
+              line: 704
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_44216"
+      family: "validation"
+      span:
+        start:
+          offset: 44216
+          line: 744
+          column: 1
+        end:
+          offset: 45155
+          line: 754
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject vegetable/mineral/synthetic wax, degras, articles and source-free averages; require source and sold raw/refined/coloured state. | un-cpc-3-notes |\n| v_route | source | Require mutually exclusive insect or lawful existing spermaceti source and upstream burden; no fictitious whale capture or non-bee honey. | fao-beeswax;fao-beekeeping |\n| v_balance | lot | Reconcile collected material, additions, prepared/treated wax, grades, rejects and net mass; investigate residual. | fao-beeswax |\n| v_allocation | source and shared services | Reject automatic zero/full wax burden, duplicate honey/wax or shared-asset period. | fao-beeswax |\n| v_identity | concrete exchange | Verify flow type, direction, source, state, gate, Mass property and unit group; beeswax-only flow cannot identify the broad reference. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 232
+              line: 8
+              column: 1
+            end:
+              offset: 297
+              line: 8
+              column: 66
+          text: "# Insect waxes and spermaceti, whether or not refined or coloured"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 44216
+              line: 744
+              column: 1
+            end:
+              offset: 44238
+              line: 744
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_source"
+      identity_kind: "explicit"
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 8077
+          line: 75
+          column: 1
+        end:
+          offset: 8318
+          line: 75
+          column: 242
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_collect"
+      identity_kind: "explicit"
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 8319
+          line: 76
+          column: 1
+        end:
+          offset: 8523
+          line: 76
+          column: 205
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_condition"
+      identity_kind: "explicit"
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 8524
+          line: 77
+          column: 1
+        end:
+          offset: 8714
+          line: 77
+          column: 191
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_treat"
+      identity_kind: "explicit"
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 8715
+          line: 78
+          column: 1
+        end:
+          offset: 8879
+          line: 78
+          column: 165
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "b_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 8880
+          line: 79
+          column: 1
+        end:
+          offset: 9071
+          line: 79
+          column: 192
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_source"
+      identity_kind: "explicit"
+      unit_id: "normative_36861"
+      source_span:
+        start:
+          offset: 36974
+          line: 708
+          column: 1
+        end:
+          offset: 37351
+          line: 708
+          column: 378
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_sperm"
+      identity_kind: "explicit"
+      unit_id: "normative_36861"
+      source_span:
+        start:
+          offset: 37352
+          line: 709
+          column: 1
+        end:
+          offset: 37592
+          line: 709
+          column: 241
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_state"
+      identity_kind: "explicit"
+      unit_id: "normative_36861"
+      source_span:
+        start:
+          offset: 37593
+          line: 710
+          column: 1
+        end:
+          offset: 37809
+          line: 710
+          column: 217
+    - pointer: "/allocation_rules/3"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_36861"
+      source_span:
+        start:
+          offset: 37810
+          line: 711
+          column: 1
+        end:
+          offset: 38107
+          line: 711
+          column: 298
+    - pointer: "/validation_rules/0"
+      rule_id: "v_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_44216"
+      source_span:
+        start:
+          offset: 44311
+          line: 748
+          column: 1
+        end:
+          offset: 44492
+          line: 748
+          column: 182
+    - pointer: "/validation_rules/1"
+      rule_id: "v_route"
+      identity_kind: "explicit"
+      unit_id: "normative_44216"
+      source_span:
+        start:
+          offset: 44493
+          line: 749
+          column: 1
+        end:
+          offset: 44682
+          line: 749
+          column: 190
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_44216"
+      source_span:
+        start:
+          offset: 44683
+          line: 750
+          column: 1
+        end:
+          offset: 44833
+          line: 750
+          column: 151
+    - pointer: "/validation_rules/3"
+      rule_id: "v_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_44216"
+      source_span:
+        start:
+          offset: 44834
+          line: 751
+          column: 1
+        end:
+          offset: 44978
+          line: 751
+          column: 145
+    - pointer: "/validation_rules/4"
+      rule_id: "v_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_44216"
+      source_span:
+        start:
+          offset: 44979
+          line: 752
+          column: 1
+        end:
+          offset: 45153
+          line: 752
+          column: 175
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 6941
+          line: 58
+          column: 1
+        end:
+          offset: 6962
+          line: 58
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6941"
+      source_span:
+        start:
+          offset: 6990
+          line: 62
+          column: 1
+        end:
+          offset: 7984
+          line: 69
+          column: 165
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_36861"
+      source_span:
+        start:
+          offset: 36861
+          line: 704
+          column: 1
+        end:
+          offset: 36901
+          line: 704
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_44216"
+      source_span:
+        start:
+          offset: 44216
+          line: 744
+          column: 1
+        end:
+          offset: 44238
+          line: 744
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:b89e7cd84b51d47cce43aa7b8aa44210b082d3ab54a47e4a103e4a78d29365ef"
+  generated_content_sha256: "sha256:1b1e8e3f8051da86d0e3161bc4a59f13129abffee8a01f55dfc30ba2a30da5d9"

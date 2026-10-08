@@ -1,10 +1,1154 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02943"
-  title: "Fine animal hair, not carded or combed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.fine-animal-hair-not-carded-or-combed"
+  classification_refs: "CPC 3.0 02943 — fine animal hair, not carded or combed"
+  covered_products: "Detached uncarded/uncombed raw fine hair of a declared species and grade, including evidenced first-cleaned state still within the raw class."
+  excluded_products: "Ordinary or pulled sheep wool; coarse hair; attached pelts; carded/combed textile fibre, tops, yarn and fabrics."
+  representative_product: "One identified species-and-grade lot of raw fine hair, with net as-sold mass and measured state."
+  production_route: "Species-specific animal husbandry upstream; actual combing, shearing or shed-fibre collection; first skirting/cleaning; grading; protective handover."
+  market_state: "Detached raw fine hair, uncarded/uncombed, at actual farm or first-collection gate."
+functional_unit:
+  what: "One declared species-and-grade lot of raw fine animal hair, uncarded/uncombed, at its actual gate."
+  how_much: "1 kg net as-sold fibre, excluding container and separately removed dirt, guard hair and rejects."
+  how_well: "Species, fineness/length or documented grade, colour, guard-hair content, contamination and moisture declared; no assumed clean-fibre equivalence."
+  how_long_or_cycle: "Identify animal cohort, harvest event, production period, first-processing lot and handover; link shared service across actual periods."
+  reference_flow_link: "fine_hair_handover"
+system_boundary:
+  rules:
+    - rule_id: b_harvest
+      applies_to: "live-animal or shed-fibre route"
+      rule: "Include actual combing, shearing or collection as an independent removal event with raw-fibre handoff; do not require every method for every species. Husbandry stays upstream unless explicitly expanded without duplicating burden."
+      source_ids:
+        - fao-animal-fibre-harvesting
+    - rule_id: b_condition
+      applies_to: "first preparation"
+      rule: "Include performed first skirting, cleaning/drying or dehairing only while the product remains raw uncarded/uncombed fine hair. Record accepted fibre, guard hair, contamination and losses; textile carding/combing is downstream."
+      source_ids:
+        - fao-animal-fibre-harvesting
+        - fao-animal-fibre-processing
+    - rule_id: b_grade
+      applies_to: "sorting and sale"
+      rule: "Sort by species-specific fineness/length, colour and contamination into accepted, independently marketed downgraded and rejected/waste outputs with distinct destinations. Coarse hair is not re-labelled fine hair."
+      source_ids:
+        - fao-animal-fibre-processing
+    - rule_id: b_gate
+      applies_to: "presentation"
+      rule: "Include actual protective packing through farm/collection handover; exclude post-handover freight and downstream textile preparation."
+      source_ids:
+        - fao-animal-fibre-harvesting
+boundary_abstraction:
+  declared_starting_condition: "Identified living fibre-producing animals and their upstream animal-service burden, or independently purchased raw fine hair with documented upstream burden and gate."
+  starting_condition_role: "Animal husbandry, feed and veterinary care are supplied by compatible attributed upstream datasets; purchased raw hair enters conditioning, not a fictitious harvest."
+  product_classification_scope: "Detached raw fine hair only; species, grade and condition determine actual product exchange."
+  recursive_input_rule: "Purchased same-category raw fine hair may be conditioned or graded but retains its upstream burden and mass; do not claim it as newly harvested output."
+  upstream_dataset_requirement: "Require compatible animal-service or purchased-hair upstream data, with allocation across actual animal outputs and periods; energy, water and package suppliers need compatible data."
+  disclosure: "Report species, animal or purchased-fibre origin, harvest method, all grade/reject destinations, moisture, gate, period, allocation and shared-asset service."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Raw fine animal hair, uncarded/uncombed, species/state/gate qualified"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - "harvest method"
+    - "fibre grade/fineness/length/colour"
+    - "raw or first-cleaned state"
+    - moisture
+    - "guard-hair and contamination state"
+    - "actual gate"
+    - "reporting period"
+    - "package tare"
+reference_flows:
+  []
+measurement_rules:
+  - id: m_net
+    applies_to: "reference and grade lots"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh net fibre after package tare; separately weigh removed guard hair, debris, downgraded saleable material and waste."
+  - id: m_moisture
+    applies_to: "raw and cleaned states"
+    required_property_ref:
+      name: "mass fraction"
+      uuid: ""
+    required_unit: "kg/kg"
+    rule: "Sample moisture by lot; use measured dry solids for comparisons between states, preserving original as-sold masses."
+  - id: m_quality
+    applies_to: "grade assignment"
+    required_property_ref:
+      name: "fibre diameter/length or documented grade"
+      uuid: ""
+    required_unit: "µm;mm;grade"
+    rule: "Preserve actual test method, species and thresholds; do not equate grades across species solely by a label."
+  - id: m_period
+    applies_to: "animal service and shared assets"
+    required_property_ref:
+      name: "time"
+      uuid: ""
+    required_unit: "reporting period"
+    rule: "Link animal-care burden and actual hair, milk, meat or other outputs to the same animal, phase and reporting period."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: harvest
+    name: "Species-specific fibre harvest or shed-fibre collection"
+    inclusion: "conditional"
+    inclusion_condition: "Required for actual animal harvest; omitted for identified purchased raw hair"
+    role: "Attributed animal service to detached raw-fibre handoff and incidental loss"
+    quantitative_reference: "kg collected raw fibre per event"
+  - id: condition
+    name: "First raw-hair conditioning"
+    inclusion: "required"
+    inclusion_condition: "Skirting/foreign-matter removal; wet cleaning, drying or dehairing only when done"
+    role: "Raw collected fibre to prepared uncarded/uncombed input state"
+    quantitative_reference: "kg raw fibre received"
+  - id: grade
+    name: "Species- and quality-specific grading"
+    inclusion: "required"
+    inclusion_condition: "Every sale lot"
+    role: "Prepared hair to accepted, saleable downgraded and reject destinations"
+    quantitative_reference: "kg prepared fibre graded"
+  - id: present
+    name: "Protective packing and handover"
+    inclusion: "required"
+    inclusion_condition: "Accepted raw fine-hair lot"
+    role: "Accepted fibre plus packaging to declared farm/collection gate"
+    quantitative_reference: "kg net as-sold fibre"
+process_inventory:
+  - id: harvest
+    label: "Species-specific fibre harvest or shed-fibre collection"
+    inputs:
+      product:
+        - row_id: animal_service
+          role: "Attributed animal-fibre production service"
+          name: "Species- and period-specific attributed animal production service (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Service / attributed cohort-period"
+          description: "Record compatible upstream husbandry burden for identified species, cohort and period; this is an attribution link, not a fictitious kg of mixed feed and care. Denominator and scope requirements：per kg raw fibre harvested Raw quantity and calculation requirements: One documented share of actual upstream animal service per harvest event. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_animal_service
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "share"
+                basis: "share of cohort-period upstream burden assigned to fibre"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_hair
+          role: "Detached raw fine hair"
+          name: "Detached raw fine animal hair by species and harvest event (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record mass removed by actual combing, shearing or shed-fibre collection; the animal is not itself a fibre output. Denominator and scope requirements：per kg collected raw fibre Raw quantity and calculation requirements: Weigh collected fibre before skirting; carry lot id to conditioning. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lot_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg measured collected raw fibre"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: harvest_reject
+          role: "Lost or unsuitable hair and harvest debris"
+          name: "Harvest loss or debris by material and destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate unrecoverable hair and foreign matter from usable raw hair by physical material and treatment. Denominator and scope requirements：per kg collected raw fibre Raw quantity and calculation requirements: Weigh separately collected waste; report unmeasurable loss as uncertainty. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rejects
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg"
+                basis: "per kg collected raw fibre"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: condition
+    label: "First raw-hair conditioning"
+    inputs:
+      product:
+        - row_id: incoming_hair
+          role: "Incoming raw fine hair"
+          name: "Raw fine animal hair by species, state and supplier (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is the harvest transfer or separately purchased raw hair with upstream burden; count it once. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Weigh incoming net fibre with origin, moisture and tare. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lot_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg raw fine hair received"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: cleaning_water
+          role: "Conditional cleaning water"
+          name: "Supplied process water (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only supplied water for performed first wet cleaning; no assumed washing for every species or lot. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Meter supplied water by lot net of separately measured return. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utility
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg raw fibre received; zero only when wet cleaning absent"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Conditional conditioning energy"
+          name: "Site-specific energy carrier (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Expand actual electricity, thermal energy or fuel by carrier only for powered operations performed. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Meter actual carrier; allocate shared use by service record. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utility
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "MJ/kg"
+                basis: "per kg raw fibre received; zero for documented manual operation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_hair
+          role: "Prepared uncarded fine hair"
+          name: "Prepared raw fine animal hair, species/state qualified (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "First-cleaned or skirted hair transfers to grade assignment without textile carding or combing. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Weigh output and record moisture, guard-hair and contamination change. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lot_mass
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg raw fibre received, with separately measured moisture change"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_reject
+          role: "Removed dirt and unusable guard hair"
+          name: "Conditioning rejects by material and fate (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record by material and disposal destination. Independently marketed coarse guard hair is a separate product, never this waste row. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Weigh removed solids; water/evaporation are separate balance terms. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rejects
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg"
+                basis: "per kg raw fibre received"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade
+    label: "Species- and quality-specific grading"
+    inputs:
+      product:
+        - row_id: grade_input
+          role: "Prepared fine hair for grading"
+          name: "Prepared uncarded fine animal hair (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Receive the identified prepared lot, not a second purchase of the same fibre. Denominator and scope requirements：per kg prepared fibre graded Raw quantity and calculation requirements: Weigh input once at grade boundary; carry source-lot id. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg prepared fibre graded"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_grade
+          role: "Accepted raw fine-hair grade"
+          name: "Accepted raw fine animal hair, species and grade qualified (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The accepted grade transfers once to packing with measured or documented fineness/length, colour, contamination and moisture. Denominator and scope requirements：per kg prepared fibre graded Raw quantity and calculation requirements: Weigh accepted material, excluding downgraded and rejected masses. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg prepared fibre graded, corrected for measured moisture change"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: downgraded_grade
+          role: "Independently saleable downgraded raw hair"
+          name: "Downgraded saleable raw fine hair by species, grade and destination (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record an actual separately sold lower grade only if it remains raw fine hair; coarse hair or another class needs its own identity and allocation disclosure. Denominator and scope requirements：per kg prepared fibre graded Raw quantity and calculation requirements: Weigh each separately marketed grade; zero when none sold. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg prepared fibre graded, corrected for measured moisture change"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Unsaleable grading reject"
+          name: "Unsaleable grading reject by material and fate (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record non-marketed reject only after distinguishing saleable downgraded fibre and actual treatment fate. Denominator and scope requirements：per kg prepared fibre graded Raw quantity and calculation requirements: Weigh rejects and samples independently of sold products. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rejects
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg prepared fibre graded, corrected for measured moisture change"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      elementary:
+        []
+  - id: present
+    label: "Protective packing and handover"
+    inputs:
+      product:
+        - row_id: pack_input
+          role: "Accepted fine hair to pack"
+          name: "Accepted raw fine hair, species and grade qualified (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Pack only the accepted identified grade; repacking purchased hair is not a new harvest. Denominator and scope requirements：per kg net packed fine hair Raw quantity and calculation requirements: Net fibre mass transferred from grading to packing. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg net packed fine hair"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: fibre_package
+          role: "Protective fibre package"
+          name: "Flexible protective fibre packaging (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Select actual clean flexible sack or other documented compatible protective packaging; record reuse and avoid fibre contamination. Denominator and scope requirements：per kg net packed fine hair Raw quantity and calculation requirements: Weigh new package mass; allocate reusable package burden by evidenced turns. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg"
+                basis: "per kg net packed fine hair"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fine_hair_handover
+          role: "Raw fine animal hair at actual handover"
+          name: "Raw fine animal hair, uncarded/uncombed, species/state/gate qualified"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Sole reference handover for an identified species, grade, state and farm/collection gate; package mass excluded. Raw reference-output records: Gross package minus measured tare and removed matter gives net as-sold fibre. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg net as-sold fine hair at declared gate"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_outputs
+    applies_to: "fibre and other animal products"
+    rule: "Subdivide animal service by actual species, animal, phase and independently sold outputs: fine hair, coarse/guard hair if marketed, milk, offspring or meat only when actually produced. Never invent slaughter co-product for fibre-only route. Prefer measured causal service allocation; if inseparable, disclose justified physical or economic allocation, price period and sensitivity. Rejects are not automatically co-products."
+    source_ids:
+      - fao-animal-fibre-harvesting
+  - rule_id: a_grades
+    applies_to: "accepted and other sold grades"
+    rule: "Split grade-specific operations where recorded. For jointly graded saleable outputs assign shared burden by causal use if measured, otherwise disclose allocation and uncertainty. One lot has one output handover."
+    source_ids:
+      - fao-animal-fibre-processing
+  - rule_id: a_period
+    applies_to: "repeat harvests and animal phases"
+    rule: "Carry husbandry inputs, animal replacement and stock changes through actual periods; attribute one service to relevant fibre events and other actual outputs once, never using universal animal lifetime or fibre yield."
+    source_ids:
+      - fao-animal-fibre-harvesting
+  - rule_id: a_shared
+    applies_to: "shears, combs, cleaning, graders and storage"
+    rule: "Register each shared asset or utility meter, its harvest/condition/grade/present consumers and service periods; apportion by measured hours, throughput or justified proxy once."
+    source_ids:
+      - fao-animal-fibre-harvesting
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_animal_service
+      process_id: "harvest"
+      flow_role: "animal upstream service"
+      record_type: "cohort and allocation ledger"
+      raw_fields: "species; animal/cohort; phase; upstream source; other actual outputs; period; share"
+      collection_method: "link upstream and sale ledger; Raw aggregation requirements: assign one evidenced share per event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "share;kg"
+      frequency: "event and period"
+      temporal_coverage: "complete phases"
+      site_scope: "source farms"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "dataset and output ledger; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_lot_mass
+      process_id: "harvest_condition"
+      flow_role: "fibre transfer"
+      record_type: "tagged lot scale ticket"
+      raw_fields: "animal/cohort; source; method; input/output mass; moisture; guard hair; time"
+      collection_method: "calibrated weighing and sample; Raw aggregation requirements: net mass by state. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;kg/kg"
+      frequency: "each lot"
+      temporal_coverage: "harvest through condition"
+      site_scope: "each lot"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration, samples, transfer signature; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_utility
+      process_id: "condition"
+      flow_role: "optional water and energy"
+      record_type: "meter/fuel record"
+      raw_fields: "lot; cleaning route; water; carrier; energy; meter; period"
+      collection_method: "meter and operation log; Raw aggregation requirements: assign carrier/lot once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;MJ"
+      frequency: "each operation"
+      temporal_coverage: "conditioning period"
+      site_scope: "each site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter and operation ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_grade
+      process_id: "grade"
+      flow_role: "product grades"
+      record_type: "assay and sale ticket"
+      raw_fields: "lot; species; fineness; length; colour; moisture; accepted; downgraded; buyer"
+      collection_method: "test and calibrated weighing; Raw aggregation requirements: reconcile grades by destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "µm;mm;kg"
+      frequency: "each lot"
+      temporal_coverage: "grade to sale"
+      site_scope: "all lots"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "test and buyer record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_rejects
+      process_id: "harvest_condition_grade"
+      flow_role: "waste/loss"
+      record_type: "material destination log"
+      raw_fields: "lot; stage; material; mass; sample; treatment"
+      collection_method: "segregate, weigh and retain receipt; Raw aggregation requirements: sum material by fate once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each removal"
+      temporal_coverage: "full route"
+      site_scope: "all sites"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "weigh/disposal receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_handover
+      process_id: "present"
+      flow_role: "final fibre and package"
+      record_type: "sale/pack ledger"
+      raw_fields: "lot; species; grade; state; gross; tare; net; package; reuse; moisture; buyer; gate"
+      collection_method: "gross/tare weighing and receipt; Raw aggregation requirements: net as-sold mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;item"
+      frequency: "handover"
+      temporal_coverage: "grade to gate"
+      site_scope: "each seller"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "pack and signed receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_net
+      applies_to: "each sale lot"
+      rule: "Net fibre = measured gross minus package tare and separately removed matter; retain species, grade, state and gate."
+      inputs:
+        - gross
+        - tare
+        - "removed matter"
+      output: "kg net fibre"
+      source_ids:
+        - fao-animal-fibre-harvesting
+    - id: c_balance
+      applies_to: "harvest through grade"
+      rule: "Reconcile incoming and transferred solids with accepted, downgraded, rejected and sampled solids; use measured moisture when wet masses differ."
+      inputs:
+        - "mass/moisture by state"
+        - rejects
+        - samples
+      output: "lot and dry-solids balance"
+      source_ids:
+        - fao-animal-fibre-processing
+    - id: c_attribution
+      applies_to: "animal and asset service"
+      rule: "Multiply actual cohort-period upstream burden by evidenced share assigned to fibre event; apportion shared utilities/assets among consumers once."
+      inputs:
+        - "service ledger"
+        - outputs
+        - "allocation key"
+      output: "attributed burden per lot"
+      source_ids:
+        - fao-animal-fibre-harvesting
+    - id: c_intensity
+      applies_to: "final dataset"
+      rule: "Divide attributed inventory by net as-sold fibre for declared species/grade/state/gate; do not use generic raw-to-clean factor."
+      inputs:
+        - "attributed flows"
+        - "net mass"
+        - qualifiers
+      output: "inventory per 1 kg reference"
+      source_ids:
+        - fao-animal-fibre-processing
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "each lot"
+      requirement: "Verify species, harvest method, absence of textile carding/combing, grade and state; animal combing alone does not imply textile-combed fibre."
+      evidence: "animal/source and operation records"
+    - id: dq_quality
+      applies_to: "state comparison"
+      requirement: "Disclose fineness/length testing, moisture/contamination sampling and uncertainty; no universal species conversion."
+      evidence: "test report and sample chain"
+    - id: dq_complete
+      applies_to: "all nodes"
+      requirement: "Account for source burden, transfer, marketed grade, reject, utility, package and period; justify actual zero activities."
+      evidence: "source, lot and meter reconciliation"
+    - id: dq_source
+      applies_to: "purchased and animal-service inputs"
+      requirement: "Preserve upstream dataset scope and output attribution to avoid duplicated husbandry or missing purchased-hair burden."
+      evidence: "supplier metadata and allocation ledger"
+validation_rules:
+  - rule_id: v_identity
+    applies_to: "reference/output"
+    rule: "Reject attached pelt, ordinary wool, coarse-only hair, textile-carded/combed fibre or species/grade/gate-free mass as reference; animal combing at harvest remains eligible."
+    source_ids:
+      - fao-animal-fibre-harvesting
+      - fao-animal-fibre-processing
+  - rule_id: v_balance
+    applies_to: "material nodes"
+    rule: "Check lot continuity, net mass, sampled moisture and accepted/downgraded/waste destinations; one lot has one handover."
+    source_ids:
+      - fao-animal-fibre-processing
+  - rule_id: v_allocation
+    applies_to: "animal periods/shared services"
+    rule: "Check actual animal output set, period attribution and shared-asset consumers; reject missing upstream burden and duplicated service."
+    source_ids:
+      - fao-animal-fibre-harvesting
+  - rule_id: v_route
+    applies_to: "optional condition"
+    rule: "Require operation evidence for washing, dehairing or drying and class confirmation for sold state; reject default yield or obligatory processing across species."
+    source_ids:
+      - fao-animal-fibre-processing
+  - rule_id: v_binding
+    applies_to: "generated exchanges"
+    rule: "Resolve conditional product inputs to exact verified UUIDs from foreground records; other UUIDs remain unresolved until detail/property/unit-group confirmation."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Species- and grade-specific fine-hair foreground data package, not a PCR release claim."
+  downstream_use: "Secondary/background dataset for later textile chains and flow/process/lifecyclemodel projections after UUID resolution."
+  allowed_use: "Compare lots with documented species, grade, raw state, moisture and gate; normalize differing moisture on measured dry solids only."
+  excluded_use: "Proxy for sheep wool, coarse hair, attached pelts, carded/combed fibre, yarn or species-free clean-hair average."
+  required_metadata: "Species, source, harvest method, animal period/outputs, grade tests, cleaning, mass/moisture, gate, package and allocation."
+  required_quality_disclosure: "Species/grade comparability, measured moisture, upstream scope, balance uncertainty, unresolved identities and shared-asset allocation."
+  update_trigger: "New species/harvest/processing route, grade definition, gate, supplier evidence or exact platform UUID support."
+data_sources:
+  - id: "fao-animal-fibre-harvesting"
+    type: "handbook"
+    reference: "[FAO, Harvesting of textile animal fibres, chapter 4](https://www.fao.org/4/v9384e/v9384e09.htm)"
+    used_for: "Species-specific combing, shearing/collection, first packing and protection."
+  - id: "fao-animal-fibre-processing"
+    type: "handbook"
+    reference: "[FAO, Harvesting of textile animal fibres, chapter 5](https://www.fao.org/4/v9384e/v9384e10.htm)"
+    used_for: "Sorting, first preparation, grade states and downstream textile-processing distinction."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:4d252f80a7dca7c91e2929b5250adc2dd8d3b5efb0849cf8187cd8acef7f8778"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6893"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6893
+          line: 56
+          column: 1
+        end:
+          offset: 9265
+          line: 78
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified living fibre-producing animals and their upstream animal-service burden, or independently purchased raw fine hair with documented upstream burden and gate. |\n| starting_condition_role | Animal husbandry, feed and veterinary care are supplied by compatible attributed upstream datasets; purchased raw hair enters conditioning, not a fictitious harvest. |\n| product_classification_scope | Detached raw fine hair only; species, grade and condition determine actual product exchange. |\n| recursive_input_rule | Purchased same-category raw fine hair may be conditioned or graded but retains its upstream burden and mass; do not claim it as newly harvested output. |\n| upstream_dataset_requirement | Require compatible animal-service or purchased-hair upstream data, with allocation across actual animal outputs and periods; energy, water and package suppliers need compatible data. |\n| disclosure | Report species, animal or purchased-fibre origin, harvest method, all grade/reject destinations, moisture, gate, period, allocation and shared-asset service. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_harvest | live-animal or shed-fibre route | Include actual combing, shearing or collection as an independent removal event with raw-fibre handoff; do not require every method for every species. Husbandry stays upstream unless explicitly expanded without duplicating burden. | fao-animal-fibre-harvesting |\n| b_condition | first preparation | Include performed first skirting, cleaning/drying or dehairing only while the product remains raw uncarded/uncombed fine hair. Record accepted fibre, guard hair, contamination and losses; textile carding/combing is downstream. | fao-animal-fibre-harvesting;fao-animal-fibre-processing |\n| b_grade | sorting and sale | Sort by species-specific fineness/length, colour and contamination into accepted, independently marketed downgraded and rejected/waste outputs with distinct destinations. Coarse hair is not re-labelled fine hair. | fao-animal-fibre-processing |\n| b_gate | presentation | Include actual protective packing through farm/collection handover; exclude post-handover freight and downstream textile preparation. | fao-animal-fibre-harvesting |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 207
+              line: 8
+              column: 1
+            end:
+              offset: 247
+              line: 8
+              column: 41
+          text: "# Fine animal hair, not carded or combed"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6893
+              line: 56
+              column: 1
+            end:
+              offset: 6914
+              line: 56
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_31189"
+      family: "allocation"
+      span:
+        start:
+          offset: 31189
+          line: 551
+          column: 1
+        end:
+          offset: 32665
+          line: 560
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_outputs | fibre and other animal products | Subdivide animal service by actual species, animal, phase and independently sold outputs: fine hair, coarse/guard hair if marketed, milk, offspring or meat only when actually produced. Never invent slaughter co-product for fibre-only route. Prefer measured causal service allocation; if inseparable, disclose justified physical or economic allocation, price period and sensitivity. Rejects are not automatically co-products. | fao-animal-fibre-harvesting |\n| a_grades | accepted and other sold grades | Split grade-specific operations where recorded. For jointly graded saleable outputs assign shared burden by causal use if measured, otherwise disclose allocation and uncertainty. One lot has one output handover. | fao-animal-fibre-processing |\n| a_period | repeat harvests and animal phases | Carry husbandry inputs, animal replacement and stock changes through actual periods; attribute one service to relevant fibre events and other actual outputs once, never using universal animal lifetime or fibre yield. | fao-animal-fibre-harvesting |\n| a_shared | shears, combs, cleaning, graders and storage | Register each shared asset or utility meter, its harvest/condition/grade/present consumers and service periods; apportion by measured hours, throughput or justified proxy once. | fao-animal-fibre-harvesting |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 207
+              line: 8
+              column: 1
+            end:
+              offset: 247
+              line: 8
+              column: 41
+          text: "# Fine animal hair, not carded or combed"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 31189
+              line: 551
+              column: 1
+            end:
+              offset: 31229
+              line: 551
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_39245"
+      family: "validation"
+      span:
+        start:
+          offset: 39245
+          line: 591
+          column: 1
+        end:
+          offset: 40433
+          line: 601
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_identity | reference/output | Reject attached pelt, ordinary wool, coarse-only hair, textile-carded/combed fibre or species/grade/gate-free mass as reference; animal combing at harvest remains eligible. | fao-animal-fibre-harvesting;fao-animal-fibre-processing |\n| v_balance | material nodes | Check lot continuity, net mass, sampled moisture and accepted/downgraded/waste destinations; one lot has one handover. | fao-animal-fibre-processing |\n| v_allocation | animal periods/shared services | Check actual animal output set, period attribution and shared-asset consumers; reject missing upstream burden and duplicated service. | fao-animal-fibre-harvesting |\n| v_route | optional condition | Require operation evidence for washing, dehairing or drying and class confirmation for sold state; reject default yield or obligatory processing across species. | fao-animal-fibre-processing |\n| v_binding | generated exchanges | Resolve conditional product inputs to exact verified UUIDs from foreground records; other UUIDs remain unresolved until detail/property/unit-group confirmation. | |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 207
+              line: 8
+              column: 1
+            end:
+              offset: 247
+              line: 8
+              column: 41
+          text: "# Fine animal hair, not carded or combed"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 39245
+              line: 591
+              column: 1
+            end:
+              offset: 39267
+              line: 591
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_harvest"
+      identity_kind: "explicit"
+      unit_id: "normative_6893"
+      source_span:
+        start:
+          offset: 8163
+          line: 73
+          column: 1
+        end:
+          offset: 8472
+          line: 73
+          column: 310
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_condition"
+      identity_kind: "explicit"
+      unit_id: "normative_6893"
+      source_span:
+        start:
+          offset: 8473
+          line: 74
+          column: 1
+        end:
+          offset: 8795
+          line: 74
+          column: 323
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_grade"
+      identity_kind: "explicit"
+      unit_id: "normative_6893"
+      source_span:
+        start:
+          offset: 8796
+          line: 75
+          column: 1
+        end:
+          offset: 9071
+          line: 75
+          column: 276
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6893"
+      source_span:
+        start:
+          offset: 9072
+          line: 76
+          column: 1
+        end:
+          offset: 9263
+          line: 76
+          column: 192
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_31189"
+      source_span:
+        start:
+          offset: 31302
+          line: 555
+          column: 1
+        end:
+          offset: 31806
+          line: 555
+          column: 505
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_grades"
+      identity_kind: "explicit"
+      unit_id: "normative_31189"
+      source_span:
+        start:
+          offset: 31807
+          line: 556
+          column: 1
+        end:
+          offset: 32096
+          line: 556
+          column: 290
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_31189"
+      source_span:
+        start:
+          offset: 32097
+          line: 557
+          column: 1
+        end:
+          offset: 32394
+          line: 557
+          column: 298
+    - pointer: "/allocation_rules/3"
+      rule_id: "a_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_31189"
+      source_span:
+        start:
+          offset: 32395
+          line: 558
+          column: 1
+        end:
+          offset: 32663
+          line: 558
+          column: 269
+    - pointer: "/validation_rules/0"
+      rule_id: "v_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_39245"
+      source_span:
+        start:
+          offset: 39340
+          line: 595
+          column: 1
+        end:
+          offset: 39606
+          line: 595
+          column: 267
+    - pointer: "/validation_rules/1"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_39245"
+      source_span:
+        start:
+          offset: 39607
+          line: 596
+          column: 1
+        end:
+          offset: 39788
+          line: 596
+          column: 182
+    - pointer: "/validation_rules/2"
+      rule_id: "v_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_39245"
+      source_span:
+        start:
+          offset: 39789
+          line: 597
+          column: 1
+        end:
+          offset: 40004
+          line: 597
+          column: 216
+    - pointer: "/validation_rules/3"
+      rule_id: "v_route"
+      identity_kind: "explicit"
+      unit_id: "normative_39245"
+      source_span:
+        start:
+          offset: 40005
+          line: 598
+          column: 1
+        end:
+          offset: 40230
+          line: 598
+          column: 226
+    - pointer: "/validation_rules/4"
+      rule_id: "v_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_39245"
+      source_span:
+        start:
+          offset: 40231
+          line: 599
+          column: 1
+        end:
+          offset: 40431
+          line: 599
+          column: 201
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6893"
+      source_span:
+        start:
+          offset: 6893
+          line: 56
+          column: 1
+        end:
+          offset: 6914
+          line: 56
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6893"
+      source_span:
+        start:
+          offset: 6942
+          line: 60
+          column: 1
+        end:
+          offset: 8070
+          line: 67
+          column: 175
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_31189"
+      source_span:
+        start:
+          offset: 31189
+          line: 551
+          column: 1
+        end:
+          offset: 31229
+          line: 551
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_39245"
+      source_span:
+        start:
+          offset: 39245
+          line: 591
+          column: 1
+        end:
+          offset: 39267
+          line: 591
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:4d252f80a7dca7c91e2929b5250adc2dd8d3b5efb0849cf8187cd8acef7f8778"
+  generated_content_sha256: "sha256:6792dbd8ccdfc38616b67a107e0b26ca01958a38914442dbe1a5c5349ec58f5d"

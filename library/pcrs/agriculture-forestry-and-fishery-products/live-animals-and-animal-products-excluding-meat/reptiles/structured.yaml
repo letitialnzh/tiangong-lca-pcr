@@ -1,10 +1,1253 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02195"
-  title: "Reptiles"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.reptiles"
+  classification_refs: "CPC 3.0 02195"
+  covered_products: "Living reptiles of an identified eligible species, with documented captive-bred or lawful wild origin"
+  excluded_products: "Amphibians; dead animals, skins, meat, detached eggs; unverified or prohibited trade; downstream transport and use"
+  representative_product: "1 kg directly measured live mass of one declared eligible reptile species at source handover"
+  production_route: "Captive breeding/rearing or legally documented live collection, mutually exclusive for each lot"
+  market_state: "Living, unprocessed, condition and source documented"
+functional_unit:
+  what: "One declared reptile species alive at source handover"
+  how_much: "1 kg directly measured live mass with individual count and size class"
+  how_well: "Alive and fit for actual handover; taxon, health, source and legal status verified"
+  how_long_or_cycle: "Declare breeding cohort, rearing phase or capture campaign and all shared-service periods"
+  reference_flow_link: "live_handover"
+system_boundary:
+  rules:
+    - rule_id: b_legal
+      applies_to: "Every lot"
+      rule: "Verify species and legal source before modelling marketable live output. CITES or domestic source codes require checking; they are not blanket authorization."
+      source_ids:
+        - un-cpc-2025
+        - woah-reptiles-2024
+        - cites-guide-2022
+    - rule_id: b_routes
+      applies_to: "Captive or wild source"
+      rule: "Captive production includes real breeding/rearing, stock, feed, water and environmental control; collection includes authorized live capture and actual holding but no invented captive lifetime. Stop at actual source handover."
+      source_ids:
+        - woah-reptiles-2024
+    - rule_id: b_shared
+      applies_to: "Shared rooms, thermal plant, pools, equipment"
+      rule: "Assign measured service to consuming cohorts, capture/holding nodes and periods once. Separate buyer transport, slaughter and destination use."
+      source_ids:
+        - woah-reptiles-2024
+boundary_abstraction:
+  declared_starting_condition: "Captive route: opening breeding/juvenile stock with count, mass and carried burden, or purchased stock with supplier burden. Capture route: licensed source population/access and actual campaign; no fictitious breeder stock."
+  starting_condition_role: "Breeding/juvenile stock is biological Product input or disclosed opening asset; wild population is capture context, not a zero-burden purchased animal."
+  product_classification_scope: "CPC 3.0 02195 living reptiles only, after species and legal-status check."
+  recursive_input_rule: "Link purchased same-category live reptiles once to upstream source dataset; internal rearing-to-handover transfer is not a second final sale."
+  upstream_dataset_requirement: "Supplier species, source, gate, geography and burden for purchased animals, feed and services; permits for regulated wild or captive source."
+  disclosure: "Taxon, source code/permit, provenance, count/mass, condition, cohort/campaign, mortality, real co-products, shared assets, route and handover gate."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Species-qualified live reptile"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Species/taxon"
+    - count
+    - "size/age class"
+    - mass
+    - "captive or wild source and permit"
+    - jurisdiction
+    - "health/condition"
+    - "cohort or campaign"
+    - "actual handover gate"
+reference_flows:
+  []
+measurement_rules:
+  - id: m_live_mass
+    applies_to: "Reference and live transfers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh live animals at actual handover; preserve count and size class. Do not use a universal kg/animal conversion across taxa."
+  - id: m_input_mass
+    applies_to: "Feed, stock and waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use measured wet/as-purchased state and disclose any dry-matter conversion separately."
+  - id: m_time
+    applies_to: "Cohorts, capture campaigns and shared facilities"
+    required_property_ref:
+      name: "Time"
+      uuid: ""
+    required_unit: "day or declared period"
+    rule: "Assign inputs, mortality, output and assets to actual periods; no default lifetime is assumed."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
+process_map:
+  - id: captive
+    name: "Breed and rear living reptiles"
+    inclusion: "conditional"
+    inclusion_condition: "evidenced captive-bred/reared source"
+    role: "managed biological production"
+    quantitative_reference: "per kg accepted live output"
+  - id: capture
+    name: "Lawful live collection and short holding"
+    inclusion: "conditional"
+    inclusion_condition: "valid wild-collection authority; excludes captive route for same lot"
+    role: "independent live capture"
+    quantitative_reference: "per kg accepted live output"
+  - id: handover
+    name: "Verify and hand over living reptiles"
+    inclusion: "required"
+    inclusion_condition: "actual source gate for either route"
+    role: "final live acceptance"
+    quantitative_reference: "per kg accepted live output"
+process_inventory:
+  - id: captive
+    label: "Breed and rear living reptiles"
+    inputs:
+      product:
+        - row_id: captive_stock
+          role: "Purchased breeding or juvenile animals"
+          name: "Species-qualified living reptile stock"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record species, source, count, mass and upstream burden; no double booking of opening stock. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured stock received or opening inventory apportioned to cohort"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stock
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; not an allowed cap"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_feed
+          role: "Species-appropriate feed"
+          name: "Actual feed or prey supplied to named cohort"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual feed identity, including procured prey only where genuinely used; no universal reptile diet is assumed. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured supplies net of closing inventory and separately recorded loss"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; replace with species records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_water
+          role: "Supplied drinking, pool or cleaning water"
+          name: "Water supplied to reptile facility"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record water actually supplied, separating functions where records allow. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "meter or reconcile supplied water by cohort and period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; investigate by husbandry mode"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_energy
+          role: "Environmental-control energy"
+          name: "Energy carrier supplied to reptile facility"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Record actual carrier for heating, lighting, filtration or humidity control where required by selected species and site. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "metered carrier energy attributed to cohort and service period"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "MJ/kg live output"
+                basis: "per kg accepted live output; no generic reptile default"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: captive_live
+          role: "Live animals transferred to acceptance"
+          name: "Species-qualified live reptiles leaving rearing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Internal cohort transfer is measured once and is not an additional final sale. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured live mass and count at transfer"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_live
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg final live output"
+                basis: "per kg accepted live output; reject missing mass balance"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_eggs
+          role: "Independently sold reptile eggs"
+          name: "Species-qualified reptile eggs sold separately"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only record real separately marketed reptile eggs with their own identity and gate. They are not part of the live reference. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "separately measured sale quantity and gate"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; zero without independent handover"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_shed_product
+          role: "Independently sold shed material"
+          name: "Species-qualified reptile shed material sold separately"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only record real separately marketed shed material at its own documented product gate, separate from reptile eggs. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "separately weighed and invoiced shed material"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; zero without separate sale"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: captive_mortality
+          role: "Captive-rearing mortalities"
+          name: "Dead reptile bodies from captive rearing"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record dead animals by species and disposal route, never as accepted live output. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "weigh or reconcile each disposal event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; investigate mortality"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_unsold_eggs
+          role: "Unsold reptile eggs for treatment"
+          name: "Unsold reptile eggs for documented treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record discarded reptile eggs separately from bodies and shed material; split actual exchanges further by treatment destination. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured discarded material by state and treatment route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; disclose treatment destination"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_unsold_shed
+          role: "Unsold shed material for treatment"
+          name: "Unsold reptile shed material for documented treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record discarded shed material separately from reptile bodies and eggs, with its actual treatment destination. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured discarded shed mass by treatment route"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; disclose treatment destination"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: captive_wastewater
+          role: "Spent pool or cleaning water"
+          name: "Reptile-facility wastewater to treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record wastewater crossing facility boundary to treatment or sewer; direct release to the environment is elementary instead. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured or water-balance-derived discharged mass"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; reconcile with supplied water"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: captive_emission
+          role: "Direct site emission, if measured"
+          name: "Named direct pollutant to specified environmental medium"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Only record a named substance and receiving medium actually measured or source-modelled; no generic emission UUID. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "substance-specific measurement or documented calculation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emission
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; substance-specific evidence required"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: capture
+    label: "Lawful live collection and short holding"
+    inputs:
+      product:
+        - row_id: capture_supplies
+          role: "Capture and holding consumables"
+          name: "Actual capture and holding materials"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual nets, traps, safe containers or purchased consumables; reusable equipment is attributed by use period. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "issue records and shared-equipment attribution"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; includes attributed reuse"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: capture_water
+          role: "Supplied holding water"
+          name: "Water supplied during live collection/holding"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Count actual short-holding water if supplied; no assumed common water need for all reptiles. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "metered or recorded supplied water"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; only actual supplied water"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: capture_live
+          role: "Legally captured live reptiles"
+          name: "Species-qualified lawfully captured living reptiles"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Count living animals leaving capture/holding by species, condition and permit; internal transfer, not second final sale. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured live mass and count leaving holding"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_live
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; compare capture and acceptance logs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: capture_mortality
+          role: "Mortality during live capture"
+          name: "Dead reptile bodies from capture"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record actual deaths and disposition; dead animals never become live output. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "event count and mass by disposal route"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; investigate incidents"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: capture_discarded_supplies
+          role: "Discarded capture consumables"
+          name: "Spent capture and holding supplies for documented treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record spent nets, traps or containment materials only if actually discarded at this node, separate from animal mortality. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "weighed or reconciled discarded consumables by material and treatment"
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; only actual discard"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: handover
+    label: "Verify and hand over living reptiles"
+    inputs:
+      product:
+        - row_id: handover_live_input
+          role: "Live animals entering source-gate check"
+          name: "Species-qualified living reptiles from source node"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record exactly one internal transfer from chosen route; never count captive and capture output for same lot. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured arrivals and count reconciled to source-node departures"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_live
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg accepted live output"
+                basis: "per kg accepted live output; compare route records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: handover_containment
+          role: "Species-appropriate containment for handover"
+          name: "Actual live-animal containment material"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include disposable enclosure material handed with lot or consumed before gate; reusable cages are shared assets. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured material issued and attributed reuse if applicable"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg live output"
+                basis: "per kg accepted live output; disclose cage reuse"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: live_handover
+          role: "Accepted living reptiles at source gate"
+          name: "Species-qualified live reptile"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One declared eligible species, alive and legally documented. Record count and measured mass; never substitute species-free UUID. Denominator and scope requirements：per 1 kg accepted live reptile Raw reference-output records: 1 kg reference from measured accepted live mass Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit."
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_live
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference flow"
+                basis: "per 1 kg accepted live reptile"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: handover_live_return
+          role: "Rejected animals returned alive to source"
+          name: "Species-qualified living reptile returned to source"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only record a real live return to captive or capture holding, not a sale, death or waste; reconcile against arrivals and accepted output. Returning through the same gate must not count the animal or burden twice. If further production occurs after return, document that separate responsibility rather than silently treating it as another acceptance pass. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "measured live returned mass and count"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_live
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg accepted live output"
+                basis: "per kg accepted live output; internal return, not second sale"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: handover_mortality
+          role: "Mortality at live handover"
+          name: "Dead reptile bodies at source gate for documented treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only dead animals at handover are Waste; living rejects returned to source are the separate Product transfer above. Denominator and scope requirements：per kg accepted live output"
+          amount:
+            expression: "actual rejected count/mass and disposition by category"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg/kg accepted live output"
+                basis: "per kg accepted live output; do not include living returns"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_output
+    applies_to: "Captive node"
+    rule: "List all intended independent live and non-live outputs and their actual gates. First partition physically separable activities; if joint burdens remain, use evidenced mass or another documented causal driver and disclose sensitivity. Unsold eggs/shed and dead animals are residue/waste."
+    source_ids:
+      - mass-balance-identity
+      - woah-reptiles-2024
+  - rule_id: a_period
+    applies_to: "Captive cohort or capture campaign"
+    rule: "Link stock, facilities, feed, losses and live animals to actual periods. Allocate opening stock and shared assets once across realized outputs and service periods; no default reptile lifetime or double counting at internal transfers."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: a_shared
+    applies_to: "Heated rooms, pools, cages and handling services"
+    rule: "Record every consuming node/cohort and period; allocate by measured service time, metered energy/water or justified capacity driver, not again at final handover."
+    source_ids:
+      - mass-balance-identity
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_stock
+      process_id: "captive"
+      flow_role: "opening/purchased reptiles"
+      record_type: "animal inventory and provenance"
+      raw_fields: "species, source, permit, count, mass, class, date, supplier, carried burden"
+      collection_method: "reconcile intake and opening ledger; Raw aggregation requirements: attribute stock once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, head"
+      frequency: "receipt and period opening"
+      temporal_coverage: "full cohort"
+      site_scope: "breeder site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "permits, supplier and scale records; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_resources
+      process_id: "captive_capture_handover"
+      flow_role: "feed, water, energy, consumables, shared cages"
+      record_type: "meter, invoice, issue/service logs"
+      raw_fields: "input identity, amount, unit, node, cohort, period, reuse, water discharge"
+      collection_method: "meter or reconcile invoices and stock; Raw aggregation requirements: attribute actual consumption once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, MJ, day"
+      frequency: "each issue and monthly"
+      temporal_coverage: "full cohort/campaign"
+      site_scope: "foreground nodes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "logs, invoices, meters, allocation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_live
+      process_id: "captive_capture_handover"
+      flow_role: "live transfers and accepted output"
+      record_type: "count, weighing, acceptance"
+      raw_fields: "species, source, authorization, animal ID, count, size, mass, health, date, gate"
+      collection_method: "weigh and inspect living animals; Raw aggregation requirements: normalize accepted mass to 1 kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, head"
+      frequency: "each handover"
+      temporal_coverage: "all cohorts/campaigns"
+      site_scope: "source site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale, identity and health records; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_outputs
+      process_id: "captive_capture_handover"
+      flow_role: "co-product, mortality and rejects"
+      record_type: "sale, incident and disposal"
+      raw_fields: "species, event, mass, count, fate, date, gate"
+      collection_method: "measure or reconcile event logs; Raw aggregation requirements: distinguish product, waste, internal return. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, head"
+      frequency: "each event"
+      temporal_coverage: "all periods"
+      site_scope: "site/campaign"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "receipts and incident logs; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_emission
+      process_id: "captive"
+      flow_role: "direct releases"
+      record_type: "monitoring or method"
+      raw_fields: "named substance, receiving medium, mass, period, method"
+      collection_method: "direct monitoring or source-backed calculation; Raw aggregation requirements: normalize by output. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "monitored interval"
+      temporal_coverage: "full cohort"
+      site_scope: "facility"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "test report and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_reference
+      applies_to: "accepted live output"
+      rule: "Sum measured mass of accepted living animals of one species; normalize allocated inventory to 1 kg. Reconcile count, source transfer and rejected/dead disposition."
+      inputs:
+        - cp_live
+        - cp_outputs
+      output: "kg accepted live species"
+      source_ids:
+        - mass-balance-identity
+    - id: c_water
+      applies_to: "captive wastewater"
+      rule: "Supplied water minus measured retained, evaporated and separately discharged quantities; direct measurement takes precedence."
+      inputs:
+        - cp_resources
+      output: "kg wastewater"
+      source_ids:
+        - mass-balance-identity
+    - id: c_period
+      applies_to: "stock and shared service"
+      rule: "Assign consumption to cohort/campaign and period, divide joint service by metered use or documented time and sum shares once."
+      inputs:
+        - cp_stock
+        - cp_resources
+        - cp_outputs
+      output: "allocated input/kg accepted output"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: q_identity
+      applies_to: "every lot"
+      requirement: "Verify scientific taxon, legal source and jurisdiction; reject unknown/prohibited provenance."
+      evidence: "source/permit and legal check"
+    - id: q_mass
+      applies_to: "reference and loss"
+      requirement: "Calibrated live mass, count, size class and condition by gate; no cross-species average kg/head."
+      evidence: "weighing and acceptance logs"
+    - id: q_period
+      applies_to: "cohorts, campaigns, shared assets"
+      requirement: "Complete inputs, outputs, mortality and periods with documented attribution, opening and closing stock."
+      evidence: "ledgers and reconciliation worksheet"
+    - id: q_flow
+      applies_to: "UUID-backed exchanges"
+      requirement: "Confirm exact flow, property, unit group, type and gate before binding; unresolved IDs stay unbound."
+      evidence: "platform detail/support-row evidence"
+validation_rules:
+  - rule_id: v_legal
+    applies_to: "live output"
+    rule: "Fail if species, authorized origin, condition or actual source gate is absent; classification does not prove legality."
+    source_ids:
+      - un-cpc-2025
+      - woah-reptiles-2024
+      - cites-guide-2022
+  - rule_id: v_routes
+    applies_to: "source process"
+    rule: "Exactly one evidenced source route supplies each lot. Captive needs stock/cohort records; capture needs permits/campaign and cannot inherit imagined breeding inputs."
+    source_ids:
+      - woah-reptiles-2024
+  - rule_id: v_balance
+    applies_to: "mass and outputs"
+    rule: "Reconcile opening/purchased or captured mass, stock changes, accepted live animals, mortality and real co-products; internal transfers and same-gate live returns only once. A later production activity requires its own responsibility and records."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_shared
+    applies_to: "multi-period/shared assets"
+    rule: "Each input, asset, output and loss has node/period attribution; shares sum to observed service without double charge at two gates."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: v_identity
+    applies_to: "all cards"
+    rule: "conditional flow cards need concrete selection; final exchanges need verified species/state/direction/property/unit and gate before publication."
+    source_ids:
+      - un-cpc-2025
+published_dataset_profile:
+  dataset_role: "Source-specific foreground package for one lawful living reptile species and route"
+  downstream_use: "Candidate secondary_dataset or background_dataset after concrete identity and quality review"
+  allowed_use: "Species, provenance, technology, geography and gate matching declared package"
+  excluded_use: "Generic all-reptile factor; amphibians or dead products; unauthorized trade; slaughter or buyer transport"
+  required_metadata: "Species, legal source/permit, route, site, cohort/campaign, count, live mass, size/condition, gate, period and actual flow selections evidence"
+  required_quality_disclosure: "Coverage, stock/mortality balance, measurements, provisional Ranges, allocation and unresolved UUIDs"
+  update_trigger: "New species, source law, captive mode, capture authorization, husbandry regime, gate or flow identity"
+data_sources:
+  - id: "un-cpc-2025"
+    type: "official_guidance"
+    reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "living-reptile classification boundary"
+  - id: "woah-reptiles-2024"
+    type: "official_guidance"
+    reference: "[WOAH Terrestrial Code chapter 7.14](https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2024/en_chapitre_aw_reptiles.htm)"
+    used_for: "species-specific handling, welfare and source documentation"
+  - id: "cites-guide-2022"
+    type: "official_guidance"
+    reference: "[CITES Trade Database guide](https://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf)"
+    used_for: "distinguish reported wild, captive and ranched source codes; not permit evidence alone"
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Mass conservation and measured foreground input/output reconciliation"
+    used_for: "normalization, stock, water and shared-service reconciliation"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:4f88cf01657e9359883ec11cddbfe408b3c216385f38ed420d4f2942f11251d3"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4475"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4475
+          line: 54
+          column: 1
+        end:
+          offset: 6476
+          line: 75
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Captive route: opening breeding/juvenile stock with count, mass and carried burden, or purchased stock with supplier burden. Capture route: licensed source population/access and actual campaign; no fictitious breeder stock. |\n| starting_condition_role | Breeding/juvenile stock is biological Product input or disclosed opening asset; wild population is capture context, not a zero-burden purchased animal. |\n| product_classification_scope | CPC 3.0 `02195` living reptiles only, after species and legal-status check. |\n| recursive_input_rule | Link purchased same-category live reptiles once to upstream source dataset; internal rearing-to-handover transfer is not a second final sale. |\n| upstream_dataset_requirement | Supplier species, source, gate, geography and burden for purchased animals, feed and services; permits for regulated wild or captive source. |\n| disclosure | Taxon, source code/permit, provenance, count/mass, condition, cohort/campaign, mortality, real co-products, shared assets, route and handover gate. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `b_legal` | Every lot | Verify species and legal source before modelling marketable live output. CITES or domestic source codes require checking; they are not blanket authorization. | `un-cpc-2025`; `woah-reptiles-2024`; `cites-guide-2022` |\n| `b_routes` | Captive or wild source | Captive production includes real breeding/rearing, stock, feed, water and environmental control; collection includes authorized live capture and actual holding but no invented captive lifetime. Stop at actual source handover. | `woah-reptiles-2024` |\n| `b_shared` | Shared rooms, thermal plant, pools, equipment | Assign measured service to consuming cohorts, capture/holding nodes and periods once. Separate buyer transport, slaughter and destination use. | `woah-reptiles-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 178
+              line: 8
+              column: 1
+            end:
+              offset: 193
+              line: 8
+              column: 16
+          text: "# Live reptiles"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4475
+              line: 54
+              column: 1
+            end:
+              offset: 4496
+              line: 54
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_31791"
+      family: "allocation"
+      span:
+        start:
+          offset: 31791
+          line: 688
+          column: 1
+        end:
+          offset: 32843
+          line: 696
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_output` | Captive node | List all intended independent live and non-live outputs and their actual gates. First partition physically separable activities; if joint burdens remain, use evidenced mass or another documented causal driver and disclose sensitivity. Unsold eggs/shed and dead animals are residue/waste. | `mass-balance-identity`; `woah-reptiles-2024` |\n| `a_period` | Captive cohort or capture campaign | Link stock, facilities, feed, losses and live animals to actual periods. Allocate opening stock and shared assets once across realized outputs and service periods; no default reptile lifetime or double counting at internal transfers. | `mass-balance-identity` |\n| `a_shared` | Heated rooms, pools, cages and handling services | Record every consuming node/cohort and period; allocate by measured service time, metered energy/water or justified capacity driver, not again at final handover. | `mass-balance-identity` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 178
+              line: 8
+              column: 1
+            end:
+              offset: 193
+              line: 8
+              column: 16
+          text: "# Live reptiles"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 31791
+              line: 688
+              column: 1
+            end:
+              offset: 31831
+              line: 688
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_38622"
+      family: "validation"
+      span:
+        start:
+          offset: 38622
+          line: 725
+          column: 1
+        end:
+          offset: 39852
+          line: 735
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_legal` | live output | Fail if species, authorized origin, condition or actual source gate is absent; classification does not prove legality. | `un-cpc-2025`; `woah-reptiles-2024`; `cites-guide-2022` |\n| `v_routes` | source process | Exactly one evidenced source route supplies each lot. Captive needs stock/cohort records; capture needs permits/campaign and cannot inherit imagined breeding inputs. | `woah-reptiles-2024` |\n| `v_balance` | mass and outputs | Reconcile opening/purchased or captured mass, stock changes, accepted live animals, mortality and real co-products; internal transfers and same-gate live returns only once. A later production activity requires its own responsibility and records. | `mass-balance-identity` |\n| `v_shared` | multi-period/shared assets | Each input, asset, output and loss has node/period attribution; shares sum to observed service without double charge at two gates. | `mass-balance-identity` |\n| `v_identity` | all cards | conditional flow cards need concrete selection; final exchanges need verified species/state/direction/property/unit and gate before publication. | `un-cpc-2025` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 178
+              line: 8
+              column: 1
+            end:
+              offset: 193
+              line: 8
+              column: 16
+          text: "# Live reptiles"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 38622
+              line: 725
+              column: 1
+            end:
+              offset: 38644
+              line: 725
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_legal"
+      identity_kind: "explicit"
+      unit_id: "normative_4475"
+      source_span:
+        start:
+          offset: 5709
+          line: 71
+          column: 1
+        end:
+          offset: 5952
+          line: 71
+          column: 244
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_routes"
+      identity_kind: "explicit"
+      unit_id: "normative_4475"
+      source_span:
+        start:
+          offset: 5953
+          line: 72
+          column: 1
+        end:
+          offset: 6243
+          line: 72
+          column: 291
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_4475"
+      source_span:
+        start:
+          offset: 6244
+          line: 73
+          column: 1
+        end:
+          offset: 6474
+          line: 73
+          column: 231
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_output"
+      identity_kind: "explicit"
+      unit_id: "normative_31791"
+      source_span:
+        start:
+          offset: 31904
+          line: 692
+          column: 1
+        end:
+          offset: 32271
+          line: 692
+          column: 368
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_31791"
+      source_span:
+        start:
+          offset: 32272
+          line: 693
+          column: 1
+        end:
+          offset: 32585
+          line: 693
+          column: 314
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_31791"
+      source_span:
+        start:
+          offset: 32586
+          line: 694
+          column: 1
+        end:
+          offset: 32841
+          line: 694
+          column: 256
+    - pointer: "/validation_rules/0"
+      rule_id: "v_legal"
+      identity_kind: "explicit"
+      unit_id: "normative_38622"
+      source_span:
+        start:
+          offset: 38717
+          line: 729
+          column: 1
+        end:
+          offset: 38923
+          line: 729
+          column: 207
+    - pointer: "/validation_rules/1"
+      rule_id: "v_routes"
+      identity_kind: "explicit"
+      unit_id: "normative_38622"
+      source_span:
+        start:
+          offset: 38924
+          line: 730
+          column: 1
+        end:
+          offset: 39146
+          line: 730
+          column: 223
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_38622"
+      source_span:
+        start:
+          offset: 39147
+          line: 731
+          column: 1
+        end:
+          offset: 39455
+          line: 731
+          column: 309
+    - pointer: "/validation_rules/3"
+      rule_id: "v_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_38622"
+      source_span:
+        start:
+          offset: 39456
+          line: 732
+          column: 1
+        end:
+          offset: 39658
+          line: 732
+          column: 203
+    - pointer: "/validation_rules/4"
+      rule_id: "v_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_38622"
+      source_span:
+        start:
+          offset: 39659
+          line: 733
+          column: 1
+        end:
+          offset: 39850
+          line: 733
+          column: 192
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4475"
+      source_span:
+        start:
+          offset: 4475
+          line: 54
+          column: 1
+        end:
+          offset: 4496
+          line: 54
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4475"
+      source_span:
+        start:
+          offset: 4524
+          line: 58
+          column: 1
+        end:
+          offset: 5616
+          line: 65
+          column: 165
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_31791"
+      source_span:
+        start:
+          offset: 31791
+          line: 688
+          column: 1
+        end:
+          offset: 31831
+          line: 688
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_38622"
+      source_span:
+        start:
+          offset: 38622
+          line: 725
+          column: 1
+        end:
+          offset: 38644
+          line: 725
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:4f88cf01657e9359883ec11cddbfe408b3c216385f38ed420d4f2942f11251d3"
+  generated_content_sha256: "sha256:42b59055e57c7074a52893d09689e4e5f0964a7cc783a3b0f8266a3f1fd89219"

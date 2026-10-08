@@ -1,10 +1,1663 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02931"
-  title: "Edible insects, not live"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.edible-insects-not-live"
+  classification_refs: "CPC 3.0 02931"
+  covered_products: "Non-living edible whole insects, parts, flour and meal in eligible fresh or first-preserved states."
+  excluded_products: "Live or feed-only insects; finished foods; extracts; unqualified or contaminated material."
+  representative_product: "One species-, stage- and form-qualified edible insect product at its actual first handover."
+  production_route: "Managed rearing or lawful wild source, independent collection and killing, first hygiene preparation, grading, optional preservation or milling, protective handover; purchased-dead input retains upstream burden."
+  market_state: "Actual whole, part, flour or meal state, with moisture and preservation declared."
+functional_unit:
+  what: "One declared food-eligible non-living insect product, not a mixed-species or mixed-state average."
+  how_much: "1 kg net saleable product as sold, excluding package and separately removable free brine."
+  how_well: "Species, life stage, whole/part/flour/meal form, moisture, food status, lawful source and gate."
+  how_long_or_cycle: "Link real cohort or wild season, processing batch, shared assets and replacement to nonoverlapping periods."
+  reference_flow_link: "accepted_product"
+system_boundary:
+  rules:
+    - rule_id: b_source
+      applies_to: "source"
+      rule: "Separate managed rearing, lawful wild collection and purchased dead input; no fictional husbandry or repeated upstream harvest."
+      source_ids:
+        - un-cpc-02931
+        - fao-edible-insects-2013
+    - rule_id: b_collect
+      applies_to: "collection"
+      rule: "Independent removal and killing has living source, non-living collected handoff, incidental material and loss; purchased dead bypasses."
+      source_ids:
+        - fao-edible-insects-2013
+    - rule_id: b_condition
+      applies_to: "first preparation"
+      rule: "Raw dead material becomes prepared only through actual hygiene sorting, cleaning or trimming; reject destination is recorded."
+      source_ids:
+        - fao-edible-insects-2013
+    - rule_id: b_grade
+      applies_to: "grade"
+      rule: "Separate accepted food, genuinely sold food downgrade and non-food reject with distinct handoffs."
+      source_ids:
+        - fao-edible-insects-2013
+    - rule_id: b_preserve
+      applies_to: "preservation"
+      rule: "Fresh lots bypass; actual chilling, freezing, drying, smoking, salting or brining records input, output, moisture and residue."
+      source_ids:
+        - un-cpc-02931
+        - fao-edible-insects-2013
+    - rule_id: b_mill
+      applies_to: "meal"
+      rule: "Food-grade flour or meal grinding is conditional; formulated foods and extracts remain outside."
+      source_ids:
+        - un-cpc-02931
+    - rule_id: b_pack
+      applies_to: "handover"
+      rule: "Protect one eligible form to actual first gate, not downstream distribution."
+      source_ids:
+        - fao-edible-insects-2013
+boundary_abstraction:
+  declared_starting_condition: "Documented farm cohort, lawful wild source, or purchased already-dead insects with upstream dataset."
+  starting_condition_role: "Farm and wild source duties are exclusive; purchased-dead supply bypasses rearing and killing but not upstream burdens."
+  product_classification_scope: "Food-grade dead whole insects or parts and qualifying flour or meal, in one declared state."
+  recursive_input_rule: "Purchased same-category insects retain supplier burden and enter the actual first performed node, with no recreated harvest."
+  upstream_dataset_requirement: "Species-specific source/feed and legal collection evidence or purchased-input burden; no zero-burden shortcut."
+  disclosure: "Species; stage; food and legal evidence; source route; form; moisture; interventions; co-products; shared service; periods; gate."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Species-, stage-, form- and gate-qualified non-living edible insects"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - species
+    - "life stage"
+    - "food eligibility"
+    - "whole/part/flour/meal"
+    - preservation
+    - moisture
+    - "lawful source"
+    - "net mass"
+    - gate
+    - period
+reference_flows:
+  []
+measurement_rules:
+  - id: m_net
+    applies_to: "all lots"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh gross and tare; report homogeneous as-sold net mass without package or separately removable free brine."
+  - id: m_moisture
+    applies_to: "drying or brining"
+    required_property_ref:
+      name: "Mass and moisture fraction"
+      uuid: ""
+    required_unit: "kg and kg/kg"
+    rule: "Measure before and after states; calculate only lot-specific conversions, never universal wet/dry or whole/meal factors."
+  - id: m_fraction
+    applies_to: "parts and meal"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Measure edible input, accepted output and rejects separately; reconcile one physical lot without counting successive states as extra production."
+  - id: m_period
+    applies_to: "cohort and shared service"
+    required_property_ref:
+      name: "Time"
+      uuid: ""
+    required_unit: "reporting period"
+    rule: "Link actual inputs, outputs and service to unique periods."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: rear
+    name: "Managed insect rearing"
+    inclusion: "conditional"
+    inclusion_condition: "Farmed route only; wild or purchased-dead lots bypass"
+    role: "Raise declared species and life stage with recorded substrate, water and cohort; hand off living harvestable biomass."
+    quantitative_reference: "per kg node output"
+  - id: collect
+    name: "Independent collection and killing"
+    inclusion: "conditional"
+    inclusion_condition: "Farmed or lawful wild source; purchased-dead input bypasses"
+    role: "Remove insects from cohort or lawful wild site, record killing and hand off non-living collected material."
+    quantitative_reference: "per kg node output"
+  - id: condition
+    name: "First hygienic conditioning"
+    inclusion: "required"
+    inclusion_condition: "Every lot; if no intervention, transfer ledger only"
+    role: "Identify raw dead input including purchased material, remove contamination, and hand off first prepared edible material."
+    quantitative_reference: "per kg node output"
+  - id: grade
+    name: "Food-grade sorting"
+    inclusion: "required"
+    inclusion_condition: "Every lot"
+    role: "Separate accepted food grade, separately sold downgraded food grade if any, and non-food reject, each with a handoff."
+    quantitative_reference: "per kg node output"
+  - id: preserve
+    name: "Optional preservation"
+    inclusion: "conditional"
+    inclusion_condition: "Only actual chilled, frozen, dried, smoked, salted or brined route"
+    role: "Record the selected stabilization intervention, before/after moisture and product state; fresh lots bypass."
+    quantitative_reference: "per kg node output"
+  - id: mill
+    name: "Conditional milling to flour or meal"
+    inclusion: "conditional"
+    inclusion_condition: "Only flour or meal actually produced"
+    role: "Grind eligible dead insects into food-grade flour or meal; exclude formulated foods and extracts."
+    quantitative_reference: "per kg node output"
+  - id: pack
+    name: "Protective packing and handover"
+    inclusion: "required"
+    inclusion_condition: "Every sold lot"
+    role: "Pack the one declared accepted form for the actual farm, collection or first-processing gate without downstream distribution."
+    quantitative_reference: "per kg node output"
+process_inventory:
+  - id: rear
+    label: "Managed insect rearing"
+    inputs:
+      product:
+        - row_id: feed
+          role: "Rearing substrate"
+          name: "Actual rearing feed or substrate (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Actual species-compatible feed or substrate including supplier burdens; classify food-grade eligibility. Denominator and scope requirements：per kg Managed insect rearing output Raw quantity and calculation requirements: Actual species-compatible feed or substrate including supplier burdens; classify food-grade eligibility. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Managed insect rearing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: water
+          role: "Rearing water"
+          name: "Water supply"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Meter consumed supplied water; wild route has no fabricated rearing use. Denominator and scope requirements：per kg Managed insect rearing output Raw quantity and calculation requirements: Meter consumed supplied water; wild route has no fabricated rearing use. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Managed insect rearing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: living_biomass
+          role: "Harvestable living cohort"
+          name: "Species-qualified living insect biomass (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One intermediate cohort output to collection, not the 02931 marketed product. Denominator and scope requirements：per kg Managed insect rearing output Raw quantity and calculation requirements: One intermediate cohort output to collection, not the 02931 marketed product. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Managed insect rearing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sold_fertilizer
+          role: "Independently sold frass-derived material"
+          name: "Actual saleable frass-derived co-product (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only where separately qualified and sold; record own handoff without counting same frass as Waste. Denominator and scope requirements：per kg Managed insect rearing output Raw quantity and calculation requirements: Only where separately qualified and sold; record own handoff without counting same frass as Waste. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Managed insect rearing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rearing_residue
+          role: "Nonmarketed frass or spent substrate"
+          name: "Actual rearing residue to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify actual residue destination; independently sold fertilizer is a separate Product, not Waste. Denominator and scope requirements：per kg Managed insect rearing output Raw quantity and calculation requirements: Classify actual residue destination; independently sold fertilizer is a separate Product, not Waste. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Managed insect rearing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: collect
+    label: "Independent collection and killing"
+    inputs:
+      product:
+        - row_id: collect_living
+          role: "Living insects entering collection"
+          name: "Species-qualified farmed living insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Farmed output only; wild capture is recorded as an elementary resource input, while purchased-dead lots bypass collection. Denominator and scope requirements：per kg Independent collection and killing output Raw quantity and calculation requirements: Farmed output only; wild capture is recorded as an elementary resource input, while purchased-dead lots bypass collection. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Independent collection and killing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: wild_resource
+          role: "Living wild edible insects removed from habitat"
+          name: "Species-qualified wild insect biological resource (UUID unresolved)"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Wild route only: record lawful species, site and removal; no farmed Product input for this biomass. Denominator and scope requirements：per kg Independent collection and killing output Raw quantity and calculation requirements: Wild route only: record lawful species, site and removal; no farmed Product input for this biomass. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Independent collection and killing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: collected_dead
+          role: "Collected non-living insects"
+          name: "Species-qualified killed insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh dead whole insects or parts at collection handoff, with species and life stage. Denominator and scope requirements：per kg Independent collection and killing output Raw quantity and calculation requirements: Weigh dead whole insects or parts at collection handoff, with species and life stage. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Independent collection and killing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: collection_loss
+          role: "Collection incidental and rejected material"
+          name: "Collection residue to actual treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Measure incidental material, inedible species and deaths/losses not accepted for food. Denominator and scope requirements：per kg Independent collection and killing output Raw quantity and calculation requirements: Measure incidental material, inedible species and deaths/losses not accepted for food. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collect
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Independent collection and killing output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: condition
+    label: "First hygienic conditioning"
+    inputs:
+      product:
+        - row_id: condition_raw
+          role: "Raw dead insects for first preparation"
+          name: "Species-qualified raw non-living insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Purchased dead insects retain upstream burden; sourced insects transfer once from collection. Denominator and scope requirements：per kg First hygienic conditioning output Raw quantity and calculation requirements: Purchased dead insects retain upstream burden; sourced insects transfer once from collection. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg First hygienic conditioning output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: wash_water
+          role: "Hygienic water when used"
+          name: "Water supply"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Meter actual wash or sanitation water by lot; no default wash step. Denominator and scope requirements：per kg First hygienic conditioning output Raw quantity and calculation requirements: Meter actual wash or sanitation water by lot; no default wash step. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg First hygienic conditioning output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared
+          role: "First-prepared edible insect material"
+          name: "Species-qualified first-prepared edible insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record accepted mass after actual cleaning, sorting or trimming before independent grade handoff. Denominator and scope requirements：per kg First hygienic conditioning output Raw quantity and calculation requirements: Record accepted mass after actual cleaning, sorting or trimming before independent grade handoff. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg First hygienic conditioning output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_reject
+          role: "Hygiene reject or removed foreign matter"
+          name: "Actual conditioning rejects to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Document treatment of inedible parts and contaminated rejects; do not count as a food co-product. Denominator and scope requirements：per kg First hygienic conditioning output Raw quantity and calculation requirements: Document treatment of inedible parts and contaminated rejects; do not count as a food co-product. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg First hygienic conditioning output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade
+    label: "Food-grade sorting"
+    inputs:
+      product:
+        - row_id: grade_input
+          role: "Prepared insects entering grade"
+          name: "First-prepared edible insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Maintain source, species, life stage and form trace. Denominator and scope requirements：per kg Food-grade sorting output Raw quantity and calculation requirements: Maintain source, species, life stage and form trace. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Food-grade sorting output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: grade_accepted
+          role: "Accepted edible grade"
+          name: "Accepted species-qualified edible insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer to actual preservation, milling or packing route exactly once. Denominator and scope requirements：per kg Food-grade sorting output Raw quantity and calculation requirements: Transfer to actual preservation, milling or packing route exactly once. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Food-grade sorting output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grade_downgrade
+          role: "Separately sold lower edible grade"
+          name: "Lower-grade edible insects if marketed (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include only genuinely food-grade, independently marketed downgrade with own destination. Denominator and scope requirements：per kg Food-grade sorting output Raw quantity and calculation requirements: Include only genuinely food-grade, independently marketed downgrade with own destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Food-grade sorting output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Non-food grade reject"
+          name: "Non-food grade rejects to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record destination and keep animal-feed or contaminated rejects outside reference product. Denominator and scope requirements：per kg Food-grade sorting output Raw quantity and calculation requirements: Record destination and keep animal-feed or contaminated rejects outside reference product. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Food-grade sorting output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: preserve
+    label: "Optional preservation"
+    inputs:
+      product:
+        - row_id: preservation_medium
+          role: "Salt or smoke material actually consumed"
+          name: "Actual food-grade salt or smoking medium (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only salted, brined or smoked routes: weigh the actual preservation medium and record its supplier burden; cold and dry routes do not invent this input. Denominator and scope requirements：per kg Optional preservation output Raw quantity and calculation requirements: Only salted, brined or smoked routes: weigh the actual preservation medium and record its supplier burden; cold and dry routes do not invent this input. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Optional preservation output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preserve_input
+          role: "Accepted insects before preservation"
+          name: "Accepted edible insects before preservation (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer accepted grade once; identify actual whole or part state. Denominator and scope requirements：per kg Optional preservation output Raw quantity and calculation requirements: Transfer accepted grade once; identify actual whole or part state. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Optional preservation output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preserve_energy
+          role: "Energy for actual preservation"
+          name: "Energy carrier for preservation"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Select carrier from actual records for cooling, freezing, drying or smoking; no universal recipe. Denominator and scope requirements：per kg Optional preservation output Raw quantity and calculation requirements: Select carrier from actual records for cooling, freezing, drying or smoking; no universal recipe. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Optional preservation output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: preserved
+          role: "Stabilized insects in declared state"
+          name: "State-qualified preserved edible insects (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual eligible chilled/frozen/dried/smoked/salted/brined form and measured net mass. Denominator and scope requirements：per kg Optional preservation output Raw quantity and calculation requirements: Record actual eligible chilled/frozen/dried/smoked/salted/brined form and measured net mass. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Optional preservation output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preserve_loss
+          role: "Preservation reject and residue"
+          name: "Actual preservation reject to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Reconcile moisture loss separately from solid rejects and wastewater. Denominator and scope requirements：per kg Optional preservation output Raw quantity and calculation requirements: Reconcile moisture loss separately from solid rejects and wastewater. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Optional preservation output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: mill
+    label: "Conditional milling to flour or meal"
+    inputs:
+      product:
+        - row_id: mill_input
+          role: "Eligible material entering mill"
+          name: "Eligible edible insects before milling (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer one graded or preserved lot; document input form and moisture. Denominator and scope requirements：per kg Conditional milling to flour or meal output Raw quantity and calculation requirements: Transfer one graded or preserved lot; document input form and moisture. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mill
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Conditional milling to flour or meal output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: flour_meal
+          role: "Food-grade insect flour or meal"
+          name: "Species-qualified edible insect flour or meal (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh actual milled output, classify fineness and human-food suitability. Denominator and scope requirements：per kg Conditional milling to flour or meal output Raw quantity and calculation requirements: Weigh actual milled output, classify fineness and human-food suitability. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mill
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Conditional milling to flour or meal output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: mill_reject
+          role: "Milling loss or non-food oversize"
+          name: "Actual milling reject to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record actual reject treatment; remilled material is internal rework, not another product. Denominator and scope requirements：per kg Conditional milling to flour or meal output Raw quantity and calculation requirements: Record actual reject treatment; remilled material is internal rework, not another product. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_mill
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Conditional milling to flour or meal output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: pack
+    label: "Protective packing and handover"
+    inputs:
+      product:
+        - row_id: pack_input
+          role: "One eligible form entering packing"
+          name: "Declared edible insect form before packing (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Choose fresh graded, preserved or flour/meal lot; do not sum successive forms of one physical lot. Denominator and scope requirements：per kg Protective packing and handover output Raw quantity and calculation requirements: Choose fresh graded, preserved or flour/meal lot; do not sum successive forms of one physical lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Protective packing and handover output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: pack_material
+          role: "Protective food-contact pack"
+          name: "Food-contact packaging function"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record single-use mass or actual reusable turns and food-contact suitability. Denominator and scope requirements：per kg Protective packing and handover output Raw quantity and calculation requirements: Record single-use mass or actual reusable turns and food-contact suitability. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Protective packing and handover output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_product
+          role: "Declared edible insect product at gate"
+          name: "Species-, stage-, form- and gate-qualified non-living edible insects"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One kg net of one species, stage, form and moisture at actual handover; exclude package tare. Raw reference-output records: One kg net of one species, stage, form and moisture at actual handover; exclude package tare. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "per kg Protective packing and handover output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: pack_reject
+          role: "Rejected product or package"
+          name: "Actual rejected material to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record spoiled or rejected material and package disposition, without counting saleable downgrade twice. Denominator and scope requirements：per kg Protective packing and handover output Raw quantity and calculation requirements: Record spoiled or rejected material and package disposition, without counting saleable downgrade twice. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg/kg"
+                basis: "per kg Protective packing and handover output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_outputs
+    applies_to: "rear, grade and all saleable routes"
+    rule: "Enumerate living intermediate, accepted food grade, any independently sold lower food grade and genuine sold frass-derived product at their own handoffs. Successive states are transfers, not extra saleable products. Subdivide measurable operations first; attribute inseparable joint burden by defensible physical causality or, if unavailable, contemporaneous net economic value with sensitivity analysis. Never classify marketed material as Waste."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: a_period
+    applies_to: "cohort and wild source"
+    rule: "Tie feed, cohort, collection, preservation, asset replacement and marketed outputs to actual nonoverlapping periods; no universal cycle or feed conversion."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: a_shared
+    applies_to: "shared rooms, traps, chillers, mills and packers"
+    rule: "Identify every consuming node and service period. Use metered service, else documented hours or throughput, once without duplicate supplier burden."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: a_form
+    applies_to: "wet, preserved and meal states"
+    rule: "Attribute preservation and milling only to lots that undergo them; one physical lot has one marketed form at a time."
+    source_ids:
+      - un-cpc-02931
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_rear
+      process_id: "rear"
+      flow_role: "cohort and management"
+      record_type: "cohort log"
+      raw_fields: "species; stage; feed; water; living_mass; frass; coproduct; loss; service; period"
+      collection_method: "feed tickets, meters and scale; Raw aggregation requirements: link products and residues once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; m3; period"
+      frequency: "each cohort"
+      temporal_coverage: "actual cohort phases"
+      site_scope: "farm"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "purchase, meter and batch records; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_collect
+      process_id: "collect"
+      flow_role: "killing and collection"
+      record_type: "event log"
+      raw_fields: "source; legal_id; stage; live_mass; dead_mass; loss; method; period"
+      collection_method: "permit and scale; Raw aggregation requirements: reconcile captured and dead material. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "collection season"
+      site_scope: "farm or wild site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "permit, scale and event record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_condition
+      process_id: "condition"
+      flow_role: "first preparation"
+      record_type: "hygiene batch"
+      raw_fields: "source; raw_mass; water; prepared_mass; reject; method"
+      collection_method: "batch scale and cleaning log; Raw aggregation requirements: actual intervention only. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; m3"
+      frequency: "each lot"
+      temporal_coverage: "batch period"
+      site_scope: "preparation site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "hygiene and scale record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_grade
+      process_id: "grade"
+      flow_role: "food grades"
+      record_type: "grade ledger"
+      raw_fields: "prepared_mass; accepted; downgrade; reject; food_qualification; destinations"
+      collection_method: "grade and sale tickets; Raw aggregation requirements: reconcile destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "batch period"
+      site_scope: "grading site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "grade, sale and reject record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_preserve
+      process_id: "preserve"
+      flow_role: "before/after state"
+      record_type: "treatment log"
+      raw_fields: "input; output; moisture_before; moisture_after; state; energy; preservation_medium; residue"
+      collection_method: "scale, moisture test and meter; Raw aggregation requirements: treated lots only. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; kg/kg; kWh"
+      frequency: "treated lot"
+      temporal_coverage: "treatment period"
+      site_scope: "treatment site"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "test and meter record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_mill
+      process_id: "mill"
+      flow_role: "flour or meal"
+      record_type: "milling log"
+      raw_fields: "input; product; fineness; moisture; reject; rework"
+      collection_method: "scale and quality record; Raw aggregation requirements: one output and rework loop. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; kg/kg"
+      frequency: "milled lot"
+      temporal_coverage: "milling period"
+      site_scope: "mill"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale and food release; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_pack
+      process_id: "pack"
+      flow_role: "net sold product"
+      record_type: "handover log"
+      raw_fields: "species; stage; form; state; gross; tare; free_brine; package; reuse; gate"
+      collection_method: "scale and handover ticket; Raw aggregation requirements: one marketed lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; turn"
+      frequency: "each sale"
+      temporal_coverage: "sale period"
+      site_scope: "gate"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "qualification and ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_net
+      applies_to: "reference"
+      rule: "Net sold mass = measured gross less package tare and separable free brine."
+      inputs:
+        - gross
+        - tare
+        - "free brine"
+      output: "kg net as sold"
+      source_ids:
+        - fao-edible-insects-2013
+    - id: c_state
+      applies_to: "drying or milling"
+      rule: "Actual matched input/output mass and moisture; no default wet/dry or whole/meal factor."
+      inputs:
+        - "before/after mass"
+        - moisture
+      output: "lot-specific balance"
+      source_ids:
+        - fao-edible-insects-2013
+    - id: c_balance
+      applies_to: "every node"
+      rule: "Reconcile input, products, sold downgrade, reject and measured state change; investigate gaps."
+      inputs:
+        - input
+        - outputs
+        - residues
+        - moisture
+      output: "kg ledger"
+      source_ids:
+        - fao-edible-insects-2013
+    - id: c_shared
+      applies_to: "shared assets"
+      rule: "Assign measured service or documented hours/throughput to unique node and period."
+      inputs:
+        - burden
+        - use
+        - period
+      output: "allocated burden"
+      source_ids:
+        - fao-edible-insects-2013
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "every lot"
+      requirement: "Verify species, stage, human-food qualification, lawful source, form, moisture and market state."
+      evidence: "permit, food release, batch and sale records"
+    - id: dq_safety
+      applies_to: "source and output"
+      requirement: "Check source/substrate contamination, hygiene and applicable jurisdictional food requirements; no invented universal numeric limits."
+      evidence: "supplier, inspection and test records"
+    - id: dq_mass
+      applies_to: "material"
+      requirement: "Calibrated net mass, state-specific moisture and destination balance; no default conversion."
+      evidence: "scale, test and balance"
+    - id: dq_period
+      applies_to: "cohort and assets"
+      requirement: "Actual periods, replacement and consuming nodes without double attribution."
+      evidence: "cohort and asset ledger"
+    - id: dq_uuid
+      applies_to: "final exchange"
+      requirement: "Resolve compatible concrete identity and property/unit support; unresolved candidate is not exchange permission."
+      evidence: "detail and support-row review"
+validation_rules:
+  - rule_id: v_scope
+    applies_to: "marketed lot"
+    rule: "Reject live, feed-only, formulated, extracted or unsafe product; verify permitted species, stage, form and food eligibility."
+    source_ids:
+      - un-cpc-02931
+      - fao-edible-insects-2013
+  - rule_id: v_route
+    applies_to: "source lot"
+    rule: "Farm, lawful wild and purchased-dead routes are exclusive; purchase retains supplier burden and skips invented source nodes."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: v_balance
+    applies_to: "every node"
+    rule: "Reconcile input, accepted output, sold downgrade, waste, moisture change and sale without counting successive states twice."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: v_safety
+    applies_to: "edible output"
+    rule: "Require source legality and applicable hygiene/contamination evidence before food-grade release."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: v_period
+    applies_to: "shared service"
+    rule: "Each event and asset service has one period and one attributed share; replacement does not duplicate prior burden."
+    source_ids:
+      - fao-edible-insects-2013
+  - rule_id: v_binding
+    applies_to: "all cards"
+    rule: "conditional product inputs require actual concrete selection; other identities need matching detail/property/unit-group evidence before exchange publication."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Species-, stage-, source-, form- and state-qualified edible-insect foreground package."
+  downstream_use: "secondary_dataset or background_dataset only after method and identity review."
+  allowed_use: "One documented qualifying non-living food insect product at actual gate."
+  excluded_use: "Live insects, animal feed, prepared snacks, mixed wet/dry average or unverified UUID exchange."
+  required_metadata: "Species; stage; route; legal and food status; form; moisture; interventions; package; gate; period; co-products; attribution."
+  required_quality_disclosure: "Source and safety gaps, measured yield/moisture, balance, shared service, uncertainty and unresolved UUIDs."
+  update_trigger: "Species/legal status, processing boundary, route, gate, source rule or platform identity change."
+data_sources:
+  - id: "un-cpc-02931"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/02931"
+    used_for: "Category states and exclusions."
+  - id: "fao-edible-insects-2013"
+    type: "official_guidance"
+    reference: "https://www.fao.org/docrep/018/i3253e/i3253e.pdf"
+    used_for: "Farm/wild routes, safety and first-processing questions."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:eb3dd2c2cd47d873cc54a9a820c16e7a870cf7c95134923bdb381fde8154a091"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6312"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6312
+          line: 56
+          column: 1
+        end:
+          offset: 8517
+          line: 81
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Documented farm cohort, lawful wild source, or purchased already-dead insects with upstream dataset. |\n| starting_condition_role | Farm and wild source duties are exclusive; purchased-dead supply bypasses rearing and killing but not upstream burdens. |\n| product_classification_scope | Food-grade dead whole insects or parts and qualifying flour or meal, in one declared state. |\n| recursive_input_rule | Purchased same-category insects retain supplier burden and enter the actual first performed node, with no recreated harvest. |\n| upstream_dataset_requirement | Species-specific source/feed and legal collection evidence or purchased-input burden; no zero-burden shortcut. |\n| disclosure | Species; stage; food and legal evidence; source route; form; moisture; interventions; co-products; shared service; periods; gate. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_source | source | Separate managed rearing, lawful wild collection and purchased dead input; no fictional husbandry or repeated upstream harvest. | un-cpc-02931;fao-edible-insects-2013 |\n| b_collect | collection | Independent removal and killing has living source, non-living collected handoff, incidental material and loss; purchased dead bypasses. | fao-edible-insects-2013 |\n| b_condition | first preparation | Raw dead material becomes prepared only through actual hygiene sorting, cleaning or trimming; reject destination is recorded. | fao-edible-insects-2013 |\n| b_grade | grade | Separate accepted food, genuinely sold food downgrade and non-food reject with distinct handoffs. | fao-edible-insects-2013 |\n| b_preserve | preservation | Fresh lots bypass; actual chilling, freezing, drying, smoking, salting or brining records input, output, moisture and residue. | un-cpc-02931;fao-edible-insects-2013 |\n| b_mill | meal | Food-grade flour or meal grinding is conditional; formulated foods and extracts remain outside. | un-cpc-02931 |\n| b_pack | handover | Protect one eligible form to actual first gate, not downstream distribution. | fao-edible-insects-2013 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 193
+              line: 8
+              column: 1
+            end:
+              offset: 219
+              line: 8
+              column: 27
+          text: "# Edible insects, not live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6312
+              line: 56
+              column: 1
+            end:
+              offset: 6333
+              line: 56
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_50090"
+      family: "allocation"
+      span:
+        start:
+          offset: 50090
+          line: 977
+          column: 1
+        end:
+          offset: 51372
+          line: 986
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_outputs | rear, grade and all saleable routes | Enumerate living intermediate, accepted food grade, any independently sold lower food grade and genuine sold frass-derived product at their own handoffs. Successive states are transfers, not extra saleable products. Subdivide measurable operations first; attribute inseparable joint burden by defensible physical causality or, if unavailable, contemporaneous net economic value with sensitivity analysis. Never classify marketed material as Waste. | fao-edible-insects-2013 |\n| a_period | cohort and wild source | Tie feed, cohort, collection, preservation, asset replacement and marketed outputs to actual nonoverlapping periods; no universal cycle or feed conversion. | fao-edible-insects-2013 |\n| a_shared | shared rooms, traps, chillers, mills and packers | Identify every consuming node and service period. Use metered service, else documented hours or throughput, once without duplicate supplier burden. | fao-edible-insects-2013 |\n| a_form | wet, preserved and meal states | Attribute preservation and milling only to lots that undergo them; one physical lot has one marketed form at a time. | un-cpc-02931 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 193
+              line: 8
+              column: 1
+            end:
+              offset: 219
+              line: 8
+              column: 27
+          text: "# Edible insects, not live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 50090
+              line: 977
+              column: 1
+            end:
+              offset: 50130
+              line: 977
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_58178"
+      family: "validation"
+      span:
+        start:
+          offset: 58178
+          line: 1019
+          column: 1
+        end:
+          offset: 59340
+          line: 1030
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | marketed lot | Reject live, feed-only, formulated, extracted or unsafe product; verify permitted species, stage, form and food eligibility. | un-cpc-02931;fao-edible-insects-2013 |\n| v_route | source lot | Farm, lawful wild and purchased-dead routes are exclusive; purchase retains supplier burden and skips invented source nodes. | fao-edible-insects-2013 |\n| v_balance | every node | Reconcile input, accepted output, sold downgrade, waste, moisture change and sale without counting successive states twice. | fao-edible-insects-2013 |\n| v_safety | edible output | Require source legality and applicable hygiene/contamination evidence before food-grade release. | fao-edible-insects-2013 |\n| v_period | shared service | Each event and asset service has one period and one attributed share; replacement does not duplicate prior burden. | fao-edible-insects-2013 |\n| v_binding | all cards | conditional product inputs require actual concrete selection; other identities need matching detail/property/unit-group evidence before exchange publication. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 193
+              line: 8
+              column: 1
+            end:
+              offset: 219
+              line: 8
+              column: 27
+          text: "# Edible insects, not live"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 58178
+              line: 1019
+              column: 1
+            end:
+              offset: 58200
+              line: 1019
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_source"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 7342
+          line: 73
+          column: 1
+        end:
+          offset: 7532
+          line: 73
+          column: 191
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_collect"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 7533
+          line: 74
+          column: 1
+        end:
+          offset: 7723
+          line: 74
+          column: 191
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_condition"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 7724
+          line: 75
+          column: 1
+        end:
+          offset: 7913
+          line: 75
+          column: 190
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_grade"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 7914
+          line: 76
+          column: 1
+        end:
+          offset: 8059
+          line: 76
+          column: 146
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "b_preserve"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 8060
+          line: 77
+          column: 1
+        end:
+          offset: 8257
+          line: 77
+          column: 198
+    - pointer: "/system_boundary/rules/5"
+      rule_id: "b_mill"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 8258
+          line: 78
+          column: 1
+        end:
+          offset: 8388
+          line: 78
+          column: 131
+    - pointer: "/system_boundary/rules/6"
+      rule_id: "b_pack"
+      identity_kind: "explicit"
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 8389
+          line: 79
+          column: 1
+        end:
+          offset: 8515
+          line: 79
+          column: 127
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_50090"
+      source_span:
+        start:
+          offset: 50203
+          line: 981
+          column: 1
+        end:
+          offset: 50730
+          line: 981
+          column: 528
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_50090"
+      source_span:
+        start:
+          offset: 50731
+          line: 982
+          column: 1
+        end:
+          offset: 50952
+          line: 982
+          column: 222
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_50090"
+      source_span:
+        start:
+          offset: 50953
+          line: 983
+          column: 1
+        end:
+          offset: 51192
+          line: 983
+          column: 240
+    - pointer: "/allocation_rules/3"
+      rule_id: "a_form"
+      identity_kind: "explicit"
+      unit_id: "normative_50090"
+      source_span:
+        start:
+          offset: 51193
+          line: 984
+          column: 1
+        end:
+          offset: 51370
+          line: 984
+          column: 178
+    - pointer: "/validation_rules/0"
+      rule_id: "v_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 58273
+          line: 1023
+          column: 1
+        end:
+          offset: 58465
+          line: 1023
+          column: 193
+    - pointer: "/validation_rules/1"
+      rule_id: "v_route"
+      identity_kind: "explicit"
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 58466
+          line: 1024
+          column: 1
+        end:
+          offset: 58643
+          line: 1024
+          column: 178
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 58644
+          line: 1025
+          column: 1
+        end:
+          offset: 58822
+          line: 1025
+          column: 179
+    - pointer: "/validation_rules/3"
+      rule_id: "v_safety"
+      identity_kind: "explicit"
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 58823
+          line: 1026
+          column: 1
+        end:
+          offset: 58976
+          line: 1026
+          column: 154
+    - pointer: "/validation_rules/4"
+      rule_id: "v_period"
+      identity_kind: "explicit"
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 58977
+          line: 1027
+          column: 1
+        end:
+          offset: 59149
+          line: 1027
+          column: 173
+    - pointer: "/validation_rules/5"
+      rule_id: "v_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 59150
+          line: 1028
+          column: 1
+        end:
+          offset: 59338
+          line: 1028
+          column: 189
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 6312
+          line: 56
+          column: 1
+        end:
+          offset: 6333
+          line: 56
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6312"
+      source_span:
+        start:
+          offset: 6361
+          line: 60
+          column: 1
+        end:
+          offset: 7249
+          line: 67
+          column: 147
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_50090"
+      source_span:
+        start:
+          offset: 50090
+          line: 977
+          column: 1
+        end:
+          offset: 50130
+          line: 977
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_58178"
+      source_span:
+        start:
+          offset: 58178
+          line: 1019
+          column: 1
+        end:
+          offset: 58200
+          line: 1019
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:eb3dd2c2cd47d873cc54a9a820c16e7a870cf7c95134923bdb381fde8154a091"
+  generated_content_sha256: "sha256:49571506bc32b87cdd5c0f1eb94022337dc1fea4cd95772aa544dc1ce36f1271"

@@ -1,10 +1,1363 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02951"
-  title: "Raw hides and skins of bovine animals"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-hides-and-skins-of-bovine-animals"
+  classification_refs: "CPC 3.0 02951"
+  covered_products: "Fresh or preserved untanned bovine raw hides and skins of class 0211."
+  excluded_products: "Non-bovine skins; tanned or further-prepared leather; isolated hair; post-gate transport."
+  representative_product: "Accepted bovine raw hide, weighed net in as-sold state at its actual handover gate."
+  production_route: "Animal husbandry and slaughter with independent flaying, or lawful fallen-animal recovery; actual first cleaning, grading, optional preservation and declared handover."
+  market_state: "Declared fresh or preserved raw state with grade, moisture and salt/brine recorded."
+functional_unit:
+  what: "Accepted bovine raw hide at its actual declared handover gate."
+  how_much: "1 kg net as-sold raw hide, excluding package tare and separable brine/salt."
+  how_well: "Species, animal purpose, source route/legal status, grade, state, moisture/salt and gate known."
+  how_long_or_cycle: "Source animal phases through removal and actual declared handover; shared service periods attributed once."
+  reference_flow_link: "final_hide"
+system_boundary:
+  rules:
+    - rule_id: b_source
+      applies_to: "animal origin"
+      rule: "Trace actual meat/dairy/draught/mixed animal system and slaughter, or lawful fallen-animal recovery with no invented meat output; distinguish source periods."
+      source_ids:
+        - fao-hides
+        - fao-statistics
+    - rule_id: b_remove
+      applies_to: "raw removal"
+      rule: "Flaying is independent of rearing/slaughter or recovery; record raw hide, attached matter, incidental loss and first-conditioning handoff. Do not count the same flaying service embedded in an upstream slaughter dataset again."
+      source_ids:
+        - fao-hides
+    - rule_id: b_prepare
+      applies_to: "cleaning and grading"
+      rule: "Include first fleshing/cleaning/trimming as performed; separate accepted, independently marketable downgraded and rejected/waste states and destinations."
+      source_ids:
+        - fao-hides
+    - rule_id: b_preserve
+      applies_to: "optional preservation"
+      rule: "Include only performed chilling, drying, salting or brining, with input salt/water/energy, residual brine and moisture loss; no tanning, liming or dehairing."
+      source_ids:
+        - fao-hides
+        - unido-leather
+    - rule_id: b_gate
+      applies_to: "packing and handover"
+      rule: "Include protective packing and shared site services to the actual declared handover; do not invent plant operations for farm-slaughter or recovery-gate sales. Exclude later freight and tanning."
+      source_ids:
+        - fao-hides
+boundary_abstraction:
+  declared_starting_condition: "Identified bovine animal system and slaughter event, or legally documented fallen-animal recovery event."
+  starting_condition_role: "Animal and terminal treatment burdens linked upstream; purchased water, energy, salt and package enter as Product inputs."
+  product_classification_scope: "Bovine class 0211 raw hides, fresh or preserved but not further prepared."
+  recursive_input_rule: "Bought-in raw bovine hides retain upstream burden; do not report them again as newly flayed output."
+  upstream_dataset_requirement: "Source meat/dairy/draught/mixed production and terminal slaughter/recovery datasets with included operations documented; exclude upstream flaying service when the same operation is modelled by the foreground removal node. No zero-burden or all-burden default."
+  disclosure: "Species, animal purpose/phases, source route, legal recovery status, grade, state, mass, allocation and gate."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Bovine raw hide, state- and gate-qualified"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "bovine species"
+    - "meat/dairy/draught/mixed source"
+    - "slaughter or legal fallen recovery"
+    - grade
+    - "fresh/wet-salted/dry-salted/air-dried/brine-cured"
+    - "moisture and salt/brine"
+    - "actual handover gate"
+    - lot
+    - "net and tare"
+reference_flows:
+  []
+measurement_rules:
+  - id: m_net
+    applies_to: "final lot"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Subtract package tare and separable free brine/salt; retain measured incorporated moisture and salt in as-sold mass."
+  - id: m_state
+    applies_to: "fresh versus preserved"
+    required_property_ref:
+      name: "Mass and moisture"
+      uuid: ""
+    required_unit: "kg;kg/kg"
+    rule: "Measure pre/post mass, moisture and salt/brine; use no universal fresh-to-cured conversion."
+  - id: m_grade
+    applies_to: "graded lot"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Reconcile accepted, downgraded, rejected, trims and measured loss."
+  - id: m_period
+    applies_to: "source animal and shared plant"
+    required_property_ref:
+      name: "Service time"
+      uuid: ""
+    required_unit: "period"
+    rule: "Link dairy, draught, growth, terminal and plant service phases to actual periods exactly once."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: remove
+    name: "Independent hide removal"
+    inclusion: "required"
+    inclusion_condition: "Slaughter or lawful recovery route"
+    role: "Source animal/carcass to raw removed hide, incidental and rejects"
+    quantitative_reference: "kg raw hide/event"
+  - id: prepare
+    name: "First cleaning and trimming"
+    inclusion: "conditional"
+    inclusion_condition: "Only where performed before declared gate"
+    role: "Raw to prepared untanned hide, trims and rejects"
+    quantitative_reference: "kg raw hide input"
+  - id: grade
+    name: "Quality grading"
+    inclusion: "conditional"
+    inclusion_condition: "Where grade sorting is performed before declared gate"
+    role: "Prepared hide to accepted, marketable downgrade or rejected destination"
+    quantitative_reference: "kg prepared hide input"
+  - id: preserve
+    name: "Conditional preservation"
+    inclusion: "conditional"
+    inclusion_condition: "Only preserved lots"
+    role: "Accepted fresh hide to actual stabilized state; salt, moisture and residue explicit"
+    quantitative_reference: "kg hide input"
+  - id: handover
+    name: "Protective packing and actual-gate handover"
+    inclusion: "required"
+    inclusion_condition: "Every accepted lot"
+    role: "Exactly one fresh or preserved net hide output at its actual declared gate"
+    quantitative_reference: "kg net as-sold hide"
+process_inventory:
+  - id: remove
+    label: "Independent hide removal"
+    inputs:
+      product:
+        - row_id: source_bovine
+          role: "Source bovine or slaughter carcass"
+          name: "Source bovine material, route- and legal-role-qualified (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use only the slaughter branch and actual meat, dairy, draught or mixed animal history and terminal event. The separate fallen-animal Waste input card applies only if local law and operation make the recovered material Waste; a recovered Product requires its own verified Product identity before exchange generation. Denominator and scope requirements：per kg raw hide removed Raw quantity and calculation requirements: Recorded event input with animal-system burden and co-products linked once. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_source
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "source material per kg raw hide; not an animal-yield default"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: fallen_source
+          role: "Lawfully recovered fallen-bovine source"
+          name: "Fallen bovine recovery material, legal Waste role (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Use only when the actual legal status of fallen material is Waste and hide recovery is permitted. Record prior animal burden and terminal handling; never invent meat/offal handovers. Product-status recovery needs a separate verified Product card in the concrete foreground package, not this Waste identity. Denominator and scope requirements：per kg raw hide recovered Raw quantity and calculation requirements: Weigh recovered material by event and record legal status. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_source
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "fallen material per kg raw hide; no default recovery yield"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_removed
+          role: "Fresh removed raw hide"
+          name: "Fresh removed bovine hide, source-gate-qualified (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh raw hide at removal handoff, not at final plant gate. Denominator and scope requirements：per source event Raw quantity and calculation requirements: Net removal weight by animal/event. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_source
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/event"
+                basis: "weighed raw hide per source event"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: remove_residue
+          role: "Attached matter and rejected tissue"
+          name: "Removal residue, composition- and destination-specific (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Segregate incidental flesh and rejected material by destination; independently sold offal is not waste. Denominator and scope requirements：per kg raw hide removed Raw quantity and calculation requirements: Weigh material sent to handler. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "residue per kg raw removed hide"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: prepare
+    label: "First cleaning and trimming"
+    inputs:
+      product:
+        - row_id: prepare_input
+          role: "Raw hide received"
+          name: "Raw bovine hide at conditioning receipt (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Carry source burden from removal or bought-in hide once. Denominator and scope requirements：per kg prepared hide Raw quantity and calculation requirements: Net receipt mass. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_prepare
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "raw input per kg prepared hide"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: prepare_water
+          role: "Cleaning water"
+          name: "Supplied process water (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only if first cleaning actually uses supplied water. Denominator and scope requirements：per kg prepared hide Raw quantity and calculation requirements: Metered lot use. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "water per kg prepared hide, zero if unused"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_hide
+          role: "Prepared untanned hide"
+          name: "First-conditioned bovine raw hide (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Transfer cleaned/trimmed raw hide to grading; do not include tanning chemistry. Denominator and scope requirements：per preparation lot Raw quantity and calculation requirements: Weigh lot output. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_prepare
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "prepared hide per lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: prepare_trim
+          role: "Fleshing and trim residue"
+          name: "Bovine fleshing residue, destination-specific (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate waste trims from independently marketed animal products. Denominator and scope requirements：per kg prepared hide Raw quantity and calculation requirements: Weighed trim to handler. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "trim waste per kg prepared hide"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grade
+    label: "Quality grading"
+    inputs:
+      product:
+        - row_id: grade_input
+          role: "Prepared hide to grading"
+          name: "Prepared bovine raw hide for grading (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure the first-conditioned incoming state. Denominator and scope requirements：per kg accepted and downgraded saleable hide Raw quantity and calculation requirements: Weigh input lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "input per kg saleable grade"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: grade_accepted
+          role: "Accepted hide grade"
+          name: "Accepted graded bovine raw hide (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Hand accepted grade to fresh packing or preservation. Denominator and scope requirements：per grading lot Raw quantity and calculation requirements: Weigh accepted mass and grade. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "accepted grade per lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grade_downgraded
+          role: "Independently sold downgrade"
+          name: "Downgraded bovine raw hide, grade-specific (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Treat as Product only where separately marketed with a handover; otherwise reclassify by actual waste destination. Denominator and scope requirements：per grading lot Raw quantity and calculation requirements: Weigh separately sold downgrade. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "separately marketed downgrade per lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Rejected hide"
+          name: "Rejected bovine hide, destination-specific (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record unmarketable contamination/damage by handler; not a downgraded sale. Denominator and scope requirements：per grading lot Raw quantity and calculation requirements: Weigh rejected lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "rejected mass per lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: preserve
+    label: "Conditional preservation"
+    inputs:
+      product:
+        - row_id: preserve_input
+          role: "Graded hide before preservation"
+          name: "Accepted fresh bovine raw hide for preservation (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Fresh sale bypasses this node; record moisture and incoming mass when it is used. Denominator and scope requirements：per kg preserved hide Raw quantity and calculation requirements: Weigh input. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "incoming fresh hide per kg preserved hide; not a conversion factor"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preserve_salt
+          role: "Salt or brine for curing"
+          name: "Preservation salt or brine, composition-specific (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual composition, salt concentration, issued and free/returned amount only on applicable route. Denominator and scope requirements：per kg preserved hide Raw quantity and calculation requirements: Issued less return and stock change. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "salt/brine input per kg preserved hide; no universal cure recipe"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preserve_energy
+          role: "Preservation energy"
+          name: "Actual preservation energy carrier (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy or Mass / kWh, MJ or kg"
+          description: "Record actual carrier for powered drying/chilling; do not invent electricity for ambient curing. Denominator and scope requirements：per kg preserved hide Raw quantity and calculation requirements: Metered or invoice energy attributed once. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kWh/kg"
+                basis: "equivalent energy per kg preserved hide with carrier conversion disclosed"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: preserve_output
+          role: "Stabilized raw hide"
+          name: "Preserved untanned bovine hide, state-specific (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One actual preserved state, with measured mass, moisture and salt content, passes to packing. Denominator and scope requirements：per preservation lot Raw quantity and calculation requirements: Weigh stabilized net mass. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg/lot"
+                basis: "measured preserved hide per lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preserve_residue
+          role: "Spent cure and rejected hides"
+          name: "Preservation residue, composition-specific (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate solid salt, spent brine and rejected hide by composition/destination; evaporated water is a measured loss, not waste Product. Denominator and scope requirements：per kg preserved hide Raw quantity and calculation requirements: Weigh residue sent to handler. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "spent cure/reject per kg preserved hide"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: handover
+    label: "Protective packing and actual-gate handover"
+    inputs:
+      product:
+        - row_id: handover_input
+          role: "Fresh or preserved accepted hide"
+          name: "Accepted bovine raw hide before handover, state-specific (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Bring exactly one state from removal, first conditioning, grading or preservation, according to actual route and gate; do not count two final states for the same lot. Denominator and scope requirements：per kg final hide Raw quantity and calculation requirements: Net received mass. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "hide receipt per kg final net hide"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: handover_package
+          role: "Protective packaging"
+          name: "Hide-protection packaging, function-specific (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual wrap/pallet/container function, mass and reuse; packaging is not product mass. Denominator and scope requirements：per kg final hide Raw quantity and calculation requirements: Package issue less returns over measured reuse. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "packaging per kg hide, zero if absent"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: final_hide
+          role: "Bovine raw hide at actual handover"
+          name: "Bovine raw hide, state- and gate-qualified"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the one accepted fresh or preserved raw bovine-hide output at the actual declared farm-slaughter, recovery, slaughterhouse or curing-plant gate. Sale state and gate are mutually exclusive lot qualifiers; do not emit a second final output for an alternative state or gate. A narrower gate identity cannot represent this broad card. Raw reference-output records: Weigh net as-sold hide at actual handover, excluding package tare and separable free brine/salt. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg"
+                basis: "exactly 1 kg reference product per kg reference, by definition"
+                basis_kind: "process_output"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: handover_pack_waste
+          role: "Discarded package"
+          name: "Packaging waste, composition-specific (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only single-use or damaged material discarded before gate is waste; reusable returns remain stock. Denominator and scope requirements：per kg final hide Raw quantity and calculation requirements: Weigh discard to handler. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg"
+                basis: "discarded packaging per kg final hide"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: a_animal
+    applies_to: "slaughter-linked route"
+    rule: "Enumerate actual intended outputs and handovers: milk in dairy phases, draught service where delivered, meat/carcass and edible offal at slaughter, hide at removal. Prefer phase subdivision and measured causal attribution; otherwise disclose evidenced physical/economic allocation across intended outputs. Neither zero hide burden nor all animal burden to one hide is default."
+    source_ids:
+      - fao-hides
+  - rule_id: a_fallen
+    applies_to: "lawful fallen recovery"
+    rule: "Document carcass Product/Waste legal role, upstream burden and terminal handling; no invented slaughter meat. Attribute recovery service and source burden by explicit recorded decision."
+    source_ids:
+      - fao-statistics
+  - rule_id: a_grade
+    applies_to: "grade and preservation"
+    rule: "Accepted and independently sold downgraded grades have distinct handovers. Rejects and residues are waste unless marketed. Reconcile moisture/salt changes before comparing saleable masses."
+    source_ids:
+      - fao-hides
+  - rule_id: a_period
+    applies_to: "animal phases and plant"
+    rule: "Record growth, dairy, draught and terminal phases, replacement/termination, and shared flaying/cleaning/curing/packing services by consumer and service period; charge each once using measured throughput, time or other evidenced driver."
+    source_ids:
+      - fao-hides
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_source
+      process_id: "remove"
+      flow_role: "source event and outputs"
+      record_type: "animal/slaughter/recovery ledger"
+      raw_fields: "species, animal ID, meat/dairy/draught phases, terminal event, legal role, output masses"
+      collection_method: "supplier ledger and scale; Raw aggregation requirements: link outputs/burdens once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;period"
+      frequency: "each event"
+      temporal_coverage: "attributed animal service and terminal event"
+      site_scope: "actual source"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "animal ledger, permit and ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_prepare
+      process_id: "prepare"
+      flow_role: "raw and prepared hide"
+      record_type: "batch log"
+      raw_fields: "receipt, water, cleaning, trim, prepared mass"
+      collection_method: "scale and meter; Raw aggregation requirements: balance by batch. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each batch"
+      temporal_coverage: "all batches"
+      site_scope: "actual plant"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scales and receiving slips; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_grade
+      process_id: "grade"
+      flow_role: "grades and rejects"
+      record_type: "grade log"
+      raw_fields: "incoming, accepted, downgraded, rejected, buyer/disposal"
+      collection_method: "scale and grade ticket; Raw aggregation requirements: balance by grade/destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "all lots"
+      site_scope: "actual plant"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "specification and sales/disposal; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_preserve
+      process_id: "preserve"
+      flow_role: "state conversion"
+      record_type: "cure log"
+      raw_fields: "initial/final mass, moisture, salt/brine, time, energy, residue"
+      collection_method: "scale, recipe, meter, test; Raw aggregation requirements: batch state balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;kWh"
+      frequency: "each performed route"
+      temporal_coverage: "preserved lots"
+      site_scope: "actual plant"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "recipe, lab and meters; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_utilities
+      process_id: "prepare_preserve_handover"
+      flow_role: "water, energy and shared asset"
+      record_type: "meter/asset log"
+      raw_fields: "carrier, amount, node, period, driver"
+      collection_method: "meters and invoices; Raw aggregation requirements: allocate once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg;kWh;h"
+      frequency: "service period"
+      temporal_coverage: "all foreground periods"
+      site_scope: "actual consumers"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration and worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_handover
+      process_id: "handover"
+      flow_role: "net product and package"
+      record_type: "dispatch log"
+      raw_fields: "source lot, state, grade, gross/tare/net, free salt/brine, package reuse, gate"
+      collection_method: "scale and dispatch note; Raw aggregation requirements: sum net mass by state/grade. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each lot"
+      temporal_coverage: "all sale lots"
+      site_scope: "actual declared handover gate"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration and dispatch; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_residue
+      process_id: "remove_prepare_grade_preserve_handover"
+      flow_role: "waste and residues"
+      record_type: "disposal log"
+      raw_fields: "composition, mass, reason, destination"
+      collection_method: "scale and handler receipt; Raw aggregation requirements: sum each destination once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg"
+      frequency: "each event"
+      temporal_coverage: "all relevant periods"
+      site_scope: "actual node"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "disposal ticket; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: c_net
+      applies_to: "sold lot"
+      rule: "net hide = gross mass minus package tare minus separable salt/free brine; incorporated moisture/salt remains in declared state"
+      inputs:
+        - cp_handover
+        - cp_preserve
+      output: "kg net hide"
+      source_ids:
+        - fao-hides
+    - id: c_balance
+      applies_to: "physical nodes"
+      rule: "measured input plus incorporated cure = accepted plus downgrade plus rejects/residue plus measured moisture loss and inventory change; report residual"
+      inputs:
+        - cp_source
+        - cp_prepare
+        - cp_grade
+        - cp_preserve
+      output: "kg residual"
+      source_ids:
+        - fao-hides
+    - id: c_state
+      applies_to: "state comparison"
+      rule: "dry hide solids = measured net mass × measured dry fraction, with salt solids separate; no universal state conversion"
+      inputs:
+        - cp_preserve
+      output: "kg dry hide solids"
+      source_ids:
+        - fao-hides
+    - id: c_attribution
+      applies_to: "source/asset"
+      rule: "attributable input per kg = measured input × documented output share × documented period/service share ÷ net sold hide; never apply a share twice"
+      inputs:
+        - cp_source
+        - cp_utilities
+        - cp_handover
+      output: "per kg hide"
+      source_ids: []
+  data_quality_requirements:
+    - id: q_source
+      applies_to: "all lots"
+      requirement: "Trace species 0211, animal purpose and phases, actual slaughter or legal fallen recovery, grade and actual handover gate."
+      evidence: "ledger and permit"
+    - id: q_mass
+      applies_to: "all lots"
+      requirement: "Calibrated gross/tare, grade, moisture and salt balance with reported residual."
+      evidence: "scale, lab and batch balance"
+    - id: q_shared
+      applies_to: "source and plant"
+      requirement: "Record animal phases, shared consumers, service periods, replacement and termination without duplicate burdens."
+      evidence: "phase and asset ledger"
+    - id: q_uuid
+      applies_to: "all exchange cards"
+      requirement: "Verify concrete flow identity, role, state, gate and property before final data package; expand conditional flow identities only with foreground evidence."
+      evidence: "resolution log"
+validation_rules:
+  - rule_id: v_scope
+    applies_to: "reference"
+    rule: "Reject non-bovine, tanned/further-prepared, unknown state, undeclared actual gate or missing net Mass basis."
+    source_ids:
+      - un-cpc-3
+  - rule_id: v_route
+    applies_to: "source"
+    rule: "Slaughter branch requires actual animal-system output allocation; legal fallen branch requires recovery evidence and no fictional meat output."
+    source_ids:
+      - fao-statistics
+      - fao-hides
+  - rule_id: v_balance
+    applies_to: "all lots"
+    rule: "Reconcile removal, preparation, grades, preservation and final mass, with trims, salt/brine and moisture loss; investigate residual by site tolerance."
+    source_ids:
+      - fao-hides
+  - rule_id: v_attribution
+    applies_to: "animal and shared assets"
+    rule: "Reject duplicated animal phases or plant service periods and missing output handovers or attribution decisions."
+    source_ids:
+      - fao-hides
+  - rule_id: v_binding
+    applies_to: "all cards"
+    rule: "Resolve the broad final output to one concrete Product UUID only after actual state, gate and Mass are evidenced; no narrower plant flow can be imposed on every lot. All other concrete UUIDs and set members require independent verification before exchange generation."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Route-, species-, grade-, state- and actual-gate-qualified foreground dataset for raw bovine hide."
+  downstream_use: "Candidate secondary_dataset or background_dataset after exchange resolution, review and publication."
+  allowed_use: "Like-state and like-gate comparison or measured dry-solids conversion with disclosure."
+  excluded_use: "Non-bovine/tanned hides, zero-burden hide default, universal state conversion, plant UUID reuse at other gates, downstream freight."
+  required_metadata: "Species, animal purpose/phases, source route/legal status, outputs and allocation, grade, state, moisture/salt, net mass, actual gate and periods."
+  required_quality_disclosure: "Animal-output and shared-service attribution, mass/grade balance, cure inputs/residues and unresolved identities."
+  update_trigger: "New verified flow identity, route, gate, preservation or measured allocation evidence."
+data_sources:
+  - id: "un-cpc-3"
+    type: "official_guidance"
+    reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "Class 0211 and 02951 raw-hide identity."
+  - id: "fao-hides"
+    type: "official_guidance"
+    reference: "[FAO, Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf)"
+    used_for: "Flaying, first treatment, grade and preservation route."
+  - id: "fao-statistics"
+    type: "official_guidance"
+    reference: "[FAO, hide/skin production definitions](https://www.fao.org/4/x9892e/X9892e06.htm)"
+    used_for: "Slaughter and fallen-animal source distinction."
+  - id: "unido-leather"
+    type: "official_guidance"
+    reference: "[UNIDO sustainable leather framework](https://downloads.unido.org/ot/46/70/4670793/KRAL_AGR_AIT_URT_2015_100228_001.pdf)"
+    used_for: "Raw-hide versus later leather-processing boundary."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:ec66bc5a56d533ac196c8b72bc203c574e0507381a2c3b60146a8607f397527f"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6460"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6460
+          line: 56
+          column: 1
+        end:
+          offset: 8738
+          line: 79
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified bovine animal system and slaughter event, or legally documented fallen-animal recovery event. |\n| starting_condition_role | Animal and terminal treatment burdens linked upstream; purchased water, energy, salt and package enter as Product inputs. |\n| product_classification_scope | Bovine class 0211 raw hides, fresh or preserved but not further prepared. |\n| recursive_input_rule | Bought-in raw bovine hides retain upstream burden; do not report them again as newly flayed output. |\n| upstream_dataset_requirement | Source meat/dairy/draught/mixed production and terminal slaughter/recovery datasets with included operations documented; exclude upstream flaying service when the same operation is modelled by the foreground removal node. No zero-burden or all-burden default. |\n| disclosure | Species, animal purpose/phases, source route, legal recovery status, grade, state, mass, allocation and gate. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| b_source | animal origin | Trace actual meat/dairy/draught/mixed animal system and slaughter, or lawful fallen-animal recovery with no invented meat output; distinguish source periods. | fao-hides;fao-statistics |\n| b_remove | raw removal | Flaying is independent of rearing/slaughter or recovery; record raw hide, attached matter, incidental loss and first-conditioning handoff. Do not count the same flaying service embedded in an upstream slaughter dataset again. | fao-hides |\n| b_prepare | cleaning and grading | Include first fleshing/cleaning/trimming as performed; separate accepted, independently marketable downgraded and rejected/waste states and destinations. | fao-hides |\n| b_preserve | optional preservation | Include only performed chilling, drying, salting or brining, with input salt/water/energy, residual brine and moisture loss; no tanning, liming or dehairing. | fao-hides;unido-leather |\n| b_gate | packing and handover | Include protective packing and shared site services to the actual declared handover; do not invent plant operations for farm-slaughter or recovery-gate sales. Exclude later freight and tanning. | fao-hides |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 207
+              line: 8
+              column: 1
+            end:
+              offset: 246
+              line: 8
+              column: 40
+          text: "# Raw hides and skins of bovine animals"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6460
+              line: 56
+              column: 1
+            end:
+              offset: 6481
+              line: 56
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_37153"
+      family: "allocation"
+      span:
+        start:
+          offset: 37153
+          line: 729
+          column: 1
+        end:
+          offset: 38468
+          line: 738
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_animal | slaughter-linked route | Enumerate actual intended outputs and handovers: milk in dairy phases, draught service where delivered, meat/carcass and edible offal at slaughter, hide at removal. Prefer phase subdivision and measured causal attribution; otherwise disclose evidenced physical/economic allocation across intended outputs. Neither zero hide burden nor all animal burden to one hide is default. | fao-hides |\n| a_fallen | lawful fallen recovery | Document carcass Product/Waste legal role, upstream burden and terminal handling; no invented slaughter meat. Attribute recovery service and source burden by explicit recorded decision. | fao-statistics |\n| a_grade | grade and preservation | Accepted and independently sold downgraded grades have distinct handovers. Rejects and residues are waste unless marketed. Reconcile moisture/salt changes before comparing saleable masses. | fao-hides |\n| a_period | animal phases and plant | Record growth, dairy, draught and terminal phases, replacement/termination, and shared flaying/cleaning/curing/packing services by consumer and service period; charge each once using measured throughput, time or other evidenced driver. | fao-hides |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 207
+              line: 8
+              column: 1
+            end:
+              offset: 246
+              line: 8
+              column: 40
+          text: "# Raw hides and skins of bovine animals"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 37153
+              line: 729
+              column: 1
+            end:
+              offset: 37193
+              line: 729
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_45293"
+      family: "validation"
+      span:
+        start:
+          offset: 45293
+          line: 770
+          column: 1
+        end:
+          offset: 46388
+          line: 780
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference | Reject non-bovine, tanned/further-prepared, unknown state, undeclared actual gate or missing net Mass basis. | un-cpc-3 |\n| v_route | source | Slaughter branch requires actual animal-system output allocation; legal fallen branch requires recovery evidence and no fictional meat output. | fao-statistics;fao-hides |\n| v_balance | all lots | Reconcile removal, preparation, grades, preservation and final mass, with trims, salt/brine and moisture loss; investigate residual by site tolerance. | fao-hides |\n| v_attribution | animal and shared assets | Reject duplicated animal phases or plant service periods and missing output handovers or attribution decisions. | fao-hides |\n| v_binding | all cards | Resolve the broad final output to one concrete Product UUID only after actual state, gate and Mass are evidenced; no narrower plant flow can be imposed on every lot. All other concrete UUIDs and set members require independent verification before exchange generation. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 207
+              line: 8
+              column: 1
+            end:
+              offset: 246
+              line: 8
+              column: 40
+          text: "# Raw hides and skins of bovine animals"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 45293
+              line: 770
+              column: 1
+            end:
+              offset: 45315
+              line: 770
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_source"
+      identity_kind: "explicit"
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 7582
+          line: 73
+          column: 1
+        end:
+          offset: 7797
+          line: 73
+          column: 216
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_remove"
+      identity_kind: "explicit"
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 7798
+          line: 74
+          column: 1
+        end:
+          offset: 8064
+          line: 74
+          column: 267
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_prepare"
+      identity_kind: "explicit"
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 8065
+          line: 75
+          column: 1
+        end:
+          offset: 8269
+          line: 75
+          column: 205
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_preserve"
+      identity_kind: "explicit"
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 8270
+          line: 76
+          column: 1
+        end:
+          offset: 8494
+          line: 76
+          column: 225
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "b_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 8495
+          line: 77
+          column: 1
+        end:
+          offset: 8736
+          line: 77
+          column: 242
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_animal"
+      identity_kind: "explicit"
+      unit_id: "normative_37153"
+      source_span:
+        start:
+          offset: 37266
+          line: 733
+          column: 1
+        end:
+          offset: 37694
+          line: 733
+          column: 429
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_fallen"
+      identity_kind: "explicit"
+      unit_id: "normative_37153"
+      source_span:
+        start:
+          offset: 37695
+          line: 734
+          column: 1
+        end:
+          offset: 37937
+          line: 734
+          column: 243
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_grade"
+      identity_kind: "explicit"
+      unit_id: "normative_37153"
+      source_span:
+        start:
+          offset: 37938
+          line: 735
+          column: 1
+        end:
+          offset: 38177
+          line: 735
+          column: 240
+    - pointer: "/allocation_rules/3"
+      rule_id: "a_period"
+      identity_kind: "explicit"
+      unit_id: "normative_37153"
+      source_span:
+        start:
+          offset: 38178
+          line: 736
+          column: 1
+        end:
+          offset: 38466
+          line: 736
+          column: 289
+    - pointer: "/validation_rules/0"
+      rule_id: "v_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_45293"
+      source_span:
+        start:
+          offset: 45388
+          line: 774
+          column: 1
+        end:
+          offset: 45533
+          line: 774
+          column: 146
+    - pointer: "/validation_rules/1"
+      rule_id: "v_route"
+      identity_kind: "explicit"
+      unit_id: "normative_45293"
+      source_span:
+        start:
+          offset: 45534
+          line: 775
+          column: 1
+        end:
+          offset: 45726
+          line: 775
+          column: 193
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_45293"
+      source_span:
+        start:
+          offset: 45727
+          line: 776
+          column: 1
+        end:
+          offset: 45916
+          line: 776
+          column: 190
+    - pointer: "/validation_rules/3"
+      rule_id: "v_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_45293"
+      source_span:
+        start:
+          offset: 45917
+          line: 777
+          column: 1
+        end:
+          offset: 46087
+          line: 777
+          column: 171
+    - pointer: "/validation_rules/4"
+      rule_id: "v_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_45293"
+      source_span:
+        start:
+          offset: 46088
+          line: 778
+          column: 1
+        end:
+          offset: 46386
+          line: 778
+          column: 299
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 6460
+          line: 56
+          column: 1
+        end:
+          offset: 6481
+          line: 56
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6460"
+      source_span:
+        start:
+          offset: 6509
+          line: 60
+          column: 1
+        end:
+          offset: 7489
+          line: 67
+          column: 127
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_37153"
+      source_span:
+        start:
+          offset: 37153
+          line: 729
+          column: 1
+        end:
+          offset: 37193
+          line: 729
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_45293"
+      source_span:
+        start:
+          offset: 45293
+          line: 770
+          column: 1
+        end:
+          offset: 45315
+          line: 770
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:ec66bc5a56d533ac196c8b72bc203c574e0507381a2c3b60146a8607f397527f"
+  generated_content_sha256: "sha256:ca2518a1869bac958705e78fe5ed62075f8f33a5f4f693a697ddb935f51ffc4b"

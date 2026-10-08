@@ -1,10 +1,1782 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02411"
-  title: "Bovine semen"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.bovine-semen"
+  classification_refs: "CPC 3.0 02411"
+  covered_products: "Usable cattle and buffalo semen doses; other Bovini only with donor-specific evidence."
+  excluded_products: "Live bulls, embryos, non-bovine semen, rejected material without a product handoff, insemination services."
+  representative_product: "One quality-accepted dose in a sealed straw at centre dispatch."
+  production_route: "Donor management → collection → quality grading → first preparation → extender formulation → filling → conditional preservation → dispatch packaging."
+  market_state: "Fresh, chilled or frozen; donor, quality, volume, sperm count, container and centre gate declared."
+functional_unit:
+  what: "One usable bovine semen insemination dose at centre dispatch."
+  how_much: "1 accepted dose; report measured volume or mass and sperm count."
+  how_well: "Declared donor species/breed, health status, acceptance grade, motility, viability, sperm count, extender and preservation state."
+  how_long_or_cycle: "One collection-to-dispatch batch with upkeep allocated across its observed donor period."
+  reference_flow_link: "usable_dose"
+system_boundary:
+  rules:
+    - rule_id: gate
+      applies_to: "all routes"
+      rule: "End at quality release from the collection centre after actual preparation and protective packing; exclude later distribution and insemination."
+      source_ids:
+        - woah-hygiene-2024
+        - woah-bovine-2024
+    - rule_id: donor
+      applies_to: "donor management"
+      rule: "Trace cattle and buffalo separately; other Bovini need source-specific evidence. Attribute observed feed, water, health and residues by donor-period, not a universal straw factor."
+      source_ids:
+        - un-cpc-3
+        - fao-cryoconservation-2021
+    - rule_id: interfaces
+      applies_to: "centre processing"
+      rule: "Identify collected raw, graded, first prepared, formulated bulk, filled, preserved and packed states; record rejected and lost states."
+      source_ids:
+        - woah-hygiene-2024
+        - fao-cryoconservation-2021
+    - rule_id: route_delta
+      applies_to: "preservation"
+      rule: "Fresh, chilled and frozen are mutually exclusive final states. The preservation parent activity differs in energy, cryogen, storage time, testing and losses; partition mixed lots."
+      source_ids:
+        - fao-cryoconservation-2021
+    - rule_id: shared_service
+      applies_to: "assets"
+      rule: "Housing, laboratory, refrigeration and reusable vessels serve multiple nodes or periods; record service and burden once, separately from disposable packaging."
+      source_ids:
+        - woah-hygiene-2024
+boundary_abstraction:
+  declared_starting_condition: "Identified eligible bovine donor entering a recorded centre service period, plus upstream feed, water, energy, extender, packaging and cryogen supplies."
+  starting_condition_role: "Donor biological management and centre preparation of reproductive goods, not live-animal sale or insemination service."
+  product_classification_scope: "CPC 3.0 02411; cattle and buffalo, with other Bovini only on direct evidence."
+  recursive_input_rule: "Purchased bovine semen is a traced upstream input, never counted again as on-site donor production."
+  upstream_dataset_requirement: "Species- and route-matched supplies, utilities, consumables and capital services."
+  disclosure: "Donor, period, gate, health/quality criteria, state route, rejects, co-outputs, shared assets and allocation."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Usable bovine semen dose at collection-centre dispatch"
+    uuid: ""
+  flow_property_ref:
+    uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+  unit_group_ref:
+    uuid: "5beb6eed-33a9-47b8-9ede-1dfe8f679159"
+  reference_unit: "item"
+  required_qualifiers:
+    - "Donor species/breed and health"
+    - batch
+    - "sperm concentration/count"
+    - "motility and grade"
+    - "dose volume"
+    - "fresh/chilled/frozen state"
+    - extender
+    - container
+    - "centre gate"
+    - "reporting period."
+reference_flows:
+  []
+measurement_rules:
+  - id: dose_identity
+    applies_to: "reference output"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "Count only quality-accepted released doses; one item is one dose meeting the declared specification, not one sperm or an arbitrary container. Report sperm count and viability separately."
+  - id: material_balance
+    applies_to: "semen, extender and filled doses"
+    required_property_ref:
+      name: "Mass or calibrated volume"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg or mL"
+    rule: "Reconcile raw semen and extender with accepted, downgraded, rejected and lost material using measured density where conversion is needed."
+  - id: state_separation
+    applies_to: "preservation"
+    required_property_ref:
+      name: "dose count"
+      uuid: ""
+    required_unit: "dose"
+    rule: "Fresh, chilled and frozen units require separate denominators and quality specifications, not universal equivalence."
+  - id: period_link
+    applies_to: "donor upkeep"
+    required_property_ref:
+      name: "donor-days and dose count"
+      uuid: ""
+    required_unit: "day; dose"
+    rule: "Attribute service and outputs to the same documented donor period."
+  - id: accepted_item_count
+    applies_to: "reference product and its output card"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted breeding dose of the declared species, state, grade and release specification. Preserve native dose counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: donor_management
+    name: "Donor-bull management"
+    inclusion: "required"
+    inclusion_condition: "observed donor period"
+    role: "Biological maintenance, culls and residues"
+    quantitative_reference: "accepted doses per donor-period"
+  - id: semen_collection
+    name: "Semen collection"
+    inclusion: "required"
+    inclusion_condition: "each collection event"
+    role: "Independent ejaculate capture"
+    quantitative_reference: "mL raw ejaculate"
+  - id: quality_grading
+    name: "Quality evaluation and grading"
+    inclusion: "required"
+    inclusion_condition: "each ejaculate"
+    role: "Accepted, downgraded and rejected states"
+    quantitative_reference: "mL graded semen"
+  - id: first_preparation
+    name: "First semen preparation"
+    inclusion: "required"
+    inclusion_condition: "each prepared batch"
+    role: "Raw-to-prepared handoff and rejects"
+    quantitative_reference: "mL prepared semen"
+  - id: formulation
+    name: "Extender formulation"
+    inclusion: "required"
+    inclusion_condition: "each formulation batch"
+    role: "Composition inputs to bulk state"
+    quantitative_reference: "mL formulated bulk"
+  - id: dosing
+    name: "Dose filling and sealing"
+    inclusion: "required"
+    inclusion_condition: "each fill run"
+    role: "Bulk-to-discrete handoff"
+    quantitative_reference: "filled dose count"
+  - id: preservation
+    name: "Chilling or cryopreservation"
+    inclusion: "conditional"
+    inclusion_condition: "if preservation before dispatch"
+    role: "State-specific intervention and losses"
+    quantitative_reference: "accepted preserved doses"
+  - id: centre_dispatch
+    name: "Protective packing and dispatch"
+    inclusion: "required"
+    inclusion_condition: "each released lot"
+    role: "Final dose and package handoff"
+    quantitative_reference: "1 accepted dose"
+process_inventory:
+  - id: donor_management
+    label: "Donor-bull management"
+    inputs:
+      product:
+        - row_id: donor_feed
+          role: "Donor feed and forage"
+          name: "Donor feed and forage (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Measure feed dry matter by donor species and service period. Denominator and scope requirements：per accepted dose Raw quantity and calculation requirements: Recorded intake allocated across documented donor-days and accepted doses. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg dry matter per dose"
+                basis: "donor-period intake divided by linked accepted doses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: donor_water
+          role: "Donor water"
+          name: "Donor water (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure drinking and husbandry water; its precise supply group depends on foreground use. Denominator and scope requirements：per accepted dose Raw quantity and calculation requirements: Meter or reconcile tanks for donor period. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg per dose"
+                basis: "measured donor-period supply over linked accepted doses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: donor_cull
+          role: "Independent live donor cull"
+          name: "Culled bovine animal (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg live mass"
+          description: "Only an actual legitimate animal handoff is an independent output. Denominator and scope requirements：per donor period Raw quantity and calculation requirements: Record transferred mass and donor-period attribution. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg per donor period"
+                basis: "actual transferred live animal"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: donor_manure
+          role: "Donor manure to treatment"
+          name: "Managed donor manure (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify as waste only when not independently transferred as a useful product. Denominator and scope requirements：per accepted dose Raw quantity and calculation requirements: Measure manure by treatment path, period and donor group. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg per dose"
+                basis: "donor-period treatment waste over linked doses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: enteric_ch4_air
+          role: "Enteric biogenic methane to air"
+          name: "Methane, biogenic"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg CH4"
+          description: "Donor enteric methane is calculated from the documented species, intake and donor-days, not from a flow UUID as a factor. Denominator and scope requirements：per accepted dose Raw quantity and calculation requirements: Apply a disclosed species-appropriate enteric method to donor-days and measured activity. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg CH4 per dose"
+                basis: "species-specific donor period over linked accepted doses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_n2o_air
+          role: "Manure nitrous oxide to air"
+          name: "Nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass / kg N2O"
+          description: "Apply a documented manure-system method to donor-specific excretion and management rather than borrowing a universal factor. Denominator and scope requirements：per accepted dose Raw quantity and calculation requirements: Calculate manure-system N2O for actual managed manure and donor period. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg N2O per dose"
+                basis: "managed-manure emissions over linked accepted doses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_nh3_air
+          role: "Manure ammonia to air"
+          name: "Ammonia"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          property_unit: "Mass / kg NH3"
+          description: "Calculate reported ammonia from actual housing and manure-management pathway with method and nitrogen basis declared. Denominator and scope requirements：per accepted dose Raw quantity and calculation requirements: Calculate reported NH3 from recorded manure and housing pathway; do not infer a factor from identity. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg NH3 per dose"
+                basis: "reported manure ammonia over linked accepted doses"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: semen_collection
+    label: "Semen collection"
+    inputs:
+      product:
+        - row_id: collection_consumables
+          role: "Collection consumables"
+          name: "Collection consumables (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record contacting sleeves and single-use collection materials; reusable equipment is a service. Denominator and scope requirements：per collection event Raw quantity and calculation requirements: Issued less unused or reusable returns. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collection
+              source_ids:
+                - woah-hygiene-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg per event"
+                basis: "material consumed at collection"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_ejaculate
+          role: "Raw collected ejaculate"
+          name: "Raw bovine ejaculate (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "The collected state transfers independently from animal management to laboratory evaluation. Denominator and scope requirements：per collection event Raw quantity and calculation requirements: Measure collection volume by donor and event, including failed events. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_collection
+              source_ids:
+                - woah-bovine-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "mL per event"
+                basis: "raw volume collected"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: quality_grading
+    label: "Quality evaluation and grading"
+    inputs:
+      product:
+        - row_id: grading_input
+          role: "Ejaculate submitted to grading"
+          name: "Raw bovine ejaculate to grading (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Keep donor and collection-event linkage through quality tests. Denominator and scope requirements：per grading event Raw quantity and calculation requirements: Transfer collected volume net of separately recorded samples. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "mL per event"
+                basis: "submitted raw volume"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_grade
+          role: "Accepted semen grade"
+          name: "Quality-accepted raw bovine semen (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Accepted grade transfers to preparation after sperm count, motility and other declared tests. Denominator and scope requirements：per grading event Raw quantity and calculation requirements: Sum accepted graded portions by donor and destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quality
+              source_ids:
+                - woah-bovine-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "mL per event"
+                basis: "accepted portion"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_grade
+          role: "Independent downgraded grade"
+          name: "Downgraded bovine semen (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Only a separate usable specification and actual handoff permit an intended lower-grade product. Denominator and scope requirements：per grading event Raw quantity and calculation requirements: Measure independently transferred lower-grade material; otherwise reject. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "mL per event"
+                basis: "independent intended handoff only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_reject
+          role: "Quality rejects"
+          name: "Rejected raw bovine semen and test residue (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Volume / mL"
+          description: "Failed-quality semen and assay residue follow the documented waste destination. Denominator and scope requirements：per grading event Raw quantity and calculation requirements: Reconcile input with accepted, downgraded, sampled and rejected states. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_quality
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "mL per event"
+                basis: "actual reject and sample"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: first_preparation
+    label: "First semen preparation"
+    inputs:
+      product:
+        - row_id: preparation_input
+          role: "Accepted raw input"
+          name: "Accepted raw bovine semen (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "The first bounded laboratory preparation receives quality-accepted raw semen. Denominator and scope requirements：per preparation batch Raw quantity and calculation requirements: Measured accepted volume transferred from grading. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preparation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "mL per batch"
+                basis: "accepted material received"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_semen
+          role: "Prepared semen"
+          name: "Prepared bovine semen before extension (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Prepared usable state, net of removed fractions, transfers to extender blending. Denominator and scope requirements：per preparation batch Raw quantity and calculation requirements: Measure recovered volume and sperm count. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preparation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "mL per batch"
+                basis: "usable prepared state"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preparation_reject
+          role: "Preparation rejects"
+          name: "Semen-preparation reject (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Volume / mL"
+          description: "Removed fractions and unusable prepared portions go to the actual waste treatment. Denominator and scope requirements：per preparation batch Raw quantity and calculation requirements: Reconcile input, prepared output, sample and loss. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preparation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "mL per batch"
+                basis: "removed unusable material"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: formulation
+    label: "Extender formulation"
+    inputs:
+      product:
+        - row_id: formulation_semen
+          role: "Prepared semen component"
+          name: "Prepared bovine semen before extension (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Measure the semen component entering the recorded composition recipe. Denominator and scope requirements：per formulation batch Raw quantity and calculation requirements: Measured semen input per batch. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_formulation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "mL per batch"
+                basis: "prepared semen in formulation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: extender_components
+          role: "Extender components"
+          name: "Semen extender components (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual diluent, buffer, nutrients, antibiotic if used and cryoprotectant for the frozen route; no universal recipe. Denominator and scope requirements：per formulation batch Raw quantity and calculation requirements: Weigh each component and reconcile with formulated bulk. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_formulation
+              source_ids:
+                - fao-cryoconservation-2021
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg per batch"
+                basis: "all actual recipe ingredients"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: formulated_bulk
+          role: "Formulated bulk semen"
+          name: "Formulated bovine semen bulk (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Quality-accepted blended bulk transfers to discrete dose filling. Denominator and scope requirements：per formulation batch Raw quantity and calculation requirements: Measure batch bulk volume and composition. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_formulation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "mL per batch"
+                basis: "accepted mixed bulk"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: formulation_reject
+          role: "Off-spec formulation"
+          name: "Off-spec semen formulation (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Volume / mL"
+          description: "Failed mixture goes to declared disposal unless separately demonstrated as a useful independent output. Denominator and scope requirements：per formulation batch Raw quantity and calculation requirements: Inputs minus accepted bulk and measured process losses. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_formulation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "mL per batch"
+                basis: "rejected formulated state"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: dosing
+    label: "Dose filling and sealing"
+    inputs:
+      product:
+        - row_id: dosing_bulk
+          role: "Formulated bulk for filling"
+          name: "Formulated bovine semen bulk (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Volume / mL"
+          description: "Measured mixture enters the separate bulk-to-discrete-dose responsibility. Denominator and scope requirements：per fill run Raw quantity and calculation requirements: Measure input by fill run. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dosing
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "mL per run"
+                basis: "formulated input to filling"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: straws
+          role: "Dose straws and seals"
+          name: "Dose straws and seals (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / item"
+          description: "Count primary containers and seals; secondary dispatch packages are separate. Denominator and scope requirements：per fill run Raw quantity and calculation requirements: Issued minus unused returns, reconciled to filled and rejected units. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dosing
+              source_ids:
+                - woah-bovine-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "items per run"
+                basis: "issued primary containers"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: filled_doses
+          role: "Accepted filled doses"
+          name: "Filled bovine semen dose before preservation (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / dose"
+          description: "Filled sealed units move to preservation or directly to dispatch packing if fresh. Denominator and scope requirements：per fill run Raw quantity and calculation requirements: Count quality-accepted fills with volume and sperm count by lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dosing
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per run"
+                basis: "acceptable discrete units"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: fill_reject
+          role: "Rejected fills"
+          name: "Rejected filled bovine semen dose (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Count / dose"
+          description: "Underfilled, broken and unsealed units follow waste destination; track lost semen volume separately. Denominator and scope requirements：per fill run Raw quantity and calculation requirements: Count rejects and reconcile associated material loss. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dosing
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per run"
+                basis: "failed units"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: preservation
+    label: "Chilling or cryopreservation"
+    inputs:
+      product:
+        - row_id: preservation_input
+          role: "Filled doses to preservation"
+          name: "Filled bovine semen dose before preservation (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / dose"
+          description: "Fresh doses bypass this intervention; chilled and frozen lots enter by documented route. Denominator and scope requirements：per preservation batch Raw quantity and calculation requirements: Count route-assigned incoming filled units. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per batch"
+                basis: "units assigned to chilled or frozen route"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preservation_energy
+          role: "Cooling and freezing energy"
+          name: "Energy supplied for preservation (foreground carrier unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Meter refrigeration, controlled freezing and storage utility by route and occupancy period. Denominator and scope requirements：per accepted preserved dose Raw quantity and calculation requirements: Attribute metered shared energy once to actual routes and periods. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kWh per dose"
+                basis: "actual route and storage-period energy"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrogen
+          role: "Liquid nitrogen for frozen lots"
+          name: "Liquid nitrogen at centre input (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure cryogen consumption and vessel refill loss; reusable tank is a separate shared asset. Denominator and scope requirements：per accepted frozen dose Raw quantity and calculation requirements: Purchases minus returns and end inventory, apportioned to frozen lots. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preservation
+              source_ids:
+                - fao-cryoconservation-2021
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg per frozen dose"
+                basis: "measured cryogen over actual storage period"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: preserved_doses
+          role: "Accepted preserved doses"
+          name: "Chilled or frozen bovine semen dose (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / dose"
+          description: "Quality-accepted chilled or frozen units pass to dispatch packing with state label. Denominator and scope requirements：per preservation batch Raw quantity and calculation requirements: Count units accepted after route-specific hold or thaw tests. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per batch"
+                basis: "accepted state-specific units"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preservation_reject
+          role: "Preservation rejects"
+          name: "Rejected preserved bovine semen dose (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Count / dose"
+          description: "Failed quality or storage losses are waste at their actual destination. Denominator and scope requirements：per preservation batch Raw quantity and calculation requirements: Count loss by route, cause, lot and service period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per batch"
+                basis: "actually rejected stored units"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: centre_dispatch
+    label: "Protective packing and dispatch"
+    inputs:
+      product:
+        - row_id: dispatch_input
+          role: "Accepted doses to packing"
+          name: "Accepted bovine semen doses before dispatch (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / dose"
+          description: "Receive fresh filled or accepted preserved units once, retaining donor, quality and state. Denominator and scope requirements：per dispatch lot Raw quantity and calculation requirements: Count one source path for each released lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dispatch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per lot"
+                basis: "accepted units arriving at pack line"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: dispatch_packaging
+          role: "Secondary protective packaging"
+          name: "Protective dispatch packaging (foreground material unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual secondary package materials; returnable transport vessels are cycle-attributed assets, not consumables. Denominator and scope requirements：per accepted dispatched dose Raw quantity and calculation requirements: Issued minus unused packaging by material and lot. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dispatch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg per dose"
+                basis: "secondary packaging consumed at centre"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: usable_dose
+          role: "Usable centre-dispatch dose"
+          name: "Usable bovine semen dose at collection-centre dispatch"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "One quality-released insemination dose crosses the semen-centre dispatch gate. Raw reference-output records: Exactly one accepted released dose per reference flow. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted breeding dose of the declared species, state, grade and release specification. Preserve native dose counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 item"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dispatch
+              source_ids:
+                - un-cpc-3
+                - woah-bovine-2024
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "dose"
+                basis: "per accepted centre-dispatch reference dose"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: packing_reject
+          role: "Packing rejects"
+          name: "Pre-dispatch rejected semen dose and package (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Count / dose plus kg package"
+          description: "Damaged doses and packaging rejected before release follow actual waste routes. Denominator and scope requirements：per dispatch lot Raw quantity and calculation requirements: Reconcile released and rejected unit counts, with package mass separately measured. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dispatch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000000"
+                unit: "doses per lot"
+                basis: "rejected units before gate"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: subdivide
+    applies_to: "all nodes"
+    rule: "Partition by donor species, donor, batch and route before allocation; count only observed service for released doses."
+    source_ids:
+      - woah-hygiene-2024
+  - rule_id: output_status
+    applies_to: "culls and downgraded grades"
+    rule: "Independent culls or saleable downgraded semen need actual destination and handoff; rejects and manure to treatment are waste."
+    source_ids:
+      - un-cpc-3
+      - woah-bovine-2024
+  - rule_id: residual
+    applies_to: "inseparable burdens"
+    rule: "Prefer causal donor-days, batch use or storage occupancy; disclose any residual physical/economic split and sensitivity, never hypothetical avoided-product credit."
+    source_ids:
+      - woah-hygiene-2024
+  - rule_id: period_asset
+    applies_to: "donor and shared assets"
+    rule: "Link feed, health, donor replacement/cull, laboratory and tank service to actual periods and consuming nodes once; prevent duplicate tank or room burden."
+    source_ids:
+      - woah-hygiene-2024
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_donor
+      process_id: "donor_management"
+      flow_role: "feed, water, cull, manure, assets"
+      record_type: "donor ledger"
+      raw_fields: "donor_id, species, breed, donor_days, feed_DM, water, health, cull_mass, manure, asset_service"
+      collection_method: "weigh, meter, husbandry log; Raw aggregation requirements: sum by donor-period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, day"
+      frequency: "daily/event"
+      temporal_coverage: "complete donor service"
+      site_scope: "all supplying donors"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "dated donor and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_collection
+      process_id: "semen_collection"
+      flow_role: "raw ejaculate and supplies"
+      record_type: "collection log"
+      raw_fields: "donor_id, event_id, volume, consumables, failed_event"
+      collection_method: "volume and material issue record; Raw aggregation requirements: sum by event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "mL, kg"
+      frequency: "event"
+      temporal_coverage: "all eligible events"
+      site_scope: "centre collection room"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibrated collection record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_quality
+      process_id: "quality_grading"
+      flow_role: "accepted, downgraded, reject"
+      record_type: "laboratory assay"
+      raw_fields: "event_id, sperm_count, concentration, motility, grade, sample_volume, destination"
+      collection_method: "grade assay; Raw aggregation requirements: reconcile each destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "mL, count"
+      frequency: "event"
+      temporal_coverage: "all collections"
+      site_scope: "centre laboratory"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "signed test and grade record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_preparation
+      process_id: "first_preparation"
+      flow_role: "prepared and rejected"
+      record_type: "batch log"
+      raw_fields: "batch_id, incoming_volume, prepared_volume, removed_volume"
+      collection_method: "calibrated balance; Raw aggregation requirements: input-output balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "mL"
+      frequency: "batch"
+      temporal_coverage: "all preparation batches"
+      site_scope: "centre laboratory"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "batch trace; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_formulation
+      process_id: "formulation"
+      flow_role: "semen, constituents, bulk, reject"
+      record_type: "recipe log"
+      raw_fields: "batch_id, semen_volume, ingredient_mass, batch_volume, reject_volume"
+      collection_method: "weigh actual recipe; Raw aggregation requirements: material balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, mL"
+      frequency: "batch"
+      temporal_coverage: "all blended batches"
+      site_scope: "centre laboratory"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "lot and scale log; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_dosing
+      process_id: "dosing"
+      flow_role: "bulk, straw, filled, reject"
+      record_type: "fill-run ledger"
+      raw_fields: "run_id, bulk_volume, straw_issued, straw_returned, filled_count, reject_count, dose_volume, sperm_per_dose"
+      collection_method: "counter and fill balance; Raw aggregation requirements: count and volume balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "mL, dose"
+      frequency: "run"
+      temporal_coverage: "all fill runs"
+      site_scope: "fill line"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "machine calibration; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_preservation
+      process_id: "preservation"
+      flow_role: "energy, nitrogen, accepted, reject"
+      record_type: "cold-chain log"
+      raw_fields: "batch_id, route, temperature, hold_days, kWh, nitrogen_mass, vessel_service, accepted_count, reject_count"
+      collection_method: "meter, logger, vessel balance; Raw aggregation requirements: route-period denominator. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kWh, kg, dose"
+      frequency: "batch/day"
+      temporal_coverage: "all stored lots"
+      site_scope: "cold room and tanks"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "logger and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_dispatch
+      process_id: "centre_dispatch"
+      flow_role: "package, release, reject"
+      record_type: "release ledger"
+      raw_fields: "lot_id, donor, species, route, grade, package_mass, vessel_cycle, released_count, reject_count, gate_time"
+      collection_method: "release count and issue log; Raw aggregation requirements: count released once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "dose, kg"
+      frequency: "lot"
+      temporal_coverage: "all dispatches"
+      site_scope: "centre gate"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "QA release and receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: material_reconcile
+      applies_to: "collection through dispatch"
+      rule: "Raw semen plus extender components equals accepted, downgraded, rejected, sampled and lost material after calibrated unit conversions."
+      inputs:
+        - cp_collection
+        - cp_quality
+        - cp_preparation
+        - cp_formulation
+        - cp_dosing
+        - cp_preservation
+        - cp_dispatch
+      output: "batch material and dose balance"
+      source_ids:
+        - fao-cryoconservation-2021
+    - id: donor_intensity
+      applies_to: "donor upkeep"
+      rule: "Same-period donor burden divided by linked accepted doses after independent output attribution."
+      inputs:
+        - cp_donor
+        - cp_dispatch
+      output: "burden per dose"
+      source_ids:
+        - woah-hygiene-2024
+    - id: route_intensity
+      applies_to: "preservation"
+      rule: "State-specific energy, nitrogen, losses and storage occupancy divided by state-specific accepted doses."
+      inputs:
+        - cp_preservation
+        - cp_dispatch
+      output: "burden per route dose"
+      source_ids:
+        - fao-cryoconservation-2021
+    - id: shared_asset
+      applies_to: "infrastructure"
+      rule: "Allocate measured service/occupancy over the full service period to consuming nodes once."
+      inputs:
+        - cp_donor
+        - cp_preservation
+        - cp_dispatch
+      output: "unique attributed asset burden"
+      source_ids:
+        - woah-hygiene-2024
+  data_quality_requirements:
+    - id: identity
+      applies_to: "released doses"
+      requirement: "Preserve donor species/breed, batch, route, quality, sperm per dose and volume."
+      evidence: "donor, assay and release records"
+    - id: completeness
+      applies_to: "whole centre"
+      requirement: "Include failed collections, grade rejects, formulation and fill losses, packaging, utilities and assets."
+      evidence: "reconciled process ledgers"
+    - id: temporal
+      applies_to: "donor and storage"
+      requirement: "Match donor-days, storage occupancy, replacement/cull and outputs to declared periods."
+      evidence: "dated husbandry and vessel logs"
+    - id: comparability
+      applies_to: "preservation states"
+      requirement: "Keep fresh/chilled/frozen denominators and quality distinct; no universal dose-yield or freezing factor."
+      evidence: "route and quality logs"
+validation_rules:
+  - rule_id: reference
+    applies_to: "final dose"
+    rule: "Require centre gate, donor species, accepted count, quality and state; unresolved product UUID blocks fixed-flow publication."
+    source_ids:
+      - un-cpc-3
+      - woah-bovine-2024
+  - rule_id: route
+    applies_to: "fresh/chilled/frozen"
+    rule: "One state per released unit; preserve only actual route inputs, storage periods and rejects."
+    source_ids:
+      - fao-cryoconservation-2021
+  - rule_id: balance
+    applies_to: "all material interfaces"
+    rule: "Reconcile semen, components, grade destinations, filled count, waste and packaging with actual records."
+    source_ids:
+      - fao-cryoconservation-2021
+  - rule_id: attribution
+    applies_to: "outputs, periods, assets"
+    rule: "Verify cull/downgrade handoffs, donor period, causal split and unique shared-asset ownership."
+    source_ids:
+      - woah-hygiene-2024
+  - rule_id: identity_review
+    applies_to: "flow UUIDs"
+    rule: "Contradictory platform bovine-semen candidate remains unbound pending source correction and new detail review."
+    source_ids:
+      - un-cpc-3
+published_dataset_profile:
+  dataset_role: "Foreground bovine-semen production package at centre dispatch."
+  downstream_use: "secondary_dataset; background_dataset only after route, identity and data-quality review."
+  allowed_use: "Species-, quality- and preservation-state-matched semen dose modelling."
+  excluded_use: "Live animals, embryos, non-bovine semen, insemination service or undifferentiated fresh/frozen comparison."
+  required_metadata: "Centre, gate, donor, health, batch, acceptance grade, sperm and volume per dose, preservation, package, storage period, outputs and allocation."
+  required_quality_disclosure: "Unresolved UUIDs, missing records, allocation assumptions, provisional ranges and material-balance gaps."
+  update_trigger: "Changed donor scope, quality standard, extender, preservation method, packaging, flow identity or allocation evidence."
+data_sources:
+  - id: "un-cpc-3"
+    type: "standard"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Product identity and exclusions"
+  - id: "woah-hygiene-2024"
+    type: "standard"
+    reference: "https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2024/en_chapitre_general_hygiene_semen.htm"
+    used_for: "Donor management, centre hygiene and storage"
+  - id: "woah-bovine-2024"
+    type: "standard"
+    reference: "https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2024/en_chapitre_coll_semen.htm"
+    used_for: "Semen collection, processing and traceability"
+  - id: "fao-cryoconservation-2021"
+    type: "official_guidance"
+    reference: "https://www.fao.org/fileadmin/user_upload/animal_genetics/docs/CGRFA-18-21-10_2_Inf1_forPDF.pdf"
+    used_for: "Cattle and water-buffalo semen, processing and preservation routes"
+  - id: "ipcc-livestock-2019"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf"
+    used_for: "Species- and pathway-specific livestock and manure emission calculations"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:dc6b46c897118ea492f419093b06c04ea2bc952eb5677404345c0474ecbf05bf"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_7124"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 7124
+          line: 59
+          column: 1
+        end:
+          offset: 9271
+          line: 82
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified eligible bovine donor entering a recorded centre service period, plus upstream feed, water, energy, extender, packaging and cryogen supplies. |\n| starting_condition_role | Donor biological management and centre preparation of reproductive goods, not live-animal sale or insemination service. |\n| product_classification_scope | CPC 3.0 `02411`; cattle and buffalo, with other Bovini only on direct evidence. |\n| recursive_input_rule | Purchased bovine semen is a traced upstream input, never counted again as on-site donor production. |\n| upstream_dataset_requirement | Species- and route-matched supplies, utilities, consumables and capital services. |\n| disclosure | Donor, period, gate, health/quality criteria, state route, rejects, co-outputs, shared assets and allocation. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `gate` | all routes | End at quality release from the collection centre after actual preparation and protective packing; exclude later distribution and insemination. | `woah-hygiene-2024`; `woah-bovine-2024` |\n| `donor` | donor management | Trace cattle and buffalo separately; other Bovini need source-specific evidence. Attribute observed feed, water, health and residues by donor-period, not a universal straw factor. | `un-cpc-3`; `fao-cryoconservation-2021` |\n| `interfaces` | centre processing | Identify collected raw, graded, first prepared, formulated bulk, filled, preserved and packed states; record rejected and lost states. | `woah-hygiene-2024`; `fao-cryoconservation-2021` |\n| `route_delta` | preservation | Fresh, chilled and frozen are mutually exclusive final states. The preservation parent activity differs in energy, cryogen, storage time, testing and losses; partition mixed lots. | `fao-cryoconservation-2021` |\n| `shared_service` | assets | Housing, laboratory, refrigeration and reusable vessels serve multiple nodes or periods; record service and burden once, separately from disposable packaging. | `woah-hygiene-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 182
+              line: 8
+              column: 1
+            end:
+              offset: 196
+              line: 8
+              column: 15
+          text: "# Bovine semen"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 7124
+              line: 59
+              column: 1
+            end:
+              offset: 7145
+              line: 59
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_53290"
+      family: "allocation"
+      span:
+        start:
+          offset: 53290
+          line: 1114
+          column: 1
+        end:
+          offset: 54234
+          line: 1123
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `subdivide` | all nodes | Partition by donor species, donor, batch and route before allocation; count only observed service for released doses. | `woah-hygiene-2024` |\n| `output_status` | culls and downgraded grades | Independent culls or saleable downgraded semen need actual destination and handoff; rejects and manure to treatment are waste. | `un-cpc-3`; `woah-bovine-2024` |\n| `residual` | inseparable burdens | Prefer causal donor-days, batch use or storage occupancy; disclose any residual physical/economic split and sensitivity, never hypothetical avoided-product credit. | `woah-hygiene-2024` |\n| `period_asset` | donor and shared assets | Link feed, health, donor replacement/cull, laboratory and tank service to actual periods and consuming nodes once; prevent duplicate tank or room burden. | `woah-hygiene-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 182
+              line: 8
+              column: 1
+            end:
+              offset: 196
+              line: 8
+              column: 15
+          text: "# Bovine semen"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 53290
+              line: 1114
+              column: 1
+            end:
+              offset: 53330
+              line: 1114
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_62090"
+      family: "validation"
+      span:
+        start:
+          offset: 62090
+          line: 1156
+          column: 1
+        end:
+          offset: 63036
+          line: 1166
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `reference` | final dose | Require centre gate, donor species, accepted count, quality and state; unresolved product UUID blocks fixed-flow publication. | `un-cpc-3`; `woah-bovine-2024` |\n| `route` | fresh/chilled/frozen | One state per released unit; preserve only actual route inputs, storage periods and rejects. | `fao-cryoconservation-2021` |\n| `balance` | all material interfaces | Reconcile semen, components, grade destinations, filled count, waste and packaging with actual records. | `fao-cryoconservation-2021` |\n| `attribution` | outputs, periods, assets | Verify cull/downgrade handoffs, donor period, causal split and unique shared-asset ownership. | `woah-hygiene-2024` |\n| `identity_review` | flow UUIDs | Contradictory platform bovine-semen candidate remains unbound pending source correction and new detail review. | `un-cpc-3` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 182
+              line: 8
+              column: 1
+            end:
+              offset: 196
+              line: 8
+              column: 15
+          text: "# Bovine semen"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 62090
+              line: 1156
+              column: 1
+            end:
+              offset: 62112
+              line: 1156
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "gate"
+      identity_kind: "explicit"
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 8120
+          line: 76
+          column: 1
+        end:
+          offset: 8331
+          line: 76
+          column: 212
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "donor"
+      identity_kind: "explicit"
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 8332
+          line: 77
+          column: 1
+        end:
+          offset: 8586
+          line: 77
+          column: 255
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "interfaces"
+      identity_kind: "explicit"
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 8587
+          line: 78
+          column: 1
+        end:
+          offset: 8811
+          line: 78
+          column: 225
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "route_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 8812
+          line: 79
+          column: 1
+        end:
+          offset: 9056
+          line: 79
+          column: 245
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "shared_service"
+      identity_kind: "explicit"
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 9057
+          line: 80
+          column: 1
+        end:
+          offset: 9269
+          line: 80
+          column: 213
+    - pointer: "/allocation_rules/0"
+      rule_id: "subdivide"
+      identity_kind: "explicit"
+      unit_id: "normative_53290"
+      source_span:
+        start:
+          offset: 53403
+          line: 1118
+          column: 1
+        end:
+          offset: 53572
+          line: 1118
+          column: 170
+    - pointer: "/allocation_rules/1"
+      rule_id: "output_status"
+      identity_kind: "explicit"
+      unit_id: "normative_53290"
+      source_span:
+        start:
+          offset: 53573
+          line: 1119
+          column: 1
+        end:
+          offset: 53784
+          line: 1119
+          column: 212
+    - pointer: "/allocation_rules/2"
+      rule_id: "residual"
+      identity_kind: "explicit"
+      unit_id: "normative_53290"
+      source_span:
+        start:
+          offset: 53785
+          line: 1120
+          column: 1
+        end:
+          offset: 54009
+          line: 1120
+          column: 225
+    - pointer: "/allocation_rules/3"
+      rule_id: "period_asset"
+      identity_kind: "explicit"
+      unit_id: "normative_53290"
+      source_span:
+        start:
+          offset: 54010
+          line: 1121
+          column: 1
+        end:
+          offset: 54232
+          line: 1121
+          column: 223
+    - pointer: "/validation_rules/0"
+      rule_id: "reference"
+      identity_kind: "explicit"
+      unit_id: "normative_62090"
+      source_span:
+        start:
+          offset: 62185
+          line: 1160
+          column: 1
+        end:
+          offset: 62374
+          line: 1160
+          column: 190
+    - pointer: "/validation_rules/1"
+      rule_id: "route"
+      identity_kind: "explicit"
+      unit_id: "normative_62090"
+      source_span:
+        start:
+          offset: 62375
+          line: 1161
+          column: 1
+        end:
+          offset: 62534
+          line: 1161
+          column: 160
+    - pointer: "/validation_rules/2"
+      rule_id: "balance"
+      identity_kind: "explicit"
+      unit_id: "normative_62090"
+      source_span:
+        start:
+          offset: 62535
+          line: 1162
+          column: 1
+        end:
+          offset: 62710
+          line: 1162
+          column: 176
+    - pointer: "/validation_rules/3"
+      rule_id: "attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_62090"
+      source_span:
+        start:
+          offset: 62711
+          line: 1163
+          column: 1
+        end:
+          offset: 62873
+          line: 1163
+          column: 163
+    - pointer: "/validation_rules/4"
+      rule_id: "identity_review"
+      identity_kind: "explicit"
+      unit_id: "normative_62090"
+      source_span:
+        start:
+          offset: 62874
+          line: 1164
+          column: 1
+        end:
+          offset: 63034
+          line: 1164
+          column: 161
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 7124
+          line: 59
+          column: 1
+        end:
+          offset: 7145
+          line: 59
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_7124"
+      source_span:
+        start:
+          offset: 7173
+          line: 63
+          column: 1
+        end:
+          offset: 8027
+          line: 70
+          column: 127
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_53290"
+      source_span:
+        start:
+          offset: 53290
+          line: 1114
+          column: 1
+        end:
+          offset: 53330
+          line: 1114
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_62090"
+      source_span:
+        start:
+          offset: 62090
+          line: 1156
+          column: 1
+        end:
+          offset: 62112
+          line: 1156
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:dc6b46c897118ea492f419093b06c04ea2bc952eb5677404345c0474ecbf05bf"
+  generated_content_sha256: "sha256:37c48cf653c6a2ab0bd65a19803f3546661743d5c245b8e91106db5e30bef4bb"

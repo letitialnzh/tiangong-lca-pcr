@@ -1,10 +1,1463 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02420"
-  title: "Embryos"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.embryos"
+  classification_refs: "CPC 3.0 02420"
+  covered_products: "Quality-accepted viable animal embryos produced in vivo or in vitro."
+  excluded_products: "Insect immature stages; unfertilised oocytes; semen; non-viable rejects; transfer and recipient services."
+  representative_product: "One viable graded embryo protected for release at the laboratory gate."
+  production_route: "Managed donor period → independent embryo collection or oocyte retrieval → first laboratory preparation, including fertilisation/culture only for in-vitro route → grading → optional preservation → protective release."
+  market_state: "Fresh, chilled or frozen; species, route, grade, container and gate disclosed."
+functional_unit:
+  what: "One quality-accepted viable animal embryo for breeding at laboratory release."
+  how_much: "1 released embryo; reconcile all recovered/retrieved, prepared, graded, preserved and rejected items."
+  how_well: "Declared species, donor, in-vivo/in-vitro route, developmental stage, viability grade, sanitary treatment and preservation state."
+  how_long_or_cycle: "One recovery-to-release lot; attribute donor and shared laboratory/storage burdens over actual service periods."
+  reference_flow_link: "viable_embryo"
+system_boundary:
+  rules:
+    - rule_id: gate
+      applies_to: "all routes"
+      rule: "End at quality release in a protected container at the collection/production laboratory; exclude recipient management, transfer, pregnancy and onward distribution."
+      source_ids:
+        - un-cpc-3
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - rule_id: route_delta
+      applies_to: "managed donor and laboratory"
+      rule: "In-vivo recovery yields already fertilised embryos; in-vitro retrieval yields oocytes, then requires semen, fertilisation and culture. The routes differ in topology, media, energy, yield and testing; use one route per lot or partition a mixed facility."
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - rule_id: interfaces
+      applies_to: "biological production through grading"
+      rule: "Record donor management separately from recovery/retrieval, raw material separately from first washing/culture, then accepted, independently downgraded, held and rejected states with handoffs."
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - rule_id: state
+      applies_to: "optional preservation"
+      rule: "Fresh lots bypass preservation; chilled/frozen lots record actual utilities, cryogen, losses and time. Package usable product separately and exclude post-gate logistics."
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - rule_id: shared
+      applies_to: "facilities and periods"
+      rule: "Record donor phases, collection room, laboratory, incubator, refrigerator/tank and reusable container consumers and service periods once."
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+boundary_abstraction:
+  declared_starting_condition: "Identified managed donor entering a reproductive service period, with purchased semen where actually used and upstream feed, media, energy, cryogen and packaging."
+  starting_condition_role: "Managed donor production and embryo-goods preparation, not recipient pregnancy or transfer service."
+  product_classification_scope: "CPC 3.0 02420, viable animal embryos only."
+  recursive_input_rule: "Purchased embryos of the same category remain traced upstream goods and are never counted as newly produced on site."
+  upstream_dataset_requirement: "Species- and route-compatible feed, semen, media, utilities, treatment and capital-service datasets when actually used."
+  disclosure: "Donor, period, route, grade, preservation, gate, rejects, shared assets and attribution."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Viable animal embryo at collection or production-lab release"
+    uuid: ""
+  flow_property_ref:
+    uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+  unit_group_ref:
+    uuid: "5beb6eed-33a9-47b8-9ede-1dfe8f679159"
+  reference_unit: "item"
+  required_qualifiers:
+    - Species
+    - donor
+    - route
+    - batch
+    - stage
+    - grade
+    - "fresh/chilled/frozen state"
+    - container
+    - gate
+    - "reporting period."
+reference_flows:
+  []
+measurement_rules:
+  - id: count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "Count each accepted embryo once; one item is one viable graded embryo, not a container, oocyte or transfer attempt."
+  - id: yield
+    applies_to: "route transitions"
+    required_property_ref:
+      name: "Count"
+      uuid: ""
+    required_unit: "embryo, oocyte"
+    rule: "Reconcile raw collection/retrieval, preparation, grading, preservation, reject and release counts by donor and route."
+  - id: media
+    applies_to: "fluids and consumables"
+    required_property_ref:
+      name: "Mass or calibrated volume"
+      uuid: ""
+    required_unit: "kg, L"
+    rule: "Convert volume to mass only with documented composition and density."
+  - id: period
+    applies_to: "donor and shared services"
+    required_property_ref:
+      name: "Time and count"
+      uuid: ""
+    required_unit: "donor-day, h, embryo"
+    rule: "Align input, output and asset service periods; retain failed attempts."
+  - id: accepted_item_count
+    applies_to: "reference product and its output card"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted viable embryo of the declared species, state, grade and release specification. Preserve native embryo counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and its stated raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection."
+process_map:
+  - id: donor
+    name: "Managed donor service"
+    inclusion: "required"
+    inclusion_condition: "observed reproductive period"
+    role: "Husbandry inputs, residues and donor handoff"
+    quantitative_reference: "donor-days per linked released embryo"
+  - id: recovery
+    name: "Embryo collection or oocyte retrieval"
+    inclusion: "required"
+    inclusion_condition: "one route per lot"
+    role: "Independent removal of intended raw material from donor context"
+    quantitative_reference: "recovered embryo or oocyte count"
+  - id: preparation
+    name: "First preparation or in-vitro production"
+    inclusion: "required"
+    inclusion_condition: "route-specific steps"
+    role: "Raw-to-prepared embryo handoff, with in-vitro fertilisation/culture only when selected"
+    quantitative_reference: "prepared embryo count"
+  - id: grading
+    name: "Grade and destination sorting"
+    inclusion: "required"
+    inclusion_condition: "every prepared lot"
+    role: "Accepted, downgraded, held and rejected states"
+    quantitative_reference: "count by grade and destination"
+  - id: preservation
+    name: "Optional stabilization"
+    inclusion: "conditional"
+    inclusion_condition: "actual chilling/freezing"
+    role: "Usable pre/post state, utilities and losses"
+    quantitative_reference: "post-preservation accepted count"
+  - id: release
+    name: "Protective packing and laboratory release"
+    inclusion: "required"
+    inclusion_condition: "every saleable lot"
+    role: "Final quality-accepted product and container handoff"
+    quantitative_reference: "1 released embryo"
+process_inventory:
+  - id: donor
+    label: "Managed donor service"
+    inputs:
+      product:
+        - row_id: donor_feed
+          role: "Donor feed"
+          name: "Donor feed (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Measure species-specific feed for the donor's attributable service period. Denominator and scope requirements：per released embryo Raw quantity and calculation requirements: Sum observed intake over donor-days linked to actual embryo lots. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg dry matter per released embryo"
+                basis: "donor-period intake divided by linked released embryos"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: donor_water
+          role: "Donor water"
+          name: "Donor water supply (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Meter drinking and care water, resolving its actual source and use from records. Denominator and scope requirements：per released embryo Raw quantity and calculation requirements: Sum observed donor-period supply. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg per released embryo"
+                basis: "donor-period supply divided by linked released embryos"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: donor_manure
+          role: "Donor manure to treatment"
+          name: "Donor manure to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify as waste only when not independently handed over as useful material. Denominator and scope requirements：per donor service period Raw quantity and calculation requirements: Record collection mass and actual destination by period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_donor
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000000"
+                unit: "kg per donor period"
+                basis: "collected manure sent to treatment"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: recovery
+    label: "Embryo collection or oocyte retrieval"
+    inputs:
+      product:
+        - row_id: recovery_medium
+          role: "Recovery medium"
+          name: "Embryo or oocyte recovery medium (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual collection or aspiration medium and its lot-specific composition. Denominator and scope requirements：per recovery event Raw quantity and calculation requirements: Measure issued and returned medium per event. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recovery
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg per event"
+                basis: "issued medium in the documented event"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: raw_invivo_embryos
+          role: "Raw in-vivo embryos"
+          name: "Raw in-vivo collected embryos (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "This internal handoff applies only to in-vivo collection, before laboratory washing and grading. Denominator and scope requirements：per in-vivo recovery event Raw quantity and calculation requirements: Count recovered embryos, including later rejects, by donor event. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recovery
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per event"
+                basis: "collected count in one donor event"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: retrieved_oocytes
+          role: "Retrieved oocytes"
+          name: "Retrieved animal oocytes (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / oocyte"
+          description: "This internal handoff applies only to in-vitro production; oocytes are not the reference product. Denominator and scope requirements：per in-vitro retrieval event Raw quantity and calculation requirements: Count retrieved oocytes, including immature material, by donor event. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recovery
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "oocyte per event"
+                basis: "retrieved count in one donor event"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: preparation
+    label: "First preparation or in-vitro production"
+    inputs:
+      product:
+        - row_id: raw_invivo_input
+          role: "Raw in-vivo embryos received"
+          name: "Raw in-vivo collected embryos (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Only in-vivo lots receive recovered embryos from the recovery node; retain donor and event identity. Denominator and scope requirements：per preparation lot Raw quantity and calculation requirements: Count received embryos against recovery-event output. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lab
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "in-vivo embryos actually received for preparation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: retrieved_oocytes_input
+          role: "Retrieved oocytes received"
+          name: "Retrieved animal oocytes (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / oocyte"
+          description: "Only in-vitro lots receive retrieved oocytes, before fertilisation and culture. Denominator and scope requirements：per preparation lot Raw quantity and calculation requirements: Count received oocytes against retrieval-event output. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lab
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "oocyte per lot"
+                basis: "oocytes actually received for in-vitro preparation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: lab_media
+          role: "Laboratory media"
+          name: "Embryo laboratory media (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record washing, fertilisation and culture media only when actually used in the selected route. Denominator and scope requirements：per prepared embryo Raw quantity and calculation requirements: Sum lot-specific issued medium less unused returns. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lab
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg per prepared embryo"
+                basis: "issued media divided by prepared embryos"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: ivf_semen
+          role: "Fertilising semen"
+          name: "Species-matched fertilising semen (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Dose count or calibrated volume / dose or mL"
+          description: "Only an in-vitro lot that uses semen records it as upstream input, not final embryo output. Denominator and scope requirements：per in-vitro preparation lot Raw quantity and calculation requirements: Record source lot and used quantity, net of returns. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lab
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "dose per in-vitro lot"
+                basis: "actual fertilising semen used in the lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_embryos
+          role: "Prepared embryos"
+          name: "Prepared animal embryos before grading (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Hand route-identified assessable embryos to grading; failed fertilisation or washing is a loss, not output. Denominator and scope requirements：per preparation lot Raw quantity and calculation requirements: Count assessable embryos by donor, route and lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lab
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "prepared count in a route-specific lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: spent_media
+          role: "Spent laboratory media"
+          name: "Spent embryo laboratory media to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record spent medium and biological losses by actual treatment destination. Denominator and scope requirements：per preparation lot Raw quantity and calculation requirements: Weigh or measure media sent to treatment by lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lab
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg per lot"
+                basis: "spent media from one observed lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading
+    label: "Grade and destination sorting"
+    inputs:
+      product:
+        - row_id: prepared_embryos_input
+          role: "Prepared embryos received"
+          name: "Prepared animal embryos before grading (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Receive assessable embryos from first preparation with donor, route and lot preserved. Denominator and scope requirements：per graded lot Raw quantity and calculation requirements: Count receipts against preparation output and all grade destinations. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "prepared embryos actually received for grading"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_embryos
+          role: "Accepted viable embryos"
+          name: "Grade-accepted viable animal embryos (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Hand only grade-accepted viable embryos to fresh packing or preservation. Denominator and scope requirements：per graded lot Raw quantity and calculation requirements: Count by developmental stage, grade, donor and next destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "accepted count in one graded lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_embryos
+          role: "Downgraded viable embryos"
+          name: "Downgraded viable animal embryos (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Product only if a lower-grade viable embryo has an actual separate handover; otherwise record hold or rejection. Denominator and scope requirements：per graded lot Raw quantity and calculation requirements: Count separately handed-over lower grade by destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "separately handed-over downgraded count"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: rejected_material
+          role: "Rejected reproductive material"
+          name: "Rejected embryo or oocyte material to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Count / item"
+          description: "Non-viable embryos and failed oocytes are rejects, not reference output. Denominator and scope requirements：per graded lot Raw quantity and calculation requirements: Count by reason, retained test sample and treatment destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "item per lot"
+                basis: "rejects from one graded lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: preservation
+    label: "Optional stabilization"
+    inputs:
+      product:
+        - row_id: accepted_embryos_input
+          role: "Accepted embryos entering preservation"
+          name: "Grade-accepted viable animal embryos (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Only chilled or frozen lots receive grade-accepted viable embryos here; fresh lots bypass this node. Denominator and scope requirements：per preserved lot Raw quantity and calculation requirements: Count receipts against grading's accepted handoff. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "accepted embryos actually entering intervention"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preservation_energy
+          role: "Preservation energy"
+          name: "Preservation energy supply (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Only actual chilled or frozen lots use this node; fresh lots bypass it. Denominator and scope requirements：per accepted preserved embryo Raw quantity and calculation requirements: Meter energy over actual intervention and storage period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kWh per accepted preserved embryo"
+                basis: "measured energy divided by accepted post-preservation count"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nitrogen
+          role: "Cryogenic nitrogen"
+          name: "Liquid nitrogen supply (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record liquid nitrogen only for routes and tanks that actually use it. Denominator and scope requirements：per accepted frozen embryo Raw quantity and calculation requirements: Reconcile deliveries, inventory and boil-off by tank service period. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "kg per accepted frozen embryo"
+                basis: "tank-period consumption divided by linked accepted embryos"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stabilized_embryos
+          role: "Stabilized viable embryos"
+          name: "Chilled or frozen viable embryos before packing (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Count viable embryos after intervention, not merely those entering storage. Denominator and scope requirements：per preserved lot Raw quantity and calculation requirements: Count post-intervention accepted embryos by state, grade and lot. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "accepted count after observed intervention"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preservation_rejects
+          role: "Preservation rejects"
+          name: "Non-viable embryos after preservation to treatment (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Count / embryo"
+          description: "Identify failed viability, contamination or packing damage and actual destination. Denominator and scope requirements：per preserved lot Raw quantity and calculation requirements: Count post-intervention rejects by reason and destination. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_preserve
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "rejected count after observed intervention"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: release
+    label: "Protective packing and laboratory release"
+    inputs:
+      product:
+        - row_id: pack_input_embryos
+          role: "Viable embryos entering packing"
+          name: "Viable animal embryos before final packing (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Count / embryo"
+          description: "Receive accepted fresh embryos directly from grading or viable chilled/frozen embryos from preservation, never both for the same item. Denominator and scope requirements：per release lot Raw quantity and calculation requirements: Count stage-, route- and state-matched receipts against prior-node handoffs. Original collection denominator kind: process_output."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100000"
+                unit: "embryo per lot"
+                basis: "viable embryos actually received for packing"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: container
+          role: "Protective containers"
+          name: "Embryo protective packaging (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record actual straw, vial or ampoule and its new or reusable status; distinguish product enclosure from post-gate shipping. Denominator and scope requirements：per released embryo Raw quantity and calculation requirements: Measure new materials and uniquely attributed reusable-container service. Original collection denominator kind: reference_flow."
+          amount:
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg per released embryo"
+                basis: "new and attributed reusable packaging over released embryos"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: viable_embryo
+          role: "Released viable embryo"
+          name: "Viable animal embryo at collection or production-lab release"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "This is the sole reference product; no transfer or pregnancy outcome is implied. Raw reference-output records: Count signed quality-released embryos by route, state and grade. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit. The machine unit item is the local representation of the confirmed unit-group reference unit Item(s), with multiplier 1. One item means one quality-accepted viable embryo of the declared species, state, grade and release specification. Preserve native embryo counts in collection records. This count representation does not equate containers, volume, sperm count, oocytes or treatment attempts to accepted goods, and does not establish equivalence across species, states or dose specifications. Denominator and scope requirements：per reference flow"
+          amount:
+            expression: "1 item"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_release
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "embryo per reference flow"
+                basis: "exactly one signed quality-accepted embryo"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - un-cpc-3
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: subdivide
+    applies_to: "all lots"
+    rule: "Subdivide by species, donor, in-vivo/in-vitro route, final state and grade before any residual allocation; include failed attempts."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+  - rule_id: destinations
+    applies_to: "graded output"
+    rule: "Accepted reference-grade embryos, independently sold downgraded embryos, held states and treatment rejects require distinct actual handoffs."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+  - rule_id: periods
+    applies_to: "donor and laboratory"
+    rule: "Attribute feed, donor events, collection, culture, storage and replacement/cull to observed service periods and lot outputs once; do not double-allocate across years."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+  - rule_id: assets
+    applies_to: "shared facilities"
+    rule: "Assign measured service hours/occupancy of rooms, incubators, tanks and reusable containers to all consuming nodes and periods once; disclose residual physical/economic split and sensitivity."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_donor
+      process_id: "donor"
+      flow_role: "feed, water, manure, donor service"
+      record_type: "husbandry ledger"
+      raw_fields: "donor_id, species, period, donor_days, feed_DM, water_kg, manure_kg, replacement, room_hours"
+      collection_method: "weigh, meter, event log; Raw aggregation requirements: sum by donor-period and lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "day, kg, h"
+      frequency: "daily/event"
+      temporal_coverage: "full linked donor period"
+      site_scope: "all donors"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "dated signed ledger; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_recovery
+      process_id: "recovery"
+      flow_role: "medium and raw embryo/oocyte"
+      record_type: "event register"
+      raw_fields: "event_id, donor_id, route, medium_kg, raw_embryo_count, oocyte_count, losses, room_hours"
+      collection_method: "issue sheet, count, weigh; Raw aggregation requirements: reconcile each event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, item, h"
+      frequency: "event"
+      temporal_coverage: "all attempts"
+      site_scope: "collection unit"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "chain of custody; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_lab
+      process_id: "preparation"
+      flow_role: "media, semen, prepared embryos, spent media"
+      record_type: "laboratory batch log"
+      raw_fields: "lot_id, route, media_kg, semen_lot, dose_count, retrieved_count, fertilised_count, prepared_count, waste_kg, incubator_hours"
+      collection_method: "issue and assay log; Raw aggregation requirements: route-specific balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, dose, item, h"
+      frequency: "lot"
+      temporal_coverage: "all batches"
+      site_scope: "laboratory"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "assay and lot record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_grade
+      process_id: "grading"
+      flow_role: "accepted, downgraded, held, rejected"
+      record_type: "grade register"
+      raw_fields: "lot_id, stage, grade, accepted, downgraded, held, rejected, destination"
+      collection_method: "qualified examination; Raw aggregation requirements: reconcile all destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "item"
+      frequency: "lot"
+      temporal_coverage: "all assessed material"
+      site_scope: "laboratory"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "signed grade sheet; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_preserve
+      process_id: "preservation"
+      flow_role: "energy, nitrogen, stable count, rejects"
+      record_type: "cold-chain log"
+      raw_fields: "lot_id, state, kWh, nitrogen_kg, storage_days, tank_hours, pre_count, accepted, rejected"
+      collection_method: "meter, stock balance, logger; Raw aggregation requirements: route-specific count and occupancy. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kWh, kg, day, item"
+      frequency: "lot/day"
+      temporal_coverage: "full intervention and storage"
+      site_scope: "cold room/tank"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "logger and QC; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_release
+      process_id: "release"
+      flow_role: "container and released embryo"
+      record_type: "release ledger"
+      raw_fields: "lot_id, route, stage, grade, state, new_package_kg, reuse_cycles, released, gate_time"
+      collection_method: "issue count and QA sign-off; Raw aggregation requirements: count signed releases. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg, embryo"
+      frequency: "lot"
+      temporal_coverage: "every handover"
+      site_scope: "laboratory gate"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "label and signed receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: count_balance
+      applies_to: "recovery through release"
+      rule: "Reconcile route-specific raw embryo or oocyte, prepared, graded, downgraded, held, rejected, preserved and released counts; retain failed events."
+      inputs:
+        - cp_recovery
+        - cp_lab
+        - cp_grade
+        - cp_preserve
+        - cp_release
+      output: "lot-level count balance"
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - id: donor_intensity
+      applies_to: "donor service"
+      rule: "Divide attributable same-period donor burden by linked released embryos after real independent-output treatment."
+      inputs:
+        - cp_donor
+        - cp_recovery
+        - cp_release
+      output: "donor burden per embryo"
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - id: route_intensity
+      applies_to: "laboratory and preservation"
+      rule: "Divide actual route/state media, semen, energy, cryogen and storage burden by same-route/state accepted count, retaining zero-output lots."
+      inputs:
+        - cp_lab
+        - cp_preserve
+        - cp_release
+      output: "route inventory per embryo"
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+    - id: shared_service
+      applies_to: "shared infrastructure"
+      rule: "Assign each asset's observed service over all consuming nodes and periods once; reconciled shares equal total service."
+      inputs:
+        - cp_donor
+        - cp_recovery
+        - cp_lab
+        - cp_preserve
+        - cp_release
+      output: "unique attributed service burden"
+      source_ids:
+        - woah-invivo-2024
+        - woah-invitro-2024
+  data_quality_requirements:
+    - id: identity
+      applies_to: "released product"
+      requirement: "Preserve species, donor, route, developmental stage, grade, state, container and gate."
+      evidence: "grade sheet and signed release"
+    - id: completeness
+      applies_to: "all attempts"
+      requirement: "Include failed retrieval/culture, samples, downgrade, rejection, utilities and packaging."
+      evidence: "reconciled event and lot registers"
+    - id: temporal
+      applies_to: "donor and assets"
+      requirement: "Link service, replacement, room/incubator/tank use and released embryos to observed periods."
+      evidence: "dated husbandry and asset logs"
+    - id: comparability
+      applies_to: "route and state"
+      requirement: "Retain separate in-vivo/in-vitro and fresh/chilled/frozen denominators; no universal success factor."
+      evidence: "route-specific release criteria and ledger"
+validation_rules:
+  - rule_id: reference
+    applies_to: "final product"
+    rule: "Require viable animal embryo, species, route, stage, grade, state and signed release; an anatomical structure cannot substitute for the product flow."
+    source_ids:
+      - un-cpc-3
+      - woah-invivo-2024
+      - woah-invitro-2024
+  - rule_id: route
+    applies_to: "each lot"
+    rule: "Resolve one in-vivo or in-vitro path and only actual fertilisation/culture, preservation and trade controls."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+  - rule_id: balance
+    applies_to: "every interface"
+    rule: "Reconcile raw, prepared, graded, downgraded, preserved, rejected and released counts plus media and packages."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+  - rule_id: attribution
+    applies_to: "periods/assets"
+    rule: "Verify donor and failed-event periods, every shared consumer, unique burden ownership and independent lower-grade handover."
+    source_ids:
+      - woah-invivo-2024
+      - woah-invitro-2024
+published_dataset_profile:
+  dataset_role: "Foreground breeding-embryo production package, not recipient-transfer service."
+  downstream_use: "secondary_dataset; background_dataset only with verified concrete identities and representativeness."
+  allowed_use: "Species-, route-, stage-, quality-, state- and gate-matched embryo assessment."
+  excluded_use: "Insect immature stages, oocytes, semen, embryo transfer, pregnancy and unmatched routes."
+  required_metadata: "CPC reference, donor, periods, route, stage, grade, all counts, state, gate and allocation."
+  required_quality_disclosure: "Missing UUIDs, failed-lot coverage, route yield, assays, media/cryogen metering, shared-asset attribution and gaps."
+  update_trigger: "Exact reference-flow identity, species/route method change or stronger quantitative evidence."
+data_sources:
+  - id: "un-cpc-3"
+    type: "standard"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Embryo product identity and insect exclusion"
+  - id: "woah-invivo-2024"
+    type: "standard"
+    reference: "https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2023/chapitre_coll_embryo_equid.pdf"
+    used_for: "In-vivo collection, washing, grading, storage and traceability"
+  - id: "woah-invitro-2024"
+    type: "standard"
+    reference: "https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2023/chapitre_coll_embryo_invitro.pdf"
+    used_for: "Oocyte retrieval, in-vitro laboratory route and traceability"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:39faa22fd242101f7d1e968c6f0bb65ef25f87d52ba700f59890b5d8aae01eaa"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6895"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6895
+          line: 57
+          column: 1
+        end:
+          offset: 9235
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified managed donor entering a reproductive service period, with purchased semen where actually used and upstream feed, media, energy, cryogen and packaging. |\n| starting_condition_role | Managed donor production and embryo-goods preparation, not recipient pregnancy or transfer service. |\n| product_classification_scope | CPC 3.0 `02420`, viable animal embryos only. |\n| recursive_input_rule | Purchased embryos of the same category remain traced upstream goods and are never counted as newly produced on site. |\n| upstream_dataset_requirement | Species- and route-compatible feed, semen, media, utilities, treatment and capital-service datasets when actually used. |\n| disclosure | Donor, period, route, grade, preservation, gate, rejects, shared assets and attribution. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `gate` | all routes | End at quality release in a protected container at the collection/production laboratory; exclude recipient management, transfer, pregnancy and onward distribution. | `un-cpc-3`; `woah-invivo-2024`; `woah-invitro-2024` |\n| `route_delta` | managed donor and laboratory | In-vivo recovery yields already fertilised embryos; in-vitro retrieval yields oocytes, then requires semen, fertilisation and culture. The routes differ in topology, media, energy, yield and testing; use one route per lot or partition a mixed facility. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `interfaces` | biological production through grading | Record donor management separately from recovery/retrieval, raw material separately from first washing/culture, then accepted, independently downgraded, held and rejected states with handoffs. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `state` | optional preservation | Fresh lots bypass preservation; chilled/frozen lots record actual utilities, cryogen, losses and time. Package usable product separately and exclude post-gate logistics. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `shared` | facilities and periods | Record donor phases, collection room, laboratory, incubator, refrigerator/tank and reusable container consumers and service periods once. | `woah-invivo-2024`; `woah-invitro-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 177
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 30
+          text: "# Animal embryos for breeding"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6895
+              line: 57
+              column: 1
+            end:
+              offset: 6916
+              line: 57
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_42013"
+      family: "allocation"
+      span:
+        start:
+          offset: 42013
+          line: 828
+          column: 1
+        end:
+          offset: 43089
+          line: 839
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n### Allocation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `subdivide` | all lots | Subdivide by species, donor, in-vivo/in-vitro route, final state and grade before any residual allocation; include failed attempts. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `destinations` | graded output | Accepted reference-grade embryos, independently sold downgraded embryos, held states and treatment rejects require distinct actual handoffs. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `periods` | donor and laboratory | Attribute feed, donor events, collection, culture, storage and replacement/cull to observed service periods and lot outputs once; do not double-allocate across years. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `assets` | shared facilities | Assign measured service hours/occupancy of rooms, incubators, tanks and reusable containers to all consuming nodes and periods once; disclose residual physical/economic split and sensitivity. | `woah-invivo-2024`; `woah-invitro-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 177
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 30
+          text: "# Animal embryos for breeding"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 42013
+              line: 828
+              column: 1
+            end:
+              offset: 42053
+              line: 828
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_49811"
+      family: "validation"
+      span:
+        start:
+          offset: 49811
+          line: 870
+          column: 1
+        end:
+          offset: 50710
+          line: 879
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `reference` | final product | Require viable animal embryo, species, route, stage, grade, state and signed release; an anatomical structure cannot substitute for the product flow. | `un-cpc-3`; `woah-invivo-2024`; `woah-invitro-2024` |\n| `route` | each lot | Resolve one in-vivo or in-vitro path and only actual fertilisation/culture, preservation and trade controls. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `balance` | every interface | Reconcile raw, prepared, graded, downgraded, preserved, rejected and released counts plus media and packages. | `woah-invivo-2024`; `woah-invitro-2024` |\n| `attribution` | periods/assets | Verify donor and failed-event periods, every shared consumer, unique burden ownership and independent lower-grade handover. | `woah-invivo-2024`; `woah-invitro-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 177
+              line: 8
+              column: 1
+            end:
+              offset: 206
+              line: 8
+              column: 30
+          text: "# Animal embryos for breeding"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 49811
+              line: 870
+              column: 1
+            end:
+              offset: 49833
+              line: 870
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 7880
+          line: 74
+          column: 1
+        end:
+          offset: 8123
+          line: 74
+          column: 244
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "route_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 8124
+          line: 75
+          column: 1
+        end:
+          offset: 8469
+          line: 75
+          column: 346
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "interfaces"
+      identity_kind: "explicit"
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 8470
+          line: 76
+          column: 1
+        end:
+          offset: 8763
+          line: 76
+          column: 294
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "state"
+      identity_kind: "explicit"
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 8764
+          line: 77
+          column: 1
+        end:
+          offset: 9013
+          line: 77
+          column: 250
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "shared"
+      identity_kind: "explicit"
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 9014
+          line: 78
+          column: 1
+        end:
+          offset: 9233
+          line: 78
+          column: 220
+    - pointer: "/allocation_rules/0"
+      rule_id: "subdivide"
+      identity_kind: "explicit"
+      unit_id: "normative_42013"
+      source_span:
+        start:
+          offset: 42148
+          line: 834
+          column: 1
+        end:
+          offset: 42350
+          line: 834
+          column: 203
+    - pointer: "/allocation_rules/1"
+      rule_id: "destinations"
+      identity_kind: "explicit"
+      unit_id: "normative_42013"
+      source_span:
+        start:
+          offset: 42351
+          line: 835
+          column: 1
+        end:
+          offset: 42570
+          line: 835
+          column: 220
+    - pointer: "/allocation_rules/2"
+      rule_id: "periods"
+      identity_kind: "explicit"
+      unit_id: "normative_42013"
+      source_span:
+        start:
+          offset: 42571
+          line: 836
+          column: 1
+        end:
+          offset: 42818
+          line: 836
+          column: 248
+    - pointer: "/allocation_rules/3"
+      rule_id: "assets"
+      identity_kind: "explicit"
+      unit_id: "normative_42013"
+      source_span:
+        start:
+          offset: 42819
+          line: 837
+          column: 1
+        end:
+          offset: 43087
+          line: 837
+          column: 269
+    - pointer: "/validation_rules/0"
+      rule_id: "reference"
+      identity_kind: "explicit"
+      unit_id: "normative_49811"
+      source_span:
+        start:
+          offset: 49906
+          line: 874
+          column: 1
+        end:
+          offset: 50143
+          line: 874
+          column: 238
+    - pointer: "/validation_rules/1"
+      rule_id: "route"
+      identity_kind: "explicit"
+      unit_id: "normative_49811"
+      source_span:
+        start:
+          offset: 50144
+          line: 875
+          column: 1
+        end:
+          offset: 50319
+          line: 875
+          column: 176
+    - pointer: "/validation_rules/2"
+      rule_id: "balance"
+      identity_kind: "explicit"
+      unit_id: "normative_49811"
+      source_span:
+        start:
+          offset: 50320
+          line: 876
+          column: 1
+        end:
+          offset: 50505
+          line: 876
+          column: 186
+    - pointer: "/validation_rules/3"
+      rule_id: "attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_49811"
+      source_span:
+        start:
+          offset: 50506
+          line: 877
+          column: 1
+        end:
+          offset: 50708
+          line: 877
+          column: 203
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 6895
+          line: 57
+          column: 1
+        end:
+          offset: 6916
+          line: 57
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6895"
+      source_span:
+        start:
+          offset: 6944
+          line: 61
+          column: 1
+        end:
+          offset: 7787
+          line: 68
+          column: 106
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_42013"
+      source_span:
+        start:
+          offset: 42013
+          line: 828
+          column: 1
+        end:
+          offset: 42053
+          line: 828
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_49811"
+      source_span:
+        start:
+          offset: 49811
+          line: 870
+          column: 1
+        end:
+          offset: 49833
+          line: 870
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:39faa22fd242101f7d1e968c6f0bb65ef25f87d52ba700f59890b5d8aae01eaa"
+  generated_content_sha256: "sha256:036f66c8b65bbdd349e913a67bc9410e9a419a68c671f47dfbc54a56054124d7"

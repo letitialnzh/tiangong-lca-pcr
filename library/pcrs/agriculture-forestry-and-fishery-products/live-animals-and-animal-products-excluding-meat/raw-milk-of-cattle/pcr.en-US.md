@@ -1,95 +1,90 @@
 ---
-schema_version: 1
 pcr_id: pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-cattle
 language: en-US
 status: candidate
-content_maturity: authored_methodology
-translation_status: canonical
 sync_with: pcr.zh-CN.md
 ---
 
-# Raw Milk of Cattle
+# Raw milk of cattle
 
 ## 1. Scope and Applicability
 
-This PCR applies to raw milk produced by domesticated cattle and delivered from the dairy farm as chilled,
-unprocessed milk. It supports foreground data packages representing a full, representative dairy-farm operating
-period up to the farm gate. The model covers the whole reporting herd, feed and bedding supply, directly managed
-feed production when applicable, enteric fermentation, manure management, milking, cooling, and on-farm storage.
-
-The PCR excludes raw milk of buffalo, sheep, goats, camels, and other animals; pasteurized, sterilized,
-homogenized, separated, standardized, concentrated, dried, fermented, flavoured, or otherwise processed milk;
-transport after the farm gate; dairy manufacturing; packaging; distribution; retail; use; and end of life.
-A concrete data package shall state the cattle production system, geography, reporting period, herd structure,
-milk composition, farm-gate condition, and whether feed production and input transport are foreground or linked
-upstream.
+This PCR governs foreground data packages for unprocessed cow milk handed over at the producing dairy farm gate. It covers lactating and replacement herds, feed, water, enteric and manure pathways, milking, initial straining and acceptance, and cooling only when controlled by the farm before handover. Both warm and farm-chilled raw milk are included; the handover state must be declared. Independent milk collection or cooling centres, transport after farm-gate transfer, pasteurization, standardization, consumer packaging and dairy processing are excluded.
 
 ## 2. Product Category Identity
 
 | Field | Value |
 | --- | --- |
-| canonical_pcr_id | pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-cattle |
-| classification_refs | CPC 3.0: 02211 Raw milk of cattle (exact) |
-| covered_products | Raw whole milk from cattle, including saleable chilled farm milk before heat treatment or dairy processing |
-| excluded_products | Raw milk from non-cattle species; separated, standardized, pasteurized, sterilized, homogenized, concentrated, dried, fermented, flavoured, or otherwise processed milk; milk consumed entirely within the farm and not delivered as product |
-| representative_product | Chilled raw whole cattle milk ready to leave on-farm storage |
-| production_route | Dairy herd management, feed supply, manure management, milking, cooling, and on-farm storage to the farm gate |
-| market_state | Unprocessed liquid raw milk at the farm gate, normally chilled and declared by measured fat and true-protein content |
+| canonical_pcr_id | `pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-cattle` |
+| classification_refs | CPC 3.0 `02211`, Raw milk of cattle |
+| covered_products | unprocessed warm or farm-chilled cow milk handed over at the producing farm gate |
+| excluded_products | buffalo or goat milk, consumer milk, processed milk and output of downstream cooling centres |
+| representative_product | accepted raw cow milk measured at its declared farm-gate handover state |
+| production_route | dairy herd production → milking capture → first conditioning → optional farm cooling; grazing and housed routes declared |
+| market_state | warm or farm-chilled raw milk with cooling state, temperature, fat/protein or solids, and acceptance state declared |
+
+Grazing and housed variants may coexist, but feed sourcing, manure pathways, energy, measurements and evidence must be stratified by herd and period. Chilled and warm final handovers are mutually exclusive.
 
 ## 3. Reference Flow
 
 | Field | Value |
 | --- | --- |
-| What | Provision of raw cattle milk ready to leave the dairy farm |
-| How much | 1 kg fat-and-protein-corrected milk (FPCM), corrected to 4.0% fat and 3.3% true protein |
-| How well | Raw whole cattle milk meeting the declared farm-gate specification, with measured physical mass, fat content, true-protein content, temperature, and saleable status |
-| How long or cycle | One representative reporting year or another declared period covering seasonal variation and a stable herd production cycle |
-| reference_flow_link | The physical raw-milk output is converted to FPCM with `calc_fpcm`; all inventory values are normalized to 1 kg FPCM delivered at the farm gate |
+| What | accepted unprocessed cow milk at the producing farm gate |
+| How much | 1 kg |
+| How well | declare warm or farm-chilled state, handover temperature, fat/protein or solids, and acceptance/rejection basis |
+| How long or cycle | declared reporting period covering lactation, dry, replacement, culling and cooling service phases |
+| reference_flow_link | `reference_product_handover` |
 
 | Field | Value |
 | --- | --- |
-| Reference amount | 1 kg FPCM |
-| Reference product flow | Raw milk of cattle `aa8aebbb-724a-417b-8372-2dccd499ce71` |
+| Reference amount | 1 |
+| Reference product flow | Raw milk of cattle, warm or farm-chilled, producing farm gate |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
-| Required qualifiers | cattle species; raw and unprocessed state; farm-gate geography; production system; reporting period; farm-gate temperature; physical milk mass; fat percentage; true-protein percentage; calculated FPCM mass; saleable milk status |
+| Required qualifiers | cattle species; raw state; farm gate; warm or chilled state; temperature; fat/protein or solids; accepted and rejected mass; reporting period |
 
-When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset
-metadata, process notes, reference-flow comments, product descriptions, or equivalent fields. Missing required
-qualifiers make the reference-flow definition incomplete.
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
+
+The chilled-only UUID `aa8aebbb-724a-417b-8372-2dccd499ce71` is used only on the explicitly chilled output card below. It does not represent this broad reference, which also includes warm milk.
 
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
-| `reference_mass` | Reference raw-milk flow and FPCM result | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Record physical raw-milk mass in kg and normalize to 1 kg FPCM; volume-only records require measured density for the represented milk and temperature. |
-| `milk_composition` | Milk fat and true protein | Mass fraction | % by mass | Use representative measured fat and true-protein percentages for the same milk mass and period; do not substitute crude protein without a disclosed, justified conversion. |
-| `dry_matter_basis` | Feed intake and bedding | Mass | kg dry matter | Preserve as-fed mass and dry-matter fraction in raw records, then calculate kg dry matter; disclose any feed quantity that cannot be converted. |
-| `liveweight_basis` | Animals leaving the farm | Mass | kg live weight | Use live weight at farm exit or a documented conversion; carcass mass shall not be inserted as live weight without the conversion basis. |
-| `gas_mass_basis` | Direct gaseous emissions | Mass | kg substance | Record each emitted substance separately before impact characterization; do not store CO2-equivalent values as elementary-flow masses. |
+| `reference_mass` | accepted raw milk | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Normalize to 1 kg measured net mass at farm-gate handover; never add the same milk as both warm and chilled. |
+| `milk_composition` | milk fat, protein or solids | Mass fraction | % or g/kg | Retain sample time, method and wet basis; check recorded composition before comparing quality grades. |
+| `herd_feed_basis` | feed | Mass | kg as-fed and kg dry matter | Record moisture conversion; do not mix as-fed and dry-matter amounts. |
+| `emission_species` | direct emissions | Pollutant mass | kg species | Keep CH4, N2O and NH3 separate with receiving medium and factor tier. |
+| `energy_carriers` | milking and cooling | Energy or carrier quantity | kWh, MJ, L or kg | Retain native carrier units, conversion and shared-meter attribution. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. These are final foreground-package contributions, not replacements for stage quantitative references or stage-native unit-process datasets. Retain stage records separately. Compute normalized amount = attributable raw amount * declared reference quantity / measured accepted final reference-output quantity. Apply normalization exactly once. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
-| rule_id | Applies to | Rule | source_ids |
-| --- | --- | --- | --- |
-| `boundary_farm_gate` | Product system to farm gate | Include dairy herd maintenance and replacements, feed and bedding supply, enteric fermentation, manure collection/storage/treatment, directly managed feed production, input energy and water, milking, cleaning, cooling, refrigerant losses, and on-farm raw-milk storage up to milk ready to leave the farm. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `boundary_whole_herd` | Reporting herd | Represent lactating and dry cows, replacement animals, calves, culls, mortality, herd inventory change, and animal movements supporting reported milk output; do not model only lactating cows when other herd classes share burdens. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `boundary_upstream_inputs` | Purchased inputs | Link purchased feed, bedding, replacement animals, fuels, electricity, fertilizers, crop-protection products, cleaning agents, refrigerants, and other material inputs to geographically and technologically appropriate upstream datasets. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `boundary_feed_land` | Feed production and land | Include directly managed feed-crop and pasture inputs, yields, soil emissions, irrigation, and relevant land-use-change treatment; for externally supplied feed, retain origin and composition records and link upstream burdens without duplicating them on farm. | `idf-dairy-carbon-footprint-2022`; `fao-leap-animal-feed-2016` |
-| `boundary_direct_emissions` | Cattle, manure, and managed soils | Calculate enteric CH4, manure-management CH4 and N2O, and relevant managed-soil emissions with methods and factors appropriate to the declared region, animal category, productivity, diet, climate, and manure system; preserve activity data and factor sources. | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
-| `boundary_exclusions` | Downstream life-cycle stages | Exclude transport after the farm gate, dairy processing, packaging, distribution, retail, consumption, and end of life; disclose any study-specific extension separately from the PCR result. | `idf-dairy-carbon-footprint-2022` |
+The boundary starts with the declared opening dairy herd and burden-bearing purchased replacements. It includes lactation, dry and replacement phases, feed and water, controlled manure management, milking, straining and acceptance, plus cooling only under farm control before transfer. Milking is a distinct capture responsibility: it turns herd milk production into measured gross collected milk. First conditioning changes that raw collected state into an accepted state. Optional cooling preserves already usable raw milk; it is neither pasteurization nor a separate raw-milk product category.
 
 ### Boundary Abstraction
 
 | Field | Value |
 | --- | --- |
-| declared_starting_condition | A dairy production system with the reporting herd, managed land, and production assets in service at the opening of the reporting period; herd replacement burdens and inventory changes are represented through period records and annualized calculations. |
-| starting_condition_role | Establishes a reproducible farm-accounting condition for a biologically continuous dairy system without treating the opening herd as burden-free. |
-| product_classification_scope | Raw cattle milk covered by CPC 3.0 code 02211; other animal milk and processed dairy products are outside the category. |
-| recursive_input_rule | Raw cattle milk produced and used internally, including milk fed to calves, is recorded as internal use and deducted from saleable farm-gate output rather than linked as an upstream raw-milk dataset. Externally purchased raw cattle milk is a separate product input with an upstream dataset and cannot be netted against output. |
-| upstream_dataset_requirement | Every purchased feed, animal, energy carrier, material, and externally provided service crossing the boundary requires a representative upstream dataset or an explicit documented data gap; supplier-specific data are preferred when material. |
-| disclosure | Declare farm geography, production system, reporting period, herd classes and inventory change, milk sold and internal use, milk composition, feed origins, manure systems, land management, allocation factors, excluded processes, data gaps, and any non-steady operational change. |
+| declared_starting_condition | opening dairy herd and admitted replacements by class, lactation state, origin and preceding burden |
+| starting_condition_role | multi-period biological stock; preceding burdens attributed once |
+| product_classification_scope | CPC 3.0 `02211`, raw milk of cattle |
+| recursive_input_rule | purchased same-category raw milk is recorded with origin and prior burden, never relabelled as this farm's own reference output |
+| upstream_dataset_requirement | supplier datasets for feed, replacements, energy and hygiene materials or disclosed gaps |
+| disclosure | herd and phase, route, milk state and temperature, losses, manure pathways, co-products, shared assets, cooling control, measurement and unresolved identities |
+
+### Boundary Rules
+
+| rule_id | Applies to | Rule | source_ids |
+| --- | --- | --- | --- |
+| `b_farm_gate` | final raw milk | Include farm-controlled activities before farm-gate handover only; independent cooling centres and onward transport are downstream. | `fao-milk-cooling-centres-2016` |
+| `b_milk_state` | warm and chilled milk | Declare final state; warm direct and farm-chilled handovers are exclusive, and internal milk transfers are not final outputs. | `fao-milk-cooling-centres-2016` |
+| `b_herd_routes` | grazing and housed herds | Use managed dairy herd production as parent; evidence each route delta in feed, manure, energy, herd records and calculations. | `fao-leap-large-ruminants-2016` |
+| `b_periods` | lactation, dry, replacement and culling | Link inputs, assets, milk and culling to herd and period; assign opening burdens, replacements and termination once. | `fao-leap-large-ruminants-2016` |
+| `b_manure` | excreta | Separate deposition, collection, storage, application and export, with nitrogen and volatile solids tracked by pathway. | `fao-leap-nutrient-flows-2018`; `ipcc-2019-livestock-manure` |
+| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. | `fao-milk-cooling-centres-2016` |
 
 ## 6. Process Inventory Structure
 
@@ -97,594 +92,849 @@ qualifiers make the reference-flow definition incomplete.
 
 | process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
-| `herd_and_feed_management` | Herd, feeding, housing, and animal management | required | Always | Foreground herd operation and enteric-emission basis | Per 1 kg FPCM at farm gate |
-| `manure_management` | Manure collection, storage, treatment, and export | required | Always | Foreground manure route and direct-emission basis | Per 1 kg FPCM at farm gate |
-| `on_farm_feed_production` | Directly managed feed-crop and pasture production | conditional | Include when feed crops or pasture are managed within the reporting farm boundary; otherwise link feed upstream | Foreground feed and managed-soil inventory | Per 1 kg FPCM at farm gate |
-| `milking_cooling_storage` | Milking, cleaning, cooling, and on-farm storage | required | Always | Foreground delivery of saleable raw milk | Per 1 kg FPCM at farm gate |
+| `dairy_herd` | Dairy Herd and Manure Production | required | all lactation and replacement phases | managed biological production; route deltas | gross milk produced by reporting herd |
+| `milk_collection` | Milking and Raw Milk Capture | required | every selected dairy route | separate harvest and capture from herd production | gross raw milk collected |
+| `primary_conditioning` | First Farm Milk Conditioning | required | straining, acceptance and handling until farm-gate transfer or cooling | raw-to-accepted state; loss segregation | accepted warm milk plus milk passed to cooling |
+| `farm_cooling` | Farm-owned Milk Cooling | conditional | only if cooling occurs under producing-farm control before handover | preservation of already usable raw milk | accepted chilled milk and cooling loss |
+| `reference_handover` | Actual producer reference-product handover | required | One actual declared route, state and producer gate per foreground package | Record the existing physical boundary handover once; linkage/accounting responsibility, not additional treatment or distribution | 1 kg accepted product at the declared handover |
 
-### Process: Herd, feeding, housing, and animal management (`herd_and_feed_management`)
+### Process: Dairy Herd and Manure Production (`dairy_herd`)
 
 #### Inputs
 
 ##### Product flows
 
-###### Dairy cattle feed ration (`feed_ration`)
+###### Feed and forage (`feed`)
 
-Record forage, concentrate, by-product feed, mineral, and additive quantities consumed by the represented herd,
-with origin, animal class, as-fed mass, and dry-matter fraction.
+Purchased and on-farm feed consumed by lactating, dry, replacement and calf groups; retain as-fed and dry-matter records.
 
-- Selected flow: Route-specific cattle feed materials
-- Flow property / unit: Mass / kg dry matter
-- Amount rule: Sum feed dry matter consumed by all represented herd classes and normalize by farm-gate FPCM.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_feed_records`
-- Range: Provisional feed-intake QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10
-  - Unit: kg dry matter/kg FPCM
-  - Basis: total herd feed dry matter per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
 
-###### Herd water and housing energy (`herd_resources`)
+Raw quantity and calculation requirements: Measured feed issue and grazing intake by feed, animal class and period Original collection denominator kind: process_output.
 
-Record water, electricity, and fuels for drinking, ventilation, lighting, feeding equipment, pumping, and other
-herd operations; keep distinct supplied flows in the concrete data package.
-
-- Selected flow: Route-specific water and energy carriers
-- Flow property / unit: Mass or energy / kg water, kWh, or MJ
-- Amount rule: Metered use or invoice-reconciled site use assigned by documented physical drivers.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_herd_resource_records`
-- Range: Provisional combined resource QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg water-equivalent screening quantity/kg FPCM
-  - Basis: broad screen only; concrete water and energy flows remain separate
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Replacement cattle entering the herd (`replacement_cattle`)
-
-Record purchased or transferred replacement cattle separately from births within the represented herd.
-
-- Selected flow: Live dairy cattle, route-specific
-- Flow property / unit: Mass / kg live weight
-- Amount rule: Calculate live weight entering from animal movement and weight records.
+- Selected flow: Cattle feed and forage products
+- Flow property / unit: Mass / kg as-fed and kg dry matter
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_herd_records`
+- Collection protocol: `cp_herd_feed`
+- Sources: `fao-leap-large-ruminants-2016`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0.1
+  - Upper: 50
+  - Unit: kg dry matter/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Herd water supply (`herd_water`)
+
+Record water actually supplied for drinking and husbandry by source and animal group; distinguish unmanaged rainfall.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Metered or estimated supplied water by source, use and period Original collection denominator kind: process_output.
+
+- Selected flow: Water supplied to the dairy herd
+- Flow property / unit: Volume / m3
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_water`
+- Sources: `fao-leap-livestock-water-2019`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.5
+  - Unit: m3/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Herd management energy (`herd_energy`)
+
+Record electricity and fuels consumed in housing, feeding, pumping and manure handling; retain each carrier.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured energy by carrier, asset, animal group and period Original collection denominator kind: process_output.
+
+- Selected flow: Energy supply for dairy herd
+- Flow property / unit: Energy or carrier quantity / kWh, MJ, L or kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_energy`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 20
+  - Unit: kWh-equivalent/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Waste flows
 
+No separately reported flow of this type.
+
 ##### Elementary flows
+
+No separately reported flow of this type.
 
 #### Outputs
 
 ##### Product flows
 
-###### Live cattle leaving the dairy farm (`live_cattle_sales`)
+###### Independently transferred usable manure (`exported_manure`)
 
-Record calves, culled cows, heifers, and other live cattle leaving the farm by animal class and live weight.
+Record manure as a co-product only when usable material is independently transferred with quantity, quality and handover evidence; do not also count it as waste.
 
-- Selected flow: Live cattle, route-specific
-- Flow property / unit: Mass / kg live weight
-- Amount rule: Calculate total live weight leaving from animal movement and weight records.
+Denominator and scope requirements：per kg saleable raw milk by herd and period
+
+Raw quantity and calculation requirements: measured transferred manure mass and nutrient content Original collection denominator kind: process_output.
+
+- Selected flow: Usable cattle manure transferred as product
+- Flow property / unit: Mass / kg wet and dry matter
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_herd_records`
-
-###### Manure transferred to manure management (`manure_internal`)
-
-Record manure transferred internally to each storage or treatment route, including bedding and dilution water.
-
-- Selected flow: Cattle manure, internal transfer
-- Flow property / unit: Mass / kg
-- Amount rule: Calculate by route from excretion, bedding, and collected dilution-water records.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_records`
-- Range: Provisional internal-manure mass-balance QA screen
+- Collection protocol: `cp_manure`
+- Sources: `fao-leap-nutrient-flows-2018`
+- Range: Provisional exported-manure screen
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
-  - Upper: 100
-  - Unit: kg/kg FPCM
-  - Basis: manure transferred internally per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
+  - Upper: 30
+  - Unit: kg wet manure/kg saleable raw milk
+  - Basis: route-dependent transfer with quantity and quality records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Transferred calves and culled cattle (`calves_culls`)
+
+Independently transferred live animals are separate co-products, with class, live mass and handover; animals retained as replacements remain internal.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured live mass and count at independent transfer Original collection denominator kind: process_output.
+
+- Selected flow: Live calves or culled cattle
+- Flow property / unit: Mass / kg live weight
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_herd_events`
+- Sources: `fao-leap-large-ruminants-2016`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 2
+  - Unit: kg live mass/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Waste flows
 
-###### Animal mortalities requiring treatment (`animal_mortalities`)
+###### Collected manure or residual excreta (`manure_residue`)
 
-Record animals that die within the farm boundary by class, mass, and treatment route.
+Route collected and deposited manure separately from the product-card export. This waste card contains unusable residue and material sent for controlled treatment without independent product handover.
 
-- Selected flow: Animal mortality waste, route-specific
-- Flow property / unit: Mass / kg
-- Amount rule: Sum recorded mortality mass and normalize by FPCM.
-- Value mode: Foreground record (`foreground_record`)
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured manure mass or calculated pathway mass by animal group and period Original collection denominator kind: process_output.
+
+- Selected flow: Cattle manure residue or transferred manure
+- Flow property / unit: Mass / kg wet and dry matter
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_herd_records`
-- Range: Mortality mass-balance QA screen
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_manure`
+- Sources: `fao-leap-nutrient-flows-2018`
+- Range: Provisional screening range
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
-  - Upper: 1
-  - Unit: kg/kg FPCM
-  - Basis: mortality mass per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
+  - Upper: 30
+  - Unit: kg wet manure/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Elementary flows
 
 ###### Enteric methane to air (`enteric_methane`)
 
-Calculate CH4 from enteric fermentation for every represented cattle class using consistent activity,
-productivity, diet, and region-specific method parameters.
+Calculate biogenic enteric CH4 from declared cattle category, activity and factor tier; keep manure CH4 separate.
 
-- Selected flow: Methane to air
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Calculated category-specific enteric CH4 Original collection denominator kind: process_output.
+
+- Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
-- Amount rule: Apply `calc_enteric_ch4` and normalize the period result by farm-gate FPCM.
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_herd_records`
+- Collection protocol: `cp_herd_events`
 - Sources: `ipcc-2019-livestock-manure`
-- Range: Provisional enteric-CH4 QA screen
+- Range: Provisional screening range
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1
-  - Unit: kg CH4/kg FPCM
-  - Basis: enteric methane per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
+  - Unit: kg CH4/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-### Process: Manure collection, storage, treatment, and export (`manure_management`)
+###### Manure nitrous oxide to air (`manure_n2o`)
 
-#### Inputs
+Calculate direct and applicable indirect N2O by recorded manure nitrogen and management pathway.
 
-##### Product flows
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
 
-###### Manure received from the represented herd (`manure_received`)
+Raw quantity and calculation requirements: Calculated pathway-specific manure N2O Original collection denominator kind: process_output.
 
-Keep manure quantity, volatile solids, nitrogen, bedding, dilution, storage, treatment, and destination records
-consistent with the internal herd output.
-
-- Selected flow: Cattle manure, internal transfer
-- Flow property / unit: Mass / kg
-- Amount rule: Equal `manure_internal` after route disaggregation; internal transfers cancel in the aggregated system.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_records`
-
-##### Waste flows
-
-##### Elementary flows
-
-#### Outputs
-
-##### Product flows
-
-###### Exported manure or recovered product (`exported_manure`)
-
-Record manure, digestate, compost, separated solids, recovered nutrients, or energy products leaving the farm,
-with classification as residue, co-product, or waste.
-
-- Selected flow: Route-specific manure or recovered product
-- Flow property / unit: Mass / kg
-- Amount rule: Measured dispatch quantity by product and destination.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_manure_records`
-- Range: Provisional exported-manure QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg/kg FPCM
-  - Basis: exported manure or recovered product per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-###### Manure sent to waste treatment or disposal (`manure_waste`)
-
-Record manure classified and managed as waste, its destination, and treatment burdens retained by the dairy system.
-
-- Selected flow: Route-specific manure waste
-- Flow property / unit: Mass / kg
-- Amount rule: Measured or mass-balanced waste quantity by destination.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_records`
-- Range: Manure-route mass-balance QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg/kg FPCM
-  - Basis: manure waste per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Elementary flows
-
-###### Methane from manure management to air (`manure_methane`)
-
-Calculate manure CH4 by animal class, volatile solids, management system, climate, and methane conversion.
-
-- Selected flow: Methane to air
-- Flow property / unit: Mass / kg CH4
-- Amount rule: Apply `calc_manure_ch4` and normalize by farm-gate FPCM.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_records`
-- Sources: `ipcc-2019-livestock-manure`
-- Range: Provisional manure-CH4 QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1
-  - Unit: kg CH4/kg FPCM
-  - Basis: manure methane per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Nitrous oxide from manure management to air (`manure_nitrous_oxide`)
-
-Calculate direct and applicable indirect N2O without double counting field-application emissions.
-
-- Selected flow: Nitrous oxide to air
+- Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
-- Amount rule: Apply `calc_manure_n2o` and normalize by farm-gate FPCM.
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_records`
+- Collection protocol: `cp_manure`
 - Sources: `ipcc-2019-livestock-manure`
-- Range: Provisional manure-N2O QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 0.2
-  - Unit: kg N2O/kg FPCM
-  - Basis: manure nitrous oxide per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-###### Ammonia losses from manure management to air (`manure_ammonia`)
-
-Record or calculate NH3 consistently with the manure nitrogen balance and indirect N2O calculation.
-
-- Selected flow: Ammonia to air
-- Flow property / unit: Mass / kg NH3
-- Amount rule: Apply the declared regional method to collected manure nitrogen and management-system records.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_records`
-- Sources: `fao-leap-nutrient-flows-2018`
-- Range: Provisional ammonia QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1
-  - Unit: kg NH3/kg FPCM
-  - Basis: ammonia loss per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-### Process: Directly managed feed-crop and pasture production (`on_farm_feed_production`)
-
-#### Inputs
-
-##### Product flows
-
-###### Feed-crop production inputs (`feed_crop_inputs`)
-
-Record seed, fertilizers and nutrient content, manure applied, crop-protection products, fuel, electricity,
-irrigation water, and contracted field operations separately in the concrete package.
-
-- Selected flow: Route-specific feed-crop inputs
-- Flow property / unit: Mass or energy / kg, kg nutrient, MJ, kWh, or kg water
-- Amount rule: Field-operation and purchase records reconciled to managed area and feed output.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_on_farm_feed_records`
-- Range: Provisional managed-feed input QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10000
-  - Unit: kg water-equivalent screening quantity/kg FPCM
-  - Basis: broad screen only; concrete material, nutrient, water, and energy flows remain separate
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-##### Elementary flows
-
-#### Outputs
-
-##### Product flows
-
-###### Feed dry matter supplied to the herd (`on_farm_feed_output`)
-
-Record usable crop, pasture, forage, or conserved-feed dry matter transferred to herd feeding.
-
-- Selected flow: Crop- or forage-specific cattle feed
-- Flow property / unit: Mass / kg dry matter
-- Amount rule: Harvested or grazed dry matter available after measured field and storage losses.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_on_farm_feed_records`
-- Range: Provisional on-farm feed-output QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10
-  - Unit: kg dry matter/kg FPCM
-  - Basis: usable on-farm feed dry matter per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-##### Elementary flows
-
-###### Nitrogen losses from managed feed land (`feed_land_nitrogen_losses`)
-
-Calculate N2O to air and record or calculate NH3 to air and nitrate to water as separate elementary flows in the
-concrete package, consistently with nitrogen inputs, crop uptake, grazing, and manure routing.
-
-- Selected flow: Substance- and compartment-specific nitrogen emission
-- Flow property / unit: Mass / kg substance
-- Amount rule: Apply the declared IPCC and nutrient-flow methods without double counting manure-storage emissions.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_on_farm_feed_records`
-- Sources: `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018`
-- Range: Provisional managed-land nitrogen-loss QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1
-  - Unit: kg substance/kg FPCM
-  - Basis: each separately reported nitrogen-loss substance per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-### Process: Milking, cleaning, cooling, and on-farm storage (`milking_cooling_storage`)
-
-#### Inputs
-
-##### Product flows
-
-###### Milking and cooling resources (`milking_resources`)
-
-Record electricity, fuel, water, detergents, disinfectants, and refrigerant make-up separately. Directly assign
-milking, cooling, and milk-storage resources to milk.
-
-- Selected flow: Route-specific electricity, water, cleaning agent, and refrigerant
-- Flow property / unit: Mass or energy / kg, kWh, or MJ
-- Amount rule: Sub-meter, dosing, service, and invoice records reconciled to site totals.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_milking_records`
-- Range: Provisional milking-resource QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg water-equivalent screening quantity/kg FPCM
-  - Basis: broad screen only; concrete water, material, energy, and refrigerant flows remain separate
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-##### Elementary flows
-
-#### Outputs
-
-##### Product flows
-
-###### Raw cattle milk at the farm gate (`raw_cattle_milk`)
-
-The final product is saleable raw whole cattle milk ready to leave on-farm storage. Physical mass and measured
-composition are retained alongside the FPCM-normalized result.
-
-- Selected flow: Raw milk of cattle `aa8aebbb-724a-417b-8372-2dccd499ce71`
-- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Amount rule: Calculate the physical raw-milk mass corresponding to 1 kg FPCM with `calc_fpcm`.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Product-specific (`product_specific`)
-- Normalization basis: 1 kg FPCM at the farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_milk_output_records`
-- Sources: `idf-dairy-carbon-footprint-2022`
-- Range: Provisional physical-milk conversion QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0.5
-  - Upper: 2
-  - Unit: kg raw milk/kg FPCM
-  - Basis: physical raw-milk mass corresponding to 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-###### Milking wastewater and non-saleable milk (`milking_wastes`)
-
-Record wastewater by treatment route and rejected or discarded milk separately from milk fed internally to animals.
-
-- Selected flow: Route-specific wastewater or raw-milk waste
-- Flow property / unit: Mass / kg
-- Amount rule: Metered, water-balanced, or disposition-record quantity by destination.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_milk_output_records`
-- Range: Milk and water mass-balance QA screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg/kg FPCM
-  - Basis: each separately reported waste flow per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Elementary flows
-
-###### Refrigerant leakage to air (`refrigerant_leakage`)
-
-Record each refrigerant species released from milk-cooling equipment; do not replace mass emissions with
-CO2-equivalent values.
-
-- Selected flow: Refrigerant emission to air, species-specific
-- Flow property / unit: Mass / kg
-- Amount rule: Equipment inventory balance or service-record loss assigned to milk cooling.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg FPCM at farm gate
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_milking_records`
-- Range: Provisional refrigerant-loss QA screen
+- Range: Provisional screening range
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 0.1
-  - Unit: kg refrigerant/kg FPCM
-  - Basis: refrigerant loss per 1 kg FPCM
-  - Basis kind: Reference flow (`reference_flow`)
+  - Unit: kg N2O/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Manure ammonia to air (`manure_ammonia`)
+
+Track volatilized NH3 by manure nitrogen pathway and subtract transferred nitrogen consistently.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Calculated pathway-specific ammonia Original collection denominator kind: process_output.
+
+- Selected flow: Ammonia to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
+- Flow property / unit: Mass / kg NH3
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_manure`
+- Sources: `fao-leap-nutrient-flows-2018`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.2
+  - Unit: kg NH3/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+### Process: Milking and Raw Milk Capture (`milk_collection`)
+
+#### Inputs
+
+##### Product flows
+
+###### Milking and cleaning water (`milking_water`)
+
+Record supplied water for udder preparation, equipment rinsing and washing; segregate from herd drinking water.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Metered water for milking and cleaning Original collection denominator kind: process_output.
+
+- Selected flow: Milking and cleaning water supply
+- Flow property / unit: Volume / m3
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_water`
+- Sources: `fao-leap-livestock-water-2019`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.2
+  - Unit: m3/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Milking energy supply (`milking_energy`)
+
+Meter vacuum pump and milk-transfer energy by carrier and period.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured milking energy Original collection denominator kind: process_output.
+
+- Selected flow: Milking energy supply
+- Flow property / unit: Energy or carrier quantity / kWh, MJ, L or kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_energy`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 5
+  - Unit: kWh-equivalent/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+No separately reported flow of this type.
+
+##### Elementary flows
+
+No separately reported flow of this type.
+
+#### Outputs
+
+##### Product flows
+
+###### Collected raw milk before conditioning (`collected_raw_milk`)
+
+This internal harvest output leaves the managed herd and enters first conditioning; it is not a second saleable reference output.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured gross collected raw milk mass Original collection denominator kind: process_output.
+
+- Selected flow: Warm raw cow milk at milking
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 2
+  - Unit: kg collected raw milk/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+###### Milking wash wastewater (`milking_wastewater`)
+
+Collect cleaning effluent by discharge or treatment destination; avoid double counting water retained in milk.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured or calculated wastewater by destination Original collection denominator kind: process_output.
+
+- Selected flow: Milking wash wastewater
+- Flow property / unit: Volume / m3
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_water`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.2
+  - Unit: m3/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Elementary flows
+
+No separately reported flow of this type.
+
+### Process: First Farm Milk Conditioning (`primary_conditioning`)
+
+#### Inputs
+
+##### Product flows
+
+###### Collected raw milk received (`collected_milk_input`)
+
+This same-batch internal transfer receives the harvest output for straining and acceptance; it is not an additional purchased milk product.
+
+Denominator and scope requirements：per kg saleable raw milk, same batch
+
+Raw quantity and calculation requirements: measured gross collected mass at the milking hand-off Original collection denominator kind: process_output.
+
+- Selected flow: Collected warm raw cow milk
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Provisional internal transfer screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 2
+  - Unit: kg/kg saleable raw milk
+  - Basis: same-batch gross milk received from milking
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Initial conditioning water (`conditioning_water`)
+
+Water for in-farm straining and equipment hygiene; no dilution of raw milk is permitted.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured water entering initial conditioning Original collection denominator kind: process_output.
+
+- Selected flow: Conditioning process water
+- Flow property / unit: Volume / m3
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_water`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.1
+  - Unit: m3/kg saleable raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+No separately reported flow of this type.
+
+##### Elementary flows
+
+No separately reported flow of this type.
+
+#### Outputs
+
+##### Product flows
+
+###### Accepted milk sent to farm cooling (`conditioned_milk_to_cooling`)
+
+This accepted internal transfer occurs only when farm-controlled cooling follows conditioning; it is not a warm farm-gate sale.
+
+Denominator and scope requirements：per kg saleable raw milk, same batch
+
+Raw quantity and calculation requirements: measured accepted mass sent to farm cooling by batch Original collection denominator kind: process_output.
+
+- Selected flow: Accepted warm raw cow milk for farm cooling
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Provisional internal transfer screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1.2
+  - Unit: kg/kg saleable raw milk
+  - Basis: accepted milk sent to cooling before cooling loss
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Warm raw milk at farm gate (`warm_saleable_milk`)
+
+Final reference output only when accepted raw milk is handed over before farm-controlled cooling; mutually exclusive with chilled final output.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured accepted warm raw milk mass at handover Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
+- Selected flow: Raw cow milk, warm, farm gate
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Physical output-share guardrail
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1
+  - Unit: kg/kg saleable raw milk
+  - Basis: physical final-output share bounded by zero and one
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `fao-leap-large-ruminants-2016`
+
+##### Waste flows
+
+###### Rejected milk and straining residues (`rejected_milk`)
+
+Record contaminated, withheld or otherwise rejected milk and captured solids by reason and destination, never as saleable product.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured rejected mass by reason and destination Original collection denominator kind: process_output.
+
+- Selected flow: Rejected raw milk and straining residue
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.5
+  - Unit: kg rejected/kg gross collected raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Elementary flows
+
+No separately reported flow of this type.
+
+### Process: Farm-owned Milk Cooling (`farm_cooling`)
+
+#### Inputs
+
+##### Product flows
+
+###### Accepted raw milk entering farm cooling (`milk_entering_cooling`)
+
+Match the conditioned output by batch, mass and time; internal transfer adds no upstream burden again.
+
+Denominator and scope requirements：per kg saleable raw milk, same batch
+
+Raw quantity and calculation requirements: measured accepted mass received from conditioning by batch Original collection denominator kind: process_output.
+
+- Selected flow: Accepted warm raw cow milk entering farm cooling
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Provisional internal transfer screen
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1.2
+  - Unit: kg/kg saleable raw milk
+  - Basis: accepted milk entering farm cooling before cooling loss
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Farm-owned milk cooling energy (`cooling_energy`)
+
+Record only energy for cooling performed under producing-farm control before farm-gate handover.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Metered cooling energy by carrier and reporting period Original collection denominator kind: process_output.
+
+- Selected flow: Energy supply for farm milk cooling
+- Flow property / unit: Energy or carrier quantity / kWh, MJ, L or kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_energy`
+- Sources: `fao-milk-cooling-centres-2016`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 5
+  - Unit: kWh-equivalent/kg chilled raw milk
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Waste flows
+
+No separately reported flow of this type.
+
+##### Elementary flows
+
+No separately reported flow of this type.
+
+#### Outputs
+
+##### Product flows
+
+###### Chilled raw milk at farm gate (`chilled_saleable_milk`)
+
+Final reference output only after farm-controlled cooling; record handover temperature and storage time. This explicitly chilled identity does not cover warm raw milk.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured accepted chilled raw milk mass at handover Original collection denominator kind: process_output.
+
+Producer-handover linkage: Only when selected as the actual terminal source for this route, this state/gate-specific row supplies the same accepted physical goods to reference_handover_input. In that case it is an internal handover record, not a second external reference sale; otherwise retain its original intermediate role. Retain its exact identity and original route condition. Choose the actual terminal source, not all successive transfers; match the same lot and compatible species/state/gate evidence. A narrower fixed gate or species is never broadened. The handover interface adds no processing, transport, yield assumption or repeated handling burden.
+
+- Selected flow: Raw milk, chilled, farm-gate production mix `aa8aebbb-724a-417b-8372-2dccd499ce71`
+- Flow property / unit: Mass / kg
+- Binding: Fixed (`fixed`)
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Sources: `fao-milk-cooling-centres-2016`
+- Range: Physical output-share guardrail
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 1
+  - Unit: kg/kg saleable raw milk
+  - Basis: physical final-output share bounded by zero and one
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `fao-leap-large-ruminants-2016`
+
+##### Waste flows
+
+###### Cooling and storage loss (`cooling_loss`)
+
+Record spills and rejected milk during controlled cooling separately from acceptable chilled output.
+
+Denominator and scope requirements：per kg saleable raw milk with herd and period strata retained
+
+Raw quantity and calculation requirements: Measured milk mass lost or rejected during cooling Original collection denominator kind: process_output.
+
+- Selected flow: Raw milk cooling loss
+- Flow property / unit: Mass / kg
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_milk_balance`
+- Range: Provisional screening range
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 0.2
+  - Unit: kg/kg milk entering farm cooling
+  - Basis: broad route-dependent first-pass screen; replace with measured records
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+##### Elementary flows
+
+No separately reported flow of this type.
+
+### Process: Actual producer reference-product handover (`reference_handover`)
+
+Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
+
+#### Inputs
+
+##### Product flows
+
+###### Raw milk of cattle, warm or farm-chilled, producing farm gate for actual producer-handover linkage (`reference_handover_input`)
+
+This input matches the accepted goods represented by `warm_saleable_milk`, `chilled_saleable_milk` under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `warm_saleable_milk`, `chilled_saleable_milk`
+
+Required product-instance qualifiers: cattle species; raw state; farm gate; warm or chilled state; temperature; fat/protein or solids; accepted and rejected mass; reporting period
+
+- Selected flow: Raw milk of cattle, warm or farm-chilled, producing farm gate for actual producer-handover linkage
+- Flow property / unit: Mass / kg
+- Amount rule: Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+- Sources: `fao-milk-cooling-centres-2016`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
+
+#### Outputs
+
+##### Product flows
+
+###### Raw milk of cattle, warm or farm-chilled, producing farm gate (`reference_product_handover`)
+
+This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID.
+
+The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation.
+
+Selected source/interface rows: `warm_saleable_milk`, `chilled_saleable_milk`
+
+Required product-instance qualifiers: cattle species; raw state; farm gate; warm or chilled state; temperature; fat/protein or solids; accepted and rejected mass; reporting period
+
+- Selected flow: Raw milk of cattle, warm or farm-chilled, producing farm gate
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reference_handover`
+- Sources: `fao-milk-cooling-centres-2016`
+
+- Range: Exact identity-reconciliation check after normalization, not a production-yield default
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg
+  - Basis: Declared reference quantity; input and output are the same accepted physical goods under the same handover ledger
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
 
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `allocation_subdivision_first` | Separable farm activities and outputs | Subdivide directly attributable activities before allocation. Assign milking, milk cooling, and milk-storage burdens entirely to milk; separately accounted animal-rearing or exported crop/energy activities do not enter the shared dairy allocation pool. | `idf-dairy-carbon-footprint-2022` |
-| `allocation_milk_live_animals` | Shared dairy-herd burdens between milk and live cattle | Apply the IDF 2022 biophysical net-energy method: `AF_milk = (NE_L × M_FPCM) / ((NE_L × M_FPCM) + Σ(NE_G,i × M_liveweight,i))`; use consistent period FPCM and live-weight sales, class-specific net energy for growth when available, and disclose every factor. The remaining fraction is assigned to live animals. | `idf-dairy-carbon-footprint-2022` |
-| `allocation_manure` | Manure leaving the farm | Classify manure explicitly. Treat manure with essentially no value at the boundary as a residue using cut-off; if it is a co-product, use disclosed economic allocation; if it is waste, assign its treatment burdens to the dairy system without an avoided-product credit. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `allocation_internal_flows` | Internal milk, feed, and manure transfers | Cancel internal product transfers only after preserving their quantities and characteristics. Internal raw milk fed to calves reduces saleable output; internally produced feed and manure shall not receive duplicated upstream burdens. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
+| `a_outputs` | milk, transferred calves/culls and manure | Treat as co-products only when independently transferred and measured; rejected milk, mortality, unusable manure and internal replacements are not saleable co-products. | `fao-leap-large-ruminants-2016` |
+| `a_mass_balance` | warm and chilled milk | For each batch, gross collected milk equals warm final output plus milk sent to cooling plus pre-cooling rejects and losses; milk sent to cooling equals milk entering cooling, which equals chilled final output plus cooling rejects and losses. Warm and chilled final paths are exclusive per batch. Internal transfer cards carry no second product burden. | `fao-leap-large-ruminants-2016` |
+| `a_coproduct` | milk and independently transferred live cattle | First separate product-specific operations such as milking and cooling. Attribute inseparable herd burdens between milk and live cattle by a documented biophysical relationship using milk-production and live-growth energy requirements by animal class and period; retain inputs and test sensitivity. Economic allocation is a disclosed sensitivity only, not the default. Do not assume substitution credit. | `fao-leap-large-ruminants-2016` |
+| `a_period_asset` | herd and shared assets | Attribute replacements, housing, milking and cooling assets by herd, phase and measured service to benefiting periods and outputs; count each asset service and opening burden once. | `fao-leap-large-ruminants-2016` |
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd_records` | `herd_and_feed_management` | Herd structure, movements, live weight, mortality, and enteric parameters | Animal register and herd-performance records | animal_class; head_count; entry_date; exit_date; exit_reason; live_weight; body_weight; milk_yield; feed_digestibility; gross_energy_intake | Farm register, calibrated scales or documented weight estimation, and herd-system export | head; kg live weight; kg milk; MJ/head/day | Continuous events, monthly summary | At least one representative 12-month period; longer averaging when unstable | All cattle supporting reported milk | Reconcile opening stock + births + purchases - sales - transfers - deaths = closing stock; aggregate animal-days | Register reconciliation, scale calibration or method, missing-event log, and system export |
-| `cp_feed_records` | `herd_and_feed_management` | Feed ration and bedding | Purchase, mixing, inventory, grazing, and laboratory records | material_id; origin; animal_class; as_fed_mass; dry_matter_fraction; opening_stock; closing_stock; feed_waste; bedding_mass | Weighbridge, invoices, mixer logs, feed analyses, grazing estimate, and stock reconciliation | kg as fed; kg dry matter; % dry matter | Batch or daily, monthly summary | Same representative period as milk and herd | All feed and bedding used by represented herd | Inputs + opening stock - closing stock - losses; convert to dry matter and normalize by FPCM | Calibration, invoices, laboratory certificates, and reconciliation difference |
-| `cp_herd_resource_records` | `herd_and_feed_management` | Herd water and housing energy | Meter, invoice, and equipment-operation records | meter_id; carrier; opening_reading; closing_reading; invoice_quantity; equipment_hours; allocation_driver | Sub-meter preferred; otherwise site reconciliation with physical allocation | kg water; kWh; MJ; kg or L fuel | Monthly | Same representative period as milk | Herd housing and service areas, excluding separately metered milking | Reconcile meters and invoices; preserve distinct carriers | Meter calibration, invoices, conversion factors, and allocation worksheet |
-| `cp_manure_records` | `manure_management` | Manure quantity, composition, route, treatment, export, and emissions | Manure-management and nutrient-balance records | animal_class; volatile_solids; nitrogen_excretion; bedding; dilution_water; management_system; climate; storage_duration; treatment; exported_mass; destination | Records, engineering balance, manure analysis, storage measurement, and method calculation | kg manure; kg volatile solids; kg N; days; kg product | Event or batch, monthly summary | Same period as herd and milk | Every manure route for all represented herd classes | Reconcile generated, stored, treated, applied, exported, and disposed manure; calculate by route | Sampling, laboratory results, storage dimensions, receipts, balance closure, and factor provenance |
-| `cp_on_farm_feed_records` | `on_farm_feed_production` | Managed crop and pasture inputs, outputs, land, and nutrient losses | Field-operation, harvest, grazing, and land records | field_id; crop_or_pasture; area; seed; fertilizer; nutrient_content; manure_applied; crop_protection; fuel; electricity; irrigation; yield; dry_matter; residue; grazing_days; previous_land_use | Field logs, invoices, calibrated application records, yield measurement, grazing records, and spatial evidence | ha; kg; kg nutrient; MJ; kWh; kg water; kg dry matter | Each operation and harvest | Crop years supplying feed to milk period | All directly managed feed land and included contracted operations | Allocate field inputs to harvested or grazed dry matter; retain crop, field, and year | Completeness, calibration, invoices, dry-matter tests, yield reconciliation, and land evidence |
-| `cp_milking_records` | `milking_cooling_storage` | Milking, cleaning, cooling, storage, water, energy, chemicals, and refrigerant | Meter, dosing, service, and cleaning-cycle records | electricity; fuel; water; cleaning_agent; dose; cleaning_cycles; refrigerant_type; refrigerant_added; tank_temperature | Sub-meter, invoice, dosing logs, controller, service records, and water balance | kWh; MJ; kg water; kg chemical; kg refrigerant; °C | Daily or batch, monthly reconciliation | Same period as milk output | All parlours, milk rooms, cooling, and farm storage | Directly assign measured milking/cooling loads to milk and reconcile with site totals | Calibration, invoices, dosing checks, service certificates, temperature logs, and balance closure |
-| `cp_milk_output_records` | `milking_cooling_storage` | Physical milk, composition, internal use, rejected milk, wastewater, and saleable output | Tank, processor receipt, laboratory, disposition, and water-balance records | milk_mass; milk_volume; density; fat_percent; true_protein_percent; temperature; saleable_mass; calf_feed_mass; rejected_mass; wastewater; destination; timestamp | Calibrated tank or weigh record linked to laboratory composition, processor receipt, and water balance | kg; L; kg/L; % by mass; °C | Each pickup or batch; representative composition testing | Same period as herd and resource records, including seasonality | All produced milk, every disposition, and related wastewater | Reconcile produced = saleable + internal use + rejected + inventory change; calculate FPCM by batch or period | Tank calibration, laboratory QA, receipts, density method, and mass-balance closure |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `cp_herd_events` | `dairy_herd` | herd and CH4 | animal-event log | class, lactation state, count, dates, opening/closing live mass, growth, source, disposition | herd register and scale; Raw aggregation requirements: cohort-period totals; one opening balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | each event | full reporting period | producing farm | per reference flow | register, scale calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_herd_feed` | `dairy_herd` | feed | feed issue and grazing log | feed id, origin, mass, dry matter, class, period | store issue and pasture observation; Raw aggregation requirements: sum by feed and class; convert dry matter. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | daily or batch | full reporting period | producing farm | per reference flow | invoice, weigh ticket, moisture test; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_water` | all applicable nodes | supplied water and wastewater | meter and destination log | source, purpose, volume, destination, meter id | meter reading and service log; Raw aggregation requirements: assign by consumer and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | m3 | each meter interval | full reporting period | producing farm | per reference flow | meter calibration, invoice; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_energy` | all applicable nodes | energy and assets | meter/fuel log | carrier, quantity, unit, meter, asset, service hours, consumer | meter, invoice, fuel receipt; Raw aggregation requirements: allocate shared use once by measured service. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | native carrier unit | each interval | full reporting period | producing farm | per reference flow | meter, invoice, asset register; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_manure` | `dairy_herd` | manure and N emissions | pathway log | animal class, VS, N, pathway, mass, handover | storage and nutrient records; Raw aggregation requirements: mass and nutrient balance by pathway. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kg N | monthly and event | full reporting period | producing farm | per reference flow | weigh ticket, assay, destination; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_milk_balance` | milk_collection; primary_conditioning; farm_cooling | accepted and rejected milk | milk batch log | gross mass, accepted mass, rejection reason, loss, temperature, solids, handover | calibrated tank/scale and sampling; Raw aggregation requirements: batch balance; final warm/chilled partition. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; °C; % | each batch | full reporting period | producing farm | per reference flow | tank calibration, acceptance and lab record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
 
 ### Calculation Rules
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
-| --- | --- | --- | --- | --- | --- |
-| `calc_fpcm` | Physical raw cattle milk | `FPCM (kg) = milk mass (kg) × [0.1226 × fat% + 0.0776 × true protein% + 0.2534]`; apply composition values as percentages, calculate at the most representative batch or period resolution, and sum before normalization. | milk_mass; fat_percent; true_protein_percent | kg FPCM | `idf-dairy-carbon-footprint-2022` |
-| `calc_saleable_milk_balance` | Milk dispositions | `total physical milk produced = saleable farm-gate milk + internal milk use + rejected milk + closing inventory - opening inventory`; investigate unexplained imbalance and normalize only saleable output. | total_milk; saleable_milk; internal_use; rejected_milk; opening_inventory; closing_inventory | reconciled kg physical milk and kg FPCM | `mass-balance-identity`; `idf-dairy-carbon-footprint-2022` |
-| `calc_milk_allocation` | Shared dairy-herd burdens | `AF_milk = (NE_L × M_FPCM) / ((NE_L × M_FPCM) + Σ(NE_G,i × M_liveweight,i))`; `AF_live_animals = 1 - AF_milk`. Use IDF class-specific net-energy values or justified values and directly assign separable activities first. | M_FPCM; animal_class; M_liveweight_i; NE_L; NE_G_i; directly_attributable_burdens | disclosed allocation factors and allocated shared inventory | `idf-dairy-carbon-footprint-2022` |
-| `calc_enteric_ch4` | All represented cattle classes | Use the appropriate IPCC 2019 Refinement tier. Prefer Tier 2 when gross-energy intake, methane conversion, animal class, productivity, and diet data are available; otherwise use the most representative permitted factor and disclose the limitation. | animal_days; animal_class; gross_energy_intake or emission_factor; methane_conversion_factor; productivity; diet | kg CH4 from enteric fermentation | `ipcc-2019-livestock-manure` |
-| `calc_manure_ch4` | Each manure route | Calculate manure CH4 from animal population, volatile-solids excretion, maximum methane-producing capacity, management-system fraction, methane conversion, and applicable recovery or oxidation terms. | animal_days; volatile_solids; manure_system_fraction; B0; MCF; recovery; oxidation | kg CH4 from manure management | `ipcc-2019-livestock-manure` |
-| `calc_manure_n2o` | Each manure route | Calculate direct and indirect N2O from nitrogen excretion and management-system fractions; keep volatilized and leached nitrogen consistent with NH3, nitrate, and managed-soil calculations. | nitrogen_excretion; manure_system_fraction; direct_EF; volatilization_fraction; leaching_fraction; indirect_EF | kg N2O from manure management | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
-| `calc_inventory_normalization` | All inventory rows | Divide period quantities by saleable farm-gate FPCM after internal-flow cancellation and allocation; preserve totals, period, and allocation factor for audit. | reporting_period_amount; saleable_FPCM; internal_flow_flag; allocation_factor | inventory amount per 1 kg FPCM | `mass-balance-identity`; `idf-dairy-carbon-footprint-2022` |
+| --- | --- | --- | --- | --- |
+| `c_milk_balance` | milk batches | Gross collected = warm final + sent to cooling + pre-cooling reject/loss; sent to cooling = entering cooling = chilled final + cooling reject/loss. Select exactly one terminal state per batch and count intermediate transfers once. | batch mass, rejection, each internal handover, loss, final state | kg accepted milk | `fao-leap-large-ruminants-2016` |
+| `c_enteric_ch4` | dairy herd | Calculate enteric CH4 by IPCC dairy category, activity and chosen tier; retain factor version. | animal class, population, period, feed/activity | kg CH4 | `ipcc-2019-livestock-manure` |
+| `c_manure` | manure | Calculate N2O, NH3 and applicable CH4 separately by VS, nitrogen and pathway; prevent duplicate emission accounting. | manure VS, N, pathway and period | kg species | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
+| `c_shared_service` | shared assets | Assign each shared asset once among herd, milking and cooling nodes and periods by evidenced service. | meter/asset register, service records | allocated input quantity | `fao-leap-large-ruminants-2016` |
+| `c_biophysical_allocation` | milk and transferred live cattle | Separate product-specific operations first, then calculate the residual herd-burden shares from documented energy requirements for milk production and live growth by class and period; shares must sum to one. | milk yield/composition, herd growth, classes, energy-requirement method and period | milk and live-cattle burden shares | `fao-leap-large-ruminants-2016` |
 
 ### Data Quality Requirements
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| `dq_identity` | Reference product and classification | Confirm cattle species, raw/unprocessed state, CPC 02211 scope, reference-flow UUID, farm-gate location, and saleable status. | Product specification, milk receipt, classification record, and TianGong identity confirmation |
-| `dq_temporal` | All foreground records | Use a common representative period of at least 12 months unless a shorter period demonstrably covers seasonality; disclose herd expansion, contraction, disruption, drought, or other non-steady conditions. | Dated herd, milk, feed, resource, field, and manure records plus representativeness statement |
-| `dq_completeness` | Farm balances | Reconcile milk dispositions, herd movements, feed inventory, water and energy totals, manure routes, and nitrogen flows; quantify missing coverage and omit no material herd class or manure route silently. | Reconciliation worksheets, closure differences, missing-data log, and corrective actions |
-| `dq_measurement` | Metered, weighed, and laboratory data | Retain equipment identity, calibration or verification, sampling method, laboratory method, density conversion, and estimation hierarchy. | Calibration certificates, laboratory QA, sampling records, invoices, and estimation rationale |
-| `dq_geography_technology` | Upstream datasets and emission methods | Match geography, production system, feed origin, electricity, fuel, climate, manure system, and animal productivity; disclose proxies. | Dataset metadata, supplier information, factor provenance, and proxy justification |
-| `dq_consistency` | Allocation and direct-emission calculations | Use one population and period across FPCM, live-weight outputs, enteric emissions, manure emissions, and allocation; keep directly assigned burdens outside the shared allocation pool. | Calculation workbook, factor version, source references, and independent formula check |
+| `dq_identity` | each milk batch | Verify cow/raw identity, warm/chilled state, farm gate and transfer of control; chilled UUID cannot represent warm milk. | batch and handover records |
+| `dq_completeness` | herd and milk | Reconcile opening/closing herd and gross, accepted, rejected and lost mass by batch. | herd register and tank balance |
+| `dq_period` | cross-period inputs | Verify replacement, asset and termination attribution to benefiting periods exactly once. | phase and asset logs |
+| `dq_flow` | supplies and emissions | Retain water and energy source, manure pathway, emission species and medium, and factor version. | meters, nutrient log and calculation sheet |
 
 ## 9. Validation Rules
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `validate_identity_scope` | Product identity | Fail when the reference product is not cattle milk, is processed beyond raw on-farm cooling/storage, lacks the declared farm gate, or does not use the confirmed reference-flow identity. | `idf-dairy-carbon-footprint-2022` |
-| `validate_reference_flow` | Functional unit and reference flow | Fail when physical milk mass, fat percentage, true-protein percentage, FPCM calculation, saleable status, or normalization to exactly 1 kg FPCM is missing or inconsistent. | `idf-dairy-carbon-footprint-2022` |
-| `validate_period_herd` | Temporal and herd coverage | Fail when herd classes, animal movements, milk output, feed, manure, and resource records do not share a representative period or opening and closing herd inventories cannot be reconciled. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `validate_boundary` | Boundary completeness | Fail when material feed supply, directly managed feed production, enteric emissions, manure routes, managed-soil emissions, milking, cooling, water, energy, or milk losses are omitted without an applicability reason and data-gap disclosure. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `validate_emissions` | Direct emissions | Fail when enteric or manure methods omit region, cattle category, productivity, diet or feed-energy basis, manure system, climate, factor source, or calculation tier needed by the method. | `ipcc-2019-livestock-manure` |
-| `validate_allocation` | Co-products and residues | Fail when directly attributable activities are allocated, live-animal outputs are omitted, IDF net-energy allocation inputs or factors are missing, manure classification is undeclared, or fractions do not sum to one within tolerance. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
-| `validate_internal_flows` | Internal milk, feed, and manure | Fail when internal flows are omitted before reconciliation, counted as both purchased and internally produced, or left in the aggregated inventory without cancellation. | `mass-balance-identity` |
-| `validate_quality_disclosure` | Dataset publication readiness | Fail when the package lacks geography, production system, period, herd structure, milk composition, feed origin, manure systems, allocation, source/factor versions, proxy disclosure, important QA-range exceptions, or material data gaps. | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
+| `v_gate` | reference | Confirm final milk handover at producing farm gate and exactly one warm or farm-chilled batch state; cooling-centre records belong downstream. | `fao-milk-cooling-centres-2016` |
+| `v_mass` | batch balance | Reconcile gross, accepted, rejected and loss mass; retain composition, temperature and acceptance evidence. | `fao-leap-large-ruminants-2016` |
+| `v_routes` | routes and herd | Evidence grazing/housed deltas in feed, manure, energy and calculation, with replacements and culls reconciled by herd and period. | `fao-leap-large-ruminants-2016` |
+| `v_attribution` | co-products and shared assets | Check each independent output handover, biophysical energy-demand inputs, asset service and cross-period burden for one-time attribution; disclose manure treatment and sensitivity. | `fao-leap-large-ruminants-2016` |
+| `v_emissions` | emissions | Check IPCC cattle class, manure pathway, species, medium and applicable factors; reject unspeciated aggregate emission UUIDs. | `ipcc-2019-livestock-manure` |
 
 ## 10. Published Dataset Profile
 
 | Field | Value |
 | --- | --- |
-| dataset_role | Foreground raw-cattle-milk production data package normalized to 1 kg FPCM at the farm gate |
-| downstream_use | May be published as a `secondary_dataset` or `background_dataset` for dairy processing, food-product, agricultural, and comparative supply-chain models when scope and quality are compatible |
-| allowed_use | Attributional farm-gate inventory, hotspot analysis within the declared farm system, supplier-specific or representative raw-milk input to downstream models, and scenario comparison using the same functional unit and allocation method |
-| excluded_use | Direct consumer or nutrition claims; processed-milk representation; non-cattle milk; consequential market-change claims; cross-study ranking with incompatible boundaries, allocation, geography, period, or data quality; use of provisional QA ranges as default inventory |
-| required_metadata | PCR id and version state; CPC reference; geography; farm production system; reporting period; herd classes and inventory change; raw-milk and FPCM output; fat and true-protein content; farm-gate temperature; feed origin; manure systems; land management; allocation method and factors; Tiangong identities; source and factor versions |
-| required_quality_disclosure | Primary-data coverage by inventory group; measurement and calibration evidence; temporal, geographic, and technological representativeness; mass/energy/nitrogen balance closure; proxies and missing data; emission tier and factors; allocation sensitivity; provisional QA-range exceptions |
-| update_trigger | Recalculate and republish when milk composition, herd productivity or structure, feed system, manure management, farm energy supply, land management, geography, reporting period, allocation method, reference identity, or a material source/factor changes enough to affect representativeness |
+| dataset_role | foreground package for raw cow milk at producing farm gate |
+| downstream_use | secondary_dataset; background_dataset |
+| allowed_use | use in downstream processes or lifecycle models when species, handover state, geography, route and quality align |
+| excluded_use | not representative of pasteurized/consumer-packaged milk, buffalo/goat milk, or independent cooling centres |
+| required_metadata | herd, periods, route, milk amount/quality, warm/chilled state, temperature, rejection, manure, co-products and attribution |
+| required_quality_disclosure | unresolved flow identities, provisional ranges, measurement quality, emission factors, upstream data and allocation sensitivity |
+| update_trigger | material change in herd composition, route, cooling control, handover state, method or factors |
 
 ## 11. Data Sources
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `idf-dairy-carbon-footprint-2022` | standard | International Dairy Federation (2022), *The IDF global Carbon Footprint standard for the dairy sector*, Bulletin 520/2022, DOI: 10.56169/FKRK7166, https://shop.fil-idf.org/products/the-idf-global-carbon-footprint-standard-for-the-dairy-sector (accessed 2026-07-24) | FPCM functional unit and formula, cradle-to-farm-gate inventory, data quality, milk/live-animal allocation, manure handling, direct assignment, and reporting |
-| `fao-leap-large-ruminants-2016` | official_guidance | FAO LEAP Partnership (2016), *Environmental performance of large ruminant supply chains: Guidelines for assessment*, ISBN 978-92-5-109523-2, https://openknowledge.fao.org/handle/20.500.14283/i6494en (accessed 2026-07-24) | Large-ruminant process boundary, whole-herd coverage, feed and manure treatment, and allocation hierarchy |
-| `fao-leap-animal-feed-2016` | official_guidance | FAO LEAP Partnership (2016), *Environmental performance of animal feeds supply chains: Guidelines for assessment*, https://www.fao.org/partnerships/leap/resources/publications/en (accessed 2026-07-24) | Feed origin, upstream feed datasets, directly managed feed production, and land-related inventory |
-| `fao-leap-nutrient-flows-2018` | official_guidance | FAO LEAP Partnership (2018), *Nutrient flows and associated environmental impacts in livestock supply chains: Guidelines for quantitative assessment*, https://openknowledge.fao.org/handle/20.500.14283/ca1328en (accessed 2026-07-24) | Manure and managed-land nitrogen balance, ammonia, nitrate, and nutrient-flow consistency |
-| `ipcc-2019-livestock-manure` | method_factor | IPCC (2019), *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Volume 4, Chapter 10: Emissions from Livestock and Manure Management, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf (accessed 2026-07-24) | Enteric CH4, manure CH4, manure N2O, animal categories, activity data, tiers, and factor selection |
-| `ilcd-units-of-mass` | standard | European Commission Joint Research Centre, ILCD reference unit group *Units of mass*, UUID `93a60a57-a4c8-11da-a746-0800200c9a66`, https://eplca.jrc.ec.europa.eu/LCDN/downloads/ILCD_Format_1.1_Documentation/ILCD_UnitGroupDataSet.html (accessed 2026-07-24) | Reference unit-group identity and kg reference unit |
-| `mass-balance-identity` | method_factor | Conservation-of-mass identity applied to milk, feed, herd, and manure reconciliation | Internal-flow cancellation, milk disposition balance, and QA bounds |
+| `fao-leap-large-ruminants-2016` | official_guidance | FAO LEAP (2016), Environmental performance of large ruminant supply chains, https://openknowledge.fao.org/handle/20.500.14283/i6494en | herd, co-products, periods and farm boundary |
+| `ipcc-2019-livestock-manure` | method_factor | IPCC (2019), Refinement Volume 4 Chapter 10, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf | dairy categories, enteric and manure emissions |
+| `fao-leap-nutrient-flows-2018` | official_guidance | FAO LEAP (2018), Nutrient flows and associated environmental impacts, https://openknowledge.fao.org/handle/20.500.14283/ca1328en | nutrient and manure pathways |
+| `fao-leap-livestock-water-2019` | official_guidance | FAO LEAP (2019), Water use in livestock production systems and supply chains, https://www.fao.org/partnerships/leap/resources/publications/ | water source and use distinctions |
+| `fao-milk-cooling-centres-2016` | official_guidance | FAO (2016), Technical and Investment Guidelines for Milk Cooling Centres, https://www.fao.org/sustainable-food-value-chains/library/details/fr/c/426262/ | cooling-centre versus farm-controlled cooling boundary |

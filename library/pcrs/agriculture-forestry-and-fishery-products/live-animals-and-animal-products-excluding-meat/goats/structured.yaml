@@ -1,10 +1,1316 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02123"
-  title: "Goats"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.goats"
+  classification_refs: "CPC 3.0: 02123 Goats"
+  covered_products: "Live domestic goats and kids transferred at the producing farm gate, including meat, dairy, fibre, breeding, replacement, cull, or mixed-purpose animal classes when the reference output remains a live animal."
+  excluded_products: "Sheep and other ruminants; meat and carcasses; raw milk, mohair, cashmere, skins, semen, and embryos as separate reference products; separately sold husbandry or veterinary services; slaughter and post-farm transport."
+  representative_product: "A live domestic goat weighed immediately before farm-gate transfer."
+  production_route: "Parent activity: managed biological production. Route variants are extensive or transhumant grazing and browse, mixed or agropastoral management, and housed or semi-intensive production. Their feed sourcing, movement, shelter, shared infrastructure, manure pathways, energy use, milking or fibre collection, and calculation requirements remain route-specific."
+  market_state: "Alive and fit for the declared transfer purpose, with species or goat type, animal class, sex where material, production purpose, route, live-weight basis, geography, and reporting cohort declared."
+functional_unit:
+  what: "Live domestic goats at the producing farm gate, before post-farm transport or slaughter."
+  how_much: "1 kg live weight."
+  how_well: "Goat type, animal class and purpose, sex where material, production route, health or fitness state relevant to transfer, and live-weight measurement basis are declared."
+  how_long_or_cycle: "One declared cohort or reporting period linking breeding or replacement, rearing, mortalities, intended co-products, shared assets, and transfers without double attribution."
+  reference_flow_link: "live_goat_reference_output"
+system_boundary:
+  rules:
+    - rule_id: managed_goat_boundary
+      applies_to: "all covered routes"
+      rule: "Include managed reproduction where present, kidding and kid rearing, grazing or housed feeding, animal health, water and energy, enteric emissions, manure routing, optional milking or fibre collection, selection or finishing, and farm-gate weighing. Exclude slaughter, carcass handling, and post-farm transport."
+      source_ids:
+        - fao-leap-small-ruminants-2016
+        - fao-gleam
+    - rule_id: route_delta_separation
+      applies_to: "extensive or transhumant, mixed or agropastoral, and housed or semi-intensive routes"
+      rule: "Identify the parent managed-biological-production activity and selected route. Preserve the route deltas in feed or browse, movement, housing and shared assets, manure routing, energy, co-product handling, calculation, and validation. Do not blend mutually exclusive routes before separate calculation."
+      source_ids:
+        - fao-leap-small-ruminants-2016
+        - fao-ruminant-lca-2013
+    - rule_id: phase_and_period_linkage
+      applies_to: "breeding, gestation, kidding, rearing, lactation or fibre phases, finishing, culling, and transfer"
+      rule: "Link inputs, assets, animal events, mortalities, intended outputs, and manure to the biological phase and reporting period that caused them. Disclose partial-cycle coverage and replacement treatment."
+      source_ids:
+        - fao-leap-small-ruminants-2016
+    - rule_id: shared_asset_boundary
+      applies_to: "housing, fencing, water systems, vehicles, handling, milking, and fibre-collection facilities used by multiple groups or periods"
+      rule: "Identify the asset or service, every consuming node or animal group, relevant service period, allocation driver, and evidence. Count the burden once across all consumers."
+      source_ids:
+        - fao-leap-small-ruminants-2016
+    - rule_id: farm_gate_handover
+      applies_to: "reference live-goat output"
+      rule: "End the foreground responsibility when the animal is weighed and ownership or control transfers at the producing farm gate; later loading and transport are excluded unless explicitly moved inside the declared foreground boundary."
+      source_ids:
+        - fao-leap-small-ruminants-2016
+boundary_abstraction:
+  declared_starting_condition: "Breeding or replacement goats admitted to the represented herd, plus purchased or transferred feed, forage, water, energy, health products, and other managed inputs entering the producing farm."
+  starting_condition_role: "The admitted herd and external management inputs start the foreground managed-biological-production responsibility; reproduction, kidding, rearing, grazing or housing, health management, milking or fibre collection when present, manure handling, selection, weighing, and transfer remain inside it."
+  product_classification_scope: "Live goats corresponding to CPC 3.0 02123. Milk, fibre, manure, skins, meat, and services remain separately classified outputs or activities."
+  recursive_input_rule: "Live goats obtained from another producer are recorded as upstream Product inputs supported by a supplier dataset; their pre-transfer production shall not be recreated recursively in the receiving farm process."
+  upstream_dataset_requirement: "Require supplier datasets for external live goats, feed and forage, health products, supplied water, energy carriers, and inbound transport where material. Select concrete flow UUIDs during foreground generation only after identity, state, provider, and destination are known."
+  disclosure: "Declare goat type, animal classes and purpose, route variant, grazing or housing regime, feed boundary, breeding and replacement treatment, milk and fibre handovers, manure pathways, shared assets and service periods, cohort or reporting period, geography, weighing point, and farm-gate handover."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Live domestic goat at producing farm gate"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "goat species or type"
+    - "animal class and purpose"
+    - "sex where material"
+    - "breed or genotype where material"
+    - "production-system route"
+    - grazing
+    - browse
+    - transhumance
+    - "or housing regime"
+    - "live-weight measurement basis and scale point"
+    - geography
+    - "farm-gate handover"
+    - "cohort or reporting period"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_live_weight
+    applies_to: "reference live goat"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure live weight immediately before transfer at the producing farm gate. Retain scale point, date, individual or lot basis, and any fasting or gut-fill convention."
+  - id: count_mass_conversion
+    applies_to: "births, entries, mortalities, and transfers recorded by head"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Convert count to mass only with animal-class-specific measured or sampled mean live weight; retain both count and conversion evidence."
+  - id: feed_dry_matter
+    applies_to: "grazed browse and forage, conserved feed, concentrates, by-products, supplements, and milk replacer"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg dry matter and kg as-fed"
+    rule: "Retain as-fed amount and measured or supplier dry-matter fraction. Do not aggregate wet and dry feed records without conversion evidence."
+  - id: water_separation
+    applies_to: "drinking and service water"
+    required_property_ref:
+      name: "Mass or volume"
+      uuid: ""
+    required_unit: "kg or m3"
+    rule: "Distinguish supplied water from rainfall and unmanaged surface water and disclose metering or estimation method."
+  - id: gas_species_basis
+    applies_to: "methane, nitrous oxide, and ammonia"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg CH4, kg N2O or kg N2O-N, and kg NH3 or kg NH3-N"
+    rule: "Preserve the named substance and elemental or molecular basis; any conversion shall be explicit and reproducible."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again."
+process_map:
+  - id: managed_goat_herd
+    name: "Managed goat herd production and farm-gate transfer"
+    inclusion: "required"
+    inclusion_condition: "Always required. Reproduction, transhumance, housing, milking, fibre collection, and manure subroutes are represented only when present and separately recorded."
+    role: "Foreground managed biological production that preserves route, phase, intended-output, and shared-infrastructure attribution through farm-gate transfer."
+    quantitative_reference: "1 kg live goat at farm gate; retain animal-head, animal-day, cohort, phase, and reporting-period records."
+process_inventory:
+  - id: managed_goat_herd
+    label: "Managed goat herd production and farm-gate transfer"
+    inputs:
+      product:
+        - row_id: breeding_replacement_goats
+          role: "Breeding and replacement goats"
+          name: "Live breeding or replacement goats (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg live weight; head count retained"
+          description: "Record live goats obtained from outside the represented herd history. Animals born and retained inside the represented cohort are internal and shall not be counted again as purchased inputs. Denominator and scope requirements：per kg live goat at farm gate over the declared cohort or reporting period"
+          amount:
+            expression: "Calculate admitted live weight from class-specific entry weights and assign the upstream burden over the actual service period or represented outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_goat_events_weights
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg admitted live weight/kg reference live weight"
+                basis: "broad replaceable screen covering self-replacing and externally replenished herds"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: feed_forage_browse
+          role: "Feed, forage, and browse supply"
+          name: "Feed, forage, browse, and supplements (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter and kg as-fed"
+          description: "Record every managed diet source crossing the accounting boundary, including grazed forage or browse when its production is in scope, conserved feed, concentrates, by-products, supplements, and milk replacer. The umbrella remains unbound until actual feed identities are known. Denominator and scope requirements：per kg live goat at farm gate and declared herd period"
+          amount:
+            expression: "Sum intake or supplied feed by source and phase after converting as-fed records to dry matter; subtract documented refusals only when separately measured and routed."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_feed_and_grazing
+              source_ids:
+                - fao-leap-small-ruminants-2016
+                - ipcc-2019-livestock-manure
+            ranges:
+              - role: qa_guardrail
+                lower: "0.2"
+                upper: "40"
+                unit: "kg dry matter/kg reference live weight"
+                basis: "broad replaceable whole-route screen across short finishing and breeding-linked systems"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: herd_health_products
+          role: "Veterinary and herd-health products"
+          name: "Veterinary and goat-health products (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Product-specific property / declared unit"
+          description: "Record medicines, vaccines, disinfectants, mineral treatments, and other health products that cross the farm boundary. Retain the formulation and administration basis needed for later exact flow selection. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Record purchased or administered quantity by product, active ingredient or formulation, animal class, and phase; do not combine unlike products into one final exchange."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_health_inputs
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "kg product/kg reference live weight"
+                basis: "broad replaceable aggregate screening range; final exchanges remain product-specific"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: supplied_water
+          role: "Supplied drinking and service water"
+          name: "Water supplied for goat production"
+          flow_type: "product"
+          property_unit: "Mass or volume / kg or m3"
+          description: "Record water supplied for drinking, cleaning, cooling, and other managed uses. Rainfall and unmanaged surface water are disclosed separately and are not automatically treated as supplied Product inputs. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Sum metered or documented supplied water by use and phase; disclose estimation where direct measurement is unavailable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_energy
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0.5"
+                upper: "200"
+                unit: "L/kg reference live weight"
+                basis: "broad replaceable screen across grazing, hot-climate, housed, cleaning, and cooling conditions"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: energy_supply
+          role: "Energy supply"
+          name: "Energy carriers and utilities for goat production"
+          flow_type: "product"
+          property_unit: "Energy or carrier-specific property / MJ, kWh, or carrier unit"
+          description: "Record purchased electricity, fuels, heat, or other energy carriers used for housing, lighting, pumping, milking, fibre collection, feeding, manure handling, and weighing. Foreground records determine the actual carrier. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Record each carrier separately by use, meter, invoice, or fuel log; retain conversion factors and do not collapse unlike carriers before final exchange selection."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_energy
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "MJ/kg reference live weight"
+                basis: "broad replaceable screen across extensive and mechanized housed routes"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: inbound_freight_transport
+          role: "Inbound freight transport service"
+          name: "Road freight transport service for inbound materials"
+          flow_type: "product"
+          property_unit: "Goods transport / t*km"
+          description: "Record freight service for feed, bedding, health products, fuel, and other purchased materials only when transport is inside the declared foreground boundary. Animal movement by a distinct livestock service remains unbound unless exactly verified. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Calculate tonne-kilometres from transported mass and route distance for material deliveries included in the foreground boundary."
+            value_mode: "calculated_value"
+            specificity: "route_specific"
+            basis:
+              text: "per reference flow"
+              kind: "transport_service"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_inbound_transport
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "t*km/kg reference live weight"
+                basis: "broad replaceable screen for local through remote purchased inputs"
+                basis_kind: "transport_service"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: live_goat_reference_output
+          role: "Live goat reference output"
+          name: "Live domestic goat at producing farm gate"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record the live animal mass weighed immediately before the farm-gate transfer of ownership or control. The semantic identity stays unbound until a broad farm-gate goat Product flow is verified. Denominator and scope requirements：1 kg live goat at the producing farm gate Raw reference-output records: Exactly 1 kg of measured live weight after normalization; retain the measured lot or individual mass before normalization. Preserve the measured accepted lot quantity and every required qualifier. The amount below is the normalized reference exchange, not an assertion that a physical lot contains only one unit."
+          amount:
+            expression: "1 kg"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_goat_events_weights
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference flow"
+                basis: "normalized reference output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - fao-leap-small-ruminants-2016
+        - row_id: raw_goat_milk_coproduct
+          role: "Raw goat milk co-product"
+          name: "Raw goat milk at farm gate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "2c001731-6bd5-4e32-b3cf-15f4c67d4038"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record raw goat milk only when it is intentionally collected and transferred independently. Milk consumed by kids or discarded is not this co-product. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Record transferred raw milk mass by herd phase and reporting period, net of milk consumed internally or discarded."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_intended_outputs
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "50"
+                unit: "kg milk/kg reference live weight"
+                basis: "broad replaceable screen spanning non-dairy and dairy-linked herds"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: fibre_coproduct
+          role: "Fibre co-product"
+          name: "Goat fibre at farm gate (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record mohair, cashmere, or other goat fibre only when intentionally collected and transferred as an independent output. Retain fibre type, cleaning state, moisture basis, and handover point for later identity resolution. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Measure transferred fibre by type and condition; do not combine greasy, washed, or dehaired states without a documented conversion."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_intended_outputs
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg fibre/kg reference live weight"
+                basis: "broad replaceable screen spanning non-fibre and fibre-producing herds"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: exported_manure_coproduct
+          role: "Exported manure co-product"
+          name: "Exported goat manure or manure-derived soil amendment (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg fresh matter and kg dry matter; nutrient content retained"
+          description: "Record manure as a Product output only when it is intentionally transferred for use and has a documented recipient. Manure retained on site is an internal stock; unusable or discarded manure is Waste flow. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Record transferred mass, moisture or dry matter, nitrogen content, treatment state, recipient, and handover; exclude internally returned manure."
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_pathways
+              source_ids:
+                - fao-leap-nutrient-flows-2018
+                - ipcc-2019-livestock-manure
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg fresh manure/kg reference live weight"
+                basis: "broad replaceable screen across direct deposition, storage, treatment, and export routes"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: mortality_waste
+          role: "Mortalities and unusable animal material"
+          name: "Goat mortalities and unusable animal material (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record goats that die before the reference handover and unusable animal material by mass and destination. Animals intentionally transferred alive as cull stock remain intended Product outputs, not waste. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Calculate mass from measured carcass weight or head count times class-specific measured mean mass; record destination and treatment route."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_goat_events_weights
+              source_ids:
+                - fao-leap-small-ruminants-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg mortality/kg reference live weight"
+                basis: "broad replaceable screen that triggers investigation of severe losses or cohort mismatch"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: enteric_methane_air
+          role: "Enteric biogenic methane to air"
+          name: "Methane, biogenic, to unspecified air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg CH4"
+          description: "Calculate methane generated by enteric fermentation for the represented goat classes, diet, route, and period. Preserve CH4 mass and emission-factor tier. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Calculate from animal population and phase, feed or energy intake, and the documented IPCC or country-specific method; normalize after cohort calculation."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_drivers
+              source_ids:
+                - ipcc-2019-livestock-manure
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "kg CH4/kg reference live weight"
+                basis: "broad replaceable screen; source method determines the calculated value, not this interval"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_methane_air
+          role: "Manure-management biogenic methane to air"
+          name: "Methane, biogenic, to unspecified air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg CH4"
+          description: "Calculate methane from manure deposited on pasture or managed in collection, storage, treatment, and use pathways. Keep this amount distinct from enteric methane. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Calculate by animal class, volatile-solids production, pathway share, climate, storage duration, methane conversion factor, and recovery where present."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_pathways
+              source_ids:
+                - ipcc-2019-livestock-manure
+                - fao-leap-nutrient-flows-2018
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg CH4/kg reference live weight"
+                basis: "broad replaceable screen; pathway calculation remains authoritative"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_nitrous_oxide_air
+          role: "Direct and indirect nitrous oxide to air"
+          name: "Nitrous oxide to unspecified air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg N2O"
+          description: "Calculate N2O from managed manure and deposited excreta, retaining direct and indirect pathways and the N2O or N2O-N basis. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Calculate nitrogen excretion by animal class and phase, allocate it to manure pathways, apply documented direct and indirect factors, and convert N2O-N to N2O where needed."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_pathways
+              source_ids:
+                - ipcc-2019-livestock-manure
+                - fao-leap-nutrient-flows-2018
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.2"
+                unit: "kg N2O/kg reference live weight"
+                basis: "broad replaceable screen; pathway calculation remains authoritative"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_ammonia_air
+          role: "Ammonia to air"
+          name: "Ammonia to unspecified air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg NH3"
+          description: "Calculate ammonia volatilization from housing, grazing deposition, collection, storage, treatment, and application pathways included in the foreground boundary. Denominator and scope requirements：per kg live goat at farm gate"
+          amount:
+            expression: "Calculate nitrogen entering each pathway, apply documented NH3-N volatilization factors, and convert NH3-N to NH3 where required; prevent overlap with nitrogen exported in manure."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_pathways
+              source_ids:
+                - fao-leap-nutrient-flows-2018
+                - ipcc-2019-livestock-manure
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "0.5"
+                unit: "kg NH3/kg reference live weight"
+                basis: "broad replaceable screen; pathway calculation remains authoritative"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: subdivide_before_allocation
+    applies_to: "separable herd groups, phases, and activities"
+    rule: "Use separate records for animal classes, route variants, milking, fibre collection, manure treatment, and transfer when independently measurable before applying allocation."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: complete_intended_output_set
+    applies_to: "live goats, milk, fibre, breeding or cull animals, and exported manure"
+    rule: "Enumerate every independently intended output and its handover. Classify retained manure as internal, exported manure with a recipient as Product flow, and mortalities or unusable material as Waste flow."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+      - fao-leap-nutrient-flows-2018
+  - rule_id: output_attribution_decision
+    applies_to: "multi-output process instances"
+    rule: "When subdivision does not remove joint burdens, document one PCR-specific attribution method, its output quantities and prices or other drivers, period, evidence, and sensitivity. Apply it consistently to all intended outputs."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: multi_period_attribution
+    applies_to: "breeding animals, replacements, shared assets, and outputs spanning periods"
+    rule: "Assign burdens to the actual service, biological, or reporting periods using recorded events and service duration. Record replacement and termination decisions and prevent carry-over burdens from appearing in two periods."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: shared_infrastructure_attribution
+    applies_to: "housing, fencing, water, handling, milking, fibre, transport, and manure assets shared by groups or periods"
+    rule: "Enumerate all consumers and service periods, choose and evidence a physical service driver where possible, and reconcile allocated shares to the total asset or service burden exactly once."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_goat_events_weights
+      process_id: "managed_goat_herd"
+      flow_role: "goat entries, births, class changes, deaths, and transfers"
+      record_type: "herd event register and scale record"
+      raw_fields: "animal id or lot; goat type; class; sex; purpose; event; date; measured weight; scale id; origin or destination"
+      collection_method: "reconcile herd register with calibrated individual or lot weighing; Raw aggregation requirements: sum measured mass by event and class; convert counts only with class-specific sampled weights. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "head; kg live weight"
+      frequency: "each event and transfer"
+      temporal_coverage: "complete cohort or declared reporting period"
+      site_scope: "every represented herd group and farm unit"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "scale calibration; event ledger reconciliation; mortality destination evidence; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_feed_and_grazing
+      process_id: "managed_goat_herd"
+      flow_role: "feed, forage, browse, grazing, and transhumance"
+      record_type: "purchase, ration, pasture, and movement records"
+      raw_fields: "feed identity; as-fed mass; dry-matter fraction; refused mass; pasture or browse area; animal-days; route and dates"
+      collection_method: "invoices and scales for purchased feed; ration logs; pasture and movement records for grazing; Raw aggregation requirements: convert each source to dry matter, assign by class and phase, then normalize to reference mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg as-fed; kg dry matter; ha; animal-day"
+      frequency: "each delivery or ration; daily or periodic grazing record"
+      temporal_coverage: "all feeding phases in the period"
+      site_scope: "every represented feeding area, route, and herd group"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "supplier analysis or sampled dry matter; stock balance; route log; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_health_inputs
+      process_id: "managed_goat_herd"
+      flow_role: "veterinary and herd-health products"
+      record_type: "medicine, vaccine, disinfection, and treatment log"
+      raw_fields: "product; formulation or active ingredient; amount; unit; animal class; administration date; purpose"
+      collection_method: "purchase reconciliation and treatment register; Raw aggregation requirements: retain distinct products and aggregate only identical formulation and unit. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "product-specific"
+      frequency: "each purchase and administration"
+      temporal_coverage: "complete reporting period"
+      site_scope: "every represented herd group and farm unit"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice; batch id; treatment record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_water_energy
+      process_id: "managed_goat_herd"
+      flow_role: "supplied water and energy"
+      record_type: "meter, invoice, fuel, and use log"
+      raw_fields: "source or carrier; quantity; unit; meter period; use; animal group; shared users"
+      collection_method: "meter reading, invoice, tank or fuel log, and documented estimate where necessary; Raw aggregation requirements: subtract unrelated uses; attribute shared totals to identified consumers and periods once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg; m3; kWh; MJ; carrier unit"
+      frequency: "meter or delivery interval"
+      temporal_coverage: "complete reporting period with opening and closing readings"
+      site_scope: "every represented meter, supply point, herd group, and shared user"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "meter id and reading; invoice; conversion factor; allocation reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_inbound_transport
+      process_id: "managed_goat_herd"
+      flow_role: "inbound material freight"
+      record_type: "delivery and route record"
+      raw_fields: "material; transported mass; origin; destination; distance; mode; load share"
+      collection_method: "supplier document, dispatch record, and evidenced route distance; Raw aggregation requirements: sum mass times distance by route and mode. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "t; km; t*km"
+      frequency: "each included delivery"
+      temporal_coverage: "complete reporting period"
+      site_scope: "every included origin-to-farm route"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "invoice or dispatch note; distance source; load-share evidence; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_intended_outputs
+      process_id: "managed_goat_herd"
+      flow_role: "milk, fibre, exported manure, and other intended outputs"
+      record_type: "output measurement and handover record"
+      raw_fields: "output identity; state; quantity; unit; date; recipient; moisture or dry matter where relevant; price or physical allocation driver"
+      collection_method: "calibrated meter or scale linked to a recipient handover; Raw aggregation requirements: aggregate identical output state and handover; retain outputs separately before attribution. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg and output-specific quality unit"
+      frequency: "each collection or transfer"
+      temporal_coverage: "complete reporting period and relevant phase"
+      site_scope: "every represented herd group, collection point, and recipient handover"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "calibration; sales or transfer record; quality or composition result; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_manure_pathways
+      process_id: "managed_goat_herd"
+      flow_role: "manure generation, deposition, storage, treatment, export, and emissions"
+      record_type: "manure and nitrogen pathway record"
+      raw_fields: "class and animal-days; feed intake; digestibility; excretion basis; pathway share; climate; storage duration; treatment; recovery; export; nitrogen content"
+      collection_method: "herd records plus documented IPCC or country method and measured transfers; Raw aggregation requirements: reconcile pathway shares to 100 percent; calculate gases by pathway and subtract documented recovery or export consistently. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "kg volatile solids; kg N; kg manure; kg CH4; kg N2O; kg NH3"
+      frequency: "monthly or each management change"
+      temporal_coverage: "all manure generated in the reporting period"
+      site_scope: "every represented herd group, deposition area, storage, treatment, and export route"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "method tier; factor source; laboratory result where available; pathway balance; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_emission_drivers
+      process_id: "managed_goat_herd"
+      flow_role: "enteric methane"
+      record_type: "animal, diet, and emission-method record"
+      raw_fields: "class; animal-days; body weight; feed intake or gross energy; diet; digestibility; emission factor; tier"
+      collection_method: "herd and feed records with documented IPCC or country method; Raw aggregation requirements: calculate per class and phase, sum period emissions, then normalize. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      unit: "animal-day; kg dry matter; MJ; kg CH4"
+      frequency: "monthly or phase change"
+      temporal_coverage: "every represented class and phase"
+      site_scope: "every represented herd group and feeding route"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "factor source; calculation workbook; herd and feed reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet"
+  calculation_rules:
+    - id: calc_reference_live_weight
+      applies_to: "reference output"
+      rule: "reference mass = sum of measured eligible farm-gate live weights; normalized exchange = reference mass/reference mass"
+      inputs:
+        - "transfer weights"
+        - eligibility
+        - "handover date"
+      output: "1 kg live goat reference output"
+      source_ids:
+        - fao-leap-small-ruminants-2016
+    - id: calc_feed_dry_matter
+      applies_to: "feed and forage"
+      rule: "dry matter = sum(as-fed mass × measured or supplier dry-matter fraction) − documented refusal dry matter"
+      inputs:
+        - "feed deliveries"
+        - rations
+        - "dry-matter fractions"
+        - refusals
+      output: "kg dry matter by source and phase"
+      source_ids:
+        - fao-leap-small-ruminants-2016
+        - ipcc-2019-livestock-manure
+    - id: calc_transport_service
+      applies_to: "included inbound freight"
+      rule: "t*km = transported tonnes × route kilometres × allocated load share"
+      inputs:
+        - "delivered mass"
+        - distance
+        - "load share"
+      output: "t*km by route and mode"
+      source_ids:
+        - fao-leap-small-ruminants-2016
+    - id: calc_enteric_methane
+      applies_to: "enteric methane"
+      rule: "apply the documented IPCC or country method by goat class and phase using population and feed or energy drivers; sum before normalization"
+      inputs:
+        - animal-days
+        - class
+        - "feed or gross energy"
+        - digestibility
+        - "selected factors"
+      output: "kg CH4"
+      source_ids:
+        - ipcc-2019-livestock-manure
+    - id: calc_manure_emissions
+      applies_to: "manure CH4, N2O, and NH3"
+      rule: "assign excreta to reconciled pathways; apply pathway-specific volatile-solids and nitrogen methods; subtract recovery and transferred nutrients consistently; convert molecular basis explicitly"
+      inputs:
+        - animal-days
+        - intake
+        - excretion
+        - "pathway shares"
+        - climate
+        - duration
+        - treatment
+        - export
+        - factors
+      output: "kg CH4; kg N2O; kg NH3; pathway balance"
+      source_ids:
+        - ipcc-2019-livestock-manure
+        - fao-leap-nutrient-flows-2018
+    - id: calc_multi_output_shares
+      applies_to: "joint live-goat, milk, fibre, and manure outputs"
+      rule: "attribution share = selected driver for one intended output/sum of the same driver for all intended outputs; shares shall sum to 1"
+      inputs:
+        - "complete output set"
+        - quantities
+        - qualities
+        - "prices or physical drivers"
+        - period
+      output: "documented output shares"
+      source_ids:
+        - fao-leap-small-ruminants-2016
+    - id: calc_shared_asset_shares
+      applies_to: "shared infrastructure"
+      rule: "asset share = evidenced service driver for one consumer-period/sum of the same driver for all consumer-periods; allocated burdens shall reconcile to the asset total"
+      inputs:
+        - "asset burden"
+        - "consuming nodes"
+        - "service periods"
+        - driver
+      output: "allocated shared burden by node and period"
+      source_ids:
+        - fao-leap-small-ruminants-2016
+  data_quality_requirements:
+    - id: dq_identity_gate
+      applies_to: "reference product and intended outputs"
+      requirement: "Preserve goat type, animal class, purpose, route, product state, property, handover, and recipient where relevant; unresolved semantic identities shall not be assigned a convenient UUID."
+      evidence: "transfer and output records plus confirmed flow detail at foreground generation"
+    - id: dq_temporal_completeness
+      applies_to: "herd, feed, outputs, manure, and assets"
+      requirement: "Cover the declared cohort or reporting period and document opening herd, entries, births, exits, mortalities, closing herd, replacements, and partial-cycle treatment."
+      evidence: "reconciled herd and period balance"
+    - id: dq_route_separation
+      applies_to: "alternative production routes"
+      requirement: "Preserve route-specific feed, movement, shelter, energy, manure, output, and infrastructure records until route results are calculated."
+      evidence: "route register and separate activity totals"
+    - id: dq_mass_and_output_balance
+      applies_to: "animal and intended-output records"
+      requirement: "Reconcile live-animal mass events and enumerate all independently intended outputs before attribution; investigate unexplained gaps."
+      evidence: "herd event balance and output handover ledger"
+    - id: dq_manure_balance
+      applies_to: "manure and nitrogen pathways"
+      requirement: "Reconcile pathway shares to 100 percent and prevent nitrogen exported in manure from also being emitted or internally applied."
+      evidence: "pathway worksheet and nitrogen balance"
+    - id: dq_shared_asset_reconciliation
+      applies_to: "shared infrastructure"
+      requirement: "Identify every consuming node and period, retain the driver and service boundary, and reconcile shares to the total burden once."
+      evidence: "asset register and allocation worksheet"
+    - id: dq_uncertainty_disclosure
+      applies_to: "modelled and calculated values"
+      requirement: "Disclose method tier, factor geography and year, estimation method, missing records, substitutions, and the effect of provisional QA ranges."
+      evidence: "calculation file, factor citation, and data-quality statement"
+validation_rules:
+  - rule_id: validate_reference_gate
+    applies_to: "reference live-goat exchange"
+    rule: "Require exactly 1 kg normalized live weight, the producing-farm gate, all required qualifiers, and no slaughter or post-farm activity in the reference exchange. Reject the narrow platform candidates for broad-reference use."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: validate_route_delta
+    applies_to: "selected production route"
+    rule: "Require one named parent managed-biological-production activity and evidence for every route delta in topology, inventory, calculation, data, or validation; preserve mutually exclusive route records until separate results exist."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+      - fao-ruminant-lca-2013
+  - rule_id: validate_period_balance
+    applies_to: "cohort and reporting periods"
+    rule: "Opening herd + births + entries − deaths − transfers shall reconcile to closing herd by class, subject to documented classification changes; replacements, terminations, and carry-over burdens shall occur in one period treatment only."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: validate_output_attribution
+    applies_to: "multi-output instances"
+    rule: "Require a complete intended-output list, each handover, one explicit attribution decision with evidence, shares summing to 1, and sensitivity where economic or another variable driver is used."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: validate_residue_waste_distinction
+    applies_to: "manure, mortalities, discarded milk, and fibre"
+    rule: "Require intended transferred products, retained internal materials, residues, losses, and Waste flows to be distinguished by destination and evidence."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+      - fao-leap-nutrient-flows-2018
+  - rule_id: validate_emission_basis
+    applies_to: "CH4, N2O, and NH3"
+    rule: "Require named substance, molecular or elemental basis, method tier, factor source, complete animal and manure pathway drivers, and explicit basis conversion."
+    source_ids:
+      - ipcc-2019-livestock-manure
+      - fao-leap-nutrient-flows-2018
+  - rule_id: validate_shared_infrastructure
+    applies_to: "shared assets and services"
+    rule: "Require two or more consumers or periods, service boundary, driver, evidence, shares reconciling to the total, and no duplicate process or period burden."
+    source_ids:
+      - fao-leap-small-ruminants-2016
+  - rule_id: validate_flow_binding
+    applies_to: "all final exchanges"
+    rule: "unresolved cards shall resolve one compatible concrete UUID from actual foreground records; every unbound card requires exact identity confirmation. UUID selection shall not change direction, type, state, route, provider, or handover to force a match."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground data package for live-goat managed biological production and farm-gate transfer."
+  downstream_use: "May support a unit-process dataset and a linked lifecycle model; after review it may be used as a secondary or background dataset only for a matching goat type, route, gate, geography, period, and co-product treatment."
+  allowed_use: "Comparative or accounting studies that preserve the declared functional unit, product boundary, route, feed and manure scope, output attribution, period treatment, and data-quality disclosure."
+  excluded_use: "Direct substitution for sheep or other ruminants; goat meat, milk, fibre, skins, or services as the reference product; slaughterhouse-gate or post-farm systems; or a materially different route without adaptation."
+  required_metadata: "Goat species or type; animal classes and purpose; sex where material; production route; geography; cohort and reporting period; grazing, browse, housing, feed, water, energy, health, manure, milk and fibre treatment; live-weight basis; farm-gate handover; allocation and shared-asset decisions; flow UUID evidence."
+  required_quality_disclosure: "Foreground coverage, weighing evidence, feed dry-matter conversion, route separation, herd and output balance, manure pathway balance, factor tier and geography, shared-asset reconciliation, missing data, substitutions, uncertainty, and unresolved identities."
+  update_trigger: "New exact broad-reference UUID; changed classification boundary; revised livestock or manure method; new source-backed range; changed flow identity verification evidence; material route evidence; or recurring validation failure."
+data_sources:
+  - id: "fao-leap-small-ruminants-2016"
+    type: "official_guidance"
+    reference: "FAO LEAP, *Greenhouse gas emissions and fossil energy use from small ruminant supply chains*, 2016. https://openknowledge.fao.org/handle/20.500.14283/i6434en"
+    used_for: "Small-ruminant boundary, route decomposition, feed and herd records, intended outputs, attribution, period treatment, and quality checks."
+  - id: "fao-gleam"
+    type: "official_guidance"
+    reference: "FAO, *Global Livestock Environmental Assessment Model*. https://www.fao.org/gleam"
+    used_for: "Goat production-system coverage and livestock route context."
+  - id: "fao-ruminant-lca-2013"
+    type: "official_guidance"
+    reference: "FAO, *Greenhouse gas emissions from ruminant supply chains — A global life cycle assessment*, 2013. https://www.fao.org/docrep/018/i3461e/i3461e.pdf"
+    used_for: "Ruminant route typology, system boundaries, and attribution context."
+  - id: "fao-leap-nutrient-flows-2018"
+    type: "official_guidance"
+    reference: "FAO LEAP, *Nutrient flows and associated environmental impacts in livestock supply chains*, 2018. https://openknowledge.fao.org/handle/20.500.14283/ca1328en"
+    used_for: "Manure and nitrogen pathways, product or waste distinction, and NH3 and N2O accounting."
+  - id: "ipcc-2019-livestock-manure"
+    type: "method_factor"
+    reference: "IPCC, *2019 Refinement, Volume 4, Chapter 10: Emissions from Livestock and Manure Management*. https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf"
+    used_for: "Goat class, feed and energy drivers, enteric methane, manure methane, direct and indirect N2O, and required activity data."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:5fb04fa940543a7a76027a499731b003ccabf96713a787de3621b8740ed518f9"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6767"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6767
+          line: 60
+          column: 1
+        end:
+          offset: 10482
+          line: 83
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Breeding or replacement goats admitted to the represented herd, plus purchased or transferred feed, forage, water, energy, health products, and other managed inputs entering the producing farm. |\n| starting_condition_role | The admitted herd and external management inputs start the foreground managed-biological-production responsibility; reproduction, kidding, rearing, grazing or housing, health management, milking or fibre collection when present, manure handling, selection, weighing, and transfer remain inside it. |\n| product_classification_scope | Live goats corresponding to CPC 3.0 02123. Milk, fibre, manure, skins, meat, and services remain separately classified outputs or activities. |\n| recursive_input_rule | Live goats obtained from another producer are recorded as upstream Product inputs supported by a supplier dataset; their pre-transfer production shall not be recreated recursively in the receiving farm process. |\n| upstream_dataset_requirement | Require supplier datasets for external live goats, feed and forage, health products, supplied water, energy carriers, and inbound transport where material. Select concrete flow UUIDs during foreground generation only after identity, state, provider, and destination are known. |\n| disclosure | Declare goat type, animal classes and purpose, route variant, grazing or housing regime, feed boundary, breeding and replacement treatment, milk and fibre handovers, manure pathways, shared assets and service periods, cohort or reporting period, geography, weighing point, and farm-gate handover. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `managed_goat_boundary` | all covered routes | Include managed reproduction where present, kidding and kid rearing, grazing or housed feeding, animal health, water and energy, enteric emissions, manure routing, optional milking or fibre collection, selection or finishing, and farm-gate weighing. Exclude slaughter, carcass handling, and post-farm transport. | `fao-leap-small-ruminants-2016`; `fao-gleam` |\n| `route_delta_separation` | extensive or transhumant, mixed or agropastoral, and housed or semi-intensive routes | Identify the parent managed-biological-production activity and selected route. Preserve the route deltas in feed or browse, movement, housing and shared assets, manure routing, energy, co-product handling, calculation, and validation. Do not blend mutually exclusive routes before separate calculation. | `fao-leap-small-ruminants-2016`; `fao-ruminant-lca-2013` |\n| `phase_and_period_linkage` | breeding, gestation, kidding, rearing, lactation or fibre phases, finishing, culling, and transfer | Link inputs, assets, animal events, mortalities, intended outputs, and manure to the biological phase and reporting period that caused them. Disclose partial-cycle coverage and replacement treatment. | `fao-leap-small-ruminants-2016` |\n| `shared_asset_boundary` | housing, fencing, water systems, vehicles, handling, milking, and fibre-collection facilities used by multiple groups or periods | Identify the asset or service, every consuming node or animal group, relevant service period, allocation driver, and evidence. Count the burden once across all consumers. | `fao-leap-small-ruminants-2016` |\n| `farm_gate_handover` | reference live-goat output | End the foreground responsibility when the animal is weighed and ownership or control transfers at the producing farm gate; later loading and transport are excluded unless explicitly moved inside the declared foreground boundary. | `fao-leap-small-ruminants-2016` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 175
+              line: 8
+              column: 1
+            end:
+              offset: 200
+              line: 8
+              column: 26
+          text: "# Live goats at farm gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6767
+              line: 60
+              column: 1
+            end:
+              offset: 6788
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_32483"
+      family: "allocation"
+      span:
+        start:
+          offset: 32483
+          line: 496
+          column: 1
+        end:
+          offset: 34340
+          line: 506
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `subdivide_before_allocation` | separable herd groups, phases, and activities | Use separate records for animal classes, route variants, milking, fibre collection, manure treatment, and transfer when independently measurable before applying allocation. | `fao-leap-small-ruminants-2016` |\n| `complete_intended_output_set` | live goats, milk, fibre, breeding or cull animals, and exported manure | Enumerate every independently intended output and its handover. Classify retained manure as internal, exported manure with a recipient as Product flow, and mortalities or unusable material as Waste flow. | `fao-leap-small-ruminants-2016`; `fao-leap-nutrient-flows-2018` |\n| `output_attribution_decision` | multi-output process instances | When subdivision does not remove joint burdens, document one PCR-specific attribution method, its output quantities and prices or other drivers, period, evidence, and sensitivity. Apply it consistently to all intended outputs. | `fao-leap-small-ruminants-2016` |\n| `multi_period_attribution` | breeding animals, replacements, shared assets, and outputs spanning periods | Assign burdens to the actual service, biological, or reporting periods using recorded events and service duration. Record replacement and termination decisions and prevent carry-over burdens from appearing in two periods. | `fao-leap-small-ruminants-2016` |\n| `shared_infrastructure_attribution` | housing, fencing, water, handling, milking, fibre, transport, and manure assets shared by groups or periods | Enumerate all consumers and service periods, choose and evidence a physical service driver where possible, and reconcile allocated shares to the total asset or service burden exactly once. | `fao-leap-small-ruminants-2016` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 175
+              line: 8
+              column: 1
+            end:
+              offset: 200
+              line: 8
+              column: 26
+          text: "# Live goats at farm gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 32483
+              line: 496
+              column: 1
+            end:
+              offset: 32523
+              line: 496
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_47294"
+      family: "validation"
+      span:
+        start:
+          offset: 47294
+          line: 545
+          column: 1
+        end:
+          offset: 49820
+          line: 558
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_gate` | reference live-goat exchange | Require exactly 1 kg normalized live weight, the producing-farm gate, all required qualifiers, and no slaughter or post-farm activity in the reference exchange. Reject the narrow platform candidates for broad-reference use. | `fao-leap-small-ruminants-2016` |\n| `validate_route_delta` | selected production route | Require one named parent managed-biological-production activity and evidence for every route delta in topology, inventory, calculation, data, or validation; preserve mutually exclusive route records until separate results exist. | `fao-leap-small-ruminants-2016`; `fao-ruminant-lca-2013` |\n| `validate_period_balance` | cohort and reporting periods | Opening herd + births + entries − deaths − transfers shall reconcile to closing herd by class, subject to documented classification changes; replacements, terminations, and carry-over burdens shall occur in one period treatment only. | `fao-leap-small-ruminants-2016` |\n| `validate_output_attribution` | multi-output instances | Require a complete intended-output list, each handover, one explicit attribution decision with evidence, shares summing to 1, and sensitivity where economic or another variable driver is used. | `fao-leap-small-ruminants-2016` |\n| `validate_residue_waste_distinction` | manure, mortalities, discarded milk, and fibre | Require intended transferred products, retained internal materials, residues, losses, and Waste flows to be distinguished by destination and evidence. | `fao-leap-small-ruminants-2016`; `fao-leap-nutrient-flows-2018` |\n| `validate_emission_basis` | CH4, N2O, and NH3 | Require named substance, molecular or elemental basis, method tier, factor source, complete animal and manure pathway drivers, and explicit basis conversion. | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |\n| `validate_shared_infrastructure` | shared assets and services | Require two or more consumers or periods, service boundary, driver, evidence, shares reconciling to the total, and no duplicate process or period burden. | `fao-leap-small-ruminants-2016` |\n| `validate_flow_binding` | all final exchanges | unresolved cards shall resolve one compatible concrete UUID from actual foreground records; every unbound card requires exact identity confirmation. UUID selection shall not change direction, type, state, route, provider, or handover to force a match. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 175
+              line: 8
+              column: 1
+            end:
+              offset: 200
+              line: 8
+              column: 26
+          text: "# Live goats at farm gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 47294
+              line: 545
+              column: 1
+            end:
+              offset: 47316
+              line: 545
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "managed_goat_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 8537
+          line: 77
+          column: 1
+        end:
+          offset: 8946
+          line: 77
+          column: 410
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "route_delta_separation"
+      identity_kind: "explicit"
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 8947
+          line: 78
+          column: 1
+        end:
+          offset: 9426
+          line: 78
+          column: 480
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "phase_and_period_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 9427
+          line: 79
+          column: 1
+        end:
+          offset: 9794
+          line: 79
+          column: 368
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "shared_asset_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 9795
+          line: 80
+          column: 1
+        end:
+          offset: 10160
+          line: 80
+          column: 366
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "farm_gate_handover"
+      identity_kind: "explicit"
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 10161
+          line: 81
+          column: 1
+        end:
+          offset: 10480
+          line: 81
+          column: 320
+    - pointer: "/allocation_rules/0"
+      rule_id: "subdivide_before_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_32483"
+      source_span:
+        start:
+          offset: 32596
+          line: 500
+          column: 1
+        end:
+          offset: 32886
+          line: 500
+          column: 291
+    - pointer: "/allocation_rules/1"
+      rule_id: "complete_intended_output_set"
+      identity_kind: "explicit"
+      unit_id: "normative_32483"
+      source_span:
+        start:
+          offset: 32887
+          line: 501
+          column: 1
+        end:
+          offset: 33266
+          line: 501
+          column: 380
+    - pointer: "/allocation_rules/2"
+      rule_id: "output_attribution_decision"
+      identity_kind: "explicit"
+      unit_id: "normative_32483"
+      source_span:
+        start:
+          offset: 33267
+          line: 502
+          column: 1
+        end:
+          offset: 33596
+          line: 502
+          column: 330
+    - pointer: "/allocation_rules/3"
+      rule_id: "multi_period_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_32483"
+      source_span:
+        start:
+          offset: 33597
+          line: 503
+          column: 1
+        end:
+          offset: 33963
+          line: 503
+          column: 367
+    - pointer: "/allocation_rules/4"
+      rule_id: "shared_infrastructure_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_32483"
+      source_span:
+        start:
+          offset: 33964
+          line: 504
+          column: 1
+        end:
+          offset: 34338
+          line: 504
+          column: 375
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 47389
+          line: 549
+          column: 1
+        end:
+          offset: 47709
+          line: 549
+          column: 321
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_route_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 47710
+          line: 550
+          column: 1
+        end:
+          offset: 48054
+          line: 550
+          column: 345
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_period_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 48055
+          line: 551
+          column: 1
+        end:
+          offset: 48385
+          line: 551
+          column: 331
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_output_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 48386
+          line: 552
+          column: 1
+        end:
+          offset: 48673
+          line: 552
+          column: 288
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_residue_waste_distinction"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 48674
+          line: 553
+          column: 1
+        end:
+          offset: 48982
+          line: 553
+          column: 309
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_emission_basis"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 48983
+          line: 554
+          column: 1
+        end:
+          offset: 49255
+          line: 554
+          column: 273
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_shared_infrastructure"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 49256
+          line: 555
+          column: 1
+        end:
+          offset: 49511
+          line: 555
+          column: 256
+    - pointer: "/validation_rules/7"
+      rule_id: "validate_flow_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 49512
+          line: 556
+          column: 1
+        end:
+          offset: 49818
+          line: 556
+          column: 307
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 6767
+          line: 60
+          column: 1
+        end:
+          offset: 6788
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6767"
+      source_span:
+        start:
+          offset: 6816
+          line: 64
+          column: 1
+        end:
+          offset: 8444
+          line: 71
+          column: 314
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_32483"
+      source_span:
+        start:
+          offset: 32483
+          line: 496
+          column: 1
+        end:
+          offset: 32523
+          line: 496
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_47294"
+      source_span:
+        start:
+          offset: 47294
+          line: 545
+          column: 1
+        end:
+          offset: 47316
+          line: 545
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:5fb04fa940543a7a76027a499731b003ccabf96713a787de3621b8740ed518f9"
+  generated_content_sha256: "sha256:0076da6d798b89547df7921a5a8a5242044bf6802e2d24369c316c265c40cb62"
