@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1 份放行剂量；另报告实测体积及精子浓度／数量。 |
 | How well | 声明物种、品种、供体健康、等级、活力、存活率、稀释液、剂量规格及最终状态。 |
 | How long or cycle | 一批从采集到放行；供体与资产负担关联至实际服务期间。 |
-| reference_flow_link | `release:released_dose` |
+| reference_flow_link | `released_dose` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 中心放行的非牛繁殖用精液剂量（UUID 未解析）。 |
+| Reference product flow | 中心放行的非牛繁殖用精液剂量 |
 | Reference flow property | 合格剂量计数（UUID 未解析）；体积和质量为另行测量的属性。 |
 | Reference unit group | 计数／剂量单位组（UUID 未解析）。 |
 | Reference unit | dose |
@@ -676,7 +676,7 @@ sync_with: pcr.en-US.md
 
 唯一参考产品是中心交接的合格非牛繁殖用精液。
 
-- 选定流：中心放行的非牛繁殖用精液剂量（UUID 未解析）
+- 选定流： 中心放行的非牛繁殖用精液剂量
 - 流属性/单位：计数 / dose
 - 数量规则：按物种、等级和状态计数合格单位，并关联体积和精子数。
 - 数值来源模式：前景记录（`foreground_record`）

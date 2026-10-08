@@ -31,12 +31,12 @@ This PCR covers two separately declared raw-fibre routes: sheep wool actually de
 | How much | 1 kg net as-sold fibre, excluding package and separable foreign material. |
 | How well | Declare raw fibre type, grade, moisture/contamination, route, source event and gate; no assumed clean-fibre equivalence. |
 | How long or cycle | Link source animal/skin, capture batch, animal phases, shared services and handover to actual periods once. |
-| reference_flow_link | `pack:market_fibre` |
+| reference_flow_link | `market_fibre` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Route-, species-, state- and gate-specific raw pulled wool or coarse animal hair (UUID unresolved) |
+| Reference product flow | Route-, species-, state- and gate-specific raw pulled wool or coarse animal hair |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -617,7 +617,7 @@ Identify single-use or reusable package and its service cycles; downstream freig
 
 Reference product has one declared route, species, state, grade and gate; attached fleece is excluded.
 
-- Selected flow: Declared raw pulled wool or coarse hair at handover (UUID unresolved)
+- Selected flow: Route-, species-, state- and gate-specific raw pulled wool or coarse animal hair
 - Flow property / unit: Mass / kg
 - Amount rule: Measure gross, tare, net and moisture for actual sale.
 - Value mode: Foreground record (`foreground_record`)

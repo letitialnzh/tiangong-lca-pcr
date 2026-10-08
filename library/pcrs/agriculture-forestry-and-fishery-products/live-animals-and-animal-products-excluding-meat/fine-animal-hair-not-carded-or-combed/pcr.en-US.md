@@ -31,12 +31,12 @@ This PCR covers detached raw fine animal hair, not textile-carded or combed, at 
 | How much | 1 kg net as-sold fibre, excluding container and separately removed dirt, guard hair and rejects. |
 | How well | Species, fineness/length or documented grade, colour, guard-hair content, contamination and moisture declared; no assumed clean-fibre equivalence. |
 | How long or cycle | Identify animal cohort, harvest event, production period, first-processing lot and handover; link shared service across actual periods. |
-| reference_flow_link | Final packaged raw fine-hair output `fine_hair_handover`; broad species/state/gate identity remains UUID-unresolved. |
+| reference_flow_link | `fine_hair_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Raw fine animal hair, uncarded/uncombed, species/state/gate qualified (UUID unresolved) |
+| Reference product flow | Raw fine animal hair, uncarded/uncombed, species/state/gate qualified |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -464,7 +464,7 @@ Select actual clean flexible sack or other documented compatible protective pack
 
 Sole reference handover for an identified species, grade, state and farm/collection gate; package mass excluded.
 
-- Selected flow: Raw fine animal hair, uncarded/uncombed, species/state/gate qualified (UUID unresolved)
+- Selected flow: Raw fine animal hair, uncarded/uncombed, species/state/gate qualified
 - Flow property / unit: Mass / kg
 - Amount rule: Gross package minus measured tare and removed matter gives net as-sold fibre.
 - Value mode: Foreground record (`foreground_record`)

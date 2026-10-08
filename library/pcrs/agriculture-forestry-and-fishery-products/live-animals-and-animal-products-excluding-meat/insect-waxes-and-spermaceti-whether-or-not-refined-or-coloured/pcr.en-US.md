@@ -33,12 +33,12 @@ The insect route collects actual comb/cappings or another documented insect secr
 | How much | 1 kg net sold wax excluding package and separately removable foreign material. |
 | How well | Declare species/source, lawful provenance where relevant, treatment, colour, purity/grade, moisture/impurities and gate. |
 | How long or cycle | Attribute source, collection, conditioning, treatment and shared service to actual lots and periods once. |
-| reference_flow_link | `handover:sold_wax` |
+| reference_flow_link | `sold_wax` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Source-, state- and gate-qualified insect wax or spermaceti (UUID unresolved) |
+| Reference product flow | Source-, state- and gate-qualified insect wax or spermaceti |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -597,7 +597,7 @@ Count actual consumed material or measured reusable package service, not later f
 
 One reference role instantiated by real source, sold state and gate; no broad fixed UUID is assumed.
 
-- Selected flow: Source-, state- and gate-qualified net sold wax (UUID unresolved)
+- Selected flow: Source-, state- and gate-qualified insect wax or spermaceti
 - Flow property / unit: Mass / kg
 - Amount rule: Measure actual net wax at actual gate and link lot, source, state and period.
 - Value mode: Foreground record (`foreground_record`)

@@ -31,14 +31,14 @@ This PCR covers living, species-qualified residual Ruminantia at actual farm or 
 | How much | 1 kg measured live mass, with head count and per-head measurements |
 | How well | Alive, declared species, sex/age class, health and acceptance condition, lawful origin |
 | How long or cycle | Declare farm cohort/breeding season or capture campaign and shared-service periods |
-| reference_flow_link | `live_output` at actual farm or capture gate |
+| reference_flow_link | `live_output` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-qualified living residual ruminant; UUID unresolved |
-| Reference flow property | Mass; UUID unresolved |
-| Reference unit group | Mass; UUID unresolved |
+| Reference product flow | Species-qualified living residual ruminant |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | Species/taxon; residual classification; legal source and jurisdiction; route; sex/age class; count; live mass; health; gate; cohort/campaign |
 
@@ -444,7 +444,7 @@ Link exactly once to either managed herd or lawful capture, never both for one l
 
 The single final reference gate requires species, class, count, mass, condition and legal origin.
 
-- Selected flow: Species-qualified living residual ruminant at actual gate
+- Selected flow: Species-qualified living residual ruminant
 - Flow property / unit: Mass / kg
 - Amount rule: measured accepted live mass normalized to 1 kg
 - Value mode: Foreground record (`foreground_record`)

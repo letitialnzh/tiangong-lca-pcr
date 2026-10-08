@@ -31,12 +31,12 @@ This PCR covers fresh or preserved but untanned raw hides/skins from bovine clas
 | How much | 1 kg net as-sold raw hide, excluding package tare and separable brine/salt. |
 | How well | Species, animal purpose, source route/legal status, grade, state, moisture/salt and gate known. |
 | How long or cycle | Source animal phases through removal and actual declared handover; shared service periods attributed once. |
-| reference_flow_link | `handover:final_hide` |
+| reference_flow_link | `final_hide` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Bovine raw hide, state- and gate-qualified (UUID unresolved) |
+| Reference product flow | Bovine raw hide, state- and gate-qualified |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -596,7 +596,7 @@ Record actual wrap/pallet/container function, mass and reuse; packaging is not p
 
 Record the one accepted fresh or preserved raw bovine-hide output at the actual declared farm-slaughter, recovery, slaughterhouse or curing-plant gate. Sale state and gate are mutually exclusive lot qualifiers; do not emit a second final output for an alternative state or gate. A narrower gate identity cannot represent this broad card.
 
-- Selected flow: Bovine raw hide, state- and gate-qualified (UUID unresolved)
+- Selected flow: Bovine raw hide, state- and gate-qualified
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh net as-sold hide at actual handover, excluding package tare and separable free brine/salt.
 - Value mode: Foreground record (`foreground_record`)

@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 净重销售原纤维，不含包装和可分离杂质。 |
 | How well | 申报原纤维类型、等级、含水/污染、路线、来源事件和交接点；不默认折算为净纤维。 |
 | How long or cycle | 将来源动物/皮张、采集批次、动物阶段、共用服务与交接分别关联实际期间且只计一次。 |
-| reference_flow_link | `pack:market_fibre` |
+| reference_flow_link | `market_fibre` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按路线、物种、状态和交接点限定的原拔毛或粗动物毛（UUID 待核实） |
+| Reference product flow | 按路线、物种、状态和交接点限定的原拔毛或粗动物毛 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -617,7 +617,7 @@ sync_with: pcr.en-US.md
 
 参考产品具有唯一申报路线、物种、状态、等级和交接点；不包括附皮羊毛。
 
-- 选定流：交接处申报的原拔毛或粗毛（UUID 待核实）
+- 选定流： 按路线、物种、状态和交接点限定的原拔毛或粗动物毛
 - 流属性/单位：质量 / kg
 - 数量规则：计量实际销售批次的毛重、皮重、净重和含水。
 - 数值来源模式：前景记录（`foreground_record`）

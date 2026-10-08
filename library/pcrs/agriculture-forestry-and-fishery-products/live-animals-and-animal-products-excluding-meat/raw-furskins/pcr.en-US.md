@@ -31,12 +31,12 @@ Covers undressed, untanned raw furskins suitable for furrier use: qualifying who
 | How much | 1 kg net as-sold raw skin excluding package and removable free preservative. |
 | How well | Species, fur quality, whole/piece composition, grade, legal source, raw state and gate declared. |
 | How long or cycle | Link farm cohort or wild capture event, removal, preservation and shared service to actual reporting periods. |
-| reference_flow_link | `handover:accepted_furskin` |
+| reference_flow_link | `accepted_furskin` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species/state/gate-qualified raw furskin (UUID unresolved) |
+| Reference product flow | Species/state/gate-qualified raw furskin |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -682,7 +682,7 @@ Identify single-use consumption or reusable turns; no packaging if absent.
 
 Measure one kg net as sold, excluding packaging and separable free preservative.
 
-- Selected flow: Raw furrier-suitable furskin at collection or curing handover (UUID unresolved)
+- Selected flow: Species/state/gate-qualified raw furskin
 - Flow property / unit: Mass / kg
 - Amount rule: Measure one kg net as sold, excluding packaging and separable free preservative.
 - Value mode: Foreground record (`foreground_record`)

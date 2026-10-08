@@ -31,12 +31,12 @@ This PCR covers usable breeding semen from animals other than bovines, including
 | How much | 1 released dose; measured volume and sperm concentration/count also reported. |
 | How well | Species, breed, donor health, grade, motility, viability, extender, dose specification and final state declared. |
 | How long or cycle | One collection-to-release lot; donor and asset burden linked to observed service periods. |
-| reference_flow_link | `release:released_dose` |
+| reference_flow_link | `released_dose` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Non-bovine breeding semen dose at centre release (UUID unresolved). |
+| Reference product flow | Non-bovine breeding semen dose at centre release |
 | Reference flow property | Accepted dose count (UUID unresolved); volume and mass are separately measured attributes. |
 | Reference unit group | Count/dose unit group (UUID unresolved). |
 | Reference unit | dose |
@@ -676,7 +676,7 @@ Only centre-issued protective packaging is included; reusable containers are app
 
 The sole reference product is quality-accepted non-bovine breeding semen at centre handover.
 
-- Selected flow: Non-bovine breeding semen dose at centre release (UUID unresolved)
+- Selected flow: Non-bovine breeding semen dose at centre release
 - Flow property / unit: Count / dose
 - Amount rule: Count accepted units by species, grade and final state and link volume and sperm count.
 - Value mode: Foreground record (`foreground_record`)

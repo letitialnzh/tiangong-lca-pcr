@@ -31,14 +31,14 @@ This PCR covers living, identified reptiles, including eligible snakes, lizards,
 | How much | 1 kg directly measured live mass with individual count and size class |
 | How well | Alive and fit for actual handover; taxon, health, source and legal status verified |
 | How long or cycle | Declare breeding cohort, rearing phase or capture campaign and all shared-service periods |
-| reference_flow_link | `live_handover` at actual breeder or authorized capture gate |
+| reference_flow_link | `live_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-qualified live reptile; UUID unresolved |
-| Reference flow property | Mass; UUID unresolved |
-| Reference unit group | Mass; UUID unresolved |
+| Reference product flow | Species-qualified live reptile |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | Species/taxon; count; size/age class; mass; captive or wild source and permit; jurisdiction; health/condition; cohort or campaign; actual handover gate |
 
@@ -569,7 +569,7 @@ No routine elementary input is assumed.
 
 One declared eligible species, alive and legally documented. Record count and measured mass; never substitute species-free UUID.
 
-- Selected flow: Species-qualified living reptile at source gate
+- Selected flow: Species-qualified live reptile
 - Flow property / unit: Mass / kg
 - Amount rule: 1 kg reference from measured accepted live mass
 - Value mode: Calculated value (`calculated_value`)

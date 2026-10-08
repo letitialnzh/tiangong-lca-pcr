@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 净重 1 kg；不含可拆包装和游离盐水 |
 | How well | 物种、来源、等级、含水/含盐状态、保藏路线及合法性 |
 | How long or cycle | 一个终止事件至交付的批次；按实际期间归属动物服务及共享资产 |
-| reference_flow_link | `handover:equine_raw_hide` |
+| reference_flow_link | `equine_raw_hide` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 实际前鞣制交付点的马属原皮（UUID 未解析） |
+| Reference product flow | 实际前鞣制交付点的马属原皮 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -621,7 +621,7 @@ sync_with: pcr.en-US.md
 
 前鞣制交付点销售状态的合格马属原皮。
 
-- 选定流： 前鞣制交付点销售状态的合格马属原皮 (UUID unresolved)
+- 选定流： 实际前鞣制交付点的马属原皮
 - 流属性/单位： 质量 / kg
 - 数量规则： 净重不含可拆包装和游离盐水。
 - 数值来源模式：前景记录 (`foreground_record`)

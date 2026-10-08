@@ -31,14 +31,14 @@ Covers non-living edible whole insects or parts, fresh, chilled, frozen, dried, 
 | How much | 1 kg net saleable product as sold, excluding package and separately removable free brine. |
 | How well | Species, life stage, whole/part/flour/meal form, moisture, food status, lawful source and gate. |
 | How long or cycle | Link real cohort or wild season, processing batch, shared assets and replacement to nonoverlapping periods. |
-| reference_flow_link | `pack:accepted_product` |
+| reference_flow_link | `accepted_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-, stage-, form- and gate-qualified non-living edible insects (UUID unresolved) |
-| Reference flow property | Mass (UUID unresolved) |
-| Reference unit group | Mass units (UUID unresolved) |
+| Reference product flow | Species-, stage-, form- and gate-qualified non-living edible insects |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | species; life stage; food eligibility; whole/part/flour/meal; preservation; moisture; lawful source; net mass; gate; period |
 
@@ -812,7 +812,7 @@ Record single-use mass or actual reusable turns and food-contact suitability.
 
 One kg net of one species, stage, form and moisture at actual handover; exclude package tare.
 
-- Selected flow: Qualified non-living edible insect product (UUID unresolved)
+- Selected flow: Species-, stage-, form- and gate-qualified non-living edible insects
 - Flow property / unit: Mass / kg
 - Amount rule: One kg net of one species, stage, form and moisture at actual handover; exclude package tare.
 - Value mode: Foreground record (`foreground_record`)

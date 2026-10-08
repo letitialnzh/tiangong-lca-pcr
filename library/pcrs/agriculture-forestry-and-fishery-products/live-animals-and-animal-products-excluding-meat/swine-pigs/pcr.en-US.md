@@ -35,17 +35,17 @@ The managed-production parent is swine husbandry through live-animal transfer. B
 | How much | 1 kg live weight immediately before ownership or control transfer |
 | How well | Declare animal class, sex where material, breed/genotype where known, production system, health/market eligibility, weighing basis, and geography |
 | How long or cycle | One declared cohort or production batch; breeding-herd and shared-asset burdens are linked across their stated service periods |
-| reference_flow_link | Product identity unresolved; no verified farm-gate live-weight Product flow UUID. Do not use feed-grade, at-plant, carcass, meat, or count-only near matches. |
+| reference_flow_link | `live_pig_output` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Live domestic swine at producing farm gate; UUID unresolved |
-| Reference flow property | Mass; UUID unresolved |
-| Reference unit group | Mass unit group; UUID unresolved |
+| Reference product flow | Live domestic swine at producing farm gate |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | Animal class; sex where material; breed/genotype where known; backyard, intermediate, or industrial route; live-weight measurement basis; geography; cohort and reporting period; farm-gate handover; intended output set; allocation method |
-| Binding | Omit; exact reference product and supporting property/unit-group UUIDs are unresolved |
+| Binding | Omit the unresolved reference product binding; independently confirmed Mass support UUIDs do not identify the product |
 
 ## 4. Measurement and Unit Rules
 
@@ -386,7 +386,7 @@ Include only supplier-to-farm or inter-site inbound movement controlled by and i
 
 ###### Live pigs at farm gate (`live_pig_output`)
 This is the reference output; no compatible platform Product flow has been verified.
-- Selected flow: Live domestic swine at producing farm gate (UUID unresolved)
+- Selected flow: Live domestic swine at producing farm gate
 - Flow property / unit: Mass / kg live weight
 - Amount rule: Record calibrated net live weight immediately before transfer and normalize all exchanges to 1 kg accepted live output.
 - Value mode: Foreground record (`foreground_record`)
@@ -688,7 +688,7 @@ Calculate only when nitrogen-flow records and a declared volatilization method s
 | rule_id | Applies to | Rule | severity |
 | --- | --- | --- | --- |
 | `validate_reference_identity` | reference flow | Fail if the output is not live domestic swine weighed by mass at the producing farm gate, or if either rejected candidate UUID is used. | error |
-| `validate_reference_uuid` | reference binding | Keep the reference Product flow, Mass property, and unit-group UUID fields empty until one compatible identity and support references are detail-confirmed; unresolved identity blocks active/publication readiness. | error |
+| `validate_reference_uuid` | reference binding | Keep the reference Product-flow UUID empty until one compatible product identity is detail-confirmed. Independently confirmed Mass property and unit-group UUIDs are support references only; unresolved product identity blocks active/publication readiness. | error |
 | `validate_route_delta` | route variants | Fail if backyard, intermediate, or industrial routes are combined without route-specific topology, inventory categories, calculation/validation deltas, current evidence, and transparent weights. | error |
 | `validate_phase_period` | phases and reporting periods | Fail when breeding, nursing, nursery, grow-finish, manure, replacement, culling, or asset service periods are relevant but unindexed, overlap without explanation, or are attributed twice. | error |
 | `validate_output_roles` | intended outputs, residues, and waste | Fail unless every live output and exported manure handover is recorded and mortalities/unusable manure are distinguished from intended products. | error |

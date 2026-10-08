@@ -31,14 +31,14 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 实测活体动物生物量，不含可分离的水、基质及容器。 |
 | How well | 物种、分类、生活阶段、数量或种群估计、活力、湿质量方法、暂养介质、来源合法性和交接点。 |
 | How long or cycle | 实际批群或采集事件及不重叠的生产、服务和替换期间。 |
-| reference_flow_link | `gate:product` |
+| reference_flow_link | `product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 注明物种、阶段与交接点的活体动物（UUID 未解析） |
-| Reference flow property | Mass (UUID unresolved) |
-| Reference unit group | Mass units (UUID unresolved) |
+| Reference product flow | 注明物种、阶段与交接点的活体动物 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 物种；分类决定；生活阶段；数量或种群估计；活力；湿质量方法；暂养介质；合法来源；路线；交接点；期间 |
 
@@ -597,7 +597,7 @@ sync_with: pcr.en-US.md
 
 在实际来源交接点称量净活体动物生物量；核实数量与合法交接。
 
-- 选定流: 来源交接点的有活力活体产品 (UUID unresolved)
+- 选定流: 注明物种、阶段与交接点的活体动物
 - 流属性/单位: Mass / kg
 - 数量规则: 在实际来源交接点称量净活体动物生物量；核实数量与合法交接。
 - 数值来源模式: 前景记录 (`foreground_record`)

@@ -33,12 +33,12 @@ The route is species-specific: farmed production, aquaculture, commercial slaugh
 | How much | 1 kg net as-sold skin excluding packaging and separable free brine or loose salt. |
 | How well | Record legal source, species, part, use, grade, state, moisture/adhering salt and gate. |
 | How long or cycle | Index source/capture, removal, cure and shared service to actual output and reporting period once. |
-| reference_flow_link | `handover:raw_skin_product` |
+| reference_flow_link | `raw_skin_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-, state- and gate-qualified raw skin of other animal (UUID unresolved) |
+| Reference product flow | Species-, state- and gate-qualified raw skin of other animal |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -598,7 +598,7 @@ Record actual wrap/crate or reusable support before gate; later distribution is 
 
 One broad reference-output role instantiated by actual species, part, grade, state and gate; one UUID is not assumed to represent all variants.
 
-- Selected flow: Species-, part-, use-, state- and gate-qualified accepted raw skin (UUID unresolved)
+- Selected flow: Species-, state- and gate-qualified raw skin of other animal
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh net sold skin excluding package and separable free cure medium.
 - Value mode: Foreground record (`foreground_record`)

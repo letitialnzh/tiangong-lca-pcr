@@ -33,14 +33,14 @@ Follow managed lactation and replacements, independent milking capture, first st
 | How much | 1 kg net milk excluding container tare |
 | How well | Species, sampled fat/solids, raw state, temperature, lot, acceptance and provenance documented |
 | How long or cycle | Defined lactation/reporting period with replacement, dry and culling phases attributed once |
-| reference_flow_link | One final `gate_milk` output; earlier milk states are internal transfers, never extra sales |
+| reference_flow_link | `gate_milk` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | Declared species' raw whole milk at actual initial gate |
-| Reference flow property | Mass |
-| Reference unit group | Mass |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | exact species; classification decision; raw whole status; measured fat/solids; gate; temperature; period; offspring consumption; net accepted/rejected mass; tare |
 
@@ -549,7 +549,7 @@ Document material and reuse cycles of container, liner or seal used before the d
 
 The sole reference sale is one declared species' net raw whole milk, excluding packaging tare.
 
-- Selected flow: Declared-species raw whole milk at actual initial handover
+- Selected flow: Declared species' raw whole milk at actual initial gate
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh saleable net product with species, fat, temperature and gate evidence.
 - Value mode: Foreground record (`foreground_record`)

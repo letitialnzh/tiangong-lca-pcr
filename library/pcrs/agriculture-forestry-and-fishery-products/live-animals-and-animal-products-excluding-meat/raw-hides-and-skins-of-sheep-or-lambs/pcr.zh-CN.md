@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 按售出状态计的净原皮，不含包装和游离盐／盐水。 |
 | How well | 记录羊龄、来源合法性、羊毛、等级、保存、水分／盐及交付点。 |
 | How long or cycle | 按动物群组、屠宰／回收事件及服务期间仅归属一次。 |
-| reference_flow_link | `handover:raw_skin_product` |
+| reference_flow_link | `raw_skin_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 状态及交付点限定的绵羊／羔羊原皮（UUID 未解析） |
+| Reference product flow | 状态及交付点限定的绵羊／羔羊原皮 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -637,7 +637,7 @@ sync_with: pcr.en-US.md
 
 参考产出不含包装及可分离游离盐／盐水。
 
-- 选定流: 按售出状态及交付点限定的未鞣制绵羊／羔羊原皮 (UUID 未解析)
+- 选定流: 状态及交付点限定的绵羊／羔羊原皮
 - 流属性/单位: Mass / kg
 - 数量规则: 按真实批次实测并核对节点投入、产出和去向。
 - 数值来源模式: 前景记录 (`foreground_record`)

@@ -31,14 +31,14 @@ Legally supplied living animals not assigned to a more specific class: eligible 
 | How much | 1 kg measured live animal biomass excluding removable water, substrate and container. |
 | How well | Species, classification, life stage, count or population estimate, viability, wet-mass method, holding medium, source legality and gate. |
 | How long or cycle | Actual cohort or collection event and nonoverlapping production, service and replacement periods. |
-| reference_flow_link | `gate:product` |
+| reference_flow_link | `product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-, stage- and gate-qualified living animal (UUID unresolved) |
-| Reference flow property | Mass (UUID unresolved) |
-| Reference unit group | Mass units (UUID unresolved) |
+| Reference product flow | Species-, stage- and gate-qualified living animal |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | species; classification decision; life stage; count or population estimate; viability; wet-mass method; holding medium; legal source; route; gate; period |
 
@@ -597,7 +597,7 @@ Measure protective container and removable medium separately from animal mass.
 
 Weigh net living animal biomass at actual source gate; verify count and lawful transfer.
 
-- Selected flow: Viable live product at source gate (UUID unresolved)
+- Selected flow: Species-, stage- and gate-qualified living animal
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh net living animal biomass at actual source gate; verify count and lawful transfer.
 - Value mode: Foreground record (`foreground_record`)

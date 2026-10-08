@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 按实售状态的 1 kg 净原皮，不含包装和可分离游离保藏剂。 |
 | How well | 声明物种、毛皮品质、整张/片块组成、等级、合法来源、原态和交付口。 |
 | How long or cycle | 将养殖群体或野外捕获事件、剥皮、保藏和共用服务关联至实际报告期间。 |
-| reference_flow_link | `handover:accepted_furskin` |
+| reference_flow_link | `accepted_furskin` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按物种、状态和交付口确认的原裘皮（UUID 未解析） |
+| Reference product flow | 按物种、状态和交付口确认的原裘皮 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -682,7 +682,7 @@ sync_with: pcr.en-US.md
 
 称量按实售状态的 1 kg 净质量，剔除包装及可分离游离保藏剂。
 
-- 选定流: 收集或保藏交付口的裘皮用原皮 (UUID unresolved)
+- 选定流: 按物种、状态和交付口确认的原裘皮
 - 流属性/单位: Mass / kg
 - 数量规则: 称量按实售状态的 1 kg 净质量，剔除包装及可分离游离保藏剂。
 - 数值来源模式: 前景记录 (`foreground_record`)

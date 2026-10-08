@@ -35,17 +35,17 @@ sync_with: pcr.en-US.md
 | How much | 所有权或控制权转移前立即称量的 1 kg 活重 |
 | How well | 声明动物类别、必要时的性别、已知品种/基因型、生产系统、健康/上市资格、称量基础及地理范围 |
 | How long or cycle | 一个声明的群组或生产批次；种猪群和共享资产负担跨其声明服务期关联 |
-| reference_flow_link | 产品身份未解析；没有经核实的农场门活重 Product 流 UUID。不得使用饲料级、工厂门、胴体、肉类或仅计数的近似项。 |
+| reference_flow_link | `live_pig_output` |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 生产农场门家猪活体；UUID 未解析 |
-| Reference flow property | Mass；UUID 未解析 |
-| Reference unit group | Mass unit group；UUID 未解析 |
+| Reference product flow | 生产农场门家猪活体 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 动物类别；必要时性别；已知品种/基因型；后院型、中间型或工业型路线；活重称量基础；地理范围；群组和报告期；农场门交付；预期产出集合；分配方法 |
-| Binding | 留空；准确参考产品及其属性/单位组 UUID 未解析 |
+| Binding | 未解析的参考产品绑定留空；独立确认的质量支持 UUID 不代表产品身份 |
 
 ## 4. 计量与单位规则
 
@@ -386,7 +386,7 @@ sync_with: pcr.en-US.md
 
 ###### 农场门活猪（`live_pig_output`）
 这是参考产出；尚未核实兼容的平台 Product 流。
-- 选定流：生产农场门家猪活体（UUID 未解析）
+- 选定流： 生产农场门家猪活体
 - 流属性/单位：Mass / kg live weight
 - 数量规则：记录交付前校准净活重，并将全部交换归一化至 1 kg 验收活体产出。
 - 数值来源模式：前景记录（`foreground_record`）
@@ -688,7 +688,7 @@ sync_with: pcr.en-US.md
 | rule_id | 适用对象 | 规则 | severity |
 | --- | --- | --- | --- |
 | `validate_reference_identity` | 参考流 | 若产出不是生产农场门按质量称量的家猪活体，或使用任一已拒绝候选 UUID，则失败。 | error |
-| `validate_reference_uuid` | 参考绑定 | 在一个兼容身份及支持引用经明细核实前，参考 Product 流、Mass 属性和单位组 UUID 保持为空；未解析身份阻止 active/发布就绪。 | error |
+| `validate_reference_uuid` | 参考绑定 | 在兼容产品身份经明细核实前，参考产品流 UUID 保持为空。独立确认的质量属性及单位组 UUID 仅为支持引用；未解析产品身份阻止 active/发布就绪。 | error |
 | `validate_route_delta` | 路线 | 若合并路线时未提供路线特定拓扑、清单类别、计算/验证差异、当前证据和透明权重，则失败。 | error |
 | `validate_phase_period` | 阶段与期间 | 相关阶段、粪污、更新、淘汰或资产服务期未编制索引、无说明重叠或重复归属时失败。 | error |
 | `validate_output_roles` | 产出、残余和废物 | 除非记录每个活体产出及外运粪污交付，并区分死亡动物/不可用粪污与预期产品，否则失败。 | error |

@@ -31,7 +31,7 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 实测活重，另记录实测只数与 kg/只。 |
 | How well | 活体、未加工；售出活禽产出不含死亡鸭。 |
 | How long or cycle | 实际孵化或育成批次，以及归属的种鸭期间。 |
-| reference_flow_link | `live_duck_final` 在选定的最终交付点。 |
+| reference_flow_link | `live_duck_final` |
 
 | Field | Value |
 | --- | --- |
@@ -771,7 +771,7 @@ sync_with: pcr.en-US.md
 
 只记录一个选定的孵化场或养殖场活鸭批次；排除死亡鸭和下游运输。
 
-- 选定流：声明生产者交付点的家鸭活体；宽口径质量 UUID 未解析
+- 选定流： 声明生产者交付点的家鸭活体；宽口径质量参考 UUID 未解析
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：1 kg 实测最终活鸭；记录只数与交付点。
 - 数值来源模式：`foreground_record`

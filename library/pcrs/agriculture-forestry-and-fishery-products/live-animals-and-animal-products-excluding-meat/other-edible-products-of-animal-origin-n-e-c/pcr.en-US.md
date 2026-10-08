@@ -33,12 +33,12 @@ A compatible source-specific upstream record carries source production and its b
 | How much | 1 kg net saleable product excluding package and separately removed inedible matter. |
 | How well | Declare animal species/source, legal and food status, grade, moisture, physical state and gate. |
 | How long or cycle | Link source establishment, productive/termination periods, collection and shared services to real lots once. |
-| reference_flow_link | `handover:sold` |
+| reference_flow_link | `sold` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Source-, state- and gate-qualified other edible animal-origin good (UUID unresolved) |
+| Reference product flow | Source-, state- and gate-qualified other edible animal-origin good |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -557,7 +557,7 @@ Record package material, tare and reuse or single-use service.
 
 Net mass excludes package at the real production or first-collection gate.
 
-- Selected flow: One source-, state- and gate-qualified edible animal product (UUID unresolved)
+- Selected flow: Source-, state- and gate-qualified other edible animal-origin good
 - Flow property / unit: Mass / kg
 - Amount rule: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled.
 - Value mode: Foreground record (`foreground_record`)

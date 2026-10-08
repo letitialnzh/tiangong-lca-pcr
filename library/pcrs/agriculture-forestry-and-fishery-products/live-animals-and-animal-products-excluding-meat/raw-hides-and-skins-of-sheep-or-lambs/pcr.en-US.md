@@ -31,12 +31,12 @@ This PCR covers untanned fresh or first-stage preserved sheep/lamb raw skins at 
 | How much | 1 kg net as-sold skin excluding package and free salt/brine. |
 | How well | Record age, source legality, fleece, grade, preservation, moisture/salt and gate. |
 | How long or cycle | Attribute once by animal cohort, slaughter/recovery event and service period. |
-| reference_flow_link | `handover:raw_skin_product` |
+| reference_flow_link | `raw_skin_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Condition- and gate-qualified sheep/lamb raw skin (UUID unresolved) |
+| Reference product flow | Condition- and gate-qualified sheep/lamb raw skin |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -637,7 +637,7 @@ Record material and reuse; exclude later freight service.
 
 Reference output excludes packaging and separable free salt/brine.
 
-- Selected flow: Raw untanned sheep/lamb skin in sold state and gate (UUID unresolved)
+- Selected flow: Condition- and gate-qualified sheep/lamb raw skin
 - Flow property / unit: Mass / kg
 - Amount rule: Measure actual lot and reconcile node inputs, outputs and destinations.
 - Value mode: Foreground record (`foreground_record`)

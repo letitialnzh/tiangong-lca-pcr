@@ -31,12 +31,12 @@ Covers equine hides fresh or preserved but not further prepared. Declare species
 | How much | 1 kg net; excludes detachable package and free brine |
 | How well | species, provenance, grade, moisture/salt condition, preservation route, legality |
 | How long or cycle | one terminal-event-to-handover lot; attribute animal service and shared assets across actual periods |
-| reference_flow_link | `handover:equine_raw_hide` |
+| reference_flow_link | `equine_raw_hide` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Equine raw hide at actual pre-tannery handover (UUID unresolved) |
+| Reference product flow | Equine raw hide at actual pre-tannery handover |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -621,7 +621,7 @@ Package function for final raw-hide protection.
 
 Accepted as-sold equine raw hide at pre-tannery gate.
 
-- Selected flow: Accepted as-sold equine raw hide at pre-tannery gate (UUID unresolved)
+- Selected flow: Equine raw hide at actual pre-tannery handover
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh net hide excluding detachable packaging and free brine.
 - Value mode: Foreground record (`foreground_record`)

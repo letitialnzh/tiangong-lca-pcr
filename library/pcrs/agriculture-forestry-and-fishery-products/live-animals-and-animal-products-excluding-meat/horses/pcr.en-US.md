@@ -36,7 +36,7 @@ This PCR covers living horses (*Equus caballus*) at a producing breeder or reari
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Live horses at producer handover (UUID unresolved) |
+| Reference product flow | Live horses at producer handover |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -729,7 +729,7 @@ Input is either breeder-gate foals or reared horses for a final lot, with prior 
 
 Count and weigh accepted live horses at the declared producing breeder or rearing-farm gate.
 
-- Selected flow: Live horses at producer handover (UUID unresolved)
+- Selected flow: Live horses at producer handover
 - Flow property / unit: Mass / kg
 - Amount rule: measured accepted live mass
 - Value mode: Foreground record (`foreground_record`)

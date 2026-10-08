@@ -33,12 +33,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 可销售净产品，不含包装及单独去除的不可食物。 |
 | How well | 声明动物物种/来源、合法及食用状态、等级、水分、物理状态和门槛。 |
 | How long or cycle | 将来源建立、生产/终止期间、采集及共用服务一次性关联真实批次。 |
-| reference_flow_link | `handover:sold` |
+| reference_flow_link | `sold` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 来源、状态及门槛明确的其他动物源可食商品（UUID 未解析） |
+| Reference product flow | 来源、状态及门槛明确的其他动物源可食商品 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -557,7 +557,7 @@ sync_with: pcr.en-US.md
 
 在真实生产或首次集货门槛处，净质量不含包装。
 
-- 选定流：一种来源、状态及门槛明确的动物源可食产品（UUID 未解析）
+- 选定流： 来源、状态及门槛明确的其他动物源可食商品
 - 流属性/单位：Mass / kg
 - 数量规则：按来源、批次和期间计量真实交换；跳过的条件节点不建模。
 - 数值来源模式：前景记录（`foreground_record`）

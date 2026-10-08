@@ -35,7 +35,7 @@ Route variants may coexist within one enterprise, but their flock, housing, feed
 | How much | 1 kg measured live weight |
 | How well | purpose and class; breed or genetic line where material; rearing or laying route; age or phase; health and market state; geography; scale and gut-fill or shrink convention |
 | How long or cycle | declared flock cohort and reporting period, covering attributed replacement, brooding, growing or laying, selection and handover phases |
-| reference_flow_link | Reference amount and identity below |
+| reference_flow_link | `live_chicken_output` |
 
 | Field | Value |
 | --- | --- |

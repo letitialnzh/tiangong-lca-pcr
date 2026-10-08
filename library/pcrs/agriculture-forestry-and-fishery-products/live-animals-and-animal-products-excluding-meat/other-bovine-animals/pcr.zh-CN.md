@@ -31,14 +31,14 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 实测活体质量，并记录头数及个体或批次称量 |
 | How well | 核实物种/分类单元、年龄性别类、存活与健康状态、所有权/保管链和合法来源 |
 | How long or cycle | 饲养存栏及设施的实际期间，或获得授权的真实捕获行动期 |
-| reference_flow_link | 养殖者或获准捕获来源处的 `gate:live_output` |
+| reference_flow_link | `live_output` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 具物种、来源和交接点限定的其他牛亚科动物活体；UUID 未解析 |
-| Reference flow property | 质量；UUID 未解析 |
-| Reference unit group | 质量；UUID 未解析 |
+| Reference product flow | 具物种、来源和交接点限定的其他牛亚科动物活体 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 科学物种名及牛亚科证据；02119 与 02129 分类决定；辖区和授权；养殖/捕获路线；头数；性别年龄类；实测质量；存活状态；存栏/行动期；真实交接点 |
 
@@ -447,7 +447,7 @@ sync_with: pcr.en-US.md
 
 这是唯一参考产出，不是跨物种平均流。
 
-- 选定流：具物种、来源和交接点限定的其他牛亚科动物活体；UUID 未解析
+- 选定流： 具物种、来源和交接点限定的其他牛亚科动物活体
 - 流属性/单位：质量 / kg
 - 数量规则：加总实测验收活体质量并归一化为 1 kg。
 - 数值来源模式：前景记录（`foreground_record`）

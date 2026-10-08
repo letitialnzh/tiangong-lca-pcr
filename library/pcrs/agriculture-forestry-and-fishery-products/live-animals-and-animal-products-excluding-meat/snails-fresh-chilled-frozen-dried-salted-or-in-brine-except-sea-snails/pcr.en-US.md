@@ -31,12 +31,12 @@ This PCR covers non-sea snail goods harvested from managed terrestrial rearing o
 | How much | 1 kg net snail product as sold, excluding packaging and separately reported free brine. |
 | How well | Species, lawful source, whole/shelled presentation, intended use, applicable grade/quality criterion, condition/rejection, moisture/brine, and food-safety status when used as food declared. |
 | How long or cycle | Identified rearing cohort or gathering event through handover; multi-period breeding stock and shared services attributed over actual service periods. |
-| reference_flow_link | `pack:pack_product` |
+| reference_flow_link | `pack_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Non-sea snail goods, sold state and handover-gate qualified (UUID unresolved) |
+| Reference product flow | Non-sea snail goods, sold state and handover-gate qualified |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -639,7 +639,7 @@ When a package is used, record its actual product-contact container and protecti
 
 Weigh one state-qualified sale lot after package tare and report product identity, grade, route and exact farm or first-processing handover gate.
 
-- Selected flow: Non-sea snail goods, sold state, use and gate qualified (UUID unresolved)
+- Selected flow: Non-sea snail goods, sold state and handover-gate qualified
 - Flow property / unit: Mass / kg
 - Amount rule: Net accepted sold snail mass; free brine and package mass separately disclosed.
 - Value mode: Foreground record (`foreground_record`)

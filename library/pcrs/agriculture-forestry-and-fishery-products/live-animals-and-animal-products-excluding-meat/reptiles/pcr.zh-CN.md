@@ -31,14 +31,14 @@ sync_with: pcr.en-US.md
 | How much | 实测活体质量 1 kg，并记录个体数及体型等级 |
 | How well | 存活且符合实际交接条件；物种、健康、来源及合法状态经核验 |
 | How long or cycle | 声明繁殖群、饲养阶段或捕获行动以及共享服务的全部期间 |
-| reference_flow_link | 实际繁育或获授权捕获门的 `live_handover` |
+| reference_flow_link | `live_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 物种限定的活爬行动物；UUID 未解析 |
-| Reference flow property | 质量；UUID 未解析 |
-| Reference unit group | 质量；UUID 未解析 |
+| Reference product flow | 物种限定的活爬行动物 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 物种/分类单元；数量；体型/年龄组；质量；人工或野外来源及许可；司法辖区；健康/状况；群组或捕获行动；实际交接门 |
 
@@ -569,7 +569,7 @@ sync_with: pcr.en-US.md
 
 一批一种合格物种，保持存活并有合法文件。记录数量及实测质量；不得代入无物种限定 UUID。
 
-- 选定流：来源门物种限定活爬行动物
+- 选定流： 物种限定的活爬行动物
 - 流属性/单位：质量 / kg
 - 数量规则：从实测验收活体质量归一化为 1 kg 参考量
 - 数值来源模式：计算值（`calculated_value`）

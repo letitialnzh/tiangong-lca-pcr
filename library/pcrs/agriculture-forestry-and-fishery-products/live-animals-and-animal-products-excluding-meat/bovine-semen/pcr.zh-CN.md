@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 一剂合格品；另报实测体积或质量与精子数。 |
 | How well | 声明供体物种/品种、健康、合格等级、活力/存活性、精子数、稀释液和保存状态。 |
 | How long or cycle | 一个从采集到交付的批次；供体维持按观测服役期分摊。 |
-| reference_flow_link | `centre_dispatch:usable_dose` |
+| reference_flow_link | `usable_dose` |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 采精中心交付的可用牛精液剂量（UUID 未解析） |
+| Reference product flow | 采精中心交付的可用牛精液剂量 |
 | Reference flow property | 件数属性 `01846770-4cfe-4a25-8ad9-919d8d378345` 仅为候选属性；一剂的等价定义仍须明确。 |
 | Reference unit group | 件数/剂量单位组（UUID 未解析）。 |
 | Reference unit | dose |
@@ -929,7 +929,7 @@ sync_with: pcr.en-US.md
 
 一剂质量放行的授精用精液跨越采精中心交付门。
 
-- 选定流: 采精中心交付的可用牛精液剂量（UUID 未解析）
+- 选定流: 采精中心交付的可用牛精液剂量
 - 流属性/单位: Count / dose
 - 数量规则: 每参考流恰为一剂合格放行品。
 - 数值来源模式: 前景记录 (`foreground_record`)

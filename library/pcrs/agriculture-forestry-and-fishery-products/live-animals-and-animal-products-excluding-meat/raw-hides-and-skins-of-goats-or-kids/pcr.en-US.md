@@ -31,12 +31,12 @@ This rule covers separately recovered, fresh or first-stage preserved, untanned 
 | How much | 1 kg net as-sold skin; exclude detachable packaging and free brine |
 | How well | goat/kid species, legal source, route, grade, fresh/chilled/dried/salted/brined state, moisture and retained salt |
 | How long or cycle | measured terminal-event-to-handover lot, linked to actual animal-production and shared-service periods |
-| reference_flow_link | `gate:raw_goat_skin` |
+| reference_flow_link | `raw_goat_skin` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Raw goat or kid skin at actual handover (UUID unresolved) |
+| Reference product flow | Raw goat or kid skin at actual handover |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -641,7 +641,7 @@ Actually used reusable or single-use protective packaging.
 
 Net as-sold fresh or preserved untanned raw goat or kid skin.
 
-- Selected flow: Net as-sold fresh or preserved untanned raw goat or kid skin (UUID unresolved)
+- Selected flow: Raw goat or kid skin at actual handover
 - Flow property / unit: Mass / kg
 - Amount rule: Exactly one final output per sold lot at its actual removal, slaughterhouse, recovery or curing gate; branch-specific upstream steps may be omitted.
 - Value mode: Foreground record (`foreground_record`)

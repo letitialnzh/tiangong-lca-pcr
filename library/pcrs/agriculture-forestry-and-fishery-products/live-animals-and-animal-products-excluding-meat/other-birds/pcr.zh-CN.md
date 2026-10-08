@@ -31,14 +31,14 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 实测活体质量，附鸟只数量 |
 | How well | 声明物种、年龄/性别类别、健康、活体状态及合法来源 |
 | How long or cycle | 声明饲养群期或捕获活动期和共用服务期 |
-| reference_flow_link | 实际来源门的 `live_handover` |
+| reference_flow_link | `live_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按物种确认的其他活鸟；UUID 未解析 |
-| Reference flow property | Mass；UUID 未解析 |
-| Reference unit group | Mass；UUID 未解析 |
+| Reference product flow | 按物种确认的其他活鸟 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 物种/分类单元；剩余类归属；来源路线；司法辖区与合法来源；数量；质量；年龄/性别类别；健康；群期/活动期；交付门 |
 
@@ -467,7 +467,7 @@ sync_with: pcr.en-US.md
 
 已验收的其他活鸟按实际发生的物种、状态及交付门登记。
 
-- 选定流：按物种确认并验收的其他活鸟
+- 选定流： 按物种确认的其他活鸟
 - 流属性/单位：Mass / kg
 - 数量规则：称重已验收活体批次；参考量为一千克
 - 数值来源模式：前景记录（`foreground_record`）

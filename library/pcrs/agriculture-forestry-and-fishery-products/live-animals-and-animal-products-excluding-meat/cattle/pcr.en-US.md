@@ -35,18 +35,18 @@ The route variants may coexist within a farm or reporting portfolio, but their r
 | How much | 1 kg live weight |
 | How well | declared animal class, sex where material, production purpose and route, breed or genetic line where material, live-weight measurement basis, health or market status, geography, and farm-gate condition |
 | How long or cycle | declared cohort or complete reporting period covering the attributed breeding, rearing, growing, finishing, manure, and shared-infrastructure service periods |
-| reference_flow_link | Reference amount and product flow below |
+| reference_flow_link | `live_cattle_reference_output` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | Live cattle at producing farm gate |
-| Reference flow property | Mass |
-| Reference unit group | Units of mass |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | animal class; sex where material; production purpose; grazing, mixed, dairy-linked, housed or feedlot route; breed or genetic line where material; weighed or measured live-weight basis; geography; farm-gate handover; cohort or reporting period; included lifecycle phases |
 
-No compatible Tiangong Product flow, flow-property UUID, or unit-group UUID has been verified for this farm-gate mass identity. These UUID positions remain blank until one exact compatible identity and its support references are confirmed. Head count is retained only as a parallel activity datum and must not replace the mass reference property.
+No compatible Product flow has been verified for this farm-gate mass identity, so its product-flow UUID remains blank. The independently confirmed Mass property and Mass unit-group support identities are recorded above; they do not establish a product-flow binding. Head count is retained only as a parallel activity datum and must not replace the mass reference property.
 
 ## 4. Measurement and Unit Rules
 

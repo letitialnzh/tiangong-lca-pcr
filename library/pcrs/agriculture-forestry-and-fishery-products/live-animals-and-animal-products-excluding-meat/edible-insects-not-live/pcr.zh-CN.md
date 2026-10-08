@@ -31,14 +31,14 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 按出售状态计量的可售净产品，扣除包装和可单独移除的游离盐水。 |
 | How well | 物种、虫态、整虫/部位/粉/粗粉形态、含水率、食品状态、合法来源和交付点。 |
 | How long or cycle | 将实际批次或野采季、加工批次、共用资产和替换关联至不重叠期间。 |
-| reference_flow_link | `pack:accepted_product` |
+| reference_flow_link | `accepted_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按物种、虫态、形态和交付点限定的非活体食用昆虫 (UUID unresolved) |
-| Reference flow property | Mass (UUID unresolved) |
-| Reference unit group | Mass units (UUID unresolved) |
+| Reference product flow | 按物种、虫态、形态和交付点限定的非活体食用昆虫 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 物种；虫态；食品资格；整虫/部位/粉/粗粉；保藏；含水率；合法来源；净质量；交付点；期间 |
 
@@ -812,7 +812,7 @@ sync_with: pcr.en-US.md
 
 在实际交付点记录单一物种、虫态、形态及含水率的 1 kg 净产品；扣除包装皮重。
 
-- 选定流: 限定非活体食用昆虫产品 (UUID unresolved)
+- 选定流: 按物种、虫态、形态和交付点限定的非活体食用昆虫
 - 流属性/单位: Mass / kg
 - 数量规则: 在实际交付点记录单一物种、虫态、形态及含水率的 1 kg 净产品；扣除包装皮重。
 - 数值来源模式: 前景记录 (`foreground_record`)

@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1 枚放行胚胎；核对全部采集/获取、制备、分级、保存及废弃数量。 |
 | How well | 声明物种、供体、体内/体外路线、发育阶段、活性等级、卫生处理和保存状态。 |
 | How long or cycle | 一次采集至放行批次；供体与共用实验室/储存负荷按实际服务期间归属。 |
-| reference_flow_link | `release:viable_embryo` |
+| reference_flow_link | `viable_embryo` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 实验室放行的可存活动物胚胎（UUID 未解析）。 |
+| Reference product flow | 实验室放行的可存活动物胚胎 |
 | Reference flow property | 胚胎计数（UUID 未解析）。 |
 | Reference unit group | 胚胎计数单位组（UUID 未解析）。 |
 | Reference unit | embryo |
@@ -701,7 +701,7 @@ sync_with: pcr.en-US.md
 
 这是唯一参考产品，不隐含移植或妊娠结果。
 
-- 选定流：实验室放行的可存活动物胚胎（UUID 未解析）
+- 选定流： 实验室放行的可存活动物胚胎
 - 流属性/单位：计数 / embryo
 - 数量规则：按路线、状态和等级计数签字质量放行胚胎。
 - 数值来源模式：前景记录（`foreground_record`）

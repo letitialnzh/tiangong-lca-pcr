@@ -33,12 +33,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 净销售蜡，不含包装和可单独移除的异物。 |
 | How well | 声明物种/来源、适用时的合法来源、处理、颜色、纯度/等级、水分/杂质及 gate。 |
 | How long or cycle | 来源、采集、初制、处理及共用服务按真实批次和期间只归属一次。 |
-| reference_flow_link | `handover:sold_wax` |
+| reference_flow_link | `sold_wax` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 来源、状态和 gate 明确的昆虫蜡或鲸蜡（UUID 未解析） |
+| Reference product flow | 来源、状态和 gate 明确的昆虫蜡或鲸蜡 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -597,7 +597,7 @@ sync_with: pcr.en-US.md
 
 按实际来源、销售状态和交付口实例化一个参考角色；不假定宽泛固定 UUID。
 
-- 选定流：来源、状态和交付口明确的净销售蜡（UUID 未解析）
+- 选定流： 来源、状态和 gate 明确的昆虫蜡或鲸蜡
 - 流属性/单位：Mass / kg
 - 数量规则：计量实际实际交付口的净蜡，并关联批次、来源、状态和期间。
 - 数值来源模式：前景记录（`foreground_record`）

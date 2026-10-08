@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 净销售皮质量；不含可拆除包装及游离盐水 |
 | How well | 山羊／羔羊物种、合法来源、路线、等级、新鲜／冷藏／干燥／盐腌／盐水状态、水分及留存盐 |
 | How long or cycle | 实测终末事件至交接批次，与实际养殖及共享服务期间关联 |
-| reference_flow_link | `gate:raw_goat_skin` |
+| reference_flow_link | `raw_goat_skin` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 实际交接点的山羊或羔羊原皮（UUID 未解析） |
+| Reference product flow | 实际交接点的山羊或羔羊原皮 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -641,7 +641,7 @@ sync_with: pcr.en-US.md
 
 净销售质量的新鲜或防腐未鞣制山羊或羔羊原皮.
 
-- 选定流：净销售质量的新鲜或防腐未鞣制山羊或羔羊原皮（UUID 未解析）
+- 选定流： 实际交接点的山羊或羔羊原皮
 - 流属性/单位：Mass / kg
 - 数量规则：每个销售批次只在实际剥皮、屠宰场、回收或防腐交接点记录一次最终输出；未经过的上游分支可省略。
 - 数值来源模式：前景记录（`foreground_record`）

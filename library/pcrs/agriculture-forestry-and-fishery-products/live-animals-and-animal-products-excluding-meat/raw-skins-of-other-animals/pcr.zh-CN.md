@@ -33,12 +33,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 出售状态的原皮净重，不含包装与可分离的游离盐水或散盐。 |
 | How well | 记录合法来源、物种、部位、用途、等级、状态、水分/附着盐及 gate。 |
 | How long or cycle | 来源/捕获、剥皮、保藏及共用服务按实际产出事件和报告期各记录一次。 |
-| reference_flow_link | `handover:raw_skin_product` |
+| reference_flow_link | `raw_skin_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按物种、状态和 gate 限定的其他动物原皮（UUID 未解析） |
+| Reference product flow | 按物种、状态和 gate 限定的其他动物原皮 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -598,7 +598,7 @@ sync_with: pcr.en-US.md
 
 这是由实际物种、部位、等级、状态和 gate 实例化的一张广义参考产出卡，并非假定一个 UUID 可代表所有变体。
 
-- 选定流：按物种、部位、用途、状态及 gate 限定的合格原皮（UUID 未解析）
+- 选定流： 按物种、状态和 gate 限定的其他动物原皮
 - 流属性/单位： Mass / kg
 - 数量规则：称量净出售原皮，不含包装及可分离游离保藏介质。
 - 数值来源模式： 前景记录（`foreground_record`）

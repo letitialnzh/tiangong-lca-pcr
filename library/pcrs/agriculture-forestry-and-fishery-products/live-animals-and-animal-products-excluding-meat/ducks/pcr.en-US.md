@@ -31,12 +31,12 @@ This PCR covers living domestic ducks classified as *Anas* (mainly *A. platyrhyn
 | How much | 1 kg measured live weight, plus observed head count and kg/head. |
 | How well | Live and unprocessed, excluding dead birds from sold live output. |
 | How long or cycle | Actual hatchery or rearing batch and any attributed breeder periods. |
-| reference_flow_link | `live_duck_final` at the selected final gate. |
+| reference_flow_link | `live_duck_final` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Living domestic duck at declared producer gate; UUID unresolved for broad mass reference |
+| Reference product flow | Living domestic duck at declared producer gate |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -771,7 +771,7 @@ Receive ducks from exactly one predecessor; internal transfer carries prior burd
 
 Record one selected hatchery- or farm-gate living duck lot; exclude dead birds and downstream transport.
 
-- Selected flow: Live domestic duck at declared producer gate; broad mass UUID unresolved
+- Selected flow: Living domestic duck at declared producer gate
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: 1 kg measured final live duck; record count and gate.
 - Value mode: `foreground_record`

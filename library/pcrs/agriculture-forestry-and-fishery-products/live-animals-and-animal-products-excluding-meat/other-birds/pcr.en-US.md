@@ -31,14 +31,14 @@ Cover living, species-qualified birds in residual CPC 02194, including pigeons, 
 | How much | 1 kg measured live mass, with head count |
 | How well | Declared species, age/sex class, health, live condition and lawful source |
 | How long or cycle | Declared rearing cohort or capture campaign and shared-service periods |
-| reference_flow_link | `live_handover` at actual source gate |
+| reference_flow_link | `live_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-qualified live other birds; UUID unresolved |
-| Reference flow property | Mass; UUID unresolved |
-| Reference unit group | Mass; UUID unresolved |
+| Reference product flow | Species-qualified live other birds |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | Species/taxon; residual classification; source route; jurisdiction and lawful provenance; count; mass; sex/age class; health; cohort/campaign; handover gate |
 
@@ -467,7 +467,7 @@ Record live birds received for acceptance for the actual species, state and gate
 
 Record accepted live other birds for the actual species, state and gate.
 
-- Selected flow: Species-qualified accepted live other birds
+- Selected flow: Species-qualified live other birds
 - Flow property / unit: Mass / kg
 - Amount rule: Weigh living accepted lot; reference is one kg
 - Value mode: Foreground record (`foreground_record`)

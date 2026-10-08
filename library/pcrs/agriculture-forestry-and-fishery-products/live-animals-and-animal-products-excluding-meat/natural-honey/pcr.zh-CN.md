@@ -36,7 +36,7 @@ sync_with: pcr.en-US.md
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 生产者交付点天然蜂蜜（UUID 未解析） |
+| Reference product flow | 生产者交付点天然蜂蜜 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -537,7 +537,7 @@ sync_with: pcr.en-US.md
 
 参考输出是蜂蜜成分；巢蜜销售毛重包括蜡，须单独抽样并从分母排除。
 
-- 选定流: 可售天然蜂蜜（参考 UUID 未解析）
+- 选定流: 生产者交付点天然蜂蜜
 - 流属性/单位: Mass / kg honey
 - 数量规则: 按批次采集并与实际交接和库存变动核对。
 - 数值来源模式: 前景记录 (`foreground_record`)

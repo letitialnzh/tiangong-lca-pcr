@@ -33,14 +33,14 @@ sync_with: pcr.en-US.md
 | How much | 扣除容器皮重后的净乳 1 kg |
 | How well | 记录物种、检测脂肪和固形物、生乳状态、温度、批次、验收及来源 |
 | How long or cycle | 明确泌乳/报告期，替换、干乳和淘汰阶段仅归属一次 |
-| reference_flow_link | 唯一最终 `gate_milk` 输出；先前乳状态是内部转移，不重复出售 |
+| reference_flow_link | `gate_milk` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | 已声明物种在实际初始交接点的全脂生乳 |
-| Reference flow property | Mass |
-| Reference unit group | Mass |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 准确物种；分类决定；全脂生乳状态；实测脂肪/固形物；交接点；温度；期间；幼畜吸食量；验收/拒收净重；皮重 |
 
@@ -549,7 +549,7 @@ sync_with: pcr.en-US.md
 
 唯一参考销售为声明物种的全脂生乳净重，不含包装皮重。
 
-- 选定流：声明物种在实际初始交接点的全脂生乳
+- 选定流： 已声明物种在实际初始交接点的全脂生乳
 - 流属性/单位：Mass / kg
 - 数量规则：连同物种、脂肪、温度及交接证据称量可售净乳。
 - 数值来源模式：前景记录（`foreground_record`）

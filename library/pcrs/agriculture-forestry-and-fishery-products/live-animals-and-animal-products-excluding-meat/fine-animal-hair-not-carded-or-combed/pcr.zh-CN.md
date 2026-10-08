@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 销售状态净纤维 1 kg，不含容器及已单独去除的污物、粗外层毛和剔除物。 |
 | How well | 申报物种、细度／长度或有记录的等级、颜色、粗外层毛含量、污染物和含水率；不得假定净纤维等价。 |
 | How long or cycle | 识别动物群、采集事件、生产期间、首次整理批次和交付；将共用服务关联到实际期间。 |
-| reference_flow_link | 最终包装原细毛产出 `fine_hair_handover`；跨物种、状态和门槛的宽泛身份 UUID 未解析。 |
+| reference_flow_link | `fine_hair_handover` |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按物种／状态／门槛限定的未梳理／精梳原细动物毛（UUID 未解析） |
+| Reference product flow | 按物种／状态／门槛限定的未梳理／精梳原细动物毛 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -464,7 +464,7 @@ sync_with: pcr.en-US.md
 
 已识别物种、等级、状态及农场／收集点的唯一参考交付；不含包装质量。
 
-- 选定流: 按物种／状态／门槛限定的未梳理／精梳原细动物毛 （UUID 未解析）
+- 选定流: 按物种／状态／门槛限定的未梳理／精梳原细动物毛
 - 流属性/单位: 质量 / kg
 - 数量规则: 包装毛重减去实测皮重及去除物，得到销售净纤维。
 - 数值来源模式: 前景记录 (`foreground_record`)

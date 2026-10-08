@@ -31,12 +31,12 @@ This PCR covers viable animal embryos released as breeding material at an embryo
 | How much | 1 released embryo; reconcile all recovered/retrieved, prepared, graded, preserved and rejected items. |
 | How well | Declared species, donor, in-vivo/in-vitro route, developmental stage, viability grade, sanitary treatment and preservation state. |
 | How long or cycle | One recovery-to-release lot; attribute donor and shared laboratory/storage burdens over actual service periods. |
-| reference_flow_link | `release:viable_embryo` |
+| reference_flow_link | `viable_embryo` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Viable animal embryo at collection or production-lab release (UUID unresolved). |
+| Reference product flow | Viable animal embryo at collection or production-lab release |
 | Reference flow property | Count of embryos (UUID unresolved). |
 | Reference unit group | Embryo count unit group (UUID unresolved). |
 | Reference unit | embryo |
@@ -701,7 +701,7 @@ Record actual straw, vial or ampoule and its new or reusable status; distinguish
 
 This is the sole reference product; no transfer or pregnancy outcome is implied.
 
-- Selected flow: Viable animal embryo at laboratory release (UUID unresolved)
+- Selected flow: Viable animal embryo at collection or production-lab release
 - Flow property / unit: Count / embryo
 - Amount rule: Count signed quality-released embryos by route, state and grade.
 - Value mode: Foreground record (`foreground_record`)

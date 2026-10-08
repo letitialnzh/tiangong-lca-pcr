@@ -31,14 +31,14 @@ sync_with: pcr.en-US.md
 | How much | 实测活重 1 kg，同时报告头数和逐头质量 |
 | How well | 活体；声明物种、性别/年龄组、健康及验收状况和合法来源 |
 | How long or cycle | 声明养殖群体/繁殖季或捕获行动及共用服务期间 |
-| reference_flow_link | 实际养殖场或捕获交接点的 `live_output` |
+| reference_flow_link | `live_output` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按物种确定的其他反刍动物活体；UUID 未解析 |
-| Reference flow property | 质量；UUID 未解析 |
-| Reference unit group | 质量；UUID 未解析 |
+| Reference product flow | 按物种确定的其他反刍动物活体 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 物种/分类群；残余分类裁定；合法来源及司法辖区；路线；性别/年龄组；头数；活重；健康；交接点；群体/行动 |
 
@@ -444,7 +444,7 @@ sync_with: pcr.en-US.md
 
 这是唯一最终参考交接点；保留物种、组别、头数、质量、状况及合法来源记录。
 
-- 选定流：实际交接点按物种确定的其他反刍动物活体
+- 选定流： 按物种确定的其他反刍动物活体
 - 流属性/单位：质量 / kg
 - 数量规则：实测验收活重归一化为 1 kg
 - 数值来源模式：前景记录（`foreground_record`）

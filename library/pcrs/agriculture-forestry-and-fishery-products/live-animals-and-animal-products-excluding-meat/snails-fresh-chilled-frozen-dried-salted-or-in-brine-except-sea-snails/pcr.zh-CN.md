@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 销售净蜗牛产品，不含包装和单独报告的游离盐水。 |
 | How well | 声明物种、合法来源、整只/去壳、预期用途、适用等级/质量准则、状态/剔除、水分/盐水；用于人类食品时还须声明食品安全状态。 |
 | How long or cycle | 从可辨识养殖批次或采集事件至交付；跨期种群及共享设施按实际服务期间归属。 |
-| reference_flow_link | `pack:pack_product` |
+| reference_flow_link | `pack_product` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 按销售状态和交付门限定的非海产蜗牛商品（UUID 未解析） |
+| Reference product flow | 按销售状态和交付门限定的非海产蜗牛商品 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -639,7 +639,7 @@ sync_with: pcr.en-US.md
 
 包装后扣皮称量单一状态销售批次，报告物种、等级、路线及确切农场/初级加工交付门。
 
-- 选定流：按销售状态、用途和交付门限定的非海产蜗牛商品（UUID 未解析）
+- 选定流： 按销售状态和交付门限定的非海产蜗牛商品
 - 流属性/单位：Mass / kg
 - 数量规则：合格销售蜗牛净质量；游离盐水和包装质量另报。
 - 数值来源模式：前景记录（`foreground_record`）

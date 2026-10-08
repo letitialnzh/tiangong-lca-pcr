@@ -31,12 +31,12 @@ This PCR covers usable semen from cattle and buffalo donors at the collection-ce
 | How much | 1 accepted dose; report measured volume or mass and sperm count. |
 | How well | Declared donor species/breed, health status, acceptance grade, motility, viability, sperm count, extender and preservation state. |
 | How long or cycle | One collection-to-dispatch batch with upkeep allocated across its observed donor period. |
-| reference_flow_link | `centre_dispatch:usable_dose` |
+| reference_flow_link | `usable_dose` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Usable bovine semen dose at collection-centre dispatch (UUID unresolved) |
+| Reference product flow | Usable bovine semen dose at collection-centre dispatch |
 | Reference flow property | Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` as candidate property; dose equivalence requires specification. |
 | Reference unit group | Count/dose unit group (UUID unresolved). |
 | Reference unit | dose |
@@ -929,7 +929,7 @@ Record actual secondary package materials; returnable transport vessels are cycl
 
 One quality-released insemination dose crosses the semen-centre dispatch gate.
 
-- Selected flow: Usable bovine semen dose at collection-centre dispatch (UUID unresolved)
+- Selected flow: Usable bovine semen dose at collection-centre dispatch
 - Flow property / unit: Count / dose
 - Amount rule: Exactly one accepted released dose per reference flow.
 - Value mode: Foreground record (`foreground_record`)

@@ -31,12 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 扣除包装皮重后的 1 kg |
 | How well | 声明羊品种、未洗或羊体洗毛状态、水分与等级；非剪后洗净毛 |
 | How long or cycle | 声明羊群年度和剪毛事件，并归属此前饲养年度 |
-| reference_flow_link | 农场门口净合格原毛包输出之和 |
+| reference_flow_link | `farm_wool` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 生产农场门口剪取油脂羊毛；UUID 未解析 |
+| Reference product flow | 生产农场门口剪取油脂羊毛 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -558,7 +558,7 @@ sync_with: pcr.en-US.md
 
 按等级、毛包和洗毛状态的最终净质量是参考输出。平台工厂门口 Raw Wool 候选不能绑定此卡。
 
-- 选定流：生产农场门口剪取油脂羊毛
+- 选定流： 生产农场门口剪取油脂羊毛
 - 流属性/单位：Mass / kg
 - 数量规则：合格和可销售降级原毛的交付量，扣毛包皮重
 - 数值来源模式：计算值（`calculated_value`）

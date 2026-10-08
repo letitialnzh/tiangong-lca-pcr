@@ -36,7 +36,7 @@ This PCR covers living domestic geese of genus *Anser* at a producing hatchery o
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Live domestic goose, producer handover (UUID unresolved) |
+| Reference product flow | Live domestic goose, producer handover |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -723,7 +723,7 @@ The input is either hatchery goslings or farm birds for one final lot, with earl
 
 Measure accepted live weight at the actual producing hatchery or farm gate; disclose count and bird class.
 
-- Selected flow: Live domestic geese at declared producer gate (UUID unresolved)
+- Selected flow: Live domestic goose, producer handover
 - Flow property / unit: Mass / kg
 - Amount rule: measured accepted live mass
 - Value mode: Foreground record (`foreground_record`)

@@ -247,7 +247,7 @@ No elementary input is prescribed by default. Land occupation, water withdrawal,
 
 Record the live animal mass weighed immediately before the farm-gate transfer of ownership or control. The semantic identity stays unbound until a broad farm-gate goat Product flow is verified.
 
-- Selected flow: Live domestic goat at producing farm gate (UUID unresolved)
+- Selected flow: Live domestic goat at producing farm gate
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Exactly 1 kg of measured live weight after normalization; retain the measured lot or individual mass before normalization.
 - Value mode: Fixed value (`fixed_value`)

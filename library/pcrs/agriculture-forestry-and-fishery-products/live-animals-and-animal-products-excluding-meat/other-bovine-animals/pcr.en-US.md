@@ -31,14 +31,14 @@ This PCR covers a living, species-qualified member of Bovinae that remains outsi
 | How much | 1 kg measured live body mass plus head count and individual or lot mass record |
 | How well | Species/taxon, age/sex class, viability, health, ownership/custody and legal source verified |
 | How long or cycle | Actual cohort and service periods for managed stock, or actual authorized capture campaign |
-| reference_flow_link | `gate:live_output` at the producer or authorized capture-source handover |
+| reference_flow_link | `live_output` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Species-, source- and gate-qualified living other bovine; UUID unresolved |
-| Reference flow property | Mass; UUID unresolved |
-| Reference unit group | Mass; UUID unresolved |
+| Reference product flow | Species-, source- and gate-qualified living other bovine |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | scientific species and Bovinae evidence; 02119-versus-02129 decision; jurisdiction and authorization; managed/capture route; head count; sex/age class; measured mass; live condition; cohort/campaign; actual gate |
 
@@ -447,7 +447,7 @@ Use only actual single-use containment; reusable crates or facilities are shared
 
 This is the single reference output, not a universal species-free average.
 
-- Selected flow: Species-, source- and gate-qualified living other bovine; UUID unresolved
+- Selected flow: Species-, source- and gate-qualified living other bovine
 - Flow property / unit: Mass / kg
 - Amount rule: Sum measured accepted live mass and normalize to 1 kg.
 - Value mode: Foreground record (`foreground_record`)

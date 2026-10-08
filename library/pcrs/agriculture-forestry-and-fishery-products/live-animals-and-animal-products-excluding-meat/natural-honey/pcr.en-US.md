@@ -36,7 +36,7 @@ Natural bee-produced honey from managed colonies or a documented wild source, tr
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Natural honey at producer gate (UUID unresolved) |
+| Reference product flow | Natural honey at producer gate |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -537,7 +537,7 @@ No prescribed flow; record actual exchanges if present.
 
 Reference output is honey constituent. Comb gross sale weight includes wax, which is sampled separately and excluded from denominator.
 
-- Selected flow: Saleable natural honey (reference UUID unresolved)
+- Selected flow: Natural honey at producer gate
 - Flow property / unit: Mass / kg honey
 - Amount rule: Collect by lot and reconcile with actual handovers and stock changes.
 - Value mode: Foreground record (`foreground_record`)

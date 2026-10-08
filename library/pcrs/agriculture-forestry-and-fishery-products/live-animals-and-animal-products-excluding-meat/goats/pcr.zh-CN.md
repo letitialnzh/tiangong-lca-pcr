@@ -247,7 +247,7 @@ sync_with: pcr.en-US.md
 
 记录在农场门口移交所有权或控制权之前即时称量的活体动物质量。在宽泛的农场门口山羊 Product 流得到验证前，语义身份保持未绑定。
 
-- Selected flow: 生产农场门口的家养活山羊（UUID 未解析）
+- Selected flow: 生产农场门口的家养活山羊
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: 归一化后恰为 1 kg 实测活重；保留归一化前实测批次或个体质量。
 - Value mode: 固定值（`fixed_value`）

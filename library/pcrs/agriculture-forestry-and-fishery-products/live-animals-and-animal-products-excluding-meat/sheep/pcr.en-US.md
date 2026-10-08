@@ -39,12 +39,12 @@ The reference product excludes goats and other ruminants, sheep meat and carcass
 | --- | --- |
 | Reference amount | 1 |
 | Reference product flow | Live domestic sheep at producing farm gate |
-| Reference flow property | Mass |
-| Reference unit group | Mass units |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Mass unit group `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | animal class and purpose; sex where material; breed or genotype where material; production-system route; grazing or housing regime; live-weight measurement basis and scale point; geography; farm-gate transfer point; cohort or reporting period |
 
-The reference product flow, flow-property, and unit-group UUIDs remain blank because platform lookup did not identify one compatible mass-based live-sheep Product flow at the producing farm gate. Head count may be retained as an activity datum, but it cannot replace measured live-weight mass.
+The reference product-flow UUID remains blank because no compatible mass-based live-sheep Product flow at the producing farm gate has been confirmed. Independently confirmed Mass property and Mass unit-group support identities are recorded above; they do not establish a product-flow binding. Head count may be retained as an activity datum, but it cannot replace measured live-weight mass.
 
 ## 4. Measurement and Unit Rules
 
@@ -241,8 +241,8 @@ Include freight or animal transport only when the inbound movement occurs inside
 
 Record live sheep weighed immediately before ownership or control transfer at the producing farm gate. The platform identity remains unresolved and no meat, fleece, milk, service, goat, or skin near-match is substituted.
 
-- Selected flow: Live domestic sheep at producing farm gate (UUID unresolved)
-- Flow property / unit: Mass / kg live weight (property and unit-group UUIDs unresolved)
+- Selected flow: Live domestic sheep at producing farm gate
+- Flow property / unit: Mass / kg live weight
 - Amount rule: Record accepted live weight and head count by animal class, sex where material, route, lot, weighing point, and transfer date; normalize to 1 kg.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)

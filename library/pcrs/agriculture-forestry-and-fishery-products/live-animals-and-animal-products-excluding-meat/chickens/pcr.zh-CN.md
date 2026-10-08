@@ -35,7 +35,7 @@ sync_with: pcr.en-US.md
 | How much | 实测活重 1 kg |
 | How well | 用途和类别；必要时的品种；饲养或产蛋路线；年龄或阶段；健康状态；地理位置；秤具及失重口径 |
 | How long or cycle | 已声明批次和报告期，覆盖归属的后备、育雏、生长或产蛋、选鸡及交付阶段 |
-| reference_flow_link | 下表的参考数量及身份 |
+| reference_flow_link | `live_chicken_output` |
 
 | 字段 | 值 |
 | --- | --- |
@@ -248,7 +248,7 @@ sync_with: pcr.en-US.md
 
 只记录转移时存活的鸡，按入场、生长和死亡记录核对质量与只数。
 
-- 选定流：生产农场门口活鸡
+- 选定流： 生产农场门口活鸡
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：按类别和批次实测交付的活鸡 kg
 - 数值来源模式：前景记录（`foreground_record`）

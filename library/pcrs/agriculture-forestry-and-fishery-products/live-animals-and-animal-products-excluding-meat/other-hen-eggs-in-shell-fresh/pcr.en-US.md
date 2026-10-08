@@ -714,7 +714,7 @@ No prescribed flow in this coordinate; record actual site-specific exchanges whe
 
 Final boundary output after actual route; if no packing occurs, handover directly from collection or grading without fabricating a packing node.
 
-- Selected flow: Fresh non-hatching hen eggs in shell at producing farm gate (UUID unresolved)
+- Selected flow: Fresh non-hatching hen eggs in shell at producing farm gate
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg shell-on
 - Amount rule: Weigh saleable eggs at handover and retain count, grade and packing state.
 - Value mode: Foreground record (`foreground_record`)
