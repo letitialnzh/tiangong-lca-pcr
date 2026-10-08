@@ -1,7 +1,7 @@
 ---
-lastReviewedAt: 2026-10-06
-lastReviewedCommit: 2d8f3f99f95763ff5e7470932f20380ed8e6f530
-lastReviewedNote: "Reviewed PCR #95 unified 0.4.3 mirrors and public preparation examples; fresh 2026-10-06 evidence retains npm/latest and live website at 0.4.2, minimum reader 0.4.1 and CLI 0.1.25; publication pending."
+lastReviewedAt: 2026-10-08
+lastReviewedCommit: ca3aa2b64f6899ace5e5996ba25bff32652235c8
+lastReviewedNote: "Reviewed PCR #100 unified 0.4.4 version mirrors and installation examples, including the merged Agent getting-started entry; canonical methodology, reader compatibility, release qualification and provider contracts remain unchanged. Publication pending."
 title: Offline PCR distribution contract
 docType: contract
 scope: repo
@@ -66,9 +66,10 @@ network calls or implicit content downloads are used.
 
 ## Build and transport
 
-The release-preparation examples below target product 0.4.3. At preparation on
-2026-10-06, both public npm `latest` channels and the website remained at 0.4.2.
-Verify completed guarded publication before using 0.4.3 registry instructions;
+The release-preparation examples below target product 0.4.4. At preparation on
+2026-10-08, the latest completed GitHub product release and the verified live
+website identity were 0.4.3.
+Verify completed guarded publication before using 0.4.4 registry instructions;
 source version metadata and a preparing release do not prove public availability.
 
 For production transport, take the two tarballs from one completed product
@@ -82,8 +83,8 @@ output must not be published as the complete product. Run them from a validated
 source checkout with locked dependencies already installed:
 
 ```sh
-npm run offline:tool -- --output dist/tiangong-pcr --version 0.4.3
-npm run offline:library -- --output dist/tiangong-pcr-library --version 0.4.3
+npm run offline:tool -- --output dist/tiangong-pcr --version 0.4.4
+npm run offline:library -- --output dist/tiangong-pcr-library --version 0.4.4
 npm pack ./dist/tiangong-pcr --pack-destination dist --ignore-scripts
 npm pack ./dist/tiangong-pcr-library --pack-destination dist --ignore-scripts
 ```
@@ -102,7 +103,7 @@ Transfer both verified product tarballs and a suitable Node runtime to the offli
 installation directory, run:
 
 ```sh
-npm install --offline --ignore-scripts --no-audit --no-fund ./tiangong-lca-pcr-0.4.3.tgz ./tiangong-lca-pcr-library-0.4.3.tgz
+npm install --offline --ignore-scripts --no-audit --no-fund ./tiangong-lca-pcr-0.4.4.tgz ./tiangong-lca-pcr-library-0.4.4.tgz
 ./node_modules/.bin/tiangong-pcr library verify --library ./node_modules/@tiangong-lca/pcr-library/library.sqlite --format json
 ./node_modules/.bin/tiangong-pcr list --library ./node_modules/@tiangong-lca/pcr-library/library.sqlite --format json
 ```
@@ -224,7 +225,7 @@ The qualified preparation runtime is Node 24.19.0; Tiangong CLI supports
 `>=24.19.0 <25`. Its qualified minimum package is released `@tiangong-lca/cli` 0.1.25.
 Confirm its publication before installation. It selects the installed PCR reader
 independently; the compatibility minimum remains 0.4.1 rather than being raised
-to the new content release's 0.4.3 version.
+to the new content release's 0.4.4 version.
 The Skill teaches readiness, general LCA authoring, optional TIDAS authoring and Agent-led
 process/model review. The tool bundles inspection, cited guidance, arithmetic and
 review-envelope support; no model runtime or TIDAS schema implementation is embedded.
@@ -388,7 +389,7 @@ The initial `v0.3.0` attempt exposed a missing filesystem constraint on the prov
 memory-backed clone. Its two npm candidate packages and sealed assets remain
 unchanged and the release remains incomplete. The reviewed repair uses product
 `0.3.1`; that recovery remains immutable. The current TypeScript release examples
-below target `0.4.3`. Never repair this by moving the old
+below target `0.4.4`. Never repair this by moving the old
 tag, replacing sealed assets, or overriding source guards in the provider console.
 
 ### Provider runtime selection and v0.4.0 recovery
@@ -418,7 +419,7 @@ checkout, prepare artifacts without any remote publication:
 npm ci --ignore-scripts --no-audit --no-fund
 npm --prefix packages/pcr-docs ci
 npm run docs:build
-npm run product:build -- v0.4.3 dist/product-release packages/pcr-docs/out
+npm run product:build -- v0.4.4 dist/product-release packages/pcr-docs/out
 npm run product:verify -- dist/product-release
 ```
 
@@ -433,13 +434,13 @@ After activation, create/resume the first product tag from the exact current mai
 version through the guarded workflow:
 
 ```sh
-gh workflow run tag-release-from-merge.yml --repo tiangong-lca/pcr --ref main -f tag_name=v0.4.3
+gh workflow run tag-release-from-merge.yml --repo tiangong-lca/pcr --ref main -f tag_name=v0.4.4
 ```
 
 Retry an existing unified release without moving its tag:
 
 ```sh
-gh workflow run publish.yml --repo tiangong-lca/pcr --ref v0.4.3 -f tag_name=v0.4.3
+gh workflow run publish.yml --repo tiangong-lca/pcr --ref v0.4.4 -f tag_name=v0.4.4
 ```
 
 A `retry_web=true` dispatch is an explicit provider-terminal confirmation, not an

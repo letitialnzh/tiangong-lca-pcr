@@ -47,6 +47,11 @@ export function verifyHostingContract(config: unknown, downloads: readonly {url:
     );
   // Specific rules carry their complete required headers, avoiding reliance on overlap precedence.
   for (const firstMatch of [false, true]) {
+    const guideHeaders = headersFor(config, "/getting-started.md", { firstMatch });
+    assert.equal(guideHeaders["content-type"], "text/markdown; charset=utf-8");
+    assert.equal(guideHeaders["content-disposition"], "inline");
+    assert.equal(guideHeaders["x-content-type-options"], "nosniff");
+    assert.equal(guideHeaders["cache-control"], "public, max-age=0, must-revalidate");
     for (const raw of downloads) {
       const headers = headersFor(config, raw.url, { firstMatch });
       assert.equal(

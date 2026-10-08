@@ -26,9 +26,9 @@ checkPaths:
   - classifications/**
   - library/modules/**
   - docs/**
-lastReviewedAt: 2026-10-06
-lastReviewedCommit: 2d8f3f99f95763ff5e7470932f20380ed8e6f530
-lastReviewedNote: "Reviewed PCR #95 0.4.3 preparation examples; availability remains guarded, qualified CLI stays 0.1.25 and compatible reader minimum stays 0.4.1."
+lastReviewedAt: 2026-10-08
+lastReviewedCommit: ca3aa2b64f6899ace5e5996ba25bff32652235c8
+lastReviewedNote: "Reviewed PCR #100 unified 0.4.4 version mirrors and installation examples, including the merged Agent getting-started entry; canonical methodology, reader compatibility, release qualification and provider contracts remain unchanged. Publication pending."
 ---
 
 # TianGong LCA PCR Library
@@ -38,6 +38,14 @@ This repository stores TianGong LCA product category rules and data production m
 Canonical source: [tiangong-lca/pcr](https://github.com/tiangong-lca/pcr). The workspace's retained local directory is `tiangong-lca-pcr`; repository renaming does not change PCR identifiers, package names, or release history.
 
 PCR records are canonical methodology documents. Classification systems such as CPC, HS, ISIC, and NAICS are entry points that map to canonical PCR records; they do not own the PCR directory structure.
+
+## Start with an Agent
+
+Read the [Agent getting-started guide](packages/pcr-docs/public/getting-started.md)
+for installation, the bundled Skill, task-pinned snapshots, LCA/TIDAS authoring,
+review and fully offline use. The website exports this source verbatim at
+`/getting-started.md`; the public URL becomes available with the next qualified
+website release containing it.
 
 ## Repository Shape
 
@@ -369,7 +377,7 @@ The [offline distribution contract](docs/offline-distribution.md) defines the se
 structured YAML only; source authoring and translation workflows remain unchanged.
 Use explicit snapshot selection and verification for offline consumption.
 
-The 0.4.3 release-preparation examples target PCR tool/content 0.4.3 and the
+The 0.4.4 release-preparation examples target PCR tool/content 0.4.4 and the
 qualified minimum `@tiangong-lca/cli` 0.1.25. Confirm the corresponding registry
 versions are available before installation; source metadata or a preparing release
 does not establish completed publication. Offline consumer targets include Linux

@@ -22,12 +22,12 @@ runtime dependencies, or automatic downloads.
 ## Install and verify
 
 The standalone PCR reader requires **Node.js 24.19 or later**, on Linux x64/ARM64, Windows x64, or
-macOS ARM64. These examples target PCR 0.4.3; use registry commands only after
+macOS ARM64. These examples target PCR 0.4.4; use registry commands only after
 guarded publication makes that version available. Source metadata or a preparing
 release does not establish public availability. In a project directory:
 
 ```sh
-npm install @tiangong-lca/pcr@0.4.3 @tiangong-lca/pcr-library@0.4.3
+npm install @tiangong-lca/pcr@0.4.4 @tiangong-lca/pcr-library@0.4.4
 ./node_modules/.bin/tiangong-pcr library info --library ./node_modules/@tiangong-lca/pcr-library/library.sqlite --format json
 ./node_modules/.bin/tiangong-pcr library verify --library ./node_modules/@tiangong-lca/pcr-library/library.sqlite --format json
 ./node_modules/.bin/tiangong-pcr list --library ./node_modules/@tiangong-lca/pcr-library/library.sqlite --format json
@@ -43,15 +43,15 @@ content package.
 Download the required versions on a connected machine:
 
 ```sh
-npm pack @tiangong-lca/pcr@0.4.3
-npm pack @tiangong-lca/pcr-library@0.4.3
+npm pack @tiangong-lca/pcr@0.4.4
+npm pack @tiangong-lca/pcr-library@0.4.4
 ```
 
 Transfer both tarballs and a suitable Node.js runtime. Then install without
 registry access:
 
 ```sh
-npm install --offline --ignore-scripts --no-audit --no-fund ./tiangong-lca-pcr-0.4.3.tgz ./tiangong-lca-pcr-library-0.4.3.tgz
+npm install --offline --ignore-scripts --no-audit --no-fund ./tiangong-lca-pcr-0.4.4.tgz ./tiangong-lca-pcr-library-0.4.4.tgz
 ./node_modules/.bin/tiangong-pcr library verify --format json
 ```
 

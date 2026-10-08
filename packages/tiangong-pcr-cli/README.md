@@ -12,14 +12,14 @@ Skill. Install the content separately with
 Requires **Node.js 24.19 or later**. Supported platforms are Linux x64/ARM64,
 Windows x64, and macOS ARM64.
 
-These examples target PCR 0.4.3. Use the registry commands after guarded
+These examples target PCR 0.4.4. Use the registry commands after guarded
 publication makes that version available; source metadata and a preparing release
 do not establish public availability.
 
 In a project directory:
 
 ```sh
-npm install @tiangong-lca/pcr@0.4.3 @tiangong-lca/pcr-library@0.4.3
+npm install @tiangong-lca/pcr@0.4.4 @tiangong-lca/pcr-library@0.4.4
 ./node_modules/.bin/tiangong-pcr library verify --format json
 ./node_modules/.bin/tiangong-pcr list --format json
 ```
@@ -111,15 +111,15 @@ package is optional; legacy `validate-model` only checks qualifier text and
 On a connected machine, download both packages:
 
 ```sh
-npm pack @tiangong-lca/pcr@0.4.3
-npm pack @tiangong-lca/pcr-library@0.4.3
+npm pack @tiangong-lca/pcr@0.4.4
+npm pack @tiangong-lca/pcr-library@0.4.4
 ```
 
 Transfer the two tarballs and a suitable Node.js runtime to the offline machine.
 In the destination directory:
 
 ```sh
-npm install --offline --ignore-scripts --no-audit --no-fund ./tiangong-lca-pcr-0.4.3.tgz ./tiangong-lca-pcr-library-0.4.3.tgz
+npm install --offline --ignore-scripts --no-audit --no-fund ./tiangong-lca-pcr-0.4.4.tgz ./tiangong-lca-pcr-library-0.4.4.tgz
 ./node_modules/.bin/tiangong-pcr library verify --format json
 ```
 

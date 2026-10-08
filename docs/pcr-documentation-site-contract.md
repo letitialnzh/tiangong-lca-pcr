@@ -1,6 +1,6 @@
 ---
 lastReviewedAt: 2026-10-08
-lastReviewedNote: "Reviewed lossless search-shard compaction, legacy reading and unchanged per-language browser budgets."
+lastReviewedNote: "Reviewed unified 0.4.4 version mirrors, installation examples and the Agent getting-started entry together with lossless search-shard compaction and legacy reading. Canonical methodology, reader compatibility, release qualification, provider contracts and per-language browser budgets remain unchanged. Publication pending."
 lastReviewedCommit: null
 title: Generated PCR Documentation Site Contract
 docType: contract
@@ -141,6 +141,16 @@ indexing targets. Raw download responses carry attachment and noindex headers.
 Distinct historical versions are not blindly canonicalized to different text.
 
 ## Reader navigation and presentation
+
+The Agent onboarding entry `/getting-started.md` is authored in
+`packages/pcr-docs/public/getting-started.md` and exported byte-for-byte. It is a
+single English operational guide, available without JavaScript or authentication,
+with installation, bundled Skill discovery, immutable task preparation, the three
+consumption routes and explicit offline use. It links to the consumer contracts
+and never supplies canonical methodology or changes the language requirements for
+PCR records. The hosting contract serves it inline as UTF-8 Markdown with cache
+revalidation. Export verification checks its bytes and required header policy;
+actual availability follows the normal qualified website publication.
 
 The library index keeps every record link in static HTML behind native subdomain
 disclosures. Domain catalog pages group the same exact record set by subdomain,

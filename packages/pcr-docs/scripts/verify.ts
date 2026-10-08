@@ -48,6 +48,12 @@ function readPage(url: string) {
 function requireThat(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
+requireThat(
+  fs.readFileSync(path.join(out, "getting-started.md")).equals(
+    fs.readFileSync(path.join(app, "public/getting-started.md")),
+  ),
+  "Agent getting-started guide must be exported byte-for-byte",
+);
 if (fs.existsSync(path.join(root, "product-release.json"))) {
   const expected = readProductIdentity(root, { requireClean: false });
   const rawActual: unknown = JSON.parse(fs.readFileSync(path.join(out, "generated/product-release.json"), "utf8"));

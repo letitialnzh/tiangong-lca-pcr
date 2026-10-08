@@ -26,9 +26,9 @@ checkPaths:
   - .github/ISSUE_TEMPLATE/**
   - classifications/**
   - library/modules/**
-lastReviewedAt: 2026-10-06
-lastReviewedCommit: 2d8f3f99f95763ff5e7470932f20380ed8e6f530
-lastReviewedNote: "Reviewed PCR #95 single product version and three package mirrors; canonical content ownership, independent reader compatibility and immutable scientific release boundaries remain unchanged."
+lastReviewedAt: 2026-10-08
+lastReviewedCommit: ca3aa2b64f6899ace5e5996ba25bff32652235c8
+lastReviewedNote: "Reviewed PCR #100 unified 0.4.4 version mirrors and installation examples, including the merged Agent getting-started entry; canonical methodology, reader compatibility, release qualification and provider contracts remain unchanged. Publication pending."
 ---
 
 # PCR 资料库架构
@@ -522,6 +522,11 @@ Data mode 明确声明 full code coverage 未测量，不能复用旧测试或 c
 [工程资格合同](typescript-engineering.md#ci-qualification-lanes) 管理。
 
 ## 公共静态文档站
+
+Agent 使用入口由 `packages/pcr-docs/public/getting-started.md` 维护，静态导出到
+`/getting-started.md`。它串联安装、随包 Skill、任务快照和三种消费路线，提供完整离线
+用法；方法学仍来自选定内容库。导出校验保留原始字节，托管配置明确 Markdown MIME，
+网站按现有统一产品流程发布此入口。
 
 `packages/pcr-docs/` 是与本地 viewer 并列的消费界面。当前文档和复用模块由
 `pcr-core` 的完整只读 bundle 提供；历史版本复用 Builder 已有发布链验证器，
