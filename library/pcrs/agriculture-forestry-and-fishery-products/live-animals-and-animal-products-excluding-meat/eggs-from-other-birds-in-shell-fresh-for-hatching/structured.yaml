@@ -1,10 +1,1270 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02321"
-  title: "Eggs from other birds in shell, fresh, for hatching"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.eggs-from-other-birds-in-shell-fresh-for-hatching"
+  classification_refs: "cpc:3.0:02321"
+  covered_products: "Fresh shell-on non-hen bird eggs selected for hatching at actual producer handover"
+  excluded_products: "Hen eggs; non-hatching eggs as reference; processed or broken eggs; incubated eggs after the egg gate; hatchlings"
+  representative_product: "Species- and lot-qualified fresh hatching-egg lot at the producer gate"
+  production_route: "Managed breeder laying is the parent activity. Species/housing alternatives are separate routes only when they change feed, water, nesting, manure, collection, holding or acceptance inventory/validation; separate measured cohorts may coexist, but cannot be averaged silently."
+  market_state: "Fresh, shell-on, hatching-selected, with producer-controlled holding and package disclosed"
+functional_unit:
+  what: "Intact fresh shell eggs of birds other than hens accepted for hatching at declared producer handover"
+  how_much: "1 kg measured shell-on egg mass, with egg count and measured lot mean mass retained"
+  how_well: "Disclose species/strain, shell integrity, grade, collection/holding time and conditions, and any actual fertility or viability tests; do not infer hatchability"
+  how_long_or_cycle: "Declared breeder-flock productive and egg collection/holding periods, including replacement cohort"
+  reference_flow_link: "Final farm_gate_hatching_eggs only for a matching farm gate; other actual gates retain an unresolved reference identity; internal egg states are not extra sales"
+system_boundary:
+  rules:
+    - rule_id: producer_gate
+      applies_to: "all routes"
+      rule: "Include breeder laying, independent collection, grading and producer-side protection up to egg handover; exclude incubation, hatchling production and post-gate distribution."
+      source_ids:
+        - fao-goose-production
+    - rule_id: species_delta
+      applies_to: "alternative breeder routes"
+      rule: "Record parent managed production plus evidenced changes in inventory, collection, holding or acceptance; chicken storage or hatchability assumptions are not transferable to other birds."
+      source_ids:
+        - fao-goose-production
+        - fao-animal-genetic-resources
+    - rule_id: grade_state
+      applies_to: "selected eggs"
+      rule: "Hatching use requires documented lot selection; intended use is not proof of fertility or realized hatchability."
+      source_ids:
+        - fao-goose-production
+    - rule_id: handoff_once
+      applies_to: "egg states"
+      rule: "Laid, collected, graded and presented states of one lot reconcile as transfers, not repeated independent products."
+      source_ids:
+        - fao-goose-production
+    - rule_id: shared_boundary
+      applies_to: "house, collection room, grader and reusable trays"
+      rule: "Identify consuming nodes and service periods; count each shared burden once with a causal driver."
+      source_ids:
+        - fao-animal-genetic-resources
+boundary_abstraction:
+  declared_starting_condition: "Purchased breeder birds, feed, water, energy and package materials enter at documented farm receipt; home-produced inputs require separate traced foreground."
+  starting_condition_role: "Incoming breeder stock before the measured productive flock period."
+  product_classification_scope: "CPC 02321 identifies the accepted fresh shell-on non-hen hatching eggs, not unsorted internal eggs or a separately sold non-hatching grade."
+  recursive_input_rule: "Purchased same-category hatching eggs used to establish breeders are upstream inputs at receipt; do not credit them against resulting eggs."
+  upstream_dataset_requirement: "Trace breeders, feed, energy, water and packaging upstream; farm-only records are not cradle-to-gate."
+  disclosure: "Species/route, flock and egg periods, gate, count/mass, quality tests, collection and holding conditions, losses, co-product handovers and shared-asset attribution."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Fresh in-shell hatching eggs of birds other than hens (UUID unresolved for broad multi-gate reference)"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species/strain"
+    - "flock/cohort"
+    - "actual producer gate"
+    - "egg count and kg"
+    - "shell grade"
+    - "hatching acceptance/test evidence"
+    - "collection/holding period and conditions"
+    - "rejected and downgraded destinations"
+    - "package reuse"
+reference_flows:
+  []
+measurement_rules:
+  - id: egg_count_mass
+    applies_to: "final and internal egg lots"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg and count"
+    rule: "Measure shell-on mass and count by lot; convert count through measured lot mean mass, never universal cross-species weight."
+  - id: egg_balance_unit
+    applies_to: "egg state transfers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg shell-on"
+    rule: "Reconcile collected, selected, downgraded, rejected, stored and dispatched mass with measured stock change."
+  - id: service_period
+    applies_to: "breeders and shared inputs"
+    required_property_ref:
+      name: "Carrier-specific property"
+      uuid: ""
+    required_unit: "kg, L, MJ, kWh"
+    rule: "Link each input, asset and output to the flock or egg period before reference normalization."
+process_map:
+  - id: breeder_laying
+    name: "Managed non-hen breeder laying"
+    inclusion: "required"
+    inclusion_condition: "Every farm route"
+    role: "Produce gross laid shell eggs, distinguish marketed birds/manure and residual waste"
+    quantitative_reference: "flock period and gross kg"
+  - id: egg_collection
+    name: "Independent egg collection"
+    inclusion: "required"
+    inclusion_condition: "Every route"
+    role: "Capture eggs from nest/house context, record breakage and handoff"
+    quantitative_reference: "gross and collected kg"
+  - id: hatching_grade
+    name: "Hatching selection and destination grading"
+    inclusion: "required"
+    inclusion_condition: "Every route"
+    role: "Split accepted, safely marketed downgrade and rejected states"
+    quantitative_reference: "collected kg"
+  - id: egg_presentation
+    name: "Producer protection and handover"
+    inclusion: "required"
+    inclusion_condition: "Direct or held lots"
+    role: "Record package, storage, loss and one final output gate"
+    quantitative_reference: "accepted kg"
+process_inventory:
+  - id: breeder_laying
+    label: "Managed non-hen breeder laying"
+    inputs:
+      product:
+        - row_id: breeder_stock
+          role: "Received non-hen breeder stock"
+          name: "Non-hen breeder birds (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg liveweight"
+          description: "Record source, species, count, live mass and productive cohort."
+          amount:
+            expression: "Record purchased replacement mass once by cohort."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_flock
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg liveweight/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: breeder_feed
+          role: "Breeder feed and supplements"
+          name: "Breeder feed ingredients (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg as-fed"
+          description: "Record ingredients and net feed supplied by species and cohort."
+          amount:
+            expression: "Receipts plus opening stock minus closing stock and diversion."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg as-fed/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: flock_water
+          role: "Drinking and cleaning water"
+          name: "Supplied breeder-house water"
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Separate functions from metered or invoiced records."
+          amount:
+            expression: "Record actual supply by function."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: house_energy
+          role: "Breeder-house energy carriers"
+          name: "Energy carriers and utilities"
+          flow_type: "product"
+          property_unit: "Energy / MJ or kWh by carrier"
+          description: "Measure ventilation, lighting and heating carriers separately."
+          amount:
+            expression: "Record each carrier and documented conversion."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_inputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: laid_eggs
+          role: "Laid shell eggs before collection"
+          name: "Newly laid non-hen shell eggs (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "Gross internal egg state handed to independent collection; not a second sale."
+          amount:
+            expression: "Weigh or calculate from count and measured lot mean mass, with loss reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_eggs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: spent_breeders
+          role: "Independently sold spent breeders"
+          name: "Spent non-hen breeders (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg liveweight"
+          description: "Include only actual marketed birds, not mortalities."
+          amount:
+            expression: "Record independent sale mass, gate and cohort."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_flock
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg liveweight/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sold_manure
+          role: "Independently exported manure"
+          name: "Sold non-hen breeder manure (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg wet and dry"
+          description: "Only a buyer-accepted specified product; otherwise waste."
+          amount:
+            expression: "Record sold mass and moisture; do not also count as waste."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg wet/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: farm_residues
+          role: "Unmarketed manure and mortalities"
+          name: "Farm residues by material and destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet and dry"
+          description: "Expand into material- and destination-specific exchanges; never merge with sold outputs."
+          amount:
+            expression: "Record generation and transfer by destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg wet/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: egg_collection
+    label: "Independent egg collection"
+    inputs:
+      product:
+        - row_id: laid_eggs_in
+          role: "Laid eggs received for collection"
+          name: "Laid shell eggs internal transfer (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "Same cohort transferred from laying; no new purchased-egg burden."
+          amount:
+            expression: "Reconcile with laid_eggs by lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_eggs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collected_eggs
+          role: "Collected unsorted shell eggs"
+          name: "Collected unsorted non-hen eggs (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "Separate collection records nest retrieval, breakage and handover to grading."
+          amount:
+            expression: "Weigh by species, route and collection time."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_eggs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: collection_loss
+          role: "Broken or lost eggs at collection"
+          name: "Broken shell egg waste by destination (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg shell-on equivalent"
+          description: "Only actually broken, lost or unsafe eggs not independently marketed."
+          amount:
+            expression: "Record count, mass and treatment destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_eggs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: hatching_grade
+    label: "Hatching selection and destination grading"
+    inputs:
+      product:
+        - row_id: collected_eggs_in
+          role: "Unsorted eggs entering grading"
+          name: "Collected egg internal transfer (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "Receive once and record shell condition and actual tests."
+          amount:
+            expression: "Reconcile with collected_eggs and stock change."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: selected_eggs
+          role: "Selected hatching-grade eggs"
+          name: "Selected non-hen hatching eggs internal state (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "Accepted fresh shell eggs pass to protection or direct handover, not another sale."
+          amount:
+            expression: "Record accepted count and measured mass by species and grade."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_eggs
+          role: "Independently marketed non-hatching eggs"
+          name: "Fresh non-hatching non-hen eggs at actual gate (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "Only safe non-hatching lots accepted at their own gate; unsafe eggs remain waste."
+          amount:
+            expression: "Record count, mass, buyer and safety status."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grading_rejects
+          role: "Rejected unsafe or broken eggs"
+          name: "Rejected egg and shell waste (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg wet"
+          description: "Separate from a safe marketed downgrade and disclose destination."
+          amount:
+            expression: "Record count, mass and rejection reason."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: egg_presentation
+    label: "Producer protection and handover"
+    inputs:
+      product:
+        - row_id: selected_eggs_in
+          role: "Selected eggs entering protection"
+          name: "Selected hatching eggs internal transfer (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Mass / kg shell-on"
+          description: "One incoming selected lot; record storage entry and exit if held."
+          amount:
+            expression: "Reconcile with selected_eggs and measured stock change."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: egg_packaging
+          role: "Protective trays and packaging"
+          name: "Protective egg package materials"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or items by material"
+          description: "Record new/reused materials and trips; post-gate distribution package is outside."
+          amount:
+            expression: "Record new inputs, losses and reuse-cycle share."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg package/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: hold_energy
+          role: "Producer-controlled holding energy"
+          name: "Energy for protected holding"
+          flow_type: "product"
+          property_unit: "Energy / MJ or kWh by carrier"
+          description: "Only pre-gate protection energy, never downstream incubator heat."
+          amount:
+            expression: "Meter carrier and period before handover."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: farm_gate_hatching_eggs
+          role: "Fresh shell-on hatching eggs at matching farm gate"
+          name: "Eggs from other birds in shell, fresh, for hatching"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3ee29323-915c-4635-b8a2-8942a155e806"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Fixed identity only for matching other-bird hatching eggs at farm gate; other gates remain unresolved."
+          amount:
+            expression: "Record measured accepted shell-on mass and count at matching gate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference"
+                basis: "measured accepted farm-gate output normalized to itself"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - fao-goose-production
+      waste:
+        - row_id: handover_loss
+          role: "Pre-gate cracked eggs and package loss"
+          name: "Pre-gate egg or package waste (UUID unresolved)"
+          flow_type: "waste"
+          property_unit: "Mass / kg by material"
+          description: "Expand by actual egg/package material and destination; do not hide in accepted mass."
+          amount:
+            expression: "Record observed breakage, rejection and package loss separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg accepted fresh shell-on hatching eggs"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg reference"
+                basis: "broad initial screen; replace with species- and lot-specific measurements"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: output_partition
+    applies_to: "breeder flock and grading"
+    rule: "Enumerate separately handed-over hatching eggs, safely marketed non-hatching eggs, spent breeders and sold manure. Internal states and waste are not co-products. Record each actual gate, mass and period."
+    source_ids:
+      - fao-goose-production
+  - rule_id: causal_attribution
+    applies_to: "joint breeder burden"
+    rule: "Attribute separable grading and presentation to the causing output. For inseparable flock burden, document a consistent measured driver and sensitivity to an alternative; no universal mass/economic ratio is imposed."
+    source_ids:
+      - fao-animal-genetic-resources
+  - rule_id: period_attribution
+    applies_to: "flock years and egg lots"
+    rule: "Link replacement, laying, collection, assets and losses to actual service/production periods; no assumed universal flock life or double attribution at replacement/exit."
+    source_ids:
+      - fao-animal-genetic-resources
+  - rule_id: shared_asset_attribution
+    applies_to: "house, collection room, grader and trays"
+    rule: "List breeder, collection, grading and presentation consumers and service periods; use observed service, throughput or reuse trips to charge each asset only once."
+    source_ids:
+      - fao-animal-genetic-resources
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_flock
+      process_id: "breeder_laying"
+      flow_role: "breeder receipts and exits"
+      record_type: "flock and sales register"
+      raw_fields: "species, strain, count, live kg, dates, flock age, mortality, sale"
+      collection_method: "reconcile register to invoices and weighing"
+      unit: "count, kg"
+      frequency: "each event"
+      temporal_coverage: "full productive flock"
+      site_scope: "farm and cohort"
+      aggregation_rule: "link stock and sale to service period"
+      quality_evidence: "invoices, scale check, mortality log"
+    - protocol_id: cp_inputs
+      process_id: "breeder_laying"
+      flow_role: "feed, water, energy"
+      record_type: "supply ledger and meter"
+      raw_fields: "feed receipt/stock, water function, carrier and readings"
+      collection_method: "receipts, inventory and meter reconciliation"
+      unit: "kg, L, MJ, kWh"
+      frequency: "monthly and flock period"
+      temporal_coverage: "productive flock"
+      site_scope: "house"
+      aggregation_rule: "net use by cohort and function"
+      quality_evidence: "invoices, meter and stock count"
+    - protocol_id: cp_residues
+      process_id: "breeder_laying"
+      flow_role: "manure and mortality"
+      record_type: "removal log"
+      raw_fields: "wet/dry kg, moisture, destination, buyer, mortality"
+      collection_method: "weigh transfer and record sale/treatment"
+      unit: "kg, count"
+      frequency: "each transfer"
+      temporal_coverage: "full flock period"
+      site_scope: "house and destination"
+      aggregation_rule: "split product and waste once"
+      quality_evidence: "transfer docket and buyer acceptance"
+    - protocol_id: cp_eggs
+      process_id: "egg_collection"
+      flow_role: "laid, collected and lost eggs"
+      record_type: "nest/collection log"
+      raw_fields: "flock, time, count, lot kg, breakage"
+      collection_method: "calibrated scale and count reconciliation"
+      unit: "kg, count"
+      frequency: "each collection"
+      temporal_coverage: "collection period"
+      site_scope: "farm nest route"
+      aggregation_rule: "balance gross, collected and loss"
+      quality_evidence: "scale check and collection log"
+    - protocol_id: cp_grade
+      process_id: "hatching_grade"
+      flow_role: "selected, downgraded, rejected"
+      record_type: "grading/test log"
+      raw_fields: "shell condition, test, count, kg, grade, buyer or waste"
+      collection_method: "inspection and calibrated weighing"
+      unit: "kg, count"
+      frequency: "each lot"
+      temporal_coverage: "collection-to-grade"
+      site_scope: "grading node"
+      aggregation_rule: "one destination per egg"
+      quality_evidence: "test, buyer and rejection record"
+    - protocol_id: cp_handover
+      process_id: "egg_presentation"
+      flow_role: "holding, packaging and final egg lot"
+      record_type: "storage/dispatch log"
+      raw_fields: "hold time/condition, material/reuse, energy, count/kg, loss, gate"
+      collection_method: "meter, material and lot-scale records"
+      unit: "kg, count, time, temperature, MJ"
+      frequency: "each lot"
+      temporal_coverage: "grade-to-gate"
+      site_scope: "producer store/gate"
+      aggregation_rule: "balance stock, loss and one output"
+      quality_evidence: "calibration, store log, receipt"
+  calculation_rules:
+    - id: count_to_mass
+      applies_to: "egg lots"
+      rule: "If individual mass is unavailable, sampled shell-on kg divided by sample count gives lot mean mass; multiply by full lot count. Keep species, grade and sample size."
+      inputs:
+        - "sample kg"
+        - "sample count"
+        - "full count"
+      output: "shell-on kg of actual lot"
+      source_ids:
+        - fao-goose-production
+    - id: egg_balance
+      applies_to: "collection through handover"
+      rule: "Opening stock + laid/collected input = accepted output + independently downgraded + waste + closing stock, with internal transfers counted once."
+      inputs:
+        - "mass/count by lot and state"
+      output: "mass-balance residual"
+      source_ids:
+        - fao-goose-production
+    - id: reference_normalization
+      applies_to: "all cards"
+      rule: "Divide attributed foreground amount by measured accepted kg at declared gate; retain independent output handovers."
+      inputs:
+        - "attributed amount"
+        - "accepted kg"
+      output: "amount per kg reference"
+      source_ids:
+        - fao-goose-production
+  data_quality_requirements:
+    - id: species_identity
+      applies_to: "all lots"
+      requirement: "Trace species/strain, flock and hatching-use acceptance; do not combine species in an undisclosed reference."
+      evidence: "flock and grade records"
+    - id: mass_count_quality
+      applies_to: "eggs"
+      requirement: "Retain count, kg, weighing calibration and lot conversion, with no universal egg-mass factor."
+      evidence: "scale checks and lot sheets"
+    - id: time_quality
+      applies_to: "flock and hold"
+      requirement: "Identify production, collection, grading and holding times/conditions and disclose gaps."
+      evidence: "dated farm and store logs"
+    - id: output_completeness
+      applies_to: "multi-output nodes"
+      requirement: "Record accepted, downgrade, sold birds/manure and waste destinations, including zero cases."
+      evidence: "invoices and rejection logs"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "final product"
+    rule: "Reject hen, non-hatching, shell-less, post-incubation or hatchling flow as this reference; require species, fresh shell state, hatching use and actual gate."
+    source_ids:
+      - fao-goose-production
+  - rule_id: validate_balance
+    applies_to: "all egg nodes"
+    rule: "Reconcile count and mass through laid, collected, selected, downgraded, rejected and handed-over states with stock/loss; reject unexplained duplicate outputs."
+    source_ids:
+      - fao-goose-production
+  - rule_id: validate_route
+    applies_to: "alternatives"
+    rule: "Require managed parent, real inventory/measurement/validation delta and separately measured cohort; a route label alone is insufficient."
+    source_ids:
+      - fao-animal-genetic-resources
+  - rule_id: validate_attribution
+    applies_to: "outputs, periods and assets"
+    rule: "Require handovers, causal allocation driver, consumers and service periods; reject duplicate shared or multi-period burden."
+    source_ids:
+      - fao-animal-genetic-resources
+  - rule_id: validate_binding
+    applies_to: "exchange projection"
+    rule: "Resolve each unresolved/unresolved card to a single verified state, gate, property and destination UUID before exchange publication."
+    source_ids:
+      - fao-goose-production
+published_dataset_profile:
+  dataset_role: "Foreground production package for fresh non-hen shell-on hatching eggs at declared producer gate."
+  downstream_use: "May inform secondary_dataset or background_dataset process and lifecycle-model projections only after concrete identity review."
+  allowed_use: "Species-, lot-, gate- and period-qualified shell-on kg results with hatching-selection evidence."
+  excluded_use: "Inferring hatchlings or hatchability from kg; substituting hen/table eggs; counting hatchery incubation or distribution as farm production."
+  required_metadata: "CPC reference, species/strain, cohort, count/kg, grade, tests, gate, storage, outputs, allocation, carriers and packages."
+  required_quality_disclosure: "Untested fertility, uncertain count-mass bridge, mixed routes, storage gaps, rejects and unresolved UUIDs."
+  update_trigger: "New species route, gate/state, acceptance criterion, measured loss, co-product treatment, identity or evidence basis."
+data_sources:
+  - id: "fao-goose-production"
+    type: "official_guidance"
+    reference: "[FAO goose production and incubation](https://www.fao.org/4/y4359e/y4359e0a.htm)"
+    used_for: "Species-specific collection, holding and hatching suitability."
+  - id: "fao-animal-genetic-resources"
+    type: "official_guidance"
+    reference: "[FAO animal genetic resources, poultry egg handling](https://www.fao.org/4/X6526E/X6526E32.htm)"
+    used_for: "Avoiding cross-species chicken assumptions and declaring management periods."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:378e0e7b4bd5656eb73633bf1f7a2b884fba997e1102403f1d2500500dfe45c4"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4059"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4059
+          line: 53
+          column: 1
+        end:
+          offset: 6267
+          line: 76
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased breeder birds, feed, water, energy and package materials enter at documented farm receipt; home-produced inputs require separate traced foreground. |\n| starting_condition_role | Incoming breeder stock before the measured productive flock period. |\n| product_classification_scope | CPC 02321 identifies the accepted fresh shell-on non-hen hatching eggs, not unsorted internal eggs or a separately sold non-hatching grade. |\n| recursive_input_rule | Purchased same-category hatching eggs used to establish breeders are upstream inputs at receipt; do not credit them against resulting eggs. |\n| upstream_dataset_requirement | Trace breeders, feed, energy, water and packaging upstream; farm-only records are not cradle-to-gate. |\n| disclosure | Species/route, flock and egg periods, gate, count/mass, quality tests, collection and holding conditions, losses, co-product handovers and shared-asset attribution. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `producer_gate` | all routes | Include breeder laying, independent collection, grading and producer-side protection up to egg handover; exclude incubation, hatchling production and post-gate distribution. | `fao-goose-production` |\n| `species_delta` | alternative breeder routes | Record parent managed production plus evidenced changes in inventory, collection, holding or acceptance; chicken storage or hatchability assumptions are not transferable to other birds. | `fao-goose-production`; `fao-animal-genetic-resources` |\n| `grade_state` | selected eggs | Hatching use requires documented lot selection; intended use is not proof of fertility or realized hatchability. | `fao-goose-production` |\n| `handoff_once` | egg states | Laid, collected, graded and presented states of one lot reconcile as transfers, not repeated independent products. | `fao-goose-production` |\n| `shared_boundary` | house, collection room, grader and reusable trays | Identify consuming nodes and service periods; count each shared burden once with a causal driver. | `fao-animal-genetic-resources` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 219
+              line: 8
+              column: 1
+            end:
+              offset: 276
+              line: 8
+              column: 58
+          text: "# Fresh in-shell hatching eggs from birds other than hens"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4059
+              line: 53
+              column: 1
+            end:
+              offset: 4080
+              line: 53
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_28310"
+      family: "allocation"
+      span:
+        start:
+          offset: 28310
+          line: 628
+          column: 1
+        end:
+          offset: 29532
+          line: 637
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_partition` | breeder flock and grading | Enumerate separately handed-over hatching eggs, safely marketed non-hatching eggs, spent breeders and sold manure. Internal states and waste are not co-products. Record each actual gate, mass and period. | `fao-goose-production` |\n| `causal_attribution` | joint breeder burden | Attribute separable grading and presentation to the causing output. For inseparable flock burden, document a consistent measured driver and sensitivity to an alternative; no universal mass/economic ratio is imposed. | `fao-animal-genetic-resources` |\n| `period_attribution` | flock years and egg lots | Link replacement, laying, collection, assets and losses to actual service/production periods; no assumed universal flock life or double attribution at replacement/exit. | `fao-animal-genetic-resources` |\n| `shared_asset_attribution` | house, collection room, grader and trays | List breeder, collection, grading and presentation consumers and service periods; use observed service, throughput or reuse trips to charge each asset only once. | `fao-animal-genetic-resources` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 219
+              line: 8
+              column: 1
+            end:
+              offset: 276
+              line: 8
+              column: 58
+          text: "# Fresh in-shell hatching eggs from birds other than hens"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 28310
+              line: 628
+              column: 1
+            end:
+              offset: 28350
+              line: 628
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_33564"
+      family: "validation"
+      span:
+        start:
+          offset: 33564
+          line: 667
+          column: 1
+        end:
+          offset: 34738
+          line: 677
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | final product | Reject hen, non-hatching, shell-less, post-incubation or hatchling flow as this reference; require species, fresh shell state, hatching use and actual gate. | `fao-goose-production` |\n| `validate_balance` | all egg nodes | Reconcile count and mass through laid, collected, selected, downgraded, rejected and handed-over states with stock/loss; reject unexplained duplicate outputs. | `fao-goose-production` |\n| `validate_route` | alternatives | Require managed parent, real inventory/measurement/validation delta and separately measured cohort; a route label alone is insufficient. | `fao-animal-genetic-resources` |\n| `validate_attribution` | outputs, periods and assets | Require handovers, causal allocation driver, consumers and service periods; reject duplicate shared or multi-period burden. | `fao-animal-genetic-resources` |\n| `validate_binding` | exchange projection | Resolve each unresolved/unresolved card to a single verified state, gate, property and destination UUID before exchange publication. | `fao-goose-production` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 219
+              line: 8
+              column: 1
+            end:
+              offset: 276
+              line: 8
+              column: 58
+          text: "# Fresh in-shell hatching eggs from birds other than hens"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 33564
+              line: 667
+              column: 1
+            end:
+              offset: 33586
+              line: 667
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "producer_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 5183
+          line: 70
+          column: 1
+        end:
+          offset: 5416
+          line: 70
+          column: 234
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "species_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 5417
+          line: 71
+          column: 1
+        end:
+          offset: 5710
+          line: 71
+          column: 294
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "grade_state"
+      identity_kind: "explicit"
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 5711
+          line: 72
+          column: 1
+        end:
+          offset: 5884
+          line: 72
+          column: 174
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "handoff_once"
+      identity_kind: "explicit"
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 5885
+          line: 73
+          column: 1
+        end:
+          offset: 6058
+          line: 73
+          column: 174
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "shared_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 6059
+          line: 74
+          column: 1
+        end:
+          offset: 6265
+          line: 74
+          column: 207
+    - pointer: "/allocation_rules/0"
+      rule_id: "output_partition"
+      identity_kind: "explicit"
+      unit_id: "normative_28310"
+      source_span:
+        start:
+          offset: 28423
+          line: 632
+          column: 1
+        end:
+          offset: 28704
+          line: 632
+          column: 282
+    - pointer: "/allocation_rules/1"
+      rule_id: "causal_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_28310"
+      source_span:
+        start:
+          offset: 28705
+          line: 633
+          column: 1
+        end:
+          offset: 29003
+          line: 633
+          column: 299
+    - pointer: "/allocation_rules/2"
+      rule_id: "period_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_28310"
+      source_span:
+        start:
+          offset: 29004
+          line: 634
+          column: 1
+        end:
+          offset: 29259
+          line: 634
+          column: 256
+    - pointer: "/allocation_rules/3"
+      rule_id: "shared_asset_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_28310"
+      source_span:
+        start:
+          offset: 29260
+          line: 635
+          column: 1
+        end:
+          offset: 29530
+          line: 635
+          column: 271
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_33564"
+      source_span:
+        start:
+          offset: 33659
+          line: 671
+          column: 1
+        end:
+          offset: 33882
+          line: 671
+          column: 224
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_33564"
+      source_span:
+        start:
+          offset: 33883
+          line: 672
+          column: 1
+        end:
+          offset: 34107
+          line: 672
+          column: 225
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_route"
+      identity_kind: "explicit"
+      unit_id: "normative_33564"
+      source_span:
+        start:
+          offset: 34108
+          line: 673
+          column: 1
+        end:
+          offset: 34315
+          line: 673
+          column: 208
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_33564"
+      source_span:
+        start:
+          offset: 34316
+          line: 674
+          column: 1
+        end:
+          offset: 34531
+          line: 674
+          column: 216
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_33564"
+      source_span:
+        start:
+          offset: 34532
+          line: 675
+          column: 1
+        end:
+          offset: 34736
+          line: 675
+          column: 205
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 4059
+          line: 53
+          column: 1
+        end:
+          offset: 4080
+          line: 53
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4059"
+      source_span:
+        start:
+          offset: 4108
+          line: 57
+          column: 1
+        end:
+          offset: 5090
+          line: 64
+          column: 182
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_28310"
+      source_span:
+        start:
+          offset: 28310
+          line: 628
+          column: 1
+        end:
+          offset: 28350
+          line: 628
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_33564"
+      source_span:
+        start:
+          offset: 33564
+          line: 667
+          column: 1
+        end:
+          offset: 33586
+          line: 667
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:378e0e7b4bd5656eb73633bf1f7a2b884fba997e1102403f1d2500500dfe45c4"
+  generated_content_sha256: "sha256:858c081cb3ed626573af7e7333fb9d2b67551c72ad35a0f20bc09a32c8495b35"

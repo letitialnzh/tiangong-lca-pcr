@@ -1,10 +1,1302 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02941"
-  title: "Shorn wool, greasy, including fleece-washed shorn wool"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.shorn-wool-greasy-including-fleece-washed-shorn-wool"
+  classification_refs: "CPC 3.0 02941; proposed exact relation pending decision"
+  covered_products: "Greasy shorn sheep/lamb wool, including fleece washed on the animal before shearing"
+  excluded_products: "Pulled wool, goat/camelid hair, post-shear scoured wool, clean wool top, yarn"
+  representative_product: "As-shorn greasy sheep fleece, skirted and baled on the producing farm"
+  production_route: "Managed flock → optional on-animal wash → shearing → airing/skirting → grading → baling and farm handover; wash/no-wash routes are mutually exclusive per fleece, with distinct water, effluent and dry-off records"
+  market_state: "Unscoured greasy wool; record moisture, vegetable matter, grade and bale state"
+functional_unit:
+  what: "Greasy shorn sheep wool transferred at the producing farm gate"
+  how_much: "1 kg net of bale tare"
+  how_well: "Declared sheep breed, greasy/fleece-washed-on-animal state, moisture and grade; not post-shear scoured"
+  how_long_or_cycle: "Declared flock year and shearing event with earlier rearing years attributed"
+  reference_flow_link: "Sum of net accepted greasy-wool bale outputs at the farm gate"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "Include managed sheep production, feed and pasture, manure, conditional pre-shear on-animal washing, shearing, farm airing/skirting, grade sorting, baling and producing-farm handover. Account for upstream purchased animal, feed, energy, water, fertilizer and packaging datasets once. Record rearing, replacements, culls and shared facilities across years. Stop before auction, post-farm freight, scouring, grease extraction and textile manufacture (iwto-wool-lca-2016)."
+      source_ids: []
+    - rule_id: farm_gate_limit
+      applies_to: "all nodes"
+      rule: "Stop at accepted greasy-wool bale handover; exclude post-shear scouring and later logistics."
+      source_ids:
+        - un-cpc-2025
+        - iwto-wool-lca-2016
+    - rule_id: wash_gate
+      applies_to: "optional wash"
+      rule: "Wash fleece while still on live sheep before shearing; document water, effluent and dry-off, retaining greasy output."
+      source_ids:
+        - wco-hs-2017
+    - rule_id: route_delta
+      applies_to: "wash/no-wash"
+      rule: "Both inherit flock husbandry; one fleece uses one route. Wash adds a separate node and inventory; no double route attribution."
+      source_ids:
+        - iwto-wool-lca-2016
+boundary_abstraction:
+  declared_starting_condition: "Managed sheep/lamb cohort with age, origin, opening stock and inherited burden"
+  starting_condition_role: "flock starting inventory, not zero-burden animals"
+  product_classification_scope: "greasy shorn sheep wool only"
+  recursive_input_rule: "Purchased greasy wool entering baling is a separately linked same-category input, never newly grown fleece"
+  upstream_dataset_requirement: "Purchased animals, feed, nutrient, energy, water and packaging datasets where crossing boundary"
+  disclosure: "breed, farm, flock-year, wash route, shear and grade balances, animal/manure co-products, attribution method"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Shorn greasy sheep wool at producing farm gate; UUID unresolved"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "sheep/lamb breed and cohort"
+    - farm
+    - "flock year"
+    - "shear date"
+    - "unwashed or fleece-washed-on-animal"
+    - moisture
+    - "vegetable matter"
+    - grade
+    - "net bale mass"
+    - "farm handover"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_greasy_mass
+    applies_to: "wool outputs"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh net as-received greasy wool after bale tare, not clean-wool yield (iwto-wool-lca-2016)."
+  - id: moisture_state
+    applies_to: "fleece"
+    required_property_ref:
+      name: "Mass fraction"
+      uuid: ""
+    required_unit: "%"
+    rule: "Record moisture method, date and wet/dry basis; fleece-washed is not scoured."
+  - id: flock_period
+    applies_to: "flock activity"
+    required_property_ref:
+      name: "Original activity property"
+      uuid: ""
+    required_unit: "original unit"
+    rule: "Assign events to flock/cohort and year before per-kg normalization."
+process_map:
+  - id: flock
+    name: "Managed sheep flock"
+    inclusion: "required"
+    inclusion_condition: "all routes"
+    role: "biological fleece production and manure"
+    quantitative_reference: "flock-year and cohort records"
+  - id: fleece_wash
+    name: "On-animal fleece wash"
+    inclusion: "conditional"
+    inclusion_condition: "pre-shear washing on animal"
+    role: "alternative route delta"
+    quantitative_reference: "wash event"
+  - id: shearing
+    name: "Live-sheep shearing"
+    inclusion: "required"
+    inclusion_condition: "all routes"
+    role: "independent fleece harvest"
+    quantitative_reference: "shear event"
+  - id: conditioning
+    name: "Farm airing and skirting"
+    inclusion: "required"
+    inclusion_condition: "after shearing"
+    role: "primary non-scouring preparation"
+    quantitative_reference: "mass balance"
+  - id: grading
+    name: "Grade and destination sorting"
+    inclusion: "required"
+    inclusion_condition: "accepted and reject states"
+    role: "classification handoffs"
+    quantitative_reference: "grade mass"
+  - id: baling
+    name: "Farm baling and handover"
+    inclusion: "required"
+    inclusion_condition: "accepted wool"
+    role: "presentation and gate"
+    quantitative_reference: "net bale mass"
+process_inventory:
+  - id: flock
+    label: "Managed sheep flock"
+    inputs:
+      product:
+        - row_id: feed
+          role: "Feed and pasture intake"
+          name: "Sheep feed and grazed biomass by actual identity"
+          flow_type: "product"
+          property_unit: "Mass / kg dry matter"
+          description: "Quantify purchased rations and grazed biomass by cohort, feed type, dry matter and year; owned-land feed production is linked once."
+          amount:
+            expression: "intake from purchase, forage and stock records"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after flock-year attribution"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_flock_feed
+              source_ids:
+                - iwto-wool-lca-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "kg dry matter/kg greasy wool"
+                basis: "broad first-pass screen, replace with flock records"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: flock_water
+          role: "Drinking and husbandry water"
+          name: "Water supply for flock operations"
+          flow_type: "product"
+          property_unit: "Volume / m3"
+          description: "Separate drinking and cleaning by purpose and source; concrete exchanges follow records."
+          amount:
+            expression: "metered or documented withdrawal by purpose and year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/kg greasy wool"
+                basis: "broad first-pass use screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: nutrient_input
+          role: "Pasture nutrient amendments"
+          name: "Agricultural nutrient supply"
+          flow_type: "product"
+          property_unit: "Mass / kg product and kg N or P"
+          description: "One consolidated card covers mineral and organic nutrients when owned pasture production is in scope; expand by actual product and N/P composition."
+          amount:
+            expression: "application records by product, nutrient and field-year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after field attribution"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_flock_feed
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg product/kg greasy wool"
+                basis: "zero-allowed broad first-pass screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: flock_energy
+          role: "Flock energy carriers"
+          name: "Energy supply for flock operations"
+          flow_type: "product"
+          property_unit: "Energy or carrier quantity / kWh, MJ, L or kg"
+          description: "Expand carriers from meter/fuel records by use and service year, including shared housing and manure equipment."
+          amount:
+            expression: "meter and fuel records by carrier and year"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water_energy
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kWh-equivalent/kg greasy wool"
+                basis: "broad cross-carrier screen, retain original units"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: live_sheep
+          role: "Live sheep transferred from flock"
+          name: "Live sheep by actual cohort and gate"
+          flow_type: "product"
+          property_unit: "Mass and count / kg and head"
+          description: "Record sale/cull heads, live mass and destination as independently transferred outputs; avoid duplicate full burden in a live-sheep dataset."
+          amount:
+            expression: "net transfer by cohort and date"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_flock_outputs
+              source_ids:
+                - iwto-wool-lca-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg live sheep/kg greasy wool"
+                basis: "broad co-output completeness screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_export
+          role: "Exported manure"
+          name: "Exported sheep manure by actual wet/dry state"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only productive independently transferred manure is a co-product; otherwise manure remains in waste management."
+          amount:
+            expression: "net transferred mass after farm use and storage change"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "kg wet manure/kg greasy wool"
+                basis: "broad product-state screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: enteric_ch4
+          role: "Enteric biogenic methane to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg CH4"
+          description: "Calculate sheep enteric methane by cohort, diet and year; manure methane is a different pathway."
+          amount:
+            expression: "declared IPCC tier applied to cohort-year activity"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg CH4/kg greasy wool"
+                basis: "broad pathway screen, not an emission factor"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_n2o
+          role: "Manure nitrous oxide to air"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass / kg N2O"
+          description: "Report direct manure-management N2O; field-soil and indirect pathways are separate where applicable."
+          amount:
+            expression: "excreted N × management share × declared factor and N-to-N2O conversion"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg N2O/kg greasy wool"
+                basis: "broad pathway screen, not a factor"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: manure_nh3
+          role: "Manure ammonia to air"
+          name: "Ammonia to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          property_unit: "Mass / kg NH3"
+          description: "Track NH3 from documented manure storage/application pathway and reconcile N."
+          amount:
+            expression: "manure N × documented volatilization method"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg greasy wool after allocation"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg NH3/kg greasy wool"
+                basis: "broad pathway screen, not a factor"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: fleece_wash
+    label: "On-animal fleece wash"
+    inputs:
+      product:
+        - row_id: wash_water
+          role: "Pre-shear fleece-washing water"
+          name: "Water supply for on-animal fleece wash"
+          flow_type: "product"
+          property_unit: "Volume / m3"
+          description: "Use water while fleece remains on living sheep; record source, collection/discharge and wash event."
+          amount:
+            expression: "metered or estimated use by event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg fleece-washed greasy wool"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wash_shear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/kg washed greasy wool"
+                basis: "wash-route-only screen"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: wash_effluent
+          role: "Captured wash effluent"
+          name: "Collected on-animal wash effluent"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "If collected, record volume and recipient; direct release requires medium-specific elementary modelling, not a guessed waste UUID."
+          amount:
+            expression: "measured captured outflow by event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg fleece-washed greasy wool"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wash_shear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "m3/kg washed greasy wool"
+                basis: "zero permitted when no effluent captured"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: shearing
+    label: "Live-sheep shearing"
+    inputs:
+      product:
+        - row_id: shear_energy
+          role: "Shearing equipment energy"
+          name: "Energy for shearing"
+          flow_type: "product"
+          property_unit: "Energy or carrier / kWh, MJ or L"
+          description: "Record electric or fuel-powered clippers and related equipment by carrier and event."
+          amount:
+            expression: "meter or equipment log per event"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg captured fleece"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wash_shear
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kWh-equivalent/kg captured fleece"
+                basis: "broad clipper-energy screen"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: captured_fleece
+          role: "Captured greasy shorn fleece"
+          name: "Greasy sheep fleece immediately after shearing"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh fleece by animal/cohort and shear event before sorting; retain the on-animal wash state."
+          amount:
+            expression: "gross captured fleece net of collection tare"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final greasy wool"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wash_shear
+              source_ids:
+                - iwto-wool-lca-2016
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "5"
+                unit: "kg captured fleece/kg final greasy wool"
+                basis: "broad loss screen, not a yield claim"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: conditioning
+    label: "Farm airing and skirting"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: skirted_fleece
+          role: "Skirted greasy fleece"
+          name: "Skirted unscoured greasy fleece"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record still-greasy prepared fleece mass and moisture before grade assignment."
+          amount:
+            expression: "measured prepared fleece"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final greasy wool"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_bale
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kg skirted fleece/kg final greasy wool"
+                basis: "broad mass-balance screen"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: skirting_reject
+          role: "Skirting and contamination rejects"
+          name: "Farm skirting rejects by material and destination"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate unmarketable soil, vegetation and fibre from independently sold low-grade wool; record disposal/recovery destination."
+          amount:
+            expression: "measured rejected mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg captured fleece"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_bale
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg reject/kg captured fleece"
+                basis: "physical mass-balance bound"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: grading
+    label: "Grade and destination sorting"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_grades
+          role: "Accepted greasy wool grades"
+          name: "Accepted grade-specific greasy sheep wool"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measure accepted grade-specific net mass transferred to farm baling."
+          amount:
+            expression: "measured grade-specific mass"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg final greasy wool"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_bale
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg accepted grade/kg final greasy wool"
+                basis: "grade shares sum to accepted mass"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_wool
+          role: "Downgraded saleable greasy wool"
+          name: "Downgraded but saleable greasy sheep wool"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Where separately marketed, retain grade, buyer gate and mass. Unsaleable material is reject."
+          amount:
+            expression: "net downgraded mass by destination"
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per kg final greasy wool"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade_bale
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg downgrade/kg final greasy wool"
+                basis: "zero where all fleece accepted standard grade"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: baling
+    label: "Farm baling and handover"
+    inputs:
+      product:
+        - row_id: bale_material
+          role: "Bale and wrap materials"
+          name: "Baling and presentation materials"
+          flow_type: "product"
+          property_unit: "Mass or count / kg or item"
+          description: "Record actual textile, film, ties and labels; determine reuse cycles from farm records."
+          amount:
+            expression: "net material consumed per bale, net of documented reuse"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "per kg net greasy wool at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade_bale
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg material/kg greasy wool"
+                basis: "zero permitted for unpackaged transfer"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: farm_wool
+          role: "Net farm-gate greasy wool"
+          name: "Shorn greasy sheep wool at producing farm gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Final net mass by grade, bale and wash state is the reference output. The platform plant-gate Raw Wool candidate is not fixed here."
+          amount:
+            expression: "accepted and saleable downgraded dispatch, net of bale tare"
+            value_mode: "calculated_value"
+            specificity: "product_specific"
+            basis:
+              text: "1 kg net greasy wool at farm gate"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade_bale
+              source_ids:
+                - un-cpc-2025
+                - iwto-wool-lca-2016
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg net greasy wool"
+                basis: "one declared reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: flock_outputs
+    applies_to: "fleece, live sheep/lambs, exported manure and other independent products"
+    rule: "Prefer physical subdivision where separable; for shared flock burdens disclose and consistently apply a justified allocation such as period-specific economic value, with price and sensitivity. No zero-burden cull sheep or dual product/waste manure."
+    source_ids:
+      - iwto-wool-lca-2016
+  - rule_id: period_link
+    applies_to: "breeding, replacement, growth, shearing and culling years"
+    rule: "Link inputs, animal stocks, events and outputs across relevant years; amortize only with observed service/lifetime evidence. Assign animal-year burden once."
+    source_ids:
+      - iwto-wool-lca-2016
+  - rule_id: shared_assets
+    applies_to: "pasture, housing, water system, shearing shed and equipment"
+    rule: "Identify flock/shearing/baling consumers and service years; allocate shared use by documented hours, area or animal-time before product allocation; avoid node duplication."
+    source_ids:
+      - iwto-wool-lca-2016
+  - rule_id: grade_accounting
+    applies_to: "accepted, downgraded and rejected fleece"
+    rule: "Keep grade outputs and destinations separate; marketable downgrade is product, unsaleable skirtings waste, and fibre cannot be both."
+    source_ids:
+      - iwto-wool-lca-2016
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_flock_feed
+      process_id: "flock"
+      flow_role: "feed, nutrients"
+      record_type: "flock/field/invoice"
+      raw_fields: "cohort; pasture area; diet; dry matter; nutrient composition; date; stock"
+      collection_method: "farm records and documented intake model"
+      unit: "kg, ha"
+      frequency: "monthly/event"
+      temporal_coverage: "flock and rearing years"
+      site_scope: "farm"
+      aggregation_rule: "reconcile purchased, grown and consumed"
+      quality_evidence: "receipts, feed tests"
+    - protocol_id: cp_water_energy
+      process_id: "flock"
+      flow_role: "water, energy"
+      record_type: "meter/invoice"
+      raw_fields: "source; carrier; purpose; period; shared consumer"
+      collection_method: "meter and invoice"
+      unit: "m3, kWh, L"
+      frequency: "monthly"
+      temporal_coverage: "flock year"
+      site_scope: "farm"
+      aggregation_rule: "allocate by consumer"
+      quality_evidence: "meter images, invoices"
+    - protocol_id: cp_flock_outputs
+      process_id: "flock"
+      flow_role: "live animals"
+      record_type: "sale/stock register"
+      raw_fields: "cohort; head; live mass; date; gate"
+      collection_method: "weighbridge and stock count"
+      unit: "kg, head"
+      frequency: "event"
+      temporal_coverage: "flock year"
+      site_scope: "farm"
+      aggregation_rule: "opening + additions - removals = closing"
+      quality_evidence: "sale slips, register"
+    - protocol_id: cp_manure
+      process_id: "flock"
+      flow_role: "manure and emissions"
+      record_type: "activity register"
+      raw_fields: "cohort; N intake/excretion; management; storage; transfer; factors"
+      collection_method: "collect activity and IPCC tier"
+      unit: "kg N, kg manure"
+      frequency: "monthly/event"
+      temporal_coverage: "flock year"
+      site_scope: "farm"
+      aggregation_rule: "distinct CH4, N2O, NH3 pathways"
+      quality_evidence: "activity/factor sheets"
+    - protocol_id: cp_wash_shear
+      process_id: "fleece_wash_shearing"
+      flow_role: "wash and capture"
+      record_type: "event"
+      raw_fields: "sheep; wash date/water/effluent/dry-off; shear date; raw mass; energy"
+      collection_method: "event log, scale, meter"
+      unit: "kg, m3, kWh"
+      frequency: "event"
+      temporal_coverage: "shear season"
+      site_scope: "farm"
+      aggregation_rule: "link one route to one fleece"
+      quality_evidence: "event and calibration sheets"
+    - protocol_id: cp_grade_bale
+      process_id: "conditioning_grading_baling"
+      flow_role: "mass/presentation"
+      record_type: "grade/bale register"
+      raw_fields: "capture; skirtings; grade; moisture; tare; packing/reuse; dispatch"
+      collection_method: "scale and buyer docket"
+      unit: "kg, item"
+      frequency: "bale"
+      temporal_coverage: "shear season"
+      site_scope: "farm"
+      aggregation_rule: "capture = grades + rejects + change/loss"
+      quality_evidence: "scale tickets, grading records"
+  calculation_rules:
+    - id: wool_balance
+      applies_to: "shear to gate"
+      rule: "captured = accepted grades + downgraded grades + skirtings + measured moisture/other loss; disclose residual"
+      inputs:
+        - "event and bale records"
+      output: "net reference mass and balance"
+      source_ids:
+        - iwto-wool-lca-2016
+    - id: enteric_method
+      applies_to: "enteric CH4"
+      rule: "declared IPCC tier on age/diet/productivity-specific activity, with factor and unit conversion"
+      inputs:
+        - cohort
+        - diet
+        - duration
+      output: "kg CH4 distinct from manure"
+      source_ids:
+        - ipcc-livestock-2019
+    - id: manure_n_method
+      applies_to: "manure N2O/NH3"
+      rule: "excreted N × management shares × distinct factors and conversions; reconcile N"
+      inputs:
+        - excretion
+        - management
+        - factors
+      output: "kg N2O and NH3"
+      source_ids:
+        - ipcc-livestock-2019
+    - id: allocated_reference
+      applies_to: "shared activities"
+      rule: "activity × documented service-period and co-product shares ÷ net greasy wool"
+      inputs:
+        - "use logs"
+        - years
+        - "outputs and values"
+      output: "activity per kg reference"
+      source_ids:
+        - iwto-wool-lca-2016
+  data_quality_requirements:
+    - id: identity
+      applies_to: "wool"
+      requirement: "Document sheep/lamb origin, greasy state, on-animal wash, grade and farm gate; reject unknown post-shear wash."
+      evidence: "shear and sale records"
+    - id: completeness
+      applies_to: "flock/fleece"
+      requirement: "Reconcile animals, feed, manure, capture, grades, co-products and rejects."
+      evidence: "mass and stock balances"
+    - id: temporal
+      applies_to: "multi-year flock"
+      requirement: "Link animal age, events and shared assets to service years; disclose gaps."
+      evidence: "cohort and asset registers"
+    - id: measurement
+      applies_to: "masses/moisture/energy"
+      requirement: "Retain calibration and original units; disclose estimates."
+      evidence: "scale/meter records"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "reference/grades"
+    rule: "Reject goat/camelid/pulled wool, post-shear scoured fibre, non-farm gate or unknown species; check greasy net kg."
+    source_ids:
+      - un-cpc-2025
+      - wco-hs-2017
+  - rule_id: validate_route
+    applies_to: "wash/no-wash"
+    rule: "Confirm wash on living sheep before shear with water/effluent/dry-off evidence; one fleece uses one route."
+    source_ids:
+      - wco-hs-2017
+      - iwto-wool-lca-2016
+  - rule_id: validate_balance
+    applies_to: "fleece/co-products"
+    rule: "Reconcile capture, grades, rejects, bale tare, live animals and manure; no product/waste dual classification."
+    source_ids:
+      - iwto-wool-lca-2016
+  - rule_id: validate_period
+    applies_to: "flock/shared assets"
+    rule: "Verify period, replacement, service and co-product shares sum once; no inherited-burden omission."
+    source_ids:
+      - iwto-wool-lca-2016
+  - rule_id: validate_binding
+    applies_to: "concrete exchanges"
+    rule: "Resolve unresolved inputs from actual records and exact UUIDs for concrete outputs before dataset publication."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground product-category package for shorn greasy sheep wool"
+  downstream_use: "secondary_dataset or background_dataset after review and concrete identity verification"
+  allowed_use: "process/lifecycle model for declared breed, farm, period, grade and farm gate"
+  excluded_use: "scoured/pulled wool, goat hair, generic plant-gate raw wool, unverified UUID publication"
+  required_metadata: "farm; years; cohort; wash route; shear/bale dates; grade; moisture; mass balance; allocation; UUID evidence"
+  required_quality_disclosure: "measured/calculated values, factor tier, gaps, provisional ranges, co-product sensitivity"
+  update_trigger: "route, species, gate, grade, allocation, factor or identity evidence changes"
+data_sources:
+  - id: "un-cpc-2025"
+    type: "official_guidance"
+    reference: "[UNSD CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "shorn versus pulled identity"
+  - id: "wco-hs-2017"
+    type: "official_guidance"
+    reference: "[WCO HS Chapter 51](https://www.wcoomd.org/-/media/wco/public/global/pdf/topics/nomenclature/instruments-and-tools/hs-nomenclature-2017/2017/1151_2017e.pdf?la=en)"
+    used_for: "sheep/lamb wool versus other hair"
+  - id: "iwto-wool-lca-2016"
+    type: "official_guidance"
+    reference: "[IWTO wool LCA guidelines](https://iwto.org/wp-content/uploads/2020/04/IWTO-Guidelines-for-Wool-LCA.pdf)"
+    used_for: "farm gate, scouring split, inventory, allocation"
+  - id: "ipcc-livestock-2019"
+    type: "method_factor"
+    reference: "[IPCC 2019 Refinement Vol. 4 Ch. 10](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf)"
+    used_for: "enteric and manure pathways"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:785e930812ebc718675815a026fce78120bfc42c86849550009aa260f00a21d1"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_3251"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 3251
+          line: 53
+          column: 1
+        end:
+          offset: 5043
+          line: 74
+          column: 1
+      markdown: "## System Boundary\n\nInclude managed sheep production, feed and pasture, manure, conditional pre-shear on-animal washing, shearing, farm airing/skirting, grade sorting, baling and producing-farm handover. Account for upstream purchased animal, feed, energy, water, fertilizer and packaging datasets once. Record rearing, replacements, culls and shared facilities across years. Stop before auction, post-farm freight, scouring, grease extraction and textile manufacture (`iwto-wool-lca-2016`).\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed sheep/lamb cohort with age, origin, opening stock and inherited burden |\n| starting_condition_role | flock starting inventory, not zero-burden animals |\n| product_classification_scope | greasy shorn sheep wool only |\n| recursive_input_rule | Purchased greasy wool entering baling is a separately linked same-category input, never newly grown fleece |\n| upstream_dataset_requirement | Purchased animals, feed, nutrient, energy, water and packaging datasets where crossing boundary |\n| disclosure | breed, farm, flock-year, wash route, shear and grade balances, animal/manure co-products, attribution method |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `farm_gate_limit` | all nodes | Stop at accepted greasy-wool bale handover; exclude post-shear scouring and later logistics. | `un-cpc-2025`; `iwto-wool-lca-2016` |\n| `wash_gate` | optional wash | Wash fleece while still on live sheep before shearing; document water, effluent and dry-off, retaining greasy output. | `wco-hs-2017` |\n| `route_delta` | wash/no-wash | Both inherit flock husbandry; one fleece uses one route. Wash adds a separate node and inventory; no double route attribution. | `iwto-wool-lca-2016` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 222
+              line: 8
+              column: 1
+            end:
+              offset: 274
+              line: 8
+              column: 53
+          text: "# Shorn greasy sheep wool at the producing farm gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 3251
+              line: 53
+              column: 1
+            end:
+              offset: 3269
+              line: 53
+              column: 19
+          text: "## System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_25455"
+      family: "allocation"
+      span:
+        start:
+          offset: 25455
+          line: 586
+          column: 1
+        end:
+          offset: 26698
+          line: 595
+          column: 1
+      markdown: "## Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `flock_outputs` | fleece, live sheep/lambs, exported manure and other independent products | Prefer physical subdivision where separable; for shared flock burdens disclose and consistently apply a justified allocation such as period-specific economic value, with price and sensitivity. No zero-burden cull sheep or dual product/waste manure. | `iwto-wool-lca-2016` |\n| `period_link` | breeding, replacement, growth, shearing and culling years | Link inputs, animal stocks, events and outputs across relevant years; amortize only with observed service/lifetime evidence. Assign animal-year burden once. | `iwto-wool-lca-2016` |\n| `shared_assets` | pasture, housing, water system, shearing shed and equipment | Identify flock/shearing/baling consumers and service years; allocate shared use by documented hours, area or animal-time before product allocation; avoid node duplication. | `iwto-wool-lca-2016` |\n| `grade_accounting` | accepted, downgraded and rejected fleece | Keep grade outputs and destinations separate; marketable downgrade is product, unsaleable skirtings waste, and fibre cannot be both. | `iwto-wool-lca-2016` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 222
+              line: 8
+              column: 1
+            end:
+              offset: 274
+              line: 8
+              column: 53
+          text: "# Shorn greasy sheep wool at the producing farm gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 25455
+              line: 586
+              column: 1
+            end:
+              offset: 25492
+              line: 586
+              column: 38
+          text: "## Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_30354"
+      family: "validation"
+      span:
+        start:
+          offset: 30354
+          line: 626
+          column: 1
+        end:
+          offset: 31325
+          line: 636
+          column: 1
+      markdown: "## Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | reference/grades | Reject goat/camelid/pulled wool, post-shear scoured fibre, non-farm gate or unknown species; check greasy net kg. | `un-cpc-2025`; `wco-hs-2017` |\n| `validate_route` | wash/no-wash | Confirm wash on living sheep before shear with water/effluent/dry-off evidence; one fleece uses one route. | `wco-hs-2017`; `iwto-wool-lca-2016` |\n| `validate_balance` | fleece/co-products | Reconcile capture, grades, rejects, bale tare, live animals and manure; no product/waste dual classification. | `iwto-wool-lca-2016` |\n| `validate_period` | flock/shared assets | Verify period, replacement, service and co-product shares sum once; no inherited-burden omission. | `iwto-wool-lca-2016` |\n| `validate_binding` | concrete exchanges | Resolve unresolved inputs from actual records and exact UUIDs for concrete outputs before dataset publication. | |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 222
+              line: 8
+              column: 1
+            end:
+              offset: 274
+              line: 8
+              column: 53
+          text: "# Shorn greasy sheep wool at the producing farm gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 30354
+              line: 626
+              column: 1
+            end:
+              offset: 30373
+              line: 626
+              column: 20
+          text: "## Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "system_boundary_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_3251"
+      source_span:
+        start:
+          offset: 3271
+          line: 55
+          column: 1
+        end:
+          offset: 3742
+          line: 55
+          column: 472
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "farm_gate_limit"
+      identity_kind: "explicit"
+      unit_id: "normative_3251"
+      source_span:
+        start:
+          offset: 4522
+          line: 70
+          column: 1
+        end:
+          offset: 4688
+          line: 70
+          column: 167
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "wash_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_3251"
+      source_span:
+        start:
+          offset: 4689
+          line: 71
+          column: 1
+        end:
+          offset: 4856
+          line: 71
+          column: 168
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "route_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_3251"
+      source_span:
+        start:
+          offset: 4857
+          line: 72
+          column: 1
+        end:
+          offset: 5041
+          line: 72
+          column: 185
+    - pointer: "/allocation_rules/0"
+      rule_id: "flock_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_25455"
+      source_span:
+        start:
+          offset: 25565
+          line: 590
+          column: 1
+        end:
+          offset: 25933
+          line: 590
+          column: 369
+    - pointer: "/allocation_rules/1"
+      rule_id: "period_link"
+      identity_kind: "explicit"
+      unit_id: "normative_25455"
+      source_span:
+        start:
+          offset: 25934
+          line: 591
+          column: 1
+        end:
+          offset: 26193
+          line: 591
+          column: 260
+    - pointer: "/allocation_rules/2"
+      rule_id: "shared_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_25455"
+      source_span:
+        start:
+          offset: 26194
+          line: 592
+          column: 1
+        end:
+          offset: 26472
+          line: 592
+          column: 279
+    - pointer: "/allocation_rules/3"
+      rule_id: "grade_accounting"
+      identity_kind: "explicit"
+      unit_id: "normative_25455"
+      source_span:
+        start:
+          offset: 26473
+          line: 593
+          column: 1
+        end:
+          offset: 26696
+          line: 593
+          column: 224
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_30354"
+      source_span:
+        start:
+          offset: 30446
+          line: 630
+          column: 1
+        end:
+          offset: 30635
+          line: 630
+          column: 190
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_route"
+      identity_kind: "explicit"
+      unit_id: "normative_30354"
+      source_span:
+        start:
+          offset: 30636
+          line: 631
+          column: 1
+        end:
+          offset: 30818
+          line: 631
+          column: 183
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_30354"
+      source_span:
+        start:
+          offset: 30819
+          line: 632
+          column: 1
+        end:
+          offset: 30997
+          line: 632
+          column: 179
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_period"
+      identity_kind: "explicit"
+      unit_id: "normative_30354"
+      source_span:
+        start:
+          offset: 30998
+          line: 633
+          column: 1
+        end:
+          offset: 31164
+          line: 633
+          column: 167
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_binding"
+      identity_kind: "explicit"
+      unit_id: "normative_30354"
+      source_span:
+        start:
+          offset: 31165
+          line: 634
+          column: 1
+        end:
+          offset: 31323
+          line: 634
+          column: 159
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_3251"
+      source_span:
+        start:
+          offset: 3251
+          line: 53
+          column: 1
+        end:
+          offset: 3269
+          line: 53
+          column: 19
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_3251"
+      source_span:
+        start:
+          offset: 3770
+          line: 59
+          column: 1
+        end:
+          offset: 4449
+          line: 66
+          column: 126
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_25455"
+      source_span:
+        start:
+          offset: 25455
+          line: 586
+          column: 1
+        end:
+          offset: 25492
+          line: 586
+          column: 38
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_30354"
+      source_span:
+        start:
+          offset: 30354
+          line: 626
+          column: 1
+        end:
+          offset: 30373
+          line: 626
+          column: 20
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:785e930812ebc718675815a026fce78120bfc42c86849550009aa260f00a21d1"
+  generated_content_sha256: "sha256:dd7ff3a8769d09de570b2dd48527877b2581d8f6edb605ef8720f254a4b16cc9"

@@ -1,10 +1,1628 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "02154"
-  title: "Ducks"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.ducks"
+  classification_refs: "CPC 3.0 02154 Ducks"
+  covered_products: "Living domestic *Anas* ducks (mainly *A. platyrhynchos*) at producer hatchery or farm handover."
+  excluded_products: "Slaughtered ducks, duck meat, eggs as reference, post-slaughter feathers, downstream distribution."
+  representative_product: "1 kg living domestic duck at one declared producer gate."
+  production_route: "Managed breeder/egg supply and incubation if operated, brooding/rearing if operated, then independent live capture/dispatch. Hatchery and farm final routes are mutually exclusive. Integrated fish/rice/wetland management is a conditional delta of the managed biological production parent."
+  market_state: "Living, unprocessed duck with declared age/class and gate."
+functional_unit:
+  what: "Living domestic duck of declared age/class at one producer gate."
+  how_much: "1 kg measured live weight, plus observed head count and kg/head."
+  how_well: "Live and unprocessed, excluding dead birds from sold live output."
+  how_long_or_cycle: "Actual hatchery or rearing batch and any attributed breeder periods."
+  reference_flow_link: "live_duck_final at the selected final gate."
+system_boundary:
+  rules:
+    - rule_id: one_final_gate
+      applies_to: "All routes"
+      rule: "Select exactly one final hatchery or farm producer handover; internal ducklings later reared are not also final sold output."
+      source_ids:
+        - fao-leap-poultry-2016
+    - rule_id: capture_independent
+      applies_to: "Final capture"
+      rule: "Separate catching, weighing and loading from biological production because this node establishes sold-live versus lost status and the final gate."
+      source_ids:
+        - fao-leap-poultry-2016
+    - rule_id: integrated_delta
+      applies_to: "Fish/rice/wetland route"
+      rule: "Add changed water, feed and manure pathways plus independently transferred fish/rice only with current enterprise evidence."
+      source_ids:
+        - fao-duck-fish-integration
+    - rule_id: period_linkage
+      applies_to: "Breeder and growout"
+      rule: "Link laying periods, incubation/rearing batches, replacement and retirement to their recipient outputs once."
+      source_ids:
+        - fao-leap-poultry-2016
+    - rule_id: system_boundary_rule_5
+      applies_to: "foreground_system_boundary"
+      rule: "The integrated route shares the managed duck-production parent with ordinary rearing but changes inventory categories (field/wetland water, foraging, manure destination and possible fish/rice handover), calculation boundaries and output-attribution validation. Farm records must identify each changed category. Integrated and non-integrated batches may coexist at an enterprise, but each lot selects its evidenced route; mutually exclusive water/manure assignments cannot be stacked."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Purchased or internally supplied duck hatching eggs/ducklings or breeding stock at the first operated stage, together with feed, water and energy."
+  starting_condition_role: "Biological starting input with upstream provenance."
+  product_classification_scope: "CPC 3.0 02154 live ducks; eggs, meat, rice and fish remain separate products."
+  recursive_input_rule: "Purchased live ducks carry predecessor burden once; internal transfers link to their producer node and are not re-imported as external duck products."
+  upstream_dataset_requirement: "Attach traceable upstream datasets for purchased eggs/ducklings, feed, water, energy, bedding and other supplied products."
+  disclosure: "Declare route, gate, breed/purpose, age, count, weight, period, housing/water regime, manure fate, mortality, independently sold outputs and shared/integrated boundary."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Living domestic duck at declared producer gate; UUID unresolved for broad mass reference"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "*Anas* species identity"
+    - "breed/purpose"
+    - "age/class"
+    - count
+    - "measured live mass"
+    - "hatchery or farm gate"
+    - location
+    - "production period"
+    - "integrated-system status"
+reference_flows:
+  []
+measurement_rules:
+  - id: duck_live_mass
+    applies_to: "Final handover"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh the live lot before producer-gate handover; exclude dead birds and packaging."
+  - id: duck_count_conversion
+    applies_to: "Count-based records"
+    required_property_ref:
+      name: "Mass and head count"
+      uuid: ""
+    required_unit: "kg; head"
+    rule: "Divide measured live kg by counted living heads; never substitute a Number-of-items UUID for the mass reference."
+  - id: feed_basis
+    applies_to: "Feed records"
+    required_property_ref:
+      name: "As-fed mass and moisture state"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Retain feed state and use one consistent basis for aggregation."
+  - id: carrier_basis
+    applies_to: "Energy records"
+    required_property_ref:
+      name: "Carrier-specific property"
+      uuid: ""
+    required_unit: "Supplier unit"
+    rule: "Preserve actual carrier/unit and documented conversion before normalization."
+process_map:
+  - id: breeder_flock
+    name: "Breeder flock and egg production"
+    inclusion: "conditional"
+    inclusion_condition: "Only when breeding/egg supply is operated; otherwise purchased eggs or ducklings carry upstream burden."
+    role: "Managed biological production across laying periods."
+    quantitative_reference: "Per breeder period and hatching eggs transferred."
+  - id: incubation
+    name: "Egg incubation and duckling production"
+    inclusion: "conditional"
+    inclusion_condition: "Only when incubation is operated; otherwise purchased ducklings enter rearing."
+    role: "Managed hatchery production and live duckling handover."
+    quantitative_reference: "Per incubation batch and duckling output."
+  - id: duck_rearing
+    name: "Brooding and rearing"
+    inclusion: "conditional"
+    inclusion_condition: "Required for farm-gate grown duck output; absent for direct hatchery-gate duckling sale."
+    role: "Managed biological production parent with conditional integrated-system delta."
+    quantitative_reference: "Per rearing batch and live bird mass."
+  - id: live_capture
+    name: "Live capture, weighing and dispatch"
+    inclusion: "required"
+    inclusion_condition: "At the one selected final hatchery or farm producer gate."
+    role: "Independent capture and measured final handover."
+    quantitative_reference: "Per 1 kg final live duck."
+process_inventory:
+  - id: breeder_flock
+    label: "Breeder flock and egg production"
+    inputs:
+      product:
+        - row_id: breeder_feed
+          role: "Breeder feed"
+          name: "Breeder feed; supplier identity unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record feed types and as-fed mass issued to the breeder flock in the attributed period."
+          amount:
+            expression: "Feed issue plus opening minus closing stock and returned feed."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg hatching eggs transferred"
+                basis: "per breeder period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: breeder_water
+          role: "Breeder-house water"
+          name: "Breeder-house supplied water by actual use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record supplied drinking and service water at this operated node; the actual water-use group is determined from foreground uses."
+          amount:
+            expression: "Metered water attributed to breeder period."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg hatching eggs transferred"
+                basis: "per breeder period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: breeder_energy
+          role: "Breeder energy carriers"
+          name: "Breeder-house energy carriers"
+          flow_type: "product"
+          property_unit: "Carrier-specific / supplier unit"
+          description: "Record electricity and fuel by actual carrier, avoiding shared-meter double count."
+          amount:
+            expression: "Metered or invoiced carrier quantities."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg hatching eggs transferred"
+                basis: "per breeder period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: breeder_eggs
+          role: "Hatching eggs transferred"
+          name: "Duck hatching eggs; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; head count"
+          description: "Weigh and count eggs sold or internally sent to incubation; internal burden transfers once."
+          amount:
+            expression: "Measured egg mass and count by batch."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg collected egg mass"
+                basis: "per breeder laying period"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: breeder_coproducts
+          role: "Other sold breeder outputs"
+          name: "Sold eggs or spent live ducks; concrete identities unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; count"
+          description: "Record table eggs and spent live breeders only when independently sold, each at its own gate."
+          amount:
+            expression: "Measure each independently transferred output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg corresponding measured output"
+                basis: "per breeder laying period"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: breeder_manure_export
+          role: "Independently sold breeder manure"
+          name: "Breeder manure product; concrete UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record only when breeder manure is independently transferred as a sold product with handover evidence."
+          amount:
+            expression: "Weigh by breeder period and document independent handover."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg hatching eggs transferred"
+                basis: "per breeder laying period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: breeder_losses
+          role: "Breeder deaths and egg rejects"
+          name: "Biological waste; concrete identities unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separate mortality and unmarketable eggs from products; document disposal."
+          amount:
+            expression: "Weigh or calculate from observed counts and mean mass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_breeder_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg relevant measured bird or egg mass"
+                basis: "per breeder laying period"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: breeder_manure_residue
+          role: "Unsold breeder manure"
+          name: "Breeder manure waste; concrete UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record breeder manure not independently transferred as a product and its treatment destination."
+          amount:
+            expression: "Weigh by breeder period and document treatment destination."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg hatching eggs transferred"
+                basis: "per breeder laying period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: breeder_ch4_air
+          role: "Biogenic methane from managed manure to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use only for an identified manure storage/treatment pathway emitting biogenic CH4 to air; the UUID is an identity, not an emission factor."
+          amount:
+            expression: "Calculate from observed volatile solids, manure management system and appropriate CH4 method factor."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_breeder_manure_emissions
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg substance/kg hatching eggs transferred"
+                basis: "per breeder laying period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: breeder_n2o_air
+          role: "Nitrous oxide from managed manure to air"
+          name: "Nitrous oxide, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use only for identified manure nitrogen pathways releasing N2O to air; do not merge indirect and direct pathway factors."
+          amount:
+            expression: "Calculate from observed manure nitrogen, management pathway and appropriate N2O method factor."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_breeder_manure_emissions
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg substance/kg hatching eggs transferred"
+                basis: "per breeder laying period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: breeder_nh3_air
+          role: "Ammonia from managed manure to air"
+          name: "Ammonia, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use only for separately evidenced NH3 volatilization to air from the documented manure/housing pathway; do not infer its amount from the IPCC CH4/N2O factors."
+          amount:
+            expression: "Measured NH3 for this pathway, or a separately documented compatible factor calculation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per breeder laying period and hatching eggs transferred"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_breeder_manure_emissions
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg substance/kg hatching eggs transferred"
+                basis: "per breeder laying period and hatching eggs transferred"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: incubation
+    label: "Egg incubation and duckling production"
+    inputs:
+      product:
+        - row_id: incubation_eggs
+          role: "Eggs entering incubation"
+          name: "Duck hatching eggs; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; count"
+          description: "Track purchased or internal duck eggs and predecessor burden once."
+          amount:
+            expression: "Measured batch input mass and count."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per incubation batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_incubation_batch
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg hatched live duckling"
+                basis: "per incubation batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: incubation_energy
+          role: "Incubation energy"
+          name: "Hatchery energy carriers"
+          flow_type: "product"
+          property_unit: "Carrier-specific / supplier unit"
+          description: "Assign actual incubator energy by carrier and batch."
+          amount:
+            expression: "Metered or invoiced batch energy."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg live duckling output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_incubation_batch
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg live duckling"
+                basis: "per kg live duckling output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: incubation_water
+          role: "Hatchery water"
+          name: "Hatchery process water"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record supplied process and cleaning water; disaggregate actual uses in foreground exchange data."
+          amount:
+            expression: "Metered water assigned to hatchery batches."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg live duckling output"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_incubation_batch
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg live duckling"
+                basis: "per kg live duckling output"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: hatched_ducklings
+          role: "Live ducklings"
+          name: "Live duckling at hatchery gate; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; count"
+          description: "Weigh and count living ducklings; choose internal rearing transfer or final hatchery sale, not both."
+          amount:
+            expression: "Measured live duckling lot mass and count."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per incubation batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_incubation_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg all weighed hatchery outputs"
+                basis: "per incubation batch"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: hatchery_losses
+          role: "Unhatched eggs and hatchery losses"
+          name: "Hatchery biological waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record unhatched eggs, shells and dead ducklings by real disposal stream."
+          amount:
+            expression: "Weigh or calculate from batch counts and observed mass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per incubation batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_incubation_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg relevant weighed hatchery material"
+                basis: "per incubation batch"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+  - id: duck_rearing
+    label: "Brooding and rearing"
+    inputs:
+      product:
+        - row_id: rearing_ducklings
+          role: "Starting ducklings"
+          name: "Live duckling entering rearing; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; count"
+          description: "Record purchased or internal living ducklings entering rearing with prior burden once."
+          amount:
+            expression: "Measured starting live mass and count."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per rearing batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rearing_batch
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg final live duck"
+                basis: "per rearing batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rearing_feed
+          role: "Rearing feed"
+          name: "Duck feed by type and provenance; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include purchased or on-farm feed actually consumed; integrated foraging is not zero burden."
+          amount:
+            expression: "Opening stock plus deliveries minus closing stock and returns."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rearing_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "50"
+                unit: "kg/kg final live duck"
+                basis: "per kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rearing_water
+          role: "Rearing water"
+          name: "Rearing supplied water by actual use"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record supplied water and distinguish drinking, cleaning and integrated-field uses from actual records; the group is deferred until those functions are known."
+          amount:
+            expression: "Metered water attributed to duck rearing."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rearing_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "kg/kg final live duck"
+                basis: "per kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rearing_energy
+          role: "Rearing energy"
+          name: "Rearing energy carriers"
+          flow_type: "product"
+          property_unit: "Carrier-specific / supplier unit"
+          description: "Record brooder, ventilation, pump and equipment energy by actual carrier."
+          amount:
+            expression: "Metered or allocated carrier energy by batch."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rearing_inputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "1000"
+                unit: "MJ/kg final live duck"
+                basis: "per kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reared_live_ducks
+          role: "Reared living ducks"
+          name: "Live reared duck before dispatch; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; count"
+          description: "Count and weigh living ducks leaving biological rearing for capture."
+          amount:
+            expression: "Measured live mass and heads transferred to capture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per rearing batch"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rearing_batch
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg weighed bird output"
+                basis: "per rearing batch"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+        - row_id: rearing_coproducts
+          role: "Independently transferred rearing co-products"
+          name: "Separately transferred co-products; concrete UUIDs unresolved"
+          flow_type: "product"
+          property_unit: "Product-specific / measured unit"
+          description: "Record intentionally sold manure, rice or fish only for actual integrated enterprises, each with own gate."
+          amount:
+            expression: "Measure each independently transferred product."
+            value_mode: "foreground_record"
+            specificity: "route_specific"
+            basis:
+              text: "per rearing batch and co-product handover"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_rearing_outputs
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg corresponding measured output"
+                basis: "per rearing batch and co-product handover"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: rearing_residues
+          role: "Mortality and unsold manure"
+          name: "Biological residue/waste; concrete UUIDs unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Classify dead birds, litter and manure not intentionally transferred as products by destination."
+          amount:
+            expression: "Weigh removals or calculate from logs and measured class mean mass."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per rearing batch"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_rearing_outputs
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg final live duck"
+                basis: "per rearing batch"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: rearing_ch4_air
+          role: "Biogenic methane from managed manure to air"
+          name: "Methane, biogenic, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use only for an identified manure storage/treatment pathway emitting biogenic CH4 to air; the UUID is an identity, not an emission factor."
+          amount:
+            expression: "Calculate from observed volatile solids, manure management system and appropriate CH4 method factor."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_emissions
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg substance/kg final live duck"
+                basis: "per kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rearing_n2o_air
+          role: "Nitrous oxide from managed manure to air"
+          name: "Nitrous oxide, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use only for identified manure nitrogen pathways releasing N2O to air; do not merge indirect and direct pathway factors."
+          amount:
+            expression: "Calculate from observed manure nitrogen, management pathway and appropriate N2O method factor."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_emissions
+              source_ids:
+                - ipcc-livestock-2019
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg substance/kg final live duck"
+                basis: "per kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: rearing_nh3_air
+          role: "Ammonia from managed manure to air"
+          name: "Ammonia, to air"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-a2a9-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use only for separately evidenced NH3 volatilization to air from the documented manure/housing pathway; do not infer its amount from the IPCC CH4/N2O factors."
+          amount:
+            expression: "Measured NH3 for this pathway, or a separately documented compatible factor calculation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_manure_emissions
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg substance/kg final live duck"
+                basis: "per kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: live_capture
+    label: "Live capture, weighing and dispatch"
+    inputs:
+      product:
+        - row_id: capture_ducks
+          role: "Ducks presented for final capture"
+          name: "Live duck at selected predecessor gate; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg; count"
+          description: "Receive ducks from exactly one predecessor; internal transfer carries prior burden once."
+          amount:
+            expression: "Weighed live mass and count presented for dispatch."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per final producer-gate lot"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_live_capture
+              source_ids: []
+            ranges:
+              - role: default_estimate
+                lower: "0"
+                upper: "10"
+                unit: "kg/kg sold live duck"
+                basis: "per final producer-gate lot"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: live_duck_final
+          role: "Final live duck at producer gate"
+          name: "Live domestic duck at declared producer gate; broad mass UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record one selected hatchery- or farm-gate living duck lot; exclude dead birds and downstream transport."
+          amount:
+            expression: "1 kg measured final live duck; record count and gate."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg final live duck"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_live_capture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference live duck"
+                basis: "per 1 kg final live duck"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      waste:
+        - row_id: capture_losses
+          role: "Capture mortalities and rejects"
+          name: "Capture waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record birds lost between presentation and sold-live weighing separately."
+          amount:
+            expression: "Reconcile presented minus sold mass with loss and rejection logs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per final producer-gate lot"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_live_capture
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg presented live birds"
+                basis: "per final producer-gate lot"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
+      elementary:
+        []
+allocation_rules:
+  - rule_id: output_census
+    applies_to: "All stages"
+    rule: "Enumerate hatching eggs, sold table eggs, spent live breeders, sold ducklings, sold grown ducks and exported manure/rice/fish only when actually transferred; record each handover. Deaths and unsold manure are residues or waste, not co-products."
+    source_ids:
+      - fao-leap-poultry-2016
+  - rule_id: allocation_precedence
+    applies_to: "Multi-output nodes"
+    rule: "First subdivide measured activities by output; for inseparable joint output use defensible physical causality, otherwise contemporaneous economic values with period and sensitivity disclosed. Do not apply substitution credit by default."
+    source_ids:
+      - fao-leap-poultry-2016
+  - rule_id: period_allocation
+    applies_to: "Breeder, hatchery, rearing"
+    rule: "Attribute feed, assets, output and replacement/retirement events to actual periods/batches; assign cross-period burdens once by measured service or documented throughput."
+    source_ids:
+      - fao-leap-poultry-2016
+  - rule_id: shared_assets
+    applies_to: "Houses, incubators, pumps and meters"
+    rule: "List each consuming node and service period; split shared service by meter or documented time/throughput, reconcile assigned shares to recorded total and prevent duplicate charges."
+    source_ids:
+      - fao-leap-poultry-2016
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_breeder_inputs
+      process_id: "breeder_flock"
+      flow_role: "Feed, water, energy"
+      record_type: "Ledgers, meter, invoice"
+      raw_fields: "period; flock; feed type/stocks; water; carrier; quantity"
+      collection_method: "Reconcile issues and meters to laying period"
+      unit: "kg; kWh; MJ"
+      frequency: "per issue/meter"
+      temporal_coverage: "whole breeder period"
+      site_scope: "breeder unit"
+      aggregation_rule: "assign one measured share per period"
+      quality_evidence: "ledger; invoice; meter"
+    - protocol_id: cp_breeder_outputs
+      process_id: "breeder_flock"
+      flow_role: "Eggs, spent birds, losses and manure"
+      record_type: "Collection/disposal ledger"
+      raw_fields: "period; egg count/mass; destination; spent birds; deaths; manure mass/fate"
+      collection_method: "Count/weigh lots and manure transfers/disposals"
+      unit: "kg; head"
+      frequency: "per lot"
+      temporal_coverage: "whole breeder period"
+      site_scope: "breeder unit"
+      aggregation_rule: "separate product from waste by handover"
+      quality_evidence: "scale; sales; disposal"
+    - protocol_id: cp_breeder_manure_emissions
+      process_id: "breeder_flock"
+      flow_role: "Species-specific breeder manure emissions"
+      record_type: "Manure, N and NH3 measurement records"
+      raw_fields: "breeder period; manure; volatile solids; N; housing/storage pathway; CH4/N2O factors; independent NH3 measurement"
+      collection_method: "Calculate CH4/N2O by actual breeder-manure system; report NH3 only from independent measurement or separately sourced method"
+      unit: "kg substance"
+      frequency: "per breeder period"
+      temporal_coverage: "whole manure period"
+      site_scope: "breeder unit/manure node"
+      aggregation_rule: "assign each manure fraction one pathway, once"
+      quality_evidence: "analysis; factor worksheet; NH3 record"
+    - protocol_id: cp_incubation_batch
+      process_id: "incubation"
+      flow_role: "Eggs, services, ducklings, losses"
+      record_type: "Batch sheet and meters"
+      raw_fields: "batch; egg count/mass/origin; ducklings; losses; energy; water"
+      collection_method: "Link input/output/services by batch"
+      unit: "kg; head; kWh; MJ"
+      frequency: "per batch"
+      temporal_coverage: "full incubation"
+      site_scope: "hatchery"
+      aggregation_rule: "assign shared services once"
+      quality_evidence: "batch sheet; scale; meter"
+    - protocol_id: cp_rearing_batch
+      process_id: "duck_rearing"
+      flow_role: "Starting/ending birds"
+      record_type: "Movement/weight ledger"
+      raw_fields: "batch; age; count; starting/ending mass"
+      collection_method: "Count/weigh each handover"
+      unit: "kg; head"
+      frequency: "per movement"
+      temporal_coverage: "whole rearing period"
+      site_scope: "flock"
+      aggregation_rule: "reconcile bird movements"
+      quality_evidence: "scale; register"
+    - protocol_id: cp_rearing_inputs
+      process_id: "duck_rearing"
+      flow_role: "Feed, water, energy"
+      record_type: "Ledger and meters"
+      raw_fields: "batch; stocks; feed; water; carrier; meter"
+      collection_method: "Reconcile actual consumption"
+      unit: "kg; kWh; MJ"
+      frequency: "per delivery/meter"
+      temporal_coverage: "whole rearing period"
+      site_scope: "flock and shared assets"
+      aggregation_rule: "allocate shared service once"
+      quality_evidence: "invoices; meter"
+    - protocol_id: cp_rearing_outputs
+      process_id: "duck_rearing"
+      flow_role: "Co-products, manure, deaths"
+      record_type: "Sales/removal records"
+      raw_fields: "batch; product; mass; destination; mortality"
+      collection_method: "Weigh output or waste removal"
+      unit: "kg; head"
+      frequency: "per movement"
+      temporal_coverage: "whole rearing period"
+      site_scope: "flock/integrated unit"
+      aggregation_rule: "classify by actual handover"
+      quality_evidence: "sales; removal ticket"
+    - protocol_id: cp_manure_emissions
+      process_id: "duck_rearing"
+      flow_role: "Species-specific rearing emissions"
+      record_type: "Manure, N and NH3 measurement records"
+      raw_fields: "batch; manure; volatile solids; N; housing/storage pathway; CH4/N2O factors; independent NH3 measurement"
+      collection_method: "Calculate CH4/N2O by actual rearing-manure system; report NH3 only from independent measurement or separately sourced method"
+      unit: "kg substance"
+      frequency: "per batch"
+      temporal_coverage: "manure period"
+      site_scope: "flock/manure node"
+      aggregation_rule: "assign each manure fraction one pathway, once"
+      quality_evidence: "analysis; factor worksheet; NH3 record"
+    - protocol_id: cp_live_capture
+      process_id: "live_capture"
+      flow_role: "Presented/sold/lost birds"
+      record_type: "Gate weighing sheet"
+      raw_fields: "lot; gate; age; count; presented/sold/lost mass"
+      collection_method: "Weigh/count at final gate"
+      unit: "kg; head"
+      frequency: "per lot"
+      temporal_coverage: "capture to handover"
+      site_scope: "selected gate"
+      aggregation_rule: "normalize sold live kg to 1 kg"
+      quality_evidence: "scale; delivery note"
+  calculation_rules:
+    - id: feed_consumed
+      applies_to: "Breeder/rearing feed"
+      rule: "Opening stock + deliveries − closing stock − returns."
+      inputs:
+        - stocks
+        - deliveries
+        - returns
+      output: "kg consumed"
+      source_ids:
+        - mass-balance-identity
+    - id: count_to_mass
+      applies_to: "Live birds"
+      rule: "Measured live lot kg ÷ counted living heads; no universal kg/head."
+      inputs:
+        - mass
+        - count
+      output: "observed kg/head"
+      source_ids:
+        - mass-balance-identity
+    - id: capture_balance
+      applies_to: "Final handover"
+      rule: "Presented live mass = sold live mass + accounted losses, within weighing uncertainty."
+      inputs:
+        - scale
+        - removals
+      output: "kg final live and loss"
+      source_ids:
+        - mass-balance-identity
+    - id: manure_species
+      applies_to: "Breeder and rearing direct emissions"
+      rule: "Calculate CH4 and N2O separately using actual manure pathway and appropriate method; flow identity is not an emission factor."
+      inputs:
+        - manure
+        - "volatile solids"
+        - N
+        - pathway
+        - factor
+      output: "kg CH4 and N2O separately"
+      source_ids:
+        - ipcc-livestock-2019
+    - id: nh3_observation
+      applies_to: "Breeder and rearing NH3"
+      rule: "Use independently measured NH3 or a separately documented compatible factor; do not derive NH3 from CH4/N2O factors."
+      inputs:
+        - "NH3 measurement or independent factor"
+      output: "kg NH3"
+      source_ids: []
+    - id: shared_sum
+      applies_to: "Shared assets"
+      rule: "Assigned node-period quantities sum to measured total within documented meter uncertainty."
+      inputs:
+        - meter
+        - "recipient usage"
+      output: "allocated service"
+      source_ids:
+        - mass-balance-identity
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Final duck lot"
+      requirement: "Record duck identity, breed/purpose, age/class, live count, measured mass and exact gate."
+      evidence: "dispatch and scale"
+    - id: dq_route
+      applies_to: "All nodes"
+      requirement: "State operated stages, purchased versus internal predecessors and integrated-system status."
+      evidence: "enterprise map and supplier links"
+    - id: dq_completeness
+      applies_to: "Inputs, losses, outputs"
+      requirement: "Reconcile stocks, meters, mortality, manure and all output destinations over complete periods; disclose gaps."
+      evidence: "ledgers, invoices, tickets"
+    - id: dq_attribution
+      applies_to: "Shared and multi-output"
+      requirement: "Archive causal/economic values, service period, allocation shares and sensitivity."
+      evidence: "allocation worksheet"
+validation_rules:
+  - rule_id: validate_gate
+    applies_to: "Reference"
+    rule: "Choose one producer gate and measured sold-live mass; count-based ecological-farm UUID cannot substitute for broad 1 kg reference."
+    source_ids:
+      - un-cpc-3-2025
+  - rule_id: validate_balance
+    applies_to: "All nodes"
+    rule: "Reconcile egg/bird/feed/capture records and internal transfers; no bird or upstream burden appears twice."
+    source_ids:
+      - mass-balance-identity
+  - rule_id: validate_outputs
+    applies_to: "Joint outputs"
+    rule: "Verify independent handover for eggs, spent birds, manure, fish or rice; otherwise retain internal, residue or waste classification."
+    source_ids:
+      - fao-leap-poultry-2016
+  - rule_id: validate_periods
+    applies_to: "Multi-period"
+    rule: "Link replacement/retirement and each breeder/rearing period to recipient batches exactly once."
+    source_ids:
+      - fao-leap-poultry-2016
+  - rule_id: validate_shared
+    applies_to: "Shared infrastructure"
+    rule: "List all consumers and periods; allocation shares sum to recorded service without duplication."
+    source_ids:
+      - fao-leap-poultry-2016
+  - rule_id: validate_integrated
+    applies_to: "Integrated route"
+    rule: "Require actual farm evidence before changed water/feed/manure pathways or fish/rice co-products enter the model."
+    source_ids:
+      - fao-duck-fish-integration
+published_dataset_profile:
+  dataset_role: "Foreground package for one living-duck hatchery- or farm-gate lot."
+  downstream_use: "Reviewed package may become secondary_dataset or background_dataset and support process/lifecyclemodel projection."
+  allowed_use: "Declared live-duck route with measured mass, count, age, period, inputs, losses and co-outputs."
+  excluded_use: "Duck meat/slaughter, egg reference, generic poultry, undeclared gate or universal integrated-system assumption."
+  required_metadata: "Gate, location, breed/purpose, age/class, count/mass, route, period, housing/water regime, upstream links and verified concrete flow identities."
+  required_quality_disclosure: "Feed/water/energy coverage, mortality, manure pathway, species-specific emissions, shared allocation, co-output treatment and unresolved evidence."
+  update_trigger: "Changed route/gate, product purpose, integrated boundary, manure system, allocation method or verified flow identity."
+data_sources:
+  - id: "un-cpc-3-2025"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Live-duck classification boundary."
+  - id: "fao-small-poultry-2004"
+    type: "official_guidance"
+    reference: "https://www.fao.org/4/y5169e/y5169e03.htm"
+    used_for: "Poultry and duck route context."
+  - id: "fao-duck-fish-integration"
+    type: "official_guidance"
+    reference: "https://www.fao.org/fishery/static/FAO_Training/FAO_Training/General/x6709e/x6709e07.htm"
+    used_for: "Conditional integrated duck/fish route."
+  - id: "fao-leap-poultry-2016"
+    type: "official_guidance"
+    reference: "https://openknowledge.fao.org/handle/20.500.14283/i6421en"
+    used_for: "Poultry LCA boundary, allocation and quality."
+  - id: "ipcc-livestock-2019"
+    type: "method_factor"
+    reference: "https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf"
+    used_for: "Livestock/manure emission method."
+  - id: "mass-balance-identity"
+    type: "method_factor"
+    reference: "Conservation of measured mass/count/service totals"
+    used_for: "QA and calculation identities, not empirical duck factors."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:fd1e6f05c45f9b645553b9dc18934d8f6274ca301cd734e617650660e9cff961"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4030"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4030
+          line: 56
+          column: 1
+        end:
+          offset: 6374
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased or internally supplied duck hatching eggs/ducklings or breeding stock at the first operated stage, together with feed, water and energy. |\n| starting_condition_role | Biological starting input with upstream provenance. |\n| product_classification_scope | CPC 3.0 02154 live ducks; eggs, meat, rice and fish remain separate products. |\n| recursive_input_rule | Purchased live ducks carry predecessor burden once; internal transfers link to their producer node and are not re-imported as external duck products. |\n| upstream_dataset_requirement | Attach traceable upstream datasets for purchased eggs/ducklings, feed, water, energy, bedding and other supplied products. |\n| disclosure | Declare route, gate, breed/purpose, age, count, weight, period, housing/water regime, manure fate, mortality, independently sold outputs and shared/integrated boundary. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `one_final_gate` | All routes | Select exactly one final hatchery or farm producer handover; internal ducklings later reared are not also final sold output. | `fao-leap-poultry-2016` |\n| `capture_independent` | Final capture | Separate catching, weighing and loading from biological production because this node establishes sold-live versus lost status and the final gate. | `fao-leap-poultry-2016` |\n| `integrated_delta` | Fish/rice/wetland route | Add changed water, feed and manure pathways plus independently transferred fish/rice only with current enterprise evidence. | `fao-duck-fish-integration` |\n| `period_linkage` | Breeder and growout | Link laying periods, incubation/rearing batches, replacement and retirement to their recipient outputs once. | `fao-leap-poultry-2016` |\n\nThe integrated route shares the managed duck-production parent with ordinary rearing but changes inventory categories (field/wetland water, foraging, manure destination and possible fish/rice handover), calculation boundaries and output-attribution validation. Farm records must identify each changed category. Integrated and non-integrated batches may coexist at an enterprise, but each lot selects its evidenced route; mutually exclusive water/manure assignments cannot be stacked.\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 175
+              line: 8
+              column: 1
+            end:
+              offset: 182
+              line: 8
+              column: 8
+          text: "# Ducks"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4030
+              line: 56
+              column: 1
+            end:
+              offset: 4051
+              line: 56
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_33396"
+      family: "allocation"
+      span:
+        start:
+          offset: 33396
+          line: 820
+          column: 1
+        end:
+          offset: 34650
+          line: 829
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_census` | All stages | Enumerate hatching eggs, sold table eggs, spent live breeders, sold ducklings, sold grown ducks and exported manure/rice/fish only when actually transferred; record each handover. Deaths and unsold manure are residues or waste, not co-products. | `fao-leap-poultry-2016` |\n| `allocation_precedence` | Multi-output nodes | First subdivide measured activities by output; for inseparable joint output use defensible physical causality, otherwise contemporaneous economic values with period and sensitivity disclosed. Do not apply substitution credit by default. | `fao-leap-poultry-2016` |\n| `period_allocation` | Breeder, hatchery, rearing | Attribute feed, assets, output and replacement/retirement events to actual periods/batches; assign cross-period burdens once by measured service or documented throughput. | `fao-leap-poultry-2016` |\n| `shared_assets` | Houses, incubators, pumps and meters | List each consuming node and service period; split shared service by meter or documented time/throughput, reconcile assigned shares to recorded total and prevent duplicate charges. | `fao-leap-poultry-2016` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 175
+              line: 8
+              column: 1
+            end:
+              offset: 182
+              line: 8
+              column: 8
+          text: "# Ducks"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 33396
+              line: 820
+              column: 1
+            end:
+              offset: 33436
+              line: 820
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_40337"
+      family: "validation"
+      span:
+        start:
+          offset: 40337
+          line: 865
+          column: 1
+        end:
+          offset: 41505
+          line: 876
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_gate` | Reference | Choose one producer gate and measured sold-live mass; count-based ecological-farm UUID cannot substitute for broad 1 kg reference. | `un-cpc-3-2025` |\n| `validate_balance` | All nodes | Reconcile egg/bird/feed/capture records and internal transfers; no bird or upstream burden appears twice. | `mass-balance-identity` |\n| `validate_outputs` | Joint outputs | Verify independent handover for eggs, spent birds, manure, fish or rice; otherwise retain internal, residue or waste classification. | `fao-leap-poultry-2016` |\n| `validate_periods` | Multi-period | Link replacement/retirement and each breeder/rearing period to recipient batches exactly once. | `fao-leap-poultry-2016` |\n| `validate_shared` | Shared infrastructure | List all consumers and periods; allocation shares sum to recorded service without duplication. | `fao-leap-poultry-2016` |\n| `validate_integrated` | Integrated route | Require actual farm evidence before changed water/feed/manure pathways or fish/rice co-products enter the model. | `fao-duck-fish-integration` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 175
+              line: 8
+              column: 1
+            end:
+              offset: 182
+              line: 8
+              column: 8
+          text: "# Ducks"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 40337
+              line: 865
+              column: 1
+            end:
+              offset: 40359
+              line: 865
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "one_final_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 5100
+          line: 73
+          column: 1
+        end:
+          offset: 5286
+          line: 73
+          column: 187
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "capture_independent"
+      identity_kind: "explicit"
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 5287
+          line: 74
+          column: 1
+        end:
+          offset: 5502
+          line: 74
+          column: 216
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "integrated_delta"
+      identity_kind: "explicit"
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 5503
+          line: 75
+          column: 1
+        end:
+          offset: 5707
+          line: 75
+          column: 205
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "period_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 5708
+          line: 76
+          column: 1
+        end:
+          offset: 5887
+          line: 76
+          column: 180
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "system_boundary_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 5889
+          line: 78
+          column: 1
+        end:
+          offset: 6372
+          line: 78
+          column: 484
+    - pointer: "/allocation_rules/0"
+      rule_id: "output_census"
+      identity_kind: "explicit"
+      unit_id: "normative_33396"
+      source_span:
+        start:
+          offset: 33509
+          line: 824
+          column: 1
+        end:
+          offset: 33814
+          line: 824
+          column: 306
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_precedence"
+      identity_kind: "explicit"
+      unit_id: "normative_33396"
+      source_span:
+        start:
+          offset: 33815
+          line: 825
+          column: 1
+        end:
+          offset: 34128
+          line: 825
+          column: 314
+    - pointer: "/allocation_rules/2"
+      rule_id: "period_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_33396"
+      source_span:
+        start:
+          offset: 34129
+          line: 826
+          column: 1
+        end:
+          offset: 34380
+          line: 826
+          column: 252
+    - pointer: "/allocation_rules/3"
+      rule_id: "shared_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_33396"
+      source_span:
+        start:
+          offset: 34381
+          line: 827
+          column: 1
+        end:
+          offset: 34648
+          line: 827
+          column: 268
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 40432
+          line: 869
+          column: 1
+        end:
+          offset: 40614
+          line: 869
+          column: 183
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 40615
+          line: 870
+          column: 1
+        end:
+          offset: 40783
+          line: 870
+          column: 169
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_outputs"
+      identity_kind: "explicit"
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 40784
+          line: 871
+          column: 1
+        end:
+          offset: 40983
+          line: 871
+          column: 200
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_periods"
+      identity_kind: "explicit"
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 40984
+          line: 872
+          column: 1
+        end:
+          offset: 41144
+          line: 872
+          column: 161
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 41145
+          line: 873
+          column: 1
+        end:
+          offset: 41313
+          line: 873
+          column: 169
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_integrated"
+      identity_kind: "explicit"
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 41314
+          line: 874
+          column: 1
+        end:
+          offset: 41503
+          line: 874
+          column: 190
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 4030
+          line: 56
+          column: 1
+        end:
+          offset: 4051
+          line: 56
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4030"
+      source_span:
+        start:
+          offset: 4079
+          line: 60
+          column: 1
+        end:
+          offset: 5007
+          line: 67
+          column: 186
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_33396"
+      source_span:
+        start:
+          offset: 33396
+          line: 820
+          column: 1
+        end:
+          offset: 33436
+          line: 820
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_40337"
+      source_span:
+        start:
+          offset: 40337
+          line: 865
+          column: 1
+        end:
+          offset: 40359
+          line: 865
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:fd1e6f05c45f9b645553b9dc18934d8f6274ca301cd734e617650660e9cff961"
+  generated_content_sha256: "sha256:282b6ed5e25e44272a20e956dd9cafdc6fb24b82c406c09701b23315db4f74f1"
