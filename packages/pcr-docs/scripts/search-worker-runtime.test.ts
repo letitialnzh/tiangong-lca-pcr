@@ -4,6 +4,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 for (const [scenario, description] of [
+  ['compact', 'worker reads losslessly compacted shards with full English, Han and machine-ID matches'],
+  ['compact-retry', 'worker rejects malformed compact score data and retries a valid shard'],
   ['english-rank', 'real serialized English index ranks exact/prefix/title/body hits predictably'],
   ['chinese', 'real serialized Chinese index retains Han matches and complete result context'],
   ['normalization', 'worker searches normalized fullwidth terms and complete machine identifiers'],

@@ -1,7 +1,7 @@
 ---
-lastReviewedAt: 2026-10-06
-lastReviewedNote: "Reviewed PCR #95 documentation package/lock 0.4.3 mirror only; complete source export, provider Node 24.18.0 import, Node 24.19.0 construction and full release/live qualification remain unchanged."
-lastReviewedCommit: 2d8f3f99f95763ff5e7470932f20380ed8e6f530
+lastReviewedAt: 2026-10-08
+lastReviewedNote: "Reviewed lossless search-shard compaction, legacy reading and unchanged per-language browser budgets."
+lastReviewedCommit: null
 title: Generated PCR Documentation Site Contract
 docType: contract
 scope: repo
@@ -163,6 +163,15 @@ and scroll within their own box instead of widening the page. Coverage pages
 show one localized summary and one download action; raw classification keys are
 not passed off as reader-facing translations. Record breadcrumb structured data
 uses the same translated category titles as the catalog.
+
+Search retains complete source terms, exact machine identifiers, result metadata and
+engine scores. Version 2 shard payloads store parsed engine exports without nested
+JSON escaping and encode sparse score buckets as their original length plus ordered
+score/posting pairs. The Worker restores the original export before importing it;
+legacy version 1 payloads remain readable. This transport encoding does not remove
+words, shorten PCRs, change ranking or omit language coverage. The per-language
+limits remain 20,000,000 serialized bytes and 4,000,000 gzip bytes in total across
+all shards. Budget failures report both measured totals.
 
 ## Validation and production
 

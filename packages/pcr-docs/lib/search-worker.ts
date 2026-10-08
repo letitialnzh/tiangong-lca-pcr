@@ -1,4 +1,5 @@
 import { searchTerms } from "./search-terms.ts";
+import { decodeSearchEntries } from "./search-codec.ts";
 import type {SearchResult} from "./types.ts";
 interface SearchIndex {import(key:string,payload:string):void;search(query:string,options:{limit:number}):(string|number)[]}
 interface SearchShard {index:SearchIndex;records:Map<string,SearchResult>}
@@ -28,9 +29,10 @@ async function load(language:string):Promise<SearchShard[]> {
   if(!record(item)||typeof item.url!=="string"||!item.url.startsWith("/generated/search/"))throw new Error("Invalid search shard.");
   const response=await fetch(item.url);if(!response.ok)throw new Error("Search shard is unavailable.");
   const data:unknown=await response.json();
-  if(!record(data)||!record(data.entries)||!Array.isArray(data.records)||!data.records.every(searchRecord))throw new Error("Invalid serialized search data.");
+  if(!record(data)||(data.schemaVersion!==undefined&&data.schemaVersion!==2)||!Array.isArray(data.records)||!data.records.every(searchRecord))throw new Error("Invalid serialized search data.");
+  const entries=decodeSearchEntries(data.entries,data.schemaVersion===2);
   const index=await createIndex(language);
-  for(const [key,payload]of Object.entries(data.entries)){if(typeof payload!=="string")throw new Error("Invalid serialized search data.");index.import(key,payload);}
+  for(const [key,payload]of Object.entries(entries))index.import(key,payload);
   shards.push({index,records:new Map(data.records.map(record=>[record.id,record]))});
  }
  return shards;

@@ -46,6 +46,7 @@ import {
 } from "./markdown.ts";
 import { SUMMARY_LIMIT, catalogSummary, documentSummary } from "./summaries.ts";
 import { searchTerms } from "../lib/search-terms.ts";
+import { encodeSearchEntries } from "../lib/search-codec.ts";
 const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { values: options } = parseArgs({
   options: {
@@ -962,7 +963,8 @@ async function generate() {
         entries[key] = value;
       });
       const payload = JSON.stringify({
-        entries,
+        schemaVersion: 2,
+        entries: encodeSearchEntries(entries),
         records: bucket.map((d) => d.record),
       });
       if (Buffer.byteLength(payload) > 20_000_000)
@@ -1000,7 +1002,7 @@ async function generate() {
     const gzipBytes = shards.reduce((sum, shard) => sum + shard.gzipBytes, 0);
     if (rawBytes > 20_000_000 || gzipBytes > 4_000_000)
       throw new Error(
-        "Search exceeds the per-language browser budget: " + language,
+        `Search exceeds the per-language browser budget: ${language} (raw ${rawBytes}/20000000 bytes; gzip ${gzipBytes}/4000000 bytes)`,
       );
     report.search.push({
       language,

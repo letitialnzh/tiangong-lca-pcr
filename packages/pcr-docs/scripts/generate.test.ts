@@ -1,4 +1,7 @@
 import {parseSiteManifest} from "../lib/site-contracts.ts";
+import {decodeSearchEntries} from "../lib/search-codec.ts";
+import {searchTerms} from "../lib/search-terms.ts";
+import {Index} from "flexsearch";
 import {isUnknownRecord} from "../../pcr-core/src/types.ts";
 import {assertManifest} from "../../../builder/lib/schema-contracts.ts";
 import type {BuilderManifest} from "../../../builder/lib/types.ts";
@@ -240,6 +243,19 @@ test("real generator preserves multilingual released snapshots and excludes open
     const report = parseReport(
       fs.readFileSync(path.join(output, ".generated/report.json")),
     );
+    const searchDirectory = path.join(output, "public/generated/search/en-US");
+    let searchHits = 0;
+    for (const name of fs.readdirSync(searchDirectory).filter(name => name.startsWith("shard-"))) {
+      const shard: unknown = JSON.parse(fs.readFileSync(path.join(searchDirectory, name), "utf8"));
+      assert.ok(isUnknownRecord(shard));
+      assert.equal(shard.schemaVersion, 2);
+      const index = new Index({tokenize: "strict", encode: (value: unknown) => searchTerms(value, "en-US")});
+      for (const [key, payload] of Object.entries(decodeSearchEntries(shard.entries, true))) index.import(key, payload);
+      searchHits += index.search("Synthetic wheat seed", {limit: 30}).length;
+      assert.deepEqual(index.search("UNPUBLISHED_TEST_MARKER", {limit: 30}), []);
+    }
+    assert.ok(searchHits > 0, "Actual generated compact shards must remain searchable");
+    assert.ok(fs.existsSync(path.join(output, "public/generated/search-codec.mjs")));
     assert.ok(
       report.downloads.some((file) => file.name === "release-history.yaml"),
     );

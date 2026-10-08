@@ -64,6 +64,7 @@ export function verifyHostingContract(config: unknown, downloads: readonly {url:
       "search-worker.mjs",
       "search-engine.mjs",
       "search-terms.mjs",
+      "search-codec.mjs",
     ]) {
       const headers = headersFor(config, "/generated/" + file, { firstMatch });
       assert.match(
