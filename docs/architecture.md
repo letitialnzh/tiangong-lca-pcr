@@ -27,8 +27,8 @@ checkPaths:
   - classifications/**
   - library/modules/**
 lastReviewedAt: 2026-10-08
-lastReviewedCommit: ca3aa2b64f6899ace5e5996ba25bff32652235c8
-lastReviewedNote: "Reviewed PCR #100 unified 0.4.4 version mirrors and installation examples, including the merged Agent getting-started entry; canonical methodology, reader compatibility, release qualification and provider contracts remain unchanged. Publication pending."
+lastReviewedCommit: f5089dd6cdacfe224cd3badd396106a903634508
+lastReviewedNote: "Reviewed PCR #106 / PR #97: canonical candidate records and regenerated projections preserve identity/readiness boundaries; search v2 retains v1 reads. Integrated main PR #105 guide and language behavior; unified 0.4.5 remains qualification-bound."
 ---
 
 # PCR 资料库架构

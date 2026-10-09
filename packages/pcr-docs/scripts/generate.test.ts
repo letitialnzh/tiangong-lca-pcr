@@ -1,5 +1,4 @@
 import {parseSiteManifest} from "../lib/site-contracts.ts";
-import {decodeSearchEntries} from "../lib/search-codec.ts";
 import {searchTerms} from "../lib/search-terms.ts";
 import {Index} from "flexsearch";
 import {isUnknownRecord} from "../../pcr-core/src/types.ts";
@@ -145,6 +144,10 @@ test("real generator preserves multilingual released snapshots and excludes open
         ],
       }),
     );
+    const guidePath = "packages/pcr-docs/public/getting-started.md";
+    fs.mkdirSync(path.dirname(path.join(root, guidePath)), { recursive: true });
+    fs.copyFileSync(new URL("../public/getting-started.md", import.meta.url), path.join(root, guidePath));
+    fs.copyFileSync(new URL("../public/getting-started.zh-CN.md", import.meta.url), path.join(root, "packages/pcr-docs/public/getting-started.zh-CN.md"));
     git("init", "-q", "-b", "main");
     git("add", "-A");
     git(
@@ -167,6 +170,22 @@ test("real generator preserves multilingual released snapshots and excludes open
     const site = parseSiteManifest(
       fs.readFileSync(path.join(output, ".generated/site.json")),
     );
+    const guides = site.pages.filter(page => page.kind === "guide");
+    assert.equal(guides.length, 2);
+    const guide = guides.find(page => page.language === "en-US")!;
+    const chineseGuide = guides.find(page => page.language === "zh-CN")!;
+    assert.equal(chineseGuide.url, "/zh/docs/getting-started/");
+    assert.equal(chineseGuide.sourceSha256, hash(fs.readFileSync(path.join(root, "packages/pcr-docs/public/getting-started.zh-CN.md"))));
+    assert.match(fs.readFileSync(path.join(output, ".generated", chineseGuide.htmlPath!), "utf8"), /创建.*LCA 数据/);
+    assert.equal(guide.url, "/en/docs/getting-started/");
+    assert.equal(guide.language, "en-US");
+    assert.equal(guide.sourcePath, guidePath);
+    assert.equal(guide.sourceSha256, hash(fs.readFileSync(path.join(root, guidePath))));
+    assert.deepEqual(guide.alternates, { "en-US": site.origin + guide.url, "zh-CN": site.origin + chineseGuide.url });
+    assert.deepEqual(chineseGuide.alternates, guide.alternates);
+    const guideHtml = fs.readFileSync(path.join(output, ".generated", guide.htmlPath!), "utf8");
+    assert.match(guideHtml, /help me create LCA data for/);
+    assert.match(guideHtml, /id="pcr-fully-offline-use"/);
     assert.equal(site.records.length, 1);
     assert.equal(site.historicalRecords!.length, 2);
     assert.equal(site.historicalRecords![0]!.version, "1.0.0");
@@ -191,6 +210,18 @@ test("real generator preserves multilingual released snapshots and excludes open
       ["zh-CN", "en-US"],
     );
     for (const language of ["en-US", "zh-CN", "de-DE"]) {
+      const search: unknown = JSON.parse(fs.readFileSync(path.join(output, "public/generated/search", language, "manifest.json"), "utf8"));
+      assert.ok(isUnknownRecord(search));
+      assert.equal(search.schemaVersion, 2, "new indexes use native JSON export arrays");
+      assert.equal(search.language, language);
+      assert.ok(Array.isArray(search.shards) && search.shards.length > 0);
+      for (const shard of search.shards) {
+        assert.ok(isUnknownRecord(shard) && typeof shard.url === "string");
+        const data: unknown = JSON.parse(fs.readFileSync(path.join(output, "public", shard.url), "utf8"));
+        assert.ok(isUnknownRecord(data) && isUnknownRecord(data.entries));
+        assert.ok(Object.values(data.entries).length > 0);
+        assert.ok(Object.values(data.entries).every(Array.isArray), "exports must not be nested JSON strings");
+      }
       const currentPages = recordPages(site, site.records[0]!, language);
       assert.equal(currentPages.length, language === "de-DE" ? 0 : 1);
       assert.ok(currentPages.every((page) => page.recordVersion === undefined));
@@ -248,14 +279,16 @@ test("real generator preserves multilingual released snapshots and excludes open
     for (const name of fs.readdirSync(searchDirectory).filter(name => name.startsWith("shard-"))) {
       const shard: unknown = JSON.parse(fs.readFileSync(path.join(searchDirectory, name), "utf8"));
       assert.ok(isUnknownRecord(shard));
-      assert.equal(shard.schemaVersion, 2);
       const index = new Index({tokenize: "strict", encode: (value: unknown) => searchTerms(value, "en-US")});
-      for (const [key, payload] of Object.entries(decodeSearchEntries(shard.entries, true))) index.import(key, payload);
+      assert.ok(isUnknownRecord(shard.entries));
+      for (const [key, payload] of Object.entries(shard.entries)) {
+        assert.ok(Array.isArray(payload));
+        index.import(key, JSON.stringify(payload));
+      }
       searchHits += index.search("Synthetic wheat seed", {limit: 30}).length;
       assert.deepEqual(index.search("UNPUBLISHED_TEST_MARKER", {limit: 30}), []);
     }
     assert.ok(searchHits > 0, "Actual generated compact shards must remain searchable");
-    assert.ok(fs.existsSync(path.join(output, "public/generated/search-codec.mjs")));
     assert.ok(
       report.downloads.some((file) => file.name === "release-history.yaml"),
     );
@@ -380,6 +413,10 @@ test("metadata summaries describe the page they belong to, and report title-only
         pcrs: [{ id: "pcr.agriculture.crops.wheat-seed", path: fixture.libraryPath }],
       }),
     );
+    const guidePath = "packages/pcr-docs/public/getting-started.md";
+    fs.mkdirSync(path.dirname(path.join(root, guidePath)), { recursive: true });
+    fs.copyFileSync(new URL("../public/getting-started.md", import.meta.url), path.join(root, guidePath));
+    fs.copyFileSync(new URL("../public/getting-started.zh-CN.md", import.meta.url), path.join(root, "packages/pcr-docs/public/getting-started.zh-CN.md"));
     git("init", "-q", "-b", "main");
     git("add", "-A");
     git(
@@ -446,7 +483,7 @@ test("metadata summaries describe the page they belong to, and report title-only
     assert.equal(
       report.summaries.pages,
       site.pages.filter(
-        (page) => page.kind === "pcr" || (page.kind === "catalog" && page.slugs.length > 1),
+        (page) => page.kind === "pcr" || page.kind === "guide" || (page.kind === "catalog" && page.slugs.length > 1),
       ).length,
       "every document and category page is counted",
     );

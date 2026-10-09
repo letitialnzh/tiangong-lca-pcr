@@ -27,8 +27,8 @@ checkPaths:
   - library/modules/**
   - docs/**
 lastReviewedAt: 2026-10-08
-lastReviewedCommit: ca3aa2b64f6899ace5e5996ba25bff32652235c8
-lastReviewedNote: "Reviewed PCR #100 unified 0.4.4 version mirrors and installation examples, including the merged Agent getting-started entry; canonical methodology, reader compatibility, release qualification and provider contracts remain unchanged. Publication pending."
+lastReviewedCommit: 059aa340fc90d0d9e0ad8add6b0af485d66a8803
+lastReviewedNote: "Reviewed PCR #106 / PR #97 candidate content and search compatibility; installation examples prepare unified 0.4.5. Task snapshots, source-language requirements and release/integration gates remain unchanged. Preserved main PR #105 bilingual guide and navigation changes during integration."
 ---
 
 # TianGong LCA PCR Library
@@ -301,6 +301,16 @@ Formats are enforced per command: `resolve`, `guidance`, and validation are JSON
 
 ## Public PCR Documentation
 
+The [English Getting started page](https://pcr.tiangong.earth/en/docs/getting-started/)
+and [Chinese guide](https://pcr.tiangong.earth/zh/docs/getting-started/)
+explain installation, Skill discovery and LCA/TIDAS tasks, with localized copyable
+Agent prompts. Their [English raw Markdown](https://pcr.tiangong.earth/getting-started.md)
+and [Chinese raw Markdown](https://pcr.tiangong.earth/getting-started.zh-CN.md) are
+exported from the corresponding authored sources for direct Agent reading. Website availability
+follows the next qualified product release containing these documentation pages.
+Website guide translations do not change the English-only npm methodology content.
+
+
 The public site in `packages/pcr-docs/` reads the canonical library through the core
 consistent document API and the shared immutable-history verifier. It renders
 ordinary Markdown as complete semantic HTML in a Next.js static export. Fumadocs
@@ -377,7 +387,7 @@ The [offline distribution contract](docs/offline-distribution.md) defines the se
 structured YAML only; source authoring and translation workflows remain unchanged.
 Use explicit snapshot selection and verification for offline consumption.
 
-The 0.4.4 release-preparation examples target PCR tool/content 0.4.4 and the
+The 0.4.5 release-preparation examples target PCR tool/content 0.4.5 and the
 qualified minimum `@tiangong-lca/cli` 0.1.25. Confirm the corresponding registry
 versions are available before installation; source metadata or a preparing release
 does not establish completed publication. Offline consumer targets include Linux

@@ -1,0 +1,824 @@
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.business-and-production-services.telecommunications-broadcasting-and-information-supply-services.daily-radio-channel-programme-lineup"
+  classification_refs: "CPC 3.0 84621 — Radio channel programmes"
+  covered_products: "Complete recorded, live and mixed station daily radio line-ups for distribution by others"
+  excluded_products: "Individual broadcast original masters; sound-recording originals; listener audio downloads or streaming; transmission and subscriber distribution services; equipment manufacture; scheduling consultancy"
+  representative_product: "Accepted daily radio channel programme line-up"
+  production_route: "Programme receipt and checking → scheduling and continuity → conditional live contribution → delivery checking and handoff"
+  market_state: "Complete accepted daily line-up identified by station, date, version and recipient"
+functional_unit:
+  what: "Provide another distributor with the assembled programming of one complete station broadcast day"
+  how_much: "1 complete daily line-up containing all scheduled programming"
+  how_well: "Order, timing, available asset references, live interfaces, audio and metadata meet the recipient’s recorded acceptance specification"
+  how_long_or_cycle: "One station broadcast day with declared timestamps and time zone; record actual airtime without assuming 24 hours; disclose repeats and retention separately"
+  reference_flow_link: "reference_product_daily_lineup"
+system_boundary:
+  rules:
+    - rule_id: sb_delivery
+      applies_to: "daily assembly"
+      rule: "Include receipt, asset checking, scheduling, continuity, required storage, actual live mixing, acceptance and handoff to the distributor, including failed handoff retries and actual rework energy."
+      source_ids:
+        - unsd-cpc3-2025
+        - ebu-radio-workflow-2023
+    - rule_id: sb_separate_distribution
+      applies_to: "downstream"
+      rule: "Model FM/DAB transmission, listener-network distribution, playback and terminal manufacture beyond the handoff separately; split combined operations using recorded interfaces."
+      source_ids:
+        - unsd-cpc3-2025
+        - ebu-radio-workflow-2023
+    - rule_id: sb_actual_resources
+      applies_to: "facilities and supporting activities"
+      rule: "Include measured or explainably attributable workstation, server, playout, storage and cooling electricity and production-support lighting. Equipment/facility manufacture, commuting and long-term archives are excluded by default and disclosed. Actual attributable on-site combustion, refrigerant leakage, consumables or equipment replacement require separately collected atomic extensions; no emissions are presumed without evidence."
+      source_ids:
+        - ebu-radio-workflow-2023
+boundary_abstraction:
+  declared_starting_condition: "Identified programme masters with usage rights or actual live contributions available at the compiler’s receiving interface"
+  starting_condition_role: "Foreground production input; new original creation is a separate upstream module even when supplied internally"
+  product_classification_scope: "Complete daily radio channel programme assemblies for distribution by others"
+  recursive_input_rule: "For re-editing an existing line-up, count its actual input and incremental assembly once without recursively rebuilding the original day"
+  upstream_dataset_requirement: "Representative datasets for source content, purchased electricity, outsourced hosting and contribution links; declare whether equipment and facility manufacture is included"
+  disclosure: "Foreground receipt/checking through complete daily handoff; missing upstream and capital equipment prevents a complete cradle-to-gate claim; disclose measured energy, source-asset boundaries, allocation, storage, unmeasured activities and exclusions"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Accepted daily radio channel programme line-up"
+    uuid: ""
+  flow_property_ref:
+    uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+  unit_group_ref:
+    uuid: "5beb6eed-33a9-47b8-9ede-1dfe8f679159"
+  reference_unit: "item"
+  required_qualifiers:
+    - "station and editorial service"
+    - date
+    - "time zone"
+    - "timestamps and actual airtime"
+    - language
+    - "line-up version and asset list"
+    - "recorded/live share"
+    - "advertising variant"
+    - format
+    - "sample rate"
+    - "channels and loudness policy"
+    - "rights and reuse scope"
+    - "handoff point and recipient acceptance"
+    - "production/distribution separation"
+    - "geography and voltage"
+    - "retention and shared allocation"
+    - "equipment and original-asset boundary"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "Use cp_delivery to collect identity and timing of one complete accepted daily line-up; every inventory row is per declared reference flow. Actual duration qualifies delivery and is not converted to mass."
+  - id: electricity_unit
+    applies_to: "ingest_electricity, schedule_electricity, live_electricity, handoff_electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Preserve the public primary property and energy unit group 93a60a57-a3c8-11da-a746-0800200c9a66; multiply measured meter kWh by 3.6 to obtain MJ. GB, CPU-hours and audio seconds are not energy."
+  - id: service_count
+    applies_to: "source_programme_master, hosted_playout_day, contribution_link_day"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "Separately define one approved audio programme master, one specified daily hosted playout package and one daily contribution-link delivery package. Verify against contracts and activity records; price and data traffic alone cannot establish the amount."
+process_map:
+  - id: programme_ingest
+    name: "Programme receipt and checking"
+    inclusion: "required"
+    inclusion_condition: "All deliveries; file/live receipt follows actual route"
+    role: "foreground production"
+    quantitative_reference: "1 item complete daily line-up"
+  - id: lineup_assembly
+    name: "Daily scheduling and continuity"
+    inclusion: "required"
+    inclusion_condition: "All approved programmes and continuity"
+    role: "foreground production"
+    quantitative_reference: "1 item complete daily line-up"
+  - id: live_contribution
+    name: "Live contribution production and mixing"
+    inclusion: "conditional"
+    inclusion_condition: "Only actual foreground live operation"
+    role: "foreground production"
+    quantitative_reference: "1 item complete daily line-up"
+  - id: delivery_handoff
+    name: "Acceptance, storage and handoff"
+    inclusion: "required"
+    inclusion_condition: "Complete daily assembly handed to others"
+    role: "foreground production"
+    quantitative_reference: "1 item complete daily line-up"
+process_inventory:
+  - id: programme_ingest
+    label: "Programme receipt and checking"
+    inputs:
+      product:
+        - row_id: source_programme_master
+          role: "Approved audio programme master"
+          name: "Approved audio programme master"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Include when recorded content is used; record each concrete master and version separately, not rights fees as production burden. Internally produced live content is not also a purchased master."
+          amount:
+            expression: "Attributed shares of actual programme masters; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assets
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+        - row_id: ingest_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Record measured electricity for this operation and attributable support equipment under cp_energy. This UUID applies only to CN grid-average consumption mix delivered to the user at <1 kV; other geography or voltage requires separately verified matching identity."
+          amount:
+            expression: "Measured attributable operation kWh converted to MJ under electricity_unit; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: lineup_assembly
+    label: "Daily scheduling and continuity"
+    inputs:
+      product:
+        - row_id: schedule_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Record measured electricity for this operation and attributable support equipment under cp_energy. This UUID applies only to CN grid-average consumption mix delivered to the user at <1 kV; other geography or voltage requires separately verified matching identity."
+          amount:
+            expression: "Measured attributable operation kWh converted to MJ under electricity_unit; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: live_contribution
+    label: "Live contribution production and mixing"
+    inputs:
+      product:
+        - row_id: live_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Record measured electricity for this operation and attributable support equipment under cp_energy. This UUID applies only to CN grid-average consumption mix delivered to the user at <1 kV; other geography or voltage requires separately verified matching identity. This operation handles actual live continuity and mixing. Complex field recording, reporting, travel or event production belongs in a separate original-contribution module with linked inventory; live content is not presumed to consist entirely of workstation audio."
+          amount:
+            expression: "Measured attributable operation kWh converted to MJ under electricity_unit; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: delivery_handoff
+    label: "Acceptance, storage and handoff"
+    inputs:
+      product:
+        - row_id: handoff_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Record measured electricity for this operation and attributable support equipment under cp_energy. This UUID applies only to CN grid-average consumption mix delivered to the user at <1 kV; other geography or voltage requires separately verified matching identity."
+          amount:
+            expression: "Measured attributable operation kWh converted to MJ under electricity_unit; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+        - row_id: hosted_playout_day
+          role: "Daily hosted playout delivery package"
+          name: "Daily hosted playout delivery package"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Include one specified service only for outsourced storage and playout; the contract identifies audio version, duration, redundancy and system boundary. Do not add local electricity, cooling or hardware burdens already included by the supplier; internal operation does not use this row."
+          amount:
+            expression: "Record attributed count of actually delivered contractual packages; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+        - row_id: contribution_link_day
+          role: "Daily contribution-link handoff package"
+          name: "Daily contribution-link handoff package"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Include only an actual outsourced contribution link carrying line-up or live signal to the distributor interface; this is one specified link service excluding the audience network. Supplier primary activity evidence is required; transmitted GB is not directly converted to kWh."
+          amount:
+            expression: "Record attributed count of actually delivered contractual link packages; per declared reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_daily_lineup
+          role: "Accepted daily radio channel programme line-up"
+          name: "Accepted daily radio channel programme line-up"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Unique output of the complete accepted daily line-up. Retain the schedule, asset references, live interfaces and acceptance record; delivery retries do not add output. No direct elementary emission or physical waste is presumed in this inventory: deleting an audio file is not a material waste flow, and power-station emissions belong upstream of purchased electricity. Actual on-site combustion, refrigerant losses or discarded consumables must be separately added and verified under sb_actual_resources when constructing a concrete data package; a manufacturing emission inventory is not imposed without evidence."
+          amount:
+            expression: "1 item"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_delivery
+              source_ids:
+                - ebu-radio-workflow-2023
+                - unsd-cpc3-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: alloc_metering
+    applies_to: "shared equipment"
+    rule: "Prefer separate meters and tasks; attribute shared-meter energy using measured task power and run time, not sale price or audience. cp_energy records active, idle, retained storage, cooling and other users; allocation must reconcile the measured total. Allocate idle energy using recorded reserved-use time and report sensitivity."
+    source_ids: []
+  - rule_id: alloc_original_reuse
+    applies_to: "source_programme_master"
+    rule: "Keep original-creation inventory separately. cp_assets defines the evidenced, non-overlapping reuse set and daily attribution weights summing to one; equivalent complete uses may share equally across evidenced uses without assumed count or lifetime. Excerpt attribution requires evidence connecting duration to creation effort; unproven attribution remains review. Rights transactions do not eliminate content burdens, nor justify adding full creation cost on every play."
+    source_ids: []
+  - rule_id: alloc_variants
+    applies_to: "line-up variants and retries"
+    rule: "Separate incremental tasks for language, advertising and regional variants with independently delivered outputs. Allocate shared assembly by documented actual task relationships; master, schedule and acceptance receipt are not three co-products. Attribute failed retries to the delivered line-up."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_delivery
+      process_id: "delivery_handoff"
+      flow_role: "reference product"
+      record_type: "acceptance record"
+      raw_fields: "station; schedule version; date; time zone; start/end; actual airtime; asset completeness; recipient; acceptance"
+      collection_method: "Reconcile each daily schedule with asset list, checksums and handoff logs; count only complete accepted versions"
+      unit: "item"
+      frequency: "each complete handoff"
+      temporal_coverage: "complete assembly and handoff period"
+      site_scope: "compiler and handoff interface"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "recipient acceptance and completeness records"
+    - protocol_id: cp_energy
+      process_id: "programme_ingest_lineup_assembly_live_contribution_delivery_handoff"
+      flow_role: "electricity"
+      record_type: "meter and job record"
+      raw_fields: "meter start/end kWh; equipment; task; active/idle time; geography; voltage; cooling; retention; shared weights"
+      collection_method: "Use verified meters and measured equipment power with task logs; remove overlaps and include rework and attributable supporting energy"
+      unit: "kWh"
+      frequency: "each operation or time interval"
+      temporal_coverage: "assembly preparation, handoff and required retention period"
+      site_scope: "declared sites and internally operated equipment"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration, complete meter balance and shared-task ledger"
+    - protocol_id: cp_assets
+      process_id: "programme_ingest"
+      flow_role: "source programme"
+      record_type: "asset and upstream inventory record"
+      raw_fields: "each master ID/version; original-creation inventory; reuse set; daily attribution share; duration; rights"
+      collection_method: "Reconcile actual programme asset list with separate original inventory; retain evidence for complete and excerpt use"
+      unit: "item"
+      frequency: "each master and line-up"
+      temporal_coverage: "creation and reuse period relevant to the line-up"
+      site_scope: "actual source creator and compiler"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "original inventory and non-duplicate attribution audit"
+    - protocol_id: cp_services
+      process_id: "delivery_handoff"
+      flow_role: "external service"
+      record_type: "contract delivery and supplier primary data"
+      raw_fields: "specific package ID; service type; schedule; duration; capacity; traffic; supplier energy; hardware boundary; shared attribution; receipt"
+      collection_method: "Separately verify actual hosting and link packages against receipts and supplier inventories; traffic checks capacity without default energy conversion"
+      unit: "item"
+      frequency: "each contractual package"
+      temporal_coverage: "complete contracted service period"
+      site_scope: "declared actual suppliers"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "service boundary, supplier primary records and non-duplicate electricity ledger"
+  calculation_rules:
+    - id: energy_conversion
+      applies_to: "ingest_electricity, schedule_electricity, live_electricity, handoff_electricity"
+      rule: "Per declared reference flow, multiply measured attributable kWh by 3.6 to obtain MJ; four operation amounts must not overlap and their sum reconciles attributable meter totals."
+      inputs:
+        - cp_energy
+      output: "MJ per declared reference flow"
+      source_ids: []
+    - id: asset_attribution
+      applies_to: "source_programme_master"
+      rule: "Per declared reference flow, record each concrete master’s evidenced attribution share and link its separate creation inventory; weights over the complete reuse set must sum to one, retaining excerpt-relationship evidence."
+      inputs:
+        - cp_assets
+      output: "master shares per declared reference flow"
+      source_ids: []
+    - id: service_attribution
+      applies_to: "hosted_playout_day, contribution_link_day"
+      rule: "Per declared reference flow, use actual package counts and evidenced shared fractions; link matching supplier inventories without a default GB-to-energy factor."
+      inputs:
+        - cp_services
+      output: "contract package shares per declared reference flow"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "reference_product_daily_lineup"
+      requirement: "Complete identifiable daily delivery with actual duration, recorded/live mix, version and reuse rights; an episode cannot stand for the day."
+      evidence: "cp_delivery; unsd-cpc3-2025"
+    - id: dq_technical
+      applies_to: "audio and handoff"
+      requirement: "Record recipient acceptance of format, integrity and loudness policy. Verify declared EBU strategy against its declared edition only when adopted, not as a universal mandate."
+      evidence: "cp_delivery; ebu-radio-workflow-2023"
+    - id: dq_representative
+      applies_to: "all inventory rows"
+      requirement: "One day represents that case; a channel-representative value requires declared-period coverage of weekdays, weekends, repeats and live differences with daily distributions. No default energy is supplied."
+      evidence: "cp_delivery; cp_energy"
+    - id: dq_missing
+      applies_to: "all inventory rows"
+      requirement: "Missing meters, absent supplier inventories, unproven reuse shares and unresolved identities remain explicit gaps, not zero."
+      evidence: "cp_assets; cp_services; cp_energy"
+validation_rules:
+  - rule_id: vr_reference
+    applies_to: "reference product"
+    rule: "Confirm one complete daily output, count unit, actual times, acceptance and every qualifier; other delivery objects are inapplicable."
+    source_ids:
+      - unsd-cpc3-2025
+  - rule_id: vr_energy
+    applies_to: "electricity rows"
+    rule: "Check meter totals and attribution, 3.6 conversion, voltage and geography; do not recount electricity already included in supplier services."
+    source_ids: []
+  - rule_id: vr_originals
+    applies_to: "source assets and services"
+    rule: "Check original inventories and reuse weights, interface boundaries, actual contract-package units and primary activity records; counting cannot replace supplier physical inventory. Unproven shares require review."
+    source_ids: []
+  - rule_id: vr_completeness
+    applies_to: "whole dataset"
+    rule: "Check every required and actual conditional activity. Expose gaps and default exclusions; absent upstream or equipment manufacture prevents a complete lifecycle claim. Add elementary flows only for evidenced direct occurrences with verified identity and compartment, not inferred site emissions from grid generation."
+    source_ids:
+      - ebu-radio-workflow-2023
+published_dataset_profile:
+  dataset_role: "foreground production dataset for a complete daily channel line-up"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "channel-delivery modelling with matching boundary and technical configuration; linking to separate distribution/playback modules"
+  excluded_use: "proxy for one original work, download, listener-hour, transmission coverage, software or hardware manufacture; complete lifecycle claims without linked evidence"
+  required_metadata: "all reference qualifiers, process coverage, geography, voltage, measured supply, source and service datasets, reuse sets, attribution methods, conditional activities and handoff acceptance"
+  required_quality_disclosure: "meter uncertainty, sampling representativeness, missing supplier evidence, unresolved identities, equipment boundary, original-reuse and idle-allocation sensitivity"
+  update_trigger: "changes in schedule/version, recorded/live mix, supplier, system/electricity conditions, retention, original reuse set or handoff specification"
+data_sources:
+  - id: "unsd-cpc3-2025"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 Explanatory Notes, 30 June 2025, PDF/printed p.444. https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Daily assembly versus original-asset and broadcast-service boundaries; no measurement coefficients"
+  - id: "ebu-radio-workflow-2023"
+    type: "official_guidance"
+    reference: "European Broadcasting Union, Tech 3401, November 2023, §2 Figure 4 p.7; §§3–4 pp.8–10. https://tech.ebu.ch/docs/tech/tech3401.pdf"
+    used_for: "Production/distribution interfaces and loudness metadata; not energy or universal audio-threshold evidence"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:95742848c3301abc186a25da88058d382c1851758c8ba266e1eaa25910c4eafe"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5014"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5014
+          line: 58
+          column: 1
+        end:
+          offset: 7295
+          line: 77
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified programme masters with usage rights or actual live contributions available at the compiler’s receiving interface |\n| starting_condition_role | Foreground production input; new original creation is a separate upstream module even when supplied internally |\n| product_classification_scope | Complete daily radio channel programme assemblies for distribution by others |\n| recursive_input_rule | For re-editing an existing line-up, count its actual input and incremental assembly once without recursively rebuilding the original day |\n| upstream_dataset_requirement | Representative datasets for source content, purchased electricity, outsourced hosting and contribution links; declare whether equipment and facility manufacture is included |\n| disclosure | Foreground receipt/checking through complete daily handoff; missing upstream and capital equipment prevents a complete cradle-to-gate claim; disclose measured energy, source-asset boundaries, allocation, storage, unmeasured activities and exclusions |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `sb_delivery` | daily assembly | Include receipt, asset checking, scheduling, continuity, required storage, actual live mixing, acceptance and handoff to the distributor, including failed handoff retries and actual rework energy. | `unsd-cpc3-2025`; `ebu-radio-workflow-2023` |\n| `sb_separate_distribution` | downstream | Model FM/DAB transmission, listener-network distribution, playback and terminal manufacture beyond the handoff separately; split combined operations using recorded interfaces. | `unsd-cpc3-2025`; `ebu-radio-workflow-2023` |\n| `sb_actual_resources` | facilities and supporting activities | Include measured or explainably attributable workstation, server, playout, storage and cooling electricity and production-support lighting. Equipment/facility manufacture, commuting and long-term archives are excluded by default and disclosed. Actual attributable on-site combustion, refrigerant leakage, consumables or equipment replacement require separately collected atomic extensions; no emissions are presumed without evidence. | `ebu-radio-workflow-2023` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 252
+              line: 9
+              column: 1
+            end:
+              offset: 291
+              line: 9
+              column: 40
+          text: "# Daily radio channel programme line-up"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5014
+              line: 58
+              column: 1
+            end:
+              offset: 5035
+              line: 58
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_16317"
+      family: "allocation"
+      span:
+        start:
+          offset: 16317
+          line: 240
+          column: 1
+        end:
+          offset: 17691
+          line: 248
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `alloc_metering` | shared equipment | Prefer separate meters and tasks; attribute shared-meter energy using measured task power and run time, not sale price or audience. cp_energy records active, idle, retained storage, cooling and other users; allocation must reconcile the measured total. Allocate idle energy using recorded reserved-use time and report sensitivity. |  |\n| `alloc_original_reuse` | source_programme_master | Keep original-creation inventory separately. cp_assets defines the evidenced, non-overlapping reuse set and daily attribution weights summing to one; equivalent complete uses may share equally across evidenced uses without assumed count or lifetime. Excerpt attribution requires evidence connecting duration to creation effort; unproven attribution remains review. Rights transactions do not eliminate content burdens, nor justify adding full creation cost on every play. |  |\n| `alloc_variants` | line-up variants and retries | Separate incremental tasks for language, advertising and regional variants with independently delivered outputs. Allocate shared assembly by documented actual task relationships; master, schedule and acceptance receipt are not three co-products. Attribute failed retries to the delivered line-up. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 252
+              line: 9
+              column: 1
+            end:
+              offset: 291
+              line: 9
+              column: 40
+          text: "# Daily radio channel programme line-up"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 16317
+              line: 240
+              column: 1
+            end:
+              offset: 16357
+              line: 240
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_22454"
+      family: "validation"
+      span:
+        start:
+          offset: 22454
+          line: 276
+          column: 1
+        end:
+          offset: 23576
+          line: 285
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `vr_reference` | reference product | Confirm one complete daily output, count unit, actual times, acceptance and every qualifier; other delivery objects are inapplicable. | `unsd-cpc3-2025` |\n| `vr_energy` | electricity rows | Check meter totals and attribution, 3.6 conversion, voltage and geography; do not recount electricity already included in supplier services. |  |\n| `vr_originals` | source assets and services | Check original inventories and reuse weights, interface boundaries, actual contract-package units and primary activity records; counting cannot replace supplier physical inventory. Unproven shares require review. |  |\n| `vr_completeness` | whole dataset | Check every required and actual conditional activity. Expose gaps and default exclusions; absent upstream or equipment manufacture prevents a complete lifecycle claim. Add elementary flows only for evidenced direct occurrences with verified identity and compartment, not inferred site emissions from grid generation. | `ebu-radio-workflow-2023` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 252
+              line: 9
+              column: 1
+            end:
+              offset: 291
+              line: 9
+              column: 40
+          text: "# Daily radio channel programme line-up"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 22454
+              line: 276
+              column: 1
+            end:
+              offset: 22476
+              line: 276
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "sb_delivery"
+      identity_kind: "explicit"
+      unit_id: "normative_5014"
+      source_span:
+        start:
+          offset: 6217
+          line: 73
+          column: 1
+        end:
+          offset: 6496
+          line: 73
+          column: 280
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "sb_separate_distribution"
+      identity_kind: "explicit"
+      unit_id: "normative_5014"
+      source_span:
+        start:
+          offset: 6497
+          line: 74
+          column: 1
+        end:
+          offset: 6764
+          line: 74
+          column: 268
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "sb_actual_resources"
+      identity_kind: "explicit"
+      unit_id: "normative_5014"
+      source_span:
+        start:
+          offset: 6765
+          line: 75
+          column: 1
+        end:
+          offset: 7293
+          line: 75
+          column: 529
+    - pointer: "/allocation_rules/0"
+      rule_id: "alloc_metering"
+      identity_kind: "explicit"
+      unit_id: "normative_16317"
+      source_span:
+        start:
+          offset: 16430
+          line: 244
+          column: 1
+        end:
+          offset: 16805
+          line: 244
+          column: 376
+    - pointer: "/allocation_rules/1"
+      rule_id: "alloc_original_reuse"
+      identity_kind: "explicit"
+      unit_id: "normative_16317"
+      source_span:
+        start:
+          offset: 16806
+          line: 245
+          column: 1
+        end:
+          offset: 17335
+          line: 245
+          column: 530
+    - pointer: "/allocation_rules/2"
+      rule_id: "alloc_variants"
+      identity_kind: "explicit"
+      unit_id: "normative_16317"
+      source_span:
+        start:
+          offset: 17336
+          line: 246
+          column: 1
+        end:
+          offset: 17689
+          line: 246
+          column: 354
+    - pointer: "/validation_rules/0"
+      rule_id: "vr_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_22454"
+      source_span:
+        start:
+          offset: 22549
+          line: 280
+          column: 1
+        end:
+          offset: 22742
+          line: 280
+          column: 194
+    - pointer: "/validation_rules/1"
+      rule_id: "vr_energy"
+      identity_kind: "explicit"
+      unit_id: "normative_22454"
+      source_span:
+        start:
+          offset: 22743
+          line: 281
+          column: 1
+        end:
+          offset: 22923
+          line: 281
+          column: 181
+    - pointer: "/validation_rules/2"
+      rule_id: "vr_originals"
+      identity_kind: "explicit"
+      unit_id: "normative_22454"
+      source_span:
+        start:
+          offset: 22924
+          line: 282
+          column: 1
+        end:
+          offset: 23189
+          line: 282
+          column: 266
+    - pointer: "/validation_rules/3"
+      rule_id: "vr_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_22454"
+      source_span:
+        start:
+          offset: 23190
+          line: 283
+          column: 1
+        end:
+          offset: 23574
+          line: 283
+          column: 385
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5014"
+      source_span:
+        start:
+          offset: 5014
+          line: 58
+          column: 1
+        end:
+          offset: 5035
+          line: 58
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5014"
+      source_span:
+        start:
+          offset: 5063
+          line: 62
+          column: 1
+        end:
+          offset: 6144
+          line: 69
+          column: 267
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_16317"
+      source_span:
+        start:
+          offset: 16317
+          line: 240
+          column: 1
+        end:
+          offset: 16357
+          line: 240
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_22454"
+      source_span:
+        start:
+          offset: 22454
+          line: 276
+          column: 1
+        end:
+          offset: 22476
+          line: 276
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:95742848c3301abc186a25da88058d382c1851758c8ba266e1eaa25910c4eafe"
+  generated_content_sha256: "sha256:44349324f74d94709c9cb4382dd5b1157e3eb244af0825bd93e70ed472788199"

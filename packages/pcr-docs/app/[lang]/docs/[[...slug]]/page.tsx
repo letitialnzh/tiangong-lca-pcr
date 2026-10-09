@@ -5,6 +5,7 @@ import { BreadcrumbJsonLd, pageTrail } from '@/components/breadcrumb-jsonld';
 import { Catalog, Coverage } from '@/components/catalog';
 import { DocsShell } from '@/components/docs-shell';
 import { DocumentBody } from '@/components/document-body';
+import { CopyAgentPrompt } from '@/components/copy-agent-prompt';
 import { ModuleScaffold } from '@/components/module-scaffold';
 import { PcrPage } from '@/components/pcr-page';
 import { PcrRecordPage } from '@/components/pcr-record';
@@ -98,7 +99,12 @@ export default async function DocumentPage({ params }: { params: Promise<Params>
         {alternates}
         {breadcrumb}
         {doc.kind === 'module' ? <ModuleScaffold locale={lang} /> : null}
-        <DocumentBody html={html} />
+        {doc.kind === 'guide' ? (
+          <>
+            <CopyAgentPrompt locale={lang} />
+            <div id="getting-started-content"><DocumentBody html={html} /></div>
+          </>
+        ) : <DocumentBody html={html} />}
         {doc.downloads && doc.downloads.length > 0 ? (
           <div className="pcr-front not-prose">
             <DownloadList

@@ -17,6 +17,7 @@ import {
 import { SUMMARY_LIMIT } from "./summaries.ts";
 import { summarizeExportFiles } from "./export-size.ts";
 import { readProductIdentity } from "../../../builder/scripts/product-identity.ts";
+import { gettingStartedGuides, gettingStartedGuide } from "../lib/getting-started.ts";
 const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
   root = path.resolve(app, "../.."),
   out = path.join(app, "out");
@@ -48,12 +49,19 @@ function readPage(url: string) {
 function requireThat(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
-requireThat(
-  fs.readFileSync(path.join(out, "getting-started.md")).equals(
-    fs.readFileSync(path.join(app, "public/getting-started.md")),
-  ),
-  "Agent getting-started guide must be exported byte-for-byte",
-);
+for (const entry of gettingStartedGuides) {
+  requireThat(fs.readFileSync(path.join(out, entry.rawUrl)).equals(fs.readFileSync(path.join(root, entry.sourcePath))), "Agent guide must be exported byte-for-byte: " + entry.rawUrl);
+  const guide = manifest.pages.find(page => page.kind === "guide" && page.url === entry.url);
+  requireThat(guide?.language === entry.language && guide.sourcePath === entry.sourcePath, "Missing authored getting-started counterpart: " + entry.language);
+  for (const counterpart of gettingStartedGuides) requireThat(guide.alternates?.[counterpart.language] === manifest.origin + counterpart.url, "Missing verified guide alternate: " + counterpart.language);
+  const guideDocument = readPage(guide.url);
+  requireThat(guideDocument.querySelector('button[aria-controls="getting-started-content"]'), "Missing localized Agent prompt copy button");
+  requireThat(guideDocument.querySelector('a[href="' + entry.rawUrl + '"]'), "Missing corresponding raw Markdown entry");
+}
+for (const url of ["/", ...manifest.languages.map(language => "/" + language.route + "/")]) {
+  const entry = gettingStartedGuide(url === "/" ? "zh" : url.split("/")[1]!);
+  requireThat(readPage(url).querySelector('a[href="' + entry.url + '"]'), "Missing localized home/navigation guide entry: " + url);
+}
 if (fs.existsSync(path.join(root, "product-release.json"))) {
   const expected = readProductIdentity(root, { requireClean: false });
   const rawActual: unknown = JSON.parse(fs.readFileSync(path.join(out, "generated/product-release.json"), "utf8"));
@@ -237,6 +245,11 @@ requireThat(
 );
 for (const page of manifest.pages) {
   const document = readPage(page.url);
+  const sidebar = document.querySelector('#nd-sidebar');
+  requireThat(sidebar, 'Missing document sidebar: ' + page.url);
+  for (const target of [gettingStartedGuide(page.locale).url, '/' + page.locale + '/docs/pcr/']) {
+    requireThat(sidebar.querySelectorAll('a[href="' + target + '"]').length === 1, 'Repeated or missing main documentation entry: ' + page.url + ' -> ' + target);
+  }
   requireThat(
     document.querySelectorAll("h1").length === 1,
     "Expected one H1 " + page.url,
@@ -359,7 +372,7 @@ for (const page of manifest.pages) {
     const value = node.getAttribute("href");
     if (!value || !value.startsWith("/") || value.startsWith("//")) continue;
     const target = new URL(value, manifest.origin);
-    if (target.pathname.startsWith("/generated/")) {
+    if (target.pathname.startsWith("/generated/") || gettingStartedGuides.some(guide => guide.rawUrl === target.pathname)) {
       requireThat(
         fs.existsSync(path.join(out, decodeURIComponent(target.pathname))),
         "Broken download " + value,

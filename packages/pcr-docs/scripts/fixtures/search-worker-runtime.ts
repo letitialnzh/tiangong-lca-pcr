@@ -4,7 +4,6 @@ import path from 'node:path';
 import { createRequire, registerHooks } from 'node:module';
 import { Index } from 'flexsearch';
 import { searchTerms } from '../../lib/search-terms.ts';
-import { encodeSearchEntries } from '../../lib/search-codec.ts';
 import type { SearchResult } from '../../lib/types.ts';
 
 const workerUrl = new URL('../../lib/search-worker.ts', import.meta.url);
@@ -22,6 +21,16 @@ registerHooks({ resolve(specifier, context, nextResolve) {
 
 type Document = { record: SearchResult; text: string };
 type Shard = { entries: Record<string, string>; records: SearchResult[] };
+function nativeShard(shard: Shard): { entries: Record<string, unknown[]>; records: SearchResult[] } {
+  const entries: Record<string, unknown[]> = {};
+  for (const [key, value] of Object.entries(shard.entries)) {
+    const parsed: unknown = JSON.parse(value);
+    assert.ok(Array.isArray(parsed));
+    assert.equal(JSON.stringify(parsed), value, 'Native arrays must roundtrip every pinned engine export exactly');
+    entries[key] = parsed;
+  }
+  return { entries, records: shard.records };
+}
 type Reply = { id: unknown; results?: SearchResult[]; error?: string };
 const document = (id: number, content: string, text = content, url = `/fixture/${id}/`, description = 'Verified fixture scope'): Document => ({
   record: { id: String(id), type: 'page', url, content, description, breadcrumbs: ['PCR library', 'Fixture domain'] }, text,
@@ -34,12 +43,18 @@ async function serialize(documents: Document[], language: string): Promise<Shard
   return { entries, records: documents.map(entry => entry.record) };
 }
 
-async function main(scenario: string): Promise<void> {
+async function main(scenario: string, schemaVersion: 1 | 2): Promise<void> {
   const language = scenario === 'chinese' ? 'zh-CN' : 'en-US';
   const root = `/generated/search/${language}/`;
   const responses = new Map<string, { status: number; body: unknown }>();
   const requests: string[] = [];
   const replies: Reply[] = [];
+  const imported: [string, string][] = [];
+  const importEntry = Index.prototype.import;
+  Index.prototype.import = function (key, payload) {
+    imported.push([key, payload]);
+    return importEntry.call(this, key, payload);
+  };
   const scope: { onmessage?: (event: MessageEvent<unknown>) => Promise<void>; postMessage(value: Reply): void } = { postMessage(value) { replies.push(value); } };
   Reflect.set(globalThis, 'self', scope);
   let gate: Promise<void> | undefined;
@@ -56,32 +71,37 @@ async function main(scenario: string): Promise<void> {
   };
   const query = (text: string) => send({ id: ++sequence, query: text, language });
   const valid = (reply: Reply): SearchResult[] => { assert.equal(reply.error, undefined); assert.ok(Array.isArray(reply.results)); return reply.results; };
+  const encode = (shard: Shard) => schemaVersion === 1 ? shard : nativeShard(shard);
   const install = async (documents: Document[][]) => {
     const shards: { url: string }[] = [];
-    for (const [index, entries] of documents.entries()) { const url = root + 'shard-' + index + '.json'; shards.push({ url }); responses.set(url, { status: 200, body: await serialize(entries, language) }); }
-    responses.set(root + 'manifest.json', { status: 200, body: { schemaVersion: 1, language, shards } });
+    for (const [index, entries] of documents.entries()) { const url = root + 'shard-' + index + '.json'; shards.push({ url }); responses.set(url, { status: 200, body: encode(await serialize(entries, language)) }); }
+    responses.set(root + 'manifest.json', { status: 200, body: { schemaVersion, language, shards } });
   };
   await install([[document(0, 'Wheat'), document(1, 'Wheat seed'), document(2, 'Organic wheat'), document(3, 'Field protocol', 'Protocol for wheat collection')]]);
   await import(workerUrl.href);
   assert.equal(requests.length, 0, 'Import alone must not fetch or initialize an index');
 
-  if (scenario === 'compact') {
-    await install([[document(0, 'Wheat', 'wheat pcr_rule_boundary')], [document(1, '小麦', 'wheat 小麦 550e8400-e29b-41d4-a716-446655440000')]]);
-    for (const [url, response] of responses) {
-      if (!url.includes('shard-')) continue;
-      const shard = response.body as Shard;
-      response.body = {schemaVersion: 2, entries: encodeSearchEntries(shard.entries), records: shard.records};
+  if (scenario === 'wire-roundtrip') {
+    const documents = [document(4, 'Wheat "seed"', 'Wheat seed 珊瑚 café', '/fixture/wheat/', 'Complete "quoted" context\\with a newline\nand Unicode 珊瑚'), document(9, 'Other scope', 'Wheat scope')];
+    const original = await serialize(documents, language);
+    await install([documents]);
+    assert.deepEqual(valid(await query('wheat')), documents.map(entry => entry.record));
+    assert.deepEqual(imported, Object.entries(original.entries), 'Worker must pass the original strings and key order into the real engine');
+  } else if (scenario === 'entry-format-retry') {
+    const target = root + 'shard-0.json';
+    const original = responses.get(target)!;
+    const shard = original.body; assert.ok(object(shard) && object(shard.entries));
+    const [key, payload] = Object.entries(shard.entries)[0]!;
+    const wrongFormat: unknown = schemaVersion === 1 ? JSON.parse(String(payload)) : JSON.stringify(payload);
+    for (const invalid of [wrongFormat, null, 7, {}]) {
+      responses.set(target, { status: 200, body: { ...shard, entries: { ...shard.entries, [key]: invalid } } });
+      const failure = await query('wheat');
+      assert.equal(failure.results, undefined);
+      assert.equal(failure.error, 'Invalid serialized search data.');
     }
-    assert.deepEqual(valid(await query('wheat')).map(item => item.content), ['Wheat', '小麦']);
-    assert.equal(valid(await query('pcr_rule_boundary'))[0]?.content, 'Wheat');
-    assert.equal(valid(await query('小麦'))[0]?.content, '小麦');
-    assert.equal(valid(await query('550e8400-e29b-41d4-a716-446655440000'))[0]?.content, '小麦');
-  } else if (scenario === 'compact-retry') {
-    const url = root + 'shard-0.json', original = responses.get(url)!.body as Shard;
-    responses.set(url, {status: 200, body: {schemaVersion: 2, entries: {'1.map': [['wheat', 1, 9, [0]]]}, records: original.records}});
-    assert.equal((await query('wheat')).error, 'Invalid serialized search data.');
-    responses.set(url, {status: 200, body: {schemaVersion: 2, entries: encodeSearchEntries(original.entries), records: original.records}});
+    responses.set(target, original);
     assert.equal(valid(await query('wheat')).length, 4);
+    assert.equal(requests.filter(url => url.endsWith('manifest.json')).length, 5);
   } else if (scenario === 'english-rank') {
     assert.deepEqual(valid(await query('wheat')).map(item => item.content), ['Wheat', 'Wheat seed', 'Organic wheat', 'Field protocol']);
     assert.equal(valid(await query('unrelated-keyword')).length, 0);
@@ -103,7 +123,7 @@ async function main(scenario: string): Promise<void> {
     const shard = responses.get(root + 'shard-1.json')!.body as Shard;
     const orphan = await serialize([document(9, 'Orphan', 'wheat')], language);
     // A separate real index contributes a hit with no retained record; that hit grants no page.
-    responses.set(root + 'shard-2.json', { status: 200, body: { ...orphan, records: [] } });
+    responses.set(root + 'shard-2.json', { status: 200, body: { ...encode(orphan), records: [] } });
     const current = responses.get(root + 'manifest.json')!.body; assert.ok(object(current) && Array.isArray(current.shards)); current.shards.push({ url: root + 'shard-2.json' });
     assert.equal(shard.records.length, 2);
     assert.deepEqual(valid(await query('wheat')).map(item => item.url), ['/same/', '/different/']);
@@ -131,14 +151,14 @@ async function main(scenario: string): Promise<void> {
     responses.set(target, saved); assert.equal(valid(await query('wheat')).length, 4);
     assert.equal(requests.filter(url => url.endsWith('manifest.json')).length, 2);
   } else if (scenario === 'manifest-shape') {
-    for (const invalid of [null, { schemaVersion: 2, language, shards: [] }, { schemaVersion: 1, language: 'other-language', shards: [] }, { schemaVersion: 1, language, shards: {} }]) {
+    for (const invalid of [null, ...[undefined, 0, 3, '2'].map(version => ({ schemaVersion: version, language, shards: [] })), { schemaVersion, language: 'other-language', shards: [] }, { schemaVersion, language, shards: {} }]) {
       responses.set(root + 'manifest.json', { status: 200, body: invalid });
       assert.equal((await query('wheat')).error, 'Invalid search manifest.');
     }
     assert.equal(requests.some(url => url.includes('shard-')), false);
   } else if (scenario === 'shard-url') {
     for (const invalid of [null, { url: 'https://outside.example/index.json' }, { url: '/outside/index.json' }, { url: 7 }]) {
-      responses.set(root + 'manifest.json', { status: 200, body: { schemaVersion: 1, language, shards: [invalid] } });
+      responses.set(root + 'manifest.json', { status: 200, body: { schemaVersion, language, shards: [invalid] } });
       assert.equal((await query('wheat')).error, 'Invalid search shard.');
     }
     assert.ok(requests.every(url => url === root + 'manifest.json'));
@@ -152,8 +172,9 @@ async function main(scenario: string): Promise<void> {
     const original = responses.get(root + 'shard-0.json')!;
     const shard = original.body as Shard;
     assert.ok(Object.keys(shard.entries).length > 0);
-    const key = Object.keys(shard.entries)[0]!;
-    responses.set(root + 'shard-0.json', { status: 200, body: { ...shard, entries: { ...shard.entries, [key]: '{malformed' } } });
+    const key = Object.keys(shard.entries).find(key => key.endsWith('.map'))!;
+    assert.ok(key);
+    responses.set(root + 'shard-0.json', { status: 200, body: { ...shard, entries: { ...shard.entries, [key]: schemaVersion === 1 ? '{malformed' : [null] } } });
     const failure = await query('wheat'); assert.equal(failure.results, undefined); assert.ok(failure.error);
     responses.set(root + 'shard-0.json', original); assert.equal(valid(await query('wheat')).length, 4);
   } else if (scenario === 'requests') {
@@ -165,4 +186,5 @@ async function main(scenario: string): Promise<void> {
   } else throw new Error('Unknown search worker scenario: ' + scenario);
 }
 const scenario = process.argv[2]; assert.ok(scenario);
-await main(scenario); process.stdout.write(`PASS ${scenario}\n`);
+const schemaVersion = Number(process.argv[3]); assert.ok(schemaVersion === 1 || schemaVersion === 2);
+await main(scenario, schemaVersion); process.stdout.write(`PASS ${scenario}\n`);

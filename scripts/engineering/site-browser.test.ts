@@ -3,15 +3,32 @@ import {mkdtempSync,mkdirSync,writeFileSync,rmSync,realpathSync,existsSync,symli
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import {inspectSiteExport,parseSiteBrowserArguments,prepareSiteBrowserReport,withSiteExportServer,isCancelledSitePrefetch} from './site-browser.ts';
+import {inspectSiteExport,parseSiteBrowserArguments,prepareSiteBrowserReport,withSiteExportServer,isCancelledSitePrefetch,emittedLanguageCodes,browserLanguageScenarios} from './site-browser.ts';
+import {preferredRoute} from '../../packages/pcr-docs/lib/language-preference.ts';
 function fixture(){const parent=mkdtempSync(path.join(realpathSync(tmpdir()),'site-browser-contract-')),root=path.join(parent,'export');mkdirSync(root);const put=(key:string,text:string)=>{mkdirSync(path.dirname(path.join(root,key)),{recursive:true});writeFileSync(path.join(root,key),text);};
  const identity={sourceCommit:'a'.repeat(40),sourceFingerprint:'sha256:'+'b'.repeat(64)};
- for(const key of ['index.html','en/index.html','zh/index.html','en/docs/pcr/index.html','zh/docs/pcr/index.html','en/docs/pcr/a/b/c/index.html','zh/docs/pcr/a/b/c/index.html','en/docs/modules/core/unit/index.html'])put(key,'<h1>Fixture</h1>');
+ for(const key of ['index.html','en/index.html','zh/index.html','en/docs/pcr/index.html','zh/docs/pcr/index.html','en/docs/pcr/a/b/c/index.html','zh/docs/pcr/a/b/c/index.html','en/docs/modules/core/unit/index.html','en/docs/getting-started/index.html','zh/docs/getting-started/index.html'])put(key,`<html lang="${key.startsWith('en/')?'en-US':'zh-CN'}"><h1>Fixture</h1></html>`);
  put('generated/version.json',JSON.stringify(identity));put('generated/product-release.json',JSON.stringify(identity));put('generated/search-worker.mjs','export {};');
  return {parent,root,put,close(){rmSync(parent,{recursive:true,force:true});}};
 }
 test('site browser requires explicit single root/report arguments without silent skip',()=>{assert.equal(parseSiteBrowserArguments(['--help']),'help');for(const args of [[],['--root','x'],['--report','x'],['--root','x','--report','y','--report','z'],['--root','--report','x'],['--unknown','x']])assert.throws(()=>parseSiteBrowserArguments(args),{code:'SITE_BROWSER_ARGUMENT'});assert.deepEqual(parseSiteBrowserArguments(['--root','x','--report','y']),{root:path.resolve('x'),report:path.resolve('y')});});
-test('site export validates identity, required routes and deterministic full-tree binding',()=>{const f=fixture();try{const before=inspectSiteExport(f.root);assert.equal(before.routes.length,8);assert.ok(before.availability.some(item=>item.kind==='history'&&!item.present));assert.equal(inspectSiteExport(f.root).treeSha256,before.treeSha256);f.put('en/docs/pcr/a/b/c/index.html','<h1>Changed</h1>');assert.notEqual(inspectSiteExport(f.root).treeSha256,before.treeSha256);f.put('generated/product-release.json','{}');assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_IDENTITY'});}finally{f.close();}});
+test('site export validates identity, required routes and deterministic full-tree binding',()=>{const f=fixture();try{const before=inspectSiteExport(f.root);assert.equal(before.routes.length,10);assert.ok(before.availability.some(item=>item.kind==='history'&&!item.present));assert.equal(inspectSiteExport(f.root).treeSha256,before.treeSha256);f.put('en/docs/pcr/a/b/c/index.html','<h1>Changed</h1>');assert.notEqual(inspectSiteExport(f.root).treeSha256,before.treeSha256);f.put('generated/product-release.json','{}');assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_IDENTITY'});}finally{f.close();}});
+test('emitted optional French stays supported and cannot be chosen as an unsupported browser probe',()=>{
+ const f=fixture();try{
+  f.put('fr-fr/index.html','<html dir="ltr" lang="fr-FR"><h1>Français</h1></html>');
+  f.put('en-gb/index.html',"<html lang='en-GB'><h1>English (UK)</h1></html>");
+  const codes=emittedLanguageCodes(inspectSiteExport(f.root));
+  assert.equal(codes['fr-fr'],'fr-FR');assert.equal(preferredRoute(codes,['ja-JP','fr-FR'],null),'fr-fr');
+  const scenarios=browserLanguageScenarios(codes),fallback=scenarios.find(scenario=>scenario.name==='unsupported language fallback');assert.ok(fallback);
+  assert.ok(!fallback.languages.includes('fr-FR'));assert.equal(preferredRoute(codes,fallback.languages,null),'en');assert.equal(fallback.htmlLanguage,'en-US');
+  const regional=scenarios.find(scenario=>scenario.name==='regional English');assert.equal(regional?.expected,'/en-gb/');assert.equal(regional?.htmlLanguage,'en-GB');
+ }finally{f.close();}
+});
+test('bounded probe exhaustion tests absent browser language information instead of mislabeling optional languages',()=>{
+ const codes={en:'en-US',zh:'zh-CN',fr:'fr-FR',ja:'ja-JP',ko:'ko-KR',ru:'ru-RU',ar:'ar-SA',hi:'hi-IN',sw:'sw-KE',eo:'eo'};
+ const fallback=browserLanguageScenarios(codes).find(scenario=>scenario.name==='missing browser language fallback');assert.ok(fallback);
+ assert.deepEqual(fallback.languages,[]);assert.equal(fallback.expected,'/en/');assert.equal(fallback.htmlLanguage,'en-US');
+});
 test('site export rejects missing input and symbolic links rather than launching browsers',()=>{const f=fixture();try{assert.throws(()=>inspectSiteExport(path.join(f.parent,'missing')),{code:'SITE_EXPORT_INPUT'});rmSync(path.join(f.root,'generated/search-worker.mjs'));assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_INPUT'});f.put('generated/search-worker.mjs','export {};');symlinkSync(path.join(f.root,'index.html'),path.join(f.root,'alias.html'));assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_PATH'});}finally{f.close();}});
 test('raw TypeScript and malformed/nonfinite identity bytes fail before browser resources open',()=>{const f=fixture();try{f.put('generated/search-worker.ts','export {};');assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_INPUT'});rmSync(path.join(f.root,'generated/search-worker.ts'));writeFileSync(path.join(f.root,'generated/version.json'),Buffer.from([0xff,0xfe]));assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_IDENTITY'});f.put('generated/version.json','{"sourceCommit":"'+ 'a'.repeat(40)+'","sourceFingerprint":"sha256:'+ 'b'.repeat(64)+'","bad":1e999}');assert.throws(()=>inspectSiteExport(f.root),{code:'SITE_EXPORT_IDENTITY'});}finally{f.close();}});
 test('report output must be new and outside the export including parent symlink aliases',()=>{const f=fixture();try{assert.throws(()=>prepareSiteBrowserReport(path.join(f.root,'evidence'),f.root),{code:'SITE_BROWSER_REPORT'});assert.throws(()=>prepareSiteBrowserReport(f.parent,f.root),{code:'SITE_BROWSER_REPORT'});const alias=path.join(f.parent,'alias');symlinkSync(f.root,alias,'dir');assert.throws(()=>prepareSiteBrowserReport(path.join(alias,'evidence'),f.root),{code:'SITE_BROWSER_REPORT'});const report=prepareSiteBrowserReport(path.join(f.parent,'report'),f.root);assert.ok(existsSync(report));assert.throws(()=>prepareSiteBrowserReport(report,f.root),{code:'SITE_BROWSER_REPORT'});}finally{f.close();}});

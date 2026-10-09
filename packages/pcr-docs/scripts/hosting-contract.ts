@@ -1,5 +1,6 @@
 import {isUnknownRecord,unknownField} from "../../pcr-core/src/types.ts";
 import assert from "node:assert/strict";
+import { gettingStartedGuides } from "../lib/getting-started.ts";
 /** EdgeOne documents one URL-path wildcard (including nested paths), with optional suffix. */
 export function matchesPath(pattern: string, pathname: string) {
   if (
@@ -35,23 +36,20 @@ export function verifyHostingContract(config: unknown, downloads: readonly {url:
   assert.equal(unknownField(config,"buildCommand"), "node builder/scripts/product-web-materialize.ts");
   // The provider imports sealed bytes; it does not run the product build toolchain.
   assert.equal(unknownField(config,"nodeVersion"), "24.18.0", "EdgeOne importer requires its qualified preinstalled Node 24 runtime");
+  const redirects = unknownField(config, "redirects");
+  assert.ok(Array.isArray(redirects), "Hosting redirects must be an array");
   for (const source of ["/zh", "/zh/"])
-    assert.ok(
-      Array.isArray(unknownField(config,"redirects")) && (unknownField(config,"redirects") as unknown[]).some(
-        (rule) =>
-          isUnknownRecord(rule) && rule.source === source &&
-          rule.destination === "/" &&
-          typeof rule.statusCode === "number" && [301, 308].includes(rule.statusCode),
-      ),
-      "Missing permanent Chinese-home consolidation: " + source,
-    );
+    assert.ok(!redirects.some((rule) => isUnknownRecord(rule) && typeof rule.source === "string"
+      && matchesPath(rule.source, source)), "Explicit Chinese-home URL must remain readable: " + source);
   // Specific rules carry their complete required headers, avoiding reliance on overlap precedence.
   for (const firstMatch of [false, true]) {
-    const guideHeaders = headersFor(config, "/getting-started.md", { firstMatch });
+    for (const guide of gettingStartedGuides) {
+    const guideHeaders = headersFor(config, guide.rawUrl, { firstMatch });
     assert.equal(guideHeaders["content-type"], "text/markdown; charset=utf-8");
     assert.equal(guideHeaders["content-disposition"], "inline");
     assert.equal(guideHeaders["x-content-type-options"], "nosniff");
     assert.equal(guideHeaders["cache-control"], "public, max-age=0, must-revalidate");
+    }
     for (const raw of downloads) {
       const headers = headersFor(config, raw.url, { firstMatch });
       assert.equal(
@@ -69,7 +67,6 @@ export function verifyHostingContract(config: unknown, downloads: readonly {url:
       "search-worker.mjs",
       "search-engine.mjs",
       "search-terms.mjs",
-      "search-codec.mjs",
     ]) {
       const headers = headersFor(config, "/generated/" + file, { firstMatch });
       assert.match(

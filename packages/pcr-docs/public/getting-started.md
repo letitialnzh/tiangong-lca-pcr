@@ -1,3 +1,8 @@
+---
+title: Getting started with TianGong PCR
+language: en-US
+---
+
 # Getting started with TianGong PCR
 
 Use TianGong product category rules to create LCA data, optionally produce a

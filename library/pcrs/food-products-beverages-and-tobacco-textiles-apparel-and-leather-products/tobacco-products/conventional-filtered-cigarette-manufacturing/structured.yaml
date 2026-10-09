@@ -1,0 +1,1217 @@
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.food-products-beverages-and-tobacco-textiles-apparel-and-leather-products.tobacco-products.conventional-filtered-cigarette-manufacturing"
+  classification_refs: "CPC 3.0 25020; narrower route context, no accepted mapping"
+  covered_products: "Conventional tobacco cigarettes with purchased single-segment acetate filters"
+  excluded_products: "Cigars/cheroots/cigarillos; substitutes; special filters; unfiltered/heated/electronic products; integrated leaf/rod production"
+  representative_product: "Declared SKU conventional filtered tobacco cigarette"
+  production_route: "Purchased ready-to-form cut rag and finished filter rods → electric rod forming/filter joining → inspection/reject handling → packing"
+  market_state: "Unused accepted cigarettes in declared retail/shipment packaging at factory gate"
+functional_unit:
+  what: "Production of an identified unused filtered tobacco cigarette configuration; a production accounting unit, not a health benefit or smoking-service equivalence"
+  how_much: "1 kg net accepted finished cigarettes, all cigarette components included, packaging excluded"
+  how_well: "Accepted against recorded plant SKU specification for dimensions, tobacco moisture, fill mass, paper/filter identity, joining integrity and packaging integrity; no universal quality thresholds or regulatory approval"
+  how_long_or_cycle: "One manufacturing and acceptance period; no use duration or shelf-life claim"
+  reference_flow_link: "reference_product_output"
+system_boundary:
+  rules:
+    - rule_id: manufacturing_boundary
+      applies_to: "foreground_system_boundary"
+      rule: "Include all actual operations within the declared receipt-to-gate route, electricity for support systems and rejection/rework burdens. Keep packing inputs in the numerator while excluding packaging from Q. Do not silently remove an operated stage."
+      source_ids:
+        - pmi-cigarette-process
+    - rule_id: separate_lifecycle_stages
+      applies_to: "foreground_system_boundary"
+      rule: "Cultivation/curing and purchased primary preparation/filter manufacture belong to supplier links; transport before receipt, delivery after gate, smoking combustion and end-of-life are excluded from this foreground. Add them explicitly to an expanded study; no consumer smoke or butt litter is a manufacturing emission."
+      source_ids:
+        - hmrc-cigarette-process
+        - bat-cigarette-components
+    - rule_id: route_extension
+      applies_to: "foreground_system_boundary"
+      rule: "If a site makes its own cut rag or filters, burns fuel, uses steam/heat, treats/discharges wastewater, prints materials or changes filter/packaging chemistry, extend the inventory with each actual atomic input/output and measured conditions before claiming applicability. Excluded routes are not zero burdens."
+      source_ids:
+        - hmrc-cigarette-process
+boundary_abstraction:
+  declared_starting_condition: "Purchased prepared cut rag, wrapped finished filter rods, finished paper grades and packaging blanks at plant receipt"
+  starting_condition_role: "Manufacturing input interface; not raw agricultural material"
+  product_classification_scope: "Only the conventional-filtered-tobacco-cigarette subset of CPC 3.0 25020"
+  recursive_input_rule: "Recovered tobacco from own rejects is an internal transfer; purchased returned cigarettes require separate recovery/upstream history and cannot be treated as burden-free filler"
+  upstream_dataset_requirement: "Link appropriate agriculture, curing/primary preparation, reconstitution if present, filter manufacture, paper/adhesive/packaging and electricity/water suppliers only when expanding beyond foreground; retain missing links explicitly"
+  disclosure: "Report incoming moisture/processing, site boundary, transport treatment, storage duration, process exclusions, packaging and unresolved upstream coverage; gate-to-gate is not complete cradle-to-gate"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Finished conventional filtered tobacco cigarette"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "SKU and site/year"
+    - dimensions
+    - "tobacco blend and purchased processed state"
+    - "ingredient declaration"
+    - "wet-basis moisture"
+    - "net finished mass including filter/papers/adhesive"
+    - "filter design and composition"
+    - "paper grades and joining chemistry"
+    - "acceptance criteria"
+    - "net mass/count conversion"
+    - "packaging component masses"
+    - "electric-only route"
+    - "reject/rework fate"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use measured Q kg net accepted finished cigarettes during the collection period, excluding packaging. All rows are per 1 kg reference flow. Q must be positive."
+  - id: piece_to_mass
+    applies_to: "count-based production records"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure m kg/piece from representative accepted finished cigarettes of the same SKU, including all cigarette components and stated moisture, with a tared calibrated scale; record sample count n and sample net mass W, m=W/n. When production is recorded as N accepted pieces, Q=N*m. Never invent m or use tobacco fill mass instead."
+  - id: electricity_conversion
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Preserve the public electricity energy property. For meter E kWh, use 3.6*E MJ, then divide by Q kg. Energy is not mass."
+  - id: water_conversion
+    applies_to: "purchased water and liquid effluent"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "If collected in m3, obtain density rho kg/m3 at recorded temperature/quality and use X=V*rho before X/Q; do not adopt a default density or equate delivered water with extracted resource."
+process_map:
+  - id: receipt
+    name: "Receipt and controlled holding"
+    inclusion: "required"
+    inclusion_condition: "Purchased ready-to-form cut rag"
+    role: "foreground production"
+    quantitative_reference: "1 kg reference flow"
+  - id: making
+    name: "Rod forming, filter joining and inspection"
+    inclusion: "required"
+    inclusion_condition: "Conventional single-segment filter cigarette"
+    role: "foreground production"
+    quantitative_reference: "1 kg reference flow"
+  - id: recovery
+    name: "Reject splitting and tobacco return"
+    inclusion: "conditional"
+    inclusion_condition: "On-site separation and reuse is actually operated"
+    role: "foreground production"
+    quantitative_reference: "1 kg reference flow"
+  - id: packing
+    name: "Pack assembly and dispatch acceptance"
+    inclusion: "required"
+    inclusion_condition: "Declared retail and shipment configuration"
+    role: "foreground production"
+    quantitative_reference: "1 kg reference flow"
+  - id: utilities
+    name: "Electric utilities, cleaning and environmental control"
+    inclusion: "required"
+    inclusion_condition: "Electric-only forming/packing plant; water-related rows conditional"
+    role: "foreground production"
+    quantitative_reference: "1 kg reference flow"
+process_inventory:
+  - id: receipt
+    label: "Receipt and controlled holding"
+    inputs:
+      product:
+        - row_id: cut_rag_input
+          role: "Prepared cut tobacco filler"
+          name: "Prepared cut tobacco filler"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Receive already blended, cut and moisture-conditioned tobacco filler. Declare leaf, stem and reconstituted-tobacco fractions and all supplier-added ingredients and moisture; do not infer an additive recipe. Measure actual net withdrawals after stock reconciliation."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_receipt
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: making
+    label: "Rod forming, filter joining and inspection"
+    inputs:
+      product:
+        - row_id: cigarette_paper
+          role: "Cigarette Paper"
+          name: "Cigarette Paper"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ae3a445e-c064-4cba-abd3-cfeab698f8ca"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Paper enclosing the tobacco rod. Record width, basis weight, porosity, coating and supplier grade; weigh reel consumption less returns. This identity is not tipping paper."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_making
+              source_ids:
+                - bat-cigarette-components
+            ranges: []
+        - row_id: filter_rods
+          role: "Wrapped cellulose acetate cigarette filter rod"
+          name: "Wrapped cellulose acetate cigarette filter rod"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased finished single-segment filter rods, including plug wrap and plasticizer. Declare net rod mass, dimensions and composition. Tow manufacture and filter-rod production are upstream; tow alone is not an equivalent input. Exclude capsules, activated carbon and tube-filter designs."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_making
+              source_ids:
+                - bat-cigarette-components
+            ranges: []
+        - row_id: tipping_paper
+          role: "Printed cigarette tipping paper"
+          name: "Printed cigarette tipping paper"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased tipping paper joins the tobacco rod and filter. Specify coatings, printing and perforation state. Purchased preprinted paper includes upstream printing; on-site printing is outside this route."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_making
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: making_pvac_glue
+          role: "Glue (Polyvinyl Acetate, PVA)"
+          name: "Glue (Polyvinyl Acetate, PVA)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e0d87fbd-b6d2-4e8d-a923-268e54f981ea"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Applicable only where the measured seam or tipping adhesive is PVAc-based glue. Record delivered wet mass and measured/supplier solids fraction; do not use neat PVAc resin as wet glue or infer universal adhesive chemistry. Other adhesives require a separately identified atomic row."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_making
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: tobacco_dust_waste
+          role: "Collected tobacco dust"
+          name: "Collected tobacco dust"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Collected dry tobacco dust crossing the plant boundary for documented treatment or external reconstitution. Keep it separate from airborne particles, recovered tobacco and wet mass moisture corrections."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_making
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+        - row_id: unrecovered_reject_cigarette
+          role: "Rejected assembled filter cigarette"
+          name: "Rejected assembled filter cigarette"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only intact rejected cigarettes leaving for treatment without on-site splitting. One assembled waste article; disclose tobacco, paper and filter fractions and destination. Do not also count its constituents as separate outgoing waste."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_making
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+      elementary:
+        - row_id: dust_air
+          role: "Particulate matter, particle size unspecified"
+          name: "Particulate matter, particle size unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0ce3dedb-caca-407b-a856-a90470eb8ec0"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional actual residual release after extraction/control, to air, unspecified subcompartment and unspecified size. Measure concentration and exhaust volume plus separately assessed fugitive releases; captured tobacco dust is not this exchange. No emission factor is prescribed and presence is not assumed. If size or compartment is established, use the corresponding verified identity instead."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+  - id: recovery
+    label: "Reject splitting and tobacco return"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: recovery_tobacco_waste
+          role: "Unusable recovered cut tobacco"
+          name: "Unusable recovered cut tobacco"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh tobacco separated from rejected cigarettes but unsuitable for internal return. Record moisture and external fate. Suitable returned rag stays in the internal loop and is not a fresh input or credited co-product."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recovery
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+        - row_id: recovery_filter_waste
+          role: "Rejected wrapped cellulose acetate filter segment"
+          name: "Rejected wrapped cellulose acetate filter segment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One separated filter assembly with declared plug wrap and plasticizer content, not neat acetate tow. Collect its actual mass and treatment destination."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recovery
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+        - row_id: recovery_paper_waste
+          role: "Tobacco-contaminated cigarette wrapping paper"
+          name: "Tobacco-contaminated cigarette wrapping paper"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Paper fraction separated from rejected cigarettes. Declare adhesive/tobacco contamination, measured mass and fate; ordinary clean recycled paper identity is not assumed."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recovery
+              source_ids:
+                - hmrc-cigarette-process
+            ranges: []
+      elementary:
+        []
+  - id: packing
+    label: "Pack assembly and dispatch acceptance"
+    inputs:
+      product:
+        - row_id: carton_input
+          role: "Paper box"
+          name: "Paper box"
+          flow_type: "product"
+          flow_ref:
+            uuid: "12d5d744-7725-4dbc-b102-43c80547f777"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased printed folding carton supplied flat; record coatings, grammage, count per pack and net mass. Supplier cutting/printing/laminating are upstream. Define any liner separately rather than treating it as carton mass."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: foil_input
+          role: "Aluminum foil"
+          name: "Aluminum foil"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d3e373a5-987f-4e3a-9f5b-8feaa9aa01e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional only for unlaminated aluminium inner wrap consistent with this identity. Record thickness and alloy. A paper/foil laminate requires one separately identified laminate product row, not this neat-foil identity or an invented composition."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: overwrap_input
+          role: "Biaxially oriented polypropylene overwrap film"
+          name: "Biaxially oriented polypropylene overwrap film"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional for the declared BOPP-film configuration; measure actual reel use, thickness and coating. Other polymers or multilayers require separate identities and composition disclosure; no universal packaging film is assumed."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: shipping_case_input
+          role: "Corrugated fibreboard shipping case"
+          name: "Corrugated fibreboard shipping case"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "For actual case-packed delivery. Record case grade, recycled content, count and net mass without imposing a recycled-fibre ratio from an unrelated flow. Reusable pallets and tape, if consumed or allocated to this output, require their own atomic rows."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: packing_pvac_glue
+          role: "Glue (Polyvinyl Acetate, PVA)"
+          name: "Glue (Polyvinyl Acetate, PVA)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e0d87fbd-b6d2-4e8d-a923-268e54f981ea"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional only for PVAc-based carton glue actually applied at this plant. Record wet mass and solids, separate from making adhesive; a different hot-melt chemistry is a different flow."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_output
+          role: "Finished conventional filtered tobacco cigarette"
+          name: "Finished conventional filtered tobacco cigarette"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Accepted unused cigarettes at factory gate, net mass including tobacco, cigarette paper, filter assembly, tipping and retained adhesive, excluding all retail and shipping packaging. The quantity is exactly 1 kg on this net as-delivered moisture basis, not 1 kg tobacco filler."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - bat-cigarette-components
+            ranges: []
+      waste:
+        - row_id: cardboard_waste
+          role: "Packaging waste, cardboard"
+          name: "Packaging waste, cardboard"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "72270223-04b1-4986-a546-94e5a0821317"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual damaged carton/case and trim mass sent off site. Identity only: no loss percentage from the flow comment is adopted. Exclude foil, plastic and rejected cigarettes from this row."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: foil_waste
+          role: "Aluminium foil packaging offcut"
+          name: "Aluminium foil packaging offcut"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional for actual unlaminated foil offcuts. Weigh separately and record contamination and recycling/treatment fate; do not credit an assumed recycling rate."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: film_waste
+          role: "Biaxially oriented polypropylene film offcut"
+          name: "Biaxially oriented polypropylene film offcut"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional where the BOPP input applies and scrap leaves the plant. Keep actual film offcuts separate from mixed plastic waste and recycled granules."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packing
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+      elementary:
+        []
+  - id: utilities
+    label: "Electric utilities, cleaning and environmental control"
+    inputs:
+      product:
+        - row_id: plant_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "455f0ef5-6118-4f2b-a3f5-1f75e0afe3ca"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Meter electricity for receipt, rod forming, filter joining, rejection, recovery, packing, air compression, extraction and environmental control. Keep process/submeter splits; do not add them to a total that already includes them. This point-of-use identity leaves provider and voltage unspecified; attach actual electricity supply datasets separately."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q MJ/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids:
+                - pmi-cigarette-process
+            ranges: []
+        - row_id: cleaning_water
+          role: "Process Water"
+          name: "Process Water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "94a04f7e-2d5c-41f0-b182-d54a3b373a02"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional purchased treated water for actual cleaning or humidification. Record each use separately. Use measured density at stated temperature for volumetric meter conversion; this is a technosphere supply, not freshwater extraction."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: cleaning_wastewater
+          role: "Untreated tobacco-plant cleaning wastewater"
+          name: "Untreated tobacco-plant cleaning wastewater"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional wastewater handed to external treatment before discharge. Measure liquid mass or volume and density, solids and measured pollutant composition. Do not represent it as water emitted to nature. On-site wastewater treatment/discharge needs an extended process inventory with separately measured pollutant rows."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: water_vapour_air
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional measured or closed-balance evaporation to air, unspecified subcompartment, from humidification/cleaning. Separate retained product moisture, liquid effluent and captured condensate; do not infer evaporation from purchased water alone. This is not a water-resource input or combustion-emission claim."
+          amount:
+            expression: "Collect X for this exact exchange over the same period as Q; calculate X/Q kg/kg; conditional rows only when present, otherwise retain evidence of absence"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids: []
+            ranges: []
+allocation_rules:
+  - rule_id: internal_rework
+    applies_to: "foreground_burden_allocation"
+    rule: "Own reject splitting and returned rag receive no avoided-product credit or second upstream tobacco burden; retain the extra electricity, handling and unrecoverable losses on the accepted output. Recovered material crossing the site boundary requires explicit mass/fate records."
+    source_ids:
+      - hmrc-cigarette-process
+  - rule_id: shared_resource_assignment
+    applies_to: "foreground_burden_allocation"
+    rule: "First subdivide by SKU/line/time using direct meters and job records. When subdivision is infeasible, use documented physical drivers: operating time with measured load for electric equipment, actual withdrawals for ingredients/packaging and measured exhaust for emissions. Disclose the driver and reconciliation to site totals; do not allocate by cigarette count across unequal configurations without net-mass/configuration correction."
+    source_ids: []
+  - rule_id: external_residue
+    applies_to: "foreground_burden_allocation"
+    rule: "Outgoing tobacco scrap and packaging scrap are waste or separately documented recovered products according to actual fate, not automatically revenue co-products. Retain waste-treatment links and disclose cut-off conventions. If a marketable co-product exists, document separate output mass, quality and economic/physical relationship and review allocation; no default recycling or displacement credit."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_receipt
+      process_id: "receipt"
+      flow_role: "cut_rag_input"
+      record_type: "lot and stock record"
+      raw_fields: "lot; blend components; purchased processing state; incoming/closing stock; gross withdrawals/returns; tobacco moisture"
+      collection_method: "Calibrated net weighing, supplier specifications and period stock reconciliation"
+      unit: "kg"
+      frequency: "each lot and period close"
+      temporal_coverage: "Same declared representative period as Q; include start-up, changeover, rejects and normal downtime; disclose seasonality and missing intervals"
+      site_scope: "supplier/receipt lots"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/SKU specifications, reconciliation, sampling/detection evidence and uncertainty"
+    - protocol_id: cp_making
+      process_id: "making"
+      flow_role: "paper/filter/tipping/glue/rejects"
+      record_type: "production and material balance"
+      raw_fields: "SKU; paper reel masses; filter rod count/mass; tipping use; glue wet mass/solids; reject routing; dust collected; internal transfer"
+      collection_method: "Reconcile line issues, unused returns, reel weighing, filter sampling and separated reject weighing"
+      unit: "kg"
+      frequency: "batch/shift"
+      temporal_coverage: "Same declared representative period as Q; include start-up, changeover, rejects and normal downtime; disclose seasonality and missing intervals"
+      site_scope: "forming/filter-joining line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/SKU specifications, reconciliation, sampling/detection evidence and uncertainty"
+    - protocol_id: cp_recovery
+      process_id: "recovery"
+      flow_role: "internal tobacco return and unusable fractions"
+      record_type: "separation balance"
+      raw_fields: "reject mass received; returned rag; unusable tobacco; filter segment; separated paper; moisture; downtime"
+      collection_method: "Weigh separation outputs separately, reconcile internal return with making logs and record handling energy"
+      unit: "kg"
+      frequency: "each recovery run"
+      temporal_coverage: "Same declared representative period as Q; include start-up, changeover, rejects and normal downtime; disclose seasonality and missing intervals"
+      site_scope: "actual recovery line only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/SKU specifications, reconciliation, sampling/detection evidence and uncertainty"
+    - protocol_id: cp_packing
+      process_id: "packing"
+      flow_role: "accepted net product and packaging"
+      record_type: "acceptance/packing record"
+      raw_fields: "SKU; N; sample n; sample net W; m; Q; moisture; acceptance/reject count; carton/foil/film/case/glue issues and returns; component scrap"
+      collection_method: "Count accepted pieces and sample unwrapped intact cigarettes with calibrated tared scale; weigh each packaging issue/return and scrap separately"
+      unit: "kg"
+      frequency: "SKU batch and shipment; resample after specification/moisture change"
+      temporal_coverage: "Same declared representative period as Q; include start-up, changeover, rejects and normal downtime; disclose seasonality and missing intervals"
+      site_scope: "packing and factory-gate acceptance"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/SKU specifications, reconciliation, sampling/detection evidence and uncertainty"
+    - protocol_id: cp_utilities
+      process_id: "utilities"
+      flow_role: "electricity/water/effluent/evaporation"
+      record_type: "meter and water balance"
+      raw_fields: "E kWh by operation; meter boundaries; allocated loads; water V and rho; effluent V and rho; moisture stocks; condensate; ventilation; temperature"
+      collection_method: "Submeter electric loads; meter actual water/effluent and measure density; close water balance with product moisture and retained condensate, retaining uncertainty"
+      unit: "MJ; kg"
+      frequency: "shift meters and period reconciliation"
+      temporal_coverage: "Same declared representative period as Q; include start-up, changeover, rejects and normal downtime; disclose seasonality and missing intervals"
+      site_scope: "declared electric-only manufacturing boundary"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/SKU specifications, reconciliation, sampling/detection evidence and uncertainty"
+    - protocol_id: cp_air
+      process_id: "making"
+      flow_role: "residual particulate to air"
+      record_type: "release monitoring"
+      raw_fields: "outlet concentration c mg/m3; exhaust volume V m3; time; gas basis; controls; detection limits; fugitive estimate basis"
+      collection_method: "Use representative release tests with paired concentration/volume under compatible dry/wet and temperature conditions; distinguish pre-control capture and residual release"
+      unit: "kg"
+      frequency: "representative production/control states and changes"
+      temporal_coverage: "Same declared representative period as Q; include start-up, changeover, rejects and normal downtime; disclose seasonality and missing intervals"
+      site_scope: "actual air releases at manufacturing outlets"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/SKU specifications, reconciliation, sampling/detection evidence and uncertainty"
+  calculation_rules:
+    - id: net_product
+      applies_to: "cp_packing and reference product"
+      rule: "m=W/n kg/piece; Q=sum(N_j*m_j) kg for accepted SKU batches j. Use direct net weighing where available and reconcile count conversion. Do not use a nominal tobacco-fill weight."
+      inputs:
+        - N
+        - n
+        - W
+        - m
+      output: "Q kg, excluding packaging"
+      source_ids: []
+    - id: normalization
+      applies_to: "all exchange rows and collection protocols"
+      rule: "q_i=X_i/Q per 1 kg reference flow; no normalization by gross production including rejects. Q>0 and X_i must cover the same output period."
+      inputs:
+        - X_i
+        - Q
+      output: "kg/kg or MJ/kg as appropriate"
+      source_ids: []
+    - id: electricity_mj
+      applies_to: "plant_electricity; cp_utilities"
+      rule: "X_E=3.6*E kWh in MJ; q_E=X_E/Q. Reconcile allocated operation totals to the plant meter without duplicating compressor/HVAC/extraction."
+      inputs:
+        - E
+        - Q
+      output: "MJ/kg"
+      source_ids: []
+    - id: materials_conversion
+      applies_to: "cp_making and cp_packing"
+      rule: "Convert filter/carton counts using measured net component kg/item; convert paper/film area with actual batch grammage kg/m2. For wet glue use measured wet mass, with solids and water separately disclosed; do not replace delivered mass with dry polymer mass."
+      inputs:
+        - count
+        - "net sample mass"
+        - area
+        - "batch grammage"
+        - solids
+      output: "X_i kg then X_i/Q"
+      source_ids: []
+    - id: water_balance
+      applies_to: "cp_utilities; water_vapour_air"
+      rule: "Liquid X=V*rho. Evaporation = actual water entering the boundary plus incoming moisture minus outgoing liquid water, outgoing product/waste moisture and measured net water-stock increase; include condensate transfers consistently. Report residual and uncertainty; negative or unexplained residual is review, not an emission."
+      inputs:
+        - V
+        - rho
+        - moisture
+        - "water stocks"
+        - condensate
+      output: "kg evaporated water and uncertainty then /Q"
+      source_ids: []
+    - id: air_monitoring
+      applies_to: "dust_air; cp_air"
+      rule: "X_PM=sum(c_k*V_k)*10^-6 kg for paired mg/m3 and m3 observations; add only separately justified non-overlapping fugitive mass. Normalize X_PM/Q. No smoke-toxicant or default PM factor."
+      inputs:
+        - c_k
+        - V_k
+        - "fugitive mass"
+        - Q
+      output: "kg/kg"
+      source_ids: []
+  data_quality_requirements:
+    - id: sku_composition
+      applies_to: "input/reference identity"
+      requirement: "Retain brand/SKU composition, moisture, filter/paper/adhesive and packaging state; disclose supplier ingredients already included in purchased rag and avoid counting them twice."
+      evidence: "Supplier specification and accepted-product sample records"
+    - id: complete_period
+      applies_to: "all processes"
+      requirement: "Cover actual operation modes, rework and rejects, stock change and site utilities; quantify missing records and attribution uncertainty. No unmeasured flow is silently zero."
+      evidence: "Meter/stock reconciliation and collection completeness statement"
+    - id: mass_and_water_closure
+      applies_to: "tobacco/filter/paper/packaging/cleaning"
+      requirement: "Reconcile separate material streams and moisture; reject discrepancies exceeding measured instrument/sampling uncertainty for investigation without inventing a universal tolerance."
+      evidence: "Mass balances, calibrated weights, uncertainty and moisture tests"
+    - id: no_default_ranges
+      applies_to: "amounts and release monitoring"
+      requirement: "Collect recipes, energy, temperature if relevant, yields, losses and net output from the actual plant. No boundary-compatible empirical ranges established here; do not treat descriptive sources or UUID comments as numerical benchmarks."
+      evidence: "Raw factory evidence; unresolved range needs retained in manifest"
+validation_rules:
+  - rule_id: reference_and_measurement
+    applies_to: "foreground_dataset_conformance"
+    rule: "Require the stated qualifiers, Q>0, same-period exchange numerator and denominator, complete-component net mass and packaging exclusion. Count-based records must carry measured m=W/n and Q=N*m; no invented piece weight."
+    source_ids: []
+  - rule_id: route_and_inventory
+    applies_to: "foreground_dataset_conformance"
+    rule: "Check purchased input state and all actual process stages against this narrow route; validate individual atomic identities and public reference property/unit chain. Unresolved UUIDs remain explicit gaps, not approved substitutions. Confirm optional rows present/absent from evidence."
+    source_ids:
+      - hmrc-cigarette-process
+  - rule_id: rework_balance
+    applies_to: "foreground_dataset_conformance"
+    rule: "Reconcile accepted output, rejects, internal rag return, outgoing tobacco/paper/filter waste and moisture. Prevent duplicate accounting of whole rejected cigarettes and separately counted constituent fractions."
+    source_ids:
+      - hmrc-cigarette-process
+  - rule_id: release_and_completeness
+    applies_to: "foreground_dataset_conformance"
+    rule: "Validate particulate monitoring gas basis and control boundary; water vapour is only justified evaporation to air. Wastewater to external treatment is technosphere waste, never a freshwater-resource input or unmeasured elementary discharge. State performed, skipped and unresolved checks and characterization coverage; missing evidence is inconclusive."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Site/SKU-specific foreground manufacturing process dataset"
+  downstream_use: "secondary_dataset; background_dataset only with disclosed gate-to-gate scope and verified links"
+  allowed_use: "Declared electric forming/packing route inventory per kg net accepted cigarette; expanded studies with explicit upstream/downstream linking"
+  excluded_use: "Whole-CPC coverage, integrated leaf processing/filter manufacture, full cradle-to-gate claim without linked evidence, health/risk reduction or regulatory conformance endorsement, cross-SKU smoking-service comparison"
+  required_metadata: "PCR version; SKU; site/geography/year; input state; tobacco/ingredient/filter/paper composition and moisture; Q/count conversion; process map; packaging; meters; allocation; internal loops; waste fate; upstream links"
+  required_quality_disclosure: "UUID gaps, scientific review status, missing/range evidence, collection coverage, uncertainty, material/water closure, skipped emission checks and LCIA characterization limitations"
+  update_trigger: "SKU/material/filter/adhesive/packaging change; boundary or utility route change; new supplier evidence; revised public identity; new measured loss or release data"
+data_sources:
+  - id: "unsd-cpc-2025"
+    type: "official_guidance"
+    reference: "UNSD. CPC Ver. 3.0 Explanatory Notes, 30 June 2025, printed/PDF page 116, division 25 and code 25020. https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Classification context only; narrower route is an explicit methodology choice, not CPC-wide acceptance"
+  - id: "hmrc-cigarette-process"
+    type: "official_guidance"
+    reference: "HMRC. Tobacco Products Duty, TPD6130 Manufacture: The Cigarette Manufacturing Process (text version), Primary/Secondary Stage and Additional notes; manual updated 18 December 2025. https://www.gov.uk/hmrc-internal-manuals/tobacco-products-duty/tpd6130"
+    used_for: "Qualitative rag-to-making/packing interface and reject return/offal fate; UK duty-accounting description, not a universal process or factor"
+  - id: "pmi-cigarette-process"
+    type: "extension_guidance"
+    reference: "Philip Morris International. How cigarettes are made, undated manufacturer webpage, Manufacturing cigarettes and Preparing the final pack. https://www.pmi.com/faq-section/smoking-and-cigarettes/how-cigarettes-are-made"
+    used_for: "Rod/filter/tipping and pack assembly context only; self-description does not establish universal recipes, energy or quality approval"
+  - id: "bat-cigarette-components"
+    type: "extension_guidance"
+    reference: "British American Tobacco. Tobacco, undated manufacturer webpage, How cigarettes work. https://www.bat.com/brands-and-innovation/product-categories/tobacco"
+    used_for: "Conventional components and distinction from special filters; descriptive context, not an endorsement or measured amount source"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:67f0527f6ab387c5c7eb13c896d4a19e850bee469a748420e110a189cfc9b64b"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6331"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6331
+          line: 67
+          column: 1
+        end:
+          offset: 8580
+          line: 87
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased prepared cut rag, wrapped finished filter rods, finished paper grades and packaging blanks at plant receipt |\n| starting_condition_role | Manufacturing input interface; not raw agricultural material |\n| product_classification_scope | Only the conventional-filtered-tobacco-cigarette subset of CPC 3.0 25020 |\n| recursive_input_rule | Recovered tobacco from own rejects is an internal transfer; purchased returned cigarettes require separate recovery/upstream history and cannot be treated as burden-free filler |\n| upstream_dataset_requirement | Link appropriate agriculture, curing/primary preparation, reconstitution if present, filter manufacture, paper/adhesive/packaging and electricity/water suppliers only when expanding beyond foreground; retain missing links explicitly |\n| disclosure | Report incoming moisture/processing, site boundary, transport treatment, storage duration, process exclusions, packaging and unresolved upstream coverage; gate-to-gate is not complete cradle-to-gate |\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `manufacturing_boundary` | Include all actual operations within the declared receipt-to-gate route, electricity for support systems and rejection/rework burdens. Keep packing inputs in the numerator while excluding packaging from Q. Do not silently remove an operated stage. | `pmi-cigarette-process` |\n| `separate_lifecycle_stages` | Cultivation/curing and purchased primary preparation/filter manufacture belong to supplier links; transport before receipt, delivery after gate, smoking combustion and end-of-life are excluded from this foreground. Add them explicitly to an expanded study; no consumer smoke or butt litter is a manufacturing emission. | `hmrc-cigarette-process`; `bat-cigarette-components` |\n| `route_extension` | If a site makes its own cut rag or filters, burns fuel, uses steam/heat, treats/discharges wastewater, prints materials or changes filter/packaging chemistry, extend the inventory with each actual atomic input/output and measured conditions before claiming applicability. Excluded routes are not zero burdens. | `hmrc-cigarette-process` |\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 255
+              line: 9
+              column: 1
+            end:
+              offset: 343
+              line: 9
+              column: 89
+          text: "# Conventional filtered cigarette manufacture from purchased cut tobacco and filter rods"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6331
+              line: 67
+              column: 1
+            end:
+              offset: 6352
+              line: 67
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_33140"
+      family: "allocation"
+      span:
+        start:
+          offset: 33140
+          line: 552
+          column: 1
+        end:
+          offset: 34470
+          line: 561
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `internal_rework` | Own reject splitting and returned rag receive no avoided-product credit or second upstream tobacco burden; retain the extra electricity, handling and unrecoverable losses on the accepted output. Recovered material crossing the site boundary requires explicit mass/fate records. | `hmrc-cigarette-process` |\n| `shared_resource_assignment` | First subdivide by SKU/line/time using direct meters and job records. When subdivision is infeasible, use documented physical drivers: operating time with measured load for electric equipment, actual withdrawals for ingredients/packaging and measured exhaust for emissions. Disclose the driver and reconciliation to site totals; do not allocate by cigarette count across unequal configurations without net-mass/configuration correction. |  |\n| `external_residue` | Outgoing tobacco scrap and packaging scrap are waste or separately documented recovered products according to actual fate, not automatically revenue co-products. Retain waste-treatment links and disclose cut-off conventions. If a marketable co-product exists, document separate output mass, quality and economic/physical relationship and review allocation; no default recycling or displacement credit. |  |\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 255
+              line: 9
+              column: 1
+            end:
+              offset: 343
+              line: 9
+              column: 89
+          text: "# Conventional filtered cigarette manufacture from purchased cut tobacco and filter rods"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 33140
+              line: 552
+              column: 1
+            end:
+              offset: 33180
+              line: 552
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_42455"
+      family: "validation"
+      span:
+        start:
+          offset: 42455
+          line: 595
+          column: 1
+        end:
+          offset: 43779
+          line: 605
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `reference_and_measurement` | Require the stated qualifiers, Q>0, same-period exchange numerator and denominator, complete-component net mass and packaging exclusion. Count-based records must carry measured m=W/n and Q=N*m; no invented piece weight. |  |\n| `route_and_inventory` | Check purchased input state and all actual process stages against this narrow route; validate individual atomic identities and public reference property/unit chain. Unresolved UUIDs remain explicit gaps, not approved substitutions. Confirm optional rows present/absent from evidence. | `hmrc-cigarette-process` |\n| `rework_balance` | Reconcile accepted output, rejects, internal rag return, outgoing tobacco/paper/filter waste and moisture. Prevent duplicate accounting of whole rejected cigarettes and separately counted constituent fractions. | `hmrc-cigarette-process` |\n| `release_and_completeness` | Validate particulate monitoring gas basis and control boundary; water vapour is only justified evaporation to air. Wastewater to external treatment is technosphere waste, never a freshwater-resource input or unmeasured elementary discharge. State performed, skipped and unresolved checks and characterization coverage; missing evidence is inconclusive. |  |\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 255
+              line: 9
+              column: 1
+            end:
+              offset: 343
+              line: 9
+              column: 89
+          text: "# Conventional filtered cigarette manufacture from purchased cut tobacco and filter rods"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 42455
+              line: 595
+              column: 1
+            end:
+              offset: 42477
+              line: 595
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "manufacturing_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_6331"
+      source_span:
+        start:
+          offset: 7504
+          line: 82
+          column: 1
+        end:
+          offset: 7808
+          line: 82
+          column: 305
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "separate_lifecycle_stages"
+      identity_kind: "explicit"
+      unit_id: "normative_6331"
+      source_span:
+        start:
+          offset: 7809
+          line: 83
+          column: 1
+        end:
+          offset: 8216
+          line: 83
+          column: 408
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "route_extension"
+      identity_kind: "explicit"
+      unit_id: "normative_6331"
+      source_span:
+        start:
+          offset: 8217
+          line: 84
+          column: 1
+        end:
+          offset: 8577
+          line: 84
+          column: 361
+    - pointer: "/allocation_rules/0"
+      rule_id: "internal_rework"
+      identity_kind: "explicit"
+      unit_id: "normative_33140"
+      source_span:
+        start:
+          offset: 33234
+          line: 556
+          column: 1
+        end:
+          offset: 33562
+          line: 556
+          column: 329
+    - pointer: "/allocation_rules/1"
+      rule_id: "shared_resource_assignment"
+      identity_kind: "explicit"
+      unit_id: "normative_33140"
+      source_span:
+        start:
+          offset: 33563
+          line: 557
+          column: 1
+        end:
+          offset: 34037
+          line: 557
+          column: 475
+    - pointer: "/allocation_rules/2"
+      rule_id: "external_residue"
+      identity_kind: "explicit"
+      unit_id: "normative_33140"
+      source_span:
+        start:
+          offset: 34038
+          line: 558
+          column: 1
+        end:
+          offset: 34467
+          line: 558
+          column: 430
+    - pointer: "/validation_rules/0"
+      rule_id: "reference_and_measurement"
+      identity_kind: "explicit"
+      unit_id: "normative_42455"
+      source_span:
+        start:
+          offset: 42531
+          line: 599
+          column: 1
+        end:
+          offset: 42787
+          line: 599
+          column: 257
+    - pointer: "/validation_rules/1"
+      rule_id: "route_and_inventory"
+      identity_kind: "explicit"
+      unit_id: "normative_42455"
+      source_span:
+        start:
+          offset: 42788
+          line: 600
+          column: 1
+        end:
+          offset: 43126
+          line: 600
+          column: 339
+    - pointer: "/validation_rules/2"
+      rule_id: "rework_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_42455"
+      source_span:
+        start:
+          offset: 43127
+          line: 601
+          column: 1
+        end:
+          offset: 43387
+          line: 601
+          column: 261
+    - pointer: "/validation_rules/3"
+      rule_id: "release_and_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_42455"
+      source_span:
+        start:
+          offset: 43388
+          line: 602
+          column: 1
+        end:
+          offset: 43776
+          line: 602
+          column: 389
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6331"
+      source_span:
+        start:
+          offset: 6331
+          line: 67
+          column: 1
+        end:
+          offset: 6352
+          line: 67
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6331"
+      source_span:
+        start:
+          offset: 6380
+          line: 71
+          column: 1
+        end:
+          offset: 7450
+          line: 78
+          column: 216
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_33140"
+      source_span:
+        start:
+          offset: 33140
+          line: 552
+          column: 1
+        end:
+          offset: 33180
+          line: 552
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_42455"
+      source_span:
+        start:
+          offset: 42455
+          line: 595
+          column: 1
+        end:
+          offset: 42477
+          line: 595
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:67f0527f6ab387c5c7eb13c896d4a19e850bee469a748420e110a189cfc9b64b"
+  generated_content_sha256: "sha256:cf681187f3fe8ac5c348d1102a53a7aee07bcad9ee5d41c115d09d83a2c9a216"

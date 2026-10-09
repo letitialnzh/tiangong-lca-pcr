@@ -36,6 +36,7 @@ import {
   assertMarkdownFrontmatter,
 } from "../../../builder/lib/schema-contracts.ts";
 import { routeFor, publicLanguage } from "./language-policy.ts";
+import { gettingStartedGuides } from "../lib/getting-started.ts";
 import { categoryTitle } from "./category-titles.ts";
 import { ensureSourceHistory } from "./source-history.ts";
 import {
@@ -46,7 +47,6 @@ import {
 } from "./markdown.ts";
 import { SUMMARY_LIMIT, catalogSummary, documentSummary } from "./summaries.ts";
 import { searchTerms } from "../lib/search-terms.ts";
-import { encodeSearchEntries } from "../lib/search-codec.ts";
 const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { values: options } = parseArgs({
   options: {
@@ -106,6 +106,7 @@ for (const line of git(
   "--",
   "library",
   "classifications",
+  ...gettingStartedGuides.map(guide => guide.sourcePath),
 ).split("\n")) {
   if (line.startsWith("@")) changeDate = line.slice(1);
   else if (line && changeDate && !modified.has(line))
@@ -182,7 +183,7 @@ function publishSummary(summary: {titleOnly:boolean;contextDropped:boolean;clipp
   return summary.text;
 }
 const tracked = new Map(
-  git("ls-tree", "-r", commit, "--", "library", "classifications")
+  git("ls-tree", "-r", commit, "--", "library", "classifications", ...gettingStartedGuides.map(guide => guide.sourcePath))
     .split("\n")
     .filter(Boolean)
     .map((line) => {
@@ -742,6 +743,26 @@ async function generate() {
       }
     },
   });
+  // Only authored, pinned translations become real counterparts.
+  const guides = gettingStartedGuides.filter(guide => tracked.has(guide.sourcePath));
+  const guideAlternates = Object.fromEntries(guides.map(guide => [guide.language, origin + guide.url]));
+  for (const guide of guides) {
+    const guidePath = guide.sourcePath;
+    const bytes = fs.readFileSync(path.join(root, guidePath));
+    bindSource(guidePath, bytes);
+    if (!codes.includes(guide.language)) {
+      codes.push(guide.language);
+      manifest.languages.push({ code: guide.language, route: guide.locale, label: guide.locale === "zh" ? "简体中文" : "English", htmlLang: guide.language, required: true });
+    }
+    sourceRoutes.set(guidePath, guide.url);
+    renderDocument({
+      artifact: { path: guidePath, text: bytes.toString("utf8"), sha256: sha256(bytes) },
+      language: guide.language,
+      slugs: ["getting-started"],
+      extra: { kind: "guide" },
+      alternates: guideAlternates,
+    });
+  }
   const modules = new Set(
     manifest.records.flatMap((r) =>
       Object.entries(r.modules).flatMap(([group, ids]) =>
@@ -958,13 +979,15 @@ async function generate() {
         encode: (value: unknown) => searchTerms(value, language),
       });
       for (const doc of bucket) index.add(Number(doc.record.id), doc.text);
-      const entries: Record<string,string> = {};
+      const entries: Record<string,unknown[]> = {};
       await index.export((key, value) => {
-        entries[key] = value;
+        const parsed: unknown = JSON.parse(value);
+        if (!Array.isArray(parsed) || JSON.stringify(parsed) !== value)
+          throw new Error("Unsupported serialized search export: " + language + "/" + key);
+        entries[key] = parsed;
       });
       const payload = JSON.stringify({
-        schemaVersion: 2,
-        entries: encodeSearchEntries(entries),
+        entries,
         records: bucket.map((d) => d.record),
       });
       if (Buffer.byteLength(payload) > 20_000_000)
@@ -994,7 +1017,7 @@ async function generate() {
     }
     await flush();
     json("public/search/" + language + "/manifest.json", {
-      schemaVersion: 1,
+      schemaVersion: 2,
       language,
       shards,
     });

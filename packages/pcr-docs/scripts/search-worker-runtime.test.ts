@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-for (const [scenario, description] of [
-  ['compact', 'worker reads losslessly compacted shards with full English, Han and machine-ID matches'],
-  ['compact-retry', 'worker rejects malformed compact score data and retries a valid shard'],
+for (const schemaVersion of [1, 2]) for (const [scenario, description] of [
+  ['wire-roundtrip', 'worker imports every export string exactly and preserves complete result records'],
+  ['entry-format-retry', 'worker rejects entries from the wrong wire format and permits a valid retry'],
   ['english-rank', 'real serialized English index ranks exact/prefix/title/body hits predictably'],
   ['chinese', 'real serialized Chinese index retains Han matches and complete result context'],
   ['normalization', 'worker searches normalized fullwidth terms and complete machine identifiers'],
@@ -20,8 +20,8 @@ for (const [scenario, description] of [
   ['serialized-retry', 'real index import failure resets initialization and permits a valid retry'],
   ['requests', 'invalid requests cannot initialize or fetch the search index'],
   ['empty', 'empty index inventories and unmatched queries return complete empty results'],
-] as const) test(description, () => {
-  const result = spawnSync(process.execPath, [fileURLToPath(new URL('./fixtures/search-worker-runtime.ts', import.meta.url)), scenario], {
+] as const) test(`v${schemaVersion}: ${description}`, () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(new URL('./fixtures/search-worker-runtime.ts', import.meta.url)), scenario, String(schemaVersion)], {
     encoding: 'utf8', timeout: 30_000, maxBuffer: 2 * 1024 * 1024,
   });
   assert.equal(result.error, undefined); assert.equal(result.signal, null);

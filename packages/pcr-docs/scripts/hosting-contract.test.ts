@@ -35,16 +35,20 @@ test("moved download rules, missing module or guide MIME and redirect drift fail
     const broken = structuredClone(config);
     if (mutation === "raw") broken.headers.find(rule => rule.source === "/generated/raw/*")!.source = "/downloads/*";
     if (mutation === "mime" || mutation === "guide") {
-      const rule = broken.headers.find(rule => rule.source === (mutation === "mime" ? "/generated/*.mjs" : "/getting-started.md"))!;
+      const rule = broken.headers.find(rule => rule.source === (mutation === "mime" ? "/generated/*.mjs" : "/getting-started*.md"))!;
       rule.headers = rule.headers.filter(
         (header) => header.key !== "Content-Type",
       );
     }
-    if (mutation === "redirect") broken.redirects = [];
+    if (mutation === "redirect") broken.redirects = [{ source: "/zh/", destination: "/", statusCode: 301 }];
     if (mutation === "output") broken.outputDirectory = "out";
     assert.throws(
       () => verifyHostingContract(broken, downloads),
       mutation,
     );
   }
+});
+test("localized Chinese home remains explicit, including broad hosting rules", () => {
+  for (const source of ["/zh", "/zh/", "/*"])
+    assert.throws(() => verifyHostingContract({ ...config, redirects: [{ source, destination: "/", statusCode: 301 }] }, downloads), /Explicit Chinese-home/u);
 });

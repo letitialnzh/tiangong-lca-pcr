@@ -1,7 +1,7 @@
 ---
 lastReviewedAt: 2026-10-08
-lastReviewedNote: "Reviewed unified 0.4.4 version mirrors, installation examples and the Agent getting-started entry together with lossless search-shard compaction and legacy reading. Canonical methodology, reader compatibility, release qualification, provider contracts and per-language browser budgets remain unchanged. Publication pending."
-lastReviewedCommit: null
+lastReviewedNote: "Reviewed PCR #106 / PR #97 native-array search v2 with v1 reader compatibility and unchanged aggregate budgets, preserving current-main onboarding and language preferences. Unified 0.4.5 publication remains subject to fresh qualification and live verification. Preserved main PR #105 bilingual guide and navigation changes during integration."
+lastReviewedCommit: 059aa340fc90d0d9e0ad8add6b0af485d66a8803
 title: Generated PCR Documentation Site Contract
 docType: contract
 scope: repo
@@ -126,9 +126,19 @@ descriptions are not evidence about methodology quality or coverage.
 The complete default Chinese home is `/`. Localized homes and document routes use
 the registry's URL aliases, initially `/zh/`, `/en/` and `/{locale}/docs/**`.
 `/zh` and `/zh/` carry that same Chinese home: they are generated, canonicalized
-to `/`, kept out of the sitemap, and redirected to `/` by the provider, so the
-Chinese home never competes with an indexable duplicate. `/en/` is a real
+to `/` and kept out of the sitemap. The provider preserves these explicit language
+URLs. `/en/` is a real
 localized home, and the document routes keep their locale segment.
+In a JavaScript-enabled browser, only `/` negotiates a reading language: a valid
+manual `pcr-docs-language` localStorage value wins, then the browser's language
+list is checked in preference order against emitted route/code identities and
+regional aliases, with English as the final fallback. Static Chinese HTML and
+its SEO identity remain unchanged. Explicit localized URLs override detection
+and saved preferences. Only a language-selector click writes the preference;
+automatic navigation and ordinary localized links never write it. Storage denial
+does not stop reading or switching. A manual Chinese home switch uses `/zh/`,
+including when persistence is unavailable. All language navigation preserves the
+current query string and fragment; a document switch prefers a verified counterpart.
 PCR document slugs retain semantic domain/subdomain/record identity under
 `docs/pcr/`. Exceptionally long documents may have stable subpages with a complete
 chapter inventory. All normative content remains in the HTML of those pages.
@@ -152,6 +162,28 @@ PCR records. The hosting contract serves it inline as UTF-8 Markdown with cache
 revalidation. Export verification checks its bytes and required header policy;
 actual availability follows the normal qualified website publication.
 
+The authored English source and its complete Chinese counterpart
+`packages/pcr-docs/public/getting-started.zh-CN.md` render as the normal
+indexable pages `/en/docs/getting-started/` and `/zh/docs/getting-started/`.
+Each page uses its own pinned Markdown source, block inventory, table of
+contents, sitemap and language search index. The Chinese raw entry
+`/getting-started.zh-CN.md` is also exported byte-for-byte with the same inline
+Markdown headers. Only actual authored counterparts appear in hreflang and the
+language selector; switching keeps the guide and preserves query/fragment.
+Homepage entries follow the reading language. Documentation navigation keeps
+one sidebar list for Getting started, the PCR library and classification
+coverage; the shell retains the related-sites menu without repeating that list.
+The prompt copy action reads the displayed first code block and gives localized
+success or manual-copy feedback. Each page links to its corresponding raw guide.
+The generator binds every translation to the pinned Git source, and export
+verification checks source fidelity, discovery links and unique sidebar entries.
+Sealed desktop/mobile browser qualification covers both languages, counterpart
+switching, unique navigation, search and accepted/denied clipboard writes.
+Clipboard transport is mocked for deterministic cross-browser checks; actual
+host permission remains a browser concern. Website guide translations do not
+change the English-only npm methodology package or the methodology catalog.
+
+
 The library index keeps every record link in static HTML behind native subdomain
 disclosures. Domain catalog pages group the same exact record set by subdomain,
 offer links to each subdomain directory, and expose those headings in the on-page
@@ -173,15 +205,6 @@ and scroll within their own box instead of widening the page. Coverage pages
 show one localized summary and one download action; raw classification keys are
 not passed off as reader-facing translations. Record breadcrumb structured data
 uses the same translated category titles as the catalog.
-
-Search retains complete source terms, exact machine identifiers, result metadata and
-engine scores. Version 2 shard payloads store parsed engine exports without nested
-JSON escaping and encode sparse score buckets as their original length plus ordered
-score/posting pairs. The Worker restores the original export before importing it;
-legacy version 1 payloads remain readable. This transport encoding does not remove
-words, shorten PCRs, change ranking or omit language coverage. The per-language
-limits remain 20,000,000 serialized bytes and 4,000,000 gzip bytes in total across
-all shards. Budget failures report both measured totals.
 
 ## Validation and production
 
@@ -321,11 +344,20 @@ actual provider still owns packaging, configured routing/headers and final publi
 live checks are required after its processing.
 
 Search is loaded only on reader intent, in a dedicated Worker. Per-language raw
-indexes must stay under 20 MB and the gzip transfer for each language under 4 MB; the
-current measured indexes are about 14.5 MB raw / 2.5 MB gzip per language. The
+indexes must stay under 20 MB and the gzip transfer for each language under 4 MB. The
 Worker and tokenization module are compiled TypeScript browser modules shipped with the pinned
 FlexSearch browser bundle, preserving its license header. Static exports must
 not ship an uncompiled TypeScript Worker. No search backend is needed at this size.
+
+New search manifests use `schemaVersion: 2`: each shard's `entries` object stores
+the pinned FlexSearch export as native JSON arrays. Generation requires every
+export value to parse as an array and stringify back to the exact original engine
+string. The Worker stringifies those arrays before engine import and also accepts
+version 1 manifests with their original string entries. Unsupported manifest
+versions and entry types inconsistent with the declared version fail initialization;
+failed loads remain retryable. This representation preserves export key order,
+terms, postings, IDs and complete records. The 2 MB text buckets, tokenization,
+30-candidate limit per shard, global ranking and browser size budgets are unchanged.
 
 Large documents split preferentially before semantic H2/H3 boundaries; bounded
 continuations retain their chapter context. Chapter URLs use source heading
@@ -357,7 +389,7 @@ Historical navigation uses each record's exact emitted chapter URLs, never a sha
 PCR-ID-only page set. Current and historical sidebars use distinct cache identities,
 and every historical record links the complete immutable version list. Home-page
 language alternatives point to canonical homes; the default Chinese alternative
-and x-default both use `/`, while `/zh/` redirects permanently to it.
+and x-default both use `/`, while `/zh/` remains an explicit Chinese reader URL.
 
 Production resource checks fail when memory measurement is unavailable or empty.
 POSIX builds inspect process-tree RSS; Windows uses its native CIM working-set

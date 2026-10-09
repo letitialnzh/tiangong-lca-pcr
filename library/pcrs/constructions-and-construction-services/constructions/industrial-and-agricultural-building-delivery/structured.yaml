@@ -1,0 +1,1779 @@
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.constructions-and-construction-services.constructions.industrial-and-agricultural-building-delivery"
+  classification_refs: "CPC 3.0 53121 — Industrial buildings"
+  covered_products: "Accepted industrial-production/assembly buildings and agricultural buildings including storage silos, with project-specific complete delivery scope"
+  excluded_products: "CPC excluded specialized facilities; building-service contracts; material kits; production equipment; other occupancy classes"
+  representative_product: "One accepted factory/workshop building or one accepted agricultural building/silo of an explicitly surveyed configuration"
+  production_route: "Actual site preparation, foundations, load-bearing erection or shell assembly, enclosure, fixed services, commissioning and handover; route-specific atomic rows"
+  market_state: "Completed on its declared site and signed over in the specified construction/fit-out condition, without an assumed production operation period"
+functional_unit:
+  what: "Deliver the building enclosure/structure and declared fixed services for the documented industrial or agricultural function"
+  how_much: "One complete accepted entity; report surveyed gross/internal/useful areas with explicit definitions, number of levels, clear height and actual dimensions; for silo declare usable storage volume/capacity and contents basis without default bulk density"
+  how_well: "As-built structural system, actual design/performance records, enclosure, industrial floor requirements and installed service/acceptance scope; no generic design loads or compliance approval"
+  how_long_or_cycle: "One actual construction-to-handover event with start/end dates; operational service life is outside this reference and must be source-supported in later scenarios"
+  reference_flow_link: "reference_building"
+system_boundary:
+  rules:
+    - rule_id: construction_gate
+      applies_to: "dataset"
+      rule: "Collect each actual foreground work package through accepted handover; the inventory is construction-focused, not automatically complete cradle-to-gate. Upstream products carry their own manufacturing burden rather than copied manufacture into site work."
+      source_ids:
+        - rics-wlca-2024
+    - rule_id: route_completeness
+      applies_to: "all inventory rows"
+      rule: "Process and flow examples are conditional, not a universal bill. Add every actually used atomic cement, aggregate, additive, panel, joint/grout, fixing, membrane, service component and waste for the real design. Do not drop industrial/agricultural routes because their identities are unresolved."
+      source_ids:
+        - jrc-levels-boq-2021
+        - un-cpc-3-53121
+    - rule_id: environment_gate
+      applies_to: "utilities; waste"
+      rule: "Distinguish supplied water, direct resource intake, dewatering, contained washwater, treated discharge and each measured emission constituent. Construction noise/vibration/land and unmeasured constituents require explicit assessment/disclosure, not invented mandatory exchanges. Direct combustion and generator supply must not double count."
+      source_ids:
+        - epa-concrete-washout-2012
+        - epa-construction-dust-2010
+boundary_abstraction:
+  declared_starting_condition: "Actual documented site condition plus supplied construction products/equipment at explicitly named supplier or site gates before installation"
+  starting_condition_role: "foreground_starting_point"
+  product_classification_scope: "Industrial/agricultural delivered building entity within the stated inclusions/exclusions"
+  recursive_input_rule: "A reused same-category building or shell is recorded once at its actual received state/gate; expose residual inherited burdens and refurbishment work, do not recursively recreate its full construction inventory"
+  upstream_dataset_requirement: "Compatible A1–A3 material/component manufacture and actual A4 delivery links must be supplied separately and checked for included transport/site processes; missing links preclude complete cradle-to-handover claim"
+  disclosure: "Site preparation and pre-existing demolition; product/manufacture gates; construction phases and temporary works; actual transport, fixed services, commissioning; later use, maintenance/replacement, final demolition, treatment and module D excluded"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Completed industrial or agricultural building"
+    uuid: ""
+  flow_property_ref:
+    uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+  unit_group_ref:
+    uuid: "5beb6eed-33a9-47b8-9ede-1dfe8f679159"
+  reference_unit: "item"
+  required_qualifiers:
+    - "entity/site id"
+    - "industrial/agricultural function and exclusions"
+    - "delivery date/state"
+    - "full installed scope"
+    - "actual area definition and geometry"
+    - "clear height"
+    - "structural system"
+    - "floor/performance evidence"
+    - "actual silo contents and capacity basis if applicable"
+    - route
+    - "upstream gates"
+    - "unmeasured/excluded stages"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_count
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Number of items"
+      uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+    required_unit: "item"
+    rule: "One accepted complete entity with cp_acceptance. Keep the same declared reference flow for all records. No numeric mass M is imposed."
+  - id: actual_geometry
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Area"
+      uuid: "93a60a56-a3c8-19da-a746-0800200c9a66"
+    required_unit: "m2"
+    rule: "Survey areas with stated measurement convention and as-built dimensions; retain silo usable volume in m3 separately. Geometry describes function/configuration and is not an automatic output conversion."
+  - id: energy_identity
+    applies_to: "lv_electricity; mv_electricity; diesel"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Preserve public net calorific value reference and energy group. Electricity kWh uses 3.6 MJ/kWh; diesel kg to MJ needs actual LHV and litres to kg actual density at declared state. Retain raw records and uncertainty."
+  - id: transport_basis
+    applies_to: "road_freight"
+    required_property_ref:
+      name: "Goods transport (mass*distance)"
+      uuid: "838aaa20-0117-11db-92e3-0800200c9a66"
+    required_unit: "t*km"
+    rule: "Retain actual cargo mass and each route distance in cp_transport; documented tonne-kilometres are an input service numerator per the same entity."
+process_map:
+  - id: ground
+    name: "Site preparation and earthworks"
+    inclusion: "required"
+    inclusion_condition: "Actual ground investigation, clearance, excavation, fill and drainage required by the delivered design; pre-existing demolition separately disclosed"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: concrete
+    name: "Foundations and structural concrete including industrial ground slab"
+    inclusion: "conditional"
+    inclusion_condition: "Actual cast-in-place foundations, slab or frame; measure concrete placement, reinforcement, finishing, curing, pumps and formwork"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: frame
+    name: "Load-bearing frame and masonry erection"
+    inclusion: "conditional"
+    inclusion_condition: "Actual steel, precast, timber or masonry route with separate row applicability; cranes/MEWPs and temporary bracing, bolting or welding, alignment and inspection"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: envelope
+    name: "Roof, wall enclosure and industrial openings"
+    inclusion: "conditional"
+    inclusion_condition: "Actual covered building: cladding, insulation, roof drainage and doors as delivered; open agricultural structures disclose absent enclosure"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: silo
+    name: "Agricultural storage-silo assembly"
+    inclusion: "conditional"
+    inclusion_condition: "Actual agricultural silo: foundation interface, shell/roof, anchors, seals and access; steel example is not universal for concrete silos"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: services
+    name: "Industrial floor finishes and fixed building services"
+    inclusion: "conditional"
+    inclusion_condition: "Only actually delivered fixed lighting, power distribution, drainage, ventilation and fire protection; integral offices included within declared building; process machinery excluded"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: utilities
+    name: "Site equipment operation and temporary facilities"
+    inclusion: "required"
+    inclusion_condition: "Actual construction utilities and measured releases across all work packages; stages and equipment retained"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: waste
+    name: "Construction waste collection and export"
+    inclusion: "conditional"
+    inclusion_condition: "Every occurring waste segregated by material and state, with actual destination; add atomic exchanges not represented by examples"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: transport
+    name: "Deliveries and exported waste transport"
+    inclusion: "conditional"
+    inclusion_condition: "Actual transport legs not already in linked datasets; preserve different gates and modes"
+    role: "foreground"
+    quantitative_reference: "per declared reference flow"
+  - id: handover
+    name: "Inspection, commissioning and accepted handover"
+    inclusion: "required"
+    inclusion_condition: "Whole delivered entity with documented geometry, structural/enclosure/services scope and signed acceptance; test exchanges retained"
+    role: "reference_product"
+    quantitative_reference: "per declared reference flow"
+process_inventory:
+  - id: ground
+    label: "Site preparation and earthworks"
+    inputs:
+      product:
+        - row_id: subbase
+          role: "Crushed stone for foundation subbase"
+          name: "Crushed stone for foundation subbase"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "If used: record actual grading, moisture, delivered and retained quantities; no universal layer thickness."
+          amount:
+            expression: "Measured attributable exchange total from cp_ground; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_ground
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: soil_export
+          role: "Non-contaminated excavated mineral soil sent for disposal"
+          name: "Non-contaminated excavated mineral soil sent for disposal"
+          flow_type: "waste"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Only if exported as waste: distinguish bank/loose volume, contamination and destination; reused soil is not disposal."
+          amount:
+            expression: "Measured attributable exchange total from cp_ground; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_ground
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+      elementary:
+        []
+  - id: concrete
+    label: "Foundations and structural concrete including industrial ground slab"
+    inputs:
+      product:
+        - row_id: ready_mix
+          role: "Ready-mixed concrete delivered before placing"
+          name: "Ready-mixed concrete delivered before placing"
+          flow_type: "product"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "For supplied concrete in foundations, ground slab or frame: retain actual mix designation, strength/exposure specification, tickets, pump/placing, curing and returns. Site batching instead requires cement, each aggregate, water and additive rows; do not count both routes."
+          amount:
+            expression: "Measured attributable exchange total from cp_concrete; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_concrete
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: rebar
+          role: "Steel rebar"
+          name: "steel rebar"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f1a1837-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for actual non-alloy steel supplied in irregularly wound coils, matching the public Chinese identity. Record supplier gate, coil grade/shape and weighed receipts; on-site straightening, cutting and bending are separate actual foreground operations with losses and utilities. Straight bars, already cut/bent bars, alloy reinforcement and prefabricated cages require separately verified identities; the generic English name does not broaden applicability."
+          amount:
+            expression: "Measured attributable exchange total from cp_concrete; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_concrete
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: formwork
+          role: "Plywood formwork panel"
+          name: "Plywood formwork panel"
+          flow_type: "product"
+          property_unit: "Area 93a60a56-a3c8-19da-a746-0800200c9a66 / m2"
+          description: "Only if used: record actual panel thickness, composition, area, reuse and remaining service under cp_asset; installed contact area is not the whole new panel charge."
+          amount:
+            expression: "Measured attributable exchange total from cp_concrete; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_concrete
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: frame
+    label: "Load-bearing frame and masonry erection"
+    inputs:
+      product:
+        - row_id: precast
+          role: "Precast concrete structural column"
+          name: "Precast concrete structural column"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for a precast frame: include actual embedded reinforcement/connection scope and delivered column mass; lifting, grouting and joints are site processes."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: steel_beam
+          role: "Fabricated structural steel beam"
+          name: "Fabricated structural steel beam"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for steel frame members: record section, grade, coating/fire protection and supplier gate. Shop cutting/welding/coating is upstream unless actually performed on site."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+        - row_id: steel_column
+          role: "Fabricated structural steel column"
+          name: "Fabricated structural steel column"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for actual steel columns; distinguish base plates, anchors and included coatings to avoid duplication; record alignment and connection inspection."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+        - row_id: timber
+          role: "Kiln-dried sawn coniferous timber"
+          name: "Kiln-dried sawn coniferous timber, at mill"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50904047-e5b0-4110-990a-53751d250267"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for a timber building route using this state: record species, strength grading, moisture and treatment; laminated or treated members require separate identities."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: brick
+          role: "Fired brick"
+          name: "Fired brick"
+          flow_type: "product"
+          flow_ref:
+            uuid: "aedc2027-2154-4b0e-95fd-9baeb46d4153"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for actual sintered clay masonry: record unit type/voids and installation evidence; refractory and unsintered units do not match."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: mortar
+          role: "Cement-sand masonry mortar"
+          name: "Cement-sand masonry mortar"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "If supplied for masonry: retain real composition and water state; if mixed on site split constituent exchanges and mixing utilities, do not assume a sand fraction."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: steel_bolt
+          role: "Structural steel bolt"
+          name: "Structural steel bolt"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "If installed: record grade, dimensions, coating and weighed quantity; nuts and washers not included by supplier must be separate atomic rows."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+        - row_id: welding_wire
+          role: "Flux Cored Wire"
+          name: "Flux Cored Wire"
+          flow_type: "product"
+          flow_ref:
+            uuid: "1b74a576-06e0-4764-97ce-11a73f8a4752"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for actual site flux-cored arc welding: record wire designation, composition, consumed mass, remaining stock and welding procedure. Not a universal erection requirement."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+        - row_id: argon
+          role: "Argon welding shielding gas"
+          name: "Argon welding shielding gas"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only if pure argon is actually supplied for the documented site weld; mixtures and CO2 shielding are separate flows. Measure cylinder net mass or supported state-specific conversion."
+          amount:
+            expression: "Measured attributable exchange total from cp_frame; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_frame
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: envelope
+    label: "Roof, wall enclosure and industrial openings"
+    inputs:
+      product:
+        - row_id: sheet
+          role: "galvanized corrugated iron"
+          name: "galvanized corrugated iron"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b302e292-860a-430a-9dc0-b95e89d4a63e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for installed hot-dip galvanized corrugated sheet of the public thickness range 0.25–2.5 mm. Verify actual thickness/coating/grade and measured receipts; sandwich panels and silo-specific sheets are separate products."
+          amount:
+            expression: "Measured attributable exchange total from cp_envelope; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_envelope
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+        - row_id: rock_wool
+          role: "Rock Wool"
+          name: "Rock Wool"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3a298360-f298-4a11-999e-11943f142cec"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for separately supplied installed rock wool: measure actual density/thickness/facing and design specification. Do not also count insulation embedded in a purchased sandwich panel."
+          amount:
+            expression: "Measured attributable exchange total from cp_envelope; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_envelope
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: industrial_door
+          role: "Finished steel industrial roller door"
+          name: "Finished steel industrial roller door"
+          flow_type: "product"
+          property_unit: "Number of items 01846770-4cfe-4a25-8ad9-919d8d378345 / item"
+          description: "Only if this door is installed: record opening size, leaf/mechanism/frame and supplied accessories. Other door types require distinct rows."
+          amount:
+            expression: "Measured attributable exchange total from cp_envelope; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_envelope
+              source_ids:
+                - bcsa-steel-buildings-2003
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: silo
+    label: "Agricultural storage-silo assembly"
+    inputs:
+      product:
+        - row_id: silo_wall
+          role: "Galvanized steel grain-silo wall panel"
+          name: "Galvanized steel grain-silo wall panel"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for assembled steel agricultural storage silos: record panel geometry, thickness, coating, included stiffeners, bolts, measured mass and supplier erection drawings. Not general industrial cladding."
+          amount:
+            expression: "Measured attributable exchange total from cp_silo; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_silo
+              source_ids:
+                - sukup-grain-bins-2026
+            ranges: []
+        - row_id: silo_roof
+          role: "Galvanized steel grain-silo roof panel"
+          name: "Galvanized steel grain-silo roof panel"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "If installed: retain actual roof/rib assembly and aperture/seal scope; supporting members and access platform not included in supply are separate."
+          amount:
+            expression: "Measured attributable exchange total from cp_silo; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_silo
+              source_ids:
+                - sukup-grain-bins-2026
+            ranges: []
+        - row_id: silo_washer
+          role: "Polyethylene grain-bin bolt sealing washer"
+          name: "Polyethylene grain-bin bolt sealing washer"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only when this actual manufacturer-type sealing washer is used; weigh or use documented supplier part mass and installed count, not a generic polyethylene-resin input."
+          amount:
+            expression: "Measured attributable exchange total from cp_silo; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_silo
+              source_ids:
+                - sukup-grain-bins-2026
+            ranges: []
+        - row_id: silo_stiffener
+          role: "Galvanized steel grain-silo wall stiffener"
+          name: "Galvanized steel grain-silo wall stiffener"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only separately supplied stiffeners on the actual silo design: record section, coating, installed mass and connection to foundation; do not repeat stiffeners embedded in panel supply."
+          amount:
+            expression: "Measured attributable exchange total from cp_silo; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_silo
+              source_ids:
+                - sukup-grain-bins-2026
+            ranges: []
+        - row_id: silo_anchor
+          role: "Steel grain-silo foundation anchor bolt"
+          name: "Steel grain-silo foundation anchor bolt"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only actual foundation anchoring: record bolt type, dimensions, coating, weighed quantity and inspected anchorage. No universal wind load or embedment is prescribed."
+          amount:
+            expression: "Measured attributable exchange total from cp_silo; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_silo
+              source_ids:
+                - sukup-grain-bins-2026
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: services
+    label: "Industrial floor finishes and fixed building services"
+    inputs:
+      product:
+        - row_id: floor_epoxy
+          role: "Two-component epoxy industrial floor coating"
+          name: "Two-component epoxy industrial floor coating"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only if installed: record actual formulated resin/hardener supply scope, coverage, mixed/unused mass and curing; do not infer VOC composition or emissions. If purchased separately list resin and hardener separately."
+          amount:
+            expression: "Measured attributable exchange total from cp_services; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: cable
+          role: "Insulated copper low-voltage building cable"
+          name: "Insulated copper low-voltage building cable"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "If part of fixed building services: collect conductor area, insulation, voltage, length and actual product mass; exclude process-machine wiring outside delivery."
+          amount:
+            expression: "Measured attributable exchange total from cp_services; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: drain_pipe
+          role: "Unplasticized polyvinyl chloride pipe"
+          name: "UPVC tube"
+          flow_type: "product"
+          flow_ref:
+            uuid: "a343bef6-8d18-4594-b1aa-99bc47172684"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for installed unplasticized PVC pipe with documented CN production-origin supply compatible with the public at-plant identity: record dimensions, pipe mass and actual drainage/water role; fittings are separate when not included."
+          amount:
+            expression: "Measured attributable exchange total from cp_services; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: led
+          role: "Complete LED building luminaire"
+          name: "Complete LED building luminaire"
+          flow_type: "product"
+          property_unit: "Number of items 01846770-4cfe-4a25-8ad9-919d8d378345 / item"
+          description: "If installed as fixed lighting: declare fixture, driver, mounting and actual tested configuration. A diode module or driver alone is not a complete luminaire."
+          amount:
+            expression: "Measured attributable exchange total from cp_services; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+        - row_id: sprinkler
+          role: "Fire sprinkler head"
+          name: "Fire sprinkler head"
+          flow_type: "product"
+          property_unit: "Number of items 01846770-4cfe-4a25-8ad9-919d8d378345 / item"
+          description: "Only if delivered fire-protection design includes this head: record type/rating, installed count and test evidence; piping, pumps and test water are separate."
+          amount:
+            expression: "Measured attributable exchange total from cp_services; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - jrc-levels-boq-2021
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: utilities
+    label: "Site equipment operation and temporary facilities"
+    inputs:
+      product:
+        - row_id: lv_electricity
+          role: "Electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only for CN user-side supply below 1 kV matching the public identity. Attribute meters to excavation, pumping, lifting, welding, enclosure, site accommodation and commissioning; other geography/voltage needs another verified row."
+          amount:
+            expression: "Measured attributable exchange total from cp_utilities; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: mv_electricity
+          role: "Electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3d76981f-964a-4865-b588-0e067a2a1163"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only for CN user-side 1–35 kV supply, with actual metering point/transformer losses and no overlap with low-voltage readings."
+          amount:
+            expression: "Measured attributable exchange total from cp_utilities; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: diesel
+          role: "Diesel"
+          name: "Diesel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fbd79004-188c-47a4-900b-96005d994690"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "For actual distillate diesel consumed in site excavators, compactors, cranes or generators: preserve net calorific value, collect fuel receipts/tank reconciliation and measured LHV with density if converting litres. Disclose fossil/bio share; site combustion is separate from refinery supply."
+          amount:
+            expression: "Measured attributable exchange total from cp_utilities; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: mains_water
+          role: "Treated mains water supplied to construction site"
+          name: "Treated mains water supplied to construction site"
+          flow_type: "product"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "If purchased: meter actual curing, cleaning, dust suppression and system testing water; supply is a technosphere input, not direct natural-resource abstraction."
+          amount:
+            expression: "Measured attributable exchange total from cp_utilities; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utilities
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: groundwater
+          role: "Water, groundwater"
+          name: "ground water"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "4f462198-40cd-4184-8733-86648a20dc3f"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Only for actual direct groundwater abstraction with source, date and volume; do not count purchased water or pumped excavation drainage as resource consumption without demonstrated routing."
+          amount:
+            expression: "Measured attributable exchange total from cp_environment; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_environment
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: riverwater
+          role: "Water, river"
+          name: "river water"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "805a7346-1664-4483-afe3-4b224be5e361"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Only for actual direct river intake with identified source; not lake water, wastewater or groundwater."
+          amount:
+            expression: "Measured attributable exchange total from cp_environment; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_environment
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        - row_id: fossil_co2
+          role: "carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only quantified immediate fossil CO2 emitted to unspecified air by documented site combustion. Retain fossil fraction and actual fuel carbon/oxidation basis; do not duplicate generator background combustion."
+          amount:
+            expression: "Measured attributable exchange total from cp_environment; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_environment
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: nitric_oxide
+          role: "nitrogen monoxide"
+          name: "nitrogen monoxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-96ee-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only if NO to unspecified air is separately measured or supported by equipment/fuel-specific evidence. Do not allocate total NOx expressed as NO2 mass to NO without justified speciation."
+          amount:
+            expression: "Measured attributable exchange total from cp_environment; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_environment
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: nitrogen_dioxide
+          role: "nitrogen dioxide"
+          name: "nitrogen dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-96e5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for separately established NO2 release to unspecified air; not N2O, nitrogen or nitrite, and not an assumed fraction of total NOx."
+          amount:
+            expression: "Measured attributable exchange total from cp_environment; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_environment
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: pm10
+          role: "particles (PM10)"
+          name: "particles (PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91be-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only for quantified PM10 release to unspecified air from evidenced earthworks/material handling or combustion; retain particle-size definition and avoid overlapping PM fractions. No fixed dust factor from historical guidance is prescribed."
+          amount:
+            expression: "Measured attributable exchange total from cp_environment; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_environment
+              source_ids:
+                - epa-construction-dust-2010
+            ranges: []
+  - id: waste
+    label: "Construction waste collection and export"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        - row_id: concrete_waste
+          role: "Hardened concrete construction offcut"
+          name: "Hardened concrete construction offcut"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only actual separated hardened concrete sent off site; fresh returned mix and mixed demolition rubble have different states and routes."
+          amount:
+            expression: "Measured attributable exchange total from cp_waste; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: steel_waste
+          role: "Steel construction offcut sent for recycling"
+          name: "Steel construction offcut sent for recycling"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only separated steel offcuts from documented site cutting; track coating, contamination, destination and recovery. Reused whole members remain product transfers."
+          amount:
+            expression: "Measured attributable exchange total from cp_waste; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: film_waste
+          role: "Polyethylene packaging film waste"
+          name: "Polyethylene packaging film waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only received packaging removed at site: measure actual polymer-specific quantity and disposal route; not virgin film provision."
+          amount:
+            expression: "Measured attributable exchange total from cp_waste; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+        - row_id: washwater
+          role: "Contained concrete-chute washwater for off-site treatment"
+          name: "Contained concrete-chute washwater for off-site treatment"
+          flow_type: "waste"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "If concrete equipment is washed: collect retained liquid volume, solids, chemistry and destination; list separated solids separately. Export is waste, not automatic emission to water."
+          amount:
+            expression: "Measured attributable exchange total from cp_waste; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - epa-concrete-washout-2012
+            ranges: []
+      elementary:
+        []
+  - id: transport
+    label: "Deliveries and exported waste transport"
+    inputs:
+      product:
+        - row_id: road_freight
+          role: "Freight Truck"
+          name: "Freight Truck"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d55f1329-cd61-44c0-8000-9367d38d5634"
+          property_unit: "Goods transport (mass*distance) 838aaa20-0117-11db-92e3-0800200c9a66 / t*km"
+          description: "Only actual generic road freight compatible with this service identity: retain leg, load, mass, distance and empty-return allocation. Stage-tag delivered goods separately from exported waste; avoid transport embedded in supplier datasets."
+          amount:
+            expression: "Measured attributable exchange total from cp_transport; preserve the row unit and documented route; no default amount"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_transport
+              source_ids:
+                - rics-wlca-2024
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: handover
+    label: "Inspection, commissioning and accepted handover"
+    inputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_building
+          role: "Completed industrial or agricultural building"
+          name: "Completed industrial or agricultural building"
+          flow_type: "product"
+          property_unit: "Number of items 01846770-4cfe-4a25-8ad9-919d8d378345 / item"
+          description: "1 item"
+          amount:
+            expression: "1 item"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - un-cpc-3-53121
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: avoid_allocation
+    applies_to: "all inventory rows"
+    rule: "Separate directly attributable records by building, stage and contractor first. For genuinely shared site utilities use measured causal activity, time or another justified physical driver; retain denominator, covered projects and uncertainty. Economic allocation needs explicit review when no physical relation can be evidenced."
+    source_ids:
+      - ghg-allocation-2011
+  - rule_id: asset_conservation
+    applies_to: "utilities; concrete; frame"
+    rule: "Equipment manufacture, scaffolds, bracing and reusable formwork are charged only by the justified share in cp_asset. Across all projects, periods and reuses cumulative manufacture-burden shares must not exceed one; retain residual and reconcile forecast service. Unknown lifetime/cumulative service requires review and disclosure; no full manufacture reset for each building."
+    source_ids:
+      - rics-wlca-2024
+  - rule_id: waste_no_credit
+    applies_to: "waste"
+    rule: "Keep actual exported waste and treatment/recovery burdens distinct from the accepted building output. Do not credit future avoided steel/concrete production by default; reuse/recycling substitutions require separately evidenced routes and consistent boundary without duplicate credit."
+    source_ids:
+      - rics-wlca-2024
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_ground
+      process_id: "ground"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Site id; excavation boundaries; geology/contamination; bank/loose volumes; grading; moisture; weighbridge tickets; reuse and export destinations"
+      collection_method: "Survey actual excavated geometry and weigh imports/exports; trace drainage separately and reconcile retained/reused fill"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_concrete
+      process_id: "concrete"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Mix/specification; batch/delivery tickets; actual placed volumes; reinforcement weights; pump power; curing water; formwork id and reuse ledger; returns/waste"
+      collection_method: "Reconcile actual deliveries, returns, installed geometry, reinforcement schedules and supplier quantities; meter placement/finishing/curing utilities. Site-batched materials collected separately"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_frame
+      process_id: "frame"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Member id; material/grade; fabrication and coating gate; component masses; bolts; weld wire/gas; lifting equipment hours; connection/alignment inspection; temporary supports"
+      collection_method: "Match as-built member list to delivery weighing and installed state; retain actual lift/assembly method, connection records and partition factory/site operations"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_envelope
+      process_id: "envelope"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Panel type/coating/thickness; measured roof/wall/opening geometry; delivered and installed masses; insulation density; drainage and doors; returns and waste"
+      collection_method: "Survey and reconcile actual assembly by product; separate embedded and separately supplied insulation, fixings, glazing and weather seals"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_silo
+      process_id: "silo"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Silo id; stored material; diameter/height; usable capacity definition and actual geometry; foundation interface; shell/roof/stiffeners/anchors; washers/seals; access; separate machinery"
+      collection_method: "Match actual manufacturer erection drawings and as-built survey to weighed supplied parts, shell/roof connections, anchoring and acceptance; no generic bulk density/capacity conversion"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_services
+      process_id: "services"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Fixed service component ids and supplied scope; cable/pipe lengths and real mass; floor coating formulation; test energy/water; commissioning records; excluded machinery list"
+      collection_method: "Trace every delivered fixed service to schedules, supplier tickets and commissioning; separate product identities and measured test consumption, identify all additional atomic flows"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_utilities
+      process_id: "utilities"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Date; stage/equipment; supply geography/voltage; meters; fuel tank receipts/returns; diesel density/LHV/fossil fraction; generator output and combustion scope"
+      collection_method: "Use calibrated site and subcontractor meters; reconcile stock, hours and actual equipment logs. Convert measured fuel mass using actual LHV and liquids using actual density; preserve energy property"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_environment
+      process_id: "utilities"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Emission species/CAS; fossil or biogenic share; actual equipment fuel/load; measured concentration/flow/time or specific factor provenance; medium/submedium; abstraction/discharge route; PM cut"
+      collection_method: "Quantify only evidenced releases/abstractions through calibrated measurements or explicit applicable factors and actual activity; retain speciation and uncertainty. Assess noise, vibration, land and drainage explicitly, never substitute unrelated flows"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_waste
+      process_id: "waste"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Material identity/state; weighed or metered amount; contamination; segregation; collection container; destination; treatment gate; liquid/solid separation; recovery"
+      collection_method: "Reconcile waste transfer notes with actual site separation and receipts. Record concrete washwater as retained liquid plus separately identified solids; direct discharge requires constituent-specific measured rows"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_transport
+      process_id: "transport"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Consignment; supplier and recipient gates; actual load mass; each origin/destination and distance; mode; load factor; empty-return and shared-load allocation"
+      collection_method: "Calculate actual leg-specific transport service from weighed cargo and documented route distance with explicit allocation; avoid transport already in product or treatment dataset"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_acceptance
+      process_id: "handover"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Entity/site id; industrial/agricultural function; actual area definition/geometry; usable height; structural design record; silo capacity and material definition where applicable; complete delivery schedule; inspections/acceptance signatures"
+      collection_method: "Inspect one complete accepted entity against as-built drawings and signed handover. Verify actual dimensions and functional requirements, installed fixed systems and excluded process machinery. No default service life or product mass"
+      unit: "item; m2; m3"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+    - protocol_id: cp_asset
+      process_id: "utilities"
+      flow_role: "Individual actual exchange or reference acceptance"
+      record_type: "foreground_records"
+      raw_fields: "Shared asset/formwork id; manufacture boundary; current attributable activity; cumulative actual service or evidenced forecast; all projects/periods; assigned shares and residual balance"
+      collection_method: "Meter operation separately. Charge manufacture only by an evidenced lifetime/cumulative activity denominator; maintain immutable cross-project/period allocation ledger and reconcile forecasts. Unknown denominator requires review; never reset full burden per project"
+      unit: "row-specific kg, m3, m2, MJ, item, t*km"
+      frequency: "Each delivery/work event and meter interval; each final handover"
+      temporal_coverage: "Full actual construction period with start/end dates and all unmetered intervals"
+      site_scope: "Declared entity/site and all subcontracted attributable work"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Original drawings/tickets; calibration; signed inspection; mass/volume reconciliation; uncertainty and provenance"
+  calculation_rules:
+    - id: project_reconciliation
+      applies_to: "all inventory rows"
+      rule: "Retain actual attributable totals in each row unit per declared reference flow. Reconcile receipts, returns, stock changes, installed quantities and exported waste by physical identity. Internal recirculation is not a new external input. No default recipe, loss factor, mass per building or service life."
+      inputs:
+        - cp_ground
+        - cp_concrete
+        - cp_frame
+        - cp_envelope
+        - cp_silo
+        - cp_services
+        - cp_utilities
+        - cp_waste
+        - cp_acceptance
+      output: "Actual exchange totals per declared reference flow"
+      source_ids:
+        - jrc-levels-boq-2021
+    - id: unit_preservation
+      applies_to: "diesel; lv_electricity; mv_electricity; road_freight"
+      rule: "Apply energy_identity and transport_basis only to input numerator units while preserving the declared reference flow. Keep measured density/LHV and actual transport legs with the dataset; geometry is reported as configuration, not an unproved output conversion."
+      inputs:
+        - cp_utilities
+        - cp_transport
+      output: "MJ or t*km per declared reference flow"
+      source_ids: []
+  data_quality_requirements:
+    - id: complete_entity
+      applies_to: "dataset"
+      requirement: "Acceptance scope, function, actual geometry, structural system, industrial floor and fixed service schedule must agree; assess agricultural storage-specific shell/capacity requirements. All absent/missing work packages are explicit; example rows do not prove complete inventory."
+      evidence: "cp_acceptance; cp_silo"
+    - id: measurement
+      applies_to: "all inventory rows"
+      requirement: "Original readings, tickets and subcontractor records cover the whole project and actual states. Report uncertainty and estimates separately; missing measurements never become zero."
+      evidence: "all collection protocols"
+    - id: identity
+      applies_to: "all inventory rows"
+      requirement: "Verify public identity, main reference property, unit group, route, geography and official bilingual flow display; mass/volume/energy are distinct. Blank identities retain exact rows and block unsupported linkage."
+      evidence: "supplier/state records; identity evidence"
+    - id: environment
+      applies_to: "utilities; waste"
+      requirement: "Document actual fossil/biogenic share, CAS, medium/submedium, immediate/long-term and particle fraction. Assess actual noise, land use, dewatering and washwater/discharge routes; disclose unmeasured coverage and add specific measured exchanges when required."
+      evidence: "cp_environment; cp_waste"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "dataset"
+    rule: "Require a whole accepted industrial/agricultural building or silo within the official exclusions, actual site/function/geometry and delivery state. Reject substitution by a building service, material bundle or specialized excluded facility."
+    source_ids:
+      - un-cpc-3-53121
+  - rule_id: validate_basis
+    applies_to: "all inventory rows"
+    rule: "Reference table, reference_building output and every row/protocol denominator must agree with one declared entity. Check physically compatible numerator property/unit and supported measured conversions; no false kg building mass or assumed capacity relation."
+    source_ids: []
+  - rule_id: validate_complete
+    applies_to: "dataset"
+    rule: "Check every actually occurring material, process, temporary work, utility, waste and release, including contractor work and commissioning. Missing identities, quantities or stages are declared gaps, not zero; no full cradle-to-gate/full-lifetime claim with missing upstream or later stages."
+    source_ids:
+      - rics-wlca-2024
+  - rule_id: validate_asset
+    applies_to: "utilities; concrete; frame"
+    rule: "Reconcile shared-equipment/formwork manufacture shares across all projects and periods, cumulative total at most one; review unknown service denominator and ensure direct operation is not charged twice."
+    source_ids:
+      - ghg-allocation-2011
+  - rule_id: validate_environment
+    applies_to: "utilities; waste"
+    rule: "Require quantified evidence and compatible CAS, source, medium and submedium; distinguish NO and NO2 and retain waste-vs-discharge routing. Never claim methodology or legal approval from a projection/check result."
+    source_ids:
+      - epa-concrete-washout-2012
+      - epa-construction-dust-2010
+published_dataset_profile:
+  dataset_role: "foreground_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Construction-to-handover inventory of the declared complete industrial/agricultural building; compatible linked upstream scenarios; comparisons only with matched actual function, geometry, delivery scope and performance"
+  excluded_use: "Full lifetime, default annual industrial operation, process-plant equipment inventory, generic kg/m2 building conversion, default capacity/density/life or legal/scientific approval"
+  required_metadata: "All reference qualifiers, construction dates, actual route, work-package coverage, installed and excluded machinery scope, supplier/stage gates, measured geometry/capacity basis, allocations and property/unit evidence"
+  required_quality_disclosure: "Measurement/estimate uncertainty, site/time/technology representativeness, missing upstream/background links, identity gaps, unmetered stages, environmental coverage and later-stage exclusions"
+  update_trigger: "Changed function, structure, geometry, storage basis, fixed-services/delivery scope, site/supplier route, measured inventory or evidence/identity"
+data_sources:
+  - id: "un-cpc-3-53121"
+    type: "official_guidance"
+    reference: "UN Statistics Division, CPC Version 3.0, subclass 53121 explanatory note. https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/53121"
+    used_for: "Category inclusions/exclusions only; not a construction recipe."
+  - id: "bcsa-steel-buildings-2003"
+    type: "handbook"
+    reference: "BCSA, Steel Buildings, publication 35/03 (2003), chapter 3, printed pp.37–41 / PDF pp.49–53. https://www.steelconstruction.info/images/0/03/BCSA_35-03.pdf"
+    used_for: "Historical UK steel building anatomy, erection and dimensional interpretation only; no default rates, loads, dimensions or contemporary code conformity. Not universal across industrial buildings."
+  - id: "sukup-grain-bins-2026"
+    type: "handbook"
+    reference: "Sukup Manufacturing Co., Grain Bins, L1132-042026Su ©2026, PDF pp.3 and 9. https://www.sukup.com/assets/brochures/Grain-Bins.pdf"
+    used_for: "Manufacturer-specific steel agricultural silo connection/sealing and foundation interface; no universal capacities, grades or design loads."
+  - id: "jrc-levels-boq-2021"
+    type: "official_guidance"
+    reference: "European Commission JRC, Level(s) indicator 2.1 v1.1, January 2021, PDF/printed pp.16 and 23–24, Table 2. https://susproc.jrc.ec.europa.eu/product-bureau/sites/default/files/2021-01/UM3_Indicator_2.1_v1.1_34pp.pdf"
+    used_for: "Source framework covers office and residential buildings; adapt only its as-built quantity/reconciliation method, not category coverage or a material recipe, to actual industrial/agricultural work. Industrial special elements require project evidence; no claim of Level(s) conformity."
+  - id: "rics-wlca-2024"
+    type: "standard"
+    reference: "RICS, Whole life carbon assessment for the built environment, 2nd edition version 3 August 2024, section 5.1.4 printed pp.80–84 / PDF pp.88–92. https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf."
+    used_for: "Construction-stage separation and project-specific evidence; no default factors or full WLCA compliance claim."
+  - id: "epa-construction-dust-2010"
+    type: "official_guidance"
+    reference: "US EPA AP-42 13.2.3 Heavy Construction Operations, January 1995 corrected February 2010, p.13.2.3-1. https://www.epa.gov/sites/default/files/2020-10/documents/13.2.3_heavy_construction_operations.pdf"
+    used_for: "Historical qualitative dust/operation/moisture relationship only; no generic emissions or fixed emission factor."
+  - id: "epa-concrete-washout-2012"
+    type: "official_guidance"
+    reference: "US EPA, Stormwater Best Management Practice Concrete Washout, EPA-833-F-11-006 February 2012, PDF pp.1–2. https://www.epa.gov/sites/default/files/2015-11/documents/concretewashout_0.pdf"
+    used_for: "Separate captured washwater and solids from environmental release; no local legal approval or automatic discharge assumption."
+  - id: "ghg-allocation-2011"
+    type: "official_guidance"
+    reference: "WRI/WBCSD Product Life Cycle Accounting and Reporting Standard 2011, chapter 9 printed p.63 / PDF p.65, Tables 9.1–9.2. https://ghgprotocol.org/sites/default/files/standards/Product-Life-Cycle-Accounting-Reporting-Standard_041613.pdf"
+    used_for: "Historical allocation hierarchy only; actual causal drivers and complete shared-asset burden ledger required."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:d4257367560d2b7b4901c4694a75bb89add9413cac51e57a7e7c9cee5b34c5cf"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5921"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5921
+          line: 58
+          column: 1
+        end:
+          offset: 8309
+          line: 77
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Actual documented site condition plus supplied construction products/equipment at explicitly named supplier or site gates before installation |\n| starting_condition_role | foreground_starting_point |\n| product_classification_scope | Industrial/agricultural delivered building entity within the stated inclusions/exclusions |\n| recursive_input_rule | A reused same-category building or shell is recorded once at its actual received state/gate; expose residual inherited burdens and refurbishment work, do not recursively recreate its full construction inventory |\n| upstream_dataset_requirement | Compatible A1–A3 material/component manufacture and actual A4 delivery links must be supplied separately and checked for included transport/site processes; missing links preclude complete cradle-to-handover claim |\n| disclosure | Site preparation and pre-existing demolition; product/manufacture gates; construction phases and temporary works; actual transport, fixed services, commissioning; later use, maintenance/replacement, final demolition, treatment and module D excluded |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| construction_gate | dataset | Collect each actual foreground work package through accepted handover; the inventory is construction-focused, not automatically complete cradle-to-gate. Upstream products carry their own manufacturing burden rather than copied manufacture into site work. | rics-wlca-2024 |\n| route_completeness | all inventory rows | Process and flow examples are conditional, not a universal bill. Add every actually used atomic cement, aggregate, additive, panel, joint/grout, fixing, membrane, service component and waste for the real design. Do not drop industrial/agricultural routes because their identities are unresolved. | jrc-levels-boq-2021; un-cpc-3-53121 |\n| environment_gate | utilities; waste | Distinguish supplied water, direct resource intake, dewatering, contained washwater, treated discharge and each measured emission constituent. Construction noise/vibration/land and unmeasured constituents require explicit assessment/disclosure, not invented mandatory exchanges. Direct combustion and generator supply must not double count. | epa-concrete-washout-2012; epa-construction-dust-2010 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 179
+              line: 8
+              column: 1
+            end:
+              offset: 226
+              line: 8
+              column: 48
+          text: "# Industrial and agricultural building delivery"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5921
+              line: 58
+              column: 1
+            end:
+              offset: 5942
+              line: 58
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_47712"
+      family: "allocation"
+      span:
+        start:
+          offset: 47712
+          line: 825
+          column: 1
+        end:
+          offset: 49000
+          line: 833
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| avoid_allocation | all inventory rows | Separate directly attributable records by building, stage and contractor first. For genuinely shared site utilities use measured causal activity, time or another justified physical driver; retain denominator, covered projects and uncertainty. Economic allocation needs explicit review when no physical relation can be evidenced. | ghg-allocation-2011 |\n| asset_conservation | utilities; concrete; frame | Equipment manufacture, scaffolds, bracing and reusable formwork are charged only by the justified share in cp_asset. Across all projects, periods and reuses cumulative manufacture-burden shares must not exceed one; retain residual and reconcile forecast service. Unknown lifetime/cumulative service requires review and disclosure; no full manufacture reset for each building. | rics-wlca-2024 |\n| waste_no_credit | waste | Keep actual exported waste and treatment/recovery burdens distinct from the accepted building output. Do not credit future avoided steel/concrete production by default; reuse/recycling substitutions require separately evidenced routes and consistent boundary without duplicate credit. | rics-wlca-2024 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 179
+              line: 8
+              column: 1
+            end:
+              offset: 226
+              line: 8
+              column: 48
+          text: "# Industrial and agricultural building delivery"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 47712
+              line: 825
+              column: 1
+            end:
+              offset: 47752
+              line: 825
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_62212"
+      family: "validation"
+      span:
+        start:
+          offset: 62212
+          line: 868
+          column: 1
+        end:
+          offset: 63834
+          line: 878
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validate_scope | dataset | Require a whole accepted industrial/agricultural building or silo within the official exclusions, actual site/function/geometry and delivery state. Reject substitution by a building service, material bundle or specialized excluded facility. | un-cpc-3-53121 |\n| validate_basis | all inventory rows | Reference table, reference_building output and every row/protocol denominator must agree with one declared entity. Check physically compatible numerator property/unit and supported measured conversions; no false kg building mass or assumed capacity relation. |  |\n| validate_complete | dataset | Check every actually occurring material, process, temporary work, utility, waste and release, including contractor work and commissioning. Missing identities, quantities or stages are declared gaps, not zero; no full cradle-to-gate/full-lifetime claim with missing upstream or later stages. | rics-wlca-2024 |\n| validate_asset | utilities; concrete; frame | Reconcile shared-equipment/formwork manufacture shares across all projects and periods, cumulative total at most one; review unknown service denominator and ensure direct operation is not charged twice. | ghg-allocation-2011 |\n| validate_environment | utilities; waste | Require quantified evidence and compatible CAS, source, medium and submedium; distinguish NO and NO2 and retain waste-vs-discharge routing. Never claim methodology or legal approval from a projection/check result. | epa-concrete-washout-2012; epa-construction-dust-2010 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 179
+              line: 8
+              column: 1
+            end:
+              offset: 226
+              line: 8
+              column: 48
+          text: "# Industrial and agricultural building delivery"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 62212
+              line: 868
+              column: 1
+            end:
+              offset: 62234
+              line: 868
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "construction_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_5921"
+      source_span:
+        start:
+          offset: 7183
+          line: 73
+          column: 1
+        end:
+          offset: 7488
+          line: 73
+          column: 306
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "route_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_5921"
+      source_span:
+        start:
+          offset: 7489
+          line: 74
+          column: 1
+        end:
+          offset: 7868
+          line: 74
+          column: 380
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "environment_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_5921"
+      source_span:
+        start:
+          offset: 7869
+          line: 75
+          column: 1
+        end:
+          offset: 8307
+          line: 75
+          column: 439
+    - pointer: "/allocation_rules/0"
+      rule_id: "avoid_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_47712"
+      source_span:
+        start:
+          offset: 47825
+          line: 829
+          column: 1
+        end:
+          offset: 48219
+          line: 829
+          column: 395
+    - pointer: "/allocation_rules/1"
+      rule_id: "asset_conservation"
+      identity_kind: "explicit"
+      unit_id: "normative_47712"
+      source_span:
+        start:
+          offset: 48220
+          line: 830
+          column: 1
+        end:
+          offset: 48666
+          line: 830
+          column: 447
+    - pointer: "/allocation_rules/2"
+      rule_id: "waste_no_credit"
+      identity_kind: "explicit"
+      unit_id: "normative_47712"
+      source_span:
+        start:
+          offset: 48667
+          line: 831
+          column: 1
+        end:
+          offset: 48998
+          line: 831
+          column: 332
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_62212"
+      source_span:
+        start:
+          offset: 62307
+          line: 872
+          column: 1
+        end:
+          offset: 62595
+          line: 872
+          column: 289
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_basis"
+      identity_kind: "explicit"
+      unit_id: "normative_62212"
+      source_span:
+        start:
+          offset: 62596
+          line: 873
+          column: 1
+        end:
+          offset: 62899
+          line: 873
+          column: 304
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_complete"
+      identity_kind: "explicit"
+      unit_id: "normative_62212"
+      source_span:
+        start:
+          offset: 62900
+          line: 874
+          column: 1
+        end:
+          offset: 63241
+          line: 874
+          column: 342
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_asset"
+      identity_kind: "explicit"
+      unit_id: "normative_62212"
+      source_span:
+        start:
+          offset: 63242
+          line: 875
+          column: 1
+        end:
+          offset: 63516
+          line: 875
+          column: 275
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_environment"
+      identity_kind: "explicit"
+      unit_id: "normative_62212"
+      source_span:
+        start:
+          offset: 63517
+          line: 876
+          column: 1
+        end:
+          offset: 63832
+          line: 876
+          column: 316
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5921"
+      source_span:
+        start:
+          offset: 5921
+          line: 58
+          column: 1
+        end:
+          offset: 5942
+          line: 58
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5921"
+      source_span:
+        start:
+          offset: 5970
+          line: 62
+          column: 1
+        end:
+          offset: 7110
+          line: 69
+          column: 266
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_47712"
+      source_span:
+        start:
+          offset: 47712
+          line: 825
+          column: 1
+        end:
+          offset: 47752
+          line: 825
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_62212"
+      source_span:
+        start:
+          offset: 62212
+          line: 868
+          column: 1
+        end:
+          offset: 62234
+          line: 868
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:d4257367560d2b7b4901c4694a75bb89add9413cac51e57a7e7c9cee5b34c5cf"
+  generated_content_sha256: "sha256:08428ad4d89dcbef5d52cc32567b5e6d58f7e3ac4053792e1fd4ae0f0b55a07e"

@@ -1,0 +1,795 @@
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.business-and-production-services.telecommunications-broadcasting-and-information-supply-services.television-channel-daily-line-up"
+  classification_refs: "CPC 3.0 84622"
+  covered_products: "Complete daily television channel assemblies handed off as files, live feeds or mixed deliveries"
+  excluded_products: "Individual originals; pure licence transactions; viewer distribution and viewing; equipment manufacture as foreground"
+  representative_product: "Television channel daily line-up"
+  production_route: "Asset ingest and reconciliation → scheduling and necessary adaptation → QC → accepted distributor handoff"
+  market_state: "Versioned complete daily line-up accepted by its receiving distributor, with declared reuse rights and delivery conditions"
+functional_unit:
+  what: "Provide a complete distributable daily television channel line-up to another distributor"
+  how_much: "One complete assembly for one channel and one declared operational day"
+  how_well: "Current contract defines picture format, frame rate, sound tracks, sync, captions, rights and QC acceptance; no universal compliance approval"
+  how_long_or_cycle: "One declared operational-day window; record start/end, timezone, actual duration and repeats"
+  reference_flow_link: "reference_product_lineup"
+system_boundary:
+  rules:
+    - rule_id: boundary_handoff
+      applies_to: "foreground_system_boundary"
+      rule: "Include ingest, scheduling, rework, necessary transcoding, synchronization checks, caption-track checks, actual storage and pre-handoff monitoring/playout. Distributor encoding/transmission, viewer devices and viewing follow handoff and are outside this foreground."
+      source_ids:
+        - cpc-tv-lineup-2025
+        - bbc-file-quality-2020
+    - rule_id: boundary_route
+      applies_to: "foreground_system_boundary"
+      rule: "Do not add transcoding for pass-through assets. Live routes require live monitoring and actual resource records. Preserve differing contractual configurations."
+      source_ids:
+        - bbc-file-quality-2020
+    - rule_id: boundary_physical
+      applies_to: "foreground_system_boundary"
+      rule: "Do not presume combustion, refrigerant leakage, water or physical waste as inevitable assembly exchanges. Add actual occurrences as separate substance/medium-specific measured rows; grid emissions belong to upstream electricity."
+      source_ids:
+        - cpc-tv-lineup-2025
+boundary_abstraction:
+  declared_starting_condition: "Version-identified programme originals and live feeds acquired for assembly; supplier production boundary disclosed"
+  starting_condition_role: "foreground_start"
+  product_classification_scope: "Daily television channel programme assembly for distribution by others"
+  recursive_input_rule: "For an existing line-up input, record source revision, actual attributable share and included boundary; do not recursively rebuild or duplicate its burdens"
+  upstream_dataset_requirement: "Link boundary-matched upstream datasets for acquired content, QC, contribution transfer, electricity and included equipment; disclose unavailable data"
+  disclosure: "Foreground starting point to accepted handoff; do not claim complete cradle-to-gate until upstream and equipment coverage is demonstrated"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Television channel daily line-up"
+    uuid: ""
+  flow_property_ref:
+    uuid: "01846770-4cfe-4a25-8ad9-919d8d378345"
+  unit_group_ref:
+    uuid: "5beb6eed-33a9-47b8-9ede-1dfe8f679159"
+  reference_unit: "item"
+  required_qualifiers:
+    - channel
+    - "operational day and timezone"
+    - "schedule revision"
+    - "complete content/version manifest"
+    - "picture/audio configuration"
+    - captions
+    - "reuse rights"
+    - "handoff endpoint/route"
+    - acceptance
+    - "equipment and upstream boundary"
+reference_flows:
+  []
+measurement_rules:
+  - id: count_reference
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Number of items"
+      uuid: ""
+    required_unit: "item"
+    rule: "item is the display alias of public Item(s); 1 item is one complete channel-day assembly, not one programme, viewer or right. Do not substitute mass."
+  - id: electricity_measurement
+    applies_to: "electricity_lv; electricity_mv; electricity_other"
+    required_property_ref:
+      name: "Energy; UUID rows retain Net calorific value"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Use cp_energy; metered kWh converts by 1 kWh = 3.6 MJ. Network GB, programme duration and price cannot be converted directly into electricity."
+process_map:
+  - id: assembly
+    name: "Asset ingest and daily assembly"
+    inclusion: "required"
+    inclusion_condition: "all routes"
+    role: "foreground_production"
+    quantitative_reference: "1 item"
+  - id: quality_handoff
+    name: "Picture/sound checks, adaptation and handoff"
+    inclusion: "required"
+    inclusion_condition: "all routes; transcoding and outsourcing only when present"
+    role: "foreground_production"
+    quantitative_reference: "1 item"
+  - id: utility_support
+    name: "Metered utility and equipment support"
+    inclusion: "required"
+    inclusion_condition: "actual facility; supply rows depend on meters without duplication"
+    role: "foreground_production"
+    quantitative_reference: "1 item"
+process_inventory:
+  - id: assembly
+    label: "Asset ingest and daily assembly"
+    inputs:
+      product:
+        - row_id: programme_original
+          role: "Television broadcast original supplied for channel assembly"
+          name: "Television broadcast original supplied for channel assembly"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Record each distinct acquired original and version separately. This is a technical content input, not the price of a licence. Its attributed original-production share follows the disclosed actual reuse plan; do not assign the full original repeatedly to every daily repeat."
+          amount:
+            expression: "Collect actual attributable quantity per declared reference flow under cp_content; no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_content
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+  - id: quality_handoff
+    label: "Picture/sound checks, adaptation and handoff"
+    inputs:
+      product:
+        - row_id: qc_service
+          role: "Television programme file quality-control service"
+          name: "Television programme file quality-control service"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Only when external QC is actually purchased; one item is one contractually defined completed QC delivery. Record its file scope, revision and acceptance report; exclude the same vendor electricity from utility rows when already included in this service dataset."
+          amount:
+            expression: "Collect actual attributable quantity per declared reference flow under cp_services; no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+        - row_id: handoff_service
+          role: "Television channel feed contribution transfer service"
+          name: "Television channel feed contribution transfer service"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Only when external contribution transfer to the accepting distributor is used; one item is one defined completed transfer session. Specify endpoint, feed duration, redundancy and transfer logs. Exclude transmission from distributor to viewers."
+          amount:
+            expression: "Collect actual attributable quantity per declared reference flow under cp_services; no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_services
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_lineup
+          role: "Television channel daily line-up"
+          name: "Television channel daily line-up"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "This output is the complete channel-day assembly accepted by another distributor; cp_acceptance reconciles its window, assets, configuration and revision."
+          amount:
+            expression: "1 item"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: utility_support
+    label: "Metered utility and equipment support"
+    inputs:
+      product:
+        - row_id: electricity_lv
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Only for actual CN grid-average customer supply below 1 kV at the documented meter. Includes attributed ingest, scheduling, video adaptation, monitoring, storage, playout-to-handoff and facility support electricity. The voltage is the supply meter voltage, not the workstation adapter voltage."
+          amount:
+            expression: "Collect actual attributable quantity per declared reference flow under cp_energy; no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+        - row_id: electricity_mv
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3d76981f-964a-4865-b588-0e067a2a1163"
+          property_unit: "Net calorific value / MJ"
+          description: "Only for actual CN grid-average customer supply at 1–35 kV. Record this instead of low-voltage consumption for the same metered supply; include downstream on-site transformer losses within that measured boundary."
+          amount:
+            expression: "Collect actual attributable quantity per declared reference flow under cp_energy; no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+        - row_id: electricity_other
+          role: "Alternating-current electricity supplied at the site meter"
+          name: "Alternating-current electricity supplied at the site meter"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Use only for actual supply outside the two CN grid-average voltage cases. State the actual geography, voltage and supply route and obtain a matching upstream dataset; this unresolved identity must not be replaced with either CN identity without evidence."
+          amount:
+            expression: "Collect actual attributable quantity per declared reference flow under cp_energy; no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+        - row_id: server_share
+          role: "Broadcast playout server"
+          name: "Broadcast playout server"
+          flow_type: "product"
+          property_unit: "Number of items / item"
+          description: "Only for capital-equipment inclusion declared by the study. One item is the actual complete specified server configuration. Attribute its production dataset using the evidenced whole installed-service or compatible cumulative-service denominator and persistent manufacture-share ledger under allocation_equipment. An observation period distributes only its already justified manufacture fraction; it does not reset the complete server production burden. Unknown service denominator or ledger coverage requires review and prevents a final attributed quantity; no default lifetime. Split monitors, storage arrays and replacement parts as separate configuration-specific exchanges when present."
+          amount:
+            expression: "Actual server count multiplied by the evidenced dimensionless manufacture share attributable to this declared reference flow under allocation_equipment and cp_equipment; unknown share remains under review, with no default quantity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_equipment
+              source_ids:
+                - cpc-tv-lineup-2025
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_resource
+    applies_to: "foreground_burden_allocation"
+    rule: "Prefer separate metering. Attribute shared workstations, servers, storage, monitoring and facility electricity using measured job consumption or log-verified resource occupancy; retain total energy, all occupants, allocation denominator, idle/redundancy treatment and reconciliation. GB is not kWh; do not allocate by assumed price or audience."
+    source_ids: []
+  - rule_id: allocation_content
+    applies_to: "foreground_burden_allocation"
+    rule: "Rights are not physical production quantities. Under cp_content disclose separate original-production datasets, versions and shares attributable under the actual use/reuse plan; an unsupported reuse denominator remains an upstream gap and sensitivity, not a full original-production charge to every repeat delivery."
+    source_ids:
+      - cpc-tv-lineup-2025
+  - rule_id: allocation_versions
+    applies_to: "foreground_burden_allocation"
+    rule: "Include main-version, rework and actual redundant-handoff resources. Multiple channels/languages/configurations use explainable actual resource attribution. Do not count incomplete line-ups as complete output."
+    source_ids: []
+  - rule_id: allocation_equipment
+    applies_to: "foreground_burden_allocation"
+    rule: "Under cp_equipment retain one same-asset manufacture boundary and persistent ledger across every project, period and beneficiary. The share uses actual attributable service activity divided by an evidenced whole installed-service or compatible cumulative-service denominator, with matching activity units; a justified forecast requires sensitivity and later reconciliation. Cumulative assigned manufacture shares must not exceed one. Within an observation period distribute only the manufacture fraction already justified for that period, never the complete asset production burden anew. Unknown denominator, prior shares or ledger coverage requires review and prohibits a final attributed manufacture quantity or complete equipment-coverage claim. These are foreground-accounting controls, not a prescribed numeric life or classification factor."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_content
+      process_id: "assembly"
+      flow_role: "programme_original"
+      record_type: "asset ledger"
+      raw_fields: "asset id; version; source; original-production dataset; actual reuse plan; attributed share; rights scope"
+      collection_method: "Reconcile ingest manifests, contracts and actual reuse logs; price is not quantity"
+      unit: "item"
+      frequency: "per asset"
+      temporal_coverage: "same channel day and actual reuse horizon"
+      site_scope: "source and receiving facility"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "complete asset/version manifest and denominator evidence"
+    - protocol_id: cp_services
+      process_id: "quality_handoff"
+      flow_role: "qc_service; handoff_service"
+      record_type: "supplier record"
+      raw_fields: "supplier; delivery definition; session; endpoint; configuration; energy coverage; acceptance"
+      collection_method: "Reconcile contracts, supplier datasets and delivery logs with included boundary"
+      unit: "item"
+      frequency: "per delivery"
+      temporal_coverage: "declared channel day"
+      site_scope: "external QC and contribution link"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "reports and double-count boundary reconciliation"
+    - protocol_id: cp_energy
+      process_id: "utility_support"
+      flow_role: "electricity_lv; electricity_mv; electricity_other"
+      record_type: "meter record"
+      raw_fields: "meter; region; supply voltage; route; start/end readings; jobs and all occupants; idle; storage; cooling; redundancy; unit"
+      collection_method: "Synchronize calibrated meters and job logs; reconcile shared attribution, site losses and supplier-included electricity"
+      unit: "MJ"
+      frequency: "per job and meter interval"
+      temporal_coverage: "complete declared day, preparation and rework"
+      site_scope: "actual workstations, servers and facility meters"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "meter calibration, bills and energy allocation totals"
+    - protocol_id: cp_equipment
+      process_id: "utility_support"
+      flow_role: "server_share"
+      record_type: "equipment record"
+      raw_fields: "persistent asset id; server configuration/count; upstream manufacture boundary; actual attributable service activity and units; evidenced whole installed-service or compatible cumulative-service denominator; all projects/periods/beneficiaries; prior shares; current dimensionless share; justified period manufacture fraction; cumulative assigned/remaining share; forecast sensitivity and later reconciliation"
+      collection_method: "Reconcile the same-asset register and full usage/allocation ledger against the supported total service denominator; cap cumulative manufacture shares at one and period allocations at their previously justified fraction. Unknown denominator or ledger coverage requires review, not an assumed lifetime or reset"
+      unit: "item; dimensionless share; actual service activity units"
+      frequency: "per asset and study period, with cumulative ledger updates"
+      temporal_coverage: "declared channel-day observation plus evidenced whole-service/cumulative-service horizon"
+      site_scope: "capital equipment declared included; all beneficiary periods retained"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "asset identity/configuration, supported denominator, cumulative conservation and period-fraction evidence"
+    - protocol_id: cp_acceptance
+      process_id: "quality_handoff"
+      flow_role: "reference_product_lineup"
+      record_type: "acceptance record"
+      raw_fields: "channel; date; timezone; window; revision; assets; duration; format; sound tracks; captions; rights; gaps; rework; receiver"
+      collection_method: "Reconcile final schedule, files/live feed, acceptance logs and current delivery specification; record completeness"
+      unit: "item"
+      frequency: "per channel day"
+      temporal_coverage: "complete declared day and associated preparation"
+      site_scope: "assembly facility to other-distributor handoff"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "receipt, picture/sound QC and complete-window reconciliation"
+  calculation_rules:
+    - id: energy_conversion
+      applies_to: "electricity_lv; electricity_mv; electricity_other"
+      rule: "Express attributable metered energy per declared reference flow; convert kWh to MJ using 3.6, preserve raw records and infer no other conversion from property names."
+      inputs:
+        - cp_energy
+      output: "MJ per declared reference flow"
+      source_ids: []
+    - id: count_complete
+      applies_to: "reference_product_lineup"
+      rule: "One accepted complete channel day counts as 1 item; duplicate files of the same delivery do not increase reference output."
+      inputs:
+        - cp_acceptance
+      output: "1 item"
+      source_ids:
+        - cpc-tv-lineup-2025
+  data_quality_requirements:
+    - id: quality_configuration
+      applies_to: "all inventory rows"
+      requirement: "Cover all actual routes and required quality configuration; easy excerpts cannot represent the complete channel day. Current contract determines acceptance."
+      evidence: "cp_acceptance; bbc-file-quality-2020"
+    - id: quality_energy
+      applies_to: "electricity_lv; electricity_mv; electricity_other"
+      requirement: "Use actual contemporaneous geography and supply voltage; disclose shared attribution, unmeasured scope and supplier-included loads."
+      evidence: "cp_energy"
+    - id: quality_upstream
+      applies_to: "programme_original; server_share"
+      requirement: "Disclose original/equipment production coverage and reuse/service-horizon evidence; uncovered is not zero."
+      evidence: "cp_content; cp_equipment"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "foreground_dataset_conformance"
+    rule: "Reference name matches output row; output is 1 item complete channel day; absent asset manifest, timezone/window, revision, rights or acceptance makes the definition incomplete."
+    source_ids:
+      - cpc-tv-lineup-2025
+  - rule_id: validate_inventory
+    applies_to: "foreground_dataset_conformance"
+    rule: "Each row is one exchange; choose actual supply rows without duplication; upstream emissions cannot be direct elementary flows; missing identity or measurement cannot be treated as data."
+    source_ids: []
+  - rule_id: validate_boundary
+    applies_to: "foreground_dataset_conformance"
+    rule: "Reconcile asset production, outsourced services, equipment and transfer dataset boundaries and attribution totals; foreground handoff results do not establish full lifecycle coverage or methodology approval."
+    source_ids: []
+  - rule_id: validate_equipment
+    applies_to: "foreground_dataset_conformance"
+    rule: "For server_share verify the same configuration, supported whole-service denominator and persistent ledger across all beneficiaries/periods; cumulative manufacture shares must not exceed one and within-period allocations must not exceed the justified period fraction. Reject manufacture reset at each day/project/period. Unknown denominator or prior-share coverage requires review and prevents final equipment attribution and complete equipment-coverage claims."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground channel-day assembly to accepted other-distributor handoff dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Input to configuration/window-matched downstream distribution models; assembly-route comparisons within disclosed boundary"
+  excluded_use: "Automatic representation of individual originals, broadcast transmission, viewer use, entire lifecycle or licence economic value"
+  required_metadata: "channel, day, window/timezone, revision, route, picture/audio configuration, rights, acceptance, supply, original/equipment boundary"
+  required_quality_disclosure: "meter coverage, shared attribution, reuse denominator, missing upstream, unresolved identities, historical technical-evidence limitations"
+  update_trigger: "configuration, route, supplier, schedule window, supply or actual resource-consumption change"
+data_sources:
+  - id: "cpc-tv-lineup-2025"
+    type: "official_guidance"
+    reference: "United Nations Statistics Division, CPC Version 3.0 Explanatory Notes (30 June 2025), p. 444. https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Category and boundary between originals, daily assemblies and broadcasting/distribution; no quantitative factors"
+  - id: "bbc-file-quality-2020"
+    type: "standard"
+    reference: "BBC, Technical Specification for the Delivery of Television Programmes as AS-11 Files, BBC File v5.1.0 (2020), p. 22, §§3.3–3.5. https://downloads.bbc.co.uk/scotland/commissioning/TechnicalDeliveryStandardsBBCFile.pdf"
+    used_for: "Historical AS-11 file QC and acceptance example only; not current universal criteria or channel-day energy. Dataset production uses the actual current delivery agreement."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:e389b8ca53ee7f5bcc27259fc17c3506bba827858dff034fe35401f3a3f56444"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4183"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4183
+          line: 56
+          column: 1
+        end:
+          offset: 5957
+          line: 75
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Version-identified programme originals and live feeds acquired for assembly; supplier production boundary disclosed |\n| starting_condition_role | foreground_start |\n| product_classification_scope | Daily television channel programme assembly for distribution by others |\n| recursive_input_rule | For an existing line-up input, record source revision, actual attributable share and included boundary; do not recursively rebuild or duplicate its burdens |\n| upstream_dataset_requirement | Link boundary-matched upstream datasets for acquired content, QC, contribution transfer, electricity and included equipment; disclose unavailable data |\n| disclosure | Foreground starting point to accepted handoff; do not claim complete cradle-to-gate until upstream and equipment coverage is demonstrated |\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| boundary_handoff | Include ingest, scheduling, rework, necessary transcoding, synchronization checks, caption-track checks, actual storage and pre-handoff monitoring/playout. Distributor encoding/transmission, viewer devices and viewing follow handoff and are outside this foreground. | cpc-tv-lineup-2025; bbc-file-quality-2020 |\n| boundary_route | Do not add transcoding for pass-through assets. Live routes require live monitoring and actual resource records. Preserve differing contractual configurations. | bbc-file-quality-2020 |\n| boundary_physical | Do not presume combustion, refrigerant leakage, water or physical waste as inevitable assembly exchanges. Add actual occurrences as separate substance/medium-specific measured rows; grid emissions belong to upstream electricity. | cpc-tv-lineup-2025 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 209
+              line: 8
+              column: 1
+            end:
+              offset: 243
+              line: 8
+              column: 35
+          text: "# Television channel daily line-up"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4183
+              line: 56
+              column: 1
+            end:
+              offset: 4204
+              line: 56
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_14529"
+      family: "allocation"
+      span:
+        start:
+          offset: 14529
+          line: 265
+          column: 1
+        end:
+          offset: 16476
+          line: 274
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| allocation_resource | Prefer separate metering. Attribute shared workstations, servers, storage, monitoring and facility electricity using measured job consumption or log-verified resource occupancy; retain total energy, all occupants, allocation denominator, idle/redundancy treatment and reconciliation. GB is not kWh; do not allocate by assumed price or audience. |  |\n| allocation_content | Rights are not physical production quantities. Under cp_content disclose separate original-production datasets, versions and shares attributable under the actual use/reuse plan; an unsupported reuse denominator remains an upstream gap and sensitivity, not a full original-production charge to every repeat delivery. | cpc-tv-lineup-2025 |\n| allocation_versions | Include main-version, rework and actual redundant-handoff resources. Multiple channels/languages/configurations use explainable actual resource attribution. Do not count incomplete line-ups as complete output. |  |\n| allocation_equipment | Under cp_equipment retain one same-asset manufacture boundary and persistent ledger across every project, period and beneficiary. The share uses actual attributable service activity divided by an evidenced whole installed-service or compatible cumulative-service denominator, with matching activity units; a justified forecast requires sensitivity and later reconciliation. Cumulative assigned manufacture shares must not exceed one. Within an observation period distribute only the manufacture fraction already justified for that period, never the complete asset production burden anew. Unknown denominator, prior shares or ledger coverage requires review and prohibits a final attributed manufacture quantity or complete equipment-coverage claim. These are foreground-accounting controls, not a prescribed numeric life or classification factor. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 209
+              line: 8
+              column: 1
+            end:
+              offset: 243
+              line: 8
+              column: 35
+          text: "# Television channel daily line-up"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 14529
+              line: 265
+              column: 1
+            end:
+              offset: 14569
+              line: 265
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_21419"
+      family: "validation"
+      span:
+        start:
+          offset: 21419
+          line: 301
+          column: 1
+        end:
+          offset: 22658
+          line: 310
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| validate_reference | Reference name matches output row; output is 1 item complete channel day; absent asset manifest, timezone/window, revision, rights or acceptance makes the definition incomplete. | cpc-tv-lineup-2025 |\n| validate_inventory | Each row is one exchange; choose actual supply rows without duplication; upstream emissions cannot be direct elementary flows; missing identity or measurement cannot be treated as data. |  |\n| validate_boundary | Reconcile asset production, outsourced services, equipment and transfer dataset boundaries and attribution totals; foreground handoff results do not establish full lifecycle coverage or methodology approval. |  |\n| validate_equipment | For server_share verify the same configuration, supported whole-service denominator and persistent ledger across all beneficiaries/periods; cumulative manufacture shares must not exceed one and within-period allocations must not exceed the justified period fraction. Reject manufacture reset at each day/project/period. Unknown denominator or prior-share coverage requires review and prevents final equipment attribution and complete equipment-coverage claims. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 209
+              line: 8
+              column: 1
+            end:
+              offset: 243
+              line: 8
+              column: 35
+          text: "# Television channel daily line-up"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 21419
+              line: 301
+              column: 1
+            end:
+              offset: 21441
+              line: 301
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_handoff"
+      identity_kind: "explicit"
+      unit_id: "normative_4183"
+      source_span:
+        start:
+          offset: 5144
+          line: 71
+          column: 1
+        end:
+          offset: 5476
+          line: 71
+          column: 333
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_route"
+      identity_kind: "explicit"
+      unit_id: "normative_4183"
+      source_span:
+        start:
+          offset: 5477
+          line: 72
+          column: 1
+        end:
+          offset: 5681
+          line: 72
+          column: 205
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_4183"
+      source_span:
+        start:
+          offset: 5682
+          line: 73
+          column: 1
+        end:
+          offset: 5955
+          line: 73
+          column: 274
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_resource"
+      identity_kind: "explicit"
+      unit_id: "normative_14529"
+      source_span:
+        start:
+          offset: 14623
+          line: 269
+          column: 1
+        end:
+          offset: 14996
+          line: 269
+          column: 374
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_content"
+      identity_kind: "explicit"
+      unit_id: "normative_14529"
+      source_span:
+        start:
+          offset: 14997
+          line: 270
+          column: 1
+        end:
+          offset: 15358
+          line: 270
+          column: 362
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_versions"
+      identity_kind: "explicit"
+      unit_id: "normative_14529"
+      source_span:
+        start:
+          offset: 15359
+          line: 271
+          column: 1
+        end:
+          offset: 15597
+          line: 271
+          column: 239
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_equipment"
+      identity_kind: "explicit"
+      unit_id: "normative_14529"
+      source_span:
+        start:
+          offset: 15598
+          line: 272
+          column: 1
+        end:
+          offset: 16474
+          line: 272
+          column: 877
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_21419"
+      source_span:
+        start:
+          offset: 21495
+          line: 305
+          column: 1
+        end:
+          offset: 21718
+          line: 305
+          column: 224
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_inventory"
+      identity_kind: "explicit"
+      unit_id: "normative_21419"
+      source_span:
+        start:
+          offset: 21719
+          line: 306
+          column: 1
+        end:
+          offset: 21932
+          line: 306
+          column: 214
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_21419"
+      source_span:
+        start:
+          offset: 21933
+          line: 307
+          column: 1
+        end:
+          offset: 22167
+          line: 307
+          column: 235
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_equipment"
+      identity_kind: "explicit"
+      unit_id: "normative_21419"
+      source_span:
+        start:
+          offset: 22168
+          line: 308
+          column: 1
+        end:
+          offset: 22656
+          line: 308
+          column: 489
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4183"
+      source_span:
+        start:
+          offset: 4183
+          line: 56
+          column: 1
+        end:
+          offset: 4204
+          line: 56
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4183"
+      source_span:
+        start:
+          offset: 4232
+          line: 60
+          column: 1
+        end:
+          offset: 5090
+          line: 67
+          column: 155
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_14529"
+      source_span:
+        start:
+          offset: 14529
+          line: 265
+          column: 1
+        end:
+          offset: 14569
+          line: 265
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_21419"
+      source_span:
+        start:
+          offset: 21419
+          line: 301
+          column: 1
+        end:
+          offset: 21441
+          line: 301
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:e389b8ca53ee7f5bcc27259fc17c3506bba827858dff034fe35401f3a3f56444"
+  generated_content_sha256: "sha256:6005456634f104a9f37cac307f0ea1f0306fc165a8285ba7f70739d517f39cb9"

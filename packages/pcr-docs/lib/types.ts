@@ -15,7 +15,7 @@ export type Download = {
 export type TocItem = { title: string; url: string; depth: number };
 export type DocPage = {
   key: string;
-  kind: "pcr" | "module" | "catalog" | "coverage";
+  kind: "pcr" | "module" | "catalog" | "coverage" | "guide";
   language: string;
   locale: string;
   slugs: string[];

@@ -14,7 +14,7 @@ function pcrRecord(value:unknown):value is PcrRecord {
  &&(value.versions===undefined||Array.isArray(value.versions)&&value.versions.every(version=>record(version)&&typeof version.version==='string'&&textMap(version.urls)));
 }
 function page(value:unknown):value is DocPage {
- if(!record(value)||!['key','kind','language','locale','url','title','description','canonical'].every(key=>typeof value[key]==='string')||!['pcr','module','catalog','coverage'].includes(String(value.kind))||!strings(value.slugs)||typeof value.indexable!=='boolean'||!textMap(value.alternates)||!strings(value.sourceNodeIds)||!Array.isArray(value.toc)||!value.toc.every(item=>record(item)&&typeof item.title==='string'&&typeof item.url==='string'&&finite(item.depth)))return false;
+ if(!record(value)||!['key','kind','language','locale','url','title','description','canonical'].every(key=>typeof value[key]==='string')||!['pcr','module','catalog','coverage','guide'].includes(String(value.kind))||!strings(value.slugs)||typeof value.indexable!=='boolean'||!textMap(value.alternates)||!strings(value.sourceNodeIds)||!Array.isArray(value.toc)||!value.toc.every(item=>record(item)&&typeof item.title==='string'&&typeof item.url==='string'&&finite(item.depth)))return false;
  for(const key of ['pcrId','recordVersion','currentUrl','currentLanguage','lastModified','moduleId','domain','subdomain','htmlPath','sourcePath','sourceSha256','sourceHeadingId','sourceHeadingAnchor'])if(value[key]!==undefined&&typeof value[key]!=='string')return false;
  return (value.downloads===undefined||downloads(value.downloads))&&(value.part===undefined||record(value.part)&&finite(value.part.index)&&finite(value.part.total)&&typeof value.part.label==='string');
 }

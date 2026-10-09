@@ -1,0 +1,1014 @@
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.food-products-beverages-and-tobacco-textiles-apparel-and-leather-products.yarn-and-thread-woven-and-tufted-textile-fabrics.dry-brushed-graded-unspun-sisal-fibre"
+  classification_refs: "CPC 3.0: 26190; narrower semantic scope; no accepted mapping is asserted"
+  covered_products: "Dry-brushed graded unspun untreated Agave sisalana main fibre; associated saleable brushing tow as co-product"
+  excluded_products: "Other fibre species; raw leaves; wet or chemically treated fibre; yarn; rope; fibre waste as the reference product"
+  representative_product: "Dry-brushed graded unspun sisal fibre"
+  production_route: "Dried extracted fibre receipt → dry sorting/brushing/grading → net weighing and baling"
+  market_state: "Factory-gate baled fibre, declared grade and moisture; packaging excluded from reference mass"
+functional_unit:
+  what: "Supply unspun sisal fibre for declared downstream processing"
+  how_much: "1 kg net accepted fibre at dispatch moisture"
+  how_well: "Declared species purity, processing state, length distribution, grade, impurity acceptance and measured moisture; buyer-specific limits"
+  how_long_or_cycle: "One accepted production lot; no service life claim"
+  reference_flow_link: "reference_product_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_finishing
+      applies_to: "all foreground processes"
+      rule: "Start at accepted extracted dried fibre receipt; include sorting, brushing, grading, dust handling, baling, net weighing and attributable gate storage/handling. This is gate-to-gate finishing."
+      source_ids:
+        - sisaex-finishing
+        - grosso-sisal
+    - rule_id: upstream_separation
+      applies_to: "agricultural and wet extraction operations"
+      rule: "Keep cultivation, harvesting, leaf decortication, extraction washing and initial drying outside this foreground. Link state-compatible supplier datasets; a complete cradle-to-gate claim requires these upstream burdens and transport explicitly connected and completeness demonstrated."
+      source_ids:
+        - grosso-sisal
+    - rule_id: wet_route_exclusion
+      applies_to: "route applicability"
+      rule: "No wet treatment or dyeing is assumed. Actual wet cleaning, softening, bleaching or dyeing requires a route-specific extension with each chemical, technosphere water, wastewater and measured pollutant separately; do not assign zero effluent by omission."
+      source_ids:
+        - sisaex-finishing
+    - rule_id: recursive_input
+      applies_to: "same-category fibre"
+      rule: "Purchased already-brushed fibre must carry upstream finishing evidence; segregate it from this unbrushed-input route. Internal transfer and rework are counted once; never attach a second background dataset to internal transfers. Exclude downstream spinning, use and end of life."
+      source_ids:
+        - unsd-cpc-2025
+        - sisaex-finishing
+boundary_abstraction:
+  declared_starting_condition: "Accepted extracted dried unbrushed Agave sisalana fibre at factory receipt"
+  starting_condition_role: "foreground_input"
+  product_classification_scope: "Only dry finishing of sisal within CPC 26190; other routes unassessed"
+  recursive_input_rule: "Segregate purchased processed fibre; count internal transfers once"
+  upstream_dataset_requirement: "Species, extraction/drying state, moisture, region and period compatible supplier data including agricultural/extraction burdens where the study includes them"
+  disclosure: "State gate-to-gate extent, excluded routes, upstream coverage, transport responsibility and actual moisture/grade"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Dry-brushed graded unspun sisal fibre"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Agave sisalana species and purity"
+    - "extracted dried incoming state"
+    - "dry brushing route"
+    - "main-fibre grade"
+    - "fibre length distribution"
+    - "impurity specification"
+    - "measured wet-basis moisture"
+    - "net mass excluding packaging"
+    - "untreated unspun state"
+    - "site and period"
+    - "packaging configuration"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh net fibre using calibrated scales and measured tare; normalize every row to per 1 kg reference flow with cp_mass_baling. Maintain the declared dispatch moisture basis."
+  - id: electricity_conversion
+    applies_to: "receipt_electricity; brushing_electricity; baling_electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Preserve the public energy reference property. Collect kWh; 1 kWh = 3.6 MJ. Never treat electricity as mass or use rated power as measured energy."
+  - id: moisture_observation
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Record wet-basis moisture fraction w and as-received mass m; dry solids = m × (1 − w). Do not replace the 1 kg dispatch reference by dry mass without an explicit separate conversion and metadata."
+process_map:
+  - id: receipt
+    name: "Receipt, sorting and moisture verification"
+    inclusion: "required"
+    inclusion_condition: "For the declared dry-finishing route"
+    role: "foreground_production"
+    quantitative_reference: "per 1 kg reference flow"
+  - id: brushing
+    name: "Dry brushing, grading and dust capture"
+    inclusion: "required"
+    inclusion_condition: "For the declared dry-finishing route"
+    role: "foreground_production"
+    quantitative_reference: "per 1 kg reference flow"
+  - id: baling
+    name: "Baling, labelling and dispatch weighing"
+    inclusion: "required"
+    inclusion_condition: "For the declared dry-finishing route"
+    role: "foreground_production"
+    quantitative_reference: "per 1 kg reference flow"
+process_inventory:
+  - id: receipt
+    label: "Receipt, sorting and moisture verification"
+    inputs:
+      product:
+        - row_id: dried_sisal_input
+          role: "Extracted dried unbrushed sisal fibre"
+          name: "Extracted dried unbrushed sisal fibre"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh accepted incoming Agave sisalana fibre and record extraction/drying state, moisture and supplier. Leaves and mixed-species lots are outside this route."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_receipt
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+        - row_id: receipt_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only user-side grid supply below 1 kV. Include warehouse handling and monitoring electricity actually attributable to this lot; other supply routes need their own verified identity. This selected UUID is applicable only to actual CN grid-average consumption supply to the user below 1 kV. Other geography, supply technology or voltage requires another verified identity and matching provider data; it is not covered by this selected UUID."
+          amount:
+            expression: "Measured allocated batch kWh × 3.6 divided by accepted net main-fibre kg."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_receipt
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: sorted_sisal_output
+          role: "Sorted dried unbrushed sisal fibre"
+          name: "Sorted dried unbrushed sisal fibre"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Internal transfer to brushing; retain batch linkage and mass without adding a second upstream burden."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_receipt
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      waste:
+        - row_id: receipt_rejected_sisal
+          role: "Rejected dried sisal fibre for off-site treatment"
+          name: "Rejected dried sisal fibre for off-site treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on actual discarded fibre. Weigh separately and document contamination and destination; supplier-returned fibre is a product return rather than this waste."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_receipt
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      elementary:
+        []
+  - id: brushing
+    label: "Dry brushing, grading and dust capture"
+    inputs:
+      product:
+        - row_id: sorted_sisal_input
+          role: "Sorted dried unbrushed sisal fibre"
+          name: "Sorted dried unbrushed sisal fibre"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Match the receipt transfer mass after explicitly recording intervening moisture change and stock movements."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_brushing
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+        - row_id: brushing_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Meter brushing drives and dust-extraction fans, with grid supply below 1 kV. Allocate shared electricity using measured machine-time and load evidence. This selected UUID is applicable only to actual CN grid-average consumption supply to the user below 1 kV. Other geography, supply technology or voltage requires another verified identity and matching provider data; it is not covered by this selected UUID."
+          amount:
+            expression: "Measured allocated batch kWh × 3.6 divided by accepted net main-fibre kg."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_brushing
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: brushed_sisal_output
+          role: "Dry-brushed graded unspun sisal fibre before baling"
+          name: "Dry-brushed graded unspun sisal fibre before baling"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh each accepted main-fibre grade before packing, with moisture and length/impurity acceptance recorded. No universal grade threshold is imposed."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_brushing
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+        - row_id: sisal_tow_output
+          role: "Saleable sisal tow recovered by dry brushing"
+          name: "Saleable sisal tow recovered by dry brushing"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on separately collected short fibre that meets a buyer specification and is sold as a co-product. Record grade, moisture, buyer and revenue; not the main reference product."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_brushing
+              source_ids:
+                - grosso-sisal
+            ranges: []
+      waste:
+        - row_id: captured_sisal_dust
+          role: "Captured sisal brushing dust for off-site treatment"
+          name: "Captured sisal brushing dust for off-site treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on actual captured discard. Record dry fibre content and contamination separately from saleable tow; the collected solid is not an air emission."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_brushing
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      elementary:
+        - row_id: particulate_air
+          role: "Particulate matter, particle size unspecified"
+          name: "Particulate matter, particle size unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0ce3dedb-caca-407b-a856-a90470eb8ec0"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on measured particulate discharge to ambient air with unspecified subcompartment and particle-size fraction. Record emission point, test method, controls, air volume and uncertainty. Never infer PM2.5 from total dust; distinguish collected dust from emitted mass. Add size-specific or other actual pollutants as individual verified rows when data support them."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+  - id: baling
+    label: "Baling, labelling and dispatch weighing"
+    inputs:
+      product:
+        - row_id: brushed_sisal_input
+          role: "Dry-brushed graded unspun sisal fibre before baling"
+          name: "Dry-brushed graded unspun sisal fibre before baling"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Internal transfer of the same accepted grade; reconcile with brushing output and final net mass."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_baling
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+        - row_id: baling_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Include press, scale, lighting and handling electricity attributable to this lot for grid supply below 1 kV, retaining idle-load allocation evidence. This selected UUID is applicable only to actual CN grid-average consumption supply to the user below 1 kV. Other geography, supply technology or voltage requires another verified identity and matching provider data; it is not covered by this selected UUID."
+          amount:
+            expression: "Measured allocated batch kWh × 3.6 divided by accepted net main-fibre kg."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy_baling
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+        - row_id: pp_bale_strap
+          role: "Polypropylene bale strapping"
+          name: "Polypropylene bale strapping"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on use of solid polypropylene strap. Weigh actual consumption and retain specification; resin, twine and cable ties are not interchangeable identities."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+        - row_id: paper_bale_label
+          role: "Paper bale label"
+          name: "Paper bale label"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on an actual paper label. Weigh labels separately; declare any adhesive as another atomic input if used. No mixed packaging placeholder is permitted."
+          amount:
+            expression: "Measured allocated batch exchange amount divided by accepted net main-fibre kg; retain moisture and stock records."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_output
+          role: "Dry-brushed graded unspun sisal fibre"
+          name: "Dry-brushed graded unspun sisal fibre"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net accepted fibre mass at dispatch, excluding straps and labels. Tare each bale and measure moisture. No spinning, dyeing or chemical softening is included."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass_baling
+              source_ids:
+                - sisaex-finishing
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: avoid_allocation
+    applies_to: "main fibre and tow"
+    rule: "Separate metered operations and grade-specific packing first. For joint brushing, cp_allocation shall test whether measured operation/material relationships justify physical partition. Never infer an allocation ratio from the classification title or assume all short fibre is waste."
+    source_ids:
+      - grosso-sisal
+  - rule_id: joint_partition
+    applies_to: "unseparated joint burdens"
+    rule: "If separation and a causal physical relationship cannot be established, disclose economic partition as a study-specific choice based on actual same-period net revenues for main-fibre grades and saleable tow. Report quantities, prices, period, factor and sensitivity to moisture-adjusted mass partition; unresolved evidence prevents comparability. No fixed factor is supplied by this PCR."
+    source_ids: []
+  - rule_id: waste_no_credit
+    applies_to: "discarded fibre and captured dust"
+    rule: "Document product-versus-waste status using actual contracts and destination. Assign treatment burdens consistently with the study method and disclose any substitution scenario separately; no automatic avoided-product credit. Include treatment and transport once."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_mass_receipt
+      process_id: "receipt"
+      flow_role: "fibre transfers and outputs"
+      record_type: "measurement"
+      raw_fields: "lot; species; grade; gross and tare mass; moisture fraction; accepted net mass; tow mass; rejects; opening/closing stocks"
+      collection_method: "Calibrated scales; batch reconciliation; documented gravimetric moisture method and sampling including oven conditions appropriate to fibre"
+      unit: "kg"
+      frequency: "Each lot and transfer"
+      temporal_coverage: "One complete representative reporting period including rejects and rework"
+      site_scope: "Declared plant and dry line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; tare records; moisture tests; supplier state; buyer acceptance; disposal receipts"
+    - protocol_id: cp_mass_brushing
+      process_id: "brushing"
+      flow_role: "fibre transfers and outputs"
+      record_type: "measurement"
+      raw_fields: "lot; species; grade; gross and tare mass; moisture fraction; accepted net mass; tow mass; rejects; opening/closing stocks"
+      collection_method: "Calibrated scales; batch reconciliation; documented gravimetric moisture method and sampling including oven conditions appropriate to fibre"
+      unit: "kg"
+      frequency: "Each lot and transfer"
+      temporal_coverage: "One complete representative reporting period including rejects and rework"
+      site_scope: "Declared plant and dry line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; tare records; moisture tests; supplier state; buyer acceptance; disposal receipts"
+    - protocol_id: cp_mass_baling
+      process_id: "baling"
+      flow_role: "fibre transfers and outputs"
+      record_type: "measurement"
+      raw_fields: "lot; species; grade; gross and tare mass; moisture fraction; accepted net mass; tow mass; rejects; opening/closing stocks"
+      collection_method: "Calibrated scales; batch reconciliation; documented gravimetric moisture method and sampling including oven conditions appropriate to fibre"
+      unit: "kg"
+      frequency: "Each lot and transfer"
+      temporal_coverage: "One complete representative reporting period including rejects and rework"
+      site_scope: "Declared plant and dry line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; tare records; moisture tests; supplier state; buyer acceptance; disposal receipts"
+    - protocol_id: cp_energy_receipt
+      process_id: "receipt"
+      flow_role: "electricity"
+      record_type: "measurement"
+      raw_fields: "meter start/end kWh; voltage; equipment; operating and idle hours; allocation driver; period"
+      collection_method: "Read calibrated process meters; reconcile with invoices; use measured operating-load evidence for shared meters, never nameplate capacity alone"
+      unit: "kWh"
+      frequency: "Each shift and reporting period"
+      temporal_coverage: "Same period as cp_mass_baling"
+      site_scope: "Same factory equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; supply voltage; invoice reconciliation; allocation record"
+    - protocol_id: cp_energy_brushing
+      process_id: "brushing"
+      flow_role: "electricity"
+      record_type: "measurement"
+      raw_fields: "meter start/end kWh; voltage; equipment; operating and idle hours; allocation driver; period"
+      collection_method: "Read calibrated process meters; reconcile with invoices; use measured operating-load evidence for shared meters, never nameplate capacity alone"
+      unit: "kWh"
+      frequency: "Each shift and reporting period"
+      temporal_coverage: "Same period as cp_mass_baling"
+      site_scope: "Same factory equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; supply voltage; invoice reconciliation; allocation record"
+    - protocol_id: cp_energy_baling
+      process_id: "baling"
+      flow_role: "electricity"
+      record_type: "measurement"
+      raw_fields: "meter start/end kWh; voltage; equipment; operating and idle hours; allocation driver; period"
+      collection_method: "Read calibrated process meters; reconcile with invoices; use measured operating-load evidence for shared meters, never nameplate capacity alone"
+      unit: "kWh"
+      frequency: "Each shift and reporting period"
+      temporal_coverage: "Same period as cp_mass_baling"
+      site_scope: "Same factory equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; supply voltage; invoice reconciliation; allocation record"
+    - protocol_id: cp_pack
+      process_id: "baling"
+      flow_role: "strap and paper label separately"
+      record_type: "measurement"
+      raw_fields: "material specification; consumed mass; count; measured mass per component; stock; scrap; actual adhesive"
+      collection_method: "Weigh components on calibrated scale and reconcile purchasing, stock and consumption; count only with measured component mass"
+      unit: "kg"
+      frequency: "Each packing lot"
+      temporal_coverage: "Same as cp_mass_baling"
+      site_scope: "Packing line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Weighing; supplier specifications; consumption records"
+    - protocol_id: cp_air
+      process_id: "brushing"
+      flow_role: "measured particulate discharge"
+      record_type: "measurement"
+      raw_fields: "emission point; particulate concentration; dry standardized exhaust volume; duration; moisture; size definition; abatement status"
+      collection_method: "Use representative stack tests or documented monitoring; combine matching concentration and gas volume bases; separately assess fugitive discharge. Unmeasured emissions remain a disclosed gap, not zero"
+      unit: "kg"
+      frequency: "Representative operating conditions and control states"
+      temporal_coverage: "Same reporting period or justified temporal adjustment"
+      site_scope: "Brushing exhaust points"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Test report; concentration/volume basis; control uptime; uncertainty"
+    - protocol_id: cp_allocation
+      process_id: "brushing"
+      flow_role: "joint outputs and shared operations"
+      record_type: "record"
+      raw_fields: "grade kg; tow kg; moisture; net revenue; invoice period; dedicated/shared meter; causal driver"
+      collection_method: "Retain production/sales ledgers and measured physical partition evidence; explain choice and sensitivity. No default prices or allocation factors"
+      unit: "kg"
+      frequency: "Each reporting period"
+      temporal_coverage: "Same as production inventory"
+      site_scope: "All joint outputs at this factory"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Production, sales and reconciliation records"
+  calculation_rules:
+    - id: calc_normalize
+      applies_to: "all inventory rows"
+      rule: "q_norm = allocated batch exchange amount / accepted net main-fibre mass in kg; report per 1 kg reference flow. Internal transfers reconcile without repeated upstream burdens."
+      inputs:
+        - cp_mass_baling
+        - cp_allocation
+      output: "Normalized exchange in its declared unit"
+      source_ids: []
+    - id: calc_energy
+      applies_to: "receipt_electricity; brushing_electricity; baling_electricity"
+      rule: "E_MJ = measured allocated electricity_kWh × 3.6; then apply calc_normalize."
+      inputs:
+        - cp_energy_receipt
+        - cp_energy_brushing
+        - cp_energy_baling
+        - cp_mass_baling
+      output: "E_MJ"
+      source_ids: []
+    - id: calc_moisture
+      applies_to: "all fibre mass rows"
+      rule: "m_dry = m_wet × (1 − w); w is measured wet-basis water mass fraction. Use dry solids for balance only; the reference remains dispatch net mass."
+      inputs:
+        - cp_mass_baling
+      output: "m_dry"
+      source_ids: []
+    - id: calc_air
+      applies_to: "particulate_air"
+      rule: "Emitted kg = measured concentration in mg/m3 × matching exhaust m3 / 1000000; retain matched dry/wet, temperature and pressure bases; apply calc_normalize after allocation."
+      inputs:
+        - cp_air
+        - cp_mass_baling
+        - cp_allocation
+      output: "Emitted particulate mass"
+      source_ids: []
+    - id: calc_partition
+      applies_to: "joint brushing burdens"
+      rule: "Retain separation and causal physical evidence first. Where economic partition is justified, a_i = observed net revenue_i / sum of joint-product net revenues in the same period; fractions sum to one. Calculate moisture-adjusted mass alternative from measured dry product masses and disclose sensitivity."
+      inputs:
+        - cp_allocation
+      output: "a_i"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "all processes"
+      requirement: "Confirm species purity, incoming extraction/drying state and absence of wet/chemical treatment; no classification-wide extrapolation"
+      evidence: "Supplier records and process walk-through"
+    - id: dq_balance
+      applies_to: "fibre transfers"
+      requirement: "Reconcile opening stock + inputs − closing stock with main fibre, tow, rejects and dust on measured dry-solids basis; quantify unexplained differences and sampling uncertainty. No universal loss threshold"
+      evidence: "Batch mass and moisture reconciliation"
+    - id: dq_coverage
+      applies_to: "data package"
+      requirement: "Cover representative operations, downtime, grades, supplier/geographic mix and period. Disclose missing inventories and allocation uncertainty; no invented temperature, yield, moisture or lifetime"
+      evidence: "Meter/production coverage and uncertainty report"
+validation_rules:
+  - rule_id: validate_identity
+    applies_to: "reference product"
+    rule: "Require exact main-fibre state and qualifiers, matching reference output and 1 kg net mass. An unresolved product UUID must be declared and confirmed before release; a broader fibre or yarn identity is not interchangeable."
+    source_ids: []
+  - rule_id: validate_measurements
+    applies_to: "all inventory rows"
+    rule: "Require linked protocols, same reporting-period mass denominator, unit conversions and documented allocation. Reject kg/kWh/MJ confusion, gross-mass reference, missing moisture basis or unexplained stock differences."
+    source_ids: []
+  - rule_id: validate_atomic_boundary
+    applies_to: "route and emissions"
+    rule: "Require one atomic exchange per row; distinguish solid dust from emitted air particulate, technosphere water from resources and wastewater. Check actual ancillary inputs and waste handling; gaps fail completeness and cannot be replaced by assumed zero."
+    source_ids: []
+  - rule_id: validate_upstream_claim
+    applies_to: "dataset profile"
+    rule: "Gate-to-gate finishing alone cannot establish complete cradle-to-gate coverage or equivalence between grades. Require audited upstream links and disclosure before extending scope."
+    source_ids:
+      - unsd-cpc-2025
+published_dataset_profile:
+  dataset_role: "foreground_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Route-specific unspun sisal finishing input to later spinning or product manufacture, with grade and moisture compatibility"
+  excluded_use: "Whole CPC coverage; raw leaf production; wet treatment; spun yarn; use-stage performance; automatic full cradle-to-gate claims"
+  required_metadata: "Site, period, species, incoming state, output grade, length, moisture, net mass, packaging, upstream links, allocation and actual route"
+  required_quality_disclosure: "Measured and estimated shares; mass reconciliation; missing exchanges; upstream/transport extent; identities; emission coverage and uncertainty; sensitivity"
+  update_trigger: "Changed species, route, moisture convention, grade specification, equipment, electricity supply, packaging or allocation evidence"
+data_sources:
+  - id: "unsd-cpc-2025"
+    type: "official_guidance"
+    reference: "UNSD, CPC Ver. 3.0 Explanatory Notes, 30 June 2025, printed/PDF pp. 117–118. https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "26190 breadth, other fibre routes and raw/retted exclusions; classification only"
+  - id: "sisaex-finishing"
+    type: "literature"
+    reference: "Sisaex, Productive Process, undated manufacturer page, Benefiting Fiber steps 1–7 and Fiber Industrialization. https://sisaex.com.br/Sisaex_en/productive_process.html"
+    used_for: "Dry finishing stages and moisture monitoring; one manufacturer route, no universal numeric recipe"
+  - id: "grosso-sisal"
+    type: "literature"
+    reference: "Grosso Sisal, operations and Sisal Fibre Products / Tow Fibre, undated manufacturer page. https://grossosisal.com/"
+    used_for: "Extraction upstream distinction and recoverable brushing tow; supplier-specific grades and bale sizes are not adopted as defaults"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:a5efb2788f3ee5590b791a4a3fde3357ebaa0eadc03d54d3f1a39c8169b81766"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4450"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4450
+          line: 57
+          column: 1
+        end:
+          offset: 6630
+          line: 77
+          column: 1
+      markdown: "## 5. System Boundary\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_finishing` | all foreground processes | Start at accepted extracted dried fibre receipt; include sorting, brushing, grading, dust handling, baling, net weighing and attributable gate storage/handling. This is gate-to-gate finishing. | `sisaex-finishing`; `grosso-sisal` |\n| `upstream_separation` | agricultural and wet extraction operations | Keep cultivation, harvesting, leaf decortication, extraction washing and initial drying outside this foreground. Link state-compatible supplier datasets; a complete cradle-to-gate claim requires these upstream burdens and transport explicitly connected and completeness demonstrated. | `grosso-sisal` |\n| `wet_route_exclusion` | route applicability | No wet treatment or dyeing is assumed. Actual wet cleaning, softening, bleaching or dyeing requires a route-specific extension with each chemical, technosphere water, wastewater and measured pollutant separately; do not assign zero effluent by omission. | `sisaex-finishing` |\n| `recursive_input` | same-category fibre | Purchased already-brushed fibre must carry upstream finishing evidence; segregate it from this unbrushed-input route. Internal transfer and rework are counted once; never attach a second background dataset to internal transfers. Exclude downstream spinning, use and end of life. | `unsd-cpc-2025`; `sisaex-finishing` |\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Accepted extracted dried unbrushed Agave sisalana fibre at factory receipt |\n| starting_condition_role | foreground_input |\n| product_classification_scope | Only dry finishing of sisal within CPC 26190; other routes unassessed |\n| recursive_input_rule | Segregate purchased processed fibre; count internal transfers once |\n| upstream_dataset_requirement | Species, extraction/drying state, moisture, region and period compatible supplier data including agricultural/extraction burdens where the study includes them |\n| disclosure | State gate-to-gate extent, excluded routes, upstream coverage, transport responsibility and actual moisture/grade |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 240
+              line: 8
+              column: 1
+            end:
+              offset: 279
+              line: 8
+              column: 40
+          text: "# Dry-brushed graded unspun sisal fibre"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4450
+              line: 57
+              column: 1
+            end:
+              offset: 4471
+              line: 57
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_21960"
+      family: "allocation"
+      span:
+        start:
+          offset: 21960
+          line: 393
+          column: 1
+        end:
+          offset: 23189
+          line: 401
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `avoid_allocation` | main fibre and tow | Separate metered operations and grade-specific packing first. For joint brushing, cp_allocation shall test whether measured operation/material relationships justify physical partition. Never infer an allocation ratio from the classification title or assume all short fibre is waste. | `grosso-sisal` |\n| `joint_partition` | unseparated joint burdens | If separation and a causal physical relationship cannot be established, disclose economic partition as a study-specific choice based on actual same-period net revenues for main-fibre grades and saleable tow. Report quantities, prices, period, factor and sensitivity to moisture-adjusted mass partition; unresolved evidence prevents comparability. No fixed factor is supplied by this PCR. |  |\n| `waste_no_credit` | discarded fibre and captured dust | Document product-versus-waste status using actual contracts and destination. Assign treatment burdens consistently with the study method and disclose any substitution scenario separately; no automatic avoided-product credit. Include treatment and transport once. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 240
+              line: 8
+              column: 1
+            end:
+              offset: 279
+              line: 8
+              column: 40
+          text: "# Dry-brushed graded unspun sisal fibre"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 21960
+              line: 393
+              column: 1
+            end:
+              offset: 22000
+              line: 393
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_31125"
+      family: "validation"
+      span:
+        start:
+          offset: 31125
+          line: 437
+          column: 1
+        end:
+          offset: 32323
+          line: 446
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | reference product | Require exact main-fibre state and qualifiers, matching reference output and 1 kg net mass. An unresolved product UUID must be declared and confirmed before release; a broader fibre or yarn identity is not interchangeable. |  |\n| `validate_measurements` | all inventory rows | Require linked protocols, same reporting-period mass denominator, unit conversions and documented allocation. Reject kg/kWh/MJ confusion, gross-mass reference, missing moisture basis or unexplained stock differences. |  |\n| `validate_atomic_boundary` | route and emissions | Require one atomic exchange per row; distinguish solid dust from emitted air particulate, technosphere water from resources and wastewater. Check actual ancillary inputs and waste handling; gaps fail completeness and cannot be replaced by assumed zero. |  |\n| `validate_upstream_claim` | dataset profile | Gate-to-gate finishing alone cannot establish complete cradle-to-gate coverage or equivalence between grades. Require audited upstream links and disclosure before extending scope. | `unsd-cpc-2025` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 240
+              line: 8
+              column: 1
+            end:
+              offset: 279
+              line: 8
+              column: 40
+          text: "# Dry-brushed graded unspun sisal fibre"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 31125
+              line: 437
+              column: 1
+            end:
+              offset: 31147
+              line: 437
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_finishing"
+      identity_kind: "explicit"
+      unit_id: "normative_4450"
+      source_span:
+        start:
+          offset: 4544
+          line: 61
+          column: 1
+        end:
+          offset: 4827
+          line: 61
+          column: 284
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "upstream_separation"
+      identity_kind: "explicit"
+      unit_id: "normative_4450"
+      source_span:
+        start:
+          offset: 4828
+          line: 62
+          column: 1
+        end:
+          offset: 5201
+          line: 62
+          column: 374
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "wet_route_exclusion"
+      identity_kind: "explicit"
+      unit_id: "normative_4450"
+      source_span:
+        start:
+          offset: 5202
+          line: 63
+          column: 1
+        end:
+          offset: 5526
+          line: 63
+          column: 325
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "recursive_input"
+      identity_kind: "explicit"
+      unit_id: "normative_4450"
+      source_span:
+        start:
+          offset: 5527
+          line: 64
+          column: 1
+        end:
+          offset: 5889
+          line: 64
+          column: 363
+    - pointer: "/allocation_rules/0"
+      rule_id: "avoid_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_21960"
+      source_span:
+        start:
+          offset: 22073
+          line: 397
+          column: 1
+        end:
+          offset: 22418
+          line: 397
+          column: 346
+    - pointer: "/allocation_rules/1"
+      rule_id: "joint_partition"
+      identity_kind: "explicit"
+      unit_id: "normative_21960"
+      source_span:
+        start:
+          offset: 22419
+          line: 398
+          column: 1
+        end:
+          offset: 22861
+          line: 398
+          column: 443
+    - pointer: "/allocation_rules/2"
+      rule_id: "waste_no_credit"
+      identity_kind: "explicit"
+      unit_id: "normative_21960"
+      source_span:
+        start:
+          offset: 22862
+          line: 399
+          column: 1
+        end:
+          offset: 23187
+          line: 399
+          column: 326
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_31125"
+      source_span:
+        start:
+          offset: 31220
+          line: 441
+          column: 1
+        end:
+          offset: 31491
+          line: 441
+          column: 272
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_measurements"
+      identity_kind: "explicit"
+      unit_id: "normative_31125"
+      source_span:
+        start:
+          offset: 31492
+          line: 442
+          column: 1
+        end:
+          offset: 31762
+          line: 442
+          column: 271
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_atomic_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_31125"
+      source_span:
+        start:
+          offset: 31763
+          line: 443
+          column: 1
+        end:
+          offset: 32073
+          line: 443
+          column: 311
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_upstream_claim"
+      identity_kind: "explicit"
+      unit_id: "normative_31125"
+      source_span:
+        start:
+          offset: 32074
+          line: 444
+          column: 1
+        end:
+          offset: 32321
+          line: 444
+          column: 248
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4450"
+      source_span:
+        start:
+          offset: 4450
+          line: 57
+          column: 1
+        end:
+          offset: 4471
+          line: 57
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4450"
+      source_span:
+        start:
+          offset: 5917
+          line: 68
+          column: 1
+        end:
+          offset: 6628
+          line: 75
+          column: 131
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_21960"
+      source_span:
+        start:
+          offset: 21960
+          line: 393
+          column: 1
+        end:
+          offset: 22000
+          line: 393
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_31125"
+      source_span:
+        start:
+          offset: 31125
+          line: 437
+          column: 1
+        end:
+          offset: 31147
+          line: 437
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:a5efb2788f3ee5590b791a4a3fde3357ebaa0eadc03d54d3f1a39c8169b81766"
+  generated_content_sha256: "sha256:de03334d3f84740d9ff7b1ed15ded165947b8a10c10a8cc66e20474e198227fc"

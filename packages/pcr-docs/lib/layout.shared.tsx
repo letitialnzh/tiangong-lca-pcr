@@ -1,6 +1,7 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { LanguageSwitchText, LanguageSwitchTrigger } from '@/components/language-switch';
 import { SiteBrand } from '@/components/site-brand';
+import { gettingStartedGuide } from './getting-started';
 
 /**
  * Production origins of the sibling TianGong public sites, taken from their own workspace
@@ -18,6 +19,7 @@ const label: Record<
   string,
   {
     library: string;
+    gettingStarted: string;
     coverage: string;
     family: string;
     familyDocs: string;
@@ -32,6 +34,7 @@ const label: Record<
 > = {
   zh: {
     library: '浏览 PCR 库',
+    gettingStarted: '开始使用',
     coverage: '分类覆盖',
     family: '相关文档',
     familyDocs: 'TianGong LCA 文档',
@@ -45,6 +48,7 @@ const label: Record<
   },
   en: {
     library: 'Browse the PCR library',
+    gettingStarted: 'Getting started',
     coverage: 'Classification coverage',
     family: 'Related sites',
     familyDocs: 'TianGong LCA Documentation',
@@ -92,6 +96,7 @@ export function baseOptions(
       },
     },
     links: [
+      { type: 'main', text: text.gettingStarted, url: gettingStartedGuide(route).url },
       { type: 'main', text: text.library, url: library },
       ...(coverage ? [{ type: 'main' as const, text: text.coverage, url: coverage }] : []),
       {
@@ -137,8 +142,11 @@ export function baseOptions(
 
 /** Documentation shell adds the canonical repository next to the library entry point. */
 export function docsOptions(route: string, library: string, coverage?: string): BaseLayoutProps {
+  const options = baseOptions(route, library, coverage);
   return {
-    ...baseOptions(route, library, coverage),
+    ...options,
+    // DocsLayout also renders these sections in its page tree. Keep one sidebar list.
+    links: options.links?.filter(link => link.type === 'menu'),
     githubUrl: 'https://github.com/tiangong-lca/pcr',
   };
 }
