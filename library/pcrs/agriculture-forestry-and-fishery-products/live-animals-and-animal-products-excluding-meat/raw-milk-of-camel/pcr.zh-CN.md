@@ -984,7 +984,7 @@ sync_with: pcr.en-US.md
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `net_yield` | 最终乳 | 净温乳与冷却乳求和，每批只选一种；归属负担除以该质量。 | `cp_handover` | kg 基准乳 | `mass-balance-identity` |
+| `net_yield` | 最终乳 | 按物种、温乳或冷藏状态及实际生产者交付门划分合格交付。每一分层仅汇总其合格净乳质量，并仅用该分层可归属清单除以这一正质量。实际冷却投入和损失仅归入冷却路线；共享驼群负担依既定分配规则归属一次。温乳与冷藏乳质量之和仅用于总量核对，不得作为单一状态结果的分母。 | `cp_handover`；各状态与交付门的合格质量及可归属清单 | 各状态与交付门分别归一化的参考流结果 | `mass-balance-identity` |
 | `milk_balance` | 乳 | 核算乳=采集+幼驼吸食+披露的未采集量；后续投入=保留+损失。不设统一幼驼分奶因子。 | `cp_milking`; `cp_conditioning`; `cp_cooling` | 核对 kg 与不确定性 | `fao-camel-production`; `mass-balance-identity` |
 | `enteric_method` | 甲烷 | 对实测驼日使用已披露的类别、饲料及 IPCC 一致方法，不从 UUID 取得因子。 | `cp_herd` | kg 生物源 CH4 | `ipcc-livestock-2019` |
 | `manure_air_method` | 粪污 CH4、N2O 和 NH3 | 对粪污系统甲烷、直接氧化亚氮与挥发氨分别选用并披露方法，使用驼群类别、排泄量、处理阶段和去向；核对直接与间接氮路径避免重复排放。 | `cp_herd` | kg CH4; kg N2O; kg NH3 | `ipcc-livestock-2019` |

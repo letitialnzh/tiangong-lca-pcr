@@ -1072,10 +1072,11 @@ dataset_production:
   calculation_rules:
     - id: net_yield
       applies_to: "final milk"
-      rule: "Sum net warm plus chilled gate mass, one state per batch; divide attributed burdens by sum."
+      rule: "Partition accepted handovers by species, warm or chilled state, and actual producer gate. For each stratum, sum only its accepted net milk mass and divide only its attributable inventory by that positive mass. Assign actual cooling inputs and losses only to the cooled route; attribute shared herd burdens once using the declared allocation rules. Warm plus chilled mass is a reconciliation total only, never the denominator of a single-state result."
       inputs:
         - cp_handover
-      output: "kg reference milk"
+        - "state- and gate-specific accepted masses and attributable inventories"
+      output: "separate reference-normalized results for each state and gate"
       source_ids:
         - mass-balance-identity
     - id: milk_balance
@@ -1191,7 +1192,7 @@ data_sources:
     used_for: "milk QA identity"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:6fda6d85078fafc7eeb1005257563bf4801e2e5ed487491dca4c905818ab631e"
+  source_sha256: "sha256:79f5516ae5a85b277462daaa800665f01bd16d7e01d3abaf924d40c5e9143d4e"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6109"
@@ -1290,15 +1291,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_59151"
+    - unit_id: "normative_59625"
       family: "validation"
       span:
         start:
-          offset: 59151
+          offset: 59625
           line: 1002
           column: 1
         end:
-          offset: 60163
+          offset: 60637
           line: 1012
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_gate` | reference milk | Reject the fixed chilled-farm UUID for warm, mobile, unspecified-gate or processed milk. Broad reference remains unbound. | `un-cpc-3`; `fao-camel-dairy` |\n| `v_mass` | milk stages | Reconcile collected, calf-consumed, conditioned, chilled, rejected and handed-over milk, with one final output per batch. | `fao-camel-production`; `mass-balance-identity` |\n| `v_route` | mixed herd | Verify route-specific feed, water, energy, manure and mutually exclusive animal-days; conditional interventions need batch records. | `fao-camel-dairy`; `fao-camel-production` |\n| `v_attribution` | co-products and assets | Verify independent calves/culls, supporting periods and shared consumers; reject duplicate burdens. | `fao-camel-dairy` |\n| `v_range` | amount QA | Provisional reasoned ranges are screening guardrails only, not measured defaults or acceptance limits. | `mass-balance-identity` |\n\n"
@@ -1318,11 +1319,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 59151
+              offset: 59625
               line: 1002
               column: 1
             end:
-              offset: 59173
+              offset: 59647
               line: 1002
               column: 23
           text: "## 9. Validation Rules"
@@ -1459,66 +1460,66 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "v_gate"
       identity_kind: "explicit"
-      unit_id: "normative_59151"
+      unit_id: "normative_59625"
       source_span:
         start:
-          offset: 59246
+          offset: 59720
           line: 1006
           column: 1
         end:
-          offset: 59431
+          offset: 59905
           line: 1006
           column: 186
     - pointer: "/validation_rules/1"
       rule_id: "v_mass"
       identity_kind: "explicit"
-      unit_id: "normative_59151"
+      unit_id: "normative_59625"
       source_span:
         start:
-          offset: 59432
+          offset: 59906
           line: 1007
           column: 1
         end:
-          offset: 59632
+          offset: 60106
           line: 1007
           column: 201
     - pointer: "/validation_rules/2"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_59151"
+      unit_id: "normative_59625"
       source_span:
         start:
-          offset: 59633
+          offset: 60107
           line: 1008
           column: 1
         end:
-          offset: 59837
+          offset: 60311
           line: 1008
           column: 205
     - pointer: "/validation_rules/3"
       rule_id: "v_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_59151"
+      unit_id: "normative_59625"
       source_span:
         start:
-          offset: 59838
+          offset: 60312
           line: 1009
           column: 1
         end:
-          offset: 60004
+          offset: 60478
           line: 1009
           column: 167
     - pointer: "/validation_rules/4"
       rule_id: "v_range"
       identity_kind: "explicit"
-      unit_id: "normative_59151"
+      unit_id: "normative_59625"
       source_span:
         start:
-          offset: 60005
+          offset: 60479
           line: 1010
           column: 1
         end:
-          offset: 60161
+          offset: 60635
           line: 1010
           column: 157
   diagnostics:
@@ -1560,14 +1561,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_59151"
+      unit_id: "normative_59625"
       source_span:
         start:
-          offset: 59151
+          offset: 59625
           line: 1002
           column: 1
         end:
-          offset: 59173
+          offset: 59647
           line: 1002
           column: 23
 projection_metadata:
@@ -1577,5 +1578,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:6fda6d85078fafc7eeb1005257563bf4801e2e5ed487491dca4c905818ab631e"
-  generated_content_sha256: "sha256:6f9f60cab03757a397a25e871ce7a26ae9f8979fdd7ff53a6adb3926ec932d9b"
+    sha256: "sha256:79f5516ae5a85b277462daaa800665f01bd16d7e01d3abaf924d40c5e9143d4e"
+  generated_content_sha256: "sha256:ee0bce67d6da0ac2ad5b0ce94b24b775f0fa43377d4cef6a5ef8b0ebe22736bc"

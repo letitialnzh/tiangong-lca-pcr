@@ -272,11 +272,10 @@ Raw reference-output records: Record accepted live weight and head by species, c
 
 ###### Camel milk co-product (`camel_milk`)
 
-Record camel milk only when it is independently intended and transferred; this card is inapplicable to South American camelid routes.
+Record camel milk only when it is independently intended and transferred; this card is inapplicable to South American camelid routes. Record warm or chilled state, temperature and actual gate separately for each lot. This broad card has no fixed UUID: a chilled farm-gate identity is eligible only for an actually chilled, gate-matched lot after identity confirmation. Never infer cooling from a UUID; include measured pre-handover cooling inputs and losses only when cooling actually occurs.
 Denominator and scope requirements：per kg reference live weight and period
 
-- Selected flow: Raw milk of camel `c20da2ab-1dac-40ad-9206-43996d07bcff`
-- Binding: Fixed (`fixed`)
+- Selected flow: Raw camel milk, handover state and gate qualified
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Record transferred mass, species, period, composition and hand-off; inapplicable to South American camelid routes and milk consumed internally.
 - Value mode: Foreground record (`foreground_record`)

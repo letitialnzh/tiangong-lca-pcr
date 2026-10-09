@@ -272,11 +272,10 @@ sync_with: pcr.en-US.md
 
 ###### 骆驼奶联产品 (`camel_milk`)
 
-仅在骆驼奶被独立预期并转移时记录；本卡不适用于南美驼科动物路线。
+仅在骆驼奶作为独立预期产品移交时记录；本卡不适用于南美驼科动物路线。逐批分别记录温乳或冷藏状态、温度和实际交付门。本宽口径卡不固定 UUID；只有实际冷藏且交付门匹配的批次，才能在身份确认后采用冷藏农场门身份。不得根据 UUID 假定发生了冷却；仅在实际冷却时纳入交付前实测冷却投入和损失。
 分母与范围要求：per kg reference live weight and period
 
-- 选定流： Raw milk of camel `c20da2ab-1dac-40ad-9206-43996d07bcff`
-- 绑定： Fixed (`fixed`)
+- 选定流：交付状态与交付门明确的骆驼原奶
 - 流属性/单位： Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则： Record transferred mass, species, period, composition and hand-off; inapplicable to South American camelid routes and milk consumed internally.
 - 数值来源模式： Foreground record (`foreground_record`)

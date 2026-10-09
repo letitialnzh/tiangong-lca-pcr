@@ -286,13 +286,12 @@ Raw reference-output records: Exactly 1 kg of measured live weight after normali
 
 ###### Raw goat milk co-product (`raw_goat_milk_coproduct`)
 
-Record raw goat milk only when it is intentionally collected and transferred independently. Milk consumed by kids or discarded is not this co-product.
+Record raw goat milk only when it is intentionally collected and transferred independently. Milk consumed by kids or discarded is not this co-product. Record warm or chilled state, temperature and actual gate separately for each lot. This broad card has no fixed UUID: a chilled farm-gate identity is eligible only for an actually chilled, gate-matched lot after identity confirmation. Never infer cooling from a UUID; include measured pre-handover cooling inputs and losses only when cooling actually occurs.
 
 Denominator and scope requirements：per kg live goat at farm gate
 
-- Selected flow: Raw goat milk at farm gate `2c001731-6bd5-4e32-b3cf-15f4c67d4038`
+- Selected flow: Raw goat milk, handover state and gate qualified
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: Fixed (`fixed`)
 - Amount rule: Record transferred raw milk mass by herd phase and reporting period, net of milk consumed internally or discarded.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
@@ -524,7 +523,7 @@ Denominator and scope requirements：per kg live goat at farm gate
 | --- | --- | --- | --- | --- | --- |
 | `calc_reference_live_weight` | reference output | reference mass = sum of measured eligible farm-gate live weights; normalized exchange = reference mass/reference mass | transfer weights; eligibility; handover date | 1 kg live goat reference output | `fao-leap-small-ruminants-2016` |
 | `calc_feed_dry_matter` | feed and forage | dry matter = sum(as-fed mass × measured or supplier dry-matter fraction) − documented refusal dry matter | feed deliveries; rations; dry-matter fractions; refusals | kg dry matter by source and phase | `fao-leap-small-ruminants-2016`; `ipcc-2019-livestock-manure` |
-| `calc_transport_service` | included inbound freight | t*km = transported tonnes × route kilometres × allocated load share | delivered mass; distance; load share | t*km by route and mode | `fao-leap-small-ruminants-2016` |
+| `calc_transport_service` | included inbound freight | For a measured delivery, t*km = this consignment's delivered tonnes × its included route kilometres; do not multiply by its share of the vehicle load again. Only when starting from a documented whole-vehicle transport total may the measured consignment share be applied once to that total. Reconcile included legs and normalize the attributable service once. | consignment delivered mass; included distance; or whole-vehicle transport total with measured consignment share | attributable t*km by route and mode | `fao-leap-small-ruminants-2016` |
 | `calc_enteric_methane` | enteric methane | apply the documented IPCC or country method by goat class and phase using population and feed or energy drivers; sum before normalization | animal-days; class; feed or gross energy; digestibility; selected factors | kg CH4 | `ipcc-2019-livestock-manure` |
 | `calc_manure_emissions` | manure CH4, N2O, and NH3 | assign excreta to reconciled pathways; apply pathway-specific volatile-solids and nitrogen methods; subtract recovery and transferred nutrients consistently; convert molecular basis explicitly | animal-days; intake; excretion; pathway shares; climate; duration; treatment; export; factors | kg CH4; kg N2O; kg NH3; pathway balance | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
 | `calc_multi_output_shares` | joint live-goat, milk, fibre, and manure outputs | attribution share = selected driver for one intended output/sum of the same driver for all intended outputs; shares shall sum to 1 | complete output set; quantities; qualities; prices or physical drivers; period | documented output shares | `fao-leap-small-ruminants-2016` |

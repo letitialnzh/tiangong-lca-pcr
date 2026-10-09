@@ -508,12 +508,12 @@ Raw quantity and calculation requirements: Calculate by declared IPCC-compatible
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_animal_emission_records`
 - Sources: `ipcc-2019-livestock-manure`
-- Range: Non-negative calculation constraint
-  - Range role: Allowed range (`allowed_range`)
+- Range: Provisional enteric-methane QA screen, not an allowable limit
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1
   - Unit: kg CH4/kg live market pig output
-  - Basis: broad non-negative calculation screen; result must be replaced by category-specific activity data and method parameters
+  - Basis: broad provisional screen only, not a permitted maximum, default factor or reason to cap a result. Use category-specific activity and method parameters; investigate values outside the screen without rejecting or truncating a supported result. Non-negativity does not establish the upper bound.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 

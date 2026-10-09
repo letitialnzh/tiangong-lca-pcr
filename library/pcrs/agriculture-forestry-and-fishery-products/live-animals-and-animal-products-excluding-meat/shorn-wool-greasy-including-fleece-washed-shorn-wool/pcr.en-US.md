@@ -16,7 +16,7 @@ This rule covers sheep/lamb fleece cut from live animals and transferred as grea
 | Field | Value |
 | --- | --- |
 | canonical_pcr_id | pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.shorn-wool-greasy-including-fleece-washed-shorn-wool |
-| classification_refs | CPC 3.0 02941; proposed exact relation pending decision |
+| classification_refs | CPC 3.0 02941; accepted exact relation documented by `docs/adr/cpc-02941.md`; classification acceptance does not establish methodology publication readiness |
 | covered_products | Greasy shorn sheep/lamb wool, including fleece washed on the animal before shearing |
 | excluded_products | Pulled wool, goat/camelid hair, post-shear scoured wool, clean wool top, yarn |
 | representative_product | As-shorn greasy sheep fleece, skirted and baled on the producing farm |

@@ -347,12 +347,10 @@ process_inventory:
                 source_ids: []
         - row_id: milk_coproduct
           role: "Milk co-product"
-          name: "Raw milk of sheep"
+          name: "Raw sheep milk, handover state and gate qualified"
           flow_type: "product"
-          flow_ref:
-            uuid: "8b3a0949-2be7-413b-bdc3-0f1f8942eb61"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Record sheep milk only when it is intentionally recovered, measured, and transferred. Milk consumed by lambs remains internal biological production and is not a separate output. Denominator and scope requirements：per kg live sheep reference output and reporting period"
+          description: "Record sheep milk only when it is intentionally recovered, measured, and transferred. Milk consumed by lambs remains internal biological production and is not a separate output. Record warm or chilled state, temperature and actual gate separately for each lot. This broad card has no fixed UUID: a chilled farm-gate identity is eligible only for an actually chilled, gate-matched lot after identity confirmation. Never infer cooling from a UUID; include measured pre-handover cooling inputs and losses only when cooling actually occurs. Denominator and scope requirements：per kg live sheep reference output and reporting period"
           amount:
             expression: "Record saleable milk mass, production period, composition or solids basis where relevant, and transfer point; report not applicable outside milking systems."
             value_mode: "foreground_record"
@@ -767,7 +765,7 @@ data_sources:
     used_for: "animal-category, feed, enteric methane, manure methane, direct nitrous oxide, method-tier, factor-provenance, and species-basis rules"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:6f04df2841fd83977c08af9da81822f31b6e1d55484bd305d0a8679563ea2b6b"
+  source_sha256: "sha256:6a23d79dab00b6d90c767c0dd31a94d7bd25dda4549982b07fe2a0501c2c609d"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6689"
@@ -818,16 +816,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_30174"
+    - unit_id: "normative_30499"
       family: "allocation"
       span:
         start:
-          offset: 30174
-          line: 464
+          offset: 30499
+          line: 463
           column: 1
         end:
-          offset: 32102
-          line: 474
+          offset: 32427
+          line: 473
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_set_completeness` | live sheep, wool, milk, breeding or cull stock, and exported manure | Enumerate every independently intended and transferred output with its hand-off. Mortalities, unusable manure, and untransferred residues remain loss or waste. Do not count one output at two hand-offs. | `fao-leap-small-ruminants-2016`; `fao-leap-nutrient-flows-2018` |\n| `direct_partition_before_allocation` | separable animal groups, activities, routes, products, and periods | Partition burdens using animal-group, process, meter, feed, land, manure-pathway, and period records before allocating shared burdens. | `fao-leap-small-ruminants-2016` |\n| `economic_allocation_for_joint_products` | inseparable live sheep, milk, wool, and other intended products | After direct partitioning, use representative farm-gate economic value over the declared period for remaining joint burdens unless a reviewed physical relationship demonstrably represents causation. State prices, period, currency, and sensitivity. | `fao-leap-small-ruminants-2016` |\n| `multi_period_attribution` | breeding stock, replacements, long-lived flock assets, and outputs spanning periods | Link entry, birth, replacement, culling, death, and output events to biological phases and reporting periods. Allocate long-lived animal and asset burdens over actual service or productive periods; do not attribute them again in a later cohort. | `fao-leap-small-ruminants-2016` |\n| `shared_infrastructure_attribution` | housing, fencing, water, handling, shearing, vehicles, and manure systems shared by groups or periods | Identify every consuming group or activity and service period. Prefer metered or activity-specific use, then animal-days or live-weight-time; document the driver and count each burden once. | `fao-leap-small-ruminants-2016` |\n\n"
       headings:
@@ -846,12 +844,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 30174
-              line: 464
+              offset: 30499
+              line: 463
               column: 1
             end:
-              offset: 30214
-              line: 464
+              offset: 30539
+              line: 463
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -866,16 +864,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_42685"
+    - unit_id: "normative_43010"
       family: "validation"
       span:
         start:
-          offset: 42685
-          line: 509
+          offset: 43010
+          line: 508
           column: 1
         end:
-          offset: 45082
-          line: 521
+          offset: 45407
+          line: 520
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_identity` | reference output | Reject a dataset that substitutes sheep meat, wool, milk, skin, goat, or a service identity for live sheep, or that omits the farm-gate live-weight basis. A concrete dataset must resolve one compatible platform UUID before publication. | `fao-leap-small-ruminants-2016` |\n| `validate_route_resolution` | alternative route variants | Require one declared route or a transparent aggregation of separately recorded routes. Confirm that feed, movement, housing, infrastructure, manure, energy, and emission records match the declared route delta. | `fao-leap-small-ruminants-2016` |\n| `validate_period_linkage` | multi-period flock production | Require opening and closing stock, entries, births, transfers, sales, culls, mortalities, and output events to reconcile by class and period; prevent replacement, breeding, asset, or output burdens from being attributed in two periods. | `fao-leap-small-ruminants-2016` |\n| `validate_output_attribution` | live sheep and conditional co-products | Require complete intended-output and loss sets, each hand-off, direct partitioning evidence, and one disclosed residual allocation method. Prevent wool, milk, manure, cull stock, or breeding stock from being counted at two hand-offs. | `fao-leap-small-ruminants-2016`; `fao-leap-nutrient-flows-2018` |\n| `validate_shared_infrastructure` | shared housing, fencing, water, handling, shearing, vehicles, and manure systems | Require at least two consuming groups, activities, or periods, a service boundary, a documented attribution driver, and evidence that the same shared burden is not duplicated. | `fao-leap-small-ruminants-2016` |\n| `validate_manure_and_emissions` | enteric and manure emission rows | Require animal category, activity data, manure pathway, method tier, factor provenance, gas species and basis, and pathway reconciliation. Reject use of IPCC factors as measured farm inventory amounts. | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |\n| `validate_flow_identity_resolution` | unresolved water, energy, and transport cards | Require foreground generation to select one verified concrete UUID consistent with the actual product or carrier, property, unit, geography, and use; unresolved cards may not carry a fixed UUID. |  |\n\n"
       headings:
@@ -894,12 +892,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 42685
-              line: 509
+              offset: 43010
+              line: 508
               column: 1
             end:
-              offset: 42707
-              line: 509
+              offset: 43032
+              line: 508
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -970,158 +968,158 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "output_set_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_30174"
+      unit_id: "normative_30499"
       source_span:
         start:
-          offset: 30287
-          line: 468
+          offset: 30612
+          line: 467
           column: 1
         end:
-          offset: 30656
-          line: 468
+          offset: 30981
+          line: 467
           column: 370
     - pointer: "/allocation_rules/1"
       rule_id: "direct_partition_before_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_30174"
+      unit_id: "normative_30499"
       source_span:
         start:
-          offset: 30657
-          line: 469
+          offset: 30982
+          line: 468
           column: 1
         end:
-          offset: 30937
-          line: 469
+          offset: 31262
+          line: 468
           column: 281
     - pointer: "/allocation_rules/2"
       rule_id: "economic_allocation_for_joint_products"
       identity_kind: "explicit"
-      unit_id: "normative_30174"
+      unit_id: "normative_30499"
       source_span:
         start:
-          offset: 30938
-          line: 470
+          offset: 31263
+          line: 469
           column: 1
         end:
-          offset: 31332
-          line: 470
+          offset: 31657
+          line: 469
           column: 395
     - pointer: "/allocation_rules/3"
       rule_id: "multi_period_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_30174"
+      unit_id: "normative_30499"
       source_span:
         start:
-          offset: 31333
-          line: 471
+          offset: 31658
+          line: 470
           column: 1
         end:
-          offset: 31730
-          line: 471
+          offset: 32055
+          line: 470
           column: 398
     - pointer: "/allocation_rules/4"
       rule_id: "shared_infrastructure_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_30174"
+      unit_id: "normative_30499"
       source_span:
         start:
-          offset: 31731
-          line: 472
+          offset: 32056
+          line: 471
           column: 1
         end:
-          offset: 32100
-          line: 472
+          offset: 32425
+          line: 471
           column: 370
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_identity"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 42780
-          line: 513
+          offset: 43105
+          line: 512
           column: 1
         end:
-          offset: 43104
-          line: 513
+          offset: 43429
+          line: 512
           column: 325
     - pointer: "/validation_rules/1"
       rule_id: "validate_route_resolution"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 43105
-          line: 514
+          offset: 43430
+          line: 513
           column: 1
         end:
-          offset: 43411
-          line: 514
+          offset: 43736
+          line: 513
           column: 307
     - pointer: "/validation_rules/2"
       rule_id: "validate_period_linkage"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 43412
-          line: 515
+          offset: 43737
+          line: 514
           column: 1
         end:
-          offset: 43745
-          line: 515
+          offset: 44070
+          line: 514
           column: 334
     - pointer: "/validation_rules/3"
       rule_id: "validate_output_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 43746
-          line: 516
+          offset: 44071
+          line: 515
           column: 1
         end:
-          offset: 44122
-          line: 516
+          offset: 44447
+          line: 515
           column: 377
     - pointer: "/validation_rules/4"
       rule_id: "validate_shared_infrastructure"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 44123
-          line: 517
+          offset: 44448
+          line: 516
           column: 1
         end:
-          offset: 44454
-          line: 517
+          offset: 44779
+          line: 516
           column: 332
     - pointer: "/validation_rules/5"
       rule_id: "validate_manure_and_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 44455
-          line: 518
+          offset: 44780
+          line: 517
           column: 1
         end:
-          offset: 44792
-          line: 518
+          offset: 45117
+          line: 517
           column: 338
     - pointer: "/validation_rules/6"
       rule_id: "validate_flow_identity_resolution"
       identity_kind: "explicit"
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 44793
-          line: 519
+          offset: 45118
+          line: 518
           column: 1
         end:
-          offset: 45080
-          line: 519
+          offset: 45405
+          line: 518
           column: 288
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -1150,27 +1148,27 @@ normative_context:
           column: 300
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_30174"
+      unit_id: "normative_30499"
       source_span:
         start:
-          offset: 30174
-          line: 464
+          offset: 30499
+          line: 463
           column: 1
         end:
-          offset: 30214
-          line: 464
+          offset: 30539
+          line: 463
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_42685"
+      unit_id: "normative_43010"
       source_span:
         start:
-          offset: 42685
-          line: 509
+          offset: 43010
+          line: 508
           column: 1
         end:
-          offset: 42707
-          line: 509
+          offset: 43032
+          line: 508
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1179,5 +1177,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:6f04df2841fd83977c08af9da81822f31b6e1d55484bd305d0a8679563ea2b6b"
-  generated_content_sha256: "sha256:043e62342a6f01b89c94fe203a7545db08daa10ee0c85b3a199eb5b3b01899bd"
+    sha256: "sha256:6a23d79dab00b6d90c767c0dd31a94d7bd25dda4549982b07fe2a0501c2c609d"
+  generated_content_sha256: "sha256:56d534e1588620db1db7e5c83228b207ed36d108eb865821e1f9c40ce495a93e"

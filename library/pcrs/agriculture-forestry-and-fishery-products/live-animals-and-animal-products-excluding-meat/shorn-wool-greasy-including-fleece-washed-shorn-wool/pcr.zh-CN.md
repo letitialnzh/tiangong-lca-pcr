@@ -16,7 +16,7 @@ sync_with: pcr.en-US.md
 | Field | Value |
 | --- | --- |
 | canonical_pcr_id | pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.shorn-wool-greasy-including-fleece-washed-shorn-wool |
-| classification_refs | CPC 3.0 02941；拟议 exact 关系，待单独决策 |
+| classification_refs | CPC 3.0 02941；exact 关系已接受，决策记录见 `docs/adr/cpc-02941.md`；分类接受不代表方法学已具备发布条件 |
 | covered_products | 活羊/羔羊剪取油脂原毛，包括剪前在羊体上洗过的羊毛 |
 | excluded_products | 拔取毛、山羊/骆驼科动物毛、剪后洗净毛、毛条与纱线 |
 | representative_product | 生产农场内分拣、打包的未洗剪取原毛 |

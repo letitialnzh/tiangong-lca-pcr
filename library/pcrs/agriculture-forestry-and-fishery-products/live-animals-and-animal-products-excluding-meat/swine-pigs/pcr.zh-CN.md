@@ -508,12 +508,12 @@ sync_with: pcr.en-US.md
 - 证据类型：由采集计算（`calculated_from_collection`）
 - 采集协议：`cp_animal_emission_records`
 - 来源：`ipcc-2019-livestock-manure`
-- 数量范围：非负计算约束
-  - 范围角色：允许范围（`allowed_range`）
+- 数量范围：暂定肠道甲烷 QA 筛查，不是允许限值
+  - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
   - 上限：1
   - 单位：kg CH4/kg 商品猪活体产出
-  - 基准：宽泛非负校验，结果必须由类别特定活动数据和方法参数替换
+  - 基准：仅为宽泛暂定筛查，不是允许上限、默认因子或截断结果的依据。使用类别特定活动数据和方法参数；超出筛查范围时应调查，不得拒绝或截断有证据支持的结果。非负性不能确定上限。
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 

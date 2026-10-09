@@ -303,15 +303,14 @@ Raw quantity and calculation requirements: measured live mass and count released
 
 ###### Independently transferred raw buffalo milk (`raw_buffalo_milk`)
 
-Include this conditional co-product only when raw buffalo milk is intentionally collected and transferred independently with measured quantity and handover. Otherwise omit the exchange.
+Include this conditional co-product only when raw buffalo milk is intentionally collected and transferred independently with measured quantity and handover. Otherwise omit the exchange. Record warm or chilled state, temperature and actual gate separately for each lot. This broad card has no fixed UUID: a chilled farm-gate identity is eligible only for an actually chilled, gate-matched lot after identity confirmation. Never infer cooling from a UUID; include measured pre-handover cooling inputs and losses only when cooling actually occurs.
 
 Denominator and scope requirements：per reporting period and per 1,000 kg farm-gate live buffalo output after attribution
 
 Raw quantity and calculation requirements: measured saleable raw milk mass at its farm-gate handover Original collection denominator kind: process_output.
 
-- Selected flow: Raw milk of buffalo `790fcd48-b398-4049-898a-f9535f08f97b`
+- Selected flow: Raw buffalo milk, handover state and gate qualified
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)

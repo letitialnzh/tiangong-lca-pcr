@@ -305,12 +305,11 @@ Denominator and scope requirements：per kg live sheep reference output and repo
 
 ###### Milk co-product (`milk_coproduct`)
 
-Record sheep milk only when it is intentionally recovered, measured, and transferred. Milk consumed by lambs remains internal biological production and is not a separate output.
+Record sheep milk only when it is intentionally recovered, measured, and transferred. Milk consumed by lambs remains internal biological production and is not a separate output. Record warm or chilled state, temperature and actual gate separately for each lot. This broad card has no fixed UUID: a chilled farm-gate identity is eligible only for an actually chilled, gate-matched lot after identity confirmation. Never infer cooling from a UUID; include measured pre-handover cooling inputs and losses only when cooling actually occurs.
 
 Denominator and scope requirements：per kg live sheep reference output and reporting period
 
-- Selected flow: Raw milk of sheep `8b3a0949-2be7-413b-bdc3-0f1f8942eb61`
-- Binding: Fixed (`fixed`)
+- Selected flow: Raw sheep milk, handover state and gate qualified
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Record saleable milk mass, production period, composition or solids basis where relevant, and transfer point; report not applicable outside milking systems.
 - Value mode: Foreground record (`foreground_record`)

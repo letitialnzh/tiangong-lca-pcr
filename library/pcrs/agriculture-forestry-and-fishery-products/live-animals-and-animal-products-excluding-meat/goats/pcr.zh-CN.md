@@ -286,13 +286,12 @@ sync_with: pcr.en-US.md
 
 ###### 山羊原奶联产品（`raw_goat_milk_coproduct`）
 
-仅当山羊原奶被有意采集并独立移交时记录。羔羊饮用或废弃的奶不属于此联产品。
+仅当山羊原奶被有意采集并独立移交时记录。羔羊饮用或废弃的奶不属于此联产品。逐批分别记录温乳或冷藏状态、温度和实际交付门。本宽口径卡不固定 UUID；只有实际冷藏且交付门匹配的批次，才能在身份确认后采用冷藏农场门身份。不得根据 UUID 假定发生了冷却；仅在实际冷却时纳入交付前实测冷却投入和损失。
 
 分母与范围要求：每 kg 农场门口活山羊
 
-- Selected flow: 农场门口山羊原奶 `2c001731-6bd5-4e32-b3cf-15f4c67d4038`
+- Selected flow: 交付状态与交付门明确的山羊原奶
 - Flow property / unit: 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: 固定（`fixed`）
 - Amount rule: 按羊群阶段和报告期记录移交的原奶质量，扣除内部消耗或废弃的奶。
 - Value mode: 前景记录（`foreground_record`）
 - Specificity: 场址特异（`site_specific`）
@@ -523,7 +522,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- | --- | --- |
 | `calc_reference_live_weight` | 参考产出 | 参考质量 = 符合条件的农场门口实测活重之和；归一化交换 = 参考质量/参考质量 | 移交体重；合格性；交接日期 | 1 kg 活山羊参考产出 | `fao-leap-small-ruminants-2016` |
 | `calc_feed_dry_matter` | 饲料和牧草 | 干物质 = sum（原物料质量 × 实测或供应商干物质比例）− 有记录的拒食干物质 | 饲料交付；日粮；干物质比例；拒食 | 按来源和阶段的 kg 干物质 | `fao-leap-small-ruminants-2016`; `ipcc-2019-livestock-manure` |
-| `calc_transport_service` | 纳入的入场货运 | t*km = 运输吨数 × 路线公里数 × 分配装载份额 | 交付质量；距离；装载份额 | 按路线和方式的 t*km | `fao-leap-small-ruminants-2016` |
+| `calc_transport_service` | 纳入的入场货运 | 对实测交付，t*km = 本批货物交付吨数 × 纳入边界的路线公里数；不得再次乘以本批货物占整车载荷的份额。只有从有记录的整车运输总量起算时，才可将实测本批货物份额乘入该总量一次。核对纳入的路段，对可归属运输服务仅归一化一次。 | 本批交付质量；纳入的距离；或整车运输总量及实测本批份额 | 按路线和方式的可归属 t*km | `fao-leap-small-ruminants-2016` |
 | `calc_enteric_methane` | 肠道甲烷 | 按山羊类别和阶段应用文件化 IPCC 或国家方法，使用群体及饲料或能量驱动因素；归一化前求和 | 动物日；类别；饲料或总能；消化率；所选因子 | kg CH4 | `ipcc-2019-livestock-manure` |
 | `calc_manure_emissions` | 粪污 CH4、N2O 和 NH3 | 将排泄物分配至已核对路径；应用路径特异的挥发性固体和氮方法；一致扣除回收和转移养分；明确换算分子基础 | 动物日；摄入；排泄；路径份额；气候；时长；处理；外运；因子 | kg CH4；kg N2O；kg NH3；路径平衡 | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
 | `calc_multi_output_shares` | 联合活山羊、奶、纤维和粪污产出 | 归属份额 = 某项预期产出的所选驱动值/所有预期产出相同驱动值之和；份额之和须为 1 | 完整产出集；数量；质量；价格或物理驱动因素；期间 | 文件化产出份额 | `fao-leap-small-ruminants-2016` |
