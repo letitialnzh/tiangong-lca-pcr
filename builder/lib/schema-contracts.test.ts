@@ -852,3 +852,35 @@ test("revision, release, and release-history Schemas enforce immutable metadata 
     false,
   );
 });
+
+
+test("candidate terminal alternatives require an explicit unresolved record for every selected output", () => {
+  const projection = {
+    functional_unit: { reference_flow_link: "fresh_output; stored_output", reference_flow_selection: "exactly_one_declared_terminal_output", reference_selection_required: "actual_route; declared_gate; product_state; output_row_id" },
+    reference_flow_definition: {product_flow_ref: {name: "Declared crop category", uuid: ""}},
+    process_inventory: [{inputs: {product: [{row_id: "input_crop", name: "Received crop"}]}, outputs: {product: [{row_id: "fresh_output", name: "Fresh accepted crop"}, {row_id: "stored_output", name: "Stored accepted crop"}]}}],
+  };
+  const manifest = {status: "candidate", content_maturity: "authored_methodology", review_metadata: {
+    reference_flow_identity: {status: "unresolved", unresolved_support_fields: ["reference_product_flow_uuid"]},
+    unresolved_flow_identities: [
+      {row_id: "fresh_output", reason_code: "verification_pending", explanation: "Exact fresh-state product identity remains unverified."},
+      {row_id: "stored_output", reason_code: "verification_pending", explanation: "Exact stored-state product identity remains unverified."},
+    ],
+  }};
+  assert.equal(hasDeclaredUnresolvedReferenceProductFlow(projection, manifest), true);
+  const legacyNamed = structuredClone(projection);
+  legacyNamed.process_inventory[0]!.outputs.product[0]!.row_id = "reference_product_final";
+  legacyNamed.process_inventory[0]!.outputs.product[0]!.name = "Declared crop category";
+  legacyNamed.functional_unit.reference_flow_link = "reference_product_final; stored_output";
+  const legacyManifest = structuredClone(manifest);
+  legacyManifest.review_metadata.unresolved_flow_identities[0]!.row_id = "reference_product_final";
+  for (const selection of ["unsupported", "exactly_one_declared_terminal_output"]) {
+    legacyNamed.functional_unit.reference_flow_selection = selection;
+    legacyNamed.functional_unit.reference_selection_required = "";
+    assert.equal(hasDeclaredUnresolvedReferenceProductFlow(legacyNamed, legacyManifest), false);
+  }
+  assert.equal(hasDeclaredUnresolvedReferenceProductFlow(projection, {...manifest, status: "active"}), false);
+  assert.equal(hasDeclaredUnresolvedReferenceProductFlow(projection, {...manifest, review_metadata: {...manifest.review_metadata, unresolved_flow_identities: manifest.review_metadata.unresolved_flow_identities.slice(0, 1)}}), false);
+  for (const link of ["fresh_output; input_crop", "fresh_output; missing_output", "fresh_output; fresh_output"])
+    assert.equal(hasDeclaredUnresolvedReferenceProductFlow({...projection, functional_unit: {...projection.functional_unit, reference_flow_link: link}}, manifest), false);
+});

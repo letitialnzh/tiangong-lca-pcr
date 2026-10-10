@@ -788,8 +788,8 @@ test("checked-in three-chain pilot derives the exact execution and review plan",
     chain_count: 3,
     node_count: 13,
     edge_count: 9,
-    ready_edge_count: 3,
-    blocked_edge_count: 6,
+    ready_edge_count: 4,
+    blocked_edge_count: 5,
   });
 
   const chains = Object.fromEntries(
@@ -801,15 +801,12 @@ test("checked-in three-chain pilot derives the exact execution and review plan",
     ["bread-and-bakers-wares"],
   ]);
   assert.deepEqual(chains["cotton-textile"]!.executable_waves, [
-    ["cotton-yarn"],
-    ["woven-cotton-fabric"],
+    ["raw-cotton", "cotton-yarn"],
+    ["carded-or-combed-cotton", "woven-cotton-fabric"],
   ]);
   assert.deepEqual(chains["forestry-pulp-paper"]!.executable_waves, []);
   assert.deepEqual(chains["grain-food"]!.review_only_node_ids, []);
-  assert.deepEqual(chains["cotton-textile"]!.review_only_node_ids, [
-    "raw-cotton",
-    "carded-or-combed-cotton",
-  ]);
+  assert.deepEqual(chains["cotton-textile"]!.review_only_node_ids, []);
   assert.deepEqual(chains["forestry-pulp-paper"]!.review_only_node_ids, [
     "coniferous-pulpwood",
     "mechanical-pulp",
@@ -823,7 +820,7 @@ test("checked-in three-chain pilot derives the exact execution and review plan",
       (count, chain) => count + chain.review_only_node_ids.length,
       0,
     ),
-    8,
+    6,
   );
 
   const cottonPreparationEdge = chains["cotton-textile"]!.edges.find(
