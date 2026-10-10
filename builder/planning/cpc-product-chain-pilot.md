@@ -8,7 +8,7 @@
 
 - Chains: 3
 - Nodes: 13
-- Edges: 9 (3 ready, 6 blocked)
+- Edges: 9 (4 ready, 5 blocked)
 
 This report shows reviewed product dependencies for planning PCR work. CPC is a product classification, not a process graph; arrows express scoped pilot relationships, not universal production routes.
 
@@ -56,7 +56,7 @@ flowchart LR
   n1["26160 Cotton, carded or combed"]
   n2["26360 Cotton yarn (other than sewing thread), containing 85% or more by weight of cotton"]
   n3["26620 Woven fabrics of cotton, containing 85% or more by weight of cotton, weighing more than 200 g/m2"]
-  n0 -.-> n1
+  n0 --> n1
   n1 -.-> n2
   n2 --> n3
 ```
@@ -65,20 +65,18 @@ flowchart LR
 
 | Edge | From | To | Evidence | Boundary | Scheduling | Blockers | Review notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| raw-cotton-to-carded-or-combed-cotton | raw-cotton | carded-or-combed-cotton | supported_by_pcr | aligned | blocked | upstream_not_material | CPC 01921 is currently unmapped, so the aligned PCR evidence does not make this edge executable; Review the cultivation-to-ginning boundary and cotton type before adding any upstream material PCR. |
+| raw-cotton-to-carded-or-combed-cotton | raw-cotton | carded-or-combed-cotton | supported_by_pcr | aligned | ready | — | CPC 01921 is currently unmapped, so the aligned PCR evidence does not make this edge executable; Review the cultivation-to-ginning boundary and cotton type before adding any upstream material PCR. |
 | carded-or-combed-cotton-to-cotton-yarn | carded-or-combed-cotton | cotton-yarn | supported_by_pcr | overlap | blocked | boundary_not_aligned | Directly chaining CPC 26160 to the current cotton-yarn PCR would repeat fibre-preparation operations already inside the downstream foreground boundary; Reassess only after a downstream-PCR revision explicitly supports purchased carded or combed cotton and conditionally excludes every duplicated preparation operation. |
 | cotton-yarn-to-woven-cotton-fabric | cotton-yarn | woven-cotton-fabric | supported_by_pcr | aligned | ready | — | Confirm that the downstream fabric basis exceeds 200 g/m2 and that purchased or internally transferred yarn is represented consistently. |
 
 ### Executable generation waves
 
-1. cotton-yarn
-2. woven-cotton-fabric
+1. raw-cotton, cotton-yarn
+2. carded-or-combed-cotton, woven-cotton-fabric
 
 ### Manual-review queue
 
-- raw-cotton-to-carded-or-combed-cotton (raw-cotton → carded-or-combed-cotton): upstream_not_material — CPC 01921 is currently unmapped, so the aligned PCR evidence does not make this edge executable; Review the cultivation-to-ginning boundary and cotton type before adding any upstream material PCR.
 - carded-or-combed-cotton-to-cotton-yarn (carded-or-combed-cotton → cotton-yarn): boundary_not_aligned — Directly chaining CPC 26160 to the current cotton-yarn PCR would repeat fibre-preparation operations already inside the downstream foreground boundary; Reassess only after a downstream-PCR revision explicitly supports purchased carded or combed cotton and conditionally excludes every duplicated preparation operation.
-- Review-only nodes: raw-cotton, carded-or-combed-cotton
 
 ## Chain: Forestry to pulp to paper
 
