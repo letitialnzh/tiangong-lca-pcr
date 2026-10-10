@@ -803,6 +803,24 @@ process_inventory:
     label: "Conditional milling to flour or meal"
     inputs:
       product:
+        - row_id: mill_operating_electricity
+          role: "Operating electricity"
+          name: "Operating electricity (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Record electricity actually consumed by mill, including its attributed shared equipment, auxiliary services and failed batches. Reconcile node, meter boundary and period under cp_operating_utilities; do not assign this use to an energy card limited to preservation or first separation. If a named service dataset already covers it fully, do not add the same electricity-supply burden again. Document absence; missing records are not zero. Prevent double counting of electricity supply, on-site generation and its fuel/emissions; verify the actual electricity identity and metered delivery point before final exchange creation."
+          amount:
+            expression: "Retain attributable raw quantities and units under cp_operating_utilities; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_operating_utilities
+              source_ids: []
+            ranges: []
         - row_id: mill_input
           role: "Eligible material entering mill"
           name: "Eligible edible insects before milling (UUID unresolved)"
@@ -1126,6 +1144,18 @@ dataset_production:
       site_scope: "actual operated feeding nodes"
       aggregation_rule: "per reference flow"
       quality_evidence: "stock and supplier records; moisture evidence; loss and no-duplication reconciliation"
+    - protocol_id: cp_operating_utilities
+      process_id: "all_actual_operated_nodes_separate_rows_by_process_id"
+      flow_role: "node-specific energy and linked service coverage"
+      record_type: "meter, equipment and service ledger"
+      raw_fields: "process_id; lot/route/state; period; energy carrier; opening/closing readings and unit; equipment hours and measured-power evidence; shared meter boundary; attribution shares; linked service and coverage; assigned exchange; accepted final output; gaps/inapplicability evidence"
+      collection_method: "Meter each node and carrier separately; where submetering is unavailable use evidenced operating time and load, reconciled with the same-period main meter and every consumer. Record named service coverage and actual direct inputs under calc_operating_utilities."
+      unit: "kWh; MJ; native unit of each fuel, kept separately"
+      frequency: "each lot and meter settlement period"
+      temporal_coverage: "complete operating period including failed batches, standby and relevant auxiliary services"
+      site_scope: "actual in-boundary facilities and linked services"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "raw readings, load/efficiency evidence, consumer allocation and no-duplication ledger; equipment hours alone do not establish energy use"
   calculation_rules:
     - id: c_net
       applies_to: "reference"
@@ -1175,6 +1205,13 @@ dataset_production:
       output: "separate feed supply, intake and loss quantities, in matched as-fed/DM units"
       source_ids:
         - fao-feed-loss-accounting-2018
+    - id: calc_operating_utilities
+      applies_to: "all actual operated nodes"
+      rule: "Obtain raw use by node/carrier; attribute shared meters using evidenced usage with all consumer shares reconciling to the total. Retain electricity kWh, purchased heat MJ and each fuel native unit separately; 1 kWh = 3.6 MJ is only an energy-unit conversion, not electricity/heat substitution or efficiency. Count inputs covered by a service dataset once. Each other actual carrier requires its own concrete exchange or named covering service; absence from the existing cards is not an exclusion. Apply existing foreground-emission responsibility rules to on-site combustion. Normalize attributable totals exactly once under the existing normalization rules; attribute zero-output failed batches to an evidenced same-scope service period rather than divide by zero or discard them. Missing metering, attribution or coverage evidence remains a gap and prevents a completeness claim."
+      inputs:
+        - cp_operating_utilities
+      output: "quantities and coverage by node and carrier per reference flow"
+      source_ids: []
   data_quality_requirements:
     - id: dq_identity
       applies_to: "every lot"
@@ -1236,6 +1273,10 @@ validation_rules:
     rule: "Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits."
     source_ids:
       - fao-feed-loss-accounting-2018
+  - rule_id: v_operating_utilities
+    applies_to: "all actual operated nodes, including non-chilled/non-frozen routes"
+    rule: "Reconcile cp_operating_utilities against every actual node/carrier: require measured/evidenced estimated use with a concrete exchange, a named service dataset explicitly covering it in full, or evidenced inapplicability. Check that added operating-electricity cards, existing preservation/separation energy cards and service datasets do not duplicate burdens. Fresh routes and nodes without an existing energy card are not assumed energy-free. This is a dataset-production review requirement; a PCR structural check does not prove actual completeness."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Species-, stage-, source-, form- and state-qualified edible-insect foreground package."
   downstream_use: "secondary_dataset or background_dataset only after method and identity review."
@@ -1259,7 +1300,7 @@ data_sources:
     used_for: "Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:cc4990f3e38868066c7879de7c05ef58fc8f5da3a2fe25d70e2b2ea30ab04d0a"
+  source_sha256: "sha256:f1c41d892ecfdb3dbfdb216b432189c7549d63b17d5745be41be91477b15e910"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6312"
@@ -1310,16 +1351,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_50835"
+    - unit_id: "normative_52149"
       family: "allocation"
       span:
         start:
-          offset: 50835
-          line: 972
+          offset: 52149
+          line: 986
           column: 1
         end:
-          offset: 52117
-          line: 981
+          offset: 53431
+          line: 995
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_outputs | rear, grade and all saleable routes | Enumerate living intermediate, accepted food grade, any independently sold lower food grade and genuine sold frass-derived product at their own handoffs. Successive states are transfers, not extra saleable products. Subdivide measurable operations first; attribute inseparable joint burden by defensible physical causality or, if unavailable, contemporaneous net economic value with sensitivity analysis. Never classify marketed material as Waste. | fao-edible-insects-2013 |\n| a_period | cohort and wild source | Tie feed, cohort, collection, preservation, asset replacement and marketed outputs to actual nonoverlapping periods; no universal cycle or feed conversion. | fao-edible-insects-2013 |\n| a_shared | shared rooms, traps, chillers, mills and packers | Identify every consuming node and service period. Use metered service, else documented hours or throughput, once without duplicate supplier burden. | fao-edible-insects-2013 |\n| a_form | wet, preserved and meal states | Attribute preservation and milling only to lots that undergo them; one physical lot has one marketed form at a time. | un-cpc-02931 |\n\n"
       headings:
@@ -1338,12 +1379,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 50835
-              line: 972
+              offset: 52149
+              line: 986
               column: 1
             end:
-              offset: 50875
-              line: 972
+              offset: 52189
+              line: 986
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1358,18 +1399,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_60686"
+    - unit_id: "normative_64153"
       family: "validation"
       span:
         start:
-          offset: 60686
-          line: 1016
+          offset: 64153
+          line: 1032
           column: 1
         end:
-          offset: 62896
-          line: 1029
+          offset: 67016
+          line: 1046
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | marketed lot | Reject live, feed-only, formulated, extracted or unsafe product; verify permitted species, stage, form and food eligibility. | un-cpc-02931;fao-edible-insects-2013 |\n| v_route | source lot | Farm, lawful wild and purchased-dead routes are exclusive; purchase retains supplier burden and skips invented source nodes. | fao-edible-insects-2013 |\n| v_balance | every node | Reconcile input, accepted output, sold downgrade, waste, moisture change and sale without counting successive states twice. | fao-edible-insects-2013 |\n| v_safety | edible output | Require source legality and applicable hygiene/contamination evidence before food-grade release. | fao-edible-insects-2013 |\n| v_period | shared service | Each event and asset service has one period and one attributed share; replacement does not duplicate prior burden. | fao-edible-insects-2013 |\n| v_binding | all cards | conditional product inputs require actual concrete selection; other identities need matching detail/property/unit-group evidence before exchange publication. |  |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | marketed lot | Reject live, feed-only, formulated, extracted or unsafe product; verify permitted species, stage, form and food eligibility. | un-cpc-02931;fao-edible-insects-2013 |\n| v_route | source lot | Farm, lawful wild and purchased-dead routes are exclusive; purchase retains supplier burden and skips invented source nodes. | fao-edible-insects-2013 |\n| v_balance | every node | Reconcile input, accepted output, sold downgrade, waste, moisture change and sale without counting successive states twice. | fao-edible-insects-2013 |\n| v_safety | edible output | Require source legality and applicable hygiene/contamination evidence before food-grade release. | fao-edible-insects-2013 |\n| v_period | shared service | Each event and asset service has one period and one attributed share; replacement does not duplicate prior burden. | fao-edible-insects-2013 |\n| v_binding | all cards | conditional product inputs require actual concrete selection; other identities need matching detail/property/unit-group evidence before exchange publication. |  |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |\n| `v_operating_utilities` | all actual operated nodes, including non-chilled/non-frozen routes | Reconcile cp_operating_utilities against every actual node/carrier: require measured/evidenced estimated use with a concrete exchange, a named service dataset explicitly covering it in full, or evidenced inapplicability. Check that added operating-electricity cards, existing preservation/separation energy cards and service datasets do not duplicate burdens. Fresh routes and nodes without an existing energy card are not assumed energy-free. This is a dataset-production review requirement; a PCR structural check does not prove actual completeness. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1386,12 +1427,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 60686
-              line: 1016
+              offset: 64153
+              line: 1032
               column: 1
             end:
-              offset: 60708
-              line: 1016
+              offset: 64175
+              line: 1032
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1501,159 +1542,172 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_50835"
+      unit_id: "normative_52149"
       source_span:
         start:
-          offset: 50948
-          line: 976
+          offset: 52262
+          line: 990
           column: 1
         end:
-          offset: 51475
-          line: 976
+          offset: 52789
+          line: 990
           column: 528
     - pointer: "/allocation_rules/1"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_50835"
+      unit_id: "normative_52149"
       source_span:
         start:
-          offset: 51476
-          line: 977
+          offset: 52790
+          line: 991
           column: 1
         end:
-          offset: 51697
-          line: 977
+          offset: 53011
+          line: 991
           column: 222
     - pointer: "/allocation_rules/2"
       rule_id: "a_shared"
       identity_kind: "explicit"
-      unit_id: "normative_50835"
+      unit_id: "normative_52149"
       source_span:
         start:
-          offset: 51698
-          line: 978
+          offset: 53012
+          line: 992
           column: 1
         end:
-          offset: 51937
-          line: 978
+          offset: 53251
+          line: 992
           column: 240
     - pointer: "/allocation_rules/3"
       rule_id: "a_form"
       identity_kind: "explicit"
-      unit_id: "normative_50835"
+      unit_id: "normative_52149"
       source_span:
         start:
-          offset: 51938
-          line: 979
+          offset: 53252
+          line: 993
           column: 1
         end:
-          offset: 52115
-          line: 979
+          offset: 53429
+          line: 993
           column: 178
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 60781
-          line: 1020
+          offset: 64248
+          line: 1036
           column: 1
         end:
-          offset: 60973
-          line: 1020
+          offset: 64440
+          line: 1036
           column: 193
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 60974
-          line: 1021
+          offset: 64441
+          line: 1037
           column: 1
         end:
-          offset: 61151
-          line: 1021
+          offset: 64618
+          line: 1037
           column: 178
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 61152
-          line: 1022
+          offset: 64619
+          line: 1038
           column: 1
         end:
-          offset: 61330
-          line: 1022
+          offset: 64797
+          line: 1038
           column: 179
     - pointer: "/validation_rules/3"
       rule_id: "v_safety"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 61331
-          line: 1023
+          offset: 64798
+          line: 1039
           column: 1
         end:
-          offset: 61484
-          line: 1023
+          offset: 64951
+          line: 1039
           column: 154
     - pointer: "/validation_rules/4"
       rule_id: "v_period"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 61485
-          line: 1024
+          offset: 64952
+          line: 1040
           column: 1
         end:
-          offset: 61657
-          line: 1024
+          offset: 65124
+          line: 1040
           column: 173
     - pointer: "/validation_rules/5"
       rule_id: "v_binding"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 61658
-          line: 1025
+          offset: 65125
+          line: 1041
           column: 1
         end:
-          offset: 61846
-          line: 1025
+          offset: 65313
+          line: 1041
           column: 189
     - pointer: "/validation_rules/6"
       rule_id: "v_foreground_emission_responsibility"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 61847
-          line: 1026
+          offset: 65314
+          line: 1042
           column: 1
         end:
-          offset: 62447
-          line: 1026
+          offset: 65914
+          line: 1042
           column: 601
     - pointer: "/validation_rules/7"
       rule_id: "v_feed_supply_intake_separation"
       identity_kind: "explicit"
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 62448
-          line: 1027
+          offset: 65915
+          line: 1043
           column: 1
         end:
-          offset: 62894
-          line: 1027
+          offset: 66361
+          line: 1043
           column: 447
+    - pointer: "/validation_rules/8"
+      rule_id: "v_operating_utilities"
+      identity_kind: "explicit"
+      unit_id: "normative_64153"
+      source_span:
+        start:
+          offset: 66362
+          line: 1044
+          column: 1
+        end:
+          offset: 67014
+          line: 1044
+          column: 653
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -1681,27 +1735,27 @@ normative_context:
           column: 147
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_50835"
+      unit_id: "normative_52149"
       source_span:
         start:
-          offset: 50835
-          line: 972
+          offset: 52149
+          line: 986
           column: 1
         end:
-          offset: 50875
-          line: 972
+          offset: 52189
+          line: 986
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_60686"
+      unit_id: "normative_64153"
       source_span:
         start:
-          offset: 60686
-          line: 1016
+          offset: 64153
+          line: 1032
           column: 1
         end:
-          offset: 60708
-          line: 1016
+          offset: 64175
+          line: 1032
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1710,5 +1764,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:cc4990f3e38868066c7879de7c05ef58fc8f5da3a2fe25d70e2b2ea30ab04d0a"
-  generated_content_sha256: "sha256:1506164cf33153b1ea73ddc489d4ec34476e74b56a39da26d19391a0f47946be"
+    sha256: "sha256:f1c41d892ecfdb3dbfdb216b432189c7549d63b17d5745be41be91477b15e910"
+  generated_content_sha256: "sha256:ce567e6393250df44fb9b33d7ed2fa9e87af7bbac1a56657affbc9c7a324f8d6"

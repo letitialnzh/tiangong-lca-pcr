@@ -970,7 +970,7 @@ sync_with: pcr.en-US.md
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `feed_consumed` | 种鸭/育成饲料 | 期初库存 + 交付 − 期末库存 − 退回。 | 库存；交付；退回 | 消耗 kg | `mass-balance-identity` |
+| `feed_consumed` | 种鸭/育成饲料投入，不是生理采食量 | 净供料量 = 期初库存 + 收货 + 进入本作业的自产饲料 − 期末库存 − 未用退回/转出。保留边界内未食用损失；实际采食量另按 calc_feed_supply_and_intake 计算。 | 库存；收货；自产供给；未用退回/转出；`cp_feed_supply_and_intake` | 匹配原物/干物质基准的净供料 kg，包含边界内损失 | `mass-balance-identity`; `fao-feed-loss-accounting-2018` |
 | `count_to_mass` | 活禽 | 实测批次活重 kg ÷ 实测活禽只数；不采用统一 kg/只。 | 质量；只数 | 实测 kg/只 | `mass-balance-identity` |
 | `capture_balance` | 最终交付 | 呈送活重 = 售出活重 + 已核算损失，允许记录的称重不确定度。 | 秤；清运记录 | 最终活鸭及损失 kg | `mass-balance-identity` |
 | `manure_species` | 种鸭和育成直接排放 | 按实际粪污途径与适当方法分别计算 CH4 和 N2O；流身份不是排放因子。 | 粪污；挥发性固体；氮；途径；因子 | CH4 和 N2O 分别计 kg | `ipcc-livestock-2019` |

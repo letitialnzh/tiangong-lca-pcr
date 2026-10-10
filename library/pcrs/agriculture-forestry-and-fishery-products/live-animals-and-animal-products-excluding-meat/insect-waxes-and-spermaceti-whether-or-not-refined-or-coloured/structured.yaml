@@ -439,6 +439,24 @@ process_inventory:
     label: "Optional refining or colouring"
     inputs:
       product:
+        - row_id: treat_operating_electricity
+          role: "Operating electricity"
+          name: "Operating electricity (UUID unresolved)"
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Record electricity actually consumed by treat, including its attributed shared equipment, auxiliary services and failed batches. Reconcile node, meter boundary and period under cp_operating_utilities; do not assign this use to an energy card limited to preservation or first separation. If a named service dataset already covers it fully, do not add the same electricity-supply burden again. Document absence; missing records are not zero. Prevent double counting of electricity supply, on-site generation and its fuel/emissions; verify the actual electricity identity and metered delivery point before final exchange creation."
+          amount:
+            expression: "Retain attributable raw quantities and units under cp_operating_utilities; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_operating_utilities
+              source_ids: []
+            ranges: []
         - row_id: treat_in
           role: "Wax entering optional treatment"
           name: "Source-qualified first-prepared wax (UUID unresolved)"
@@ -831,6 +849,18 @@ dataset_production:
       site_scope: "origin site"
       aggregation_rule: "per reference flow"
       quality_evidence: "transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_operating_utilities
+      process_id: "all_actual_operated_nodes_separate_rows_by_process_id"
+      flow_role: "node-specific energy and linked service coverage"
+      record_type: "meter, equipment and service ledger"
+      raw_fields: "process_id; lot/route/state; period; energy carrier; opening/closing readings and unit; equipment hours and measured-power evidence; shared meter boundary; attribution shares; linked service and coverage; assigned exchange; accepted final output; gaps/inapplicability evidence"
+      collection_method: "Meter each node and carrier separately; where submetering is unavailable use evidenced operating time and load, reconciled with the same-period main meter and every consumer. Record named service coverage and actual direct inputs under calc_operating_utilities."
+      unit: "kWh; MJ; native unit of each fuel, kept separately"
+      frequency: "each lot and meter settlement period"
+      temporal_coverage: "complete operating period including failed batches, standby and relevant auxiliary services"
+      site_scope: "actual in-boundary facilities and linked services"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "raw readings, load/efficiency evidence, consumer allocation and no-duplication ledger; equipment hours alone do not establish energy use"
   calculation_rules:
     - id: c_net
       applies_to: "sold lot"
@@ -869,6 +899,13 @@ dataset_production:
       inputs:
         - cp_handover
       output: "unit/kg wax"
+      source_ids: []
+    - id: calc_operating_utilities
+      applies_to: "all actual operated nodes"
+      rule: "Obtain raw use by node/carrier; attribute shared meters using evidenced usage with all consumer shares reconciling to the total. Retain electricity kWh, purchased heat MJ and each fuel native unit separately; 1 kWh = 3.6 MJ is only an energy-unit conversion, not electricity/heat substitution or efficiency. Count inputs covered by a service dataset once. Each other actual carrier requires its own concrete exchange or named covering service; absence from the existing cards is not an exclusion. Apply existing foreground-emission responsibility rules to on-site combustion. Normalize attributable totals exactly once under the existing normalization rules; attribute zero-output failed batches to an evidenced same-scope service period rather than divide by zero or discard them. Missing metering, attribution or coverage evidence remains a gap and prevents a completeness claim."
+      inputs:
+        - cp_operating_utilities
+      output: "quantities and coverage by node and carrier per reference flow"
       source_ids: []
   data_quality_requirements:
     - id: q_identity
@@ -917,6 +954,10 @@ validation_rules:
     applies_to: "Actual operated nodes and linked services"
     rule: "Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting."
     source_ids: []
+  - rule_id: v_operating_utilities
+    applies_to: "all actual operated nodes, including non-chilled/non-frozen routes"
+    rule: "Reconcile cp_operating_utilities against every actual node/carrier: require measured/evidenced estimated use with a concrete exchange, a named service dataset explicitly covering it in full, or evidenced inapplicability. Check that added operating-electricity cards, existing preservation/separation energy cards and service datasets do not duplicate burdens. Fresh routes and nodes without an existing energy card are not assumed energy-free. This is a dataset-production review requirement; a PCR structural check does not prove actual completeness."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Source-, route-, grade-, state- and gate-qualified animal-wax foreground dataset."
   downstream_use: "Candidate secondary_dataset or background_dataset only after concrete identities, review and publication."
@@ -940,7 +981,7 @@ data_sources:
     used_for: "comb/cappings and honey context"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:ed0a57f080b9bb001072c4fd38688b34b72235c20bfa3a3c4853a2898e2d60e8"
+  source_sha256: "sha256:898374aa728b4ef2b86686be5eb1c1f837da2f05e0e42152fe9daa75f60bdfcb"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6941"
@@ -991,16 +1032,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36861"
+    - unit_id: "normative_38177"
       family: "allocation"
       span:
         start:
-          offset: 36861
-          line: 704
+          offset: 38177
+          line: 718
           column: 1
         end:
-          offset: 38109
-          line: 713
+          offset: 39425
+          line: 727
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual source output set | Enumerate wax and each real independently marketed output at its own handoff. Honey is a co-product only for actual bee honey. Prefer supported causal physical attribution; if unavailable, disclose period-specific economic allocation and sensitivity. Never assign wax automatic zero or whole-source burden. | fao-beeswax;fao-beekeeping |\n| a_sperm | lawful spermaceti source | Require legal chain, compatible upstream burden, real other outputs and justified treatment of pre-existing material and terminal alternative. No new capture or fictional co-product. | un-cpc-3-notes |\n| a_state | process and grades | Attribute actual wax states and disjoint saleable grades once. Colourant addition or purification does not make another original-wax output; waste is not marketed wax. | fao-beeswax |\n| a_period | source phases and shared services | Index colony/source, collection, melting, filtration, storage and packaging periods; allocate shared tanks/filters/energy and package services by observed throughput/time across actual consumers once. Record replacement/termination. | fao-beeswax |\n\n"
       headings:
@@ -1019,12 +1060,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36861
-              line: 704
+              offset: 38177
+              line: 718
               column: 1
             end:
-              offset: 36901
-              line: 704
+              offset: 38217
+              line: 718
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1039,18 +1080,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_44216"
+    - unit_id: "normative_47685"
       family: "validation"
       span:
         start:
-          offset: 44216
-          line: 744
+          offset: 47685
+          line: 760
           column: 1
         end:
-          offset: 45756
-          line: 755
+          offset: 49878
+          line: 772
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject vegetable/mineral/synthetic wax, degras, articles and source-free averages; require source and sold raw/refined/coloured state. | un-cpc-3-notes |\n| v_route | source | Require mutually exclusive insect or lawful existing spermaceti source and upstream burden; no fictitious whale capture or non-bee honey. | fao-beeswax;fao-beekeeping |\n| v_balance | lot | Reconcile collected material, additions, prepared/treated wax, grades, rejects and net mass; investigate residual. | fao-beeswax |\n| v_allocation | source and shared services | Reject automatic zero/full wax burden, duplicate honey/wax or shared-asset period. | fao-beeswax |\n| v_identity | concrete exchange | Verify flow type, direction, source, state, gate, Mass property and unit group; beeswax-only flow cannot identify the broad reference. |  |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject vegetable/mineral/synthetic wax, degras, articles and source-free averages; require source and sold raw/refined/coloured state. | un-cpc-3-notes |\n| v_route | source | Require mutually exclusive insect or lawful existing spermaceti source and upstream burden; no fictitious whale capture or non-bee honey. | fao-beeswax;fao-beekeeping |\n| v_balance | lot | Reconcile collected material, additions, prepared/treated wax, grades, rejects and net mass; investigate residual. | fao-beeswax |\n| v_allocation | source and shared services | Reject automatic zero/full wax burden, duplicate honey/wax or shared-asset period. | fao-beeswax |\n| v_identity | concrete exchange | Verify flow type, direction, source, state, gate, Mass property and unit group; beeswax-only flow cannot identify the broad reference. |  |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n| `v_operating_utilities` | all actual operated nodes, including non-chilled/non-frozen routes | Reconcile cp_operating_utilities against every actual node/carrier: require measured/evidenced estimated use with a concrete exchange, a named service dataset explicitly covering it in full, or evidenced inapplicability. Check that added operating-electricity cards, existing preservation/separation energy cards and service datasets do not duplicate burdens. Fresh routes and nodes without an existing energy card are not assumed energy-free. This is a dataset-production review requirement; a PCR structural check does not prove actual completeness. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1067,12 +1108,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 44216
-              line: 744
+              offset: 47685
+              line: 760
               column: 1
             end:
-              offset: 44238
-              line: 744
+              offset: 47707
+              line: 760
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1156,133 +1197,146 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_source"
       identity_kind: "explicit"
-      unit_id: "normative_36861"
+      unit_id: "normative_38177"
       source_span:
         start:
-          offset: 36974
-          line: 708
+          offset: 38290
+          line: 722
           column: 1
         end:
-          offset: 37351
-          line: 708
+          offset: 38667
+          line: 722
           column: 378
     - pointer: "/allocation_rules/1"
       rule_id: "a_sperm"
       identity_kind: "explicit"
-      unit_id: "normative_36861"
+      unit_id: "normative_38177"
       source_span:
         start:
-          offset: 37352
-          line: 709
+          offset: 38668
+          line: 723
           column: 1
         end:
-          offset: 37592
-          line: 709
+          offset: 38908
+          line: 723
           column: 241
     - pointer: "/allocation_rules/2"
       rule_id: "a_state"
       identity_kind: "explicit"
-      unit_id: "normative_36861"
+      unit_id: "normative_38177"
       source_span:
         start:
-          offset: 37593
-          line: 710
+          offset: 38909
+          line: 724
           column: 1
         end:
-          offset: 37809
-          line: 710
+          offset: 39125
+          line: 724
           column: 217
     - pointer: "/allocation_rules/3"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_36861"
+      unit_id: "normative_38177"
       source_span:
         start:
-          offset: 37810
-          line: 711
+          offset: 39126
+          line: 725
           column: 1
         end:
-          offset: 38107
-          line: 711
+          offset: 39423
+          line: 725
           column: 298
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 44311
-          line: 748
+          offset: 47780
+          line: 764
           column: 1
         end:
-          offset: 44492
-          line: 748
+          offset: 47961
+          line: 764
           column: 182
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 44493
-          line: 749
+          offset: 47962
+          line: 765
           column: 1
         end:
-          offset: 44682
-          line: 749
+          offset: 48151
+          line: 765
           column: 190
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 44683
-          line: 750
+          offset: 48152
+          line: 766
           column: 1
         end:
-          offset: 44833
-          line: 750
+          offset: 48302
+          line: 766
           column: 151
     - pointer: "/validation_rules/3"
       rule_id: "v_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 44834
-          line: 751
+          offset: 48303
+          line: 767
           column: 1
         end:
-          offset: 44978
-          line: 751
+          offset: 48447
+          line: 767
           column: 145
     - pointer: "/validation_rules/4"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 44979
-          line: 752
+          offset: 48448
+          line: 768
           column: 1
         end:
-          offset: 45153
-          line: 752
+          offset: 48622
+          line: 768
           column: 175
     - pointer: "/validation_rules/5"
       rule_id: "v_foreground_emission_responsibility"
       identity_kind: "explicit"
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 45154
-          line: 753
+          offset: 48623
+          line: 769
           column: 1
         end:
-          offset: 45754
-          line: 753
+          offset: 49223
+          line: 769
           column: 601
+    - pointer: "/validation_rules/6"
+      rule_id: "v_operating_utilities"
+      identity_kind: "explicit"
+      unit_id: "normative_47685"
+      source_span:
+        start:
+          offset: 49224
+          line: 770
+          column: 1
+        end:
+          offset: 49876
+          line: 770
+          column: 653
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -1310,27 +1364,27 @@ normative_context:
           column: 165
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36861"
+      unit_id: "normative_38177"
       source_span:
         start:
-          offset: 36861
-          line: 704
+          offset: 38177
+          line: 718
           column: 1
         end:
-          offset: 36901
-          line: 704
+          offset: 38217
+          line: 718
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_44216"
+      unit_id: "normative_47685"
       source_span:
         start:
-          offset: 44216
-          line: 744
+          offset: 47685
+          line: 760
           column: 1
         end:
-          offset: 44238
-          line: 744
+          offset: 47707
+          line: 760
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1339,5 +1393,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:ed0a57f080b9bb001072c4fd38688b34b72235c20bfa3a3c4853a2898e2d60e8"
-  generated_content_sha256: "sha256:68691990925e032e1ca76c2550047849f51c27416ab5c38be8cd630e368c16ae"
+    sha256: "sha256:898374aa728b4ef2b86686be5eb1c1f837da2f05e0e42152fe9daa75f60bdfcb"
+  generated_content_sha256: "sha256:c757c81107e2f170141b5e08d9f5c9cfa4ed502e11ffb7be7a4a739705ebfbea"

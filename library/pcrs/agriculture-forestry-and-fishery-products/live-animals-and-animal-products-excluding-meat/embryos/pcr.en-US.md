@@ -76,6 +76,7 @@ This PCR covers viable animal embryos released as breeding material at an embryo
 | `interfaces` | biological production through grading | Record donor management separately from recovery/retrieval, raw material separately from first washing/culture, then accepted, independently downgraded, held and rejected states with handoffs. | `woah-invivo-2024`; `woah-invitro-2024` |
 | `state` | optional preservation | Fresh lots bypass preservation; chilled/frozen lots record actual utilities, cryogen, losses and time. Package usable product separately and exclude post-gate logistics. | `woah-invivo-2024`; `woah-invitro-2024` |
 | `shared` | facilities and periods | Record donor phases, collection room, laboratory, incubator, refrigerator/tank and reusable container consumers and service periods once. | `woah-invivo-2024`; `woah-invitro-2024` |
+| `reproductive_inputs` | donor management and actual in-vivo/in-vitro routes | In-vivo fertilisation precedes recovery; it does not imply absence of reproductive inputs. Include attributable inputs/services for actual artificial insemination or natural mating and actual donor reproductive treatment; in-vitro semen belongs only to laboratory fertilisation. Preserve each actual route and failed attempt; distinguish donor treatment from excluded recipient preparation/transfer. Cattle evidence establishes possible operations, not a prescription, dose or success rate for other species. | `fao-cattle-embryo-superovulation` |
 
 ## 6. Process Inventory Structure
 
@@ -95,6 +96,48 @@ This PCR covers viable animal embryos released as breeding material at an embryo
 #### Inputs
 
 ##### Product flows
+
+###### Donor insemination semen (`donor_insemination_semen`)
+
+Record only actual artificial insemination in the in-vivo route; reconcile species, donor, semen lot, dose specification and used quantity without duplicating laboratory ivf_semen. Convert doses to volume only with measured lot-specific dose volume; do not assume dose equivalence.
+
+- Selected flow: Donor insemination semen (UUID unresolved)
+- Flow property / unit: Dose count / dose
+- Amount rule: Retain attributable raw quantities and units under cp_reproductive_inputs; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reproductive_inputs`
+
+###### Donor natural mating service (`donor_mating_service`)
+
+Record only actual natural mating; attribute breeding-male husbandry/service burden or verify complete coverage by purchased service. Retain failed events and the actual service period; do not additionally charge semen for insemination that did not occur. Define each service, donor and species; service count is not successful conception count.
+
+- Selected flow: Donor natural mating service (UUID unresolved)
+- Flow property / unit: Service count / service
+- Amount rule: Retain attributable raw quantities and units under cp_reproductive_inputs; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reproductive_inputs`
+
+###### Donor reproductive treatment inputs (`donor_reproductive_treatment`)
+
+Conditional collection role, not one fixed drug flow. Under cp_reproductive_inputs record each actually used formulation, active ingredient, concentration, formulated quantity, diluent, consumable and service separately; instantiate zero, one or multiple verified concrete exchanges without combining different drugs or units. Evidence may establish non-use; no universal superovulation requirement, prescription or default dose is imposed across species.
+
+- Selected flow: Donor reproductive treatment inputs (UUID unresolved)
+- Flow property / unit: Actual product property / native unit
+- Amount rule: Retain attributable raw quantities and units under cp_reproductive_inputs; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_reproductive_inputs`
 
 ###### Donor feed (`donor_feed`)
 
@@ -269,6 +312,20 @@ Use actual species, housing/storage conditions and a justified nitrogen-flow met
 
 ##### Product flows
 
+###### Operating electricity (`recovery_operating_electricity`)
+
+Record electricity actually consumed by recovery, including its attributed shared equipment, auxiliary services and failed batches. Reconcile node, meter boundary and period under cp_operating_utilities; do not assign this use to an energy card limited to preservation or first separation. If a named service dataset already covers it fully, do not add the same electricity-supply burden again. Document absence; missing records are not zero. Prevent double counting of electricity supply, on-site generation and its fuel/emissions; verify the actual electricity identity and metered delivery point before final exchange creation.
+
+- Selected flow: Operating electricity (UUID unresolved)
+- Flow property / unit: Energy / kWh
+- Amount rule: Retain attributable raw quantities and units under cp_operating_utilities; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_operating_utilities`
+
 ###### Recovery medium (`recovery_medium`)
 
 Record actual collection or aspiration medium and its lot-specific composition.
@@ -365,6 +422,20 @@ Raw quantity and calculation requirements: Count retrieved oocytes, including im
 
 ##### Product flows
 
+###### Operating electricity (`preparation_operating_electricity`)
+
+Record electricity actually consumed by preparation, including its attributed shared equipment, auxiliary services and failed batches. Reconcile node, meter boundary and period under cp_operating_utilities; do not assign this use to an energy card limited to preservation or first separation. If a named service dataset already covers it fully, do not add the same electricity-supply burden again. Document absence; missing records are not zero. Prevent double counting of electricity supply, on-site generation and its fuel/emissions; verify the actual electricity identity and metered delivery point before final exchange creation.
+
+- Selected flow: Operating electricity (UUID unresolved)
+- Flow property / unit: Energy / kWh
+- Amount rule: Retain attributable raw quantities and units under cp_operating_utilities; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_operating_utilities`
+
 ###### Raw in-vivo embryos received (`raw_invivo_input`)
 
 Only in-vivo lots receive recovered embryos from the recovery node; retain donor and event identity.
@@ -445,7 +516,7 @@ Raw quantity and calculation requirements: Sum lot-specific issued medium less u
 
 ###### Fertilising semen (`ivf_semen`)
 
-Only an in-vitro lot that uses semen records it as upstream input, not final embryo output.
+This card records semen used in laboratory in-vitro fertilisation only, not final embryo output. Actual in-vivo insemination semen is recorded under donor_insemination_semen; mating and reproductive treatment are covered by cp_reproductive_inputs and are not excluded by this laboratory-only card.
 
 Denominator and scope requirements：per in-vitro preparation lot
 
@@ -538,6 +609,20 @@ Raw quantity and calculation requirements: Weigh or measure media sent to treatm
 #### Inputs
 
 ##### Product flows
+
+###### Operating electricity (`grading_operating_electricity`)
+
+Record electricity actually consumed by grading, including its attributed shared equipment, auxiliary services and failed batches. Reconcile node, meter boundary and period under cp_operating_utilities; do not assign this use to an energy card limited to preservation or first separation. If a named service dataset already covers it fully, do not add the same electricity-supply burden again. Document absence; missing records are not zero. Prevent double counting of electricity supply, on-site generation and its fuel/emissions; verify the actual electricity identity and metered delivery point before final exchange creation.
+
+- Selected flow: Operating electricity (UUID unresolved)
+- Flow property / unit: Energy / kWh
+- Amount rule: Retain attributable raw quantities and units under cp_operating_utilities; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_operating_utilities`
 
 ###### Prepared embryos received (`prepared_embryos_input`)
 
@@ -929,6 +1014,8 @@ Denominator and scope requirements：per reference flow
 | `cp_pathway_emissions` | `donor` | pathway-specific gases and manure N/C | herd, feed, manure, field and method ledger | species/class; animal-days; intake/DM/digestibility; volatile solids; manure N/TAN; system shares; climate; storage time; fertiliser N; grazing; volatilisation/leaching; methane recovery; factor source/unit; final accepted output ; collected manure wet mass; dry matter; destination| collect primary activity by node and period, document parameter applicability, retain each pathway worksheet and any linked treatment/pasture dataset  Retain raw totals and normalize attributed quantities once to the measured accepted final reference output.| animal-day; kg DM; kg VS; kg N; kg CH4; kg N2O; kg NH3 | each operating period and management change | complete represented cohort and service period | actual operated nodes only | per reference flow | meter/analysis records, nitrogen cascade, method and factor evidence, no-duplication ledger |
 | `cp_feed_supply_and_intake` | `donor` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
 | `cp_manure_n2o_coverage` | `donor` | Direct and indirect manure/soil N2O coverage | pathway N ledger and method worksheet | species/class; period; excreted N; stage stocks/transfers; system shares; volatilised NH3-N/NOx-N; leached/runoff N; application/grazing N; factor source, unit and applicability; direct/indirect components; receiving medium; linked process and assigned card; accepted final output | Retain raw stage N and component calculations under calc_manure_n2o_coverage, matched to actual operation and existing manure protocols. Document unsupported or inapplicable paths and coverage boundaries; normalize attributable N2O once. | kg N; kg N2O | each reporting period and management change | complete represented management period | actual operated and explicitly linked nodes | per reference flow | N balance, factor unit/applicability, component-to-card and no-duplication worksheet |
+| `cp_operating_utilities` | all actual operated nodes, separate rows by process_id | node-specific energy and linked service coverage | meter, equipment and service ledger | process_id; lot/route/state; period; energy carrier; opening/closing readings and unit; equipment hours and measured-power evidence; shared meter boundary; attribution shares; linked service and coverage; assigned exchange; accepted final output; gaps/inapplicability evidence | Meter each node and carrier separately; where submetering is unavailable use evidenced operating time and load, reconciled with the same-period main meter and every consumer. Record named service coverage and actual direct inputs under calc_operating_utilities. | kWh; MJ; native unit of each fuel, kept separately | each lot and meter settlement period | complete operating period including failed batches, standby and relevant auxiliary services | actual in-boundary facilities and linked services | per reference flow | raw readings, load/efficiency evidence, consumer allocation and no-duplication ledger; equipment hours alone do not establish energy use |
+| `cp_reproductive_inputs` | `donor` | actual insemination, mating and individual reproductive treatments | donor reproduction, issue and service ledger | donor/species; event/route; service period; mating mode; semen lot/dose specification/quantity; each formulation/concentration/native amount; diluents/consumables; unused returns/discards; failed events; service dataset/coverage; exchange identity; linked released embryos | Reconcile actual reproductive, issue/return and supplier records individually; attribute under calc_reproductive_inputs. Document non-use rather than infer a universal drug or semen dose from embryo counts. | dose; service; each formulation native mass/volume/activity unit, kept separately | each reproduction/treatment event | full donor service period including failures | actual donors and linked services | per reference flow | donor-event linkage, formulation label/concentration, issue/return records, actual service scope and no-duplication ledger |
 
 ### Calculation Rules
 
@@ -941,6 +1028,8 @@ Denominator and scope requirements：per reference flow
 | `calc_pathway_emissions` | `donor` | Use species- and management-compatible methods and retain disaggregated pathway totals. Convert N2O-N to N2O by 44/28 and NH3-N to NH3 by 17/14 exactly once; already molecular masses are not reconverted. Check methane against the documented available-carbon/methane-potential balance and nitrogen losses against each stage's available N. Indirect formation from previously volatilised N is a downstream transformation, not a second source-stage N loss. Attribute and normalize once; do not duplicate linked treatment or fate-model emissions.  Use matched raw-period quantities before allocation for physical screens: CH4 mass × 12/16 must not exceed the carbon available to the represented pathway; source-stage NH3 mass × 14/17 plus direct N2O mass × 28/44 and other source N losses must not exceed that stage's available N, after accounting for stocks and transfers. Bound each indirect N2O-N calculation by its documented volatilised or leached N precursor, not by subtracting that downstream transformation again from the source ledger. These are conservation checks, not emission factors or an empirical per-product range.| `cp_pathway_emissions` | kg named compound per final reference flow | `review-ipcc-livestock-2019`; `review-eea-manure-2023`; `review-ipcc-soils-2019` |
 | `calc_feed_supply_and_intake` | `donor_feed` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `review-fao-pig-lca-2018` |
 | `calc_manure_n2o_coverage` | `review_donor_direct_n2o`; `review_donor_indirect_n2o` | For each actual manure stage, calculate direct N2O, volatilisation/deposition-derived indirect N2O, and applicable leaching/runoff-derived indirect N2O separately with documented species/system activity and factor basis. Convert N2O-N to molecular N2O by 44/28 once; do not reconvert molecular masses. Retain component worksheets. Where an existing N2O card covers both direct and indirect emissions, report their non-overlapping sum; where separate direct/indirect cards exist, assign each component once to its matching card and never also report the sum. Pasture deposition and land application use the managed-soil method, not a manure-storage factor. Assign foreground versus linked treatment/pasture coverage explicitly; a manure export does not erase earlier emissions, and already covered downstream emissions are not repeated. Account for stock, transfers and previous N losses in the nitrogen cascade; indirect N2O is a downstream transformation of its precursor, not a second source-stage N loss. Normalize attributed molecular masses once to the accepted reference output. Document inapplicability; absent pathway data are not zero. | `cp_manure_n2o_coverage` | kg molecular N2O by pathway and assigned existing card | `review-ipcc-livestock-2019`; `review-ipcc-soils-2019` |
+| `calc_operating_utilities` | all actual operated nodes | Obtain raw use by node/carrier; attribute shared meters using evidenced usage with all consumer shares reconciling to the total. Retain electricity kWh, purchased heat MJ and each fuel native unit separately; 1 kWh = 3.6 MJ is only an energy-unit conversion, not electricity/heat substitution or efficiency. Count inputs covered by a service dataset once. Each other actual carrier requires its own concrete exchange or named covering service; absence from the existing cards is not an exclusion. Apply existing foreground-emission responsibility rules to on-site combustion. Normalize attributable totals exactly once under the existing normalization rules; attribute zero-output failed batches to an evidenced same-scope service period rather than divide by zero or discard them. Missing metering, attribution or coverage evidence remains a gap and prevents a completeness claim. | `cp_operating_utilities` | quantities and coverage by node and carrier per reference flow | |
+| `calc_reproductive_inputs` | `donor_insemination_semen`; `donor_mating_service`; `donor_reproductive_treatment` | Obtain each quantity/service from actual donor events, retaining failed events and in-boundary loss burdens; reconcile unused returns to actual destinations. Link an evidenced same-scope service period to accepted released embryos, then normalize each attributable native-unit quantity once; never divide zero-output events by zero or discard their burdens. Formulation mass is not active-ingredient mass; IU cannot be converted to kg without evidence. Do not duplicate inputs already covered by a named service; attribute in-vivo and in-vitro semen separately. | `cp_reproductive_inputs`; `cp_release` | separate actual input quantities per released embryo | `fao-cattle-embryo-superovulation` |
 
 ### Data Quality Requirements
 
@@ -963,6 +1052,8 @@ Denominator and scope requirements：per reference flow
 | `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 | `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `review-fao-pig-lca-2018` |
 | `v_manure_n2o_coverage` | Applicable manure and managed-soil N pathways | Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components. | `review-ipcc-livestock-2019`; `review-ipcc-soils-2019` |
+| `v_operating_utilities` | all actual operated nodes, including non-chilled/non-frozen routes | Reconcile cp_operating_utilities against every actual node/carrier: require measured/evidenced estimated use with a concrete exchange, a named service dataset explicitly covering it in full, or evidenced inapplicability. Check that added operating-electricity cards, existing preservation/separation energy cards and service datasets do not duplicate burdens. Fresh routes and nodes without an existing energy card are not assumed energy-free. This is a dataset-production review requirement; a PCR structural check does not prove actual completeness. | |
+| `v_reproductive_inputs` | actual donor route | Reconcile every actual insemination/mating and reproductive treatment to concrete quantities/exchanges under the donor roles or a named service with complete coverage. Evidence is required for non-use; missing records, unresolved UUIDs and failed events are not zero inputs. The laboratory-only ivf_semen card cannot justify excluding in-vivo semen. Unresolved drug/service identity or quantity prevents a complete dataset claim and unverified final exchange creation. | `fao-cattle-embryo-superovulation` |
 
 ## 10. Published Dataset Profile
 
@@ -987,3 +1078,4 @@ Denominator and scope requirements：per reference flow
 | `review-ipcc-livestock-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 10: Emissions from Livestock and Manure Management](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf) | Species and pathway applicability; CH4 and N2O method selection, not universal emission factors |
 | `review-eea-manure-2023` | official_guidance | [EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, 3.B Manure Management](https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023/part-b-sectoral-guidance-chapters/3-agriculture/3-b-manure-management-2023) | NH3 nitrogen-flow method; verify actual species, management and geographical applicability before adopting parameters |
 | `review-ipcc-soils-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf) | Managed-soil direct and indirect nitrogen pathways and boundary reconciliation |
+| `fao-cattle-embryo-superovulation` | official_guidance | [FAO, Training manual for embryo transfer in cattle, Chapter 4](https://www.fao.org/4/t0117e/t0117e04.htm) | Evidence for donor reproductive treatment and insemination in cattle in-vivo embryo production; identify actual inputs only, without adopting historical prescriptions, doses, success rates or extrapolating them to other species |

@@ -1125,15 +1125,18 @@ dataset_production:
       quality_evidence: "N balance, factor unit/applicability, component-to-card and no-duplication worksheet"
   calculation_rules:
     - id: feed_consumed
-      applies_to: "Breeder/rearing feed"
-      rule: "Opening stock + deliveries − closing stock − returns."
+      applies_to: "Breeder/rearing feed supply, not biological intake"
+      rule: "Net feed supplied = opening stock + receipts + on-site feed entering the operation − closing stock − unused returns/transfers out. Retain in-boundary uneaten losses; calculate biological intake separately under calc_feed_supply_and_intake."
       inputs:
         - stocks
-        - deliveries
-        - returns
-      output: "kg consumed"
+        - receipts
+        - "on-site provision"
+        - "unused returns/transfers"
+        - cp_feed_supply_and_intake
+      output: "kg net feed supplied on matched as-fed/DM basis, including in-boundary losses"
       source_ids:
         - mass-balance-identity
+        - fao-feed-loss-accounting-2018
     - id: count_to_mass
       applies_to: "Live birds"
       rule: "Measured live lot kg ÷ counted living heads; no universal kg/head."
@@ -1303,7 +1306,7 @@ data_sources:
     used_for: "Direct/indirect nitrogen pathways and coordination of manure storage with managed-soil emissions; select applicable species and management evidence."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:48c5e0f5af8d009fae1e1f7bc8292634c94a353663ddf5d98df5df9938473ecd"
+  source_sha256: "sha256:1a206abdc71ce5edea9ed61e3427b3af5f214e0f431a8be3b9139a3a5f868692"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6669"
@@ -1402,15 +1405,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_63195"
+    - unit_id: "normative_63573"
       family: "validation"
       span:
         start:
-          offset: 63195
+          offset: 63573
           line: 991
           column: 1
         end:
-          offset: 65885
+          offset: 66263
           line: 1005
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_gate` | Reference | Choose one producer gate and measured sold-live mass; count-based ecological-farm UUID cannot substitute for broad 1 kg reference. | `un-cpc-3-2025` |\n| `validate_balance` | All nodes | Reconcile egg/bird/feed/capture records and internal transfers; no bird or upstream burden appears twice. | `mass-balance-identity` |\n| `validate_outputs` | Joint outputs | Verify independent handover for eggs, spent birds, manure, fish or rice; otherwise retain internal, residue or waste classification. | `fao-leap-poultry-2016` |\n| `validate_periods` | Multi-period | Link replacement/retirement and each breeder/rearing period to recipient batches exactly once. | `fao-leap-poultry-2016` |\n| `validate_shared` | Shared infrastructure | List all consumers and periods; allocation shares sum to recorded service without duplication. | `fao-leap-poultry-2016` |\n| `validate_integrated` | Integrated route | Require actual farm evidence before changed water/feed/manure pathways or fish/rice co-products enter the model. | `fao-duck-fish-integration` |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |\n| `v_manure_n2o_coverage` | Applicable manure and managed-soil N pathways | Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components. | `ipcc-livestock-2019`; `ipcc-managed-soils-2019` |\n\n"
@@ -1430,11 +1433,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 63195
+              offset: 63573
               line: 991
               column: 1
             end:
-              offset: 63217
+              offset: 63595
               line: 991
               column: 23
           text: "## 9. Validation Rules"
@@ -1571,118 +1574,118 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "validate_gate"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 63290
+          offset: 63668
           line: 995
           column: 1
         end:
-          offset: 63472
+          offset: 63850
           line: 995
           column: 183
     - pointer: "/validation_rules/1"
       rule_id: "validate_balance"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 63473
+          offset: 63851
           line: 996
           column: 1
         end:
-          offset: 63641
+          offset: 64019
           line: 996
           column: 169
     - pointer: "/validation_rules/2"
       rule_id: "validate_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 63642
+          offset: 64020
           line: 997
           column: 1
         end:
-          offset: 63841
+          offset: 64219
           line: 997
           column: 200
     - pointer: "/validation_rules/3"
       rule_id: "validate_periods"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 63842
+          offset: 64220
           line: 998
           column: 1
         end:
-          offset: 64002
+          offset: 64380
           line: 998
           column: 161
     - pointer: "/validation_rules/4"
       rule_id: "validate_shared"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 64003
+          offset: 64381
           line: 999
           column: 1
         end:
-          offset: 64171
+          offset: 64549
           line: 999
           column: 169
     - pointer: "/validation_rules/5"
       rule_id: "validate_integrated"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 64172
+          offset: 64550
           line: 1000
           column: 1
         end:
-          offset: 64361
+          offset: 64739
           line: 1000
           column: 190
     - pointer: "/validation_rules/6"
       rule_id: "v_foreground_emission_responsibility"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 64362
+          offset: 64740
           line: 1001
           column: 1
         end:
-          offset: 64962
+          offset: 65340
           line: 1001
           column: 601
     - pointer: "/validation_rules/7"
       rule_id: "v_feed_supply_intake_separation"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 64963
+          offset: 65341
           line: 1002
           column: 1
         end:
-          offset: 65409
+          offset: 65787
           line: 1002
           column: 447
     - pointer: "/validation_rules/8"
       rule_id: "v_manure_n2o_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 65410
+          offset: 65788
           line: 1003
           column: 1
         end:
-          offset: 65883
+          offset: 66261
           line: 1003
           column: 474
   diagnostics:
@@ -1724,14 +1727,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_63195"
+      unit_id: "normative_63573"
       source_span:
         start:
-          offset: 63195
+          offset: 63573
           line: 991
           column: 1
         end:
-          offset: 63217
+          offset: 63595
           line: 991
           column: 23
 projection_metadata:
@@ -1741,5 +1744,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:48c5e0f5af8d009fae1e1f7bc8292634c94a353663ddf5d98df5df9938473ecd"
-  generated_content_sha256: "sha256:1ca35ba249f53fdec5ae466095f4cb2d53345f8e181402ec4f2d882bdc857bb8"
+    sha256: "sha256:1a206abdc71ce5edea9ed61e3427b3af5f214e0f431a8be3b9139a3a5f868692"
+  generated_content_sha256: "sha256:05ab66627538b8d0f258e9aa02a19ef546e5474731fbc9e564cc3c044b8e574f"

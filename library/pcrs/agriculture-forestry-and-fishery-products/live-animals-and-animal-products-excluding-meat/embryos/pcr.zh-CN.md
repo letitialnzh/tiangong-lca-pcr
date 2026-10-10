@@ -76,6 +76,7 @@ sync_with: pcr.en-US.md
 | `interfaces` | 生物生产至分级 | 供体管理与采集/获取分开；原始材料与首次清洗/培养分开；合格、独立降级、暂存和拒收状态均记录交接。 | `woah-invivo-2024`; `woah-invitro-2024` |
 | `state` | 可选保存 | 鲜品绕过保存；冷藏/冷冻记录实际公用工程、冷冻剂、损耗和时间。可用产品独立包装，不计门点后物流。 | `woah-invivo-2024`; `woah-invitro-2024` |
 | `shared` | 设施和期间 | 对供体阶段、采集室、实验室、培养箱、冷藏设备/罐及可重复使用容器的使用节点和期间只归属一次。 | `woah-invivo-2024`; `woah-invitro-2024` |
+| `reproductive_inputs` | 供体管理及实际体内/体外路线 | 体内受精发生在采集之前，不表示没有繁殖投入。纳入实际人工授精或自然配种，以及实际供体繁殖处理的可归属投入与服务；体外精液只在实验室受精节点计入。每批保留真实路线和失败尝试；供体处理与范围外的受体准备/移植服务分开。牛的文献仅证明可能存在这些操作，不将处方、剂量或成功率外推到其他物种。 | `fao-cattle-embryo-superovulation` |
 
 ## 6. 过程清单结构
 
@@ -95,6 +96,48 @@ sync_with: pcr.en-US.md
 #### Inputs
 
 ##### Product flows
+
+###### 供体人工授精精液（`donor_insemination_semen`）
+
+仅体内路线实际人工授精时记录；按物种、供体、精液批次、剂量规格及使用量核对，不重复实验室 ivf_semen。仅在有该批次实测剂量体积时进行剂量与体积换算；不假定各剂量等价。
+
+- 选定流：供体人工授精精液（UUID 未解析）
+- 流属性/单位：Dose count / dose
+- 数量规则：按 cp_reproductive_inputs 保留可归属原始数量及单位，采用 inventory_reference_normalization 和 stage_throughput_linkage 对同范围合格最终产出归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reproductive_inputs`
+
+###### 供体自然配种服务（`donor_mating_service`）
+
+仅实际自然配种时记录；承接种用雄性动物可归属的饲养及服务负担，或核实外购服务完整覆盖。保留实际失败事件及服务期间，不对未发生的人工授精另计精液。每次服务的定义、供体和物种须明确，服务次数不等于成功受胎次数。
+
+- 选定流：供体自然配种服务（UUID 未解析）
+- 流属性/单位：Service count / service
+- 数量规则：按 cp_reproductive_inputs 保留可归属原始数量及单位，采用 inventory_reference_normalization 和 stage_throughput_linkage 对同范围合格最终产出归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reproductive_inputs`
+
+###### 供体繁殖处理投入（`donor_reproductive_treatment`）
+
+条件性采集角色，不是一个固定药物流。按 cp_reproductive_inputs 逐项记录实际使用的制剂、活性成分、浓度、制剂用量、稀释剂、耗材及服务；生成零个、一个或多个经核实的具体交换，不合并不同药物或单位。允许有证据的未使用，不规定所有物种必须超排，也不采用统一处方或默认剂量。
+
+- 选定流：供体繁殖处理投入（UUID 未解析）
+- 流属性/单位：Actual product property / native unit
+- 数量规则：按 cp_reproductive_inputs 保留可归属原始数量及单位，采用 inventory_reference_normalization 和 stage_throughput_linkage 对同范围合格最终产出归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集计算（`calculated_from_collection`）
+- 采集协议：`cp_reproductive_inputs`
 
 ###### 供体饲料（`donor_feed`）
 
@@ -269,6 +312,20 @@ sync_with: pcr.en-US.md
 
 ##### Product flows
 
+###### 作业电力（`recovery_operating_electricity`）
+
+仅记录 recovery 节点实际用电，包含归属该节点的共用设备、辅助设施及失败批次用电。按 cp_operating_utilities 核对节点、计量边界和期间；不得将其归入只覆盖保存或首次分离的能源卡。若已由具名服务数据集完整承接，不再另加同一电量的上游负担。无用电须有依据，缺记录不是零。电力供应、现场自发电及其燃料/排放不得重复核算；最终交换须核实实际电力身份及计量交付点。
+
+- 选定流：作业电力（UUID 未解析）
+- 流属性/单位：Energy / kWh
+- 数量规则：按 cp_operating_utilities 保留可归属原始数量及单位，采用 inventory_reference_normalization 和 stage_throughput_linkage 对同范围合格最终产出归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集计算（`calculated_from_collection`）
+- 采集协议：`cp_operating_utilities`
+
 ###### 采集介质（`recovery_medium`）
 
 记录实际采集或抽吸介质及该批组成。
@@ -365,6 +422,20 @@ sync_with: pcr.en-US.md
 
 ##### Product flows
 
+###### 作业电力（`preparation_operating_electricity`）
+
+仅记录 preparation 节点实际用电，包含归属该节点的共用设备、辅助设施及失败批次用电。按 cp_operating_utilities 核对节点、计量边界和期间；不得将其归入只覆盖保存或首次分离的能源卡。若已由具名服务数据集完整承接，不再另加同一电量的上游负担。无用电须有依据，缺记录不是零。电力供应、现场自发电及其燃料/排放不得重复核算；最终交换须核实实际电力身份及计量交付点。
+
+- 选定流：作业电力（UUID 未解析）
+- 流属性/单位：Energy / kWh
+- 数量规则：按 cp_operating_utilities 保留可归属原始数量及单位，采用 inventory_reference_normalization 和 stage_throughput_linkage 对同范围合格最终产出归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集计算（`calculated_from_collection`）
+- 采集协议：`cp_operating_utilities`
+
 ###### 接收的体内采集原始胚胎（`raw_invivo_input`）
 
 仅体内批接收采集节点的胚胎，并保留供体和事件身份。
@@ -445,7 +516,7 @@ sync_with: pcr.en-US.md
 
 ###### 受精用精液（`ivf_semen`）
 
-仅使用精液的体外批次将其记作上游投入，不作为最终胚胎产出。
+本卡仅记录体外实验室受精使用的精液，不作为最终胚胎产出。体内路线的实际人工授精精液由 donor_insemination_semen 记录，配种及繁殖处理按 cp_reproductive_inputs 承接，不能因本卡仅适用体外路线而排除。
 
 分母与范围要求：每体外制备批
 
@@ -538,6 +609,20 @@ sync_with: pcr.en-US.md
 #### Inputs
 
 ##### Product flows
+
+###### 作业电力（`grading_operating_electricity`）
+
+仅记录 grading 节点实际用电，包含归属该节点的共用设备、辅助设施及失败批次用电。按 cp_operating_utilities 核对节点、计量边界和期间；不得将其归入只覆盖保存或首次分离的能源卡。若已由具名服务数据集完整承接，不再另加同一电量的上游负担。无用电须有依据，缺记录不是零。电力供应、现场自发电及其燃料/排放不得重复核算；最终交换须核实实际电力身份及计量交付点。
+
+- 选定流：作业电力（UUID 未解析）
+- 流属性/单位：Energy / kWh
+- 数量规则：按 cp_operating_utilities 保留可归属原始数量及单位，采用 inventory_reference_normalization 和 stage_throughput_linkage 对同范围合格最终产出归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集计算（`calculated_from_collection`）
+- 采集协议：`cp_operating_utilities`
 
 ###### 接收的制备胚胎（`prepared_embryos_input`）
 
@@ -929,6 +1014,8 @@ sync_with: pcr.en-US.md
 | `cp_pathway_emissions` | `donor` | 路径专属气体及粪污氮/碳 | 动物、饲料、粪污、田间及方法台账 | 物种/类别；动物日；采食/干物质/消化率；挥发性固体；粪污氮/铵态氮；系统份额；气候；贮存时间；肥料氮；放牧；挥发/淋溶；甲烷回收；因子来源/单位；最终合格产出 ；收集粪污湿质量；干物质；去向| 按节点及期间采集一手活动数据，证明参数适用性，保留各路径计算表及链接的处理/牧地数据集  保留原始总量，可归属数量仅对实测最终合格参考产出归一化一次。| animal-day；kg DM；kg VS；kg N；kg CH4；kg N2O；kg NH3 | 各运行期间及管理变化时 | 完整所代表群体与服务期间 | 仅实际运行节点 | 每参考流 | 计量/分析记录、氮级联、方法与因子证据、防重复台账 |
 | `cp_feed_supply_and_intake` | `donor` | 饲料投入、采食及损失 | 库存、收货、发料及损失台账 | 饲料身份/来源；群体/阶段；期间；期初/期末库存；收货；自产供给；未用退回/转出；未食用/变质质量及去向；原物/干物质；实际采食量；负担归属；合格最终产出 | 按 calc_feed_supply_and_intake 核对匹配的库存、称重、日粮/采草估算及处置记录。保留原始总量及阶段分母，生产与处理负担各归属一次，再对合格最终产出归一化。 | kg as-fed; kg DM | 每次发料及期间结算 | 完整所代表群体/期间 | 实际运行饲喂节点 | 每参考流 | 库存及供应商记录；水分证据；损失及无重复核算核对 |
 | `cp_manure_n2o_coverage` | `donor` | 粪污/土壤直接及间接 N2O 覆盖 | 分路径氮台账及方法计算表 | 物种/类别；期间；排泄氮；阶段库存/转移；系统份额；挥发 NH3-N/NOx-N；淋溶/径流氮；施用/放牧氮；因子来源、单位及适用性；直接/间接分项；接受介质；已链接过程及归属卡；合格最终产出 | 按 calc_manure_n2o_coverage 保留原始阶段氮及分项计算，并匹配实际作业与现有粪污协议。记录缺证据或不适用路径及覆盖边界，可归属 N2O 归一化一次。 | kg N; kg N2O | 每个报告期间及管理变化 | 完整所代表管理期间 | 实际运行及明确链接节点 | 每参考流 | 氮平衡、因子单位/适用性、分项到卡片及无重复核算表 |
+| `cp_operating_utilities` | 所有实际运行节点，按 process_id 分行 | 分节点能源及已链接服务覆盖 | 计量、设备及服务台账 | process_id；批次/路线/状态；期间；能源品种；计量起止/单位；设备小时与实测功率依据；共享计量边界；分配份额；已链接服务及覆盖；对应交换；合格最终产出；缺口/不适用依据 | 按节点和每种能源分别计量；不能分表时使用有证据的设备用时与负载方法，并与同期间总表及全部使用者核对。按 calc_operating_utilities 记录具名服务覆盖和实际直接投入。 | kWh；MJ；每种燃料的原生单位，分别保留 | 每批次及计量结算期 | 包含失败批次、待机及相关辅助服务的完整运行期间 | 声明边界内的实际设施及已链接服务 | 每参考流 | 原始读数、负载/效率依据、使用者分摊及无重复覆盖表；仅有设备小时不足以确定能耗 |
+| `cp_reproductive_inputs` | `donor` | 实际授精、配种及逐项繁殖处理 | 供体繁殖、领料和服务台账 | 供体/物种；事件/路线；服务期间；配种方式；精液批次/剂量规格/用量；每项制剂/浓度/原生用量；稀释剂/耗材；未用退回/废弃；失败事件；服务数据集/覆盖；交换身份；关联放行胚胎 | 对照实际繁殖记录、领退料及供应商记录逐项核对；按 calc_reproductive_inputs 归属。无操作须说明依据，不从胚胎数量反推统一用药或精液剂量。 | dose；service；各制剂原生质量/体积/活性单位，分别保留 | 每个繁殖及处理事件 | 包含失败事件的完整供体服务期间 | 实际供体及已链接服务 | 每参考流 | 供体事件关联、制剂标签及浓度、领退料、实际服务范围及无重复核算表 |
 
 ### 计算规则
 
@@ -941,6 +1028,8 @@ sync_with: pcr.en-US.md
 | `calc_pathway_emissions` | `donor` | 采用物种和管理方式相容的方法，保留分路径总量。N2O-N 乘 44/28 转为 N2O，NH3-N 乘 17/14 转为 NH3，且恰换算一次；已为分子质量者不得重算。依据有记录的可用碳/甲烷潜力平衡检查甲烷，并按各阶段可用氮核对氮损失。已挥发氮引致的间接形成是下游转化，不是源阶段第二次氮损失。归属及归一化只做一次，不重复计入链接处理或去向模型中的排放。  物理筛查采用分配前、同一原始期间的数量：CH4 质量 × 12/16 不得超过所代表路径的可用碳；源阶段 NH3 质量 × 14/17、直接 N2O 质量 × 28/44 与其他源阶段氮损失之和，在核对库存及转移后不得超过该阶段可用氮。各项间接 N2O-N 计算以有记录的挥发氮或淋溶氮前体为上限，不再从源台账扣除该下游转化。这些是守恒检查，不是排放因子或经验单位产品区间。| `cp_pathway_emissions` | 每最终参考流的指定化合物 kg | `review-ipcc-livestock-2019`; `review-eea-manure-2023`; `review-ipcc-soils-2019` |
 | `calc_feed_supply_and_intake` | `donor_feed` | 所代表作业使用的饲料投入 = 期初饲料库存 + 收货 + 进入本作业的自产饲料 - 期末饲料库存 - 有记录的未用退回或转出。该投入保留边界内变质、拒食及被丢弃的剩余料。实际采食量 = 该投入 - 实测未食用/丢弃损失，并匹配水分/干物质与期间；采食量仅用于营养及代谢计算。期初库存承接原有负担，不是再次采购。追溯未用退回或转出的物料及负担去向，不自动给予替代抵扣。同一饲料的生产负担由采购饲料数据集或已建模自产作物/采集节点承担一次，不得两者并计。实际废料处理及粪污贡献计一次，不再次添加饲料生产负担。 | `cp_feed_supply_and_intake` | 同一原物/干物质基准下分开的饲料投入、采食及损失数量 | `review-fao-pig-lca-2018` |
 | `calc_manure_n2o_coverage` | `review_donor_direct_n2o`; `review_donor_indirect_n2o` | 按真实粪污阶段，采用有记录的物种/系统活动量及因子基准，分别计算直接 N2O、挥发/沉降引致间接 N2O，以及适用的淋溶/径流引致间接 N2O。N2O-N 乘 44/28 恰换算一次为分子态 N2O；已为分子质量的不得再次换算。保留分项计算表。现有 N2O 卡同时覆盖直接与间接排放时，填报其不重叠总和；已有直接/间接独立卡时，每个分项只归入对应卡，不再另报总和。放牧沉积及田间施用采用管理土壤方法，不套用粪污贮存因子。明确前景与已链接处理/牧地数据的核算责任；粪污转出不消除此前排放，已覆盖的下游排放不得重复。氮级联核对库存、转移及此前氮损失；间接 N2O 是前体的下游转化，不再次视为源阶段氮损失。可归属分子质量对合格参考产出归一化一次。记录不适用依据；路径数据缺失不等于零。 | `cp_manure_n2o_coverage` | 按路径及现有归属卡分开的 kg 分子态 N2O | `review-ipcc-livestock-2019`; `review-ipcc-soils-2019` |
+| `calc_operating_utilities` | 所有实际运行节点 | 按节点/能源品种取得原始耗量；共用总表按有依据的使用量分摊且全部份额与总量相符。电力 kWh、外购热 MJ 及各燃料原生单位分别保留；1 kWh = 3.6 MJ 只是能量单位换算，不是电热替代或效率。服务数据集已覆盖的投入只计一次。其他实际能源须逐项建立具体交换或具名覆盖关系，不得因现有卡片未列出而省略；现场燃烧排放按现有排放责任规则处理。可归属总量按既有归一化规则恰归一化一次；零产出失败批次的负担归入有依据的同范围服务期间，不除以零或丢弃。缺计量、归属或覆盖证据时保留缺口，不能认定完整。 | `cp_operating_utilities` | 按节点和能源分别表示的每参考流数量及覆盖关系 | |
+| `calc_reproductive_inputs` | `donor_insemination_semen`; `donor_mating_service`; `donor_reproductive_treatment` | 从实际供体事件取得各项用量及服务，保留失败事件及边界内损耗负担；未用退回按实际去向核对。按有依据的同范围服务期间与合格放行胚胎建立关联，再对各项原生单位的可归属数量归一化一次；零产出事件不除以零或删除负担。制剂质量不等于活性成分质量；IU 不能无依据换算为 kg。具名服务已覆盖的投入不重复计算，体内和体外精液分别归属。 | `cp_reproductive_inputs`; `cp_release` | 按实际投入分别表示的每放行胚胎数量 | `fao-cattle-embryo-superovulation` |
 
 ### 数据质量要求
 
@@ -963,6 +1052,8 @@ sync_with: pcr.en-US.md
 | `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
 | `v_feed_supply_intake_separation` | 全部饲料投入 | 拒绝扣除边界内拒食、变质或丢弃剩余料且未保留其生产负担的上游饲料清单。按 calc_feed_supply_and_intake 核对投入、采食、库存、转移及损失去向。不得把采食量当作饲料投入，不得假设自产饲料零负担或自动给予替代产品抵扣。 | `review-fao-pig-lca-2018` |
 | `v_manure_n2o_coverage` | 适用粪污及管理土壤氮路径 | 须明确直接及间接路径覆盖、阶段氮平衡及分子质量换算。按 calc_manure_n2o_coverage，将各分项归入现有 N2O 卡或明确覆盖的已链接过程一次。间接路径证据缺失时不得宣称完整；不得默认零值或把汇总值与分项重复并计。 | `review-ipcc-livestock-2019`; `review-ipcc-soils-2019` |
+| `v_operating_utilities` | 所有实际运行节点，包括未冷藏/未冷冻路线 | 核对 cp_operating_utilities 覆盖每个实际运行节点及能源品种；每项须有实测/有依据的估算及具体交换、明确完整承接的具名服务数据集，或有证据的不适用。核对新增作业电力卡与原保存/分离能源卡、服务数据集不重复；不得将鲜品路线或未列出能源卡的节点当作零能耗。该项需数据生产时审查，PCR 结构检查通过不证明实际覆盖完整。 | |
+| `v_reproductive_inputs` | 实际供体路线 | 核对每次实际人工授精/自然配种及繁殖处理，在 donor 的对应角色下有具体数量和交换，或有具名且覆盖完整的服务。声明未采用者须有依据；未记录、UUID 未解析或失败事件均不等于零投入。不得将仅适用实验室的 ivf_semen 当作排除体内精液的依据。具体药品、服务身份或数量仍未确定时，不得宣称数据包完整或创建未核实的最终交换。 | `fao-cattle-embryo-superovulation` |
 
 ## 10. 发布数据集画像
 
@@ -987,3 +1078,4 @@ sync_with: pcr.en-US.md
 | `review-ipcc-livestock-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 10: Emissions from Livestock and Manure Management](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf) | 物种与路径适用性；CH4 和 N2O 方法选择，不作为通用排放因子 |
 | `review-eea-manure-2023` | official_guidance | [EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, 3.B Manure Management](https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023/part-b-sectoral-guidance-chapters/3-agriculture/3-b-manure-management-2023) | NH3 氮流方法；采用参数前核实实际物种、管理方式及地域适用性 |
 | `review-ipcc-soils-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf) | 管理土壤直接及间接氮路径与边界核对 |
+| `fao-cattle-embryo-superovulation` | official_guidance | [FAO, Training manual for embryo transfer in cattle, Chapter 4](https://www.fao.org/4/t0117e/t0117e04.htm) | 牛体内胚胎生产的供体繁殖处理与授精操作依据；仅用于识别实际投入，不采用其中的历史处方、剂量、成功率，也不外推至其他物种 |

@@ -970,7 +970,7 @@ Raw quantity and calculation requirements: Reconcile presented minus sold mass w
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `feed_consumed` | Breeder/rearing feed | Opening stock + deliveries − closing stock − returns. | stocks; deliveries; returns | kg consumed | `mass-balance-identity` |
+| `feed_consumed` | Breeder/rearing feed supply, not biological intake | Net feed supplied = opening stock + receipts + on-site feed entering the operation − closing stock − unused returns/transfers out. Retain in-boundary uneaten losses; calculate biological intake separately under calc_feed_supply_and_intake. | stocks; receipts; on-site provision; unused returns/transfers; `cp_feed_supply_and_intake` | kg net feed supplied on matched as-fed/DM basis, including in-boundary losses | `mass-balance-identity`; `fao-feed-loss-accounting-2018` |
 | `count_to_mass` | Live birds | Measured live lot kg ÷ counted living heads; no universal kg/head. | mass; count | observed kg/head | `mass-balance-identity` |
 | `capture_balance` | Final handover | Presented live mass = sold live mass + accounted losses, within weighing uncertainty. | scale; removals | kg final live and loss | `mass-balance-identity` |
 | `manure_species` | Breeder and rearing direct emissions | Calculate CH4 and N2O separately using actual manure pathway and appropriate method; flow identity is not an emission factor. | manure; volatile solids; N; pathway; factor | kg CH4 and N2O separately | `ipcc-livestock-2019` |

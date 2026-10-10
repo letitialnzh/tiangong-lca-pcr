@@ -393,6 +393,20 @@ Raw quantity and calculation requirements: Measure actual separation residue and
 
 ##### Product flows
 
+###### Operating electricity (`treat_operating_electricity`)
+
+Record electricity actually consumed by treat, including its attributed shared equipment, auxiliary services and failed batches. Reconcile node, meter boundary and period under cp_operating_utilities; do not assign this use to an energy card limited to preservation or first separation. If a named service dataset already covers it fully, do not add the same electricity-supply burden again. Document absence; missing records are not zero. Prevent double counting of electricity supply, on-site generation and its fuel/emissions; verify the actual electricity identity and metered delivery point before final exchange creation.
+
+- Selected flow: Operating electricity (UUID unresolved)
+- Flow property / unit: Energy / kWh
+- Amount rule: Retain attributable raw quantities and units under cp_operating_utilities; normalize once to accepted final output of the same scope under inventory_reference_normalization and stage_throughput_linkage.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_operating_utilities`
+
 ###### Wax entering optional treatment (`treat_in`)
 
 Only refined or coloured lots enter; raw lots bypass this node.
@@ -722,6 +736,7 @@ Denominator and scope requirements：per reference flow
 | cp_grade | grade | accepted, downgrade and reject | grade ledger | source, state, grade, mass, destination | grade ticket and scale; Raw aggregation requirements: disjoint grades. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | grade period | facility | per reference flow | grade and reject tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_handover | handover | wax, package and gate | dispatch ledger | source, state, colourant, purity, moisture, gross, tare, net, package reuse, gate | dispatch ticket and scale; Raw aggregation requirements: one net sale per lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each sale lot | handover period | facility | per reference flow | ticket and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_residue | collect;condition;treat;grade | waste | treatment ledger | lot, type, mass, destination, period | scale and transfer record; Raw aggregation requirements: once per material/destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each event | relevant period | origin site | per reference flow | transfer record; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_operating_utilities` | all actual operated nodes, separate rows by process_id | node-specific energy and linked service coverage | meter, equipment and service ledger | process_id; lot/route/state; period; energy carrier; opening/closing readings and unit; equipment hours and measured-power evidence; shared meter boundary; attribution shares; linked service and coverage; assigned exchange; accepted final output; gaps/inapplicability evidence | Meter each node and carrier separately; where submetering is unavailable use evidenced operating time and load, reconciled with the same-period main meter and every consumer. Record named service coverage and actual direct inputs under calc_operating_utilities. | kWh; MJ; native unit of each fuel, kept separately | each lot and meter settlement period | complete operating period including failed batches, standby and relevant auxiliary services | actual in-boundary facilities and linked services | per reference flow | raw readings, load/efficiency evidence, consumer allocation and no-duplication ledger; equipment hours alone do not establish energy use |
 
 ### Calculation Rules
 
@@ -731,6 +746,7 @@ Denominator and scope requirements：per reference flow
 | c_balance | source to handover | Source material plus actual additions = saleable wax, residues, measured removals and stock change within observed uncertainty. No universal wax yield. | cp_collect;cp_condition;cp_treat;cp_grade;cp_handover;cp_residue | kg balance residual | fao-beeswax |
 | c_period | source and shared service | Attribute source phase and each shared tank, filter, energy, storage or package use once to consuming lots/periods. | cp_collect;cp_condition;cp_treat;cp_handover | burden/kg wax | fao-beeswax |
 | c_norm | final exchange | Divide attributable exchange by positive net mass of the same source/state/gate lot. | cp_handover | unit/kg wax |  |
+| `calc_operating_utilities` | all actual operated nodes | Obtain raw use by node/carrier; attribute shared meters using evidenced usage with all consumer shares reconciling to the total. Retain electricity kWh, purchased heat MJ and each fuel native unit separately; 1 kWh = 3.6 MJ is only an energy-unit conversion, not electricity/heat substitution or efficiency. Count inputs covered by a service dataset once. Each other actual carrier requires its own concrete exchange or named covering service; absence from the existing cards is not an exclusion. Apply existing foreground-emission responsibility rules to on-site combustion. Normalize attributable totals exactly once under the existing normalization rules; attribute zero-output failed batches to an evidenced same-scope service period rather than divide by zero or discard them. Missing metering, attribution or coverage evidence remains a gap and prevents a completeness claim. | `cp_operating_utilities` | quantities and coverage by node and carrier per reference flow | |
 
 ### Data Quality Requirements
 
@@ -751,6 +767,7 @@ Denominator and scope requirements：per reference flow
 | v_allocation | source and shared services | Reject automatic zero/full wax burden, duplicate honey/wax or shared-asset period. | fao-beeswax |
 | v_identity | concrete exchange | Verify flow type, direction, source, state, gate, Mass property and unit group; beeswax-only flow cannot identify the broad reference. |  |
 | `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_operating_utilities` | all actual operated nodes, including non-chilled/non-frozen routes | Reconcile cp_operating_utilities against every actual node/carrier: require measured/evidenced estimated use with a concrete exchange, a named service dataset explicitly covering it in full, or evidenced inapplicability. Check that added operating-electricity cards, existing preservation/separation energy cards and service datasets do not duplicate burdens. Fresh routes and nodes without an existing energy card are not assumed energy-free. This is a dataset-production review requirement; a PCR structural check does not prove actual completeness. | |
 
 ## 10. Published Dataset Profile
 
