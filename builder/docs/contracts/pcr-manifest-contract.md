@@ -128,6 +128,8 @@ Status and maturity are validated as one state:
 | `published` | `published_methodology` |
 | `deprecated` | `deprecated_methodology` |
 
+An authored candidate may retain an explicitly unresolved reference-product UUID while its category name differs from individual terminal-state output names. Declare `review_metadata.reference_flow_identity.status: unresolved`, include `reference_product_flow_uuid` in `unresolved_support_fields`, and give every selected product-output row an individual `unresolved_flow_identities` object containing `row_id`, `reason_code` and `explanation`. The functional-unit link must identify one product output, or the bounded exactly-one terminal selector defined in `measurement-unit-rules.md`. This exception applies only to candidate/authored_methodology; it supplies no UUID, does not waive flow-property or unit-group identity, and does not permit active or published readiness.
+
 Moving to `active` requires an aligned or reviewed Chinese translation and a material PCR preflight. Publication is a
 separate transition from `active`: it requires reviewed methodology, `translation_status.zh-CN: reviewed`, valid
 semver, current structured output, and no non-empty unresolved or blocking field in `review_metadata`. Every

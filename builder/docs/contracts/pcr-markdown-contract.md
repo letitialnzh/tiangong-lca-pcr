@@ -123,6 +123,11 @@ The reference flow section must first define the functional unit:
 | reference_flow_link |  |
 ```
 
+`reference_flow_link` normally names one completed product-output row. PCRs permitting several terminal states
+may declare the finite exactly-one selector documented in [Measurement and Unit Rules](../methods/measurement-unit-rules.md#explicit-terminal-output-alternatives).
+Both renderings must preserve its row ids and controlled fields. The actual dataset must select one state explicitly;
+an intermediate handoff quantity must never be fixed to the final reference just to satisfy a check.
+
 The reference flow section then defines the Tiangong reference flow object:
 
 ```markdown

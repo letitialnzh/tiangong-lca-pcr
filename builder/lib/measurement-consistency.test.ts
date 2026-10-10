@@ -491,3 +491,85 @@ for (const expression of ["q_item / M", "q_ref = q_item / M", "M * q_item"]) {
     assert.equal(result.coverage.complete, false);
   });
 }
+
+function terminalProjectionPair() {
+  const documents = pair({referenceAmount: "1", basis: "per declared reference flow", collectionBasis: "per declared reference flow", expression: "Record measured electricity from cp_energy."});
+  const projections = {english: parsePcrMarkdownToStructured(documents.english), chinese: parsePcrMarkdownToStructured(documents.chinese)};
+  for (const parsed of Object.values(projections)) {
+    assert.ok(parsed.functionalUnit);
+    parsed.functionalUnit.reference_flow_link = "finished_baler; extended_output";
+    parsed.functionalUnit.reference_flow_selection = "exactly_one_declared_terminal_output";
+    parsed.functionalUnit.reference_selection_required = "actual_route; declared_gate; product_state; output_row_id";
+    const process = parsed.processInventory[0]; assert.ok(process);
+    const first = process.outputs.product[0]; assert.ok(first);
+    first.amount.expression = "1 kg when selected as reference output; otherwise use measured internal-transfer quantity";
+    const second = structuredClone(first); second.row_id = "extended_output";
+    process.outputs.product.push(second);
+  }
+  return projections;
+}
+
+test("explicit reference row takes priority over a UUID shared with another output", () => {
+  const p = terminalProjectionPair();
+  for (const parsed of Object.values(p)) {
+    assert.ok(parsed.functionalUnit); parsed.functionalUnit.reference_flow_link = "finished_baler";
+    delete parsed.functionalUnit.reference_flow_selection; delete parsed.functionalUnit.reference_selection_required;
+    assert.ok(parsed.referenceFlowDefinition); parsed.referenceFlowDefinition.product_flow.uuid = "shared-product";
+    const process = parsed.processInventory[0]; assert.ok(process);
+    for (const row of process.outputs.product) row.uuid = "shared-product";
+    const first = process.outputs.product[0]; assert.ok(first); first.amount.expression = "1 kg";
+    const second = process.outputs.product[1]; assert.ok(second); second.amount.expression = "Measured co-product quantity";
+    second.amount.evidence.collection_protocol_id = "cp_energy";
+  }
+  assert.equal(checkMeasurementConsistency(p).status, "pass");
+  p.english.functionalUnit!.reference_flow_link = "missing_row";
+  assert.ok(codes(checkMeasurementConsistency(p)).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("ordinary linked agronomic calculations are independent of machine-mass normalization", () => {
+  const p = pair({referenceAmount: "1", basis: "per declared reference flow", collectionBasis: "per declared reference flow", expression: "Calculate the measured emission using calculate_soil_emission."});
+  const values = {english: parsePcrMarkdownToStructured(p.english), chinese: parsePcrMarkdownToStructured(p.chinese)};
+  for (const parsed of Object.values(values)) parsed.calculationRules.push({id: "calculate_soil_emission", applies_to: "managed soil", rule: "N2O = nitrogen input multiplied by the declared factor", inputs: ["nitrogen input", "declared factor"], output: "N2O", source_ids: []});
+  assert.equal(checkMeasurementConsistency(values).status, "pass");
+});
+
+test("explicit terminal alternatives check every allowed output without fixing internal transfer amounts", () => {
+  const p = terminalProjectionPair();
+  const result = checkMeasurementConsistency(p);
+  assert.equal(result.status, "pass");
+  assert.equal(result.coverage.performed.filter(row => row.check === "reference_output").length, 4);
+  p.english.processInventory[0]!.outputs.product[1]!.amount.expression = "2 kg when selected as reference output; otherwise use measured internal-transfer quantity";
+  assert.ok(codes(checkMeasurementConsistency(p)).includes("MEASUREMENT_REFERENCE_OUTPUT_MISMATCH"));
+});
+
+for (const change of ["missing_row", "duplicate_row", "input_row", "unknown_selector", "missing_metadata", "unconditional_quantity", "extra_amount_clause"] as const) {
+  test(`terminal selectors reject ${change}`, () => {
+    const p = terminalProjectionPair(); const parsed = p.english; assert.ok(parsed.functionalUnit);
+    if (change === "missing_row") parsed.functionalUnit.reference_flow_link = "finished_baler; absent";
+    if (change === "duplicate_row") parsed.functionalUnit.reference_flow_link = "finished_baler; finished_baler";
+    if (change === "input_row") parsed.functionalUnit.reference_flow_link = "finished_baler; electricity";
+    if (change === "unknown_selector") parsed.functionalUnit.reference_flow_selection = "any_output";
+    if (change === "missing_metadata") delete parsed.functionalUnit.reference_selection_required;
+    if (change === "unconditional_quantity") parsed.processInventory[0]!.outputs.product[1]!.amount.expression = "1 kg";
+    if (change === "extra_amount_clause") parsed.processInventory[0]!.outputs.product[1]!.amount.expression += "; assume the later gate";
+    assert.notEqual(checkMeasurementConsistency(p).status, "pass");
+  });
+}
+
+test("bilingual terminal-output selectors must describe the same set", () => {
+  const p = terminalProjectionPair(); const parsed = p.chinese; assert.ok(parsed.functionalUnit);
+  parsed.functionalUnit.reference_flow_link = "extended_output; finished_baler";
+  assert.equal(checkMeasurementConsistency(p).status, "pass");
+  parsed.functionalUnit.reference_flow_link = "finished_baler; another_terminal";
+  parsed.processInventory[0]!.outputs.product[1]!.row_id = "another_terminal";
+  assert.ok(codes(checkMeasurementConsistency(p)).includes("MEASUREMENT_BILINGUAL_REFERENCE_OUTPUT_MISMATCH"));
+});
+
+
+test("Chinese terminal amounts preserve the same explicit conditional meaning", () => {
+  const p = terminalProjectionPair();
+  for (const row of p.chinese.processInventory[0]!.outputs.product) row.amount.expression = "当选为参考输出时为 1 千克；否则采用实测内部转移数量";
+  assert.equal(checkMeasurementConsistency(p).status, "pass");
+  p.chinese.processInventory[0]!.outputs.product[0]!.amount.expression += "；默认选后一个门";
+  assert.notEqual(checkMeasurementConsistency(p).status, "pass");
+});

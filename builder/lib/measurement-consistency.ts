@@ -13,7 +13,7 @@ export interface SkippedMeasurementCheck extends MeasurementCheck { reason: stri
 export interface MeasurementReport { check_version: number; status: 'pass' | 'error' | 'manual_review'; findings: MeasurementFinding[];
  coverage: { performed: MeasurementCheck[]; skipped: SkippedMeasurementCheck[]; complete: boolean; counts: { languages: number; inventory_rows: number; performed: number; skipped: number } } }
 interface RowSummary { context: MeasurementContext; basis: Basis | null; collection_basis: Basis | null; conversions: Conversion[] }
-interface MeasurementSummary { reference: Reference | null; mass: MassDefinition; rows: Map<string, RowSummary> }
+interface MeasurementSummary { reference: Reference | null; mass: MassDefinition; rows: Map<string, RowSummary>; reference_outputs: string[]; selection: string }
 
 /**
  * Builder-only, finite measurement recognizers; this is not a mathematics engine.
@@ -365,7 +365,7 @@ export function checkMeasurementConsistency({ english, chinese }: { english?: Me
     const rows = inventoryRows(parsed);
     inventoryCount += rows.length;
     const mass = massDefinition(parsed);
-    const summary: MeasurementSummary = { reference, mass, rows: new Map() };
+    const summary: MeasurementSummary = { reference, mass, rows: new Map(), reference_outputs: [], selection: "" };
     summaries.set(language, summary);
     if (!reference?.amount || !reference?.unit) {
       review("reference_quantity", "MEASUREMENT_REFERENCE_UNSUPPORTED", "Reference quantity or unit is absent or outside the supported numeric/M grammar.", context);
@@ -392,19 +392,36 @@ export function checkMeasurementConsistency({ english, chinese }: { english?: Me
     if (reference?.amount === "M") checkMass();
     const referenceLink = clean(parsed.functionalUnit?.reference_flow_link);
     const referenceUuid = sourceReference?.product_flow?.uuid;
+    // A PCR may describe several admissible terminal states. This declares
+    // alternatives for future datasets, never the actual state of a dataset.
+    const selection = clean(parsed.functionalUnit?.reference_flow_selection);
+    const alternatives = referenceLink.split(";").map(clean);
+    const hasSelector = selection === "exactly_one_declared_terminal_output";
+    const selectorValid = hasSelector && alternatives.length >= 2 && alternatives.length <= 8 &&
+      new Set(alternatives).size === alternatives.length && alternatives.every((id) => /^[a-z][a-z0-9_]*$/u.test(id)) &&
+      clean(parsed.functionalUnit?.reference_selection_required) === "actual_route; declared_gate; product_state; output_row_id";
+    // Explicit row links take priority over UUIDs shared by internal transfers.
     const outputs = rows.filter((entry) => entry.direction === "outputs" && entry.flow_type === "product" &&
-      ((referenceLink && entry.row.row_id === referenceLink) || (referenceUuid && entry.row.uuid === referenceUuid)));
-    if (rows.length && outputs.length !== 1) {
-      review("reference_output", "MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED", "Exactly one completed product output must be identified by reference_flow_link or the reference product UUID.", context);
+      (hasSelector ? alternatives.includes(entry.row.row_id) : referenceLink ? entry.row.row_id === referenceLink : Boolean(referenceUuid && entry.row.uuid === referenceUuid)));
+    const resolved = hasSelector
+      ? selectorValid && alternatives.every((id) => outputs.filter((entry) => entry.row.row_id === id).length === 1)
+      : !selection && outputs.length === 1;
+    summary.selection = selection;
+    summary.reference_outputs = outputs.map((entry) => entry.row.row_id).sort();
+    if (rows.length && !resolved) {
+      review("reference_output", "MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED", "Identify one completed product output, or declare an explicit exactly-one terminal-output selector with unique output rows and required actual-state metadata.", context);
     }
     for (const entry of rows) {
       const { row, process_id } = entry;
       const rowContext = { language, process_id, row_id: row.row_id };
       const rowBasis = basis(row.amount?.basis?.text);
       const expression = row.amount?.expression ?? "";
-      const linked = (parsed.calculationRules ?? []).filter((rule) => hasToken(expression, rule.id));
+      // Ordinary yield, moisture and emission calculations are not machine
+      // count-to-mass conversions. Keep reserved normalization symbols strict.
+      const linked = (parsed.calculationRules ?? []).filter((rule) => hasToken(expression, rule.id) &&
+        ["q_item", "q_ref", "M"].some((symbol) => hasToken(rule.rule, symbol) || rule.inputs.some((input) => hasToken(input, symbol))));
       const conversions = linked.map(conversion);
-      const isOutput = outputs.length === 1 && outputs[0] === entry;
+      const isOutput = resolved && outputs.includes(entry);
       if (!isOutput && !linked.length && ["q_item", "q_ref", "M"].some((symbol) => hasToken(expression, symbol))) {
         review("conversion_application", "MEASUREMENT_CONVERSION_APPLICATION_UNSUPPORTED", "Reserved normalization symbols in an inventory amount require a supported linked application; an unlinked expression is not interpreted or accepted.", rowContext);
       }
@@ -426,7 +443,9 @@ export function checkMeasurementConsistency({ english, chinese }: { english?: Me
       }
       if (isOutput) {
         record("reference_output", rowContext);
-        const amount = outputAmount(expression);
+        const conditionalAmount = hasSelector ? (expression.match(/^(.+?) when selected as reference output; otherwise use measured internal-transfer quantity$/u) ??
+          expression.match(/^当选为参考输出时为 (.+?)；否则采用实测内部转移数量$/u)) : null;
+        const amount = outputAmount(hasSelector ? conditionalAmount?.[1] ?? "" : expression);
         const exchangeUnit = unit(row.property_unit?.split("/").at(-1));
         if (!amount) {
           if (containsItemBasis(expression) || /\bone (?:accepted |finished |complete )*(?:baler|machine)\b|一台.*(?:打捆机|机器)/iu.test(expression)) {
@@ -492,6 +511,9 @@ export function checkMeasurementConsistency({ english, chinese }: { english?: Me
   if (en && zh) {
     const context = { language: "bilingual" };
     record("bilingual_reference", context);
+    if (en.selection !== zh.selection || JSON.stringify(en.reference_outputs) !== JSON.stringify(zh.reference_outputs)) {
+      finding("error", "MEASUREMENT_BILINGUAL_REFERENCE_OUTPUT_MISMATCH", "English and Chinese must identify the same reference output rows and terminal-selection contract.", context);
+    }
     if (en.reference && zh.reference && JSON.stringify(en.reference) !== JSON.stringify(zh.reference)) finding("error", "MEASUREMENT_BILINGUAL_REFERENCE_MISMATCH", "English and Chinese reference quantities or units differ.", context);
     if ((en.reference?.amount === "M" || zh.reference?.amount === "M") && en.mass.signature !== zh.mass.signature) finding("error", "MEASUREMENT_BILINGUAL_VARIABLE_MISMATCH", "English and Chinese M definitions differ or one is missing.", { ...context, rule_id: en.mass.rule_id ?? zh.mass.rule_id });
     for (const key of new Set([...en.rows.keys(), ...zh.rows.keys()])) {
