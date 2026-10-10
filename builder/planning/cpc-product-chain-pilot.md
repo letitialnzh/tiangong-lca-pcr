@@ -65,7 +65,7 @@ flowchart LR
 
 | Edge | From | To | Evidence | Boundary | Scheduling | Blockers | Review notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| raw-cotton-to-carded-or-combed-cotton | raw-cotton | carded-or-combed-cotton | supported_by_pcr | aligned | ready | — | CPC 01921 is currently unmapped, so the aligned PCR evidence does not make this edge executable; Review the cultivation-to-ginning boundary and cotton type before adding any upstream material PCR. |
+| raw-cotton-to-carded-or-combed-cotton | raw-cotton | carded-or-combed-cotton | supported_by_pcr | aligned | ready | — | CPC 01921 now has an accepted material PCR mapping; this interface uses only its declared ginned-lint output; Confirm actual virgin Upland cotton, ginning completion, bale condition and moisture basis; the seed-cotton farm-gate route does not satisfy this interface. |
 | carded-or-combed-cotton-to-cotton-yarn | carded-or-combed-cotton | cotton-yarn | supported_by_pcr | overlap | blocked | boundary_not_aligned | Directly chaining CPC 26160 to the current cotton-yarn PCR would repeat fibre-preparation operations already inside the downstream foreground boundary; Reassess only after a downstream-PCR revision explicitly supports purchased carded or combed cotton and conditionally excludes every duplicated preparation operation. |
 | cotton-yarn-to-woven-cotton-fabric | cotton-yarn | woven-cotton-fabric | supported_by_pcr | aligned | ready | — | Confirm that the downstream fabric basis exceeds 200 g/m2 and that purchased or internally transferred yarn is represented consistently. |
 

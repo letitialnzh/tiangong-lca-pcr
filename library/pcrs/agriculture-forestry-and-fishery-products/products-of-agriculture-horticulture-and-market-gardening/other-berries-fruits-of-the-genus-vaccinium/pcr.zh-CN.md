@@ -1,7 +1,7 @@
 ---
 pcr_id: pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.other-berries-fruits-of-the-genus-vaccinium
 language: zh-CN
-status: candidate
+status: active
 sync_with: pcr.en-US.md
 ---
 

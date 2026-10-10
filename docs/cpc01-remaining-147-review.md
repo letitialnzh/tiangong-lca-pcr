@@ -36,12 +36,15 @@ lastReviewedNote: "Content consistency and focused primary-source audit; candida
 
 逐份 `pcr:check`：147/147 通过，计量检查覆盖均完整。检查共报告 900 条非阻断警告，其中原子流迁移警告涉及 221 个聚合清单标签；它们仍需后续按实际产品/物质拆成原子交换。这次没有声明 `atomic_flows: v1` 或官方中文流名已核验。
 
-完整 `npm run validate`：待本次最终验证记录更新。
+Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量类型检查和 lint 通过。本地 macOS 全量测试在 Goal 安全报告读取处出现平台限制（`GOAL_COORDINATOR_REPORT_UNSAFE`，其目录遍历明确要求 Linux 和 `/proc/self/fd`）；单测独立复现，相关 `builder/goal-harness/` 文件与目标基线没有差异。确认限制后停止本地全量测试，不能将其记为通过。
+
+相关测量与 Schema 回归测试 92 项通过，目录及棉花链受影响的回归用例通过。已核对 294 份双语 Markdown 的身份、同步来源及已声明状态与 manifest 一致。首轮 Linux CI 发现的其他油籽翻译状态冲突、目录测试旧覆盖状态和棉花产品链旧预期已修正；完整的最新 Linux 分片、网站构建及离线包验证结论见 [PR #14 检查记录](https://github.com/letitialnzh/tiangong-lca-pcr/pull/14/checks)。
 
 ## 已确认并修正的问题
 
 | 问题 | 处理和证据 |
 | --- | --- |
+| Markdown 与 manifest 的状态冲突 | 其他油籽中文遗留 scaffold_pending_translation；两份浆果正文 frontmatter 仍为 candidate 而 manifest 为 active。统一到实际 manifest 状态，并对全部 294 份 Markdown 核对；不把历史 reviewed 标记当作本次重新审阅。 |
 | 巴西坚果把未开启的木质果荚与单粒带硬壳种子混作参考产品 | 参考产品明确为开荚后仍保留单粒硬壳的种子；未开荚中间投入不继承该产品 UUID。[FAO Brazil nuts](https://www.fao.org/forestry/nwfp/statistics/brazil-nuts) 区分果荚与其中的种子。 |
 | 七类坚果引用套用了作物题名，多个 CXC 4-1971 被改写成别的坚果标准 | 改用可核实的作物资料及正确的 CXC 6-1972（树坚果）、CXC 22-1979（花生）。CXC 4-1971 仅保留为脱水椰子下游范围背景。[Codex 标准目录](https://www.fao.org/fao-who-codexalimentarius/committees/committee/related-standards/en/?committee=CCPFV)；不能验证的套用指南退出规范引用。 |
 | 中文坚果文本遗留腰果“苹果”、错误文献和荚果开启排除项 | 改为对应的荚果、苞或外果皮术语，来源表与英文同步；中文整体仍标记为 draft_translation。 |

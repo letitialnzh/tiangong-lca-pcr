@@ -1,7 +1,7 @@
 ---
 pcr_id: pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.raspberries-blackberries-mulberries-and-loganberries
 language: en-US
-status: candidate
+status: active
 sync_with: pcr.zh-CN.md
 ---
 

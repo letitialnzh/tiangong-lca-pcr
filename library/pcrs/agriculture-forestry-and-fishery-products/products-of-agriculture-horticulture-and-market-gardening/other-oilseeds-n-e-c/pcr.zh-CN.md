@@ -4,7 +4,7 @@ pcr_id: pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-ho
 language: zh-CN
 status: candidate
 content_maturity: authored_methodology
-translation_status: scaffold_pending_translation
+translation_status: aligned
 sync_with: pcr.en-US.md
 ---
 # 其他未另分类油籽
