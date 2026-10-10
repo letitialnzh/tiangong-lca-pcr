@@ -1,10 +1,1810 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "03131"
-  title: "Fuel wood of coniferous wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.forestry-and-logging-products.fuel-wood-of-coniferous-wood"
+  classification_refs: "CPC 3.0 03131"
+  covered_products: "Actual raw conifer fuelwood forms; primary separately measured forest-harvest residue recovery where declared"
+  excluded_products: "Non-conifer fuelwood; industrial logs; manufactured wood fuels; charcoal; treated/recovered industrial wood; delivered energy"
+  representative_product: "A traced raw conifer fuelwood lot for fuel use at producer collection-point dispatch"
+  production_route: "Declared source management or natural/residue source → harvest/removal → actual extraction/preparation → destination sorting and handover"
+  market_state: "Net raw wood as received, with actual moisture, bark and form; not combustion-ready universal grade"
+functional_unit:
+  what: "Qualified raw conifer fuelwood at the declared producer handover"
+  how_much: "1 kg"
+  how_well: "Actual species/form/bark, moisture basis, origin and fuel destination recorded; grade is lot-specific"
+  how_long_or_cycle: "Declared source cohort, harvest campaign and handover period; growth/asset phases and closing stocks linked, no universal rotation"
+  reference_flow_link: "fuelwood_handover"
+system_boundary:
+  rules:
+    - rule_id: source_partition
+      applies_to: "source interfaces"
+      rule: "Select one source representation for each traced mass: managed transfer, natural withdrawal or prior-attributed residue feed. Growth, harvest/removal and preparation are separate responsibilities; avoid overlap, including uncollected habitat residues."
+      source_ids:
+        - fao-fuelwood-harvesting
+        - fao-forest-product-definitions
+    - rule_id: declared_gate
+      applies_to: "all operations"
+      rule: "Include actual source, extraction, cutting/splitting, optional seasoning, sorting and loading before producer handover only. Exclude downstream transport, combustion and carbonisation. A charcoal-focused source informs unit operations only, not the final gate or its illustrative yields."
+      source_ids:
+        - fao-fuelwood-harvesting
+        - fao-forest-product-definitions
+    - rule_id: cohort_assets
+      applies_to: "sites and phases"
+      rule: "List every contributing parcel, management/harvest/seasoning period and shared road/equipment consumer. Record establishment, maintenance, replacement and closure where relevant; allocate actual asset services over recorded use, not a default lifetime."
+      source_ids:
+        - fao-fuelwood-harvesting
+        - fao-forest-product-definitions
+    - rule_id: boundary_direct_release_coverage
+      applies_to: "stand_management; wood_collection; primary_extraction; wood_preparation; handover_sorting"
+      rule: "Reconcile on-site combustion, actual applications and fugitive releases/leaks at every activated node through unique activity-substance-receiving-medium records in cp_direct_release_stand_management; cp_direct_release_wood_collection; cp_direct_release_primary_extraction; cp_direct_release_wood_preparation; cp_direct_release_handover_sorting. Upstream production of purchased fuel or chemicals does not replace emissions from their use on site; verify coverage and avoid double counting the same activity inside a supplier service. Evidence must support non-activity; missing data are not zero. This obligation does not expand the existing product gate or downstream-use boundary and does not presume combustion, fertilization, chemicals or equipment occur."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Identified managed cohort, declared natural source or traced primary harvest residues with explicit prior burden handoff"
+  starting_condition_role: "Foreground source boundary, not assumed zero-burden cut-off"
+  product_classification_scope: "CPC 3.0 03131; actual raw conifer fuelwood"
+  recursive_input_rule: "Record purchased same-category fuelwood as an upstream input with origin, state, gate and supplier dataset; do not recursively regenerate or duplicate its source/harvest burdens"
+  upstream_dataset_requirement: "Require compatible upstream source/material/service data or disclose a gap and bounded estimate; never assert a complete cradle-to-gate boundary without it"
+  disclosure: "Source sites/cohorts, included phases, omitted operations, soil/carbon coverage, actual gate, stock periods, source/residue attribution and representativeness"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Raw conifer fuel wood at producer roadside or collection-point handover"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "conifer species and source parcel"
+    - "raw form and bark inclusion"
+    - "net as-received mass"
+    - "wet/dry moisture basis and method"
+    - "actual source and operation route"
+    - "energy-use destination"
+    - "producer gate"
+    - "harvest/dispatch periods"
+    - "stock and upstream attribution boundary"
+reference_flows:
+  []
+measurement_rules:
+  - id: net_reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh net accepted handover wood excluding tare and foreign matter. Only fuelwood_handover is fixed to 1 kg; all upstream feeds, prepared transfers and losses remain measured."
+  - id: moisture_bridge
+    applies_to: "wood mass"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Declare wet-basis fraction w or dry-basis ratio u from matched sample; dry mass = wet mass × (1 − w); w = u / (1 + u). Moisture, bark and sample condition must match; no universal drying loss."
+  - id: volume_mass_bridge
+    applies_to: "volume-based wood records"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep solid and stacked volume distinct. Measure lot-matched mass/volume and packing factor when needed; never use universal conifer density. Heating value is supplementary with matched moisture, not a mass-reference replacement."
+  - id: carrier_units
+    applies_to: "operation energy"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Retain original fuel, kWh, distance and service quantities; convert kWh to MJ with 3.6 exactly once when that exchange requires MJ. Fuel mass/volume-to-energy requires its actual documented factor."
+  - id: provisional_range_evidence_policy
+    applies_to: "all Ranges and actual exchanges"
+    required_property_ref:
+      name: "compatible property of each actual exchange"
+      uuid: ""
+    required_unit: "native unit of each actual exchange"
+    rule: "All reasoned_estimate Ranges are provisional review prompts for this candidate method, not measured distributions, allowable losses, default quantities or emission factors. Never clip, backfill or force actual records to fit them; investigate state, units, boundary, stocks and evidence when exceeded. Before completing a data package, determine actual quantities and uncertainty from traceable measurements or applicable reviewed quantitative sources. Retain missing amounts, factors and flow identities as gaps that block completeness claims; passing a range screen is not evidence."
+  - id: independent_reference_range
+    applies_to: "non-reference Range upper limits"
+    required_property_ref:
+      name: "matched actual exchange property"
+      uuid: ""
+    required_unit: "matched actual exchange unit"
+    rule: "reference_record_max must come from an independent, pre-frozen reviewed reference sample or historical period matched for source, route, state, unit and normalization basis. Record sample IDs, time window, sample size, derivation and uncertainty; never test a batch against its own maximum. Without an independent reference the upper limit is unresolved: retain the gap and check actual balances and measurements, without claiming a passed numerical upper-limit check."
+process_map:
+  - id: stand_management
+    name: "Conifer stand management"
+    inclusion: "conditional"
+    inclusion_condition: "Only when attributable planting, tending or regeneration belongs to the declared source boundary"
+    role: "managed biological production"
+    quantitative_reference: "Attributed to 1 kg reference flow; raw lot/cohort records retained"
+  - id: wood_collection
+    name: "Harvest or removal of source wood"
+    inclusion: "conditional"
+    inclusion_condition: "Only actual harvest/removal or primary harvest-residue collection in the foreground; select managed, natural/deadwood or residue source without duplicating mass"
+    role: "source-to-collected wood"
+    quantitative_reference: "Attributed to 1 kg reference flow; raw lot/cohort records retained"
+  - id: primary_extraction
+    name: "Extraction to producer collection point"
+    inclusion: "conditional"
+    inclusion_condition: "Only the actual short-haul extraction before the declared producer handover"
+    role: "primary movement"
+    quantitative_reference: "Attributed to 1 kg reference flow; raw lot/cohort records retained"
+  - id: wood_preparation
+    name: "Cutting, splitting or pre-handover seasoning"
+    inclusion: "conditional"
+    inclusion_condition: "Only evidenced preparation before handover; absent operations have no invented inputs or losses"
+    role: "primary conditioning"
+    quantitative_reference: "Attributed to 1 kg reference flow; raw lot/cohort records retained"
+  - id: handover_sorting
+    name: "Destination sorting and producer handover"
+    inclusion: "required"
+    inclusion_condition: "Reconcile qualified fuelwood, diverted wood, rejects and stock at the actual producer gate"
+    role: "grading and final handover"
+    quantitative_reference: "Attributed to 1 kg reference flow; raw lot/cohort records retained"
+process_inventory:
+  - id: stand_management
+    label: "Conifer stand management"
+    inputs:
+      product:
+        - row_id: management_materials
+          role: "Actual planting and tending materials"
+          name: "Actual planting and tending materials"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One conditional umbrella for actual seedlings, formulated fertilizers and other tending materials. Each actual material is distinct in the dataset; keep formulated mass, nutrient/active-content bridge and supplier scope. Natural unmanaged sources do not inherit a planting recipe."
+          amount:
+            expression: "Recorded material quantities attributable to the harvested fuelwood cohort"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_management
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: stand_management_energy
+          role: "Actual operation energy carriers"
+          name: "Actual operation energy carriers"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "One conditional energy umbrella: identify actual fuel, electricity or heat carriers from records; zero, one or multiple concrete energy exchanges. Preserve original carrier units and verified bridges to MJ. If an inclusive contracted service supplies the work, record its native service quantity and upstream boundary independently, outside this energy card; do not also count its fuel or exhaust."
+          amount:
+            expression: "Recorded actual carrier energy attributable to the operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_at_stand_management
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "MJ"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: land_occupation
+          role: "Actual conifer-source land occupation"
+          name: "Actual conifer-source land occupation"
+          flow_type: "elementary"
+          property_unit: "Area time / m2*a"
+          description: "Record land category, parcel area and occupation period where in boundary; transformation is a separate actual event, never inferred from occupation. No universal rotation or land-use-change burden."
+          amount:
+            expression: "Measured parcel area-time attributed to the output cohort"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_management
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "m2*a"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: biogenic_carbon_uptake
+          role: "Carbon dioxide uptake from air in included managed growth"
+          name: "Carbon dioxide uptake from air in included managed growth"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "da174fac-e567-42d3-99b5-a688913dc88e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only if the included growth boundary, declared inventory method and independently evidenced complete carbon ledger support this exchange under carbon_uptake_reconciliation. Report carbon pools and dry-matter basis; net stock change alone is not uptake, and later energy use earns no automatic negative credit. Do not duplicate uptake carried by an upstream dataset."
+          amount:
+            expression: "Determine CO2 uptake from a complete independently evidenced dry-carbon pool ledger and declared method, including harvest, transfers and respiration/releases; never from net stock change alone."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_carbon
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: standing_source_wood
+          role: "Standing conifer wood available for declared harvest"
+          name: "Standing conifer wood available for declared harvest"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Managed-source intermediate handoff to wood_collection. Measure attributable standing biomass; not the final dispatched reference and not fixed to 1 kg."
+          amount:
+            expression: "Measured attributable source biomass available to the collection campaign"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_stand_management
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: wood_collection
+    label: "Harvest or removal of source wood"
+    inputs:
+      product:
+        - row_id: managed_source_feed
+          role: "Standing conifer wood received from management"
+          name: "Standing conifer wood received from management"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only for managed-source harvest. Link standing_source_wood transfer and its prior burdens once; do not also count the same biomass as natural withdrawal."
+          amount:
+            expression: "Measured source biomass allocated to the fuelwood collection operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: residue_source_feed
+          role: "Measured conifer harvest residues received for fuelwood recovery"
+          name: "Measured conifer harvest residues received for fuelwood recovery"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only separately evidenced primary harvest-residue recovery, not industrial/recovered demolition waste. Declare prior producer interface, residue status and attributed upstream burdens. Mutually exclusive with another feed representation for the same lot."
+          amount:
+            expression: "Measured received residue mass attributable to this lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: wood_collection_energy
+          role: "Actual operation energy carriers"
+          name: "Actual operation energy carriers"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "One conditional energy umbrella: identify actual fuel, electricity or heat carriers from records; zero, one or multiple concrete energy exchanges. Preserve original carrier units and verified bridges to MJ. If an inclusive contracted service supplies the work, record its native service quantity and upstream boundary independently, outside this energy card; do not also count its fuel or exhaust."
+          amount:
+            expression: "Recorded actual carrier energy attributable to the operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "MJ"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: natural_wood_withdrawal
+          role: "Conifer woody biomass removed from declared natural source"
+          name: "Conifer woody biomass removed from declared natural source"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only natural/deadwood source withdrawal when not already a technosphere input. Identify live/dead state and compartment. Collected logging residues with prior product attribution use their source ledger, not an invented zero-burden natural flow."
+          amount:
+            expression: "Measured woody resource removal attributable to the declared fuelwood source"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: collected_fuelwood
+          role: "Collected raw conifer fuelwood before extraction or preparation"
+          name: "Collected raw conifer fuelwood before extraction or preparation"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Intended internal transfer from actual harvest/removal responsibility, independent of stand growth and later preparation. Preserve raw moisture, bark and form; quantity is measured, not forced to 1 kg."
+          amount:
+            expression: "Measured collected fuelwood mass traceable to the final lot"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: industrial_wood_coproduct
+          role: "Actual separately dispatched industrial wood co-products"
+          name: "Actual separately dispatched industrial wood co-products"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional output register for real saw/veneer/pulp/panel/other-use lots. Enumerate every actual intended product and gate in the dataset, separate from fuelwood, and apply the explicit allocation decision."
+          amount:
+            expression: "Measured independent intended co-product quantities"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: collection_exported_residues
+          role: "Exported collection residues sent as waste"
+          name: "Exported collection residues sent as waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only material leaving the foreground with documented waste destination. Uncollected branches, retained habitat wood and on-site residues stay in the source ledger, not a fictional boundary waste exchange."
+          amount:
+            expression: "Measured exported residue mass by destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_source_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      elementary:
+        - row_id: wood_collection_air_emissions
+          role: "Substance-specific direct operation emissions to air"
+          name: "Substance-specific direct operation emissions to air"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional reporting card only for direct foreground releases. Identify each measured/modelled substance, fossil or biogenic carbon origin and receiving air compartment; do not fix a broad exhaust UUID. Exclude emissions already embedded in an inclusive contracted service."
+          amount:
+            expression: "Recorded or calculated attributable substance-specific direct emissions"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions_at_wood_collection
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+  - id: primary_extraction
+    label: "Extraction to producer collection point"
+    inputs:
+      product:
+        - row_id: extraction_feed
+          role: "Collected conifer fuelwood entering primary extraction"
+          name: "Collected conifer fuelwood entering primary extraction"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual collected_fuelwood transfer or directly matched source lot; an internal transfer carries prior burdens once, never an additional harvested yield."
+          amount:
+            expression: "Measured mass entering extraction"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_movement
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: primary_extraction_energy
+          role: "Actual operation energy carriers"
+          name: "Actual operation energy carriers"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "One conditional energy umbrella: identify actual fuel, electricity or heat carriers from records; zero, one or multiple concrete energy exchanges. Preserve original carrier units and verified bridges to MJ. If an inclusive contracted service supplies the work, record its native service quantity and upstream boundary independently, outside this energy card; do not also count its fuel or exhaust."
+          amount:
+            expression: "Recorded actual carrier energy attributable to the operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_at_primary_extraction
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "MJ"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: collection_point_wood
+          role: "Raw conifer fuelwood at producer collection point before preparation"
+          name: "Raw conifer fuelwood at producer collection point before preparation"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measured internal handoff to preparation or sorting; loading and own short-haul movement stop at the chosen producer point. Neither consumer delivery nor an invariant 1 kg output."
+          amount:
+            expression: "Measured wood mass delivered to this internal collection point"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_movement
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: extraction_losses
+          role: "Extraction losses exported to actual waste destination"
+          name: "Extraction losses exported to actual waste destination"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Separate actual losses and destination from stock retained at source; no preset transport loss percentage."
+          amount:
+            expression: "Measured exported loss mass"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_movement
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      elementary:
+        - row_id: primary_extraction_air_emissions
+          role: "Substance-specific direct operation emissions to air"
+          name: "Substance-specific direct operation emissions to air"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional reporting card only for direct foreground releases. Identify each measured/modelled substance, fossil or biogenic carbon origin and receiving air compartment; do not fix a broad exhaust UUID. Exclude emissions already embedded in an inclusive contracted service."
+          amount:
+            expression: "Recorded or calculated attributable substance-specific direct emissions"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions_at_primary_extraction
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+  - id: wood_preparation
+    label: "Cutting, splitting or pre-handover seasoning"
+    inputs:
+      product:
+        - row_id: preparation_feed
+          role: "Raw conifer fuelwood entering cutting or seasoning"
+          name: "Raw conifer fuelwood entering cutting or seasoning"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measured feed from collection or extraction in its actual moisture state. Stacked volume is not solid volume; match conversion to form, bark, species and moisture."
+          amount:
+            expression: "Measured raw feed mass before preparation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preparation
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: wood_preparation_energy
+          role: "Actual operation energy carriers"
+          name: "Actual operation energy carriers"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "One conditional energy umbrella: identify actual fuel, electricity or heat carriers from records; zero, one or multiple concrete energy exchanges. Preserve original carrier units and verified bridges to MJ. If an inclusive contracted service supplies the work, record its native service quantity and upstream boundary independently, outside this energy card; do not also count its fuel or exhaust."
+          amount:
+            expression: "Recorded actual carrier energy attributable to the operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_at_wood_preparation
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "MJ"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: prepared_fuelwood
+          role: "Prepared raw conifer fuelwood before handover sorting"
+          name: "Prepared raw conifer fuelwood before handover sorting"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Shortened/split or seasoned raw fuelwood; record each actual operation and exit moisture. No manufacture of chips, pellets or charcoal. Preserve measured prepared quantity and stock movements."
+          amount:
+            expression: "Measured prepared wood transferred to sorting"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preparation
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: preparation_exported_rejects
+          role: "Preparation rejects and bark exported as waste"
+          name: "Preparation rejects and bark exported as waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual exported waste only; saleable bark or wood is a separately identified co-product, not automatically waste. Retain rework destinations and prevent counting rejects as accepted fuelwood."
+          amount:
+            expression: "Measured rejected mass leaving this process as waste"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preparation
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      elementary:
+        - row_id: seasoning_water_to_air
+          role: "Water evaporated to air during actual seasoning"
+          name: "Water evaporated to air during actual seasoning"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only water loss to air with moisture/stock evidence. Separate rainfall uptake, drainage and dry-matter losses; no generic fresh-to-dry yield or historical tropical-hardwood example applied to conifers. This selected identity is water vapour to explicitly unspecified air. Use it only when the disclosed receiving compartment is unspecified; a known specific air compartment requires its own verified compatible identity and is not automatically replaced by this generic compartment."
+          amount:
+            expression: "Matched measured moisture-balance-derived evaporation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preparation
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: wood_preparation_air_emissions
+          role: "Substance-specific direct operation emissions to air"
+          name: "Substance-specific direct operation emissions to air"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional reporting card only for direct foreground releases. Identify each measured/modelled substance, fossil or biogenic carbon origin and receiving air compartment; do not fix a broad exhaust UUID. Exclude emissions already embedded in an inclusive contracted service."
+          amount:
+            expression: "Recorded or calculated attributable substance-specific direct emissions"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions_at_wood_preparation
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+  - id: handover_sorting
+    label: "Destination sorting and producer handover"
+    inputs:
+      product:
+        - row_id: sorting_feed
+          role: "Actual conifer fuelwood received for final sorting"
+          name: "Actual conifer fuelwood received for final sorting"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Use the last actual preceding node: collection, extraction or preparation. Distinct lots can coexist; bypassed operations have no invented transfers."
+          amount:
+            expression: "Measured received wood and attributable stock drawdown"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: handover_sorting_energy
+          role: "Actual operation energy carriers"
+          name: "Actual operation energy carriers"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "One conditional energy umbrella: identify actual fuel, electricity or heat carriers from records; zero, one or multiple concrete energy exchanges. Preserve original carrier units and verified bridges to MJ. If an inclusive contracted service supplies the work, record its native service quantity and upstream boundary independently, outside this energy card; do not also count its fuel or exhaust."
+          amount:
+            expression: "Recorded actual carrier energy attributable to the operation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_operation_at_handover_sorting
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "MJ"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: fuelwood_handover
+          role: "Raw conifer fuel wood at producer roadside or collection-point handover"
+          name: "Raw conifer fuel wood at producer roadside or collection-point handover"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "The sole final reference: net qualified raw wood, excluding packaging and soil/foreign matter not part of the product; as-received bark/moisture basis is disclosed. Record actual raw form and energy-use destination."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_handover
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+        - row_id: diverted_wood_products
+          role: "Actual diverted saleable wood products"
+          name: "Actual diverted saleable wood products"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Enumerate real non-reference grade/destination products and their handovers; do not hide them inside fuelwood yield or use a universal waste-cutoff claim."
+          amount:
+            expression: "Measured diverted product mass by declared destination"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      waste:
+        - row_id: handover_rejects
+          role: "Final rejected wood sent to declared waste management"
+          name: "Final rejected wood sent to declared waste management"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual off-spec/contaminated rejects leaving the boundary. Re-cutting returns to wood_preparation as linked rework, counted once; unresolved contaminated material cannot enter the reference."
+          amount:
+            expression: "Measured final waste rejects"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids:
+                - fao-fuelwood-harvesting
+                - fao-forest-product-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "reference_record_max"
+                unit: "kg"
+                basis: "per 1 kg reference flow; actual lot/source denominator preserved in the collection ledger"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: attribution_priority
+    applies_to: "intended outputs"
+    rule: "First subdivide independently measured source/operations. For inseparable common burdens document a physical causal relation using compatible dry wood/biomass or service records; if unsupported, use justified economic allocation with actual prices/period and sensitivity. No automatic zero burden for fuelwood/residues or substitution credit."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: output_partition
+    applies_to: "stock and rejects"
+    rule: "Enumerate fuelwood, industrial wood, diverted products, waste exits and retained stock by lot and handover. Internal transfer, rework to wood_preparation and stock movement are not extra sales; retain their burdens and count eventual accepted dispatch once."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: period_shared_assets
+    applies_to: "cohorts and consumers"
+    rule: "Assign growth/management and shared road/equipment services across recorded cohorts, sites, consuming nodes and periods with an explicit denominator and sum-to-one shares. Link maintenance/changeovers/replacement/closure once; do not annualize and allocate the same burden again at dispatch."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_management
+      process_id: "stand_management"
+      flow_role: "management inputs/land"
+      record_type: "cohort records"
+      raw_fields: "parcel; species; establishment/tending dates; materials and original units; area; occupation years; asset IDs; output cohorts; allocation shares"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope"
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_source_at_wood_collection
+      process_id: "wood_collection"
+      flow_role: "source/harvest/removal"
+      record_type: "lot ledger"
+      raw_fields: "source parcel/cohort; natural/managed/residue status; live/dead state; form; bark; gross/tare/net; moisture; actual outputs and destinations; retained residues; prior burden link; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_source_at_stand_management
+      process_id: "stand_management"
+      flow_role: "source/harvest/removal"
+      record_type: "lot ledger"
+      raw_fields: "source parcel/cohort; natural/managed/residue status; live/dead state; form; bark; gross/tare/net; moisture; actual outputs and destinations; retained residues; prior burden link; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_operation_at_stand_management
+      process_id: "stand_management"
+      flow_role: "energy/material service"
+      record_type: "operation records"
+      raw_fields: "process and campaign; actual carrier/service; supplier; original quantity/unit; fuel factor or kWh bridge; hours/distance; consumers; service inclusions; zero evidence; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_operation_at_wood_collection
+      process_id: "wood_collection"
+      flow_role: "energy/material service"
+      record_type: "operation records"
+      raw_fields: "process and campaign; actual carrier/service; supplier; original quantity/unit; fuel factor or kWh bridge; hours/distance; consumers; service inclusions; zero evidence; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_operation_at_primary_extraction
+      process_id: "primary_extraction"
+      flow_role: "energy/material service"
+      record_type: "operation records"
+      raw_fields: "process and campaign; actual carrier/service; supplier; original quantity/unit; fuel factor or kWh bridge; hours/distance; consumers; service inclusions; zero evidence; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_operation_at_wood_preparation
+      process_id: "wood_preparation"
+      flow_role: "energy/material service"
+      record_type: "operation records"
+      raw_fields: "process and campaign; actual carrier/service; supplier; original quantity/unit; fuel factor or kWh bridge; hours/distance; consumers; service inclusions; zero evidence; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_operation_at_handover_sorting
+      process_id: "handover_sorting"
+      flow_role: "energy/material service"
+      record_type: "operation records"
+      raw_fields: "process and campaign; actual carrier/service; supplier; original quantity/unit; fuel factor or kWh bridge; hours/distance; consumers; service inclusions; zero evidence; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_movement
+      process_id: "primary_extraction"
+      flow_role: "extraction/transport balances"
+      record_type: "movement tickets"
+      raw_fields: "source/destination lot; start/end gate; carried net mass; trip/distance; vehicle/animal/service; load utilization; damage/loss destination; stock"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope"
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_preparation
+      process_id: "wood_preparation"
+      flow_role: "conditioning mass/water"
+      record_type: "paired batch measurements"
+      raw_fields: "linked batch; operation dates; incoming/outgoing net masses; paired moisture with basis/method; solid/stacked volumes and measured factors; water uptake/drainage; bark/dry losses; stock; rework"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope"
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_handover
+      process_id: "handover_sorting"
+      flow_role: "reference/destinations"
+      record_type: "weighing and dispatch records"
+      raw_fields: "lot/source/process; calibrated scale; gross/tare/net accepted mass; form/bark/moisture; energy destination; producer gate; grades; diverted/waste quantities; opening/closing stock; packaging excluded"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope"
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_emissions_at_stand_management
+      process_id: "stand_management"
+      flow_role: "direct substance releases"
+      record_type: "measurement/factor ledger"
+      raw_fields: "process/campaign; actual fuel/material; named substance; air compartment; fossil/biogenic origin; measured release or documented factor and original basis; upstream-service inclusion; uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_emissions_at_wood_collection
+      process_id: "wood_collection"
+      flow_role: "direct substance releases"
+      record_type: "measurement/factor ledger"
+      raw_fields: "process/campaign; actual fuel/material; named substance; air compartment; fossil/biogenic origin; measured release or documented factor and original basis; upstream-service inclusion; uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_emissions_at_primary_extraction
+      process_id: "primary_extraction"
+      flow_role: "direct substance releases"
+      record_type: "measurement/factor ledger"
+      raw_fields: "process/campaign; actual fuel/material; named substance; air compartment; fossil/biogenic origin; measured release or documented factor and original basis; upstream-service inclusion; uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_emissions_at_wood_preparation
+      process_id: "wood_preparation"
+      flow_role: "direct substance releases"
+      record_type: "measurement/factor ledger"
+      raw_fields: "process/campaign; actual fuel/material; named substance; air compartment; fossil/biogenic origin; measured release or documented factor and original basis; upstream-service inclusion; uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_emissions_at_handover_sorting
+      process_id: "handover_sorting"
+      flow_role: "direct substance releases"
+      record_type: "measurement/factor ledger"
+      raw_fields: "process/campaign; actual fuel/material; named substance; air compartment; fossil/biogenic origin; measured release or documented factor and original basis; upstream-service inclusion; uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_carbon
+      process_id: "stand_management"
+      flow_role: "carbon stock/uptake"
+      record_type: "matched carbon ledger"
+      raw_fields: "cohort/parcel; carbon pools; period opening/closing biomass; dry-matter and actual carbon fraction; exports/retained stocks; upstream carbon inclusion; source method"
+      collection_method: "Traceable original records and calibrated measurements; match lot, campaign and scope"
+      unit: "Original units retained; declared exchange unit"
+      frequency: "Each event/lot and period closure"
+      temporal_coverage: "Actual cohort and reporting period"
+      site_scope: "Every contributing parcel/site and handover point"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, invoices/logs, moisture method, transfer IDs and reconciliation trail"
+    - protocol_id: cp_direct_release_stand_management
+      process_id: "stand_management"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_direct_release_wood_collection
+      process_id: "wood_collection"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_direct_release_primary_extraction
+      process_id: "primary_extraction"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_direct_release_wood_preparation
+      process_id: "wood_preparation"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_direct_release_handover_sorting
+      process_id: "handover_sorting"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+  calculation_rules:
+    - id: reference_normalization
+      applies_to: "all inventory rows"
+      rule: "Preserve original totals and unit bridges; attribute each source/output/period share once; inventory per 1 kg reference flow = attributable exchange total / matched net accepted handover kg. The reference card alone reports 1 kg."
+      inputs:
+        - "source totals"
+        - allocation
+        - cp_handover
+      output: "per-reference exchange"
+      source_ids:
+        - fao-fuelwood-harvesting
+        - fao-forest-product-definitions
+    - id: paired_wood_balance
+      applies_to: "wood transfers and losses"
+      rule: "Reconcile dry wood, water, bark, foreign matter, stock and destinations using paired records. Wet net mass changes are not automatically dry-matter loss or emissions."
+      inputs:
+        - cp_source_at_wood_collection
+        - cp_source_at_stand_management
+        - cp_preparation
+        - cp_handover
+      output: "reconciled mass/water ledger"
+      source_ids:
+        - fao-fuelwood-harvesting
+        - fao-forest-product-definitions
+    - id: carbon_uptake_reconciliation
+      applies_to: "Actual biogenic CO2 uptake"
+      rule: "Record CO2 uptake only when the declared inventory method requires it and independent evidence supports it. Net carbon-stock change is not uptake: reconcile the same dry-carbon pools and period as C_open + C_atmosphere + C_nonair_in = C_close + C_harvest_out + C_other_out. Independently record non-atmospheric inputs, harvest/transfers out and evidenced respiration/other releases; cancel internal pool transfers once. Missing terms cannot be replaced by closing minus opening stock. Convert only method-verified atmospheric carbon corresponding to CO2 using 44/12, accounting for other carbon gases separately. Do not duplicate upstream uptake or assign an automatic negative credit."
+      inputs:
+        - cp_carbon
+        - "independent pool/transfer/release records"
+        - "declared inventory method"
+      output: "evidenced CO2 uptake and unresolved gaps"
+      source_ids: []
+    - id: site_weighting
+      applies_to: "contributing sites"
+      rule: "Sum attributable exchange totals and qualified handover kg over traced comparable lots; compute their quotient, not an average of site ratios. Preserve excluded/nonrepresentative site disclosures."
+      inputs:
+        - "site records"
+        - cp_handover
+      output: "representative per-reference exchanges"
+      source_ids:
+        - fao-fuelwood-harvesting
+        - fao-forest-product-definitions
+    - id: calculate_direct_release_ledger
+      applies_to: "stand_management; wood_collection; primary_extraction; wood_preparation; handover_sorting"
+      rule: "For each unique event, substance and medium, obtain raw release E from measurement or the cited applicable method using activity A and a compatible factor EF; use E = A * EF only for a genuinely simple-factor method, after checking units and abatement scope. Do not add different substances/media; retain an unallocated raw-release ledger. Divide attributed burden totals once by matched positive final reference quantity R; do not renormalize final-reference intensities or allocate a shared event twice. Unexplained material residuals are not automatically emissions and missing factors are not zero."
+      inputs:
+        - cp_direct_release_stand_management
+        - cp_direct_release_wood_collection
+        - cp_direct_release_primary_extraction
+        - cp_direct_release_wood_preparation
+        - cp_direct_release_handover_sorting
+        - "existing emission cards"
+        - "supplier coverage"
+        - "reference quantity"
+      output: "Node/substance/medium-specific raw and attributed amounts and unresolved gaps"
+      source_ids: []
+  data_quality_requirements:
+    - id: traceability
+      applies_to: "all lots"
+      requirement: "Record species, form, source, site, dates, gate and upstream boundaries; mixed unidentified material is not the conifer reference"
+      evidence: "cp_source_at_wood_collection; cp_source_at_stand_management; cp_handover"
+    - id: measurement_coverage
+      applies_to: "mass/water/energy"
+      requirement: "Calibrated net mass and matched moisture; missing conversions/zero evidence/identity details are disclosed gaps, not assumed values"
+      evidence: "cp_preparation; cp_operation_at_stand_management; cp_operation_at_wood_collection; cp_operation_at_primary_extraction; cp_operation_at_wood_preparation; cp_operation_at_handover_sorting"
+    - id: representativeness
+      applies_to: "sites and periods"
+      requirement: "List all contributors, weighting, harvest/seasoning conditions, stock closure and included/excluded asset phases; retain uncertainty and sensitivity"
+      evidence: "site/cohort ledger"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "fuelwood_handover"
+    rule: "Require one final 1 kg net as-received conifer raw-fuelwood reference at actual producer gate, qualifiers and concrete identity evidence; neither drying feed nor internal transfer is fixed to 1 kg."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: validate_route
+    applies_to: "source and technology"
+    rule: "Validate actual source/technology evidence and parent/delta records; no duplicate managed and natural/residue input, no invented omitted operation, no manufactured chips/charcoal/consumer delivery in this boundary."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: validate_measurement
+    applies_to: "all inventory rows"
+    rule: "Require same-reference bilingual and projected bases, real collection links and exactly-once original-unit conversion/attribution. Require every actual concrete exchange from umbrella cards, with correct direction, type, property/unit and identity confirmation."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: validate_balance
+    applies_to: "lots and periods"
+    rule: "Reconcile accepted/diverted/rejected/rework/retained stocks, moisture and dry matter with actual destinations; no unexplained biomass yield or universal density/LHV, and no unsupported carbon credit."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: validate_attribution
+    applies_to: "cohorts/sites/assets"
+    rule: "Check complete output sets, common-burden decision, sum-to-one shares, site weights, source/phase/event indexing and no double-counted shared infrastructure or inclusive service. Unknown actual state or missing evidence blocks the corresponding dataset claim."
+    source_ids:
+      - fao-fuelwood-harvesting
+      - fao-forest-product-definitions
+  - rule_id: validate_direct_release_coverage
+    applies_to: "stand_management; wood_collection; primary_extraction; wood_preparation; handover_sorting"
+    rule: "For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_wood_collection; cp_direct_release_primary_extraction; cp_direct_release_wood_preparation; cp_direct_release_handover_sorting: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground_data_package"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Raw conifer fuelwood producer-gate supply modelling with stated form, moisture, source and attribution"
+  excluded_use: "Non-conifer substitution; manufactured fuels; delivered heat/electricity; unsupported full forest carbon or sustainability claims"
+  required_metadata: "Species/form/bark/moisture; origin and site mix; source/operation/gate; reference lot; periods/stocks; upstream/asset scope; allocation and unit bridges"
+  required_quality_disclosure: "Identity/measurement/source gaps, excluded phases, concrete exchange coverage, range evidence, stock closure, uncertainty and sensitivity"
+  update_trigger: "Changed source/technology/gate, form/moisture, attribution, assets, supplier identity or better measurement/evidence"
+data_sources:
+  - id: "unsd-cpc-fuelwood-conifer"
+    type: "official_guidance"
+    reference: "UNSD CPC 3.0 03131, Fuel wood of coniferous wood; https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/03131"
+    used_for: "Official category context; retrieved 2026-10-08 through reviewed classification source"
+  - id: "fao-fuelwood-harvesting"
+    type: "handbook"
+    reference: "FAO, Simple technologies for charcoal making, Chapter 3: Harvesting and transporting fuelwood; https://www.fao.org/4/x5328e/x5328e04.htm"
+    used_for: "Harvest/movement/preparation decomposition only; retrieved 2026-10-08; illustrative charcoal/hardwood quantities not adopted"
+  - id: "fao-forest-product-definitions"
+    type: "official_guidance"
+    reference: "FAO, Classifications and definitions, Production and trade of wood-based forest products; https://www.fao.org/4/x2613e/x2613e2w.htm"
+    used_for: "Raw fuelwood versus industrial roundwood/chips/charcoal; retrieved 2026-10-08; statistical equivalents not used as conversion factors"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:dd738bc48fdf3eeae060f1bb0161de67cc2d71dfd36a1207675ced68d81c4d44"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6252"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6252
+          line: 70
+          column: 1
+        end:
+          offset: 9311
+          line: 90
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified managed cohort, declared natural source or traced primary harvest residues with explicit prior burden handoff |\n| starting_condition_role | Foreground source boundary, not assumed zero-burden cut-off |\n| product_classification_scope | CPC 3.0 03131; actual raw conifer fuelwood |\n| recursive_input_rule | Record purchased same-category fuelwood as an upstream input with origin, state, gate and supplier dataset; do not recursively regenerate or duplicate its source/harvest burdens |\n| upstream_dataset_requirement | Require compatible upstream source/material/service data or disclose a gap and bounded estimate; never assert a complete cradle-to-gate boundary without it |\n| disclosure | Source sites/cohorts, included phases, omitted operations, soil/carbon coverage, actual gate, stock periods, source/residue attribution and representativeness |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `source_partition` | source interfaces | Select one source representation for each traced mass: managed transfer, natural withdrawal or prior-attributed residue feed. Growth, harvest/removal and preparation are separate responsibilities; avoid overlap, including uncollected habitat residues. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `declared_gate` | all operations | Include actual source, extraction, cutting/splitting, optional seasoning, sorting and loading before producer handover only. Exclude downstream transport, combustion and carbonisation. A charcoal-focused source informs unit operations only, not the final gate or its illustrative yields. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `cohort_assets` | sites and phases | List every contributing parcel, management/harvest/seasoning period and shared road/equipment consumer. Record establishment, maintenance, replacement and closure where relevant; allocate actual asset services over recorded use, not a default lifetime. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `boundary_direct_release_coverage` | `stand_management`; `wood_collection`; `primary_extraction`; `wood_preparation`; `handover_sorting` | Reconcile on-site combustion, actual applications and fugitive releases/leaks at every activated node through unique activity-substance-receiving-medium records in cp_direct_release_stand_management; cp_direct_release_wood_collection; cp_direct_release_primary_extraction; cp_direct_release_wood_preparation; cp_direct_release_handover_sorting. Upstream production of purchased fuel or chemicals does not replace emissions from their use on site; verify coverage and avoid double counting the same activity inside a supplier service. Evidence must support non-activity; missing data are not zero. This obligation does not expand the existing product gate or downstream-use boundary and does not presume combustion, fertilization, chemicals or equipment occur. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 180
+              line: 8
+              column: 1
+            end:
+              offset: 203
+              line: 8
+              column: 24
+          text: "# Raw conifer fuel wood"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6252
+              line: 70
+              column: 1
+            end:
+              offset: 6273
+              line: 70
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_50034"
+      family: "allocation"
+      span:
+        start:
+          offset: 50034
+          line: 856
+          column: 1
+        end:
+          offset: 51373
+          line: 864
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `attribution_priority` | intended outputs | First subdivide independently measured source/operations. For inseparable common burdens document a physical causal relation using compatible dry wood/biomass or service records; if unsupported, use justified economic allocation with actual prices/period and sensitivity. No automatic zero burden for fuelwood/residues or substitution credit. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `output_partition` | stock and rejects | Enumerate fuelwood, industrial wood, diverted products, waste exits and retained stock by lot and handover. Internal transfer, rework to wood_preparation and stock movement are not extra sales; retain their burdens and count eventual accepted dispatch once. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `period_shared_assets` | cohorts and consumers | Assign growth/management and shared road/equipment services across recorded cohorts, sites, consuming nodes and periods with an explicit denominator and sum-to-one shares. Link maintenance/changeovers/replacement/closure once; do not annualize and allocate the same burden again at dispatch. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 180
+              line: 8
+              column: 1
+            end:
+              offset: 203
+              line: 8
+              column: 24
+          text: "# Raw conifer fuel wood"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 50034
+              line: 856
+              column: 1
+            end:
+              offset: 50074
+              line: 856
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_78094"
+      family: "validation"
+      span:
+        start:
+          offset: 78094
+          line: 913
+          column: 1
+        end:
+          offset: 80833
+          line: 924
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | fuelwood_handover | Require one final 1 kg net as-received conifer raw-fuelwood reference at actual producer gate, qualifiers and concrete identity evidence; neither drying feed nor internal transfer is fixed to 1 kg. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `validate_route` | source and technology | Validate actual source/technology evidence and parent/delta records; no duplicate managed and natural/residue input, no invented omitted operation, no manufactured chips/charcoal/consumer delivery in this boundary. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `validate_measurement` | all inventory rows | Require same-reference bilingual and projected bases, real collection links and exactly-once original-unit conversion/attribution. Require every actual concrete exchange from umbrella cards, with correct direction, type, property/unit and identity confirmation. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `validate_balance` | lots and periods | Reconcile accepted/diverted/rejected/rework/retained stocks, moisture and dry matter with actual destinations; no unexplained biomass yield or universal density/LHV, and no unsupported carbon credit. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `validate_attribution` | cohorts/sites/assets | Check complete output sets, common-burden decision, sum-to-one shares, site weights, source/phase/event indexing and no double-counted shared infrastructure or inclusive service. Unknown actual state or missing evidence blocks the corresponding dataset claim. | `fao-fuelwood-harvesting`; `fao-forest-product-definitions` |\n| `validate_direct_release_coverage` | `stand_management`; `wood_collection`; `primary_extraction`; `wood_preparation`; `handover_sorting` | For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_wood_collection; cp_direct_release_primary_extraction; cp_direct_release_wood_preparation; cp_direct_release_handover_sorting: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 180
+              line: 8
+              column: 1
+            end:
+              offset: 203
+              line: 8
+              column: 24
+          text: "# Raw conifer fuel wood"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 78094
+              line: 913
+              column: 1
+            end:
+              offset: 78116
+              line: 913
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "source_partition"
+      identity_kind: "explicit"
+      unit_id: "normative_6252"
+      source_span:
+        start:
+          offset: 7300
+          line: 85
+          column: 1
+        end:
+          offset: 7658
+          line: 85
+          column: 359
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "declared_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6252"
+      source_span:
+        start:
+          offset: 7659
+          line: 86
+          column: 1
+        end:
+          offset: 8047
+          line: 86
+          column: 389
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "cohort_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_6252"
+      source_span:
+        start:
+          offset: 8048
+          line: 87
+          column: 1
+        end:
+          offset: 8403
+          line: 87
+          column: 356
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_direct_release_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_6252"
+      source_span:
+        start:
+          offset: 8404
+          line: 88
+          column: 1
+        end:
+          offset: 9309
+          line: 88
+          column: 906
+    - pointer: "/allocation_rules/0"
+      rule_id: "attribution_priority"
+      identity_kind: "explicit"
+      unit_id: "normative_50034"
+      source_span:
+        start:
+          offset: 50147
+          line: 860
+          column: 1
+        end:
+          offset: 50599
+          line: 860
+          column: 453
+    - pointer: "/allocation_rules/1"
+      rule_id: "output_partition"
+      identity_kind: "explicit"
+      unit_id: "normative_50034"
+      source_span:
+        start:
+          offset: 50600
+          line: 861
+          column: 1
+        end:
+          offset: 50964
+          line: 861
+          column: 365
+    - pointer: "/allocation_rules/2"
+      rule_id: "period_shared_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_50034"
+      source_span:
+        start:
+          offset: 50965
+          line: 862
+          column: 1
+        end:
+          offset: 51371
+          line: 862
+          column: 407
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 78189
+          line: 917
+          column: 1
+        end:
+          offset: 78495
+          line: 917
+          column: 307
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_route"
+      identity_kind: "explicit"
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 78496
+          line: 918
+          column: 1
+        end:
+          offset: 78819
+          line: 918
+          column: 324
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_measurement"
+      identity_kind: "explicit"
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 78820
+          line: 919
+          column: 1
+        end:
+          offset: 79193
+          line: 919
+          column: 374
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 79194
+          line: 920
+          column: 1
+        end:
+          offset: 79499
+          line: 920
+          column: 306
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 79500
+          line: 921
+          column: 1
+        end:
+          offset: 79873
+          line: 921
+          column: 374
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_direct_release_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 79874
+          line: 922
+          column: 1
+        end:
+          offset: 80831
+          line: 922
+          column: 958
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6252"
+      source_span:
+        start:
+          offset: 6252
+          line: 70
+          column: 1
+        end:
+          offset: 6273
+          line: 70
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6252"
+      source_span:
+        start:
+          offset: 6301
+          line: 74
+          column: 1
+        end:
+          offset: 7227
+          line: 81
+          column: 176
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_50034"
+      source_span:
+        start:
+          offset: 50034
+          line: 856
+          column: 1
+        end:
+          offset: 50074
+          line: 856
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_78094"
+      source_span:
+        start:
+          offset: 78094
+          line: 913
+          column: 1
+        end:
+          offset: 78116
+          line: 913
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:dd738bc48fdf3eeae060f1bb0161de67cc2d71dfd36a1207675ced68d81c4d44"
+  generated_content_sha256: "sha256:3d3698a162d8ab4195255cdab59af40999075143d08936b483513876fc856f53"
