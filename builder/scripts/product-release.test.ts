@@ -38,6 +38,7 @@ function fixture(t: TestContext, { product = true } = {}) {
   const prepareWeb = () => {
     const webDir = path.join(container, "web"), identity = readProductIdentity(root);
     put(path.join(webDir, "index.html"), "HOME");
+    put(path.join(webDir, "zh/index.html"), "中文首页"); put(path.join(webDir, "en/index.html"), "English home");
     putJson(path.join(webDir, "generated/product-release.json"), identity);
     putJson(path.join(webDir, "generated/version.json"), { sourceCommit: identity.sourceCommit, releaseVersion: identity.version, releaseTag: identity.tag, sourceFingerprint: identity.sourceFingerprint,
       counts: { pcrs: 1, pages: 2, languages: 2, sourceBytes: 20 } });

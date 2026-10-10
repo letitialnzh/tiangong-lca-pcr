@@ -1,7 +1,7 @@
 ---
-lastReviewedAt: 2026-10-08
-lastReviewedCommit: 059aa340fc90d0d9e0ad8add6b0af485d66a8803
-lastReviewedNote: "Reviewed PCR #106 / PR #97 candidate content and unified 0.4.5 preparation; immutable task pins, reader 0.4.1 compatibility minimum, English offline content and Agent review boundaries remain unchanged. Preserved main PR #105 bilingual guide and navigation changes during integration."
+lastReviewedAt: 2026-10-09
+lastReviewedCommit: e9b91252307d0345defcb709e819799d1aa6ba42
+lastReviewedNote: "Reviewed PCR #107/#108 latest browser failure: explicit manual language switches load the verified exported HTML document directly, preserving counterpart, query/fragment, preference and storage-denial behavior; neutral detection remains unchanged. Guide browser acceptance additionally requires exact main-frame HTTP 200 HTML navigation. Unmarked RSC failures remain blocking; no classifier exemptions, dependency or methodology changes. Fresh full CI and updated independent review remain required."
 title: Agent-led PCR consumption and review
 docType: contract
 scope: repo
@@ -141,7 +141,7 @@ See [the distribution contract](offline-distribution.md) for these declarations.
 
 The qualified task-preparation runtime is Node 24.19.0; Tiangong CLI supports
 `>=24.19.0 <25`. The minimum preparation CLI is released `@tiangong-lca/cli` 0.1.25;
-confirm publication before installing it. Product 0.4.5 preparation does not prove
+confirm publication before installing it. Product 0.4.6 preparation does not prove
 registry or website availability, and its compatibility minimum remains reader
 0.4.1. The bundled thin Skill prepares a dedicated PCR task with Tiangong CLI's
 `pcr snapshot ensure --task-dir <absolute-task-dir> --tool-root <installed-reader> --json`.

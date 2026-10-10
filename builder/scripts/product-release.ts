@@ -9,7 +9,7 @@ import { pathToFileURL } from "node:url";
 import { compareSemver } from "../lib/lifecycle-policy.ts";
 import { assertIdentity, buildPackageArtifact, githubRequest, packages } from "./npm-release.ts";
 import { PRODUCT_VERSION_FILE, assertProductIdentity, productReleaseSpec, type ProductIdentity, type ProductReleaseSpec, productGit, productSha256, readProductIdentity, readProductVersion } from "./product-identity.ts";
-import { createWebProbes, writePrebuiltConfig, type WebProbes } from "./product-web.ts";
+import { createWebProbes, writePrebuiltConfig, LEGACY_WEB_PROBE_ROUTES, WEB_PROBE_ROUTES, type WebProbes } from "./product-web.ts";
 
 import { PRODUCT_COMPATIBILITY, READER_CAPABILITIES_FILENAME, assertImplementedReaderCapabilities, assertReaderCompatibility, validateProductCompatibility } from "./reader-compatibility.ts";
 import { isRecord, record, field, text, type JsonObject, type GitHubRequest, type ArtifactProof, type ProductManifest, type ProductPackageReceipt, type ArchiveEntry, type ArchiveFile } from "./release-types.ts";
@@ -370,8 +370,9 @@ export function validateProductManifest(value: unknown, { identity = null, toolc
   const validProbe = (probe: unknown, expected: string | undefined): boolean => isRecord(probe) && probe.path === expected
     && typeof probe.sha256 === "string" && /^sha256:[a-f0-9]{64}$/u.test(probe.sha256)
     && typeof probe.bytes === "number" && Number.isSafeInteger(probe.bytes) && probe.bytes > 0 && probe.bytes < 25_000_000;
-  if (!Array.isArray(probes.routes) || probes.routes.length !== 2
-    || !probes.routes.every((probe: unknown, index: number) => validProbe(probe, ["/zh/docs/pcr/", "/en/docs/pcr/"][index]))
+  const expectedRoutes = Array.isArray(probes.routes) && probes.routes.length === LEGACY_WEB_PROBE_ROUTES.length ? LEGACY_WEB_PROBE_ROUTES : WEB_PROBE_ROUTES;
+  if (!Array.isArray(probes.routes) || probes.routes.length !== expectedRoutes.length
+    || !probes.routes.every((probe: unknown, index: number) => validProbe(probe, expectedRoutes[index]))
     || !validProbe(probes.rawDownload, "/generated/raw/classifications/indexes/cpc-3.0-coverage.json")) throw new Error("Invalid sealed web probes.");
   for (const kind of ["tool", "library"] as const) {
     const source = packages[kind], receipt = receipts[kind];
@@ -409,7 +410,7 @@ export async function verifyProductWebTree(webDir: string, value: unknown) {
   if (tree.files.length !== manifest.web.files || tree.files.reduce((bytes, file) => bytes + file.bytes, 0) !== manifest.web.uncompressedBytes
     || productTreeSha256(tree.files) !== manifest.web.treeSha256) throw new Error("Web materialized tree differs from its sealed manifest.");
   checkWebMetadata(contents, manifest.identity, manifest.web.probes);
-  if (!sameJson(createWebProbes({ webDir }), manifest.web.probes)) throw new Error("Materialized web probes differ from the sealed release.");
+  if (!sameJson(createWebProbes({ webDir, includeHomes: manifest.web.probes.routes.length !== LEGACY_WEB_PROBE_ROUTES.length }), manifest.web.probes)) throw new Error("Materialized web probes differ from the sealed release.");
   return { files: tree.files.length, uncompressedBytes: manifest.web.uncompressedBytes, treeSha256: manifest.web.treeSha256 };
 }
 

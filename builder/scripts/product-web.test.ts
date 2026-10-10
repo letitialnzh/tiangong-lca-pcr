@@ -22,6 +22,8 @@ function fixture(t: TestContext, { raw = Buffer.from('{"coverage":"sealed"}') }:
   mkdirSync(root); mkdirSync(webDir);
   const files = new Map([
     ["index.html", Buffer.from("<!doctype html><html><h1>Home</h1></html>")],
+    ["zh/index.html", Buffer.from("<!doctype html><html lang=zh><h1>中文首页</h1></html>")],
+    ["en/index.html", Buffer.from("<!doctype html><html lang=en><h1>English home</h1></html>")],
     ["generated/product-release.json", Buffer.from(JSON.stringify(identity))],
     ["generated/version.json", Buffer.from(JSON.stringify(version()))],
     ["zh/docs/pcr/index.html", Buffer.from("<!doctype html><html lang=zh><h1>PCR 目录</h1></html>")],
@@ -37,9 +39,9 @@ function fixture(t: TestContext, { raw = Buffer.from('{"coverage":"sealed"}') }:
     redirects: [{ source: "/zh", destination: "/", statusCode: 301 }], rewrites: [{ source: "/old", destination: "/new" }] };
   writeFileSync(path.join(root, "edgeone.json"), JSON.stringify(config)); git("add", "edgeone.json"); git("commit", "--no-gpg-sign", "-m", "Fixture config");
   const response = (urlPath: string) => {
-    if (["/zh", "/zh/"].includes(urlPath)) return new Response(null, { status: 301, headers: { location: "/" } });
     let key = urlPath.slice(1);
     if (urlPath.endsWith("/")) key += "index.html";
+    else if (["/zh", "/en"].includes(urlPath)) key += "/index.html";
     const body = files.get(key);
     if (!body) return new Response("missing", { status: 404 });
     const headers = urlPath === rawPath ? rawHeaders : urlPath.endsWith(".json") ? { ...fresh, "content-type": "application/json" } : { "content-type": "text/html; charset=utf-8" };
@@ -90,10 +92,10 @@ test("local probes fail closed on mixed product/version documents", t => {
   assert.throws(() => createWebProbes(f), code("PCR_WEB_IDENTITY_MISMATCH"));
 });
 
-test("live acceptance observes both languages, canonical redirects, exact downloads and unchanged ending identity", async t => {
+test("live acceptance observes both languages, explicit homepage URLs, exact downloads and unchanged ending identity", async t => {
   const f = fixture(t), result = await verifyLiveWebsite(f.options);
   assert.equal(result.verified, true); assert.deepEqual(result.identity, identity); assert.deepEqual(result.counts, counts);
-  assert.equal(result.checks.length, 9);
+  assert.equal(result.checks.length, 12);
   assert.equal(f.calls.filter(call => call.url.endsWith("/generated/product-release.json")).length, 2);
   assert.equal(f.calls.filter(call => call.url.endsWith("/generated/version.json")).length, 2);
   assert.equal(result.checks.find(check => check.path === rawPath)?.sha256, f.probes.rawDownload.sha256);
@@ -103,6 +105,17 @@ test("current 2,435,231-byte CPC coverage and larger explicitly sealed probes fi
   const f = fixture(t, { raw: Buffer.alloc(2_435_231, "x") });
   const result = await verifyLiveWebsite({ ...f.options, maxBytes: 1024 });
   assert.equal(result.checks.find(check => check.path === rawPath)?.bytes, 2_435_231);
+});
+
+test("explicit homes require sealed bytes, HTML and HTTP 200 without redirecting", async t => {
+  const f = fixture(t);
+  for (const home of ["/", "/zh", "/zh/", "/en", "/en/"]) {
+    await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, home, () => new Response("wrong language or stale home", { headers: { "content-type": "text/html" } })) }), code("PCR_WEB_HASH_MISMATCH"));
+    await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, home, () => new Response("{}", { headers: { "content-type": "application/json" } })) }), code("PCR_WEB_CONTENT_TYPE"));
+    await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, home, () => new Response("missing", { status: 404 })) }), code("PCR_WEB_STATUS"));
+    await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, home, () => new Response(null, { status: 301, headers: { location: "/" } })) }), code("PCR_WEB_REDIRECT"));
+  }
+  await assert.rejects(verifyLiveWebsite({ ...f.options, probes: { ...f.probes, routes: f.probes.routes.slice(0, 2) } }), code("PCR_WEB_PROBE_INVALID"));
 });
 
 test("mixed versions, wrong commit/fingerprint/tag and stale counts are never accepted", async t => {
@@ -132,9 +145,9 @@ test("404, authentication HTML and malformed JSON cannot masquerade as website i
   ] as const) await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, "/generated/product-release.json", response) }), code(expected));
 });
 
-test("unexpected redirects, wrong canonical status/destination and credentialed origins fail without leaking URLs", async t => {
+test("unexpected homepage redirects and credentialed origins fail without leaking URLs", async t => {
   const f = fixture(t);
-  for (const [status, location] of [[302, "/"], [301, "https://login.example.test/?token=SECRET"], [301, "/zh/"], [301, "/?token=SECRET"]] as const) {
+  for (const [status, location] of [[301, "/"], [302, "/"], [301, "https://login.example.test/?token=SECRET"], [301, "/zh/"], [301, "/?token=SECRET"]] as const) {
     await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, "/zh", () => new Response(null, { status, headers: { location } })) }), error => code("PCR_WEB_REDIRECT")(error) && !JSON.stringify(error).includes("SECRET"));
   }
   await assert.rejects(verifyLiveWebsite({ ...f.options, fetcher: changed(f, "/en/docs/pcr/", () => new Response(null, { status: 302, headers: { location: "/login" } })) }), code("PCR_WEB_REDIRECT"));

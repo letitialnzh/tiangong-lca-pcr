@@ -597,12 +597,15 @@ test('saved fixed-source progress leaves later windows for fresh UUID acceptance
   sealRejectedCandidate(f);
   const reads=populateMaterialReport(f);
   const wire={schema_version:2,prepared_report:prepareAuthorReport({...f.options,auditUuidsFn:()=>reads}),boundary_review_report:null,failure:null};
-  let clock=Date.now(), slow=true, sourceFetches=0;
+  // Expire the fake clock explicitly; real Git integrity reads use the normal
+  // harvest budget instead of depending on a 50ms scheduler window.
+  let clock=Date.now(), slow=true, sourceFetches=0, uuidAudits=0;
   t.mock.method(Date,'now',()=>clock);
   const {verifySourceLocators}=await import('./evidence-audit.ts');
   const {originalHtml}=await import('./fixtures/original-source.ts');
-  const options={...f,config:{...f.config,tools:{tiangong_cli_root:'/unused-test'}},adapter:completedAdapter(f.task,wire),reviewFn:reviewed,reviewBudgetMs:50,
+  const options={...f,config:{...f.config,tools:{tiangong_cli_root:'/unused-test'}},adapter:completedAdapter(f.task,wire),reviewFn:reviewed,
     auditUuidsFn({report:reportInput,phase,deadline}: {report:unknown;phase:string;deadline:number}) {
+      uuidAudits++;assert.ok(clock<deadline,'each UUID audit receives a fresh unexpired window');
       const report=evidenceReport(reportInput);
       if(!slow) return reads;
       clock=number(deadline);
@@ -613,14 +616,18 @@ test('saved fixed-source progress leaves later windows for fresh UUID acceptance
   };
   const first=await harvestGoalAuthors(options);
   assert.equal(first.valid_results.length,0); assert.ok(sourceFetches>0);
+  assert.equal(item(item(first.state.tasks)[0]).failure_code,'GOAL_REVIEW_WINDOW_EXHAUSTED');
   const completedFetches=sourceFetches;
   const second=await harvestGoalAuthors({...options,adapter:{}});
   assert.equal(sourceFetches,completedFetches,'completed fixed originals are reused while UUIDs are read afresh');
   assert.equal(second.valid_results.length,0); assert.equal(second.snapshot,null);
+  assert.equal(item(item(second.state.tasks)[0]).failure_code,'GOAL_REVIEW_WINDOW_EXHAUSTED');
   assert.equal(f.store.readEvents().some(e=>e.type==='verified_common_uuids_updated'),false);
   slow=false;
   const third=await harvestGoalAuthors({...options,adapter:{}});
   assert.equal(third.valid_results.length,1);
+  assert.equal(uuidAudits,3,'each recovery audits UUIDs afresh');
+  assert.equal(sourceFetches,completedFetches,'accepted recovery still reuses fixed originals');
 });
 
 for(const limit of [1,5]) test(`saved report window recovery stops at its independent configured limit ${limit}`,async t=>{

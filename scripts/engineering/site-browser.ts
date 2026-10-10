@@ -7,7 +7,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
 import {chromium, firefox, webkit} from 'playwright';
-import type {Page, Browser, BrowserType, Request} from 'playwright';
+import type {Page, Browser, BrowserType, Request, Response} from 'playwright';
 import { gettingStartedGuide } from '../../packages/pcr-docs/lib/getting-started.ts';
 import { LANGUAGE_PREFERENCE_KEY, preferredRoute } from '../../packages/pcr-docs/lib/language-preference.ts';
 
@@ -78,17 +78,41 @@ export async function withSiteExportServer<T>(root:string,callback:(origin:strin
  try {const address=server.address();assert.ok(address&&typeof address==='object');return await callback(`http://127.0.0.1:${address.port}`);}finally{await closeServer(server);}
 }
 async function closeServer(server:Server){server.closeAllConnections();await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));}
-export interface CancelledRequest {url:string;reason:string;method:string;headers:Record<string,string>;status?:number|undefined}
-export function isCancelledSitePrefetch(request:CancelledRequest,prefetchUrls:readonly string[]):boolean {
- if(request.reason!=='net::ERR_ABORTED')return false;
- if(request.headers['next-router-prefetch']==='1'||request.headers['purpose']==='prefetch'||/(?:^|[;\s,])prefetch(?:$|[;\s,])/u.test(request.headers['sec-purpose']??''))return true;
- // Next 16 output:export probes the canonical HTML URL with HEAD before its
- // explicitly marked segment prefetch. Require both the successful probe and
- // that exact companion request; ordinary document/asset failures still fail.
- if(request.method!=='HEAD'||request.status!==200)return false;
- const probe=new URL(request.url);return prefetchUrls.some(value=>{const next=new URL(value);return next.origin===probe.origin&&next.pathname===probe.pathname.replace(/\/?$/u,'/')+'__next._tree.txt';});
+export type SiteBrowserEngine = 'chromium'|'firefox'|'webkit';
+export interface CancelledRequest {
+ engine:SiteBrowserEngine;url:string;reason:string;method:string;headers:Record<string,string>;
+ resourceType:string;isNavigationRequest:boolean;status?:number|undefined;
+ startedAtMs?:number|null;failedAtMs?:number;startPhase?:string|null;failurePhase?:string;actualUrl?:string;viewport?:string;
 }
-interface BrowserEvidence {engine:string;engineVersion:string;viewport:string;route:SiteRoute;assertions:string[];errors:string[];ignoredPrefetchAborts:string[];screenshot:string;screenshots?:string[];diagnosticError?:string;search?:{query:string;hits:number;workerUrls:string[]};failure?:string}
+const cancellationReasons:Record<SiteBrowserEngine,readonly string[]>={chromium:['net::ERR_ABORTED'],firefox:['NS_BINDING_ABORTED'],webkit:['cancelled','Load request cancelled']};
+export function isCancelledSitePrefetch(request:CancelledRequest,prefetchUrls:readonly string[]):boolean {
+ if(!cancellationReasons[request.engine]?.includes(request.reason)||request.isNavigationRequest!==false
+  ||!['fetch','xhr','other'].includes(request.resourceType)||!['GET','HEAD'].includes(request.method)
+  ||(request.status!==undefined&&(request.status<200||request.status>=300)))return false;
+ if(request.headers['next-router-prefetch']==='1'||request.headers['purpose']==='prefetch'||/(?:^|[;\s,])prefetch(?:$|[;\s,])/u.test(request.headers['sec-purpose']??''))return true;
+ // A cancelled successful HEAD probe requires an observed explicit segment
+ // prefetch on this page. A route-looking URL alone is never prefetch evidence.
+ if(request.method!=='HEAD'||request.status!==200)return false;
+ try {const probe=new URL(request.url);return prefetchUrls.some(value=>{const next=new URL(value);return next.origin===probe.origin&&next.pathname===probe.pathname.replace(/\/?$/u,'/')+'__next._tree.txt';});}catch{return false;}
+}
+type FailureRequest = Pick<Request,'url'|'failure'|'method'|'headers'|'resourceType'|'isNavigationRequest'>;
+interface FailureContext {engine:SiteBrowserEngine;viewport:string;startedAtMs:number|null;failedAtMs:number;startPhase:string|null;failurePhase:string;actualUrl:string}
+/** Retain classification evidence without collecting cookies or arbitrary headers. */
+export function captureCancelledSiteRequest(request:FailureRequest,context:FailureContext,status?:number):CancelledRequest {
+ const headers=request.headers(),selected:Record<string,string>={};
+ for(const key of ['next-router-prefetch','next-router-segment-prefetch','rsc','purpose','sec-purpose','sec-fetch-mode','sec-fetch-dest'])if(headers[key]!==undefined)selected[key]=headers[key];
+ return {engine:context.engine,viewport:context.viewport,startedAtMs:context.startedAtMs,failedAtMs:context.failedAtMs,startPhase:context.startPhase,failurePhase:context.failurePhase,actualUrl:context.actualUrl,url:request.url(),reason:request.failure()?.errorText??'unknown',method:request.method(),headers:selected,resourceType:request.resourceType(),isNavigationRequest:request.isNavigationRequest(),status};
+}
+function observeSiteRequests(page:Page,context:{engine:SiteBrowserEngine;viewport:string},failedRequests:CancelledRequest[],prefetchUrls:string[]) {
+ let phase='page-check';const starts=new WeakMap<Request,{at:number;phase:string}>(),responses=new WeakMap<Request,number>();
+ const started=(request:Request)=>{starts.set(request,{at:Date.now(),phase});if(request.headers()['next-router-prefetch']==='1'&&!request.isNavigationRequest()&&request.method()==='GET'&&['fetch','xhr','other'].includes(request.resourceType()))prefetchUrls.push(request.url());};
+ const response=(received:Response)=>responses.set(received.request(),received.status());
+ const failed=(request:Request)=>{const start=starts.get(request);failedRequests.push(captureCancelledSiteRequest(request,{...context,startedAtMs:start?.at??null,failedAtMs:Date.now(),startPhase:start?.phase??null,failurePhase:phase,actualUrl:page.url()},responses.get(request)));};
+ page.on('request',started);page.on('response',response);page.on('requestfailed',failed);
+ return {setPhase(value:string){phase=value;},stop(){page.off('request',started);page.off('response',response);page.off('requestfailed',failed);}};
+}
+interface BrowserEvidence {engine:string;engineVersion:string;viewport:string;route:SiteRoute;assertions:string[];errors:string[];ignoredPrefetchAborts:string[];requestFailures:CancelledRequest[];prefetchUrls:string[];screenshot:string;screenshots?:string[];diagnosticError?:string;search?:{query:string;hits:number;workerUrls:string[]};failure?:string}
+interface LanguagePreferenceEvidence {engine:SiteBrowserEngine;viewport:string;checks:string[];ignoredPrefetchAborts:string[];requestFailures:CancelledRequest[];prefetchUrls:string[]}
 function message(error:unknown){return error instanceof Error?error.message:String(error);}
 async function captureSiteEvidence(page:Page,report:string,file:string):Promise<string[]> {
  const size=await page.evaluate(()=>({height:document.documentElement.scrollHeight,viewport:window.innerHeight}));
@@ -142,16 +166,22 @@ async function openLanguageSelector(page:Page):Promise<void> {
  await page.waitForFunction(()=>Array.from(document.querySelectorAll<HTMLElement>('[data-pcr-language-trigger]')).some(button=>button.getBoundingClientRect().width>0));
  assert.ok(await clickVisible(),'Language selector must be visible');
 }
-async function checkGuideCounterpart(page:Page,origin:string,route:SiteRoute,evidence:BrowserEvidence):Promise<void> {
+async function checkGuideCounterpart(page:Page,origin:string,route:SiteRoute,evidence:BrowserEvidence,setPhase:(phase:string)=>void):Promise<void> {
  const counterpart=gettingStartedGuide(route.locale==='zh'?'en':'zh');
- await page.goto(origin+route.path+'?from=getting-started',{waitUntil:'networkidle'});
- await openLanguageSelector(page);
- await page.getByRole('button',{name:counterpart.locale==='zh'?'中文':'English',exact:true}).last().click();
- await page.waitForURL(origin+counterpart.url+'?from=getting-started');await settleLanguage(page,counterpart.language);
+ setPhase('guide-counterpart-entry');await page.goto(origin+route.path+'?from=getting-started',{waitUntil:'networkidle'});
+ setPhase('guide-counterpart-select');await openLanguageSelector(page);
+ const target=origin+counterpart.url+'?from=getting-started';
+ const [response]=await Promise.all([
+  page.waitForResponse(received=>received.url()===target&&received.request().isNavigationRequest()
+   &&received.request().resourceType()==='document'&&received.request().frame()===page.mainFrame()),
+  page.getByRole('button',{name:counterpart.locale==='zh'?'中文':'English',exact:true}).last().click(),
+ ]);
+ assert.equal(response.status(),200);assert.match(response.headers()['content-type']??'',/^text\/html(?:;|$)/iu);
+ await page.waitForURL(target);await settleLanguage(page,counterpart.language);
  await page.getByRole('button',{name:counterpart.locale==='zh'?'复制 Agent 提示词':'Copy Agent prompt',exact:true}).waitFor({state:'visible'});
  assert.ok((await page.locator('#getting-started-content pre code').first().textContent())?.includes(counterpart.rawUrl));
- evidence.assertions.push('language selector opens authored guide counterpart and preserves query');
- await page.goto(origin+route.path,{waitUntil:'networkidle'});
+ evidence.assertions.push('language selector loads HTTP 200 HTML document for authored guide counterpart and preserves query');
+ setPhase('guide-counterpart-return');await page.goto(origin+route.path,{waitUntil:'networkidle'});
 }
 async function settleLanguage(page:Page,language:string):Promise<void> {
  await page.waitForFunction(expected=>document.documentElement.lang===expected,language);
@@ -200,8 +230,8 @@ function currentNetworkIdle(page:Page):()=>Promise<void> {
   while(active.size>0||Date.now()-lastActivity<500){assert.ok(Date.now()<deadline,'Current browser requests did not settle');await new Promise<void>(resolve=>setTimeout(resolve,50));}
  };
 }
-async function checkLanguagePreferences(browser:Browser,origin:string,viewport:{width:number;height:number},documentPath:string,languageCodes:Readonly<Record<string,string>>):Promise<{checks:string[];ignoredPrefetchAborts:string[]}> {
- const checks:string[]=[],ignoredPrefetchAborts:string[]=[];
+async function checkLanguagePreferences(browser:Browser,origin:string,viewport:{width:number;height:number},documentPath:string,languageCodes:Readonly<Record<string,string>>,evidence:LanguagePreferenceEvidence):Promise<void> {
+ const {checks,ignoredPrefetchAborts,requestFailures:failedRequests,prefetchUrls}=evidence;
  for(const scenario of browserLanguageScenarios(languageCodes)){
   const context=await browser.newContext({viewport,locale:scenario.languages[0]??languageCodes.en!});
   try {
@@ -245,41 +275,39 @@ async function checkLanguagePreferences(browser:Browser,origin:string,viewport:{
  const blocked=await browser.newContext({viewport,locale:'en-US'});
  try {
   await blocked.addInitScript(()=>{Object.defineProperty(window,'localStorage',{configurable:true,get:()=>{throw new Error('Storage blocked for qualification');}});});
-  const page=await blocked.newPage(),errors:string[]=[],failedRequests:CancelledRequest[]=[],prefetchUrls:string[]=[],responses=new WeakMap<Request,number>();page.on('pageerror',error=>errors.push(error.message));
-  page.on('request',request=>{if(request.headers()['next-router-prefetch']==='1')prefetchUrls.push(request.url());});
-  page.on('response',response=>responses.set(response.request(),response.status()));
-  page.on('requestfailed',request=>failedRequests.push({url:request.url(),reason:request.failure()?.errorText??'unknown',method:request.method(),headers:request.headers(),status:responses.get(request)}));
-  const waitForCurrentRequests=currentNetworkIdle(page);
+  const page=await blocked.newPage(),errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  const trace=observeSiteRequests(page,{engine:evidence.engine,viewport:evidence.viewport},failedRequests,prefetchUrls);trace.setPhase('blocked-storage-entry');
+  try {const waitForCurrentRequests=currentNetworkIdle(page);
   await page.goto(origin+'/',{waitUntil:'networkidle'});await page.waitForURL(origin+'/en/');
   await settleLanguage(page,languageCodes.en!);
-  await openLanguageSelector(page);
-  await page.getByRole('button',{name:'中文',exact:true}).last().click();await page.waitForURL(origin+'/zh/');await settleLanguage(page,languageCodes.zh!);await waitForCurrentRequests();await page.reload({waitUntil:'networkidle'});
+  trace.setPhase('blocked-storage-select');await openLanguageSelector(page);
+  await page.getByRole('button',{name:'中文',exact:true}).last().click();await page.waitForURL(origin+'/zh/');await settleLanguage(page,languageCodes.zh!);await waitForCurrentRequests();trace.setPhase('blocked-storage-reload');await page.reload({waitUntil:'networkidle'});
   for(const request of failedRequests)if(isCancelledSitePrefetch(request,prefetchUrls))ignoredPrefetchAborts.push(request.url);
   assert.equal(new URL(page.url()).pathname,'/zh/');assert.deepEqual(errors,[]);assert.deepEqual(failedRequests.filter(request=>!isCancelledSitePrefetch(request,prefetchUrls)),[]);checks.push('blocked storage permits fallback, manual Chinese and localized reload');
+  }finally{trace.stop();}
  }finally{await blocked.close();}
- return {checks,ignoredPrefetchAborts};
 }
 export async function qualifySiteBrowser(options:SiteBrowserOptions){
  const metadata:unknown=createRequire(import.meta.url)('playwright/package.json');if(!object(metadata)||metadata.version!=='1.63.0')failure('SITE_BROWSER_RUNTIME','Qualification requires exact Playwright 1.63.0.');
  const exported=inspectSiteExport(options.root),languageCodes=emittedLanguageCodes(exported),report=prepareSiteBrowserReport(options.report,exported.root),results:BrowserEvidence[]=[];
- const languagePreferences:{engine:string;viewport:string;checks:string[];ignoredPrefetchAborts:string[]}[]=[];
+ const languagePreferences:LanguagePreferenceEvidence[]=[];
  const receipt={schemaVersion:1,operation:'existing-export-browser-qualification',startedAt:new Date().toISOString(),source:exported.source,export:{root:exported.root,treeSha256:exported.treeSha256,files:exported.files.length,bytes:exported.bytes,unchangedAfterCheck:false},toolSha256:hash(readFileSync(fileURLToPath(import.meta.url))),routes:exported.routes,availability:exported.availability,playwrightVersion:'1.63.0',results,languagePreferences,status:'running',completedAt:'',failure:''};
  try {await withSiteExportServer(exported.root,async origin=>{
   for(const [name,engine] of [['chromium',chromium],['firefox',firefox],['webkit',webkit]] as const satisfies readonly (readonly [string,BrowserType])[]){const browser=await engine.launch({headless:true});
    try {for(const [viewport,size] of [['desktop',{width:1440,height:1000}],['mobile',{width:390,height:844}]] as const){const context=await browser.newContext({viewport:size,locale:'zh-CN'});
-    try {for(const route of exported.routes){const page=await context.newPage();const evidence:BrowserEvidence={engine:name,engineVersion:browser.version(),viewport,route,assertions:[],errors:[],ignoredPrefetchAborts:[],screenshot:`${name}-${viewport}-${route.locale}-${route.kind}.png`};results.push(evidence);
-     const consoleErrors:{text:string;url:string}[]=[],failedRequests:CancelledRequest[]=[],prefetchUrls:string[]=[],responses=new WeakMap<Request,number>();
+    try {for(const route of exported.routes){const page=await context.newPage();const evidence:BrowserEvidence={engine:name,engineVersion:browser.version(),viewport,route,assertions:[],errors:[],ignoredPrefetchAborts:[],requestFailures:[],prefetchUrls:[],screenshot:`${name}-${viewport}-${route.locale}-${route.kind}.png`};results.push(evidence);
+     const consoleErrors:{text:string;url:string}[]=[],{requestFailures:failedRequests,prefetchUrls}=evidence;
+     const trace=observeSiteRequests(page,{engine:name,viewport},failedRequests,prefetchUrls);
      page.on('pageerror',error=>evidence.errors.push('pageerror: '+error.message));page.on('console',event=>{if(event.type()==='error')consoleErrors.push({text:event.text(),url:event.location().url});});
-     page.on('request',request=>{if(request.headers()['next-router-prefetch']==='1')prefetchUrls.push(request.url());});page.on('response',response=>{responses.set(response.request(),response.status());if(response.status()>=400)evidence.errors.push(`HTTP ${response.status()}: ${response.url()}`);});
-     page.on('requestfailed',request=>{failedRequests.push({url:request.url(),reason:request.failure()?.errorText??'unknown',method:request.method(),headers:request.headers(),status:responses.get(request)});});
-     try {await checkPage(page,origin,route,viewport,evidence,exported);evidence.screenshots=await captureSiteEvidence(page,report,evidence.screenshot);if(route.kind==='home'){const guide=gettingStartedGuide(route.locale==='default'?'zh':route.locale);await page.locator('.pcr-hero-actions a[href="'+guide.url+'"]').click();await page.locator('#getting-started-content').waitFor();assert.equal(new URL(page.url()).pathname,guide.url);evidence.assertions.push('home entry navigates to corresponding documentation language');}if(route.kind==='guide')await checkGuideCounterpart(page,origin,route,evidence);if(route.kind==='pcr'||route.kind==='guide')await checkSearch(page,route,evidence);for(const request of failedRequests){if(isCancelledSitePrefetch(request,prefetchUrls))evidence.ignoredPrefetchAborts.push(request.url);else evidence.errors.push(`requestfailed: ${request.reason}: ${request.method} ${request.url}`);}for(const error of consoleErrors){if(!(error.text.includes('net::ERR_ABORTED')&&evidence.ignoredPrefetchAborts.includes(error.url)))evidence.errors.push('console: '+error.text+' '+error.url);}assert.deepEqual(evidence.errors,[],'Browser reported errors');}
+     page.on('response',response=>{if(response.status()>=400)evidence.errors.push(`HTTP ${response.status()}: ${response.url()}`);});
+     try {await checkPage(page,origin,route,viewport,evidence,exported);evidence.screenshots=await captureSiteEvidence(page,report,evidence.screenshot);if(route.kind==='home'){trace.setPhase('home-guide-navigation');const guide=gettingStartedGuide(route.locale==='default'?'zh':route.locale);await page.locator('.pcr-hero-actions a[href="'+guide.url+'"]').click();await page.locator('#getting-started-content').waitFor();assert.equal(new URL(page.url()).pathname,guide.url);evidence.assertions.push('home entry navigates to corresponding documentation language');}if(route.kind==='guide')await checkGuideCounterpart(page,origin,route,evidence,trace.setPhase);if(route.kind==='pcr'||route.kind==='guide'){trace.setPhase('search');await checkSearch(page,route,evidence);}trace.setPhase('request-error-check');for(const request of failedRequests){if(isCancelledSitePrefetch(request,prefetchUrls))evidence.ignoredPrefetchAborts.push(request.url);else evidence.errors.push(`requestfailed: ${request.reason}: ${request.method} ${request.url}`);}for(const error of consoleErrors){if(!(error.text.includes('net::ERR_ABORTED')&&evidence.ignoredPrefetchAborts.includes(error.url)))evidence.errors.push('console: '+error.text+' '+error.url);}assert.deepEqual(evidence.errors,[],'Browser reported errors');}
      catch(error){evidence.failure=message(error);try{writeFileSync(path.join(report,evidence.screenshot+'.html'),await page.content());}catch(diagnostic){evidence.diagnosticError=message(diagnostic);}}
-     finally {try{if(!existsSync(path.join(report,evidence.screenshot)))evidence.screenshots=await captureSiteEvidence(page,report,evidence.screenshot);}catch(diagnostic){evidence.diagnosticError=message(diagnostic);if(!evidence.failure)throw diagnostic;}finally{await page.close();}}
+     finally {try{if(!existsSync(path.join(report,evidence.screenshot)))evidence.screenshots=await captureSiteEvidence(page,report,evidence.screenshot);}catch(diagnostic){evidence.diagnosticError=message(diagnostic);if(!evidence.failure)throw diagnostic;}finally{trace.stop();await page.close();}}
     }}finally{await context.close();}
     const documentPath=exported.routes.find(route=>route.kind==='pcr'&&route.locale==='en')?.path;
     assert.ok(documentPath,'Language qualification requires an English PCR document');
-    const evidence=await checkLanguagePreferences(browser,origin,size,documentPath,languageCodes);
-    languagePreferences.push({engine:name,viewport,...evidence});
+    const evidence:LanguagePreferenceEvidence={engine:name,viewport,checks:[],ignoredPrefetchAborts:[],requestFailures:[],prefetchUrls:[]};languagePreferences.push(evidence);
+    await checkLanguagePreferences(browser,origin,size,documentPath,languageCodes,evidence);
    }}finally{await browser.close();}
   }
  });const after=inspectSiteExport(exported.root);assert.equal(after.treeSha256,exported.treeSha256,'Export changed during browser qualification');receipt.export.unchangedAfterCheck=true;assert.ok(results.every(result=>!result.failure),`${results.filter(result=>result.failure).length} browser case(s) failed: ${results.find(result=>result.failure)?.failure}`);receipt.status='passed';return receipt;

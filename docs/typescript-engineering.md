@@ -21,9 +21,9 @@ checkPaths:
   - tests/agent/**
   - scripts/engineering/**
   - .github/workflows/**
-lastReviewedAt: 2026-10-08
-lastReviewedCommit: 42a1e3f1a1d6c242066567b4337eddcfa77f8e18
-lastReviewedNote: "Reviewed PCR #104 bilingual getting-started sources, localized copy feedback and verified counterpart switching, plus one sidebar entry per main section. Preserve #103 reading-language preferences, source fidelity, English-only npm methodology and separate qualified publication; canonical methodology and CLI behavior remain unchanged."
+lastReviewedAt: 2026-10-09
+lastReviewedCommit: e9b91252307d0345defcb709e819799d1aa6ba42
+lastReviewedNote: "Reviewed PCR #107/#108 latest browser failure: explicit manual language switches load the verified exported HTML document directly, preserving counterpart, query/fragment, preference and storage-denial behavior; neutral detection remains unchanged. Guide browser acceptance additionally requires exact main-frame HTTP 200 HTML navigation. Unmarked RSC failures remain blocking; no classifier exemptions, dependency or methodology changes. Fresh full CI and updated independent review remain required."
 related:
   - repository-coding-guidelines.md
   - offline-distribution.md
@@ -442,6 +442,9 @@ The Chinese and English getting-started guides are planned routes in that same
 desktop/mobile matrix. Checks cover language-matched home entry, verified guide
 counterpart switching, one main navigation entry per section, localized copying
 of displayed prompt text, clipboard-denial feedback and guide search/navigation.
+Counterpart switching must observe a main-frame document navigation to the exact
+target URL, HTTP 200 and HTML before checking the target language and authored
+guide content. An eventual successful page does not excuse an unmarked failed RSC request.
 Clipboard transport is mocked for repeatable cross-browser acceptance; no host
 clipboard permission or live website publication is claimed by those checks.
 
@@ -454,6 +457,28 @@ browser language information instead. Regional expectations and HTML language
 assertions use the emitted route/code mapping, including optional translations.
 Language-preference failures fail qualification and are retained in the receipt;
 completed matrices preserve their checks and specifically classified prefetch aborts.
+
+Browser request receipts retain engine, viewport, exact URL, method, resource
+kind, navigation flag, observed HTTP status, start/failure timestamps and phases,
+actual page URL, and an allowlist of routing/prefetch headers. Cookies and
+credentials are not collected. Partial language-preference evidence survives
+failure. Diagnostic capture copies only the explicit scalar context fields; it
+never retains an evidence object or its request-failure array, so the complete
+partial receipt remains serializable. The classifier accepts only the pinned engine's exact cancellation
+reason (`net::ERR_ABORTED`, `NS_BINDING_ABORTED`, or WebKit `cancelled` /
+`Load request cancelled`), a non-navigation GET/HEAD fetch/xhr/other request,
+no failed observed HTTP response, and explicit prefetch metadata. A successful
+HEAD probe additionally may use an observed explicit same-origin/path segment
+prefetch companion. An RSC URL or header alone is insufficient. Unknown reasons,
+missing metadata, document/asset/navigation failures and failed HTTP responses
+remain blocking; case counts and functional assertions are unchanged.
+
+The Playwright [Request contract](https://playwright.dev/docs/api/class-request)
+and pinned [Firefox network implementation](https://github.com/microsoft/playwright/blob/v1.63.0/packages/playwright-core/src/server/firefox/ffNetworkManager.ts)
+provide request identity and engine cancellation semantics. Exact WebKit strings
+and prefetch evidence were also reproduced against the pinned browser runtime in
+[PCR #106](https://github.com/tiangong-lca/pcr/issues/106#issuecomment-6064168510).
+Historical failed receipts lacking those fields are not retroactively qualified.
 
 Successive Goal runtime overlays compare both the original Goal baseline and the
 actual receiving runtime tree. They retain the original receipt behavior while

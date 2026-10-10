@@ -68,7 +68,9 @@ export function Provider({
           const declared = alternateTarget(currentAlternates(), languageCodes[next] ?? next);
           const target = manualLanguageTarget(declared, next);
           if (target !== pathname) {
-            router.push(preserveLocationSuffix(target, window.location.search, window.location.hash));
+            // Explicit language changes read the exported document directly. The
+            // destination owns its HTML language and verified counterpart content.
+            window.location.assign(preserveLocationSuffix(target, window.location.search, window.location.hash));
           }
         },
       }}

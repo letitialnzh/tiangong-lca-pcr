@@ -24,9 +24,9 @@ checkPaths:
   - .github/ISSUE_TEMPLATE/**
   - library/pcrs/**
   - library/modules/**
-lastReviewedAt: 2026-10-08
-lastReviewedCommit: f5089dd6cdacfe224cd3badd396106a903634508
-lastReviewedNote: "Reviewed PCR #106 / PR #97 content and bilingual pectin/TV accounting corrections against the update workflow. Candidate maturity, pending scientific review, unresolved identities and mapping authorization are preserved; unified 0.4.5 is product preparation only."
+lastReviewedAt: 2026-10-09
+lastReviewedCommit: e9b91252307d0345defcb709e819799d1aa6ba42
+lastReviewedNote: "Reviewed PCR #107/#108 latest browser failure: explicit manual language switches load the verified exported HTML document directly, preserving counterpart, query/fragment, preference and storage-denial behavior; neutral detection remains unchanged. Guide browser acceptance additionally requires exact main-frame HTTP 200 HTML navigation. Unmarked RSC failures remain blocking; no classifier exemptions, dependency or methodology changes. Fresh full CI and updated independent review remain required."
 ---
 
 # Authoring Guide

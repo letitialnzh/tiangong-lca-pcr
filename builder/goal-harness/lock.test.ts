@@ -219,22 +219,7 @@ test("multiple concurrent stale-lock reclaimers retire one exact owner and only 
   const stale = { schema_version: 1, token: "stale-token", pid: 2147483647, operation: "integrate", acquired_at: "2026-09-04T00:00:00.000Z" };
   try {
     writeFileSync(lockPath, `${JSON.stringify(stale)}\n`);
-    const moduleUrl = pathToFileURL(path.join(process.cwd(), "builder/goal-harness/lock.ts")).href;
-    const run = () => new Promise<UnknownRecord>((resolve) => {
-      const source = `import { withGoalLock } from ${JSON.stringify(moduleUrl)};
-try {
-  const value = withGoalLock(${JSON.stringify(stateDir)}, "race", () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 500); return "entered"; });
-  process.stdout.write(JSON.stringify({ ok: true, value }));
-} catch (error) {
-  process.stdout.write(JSON.stringify({ ok: false, code: error.code }));
-  process.exitCode = 1;
-}`;
-      const child = spawn(process.execPath, ["--input-type=module", "-e", source], { stdio: ["ignore", "pipe", "pipe"] });
-      let stdout = "";
-      child.stdout.on("data", (chunk) => { stdout += chunk; });
-      child.on("close", () => resolve(jsonRecord(stdout)));
-    });
-    const results = await Promise.all(Array.from({ length: 8 }, () => run()));
+    const results = await runContenders(stateDir, 8);
     assert.equal(results.filter((entry) => entry.ok).length, 1);
     assert.ok(results.filter((entry) => !entry.ok).every((entry) => entry.code === "GOAL_LOCKED"));
     const archives = readdirSync(path.join(stateDir, "lock-history"));
@@ -264,22 +249,7 @@ test("concurrent reclaimers recover a crash after the retirement directory was c
     assert.deepEqual(readdirSync(path.join(stateDir, "lock-history", text(incompleteClaim))), []);
     assert.deepEqual(jsonRecord(readFileSync(lockPath, "utf8")), stale);
 
-    const moduleUrl = pathToFileURL(path.join(process.cwd(), "builder/goal-harness/lock.ts")).href;
-    const run = () => new Promise<UnknownRecord>((resolve) => {
-      const source = `import { withGoalLock } from ${JSON.stringify(moduleUrl)};
-try {
-  const value = withGoalLock(${JSON.stringify(stateDir)}, "race", () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 500); return "entered"; });
-  process.stdout.write(JSON.stringify({ ok: true, value }));
-} catch (error) {
-  process.stdout.write(JSON.stringify({ ok: false, code: error.code }));
-  process.exitCode = 1;
-}`;
-      const child = spawn(process.execPath, ["--input-type=module", "-e", source], { stdio: ["ignore", "pipe", "pipe"] });
-      let stdout = "";
-      child.stdout.on("data", (chunk) => { stdout += chunk; });
-      child.on("close", () => resolve(jsonRecord(stdout)));
-    });
-    const results = await Promise.all(Array.from({ length: 8 }, () => run()));
+    const results = await runContenders(stateDir, 8);
     assert.equal(results.filter((entry) => entry.ok).length, 1);
     assert.ok(results.filter((entry) => !entry.ok).every((entry) => entry.code === "GOAL_LOCKED"));
     assert.deepEqual(jsonRecord(readFileSync(path.join(stateDir, "lock-history", text(incompleteClaim), "owner.json"), "utf8")), stale);
@@ -337,15 +307,7 @@ withGoalLock(${JSON.stringify(stateDir)}, "capture-crash", () => "must not run",
     assert.deepEqual(JSON.parse(readFileSync(path.join(retiredDir, "owner.json"), "utf8")), stale);
     assert.deepEqual(jsonRecord(readFileSync(lockPath, "utf8")), stale);
 
-    const run = () => spawnRun(`import { withGoalLock } from ${JSON.stringify(moduleUrl)};
-try {
-  const value = withGoalLock(${JSON.stringify(stateDir)}, "race", () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 500); return "entered"; });
-  process.stdout.write(JSON.stringify({ ok: true, value }));
-} catch (error) {
-  process.stdout.write(JSON.stringify({ ok: false, code: error.code }));
-  process.exitCode = 1;
-}`).then(({ stdout }) => jsonRecord(stdout));
-    const results = await Promise.all(Array.from({ length: 8 }, () => run()));
+    const results = await runContenders(stateDir, 8);
     assert.equal(results.filter((entry) => entry.ok).length, 1);
     assert.ok(results.filter((entry) => !entry.ok).every((entry) => entry.code === "GOAL_LOCKED"));
     assert.equal(existsSync(lockPath), false);

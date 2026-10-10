@@ -19,7 +19,8 @@ function identityFields(value: ProductIdentity): ProductIdentity {
 
 const HARD_MAX_BYTES = 25_000_000;
 const JSON_MAX_BYTES = 64 * 1024;
-const DEFAULT_ROUTES = ["/zh/docs/pcr/", "/en/docs/pcr/"];
+export const LEGACY_WEB_PROBE_ROUTES = ["/zh/docs/pcr/", "/en/docs/pcr/"] as const;
+export const WEB_PROBE_ROUTES = [...LEGACY_WEB_PROBE_ROUTES, "/", "/zh/", "/en/"] as const;
 const RAW_PATH = "/generated/raw/classifications/indexes/cpc-3.0-coverage.json";
 const identityKeys = ["schema", "version", "tag", "sourceCommit", "sourceFingerprint"] as const;
 const sha256 = (bytes: BinaryLike) => `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
@@ -159,7 +160,7 @@ export function writePrebuiltConfig({ root, webDir }: { root: string; webDir: st
 }
 
 /** Small exact-byte descriptors, derived from the verified export before sealing. */
-export function createWebProbes({ webDir }: { webDir: string }): WebProbes {
+export function createWebProbes({ webDir, includeHomes = true }: { webDir: string; includeHomes?: boolean }): WebProbes {
   webDir = controlledRoot(webDir);
   readManaged(webDir, "index.html");
   const identity = parseJson(readManaged(webDir, "generated/product-release.json", JSON_MAX_BYTES), "PCR_WEB_IDENTITY_INVALID", "Export product identity is not JSON.");
@@ -173,7 +174,7 @@ export function createWebProbes({ webDir }: { webDir: string }): WebProbes {
     return { path: urlPath, sha256: sha256(bytes), bytes: bytes.length };
   };
   return { identity: identityFields(identity), counts,
-    routes: DEFAULT_ROUTES.map(urlPath => describe(urlPath, `${urlPath.slice(1)}index.html`)),
+    routes: (includeHomes ? WEB_PROBE_ROUTES : LEGACY_WEB_PROBE_ROUTES).map(urlPath => describe(urlPath, `${urlPath.slice(1)}index.html`)),
     rawDownload: describe(RAW_PATH, RAW_PATH.slice(1)) };
 }
 
@@ -225,15 +226,15 @@ export async function verifyLiveWebsite({ origin, identity, counts, probes, fetc
     || !Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > HARD_MAX_BYTES || typeof fetcher !== "function") {
     fail("PCR_WEB_PROBE_INVALID", "Invalid bounded fetch settings.");
   }
-  if (!isRecord(probes) || !Array.isArray(probes.routes) || probes.routes.length !== DEFAULT_ROUTES.length) fail("PCR_WEB_PROBE_INVALID", "Both sealed language route probes are required.");
+  if (!isRecord(probes) || !Array.isArray(probes.routes) || probes.routes.length !== WEB_PROBE_ROUTES.length) fail("PCR_WEB_PROBE_INVALID", "Sealed catalog and homepage route probes are required.");
   compareIdentity(probes.identity, identity);
   compareVersion({ releaseVersion: identity.version, releaseTag: identity.tag, sourceCommit: identity.sourceCommit,
     sourceFingerprint: identity.sourceFingerprint, counts: probes.counts }, identity, counts);
-  const routes = probes.routes.map((probe: unknown, index: number) => { validateProbe(probe, DEFAULT_ROUTES[index] ?? ""); return probe; });
+  const routes = probes.routes.map((probe: unknown, index: number) => { validateProbe(probe, WEB_PROBE_ROUTES[index] ?? ""); return probe; });
   const rawDownload = probes.rawDownload; validateProbe(rawDownload, RAW_PATH);
   const deadline = performance.now() + timeoutMs, checks: { path: string; status: number; bytes?: number; sha256?: string }[] = [];
 
-  const request = async (urlPath: string, { limit = maxBytes, mediaType = null, redirect = false, fresh = false }: { limit?: number; mediaType?: string | null; redirect?: boolean; fresh?: boolean } = {}): Promise<Buffer | null> => {
+  const request = async (urlPath: string, { limit = maxBytes, mediaType = null, fresh = false }: { limit?: number; mediaType?: string | null; fresh?: boolean } = {}): Promise<Buffer | null> => {
     const url = new URL(urlPath, base), remaining = Math.ceil(deadline - performance.now());
     if (remaining <= 0) fail("PCR_WEB_TIMEOUT", "Website acceptance exhausted its execution budget.", { path: urlPath }, true);
     const controller = new AbortController();
@@ -247,12 +248,6 @@ export async function verifyLiveWebsite({ origin, identity, counts, probes, fetc
           headers: { "Cache-Control": "no-cache", Accept: mediaType ?? "*/*" }, signal: controller.signal });
         if (!response || !Number.isInteger(response.status) || !response.headers?.get) fail("PCR_WEB_FETCH_FAILED", "Invalid website response.", { path: urlPath }, true);
         if (response.redirected || (response.url && response.url !== url.href)) fail("PCR_WEB_REDIRECT", "An unexpected website redirect was observed.", { path: urlPath });
-        if (redirect) {
-          let destination;
-          try { destination = new URL(response.headers.get("location") ?? "", url); } catch { /* handled below */ }
-          if (response.status !== 301 || destination?.href !== base.href) fail("PCR_WEB_REDIRECT", "Chinese home alias must redirect permanently to the canonical HTTPS home.", { path: urlPath, status: response.status });
-          checks.push({ path: urlPath, status: response.status }); return null;
-        }
         if (response.status >= 300 && response.status < 400) fail("PCR_WEB_REDIRECT", "An unexpected website redirect was observed.", { path: urlPath, status: response.status });
         if (response.status !== 200) fail("PCR_WEB_STATUS", "Website probe did not return HTTP 200.", { path: urlPath, status: response.status }, response.status === 429 || response.status >= 500);
         if (fresh) requireFresh(response.headers, urlPath);
@@ -287,11 +282,11 @@ export async function verifyLiveWebsite({ origin, identity, counts, probes, fetc
   const readIdentity = async () => compareIdentity(parseJson(await request("/generated/product-release.json", { limit: Math.min(maxBytes, JSON_MAX_BYTES), mediaType: "application/json", fresh: true }), "PCR_WEB_BODY_INVALID", "Website product identity is not JSON."), identity);
   const readVersion = async () => compareVersion(parseJson(await request("/generated/version.json", { limit: Math.min(maxBytes, JSON_MAX_BYTES), mediaType: "application/json", fresh: true }), "PCR_WEB_BODY_INVALID", "Website version document is not JSON."), identity, counts);
   await readIdentity(); await readVersion();
-  for (const probe of routes) {
+  const liveRoutes = [...routes, ...routes.filter(probe => ["/zh/", "/en/"].includes(probe.path)).map(probe => ({ ...probe, path: probe.path.slice(0, -1) }))];
+  for (const probe of liveRoutes) {
     const bytes = await request(probe.path, { limit: Math.max(maxBytes, probe.bytes), mediaType: "text/html" });
     if (bytes === null || bytes.length !== probe.bytes || sha256(bytes) !== probe.sha256) fail("PCR_WEB_HASH_MISMATCH", "Language route differs from the sealed export.", { path: probe.path });
   }
-  await request("/zh", { redirect: true }); await request("/zh/", { redirect: true });
   const raw = await request(RAW_PATH, { limit: Math.max(maxBytes, rawDownload.bytes) });
   if (raw === null || raw.length !== rawDownload.bytes || sha256(raw) !== rawDownload.sha256) fail("PCR_WEB_HASH_MISMATCH", "Raw download differs from the sealed export.", { path: RAW_PATH });
   // Detect a release cutover while the route/download probes were being inspected.

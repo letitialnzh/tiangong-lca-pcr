@@ -71,6 +71,7 @@ export async function sealedProductFixture(t: TestContext, usableTool: boolean, 
   git('init', '-q'); git('config', 'user.name', 'Sealed Test'); git('config', 'user.email', 'sealed@example.invalid'); git('add', '.'); git('commit', '-qm', 'controlled seal identity');
   const identity = readProductIdentity(source); const web = path.join(base, 'web');
   put(web, 'index.html', 'Controlled home.');
+  put(web, 'zh/index.html', 'Controlled Chinese home.'); put(web, 'en/index.html', 'Controlled English home.');
   put(web, 'zh/docs/pcr/index.html', 'Controlled Chinese directory.'); put(web, 'en/docs/pcr/index.html', 'Controlled English directory.');
   put(web, 'generated/product-release.json', JSON.stringify(identity));
   put(web, 'generated/version.json', JSON.stringify({ sourceCommit: identity.sourceCommit, releaseVersion: identity.version, releaseTag: identity.tag, sourceFingerprint: identity.sourceFingerprint, counts: { pcrs: 1, pages: 2, languages: 2, sourceBytes: 20 } }));

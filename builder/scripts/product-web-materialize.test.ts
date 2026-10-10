@@ -48,6 +48,8 @@ async function fixture(t: TestContext, mutateWeb: (context: { webDir: string; id
   write(path.join(root, "packages/pcr-docs/out/index.html"), "PREVIOUS-GOOD");
   const webDir = path.join(owned, "web");
   write(path.join(webDir, "index.html"), "<h1>Sealed web</h1>");
+  write(path.join(webDir, "zh/index.html"), "<h1>中文首页</h1>");
+  write(path.join(webDir, "en/index.html"), "<h1>English home</h1>");
   write(path.join(webDir, "en/docs/pcr/index.txt"), "Supported native navigation payload");
   write(path.join(webDir, "en/docs/pcr/index.html"), "<h1>English PCR library</h1>");
   write(path.join(webDir, "zh/docs/pcr/index.html"), "<h1>中文 PCR 库</h1>");
@@ -171,6 +173,15 @@ test("real tmpfs scratch selection retains the queued-deadline rollback and owne
   assert.equal(wired.selected.length, 1);
   assert.equal(fs.existsSync(present(wired.selected[0]).scratchRoot), false);
   previousIsIntact(f);
+});
+
+test("historical two-catalog manifests retain exact sealed materialization", async t => {
+  const f = await fixture(t);
+  f.manifest.web.probes.routes.splice(2);
+  const result = await materializeProductWeb(f.options);
+  assert.deepEqual(result.identity, f.identity);
+  assert.equal(fs.readFileSync(path.join(f.root, "packages/pcr-docs/out/zh/index.html"), "utf8"), "<h1>中文首页</h1>");
+  assert.deepEqual(fs.readdirSync(f.scratchBase), []);
 });
 
 test("materialization imports the exact sealed web and atomically hands off provider hardlinks", async t => {
