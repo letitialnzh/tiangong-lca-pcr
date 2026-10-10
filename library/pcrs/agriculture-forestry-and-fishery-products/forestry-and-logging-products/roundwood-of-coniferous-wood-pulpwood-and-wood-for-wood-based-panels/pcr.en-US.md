@@ -22,7 +22,7 @@ Excluded are sawlogs/veneer logs, non-coniferous wood, fuelwood, poles and other
 | covered_products | Coniferous pulpwood and panel wood, round/split or directly forest-chipped form, on solid under-bark basis |
 | excluded_products | Sawlogs/veneer logs, fuelwood, non-coniferous or other industrial wood, mill chips/residues, pulp and finished panels |
 | representative_product | Graded conifer pulpwood logs ready for outbound transport at forest roadside |
-| production_route | Attributable stand management → felling and bucking → extraction to landing → sorting and scaling; direct forest chipping is a conditional terminal route |
+| production_route | Attributable stand management → felling and bucking → extraction to landing → sorting and scaling; optional direct forest chipping precedes final producer handover for the declared physical form |
 | market_state | Industrial wood at forest roadside before external transport or mill conversion |
 
 ## 3. Reference Flow
@@ -33,24 +33,19 @@ Excluded are sawlogs/veneer logs, non-coniferous wood, fuelwood, poles and other
 | How much | 1 m3 solid wood volume under bark |
 | How well | Declared species/group, pulp/panel destination, grade/diameter, physical form, bark and moisture; no assumed pulp yield |
 | How long or cycle | Declared harvest cohort and reporting period, with attributable establishment and tending years linked |
-| reference_flow_link | `roadside_pulpwood` |
+| reference_flow_link | `pulpwood_handover` |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Coniferous pulpwood/panel wood at roadside; exact UUID unresolved |
+| Reference product flow | Coniferous pulpwood/panel wood at producer handover; exact UUID unresolved |
 | Reference flow property | Volume `93a60a56-a3c8-22da-a746-0800200c9a66` ; measured as solid under-bark wood volume or its documented equivalent |
 | Reference unit group | Units of volume `93a60a57-a3c8-12da-a746-0800200c9a66` |
 | Reference unit | m3 |
-| reference_output_optional_process | `forest_chip` |
-| reference_output_when_inactive | `roadside_pulpwood` |
-| reference_output_when_active | `direct_forest_chips` |
 | Required qualifiers | Conifer species/group; region and stand regime; pulp or panel end use; round/split/direct forest-chip form; bark/moisture state; diameter/grade; harvest cohort; landing gate; scale/conversion method |
 
 Required qualifiers are foreground data-package metadata. A loose-chip cubic metre is not the reference amount; direct chips require measured or documented solid-wood-equivalent conversion (fao-jfsq-2020).
-The direct-forest-chip card is a conditional product-route output, not a second reference-flow object. A chip-specific downstream dataset must confirm its own concrete chip-flow identity before publication and must not reuse the unresolved roundwood identity by assumption.
-
-For the declared reference lot, retain one process map with optional forest chipping. Determine whether `forest_chip` is active from actual processing and dispatch records: inactive selects `roadside_pulpwood` as the final reference output; active selects `direct_forest_chips` and treats `roadside_pulpwood` as an internal feed. `reference_flow_link` anchors the inactive wood state only; it is not an unconditional choice. The selected card supplies the actual product identity and form, without inheriting the other state's UUID. Exactly one of these cards is the final reference output for that lot, normalized to 1 m3 solid under-bark wood or its documented equivalent. Do not sum the two as final outputs. Separate differently delivered lots and attribute common burdens explicitly; unknown chipping status or missing chip-conversion evidence is a gap, not an inactive default.
+The sole final reference card is `pulpwood_handover` at the unchanged forest-roadside gate. Determine the actual physical form from processing and dispatch records: accept round/split wood from `roadside_pulpwood` when no forest chipping occurred, or accept chips from `direct_forest_chips` when it did. Both are internal transfers into the same documentary handover node, not additional final sales. Instantiate one actual product identity per declared-form lot; never merge forms into one concrete flow, inherit a roundwood UUID for chips, or infer an inactive chipper from missing records. Separate lots of different form and retain their own conversion evidence and burden attribution. Normalize accepted positive final lot quantity R to 1 m3 solid under-bark wood or its evidenced equivalent. The handover node adds no physical treatment, loss or energy assumption; actual operations remain at their responsible nodes. Chipping feed and work-in-progress quantities stay measured rather than fixed to R.
 
 ## 4. Measurement and Unit Rules
 
@@ -102,8 +97,9 @@ Determine activation from stand, task and lot records; distinguish unused activi
 | --- | --- | --- | --- | --- | --- |
 | `stand_management` | Source stand management and growth attribution | conditional | Include attributable establishment/tending or managed-natural-forest operations; otherwise document source and upstream treatment | Managed biological production and cohort handoff | Standing volume and records by cohort |
 | `felling_extraction` | Felling, bucking and extraction | conditional | Only when actually inside the foreground; qualified purchased completed-state feed bypasses completed operations while retaining upstream burdens. | Harvest/capture distinct from growth and sorting | Extracted log volume and machine energy |
-| `landing_sort_scale` | Landing sorting and scaling | required | Final lot measurement, acceptance and roadside producer handover remain required for every reference lot. Repeat physical sorting only when actually performed; purchased qualified lots retain upstream sorting coverage without repeating it. | Accept and measure the final lot; grade actual intended uses, rejects and under-bark product | Product volumes by lot |
+| `landing_sort_scale` | Landing sorting and scaling | required | Confirm actual grade and upstream sorting coverage; repeat physical sorting only when performed. Final producer acceptance is recorded at handover. | Segregate intended uses and reconcile graded material and rejects | Product volumes by lot |
 | `forest_chip` | Direct forest chipping | conditional | Only directly forest-chipped roundwood before dispatch | Primary conditioning from logs to chips | Matched feed, chips and rejects |
+| `producer_handover` | Forest-roadside producer handover confirmation | required | Confirm every accepted final lot after its actual preparation; no assumed additional physical operation | Unique final boundary output and paired accepted-lot transfer | 1 m3 solid under-bark volume or evidenced equivalent |
 
 ### Process: Source stand management and growth attribution (`stand_management`)
 
@@ -535,12 +531,11 @@ Task: Roadside sorting, scaling and handling. Activate only for lubricant consum
 
 ###### Graded pulpwood or panel wood at roadside (`roadside_pulpwood`)
 
-This intended output is the final reference product for the unchipped route; if chipped in forest, this is an internal transfer, not a second final product.
+Graded roundwood is an internal transfer to producer_handover for an unchipped lot, or to forest_chip for an actually chipped lot. Preserve measured totals, stocks and rejects; this card is never another final sale.
 
 - Selected flow: Coniferous pulpwood/panel wood at roadside; exact UUID unresolved
 - Flow property / unit: solid under-bark volume [Volume `93a60a56-a3c8-22da-a746-0800200c9a66`; unit group `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
-- Amount rule: For unchipped sale, 1 m3 reference output; for direct forest chipping, the measured under-bark volume internally fed to the chipper per 1 m3 final chip equivalent
-- Amount rule when reference output: 1 m3
+- Amount rule: Measured attributable graded-roundwood quantity under cp_grade_scale divided once by positive accepted final handover volume R; do not force chipper feed or period stocks to equal R
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 m3 reference flow
@@ -774,8 +769,7 @@ Only chips made directly from roundwood in the forest qualify; measured mass or 
 
 - Selected flow: Direct forest chips from conifer pulpwood/panel wood; exact UUID unresolved
 - Flow property / unit: solid under-bark wood equivalent [Volume `93a60a56-a3c8-22da-a746-0800200c9a66`; unit group `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
-- Amount rule: 1 m3 equivalent process output from matched chip and feed records
-- Amount rule when reference output: 1 m3
+- Amount rule: Actual chip output in measured solid-underbark equivalent under cp_chip_conversion divided once by accepted final handover volume R; retain chip stocks, rejects and conversion uncertainty
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 m3 reference flow
@@ -865,6 +859,92 @@ Activate only when this identified material is physically removed as waste to a 
 
 ##### Elementary flows
 
+### Process: Forest-roadside producer handover confirmation (`producer_handover`)
+
+The sole final reference card is `pulpwood_handover` at the unchanged forest-roadside gate. Determine the actual physical form from processing and dispatch records: accept round/split wood from `roadside_pulpwood` when no forest chipping occurred, or accept chips from `direct_forest_chips` when it did. Both are internal transfers into the same documentary handover node, not additional final sales. Instantiate one actual product identity per declared-form lot; never merge forms into one concrete flow, inherit a roundwood UUID for chips, or infer an inactive chipper from missing records. Separate lots of different form and retain their own conversion evidence and burden attribution. Normalize accepted positive final lot quantity R to 1 m3 solid under-bark wood or its evidenced equivalent. The handover node adds no physical treatment, loss or energy assumption; actual operations remain at their responsible nodes. Chipping feed and work-in-progress quantities stay measured rather than fixed to R.
+
+#### Inputs
+
+##### Product flows
+
+###### Accepted roundwood lot received for handover (`handover_roundwood_input`)
+
+Activate only for an actually unchipped final lot from roadside_pulpwood. Omit for chip deliveries; do not also count raw chipper feed here.
+
+- Selected flow: Accepted coniferous pulpwood/panel roundwood at roadside; exact UUID unresolved
+- Flow property / unit: Solid under-bark wood volume or evidenced equivalent [Volume `93a60a56-a3c8-22da-a746-0800200c9a66`; unit group `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
+- Amount rule: Matched accepted lot quantity divided by positive final handover volume R under cp_producer_handover
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per 1 m3 reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_producer_handover`
+- Range: Accepted-lot normalization identity, only for the activated declared form
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: m3
+  - Basis: (R/R) × 1 m3 = 1 m3; matched positive accepted final lot, not a yield or feed assumption
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+###### Accepted direct forest-chip lot received for handover (`handover_chip_input`)
+
+Activate only for an actually forest-chipped final lot from direct_forest_chips. Require lot-specific solid-underbark equivalence; omit for roundwood deliveries.
+
+- Selected flow: Accepted directly forest-made conifer chips at roadside; exact UUID unresolved
+- Flow property / unit: Solid under-bark wood volume or evidenced equivalent [Volume `93a60a56-a3c8-22da-a746-0800200c9a66`; unit group `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
+- Amount rule: Matched accepted lot quantity divided by positive final handover volume R under cp_producer_handover
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per 1 m3 reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_producer_handover`
+- Range: Accepted-lot normalization identity, only for the activated declared form
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: m3
+  - Basis: (R/R) × 1 m3 = 1 m3; matched positive accepted final lot, not a yield or feed assumption
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
+
+#### Outputs
+
+##### Product flows
+
+###### Accepted coniferous pulpwood at producer handover (`pulpwood_handover`)
+
+One declared physical form and one concrete product identity per final lot. This is the sole final reference output; roundwood and chip lot identities are not interchangeable or summed. Packaging, rejects and unsold stocks are excluded from accepted R.
+
+- Selected flow: Coniferous pulpwood/panel wood at producer handover; exact UUID unresolved
+- Flow property / unit: Solid under-bark wood volume or evidenced equivalent [Volume `93a60a56-a3c8-22da-a746-0800200c9a66`; unit group `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
+- Amount rule: 1 m3
+- Value mode: Fixed value (`fixed_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per 1 m3 reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_producer_handover`
+- Range: Accepted-lot normalization identity, only for the activated declared form
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: m3
+  - Basis: (R/R) × 1 m3 = 1 m3; matched positive accepted final lot, not a yield or feed assumption
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+
+##### Waste flows
+
+##### Elementary flows
+
 ## 7. Allocation and Co-product Handling
 
 The product definitions and volume convention below are supported by the FAO sources. The allocation hierarchy and shared-asset attribution are rules selected by this PCR, not LCA allocation requirements prescribed by those statistical or harvesting documents. Before applying a volume or service driver, demonstrate its relevance to the shared activity and retain the justification and sensitivity to a materially different justified driver; a product-class definition alone is not allocation evidence.
@@ -900,6 +980,7 @@ The product definitions and volume convention below are supported by the FAO sou
 | `cp_direct_release_felling_extraction` | `felling_extraction` | Per-node actual direct releases and coverage decisions | Activity, measurement and method-evidence ledger | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package. | kg per substance/medium; retain native activity units | Each event and lot/reporting-period reconciliation | Periods matched to node activity and final reference lots | Actual activity sites; one owner for each shared event | per 1 m3 reference flow | Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix |
 | `cp_direct_release_landing_sort_scale` | `landing_sort_scale` | Per-node actual direct releases and coverage decisions | Activity, measurement and method-evidence ledger | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package. | kg per substance/medium; retain native activity units | Each event and lot/reporting-period reconciliation | Periods matched to node activity and final reference lots | Actual activity sites; one owner for each shared event | per 1 m3 reference flow | Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix |
 | `cp_direct_release_forest_chip` | `forest_chip` | Per-node actual direct releases and coverage decisions | Activity, measurement and method-evidence ledger | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package. | kg per substance/medium; retain native activity units | Each event and lot/reporting-period reconciliation | Periods matched to node activity and final reference lots | Actual activity sites; one owner for each shared event | per 1 m3 reference flow | Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix |
+| `cp_producer_handover` | `producer_handover` | Accepted final lot and matched incoming transfer | Processing, scaling and dispatch records | lot_id; transfer_id; actual physical form; upstream node; accepted quantity R; bark/moisture basis; chip-equivalence evidence; rejected and stock quantities; concrete flow identity | Match one declared-form accepted lot to its actual roundwood or chip receipt and producer dispatch. No further physical treatment is assumed. Retain measured rejected/stock quantities at their responsible nodes. | m3 solid under bark or evidenced equivalent | each final lot | matched reporting period | same forest-roadside gate | per 1 m3 reference flow | signed acceptance and scale tickets; matched conversion and transfer evidence |
 
 ### Calculation Rules
 
@@ -907,9 +988,10 @@ The product definitions and volume convention below are supported by the FAO sou
 | --- | --- | --- | --- | --- | --- |
 | `calc_underbark` | All wood rows | Sum scaled solid wood volume excluding bark; deduct measured or documented species/lot bark volume from over-bark readings. | log scale, bark deduction | m3 solid under bark | `fao-jfsq-2020` |
 | `calc_chip_equivalent` | Direct forest chips | Convert chip mass/bulk volume with lot-specific density, moisture and bark basis; reconcile against measured roundwood feed; no universal factor. | chip and feed tickets, tests | m3 solid under-bark equivalent | `fao-jfsq-2020` |
-| `calc_assortment_balance` | Landing outputs | For one reconciliation boundary covering landing sorting and any activated forest chipping, V_open + V_receipts = V_selected_final + V_other_final + V_exported_waste + V_retained_loss + V_close + delta, all on matched underbark solid-volume or evidenced equivalent bases. Receipts include own-harvest deliveries and external purchased lots; cancel paired sorting-to-chipper transfers once. Select exactly one final reference output per lot from actual chipping activation, never both roundwood feed and chips. Opening/closing stock includes work in progress; known stock changes are explicit. Delta is only an unexplained measurement residual, not an inferred loss or emission; exported waste and retained loss must originate in the same input wood pool. | receipt/sorting/chipping tickets; opening/closing and work-in-progress stock; transfer, waste and retained-loss records | reconciled output m3 | `fao-jfsq-2020` |
+| `calc_assortment_balance` | Landing outputs | For one reconciliation boundary covering landing sorting, any activated forest chipping and final producer handover, V_open + V_receipts = V_selected_final + V_other_final + V_exported_waste + V_retained_loss + V_close + delta, all on matched underbark solid-volume or evidenced equivalent bases. Receipts include own-harvest deliveries and external purchased lots; cancel paired sorting-to-chipper and accepted-lot-to-handover transfers once. Select exactly one final reference output per lot from actual chipping activation, never both roundwood feed and chips. Opening/closing stock includes work in progress; known stock changes are explicit. Delta is only an unexplained measurement residual, not an inferred loss or emission; exported waste and retained loss must originate in the same input wood pool. | receipt/sorting/chipping tickets; opening/closing and work-in-progress stock; transfer, waste and retained-loss records | reconciled output m3 | `fao-jfsq-2020` |
 | `calc_shared_burden` | Cross-output and cross-period inputs | Directly assign metered use; otherwise allocate each shared activity once by documented service/use or under-bark output fraction within the cohort; sum shares to 100%. | service records, cohort, products | assigned activity per m3 output | `fao-harvesting-code` |
 | `calculate_direct_release_ledger` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | For each unique event, substance and medium, obtain raw release E from measurement or the cited applicable method using activity A and a compatible factor EF; use E = A * EF only for a genuinely simple-factor method, after checking units and abatement scope. Do not add different substances/media; retain an unallocated raw-release ledger. Divide attributed burden totals once by matched positive final reference quantity R; do not renormalize final-reference intensities or allocate a shared event twice. Unexplained material residuals are not automatically emissions and missing factors are not zero. | cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip; existing emission cards; supplier coverage; reference quantity | Node/substance/medium-specific raw and attributed amounts and unresolved gaps |  |
+| `calc_final_handover` | handover_roundwood_input; handover_chip_input; pulpwood_handover | For each declared-form final lot, activate exactly one accepted incoming transfer with the same quantity and identity as handover output. Normalize each by its own positive accepted R: R/R × 1 m3 = 1 m3. Raw chipping feed, processing outputs, rejects and period stocks remain separate measured quantities and need not equal R. Match and cancel each internal transfer once at whole-system aggregation; retain both sides in separate unit-process datasets. | cp_producer_handover; cp_grade_scale; cp_chip_conversion; form and transfer records | one final reference output and traceable internal transfers | |
 
 ### Data Quality Requirements
 
@@ -919,6 +1001,7 @@ The product definitions and volume convention below are supported by the FAO sou
 | `dq_measurement` | Reference amount | Document scaling/calibration, bark correction and chip moisture/density conversion. | scale certificates and worksheets |
 | `dq_period` | Management and shared assets | Record cohort, activity/harvest years and consumers; disclose attribution period and exclusions. | dated work, road and machine records |
 | `dq_completeness` | Wood and energy balances | Reconcile harvested logs, grades, chips, rejects, retained material and energy without double-counting internal transfers. | balance worksheet and fuel reconciliation |
+| `dq_final_form_identity` | producer_handover | Require one known processing state, physical form, concrete identity and accepted quantity per final lot. Unknown route or missing chip-equivalence evidence blocks completeness; the generic PCR product label is not a UUID applicable to every form. Retain every actual physical operation and its emissions at its responsible node; handover adds no duplicate loading or machinery burden. | form-specific processing/dispatch records; matching Tiangong identity and conversion evidence |
 
 ## 9. Validation Rules
 
@@ -931,6 +1014,7 @@ The product definitions and volume convention below are supported by the FAO sou
 | `validate_flow_resolution` | Downstream exchange creation | Do not emit a concrete TIDAS exchange from any unresolved semantic card until exact flow, property and unit-group identities are verified. |  |
 | `validate_card_activation_units` | All refined cards | Verify activation and actual material/formulation/task/supply specification; missing records are not zero. Each amount and Range uses one compatible property/unit; retain density and wood mass/volume bridges. Check contractor-service components against fuel, equipment and emissions to avoid double burdens. | `fao-harvesting-code` |
 | `validate_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |
+| `validate_unique_handover` | producer_handover | Require one actual form and one matched accepted incoming transfer per final lot, with pulpwood_handover as the sole final reference output. Check positive R, form, identity and conversion; measured internal feed, stocks and rejects need not equal R. Unknown processing state or missing chip-equivalence evidence prevents completeness claims. | |
 
 - Reconcile required/conditional activation and upstream coverage against incoming state at each node; purchased completed-state feed must not duplicate growth, harvest or preparation. Equal classification does not replace state and gate matching.
 

@@ -7,14 +7,14 @@ product_category_identity:
   covered_products: "Coniferous pulpwood and panel wood, round/split or directly forest-chipped form, on solid under-bark basis"
   excluded_products: "Sawlogs/veneer logs, fuelwood, non-coniferous or other industrial wood, mill chips/residues, pulp and finished panels"
   representative_product: "Graded conifer pulpwood logs ready for outbound transport at forest roadside"
-  production_route: "Attributable stand management → felling and bucking → extraction to landing → sorting and scaling; direct forest chipping is a conditional terminal route"
+  production_route: "Attributable stand management → felling and bucking → extraction to landing → sorting and scaling; optional direct forest chipping precedes final producer handover for the declared physical form"
   market_state: "Industrial wood at forest roadside before external transport or mill conversion"
 functional_unit:
   what: "Coniferous pulpwood or wood for wood-based panels at forest roadside"
   how_much: "1 m3 solid wood volume under bark"
   how_well: "Declared species/group, pulp/panel destination, grade/diameter, physical form, bark and moisture; no assumed pulp yield"
   how_long_or_cycle: "Declared harvest cohort and reporting period, with attributable establishment and tending years linked"
-  reference_flow_link: "roadside_pulpwood"
+  reference_flow_link: "pulpwood_handover"
 system_boundary:
   rules:
     - rule_id: roadside_gate
@@ -58,7 +58,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
-    name: "Coniferous pulpwood/panel wood at roadside; exact UUID unresolved"
+    name: "Coniferous pulpwood/panel wood at producer handover; exact UUID unresolved"
     uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-22da-a746-0800200c9a66"
@@ -75,10 +75,6 @@ reference_flow_definition:
     - "harvest cohort"
     - "landing gate"
     - "scale/conversion method"
-  conditional_output:
-    optional_process_id: "forest_chip"
-    inactive_row_id: "roadside_pulpwood"
-    active_row_id: "direct_forest_chips"
 reference_flows:
   []
 measurement_rules:
@@ -126,8 +122,8 @@ process_map:
   - id: landing_sort_scale
     name: "Landing sorting and scaling"
     inclusion: "required"
-    inclusion_condition: "Final lot measurement, acceptance and roadside producer handover remain required for every reference lot. Repeat physical sorting only when actually performed; purchased qualified lots retain upstream sorting coverage without repeating it."
-    role: "Accept and measure the final lot; grade actual intended uses, rejects and under-bark product"
+    inclusion_condition: "Confirm actual grade and upstream sorting coverage; repeat physical sorting only when performed. Final producer acceptance is recorded at handover."
+    role: "Segregate intended uses and reconcile graded material and rejects"
     quantitative_reference: "Product volumes by lot"
   - id: forest_chip
     name: "Direct forest chipping"
@@ -135,6 +131,12 @@ process_map:
     inclusion_condition: "Only directly forest-chipped roundwood before dispatch"
     role: "Primary conditioning from logs to chips"
     quantitative_reference: "Matched feed, chips and rejects"
+  - id: producer_handover
+    name: "Forest-roadside producer handover confirmation"
+    inclusion: "required"
+    inclusion_condition: "Confirm every accepted final lot after its actual preparation; no assumed additional physical operation"
+    role: "Unique final boundary output and paired accepted-lot transfer"
+    quantitative_reference: "1 m3 solid under-bark volume or evidenced equivalent"
 process_inventory:
   - id: stand_management
     label: "Source stand management and growth attribution"
@@ -608,10 +610,9 @@ process_inventory:
           name: "Coniferous pulpwood/panel wood at roadside; exact UUID unresolved"
           flow_type: "product"
           property_unit: "solid under-bark volume [Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66] / m3"
-          description: "This intended output is the final reference product for the unchipped route; if chipped in forest, this is an internal transfer, not a second final product."
+          description: "Graded roundwood is an internal transfer to producer_handover for an unchipped lot, or to forest_chip for an actually chipped lot. Preserve measured totals, stocks and rejects; this card is never another final sale."
           amount:
-            expression: "For unchipped sale, 1 m3 reference output; for direct forest chipping, the measured under-bark volume internally fed to the chipper per 1 m3 final chip equivalent"
-            reference_output_expression: "1 m3"
+            expression: "Measured attributable graded-roundwood quantity under cp_grade_scale divided once by positive accepted final handover volume R; do not force chipper feed or period stocks to equal R"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -875,8 +876,7 @@ process_inventory:
           property_unit: "solid under-bark wood equivalent [Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66] / m3"
           description: "Only chips made directly from roundwood in the forest qualify; measured mass or bulk volume needs lot-specific conversion to solid under-bark equivalent."
           amount:
-            expression: "1 m3 equivalent process output from matched chip and feed records"
-            reference_output_expression: "1 m3"
+            expression: "Actual chip output in measured solid-underbark equivalent under cp_chip_conversion divided once by accepted final handover volume R; retain chip stocks, rejects and conversion uncertainty"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -978,6 +978,98 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
+      elementary:
+        []
+  - id: producer_handover
+    label: "Forest-roadside producer handover confirmation"
+    inputs:
+      product:
+        - row_id: handover_roundwood_input
+          role: "Accepted roundwood lot received for handover"
+          name: "Accepted coniferous pulpwood/panel roundwood at roadside; exact UUID unresolved"
+          flow_type: "product"
+          property_unit: "Solid under-bark wood volume or evidenced equivalent [Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66] / m3"
+          description: "Activate only for an actually unchipped final lot from roadside_pulpwood. Omit for chip deliveries; do not also count raw chipper feed here."
+          amount:
+            expression: "Matched accepted lot quantity divided by positive final handover volume R under cp_producer_handover"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 m3 reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_producer_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "m3"
+                basis: "(R/R) × 1 m3 = 1 m3; matched positive accepted final lot, not a yield or feed assumption"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+        - row_id: handover_chip_input
+          role: "Accepted direct forest-chip lot received for handover"
+          name: "Accepted directly forest-made conifer chips at roadside; exact UUID unresolved"
+          flow_type: "product"
+          property_unit: "Solid under-bark wood volume or evidenced equivalent [Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66] / m3"
+          description: "Activate only for an actually forest-chipped final lot from direct_forest_chips. Require lot-specific solid-underbark equivalence; omit for roundwood deliveries."
+          amount:
+            expression: "Matched accepted lot quantity divided by positive final handover volume R under cp_producer_handover"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 m3 reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_producer_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "m3"
+                basis: "(R/R) × 1 m3 = 1 m3; matched positive accepted final lot, not a yield or feed assumption"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: pulpwood_handover
+          role: "Accepted coniferous pulpwood at producer handover"
+          name: "Coniferous pulpwood/panel wood at producer handover; exact UUID unresolved"
+          flow_type: "product"
+          property_unit: "Solid under-bark wood volume or evidenced equivalent [Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66] / m3"
+          description: "One declared physical form and one concrete product identity per final lot. This is the sole final reference output; roundwood and chip lot identities are not interchangeable or summed. Packaging, rejects and unsold stocks are excluded from accepted R."
+          amount:
+            expression: "1 m3"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 m3 reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_producer_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "m3"
+                basis: "(R/R) × 1 m3 = 1 m3; matched positive accepted final lot, not a yield or feed assumption"
+                basis_kind: "reference_flow"
+                evidence_kind: "calculated_from_collection"
+                source_ids: []
+      waste:
+        []
       elementary:
         []
 allocation_rules:
@@ -1215,6 +1307,18 @@ dataset_production:
       site_scope: "Actual activity sites; one owner for each shared event"
       aggregation_rule: "per 1 m3 reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_producer_handover
+      process_id: "producer_handover"
+      flow_role: "Accepted final lot and matched incoming transfer"
+      record_type: "Processing, scaling and dispatch records"
+      raw_fields: "lot_id; transfer_id; actual physical form; upstream node; accepted quantity R; bark/moisture basis; chip-equivalence evidence; rejected and stock quantities; concrete flow identity"
+      collection_method: "Match one declared-form accepted lot to its actual roundwood or chip receipt and producer dispatch. No further physical treatment is assumed. Retain measured rejected/stock quantities at their responsible nodes."
+      unit: "m3 solid under bark or evidenced equivalent"
+      frequency: "each final lot"
+      temporal_coverage: "matched reporting period"
+      site_scope: "same forest-roadside gate"
+      aggregation_rule: "per 1 m3 reference flow"
+      quality_evidence: "signed acceptance and scale tickets; matched conversion and transfer evidence"
   calculation_rules:
     - id: calc_underbark
       applies_to: "All wood rows"
@@ -1236,7 +1340,7 @@ dataset_production:
         - fao-jfsq-2020
     - id: calc_assortment_balance
       applies_to: "Landing outputs"
-      rule: "For one reconciliation boundary covering landing sorting and any activated forest chipping, V_open + V_receipts = V_selected_final + V_other_final + V_exported_waste + V_retained_loss + V_close + delta, all on matched underbark solid-volume or evidenced equivalent bases. Receipts include own-harvest deliveries and external purchased lots; cancel paired sorting-to-chipper transfers once. Select exactly one final reference output per lot from actual chipping activation, never both roundwood feed and chips. Opening/closing stock includes work in progress; known stock changes are explicit. Delta is only an unexplained measurement residual, not an inferred loss or emission; exported waste and retained loss must originate in the same input wood pool."
+      rule: "For one reconciliation boundary covering landing sorting, any activated forest chipping and final producer handover, V_open + V_receipts = V_selected_final + V_other_final + V_exported_waste + V_retained_loss + V_close + delta, all on matched underbark solid-volume or evidenced equivalent bases. Receipts include own-harvest deliveries and external purchased lots; cancel paired sorting-to-chipper and accepted-lot-to-handover transfers once. Select exactly one final reference output per lot from actual chipping activation, never both roundwood feed and chips. Opening/closing stock includes work in progress; known stock changes are explicit. Delta is only an unexplained measurement residual, not an inferred loss or emission; exported waste and retained loss must originate in the same input wood pool."
       inputs:
         - "receipt/sorting/chipping tickets"
         - "opening/closing and work-in-progress stock"
@@ -1268,6 +1372,16 @@ dataset_production:
         - "reference quantity"
       output: "Node/substance/medium-specific raw and attributed amounts and unresolved gaps"
       source_ids: []
+    - id: calc_final_handover
+      applies_to: "handover_roundwood_input; handover_chip_input; pulpwood_handover"
+      rule: "For each declared-form final lot, activate exactly one accepted incoming transfer with the same quantity and identity as handover output. Normalize each by its own positive accepted R: R/R × 1 m3 = 1 m3. Raw chipping feed, processing outputs, rejects and period stocks remain separate measured quantities and need not equal R. Match and cancel each internal transfer once at whole-system aggregation; retain both sides in separate unit-process datasets."
+      inputs:
+        - cp_producer_handover
+        - cp_grade_scale
+        - cp_chip_conversion
+        - "form and transfer records"
+      output: "one final reference output and traceable internal transfers"
+      source_ids: []
   data_quality_requirements:
     - id: dq_identity
       applies_to: "All wood states"
@@ -1285,6 +1399,10 @@ dataset_production:
       applies_to: "Wood and energy balances"
       requirement: "Reconcile harvested logs, grades, chips, rejects, retained material and energy without double-counting internal transfers."
       evidence: "balance worksheet and fuel reconciliation"
+    - id: dq_final_form_identity
+      applies_to: "producer_handover"
+      requirement: "Require one known processing state, physical form, concrete identity and accepted quantity per final lot. Unknown route or missing chip-equivalence evidence blocks completeness; the generic PCR product label is not a UUID applicable to every form. Retain every actual physical operation and its emissions at its responsible node; handover adds no duplicate loading or machinery burden."
+      evidence: "form-specific processing/dispatch records; matching Tiangong identity and conversion evidence"
 validation_rules:
   - rule_id: validate_class_gate
     applies_to: "Dataset identity"
@@ -1321,7 +1439,11 @@ validation_rules:
     applies_to: "stand_management; felling_extraction; landing_sort_scale; forest_chip"
     rule: "For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events."
     source_ids: []
-  - rule_id: validation_rule_8
+  - rule_id: validate_unique_handover
+    applies_to: "producer_handover"
+    rule: "Require one actual form and one matched accepted incoming transfer per final lot, with pulpwood_handover as the sole final reference output. Check positive R, form, identity and conversion; measured internal feed, stocks and rejects need not equal R. Unknown processing state or missing chip-equivalence evidence prevents completeness claims."
+    source_ids: []
+  - rule_id: validation_rule_9
     applies_to: "foreground_dataset_conformance"
     rule: "Reconcile required/conditional activation and upstream coverage against incoming state at each node; purchased completed-state feed must not duplicate growth, harvest or preparation. Equal classification does not replace state and gate matching."
     source_ids: []
@@ -1356,19 +1478,19 @@ data_sources:
     used_for: "Conditional planting stock, fertilization, protection and watering inputs; no universal application rates"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:fe644418d31c33752eb27435d1f4be27ecc302c1ee131c329c53723694fbb86e"
+  source_sha256: "sha256:17eafffa3e10c5cb6b7519f1cb4936b71c838cd36ecbd6ce0a8c98579eb5acf6"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_7204"
+    - unit_id: "normative_6935"
       family: "system_boundary"
       span:
         start:
-          offset: 7204
-          line: 67
+          offset: 6935
+          line: 62
           column: 1
         end:
-          offset: 11173
-          line: 92
+          offset: 10904
+          line: 87
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | For own harvesting, an identified coniferous stand or recovered-tree source with origin, management regime, age/cohort, location and pre-harvest volume method; for purchased qualified roundwood, its origin, received product state, incoming gate, lot quantity and upstream coverage |\n| starting_condition_role | Biological forest source for own harvesting; an upstream product input for purchased qualified roundwood. A purchased lot does not create a second growth or harvest operation in this foreground. |\n| product_classification_scope | Coniferous industrial wood for pulp or wood-based panels; declared intended use and final form decide inclusion |\n| recursive_input_rule | Purchased same-category pulpwood at landing is separately metered with origin and upstream dataset; do not count it as newly grown and harvested here |\n| upstream_dataset_requirement | Supply upstream datasets for purchased fuel, seedlings, services, machinery, and any imported same-category wood |\n| disclosure | Stand/cohort and periods; felling/extraction system; landing and shared road/equipment; bark/moisture/scale method; other grades, losses and direct-chipping choice |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `roadside_gate` | All nodes | Include attributable stand management, felling/bucking, extraction, landing grading/scaling and direct forest chipping only when before roadside handover. Exclude outbound haulage and mill processing. | `fao-harvesting-code`, `fao-jfsq-2020` |\n| `purpose_and_form` | Product classification | Confirm conifer identity and intended pulp/panel use; route sawlogs, veneer logs, fuelwood and other assortments separately. Direct forest chips qualify for this PCR but are classified as CPC 31230, not 03112. Mill residues remain outside this PCR. Do not transfer the FAO statistical grouping into CPC classification. | `un-cpc-03112`, `un-cpc-31230`, `fao-jfsq-2020` |\n| `wood_removed_once` | Wood accounting | Count delivered removed wood on solid under-bark basis; distinguish bark and unremoved forest residues, and identify internal transfers only once. | `fao-jfsq-2020` |\n| `period_shared_assets` | Stand, forest road, landing and equipment | Identify establishment, tending and harvest periods and every shared asset consumer; allocate documented service once among cohorts and outputs. | `fao-harvesting-code` |\n| `boundary_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | Reconcile on-site combustion, actual applications and fugitive releases/leaks at every activated node through unique activity-substance-receiving-medium records in cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip. Upstream production of purchased fuel or chemicals does not replace emissions from their use on site; verify coverage and avoid double counting the same activity inside a supplier service. Evidence must support non-activity; missing data are not zero. This obligation does not expand the existing product gate or downstream-use boundary and does not presume combustion, fertilization, chemicals or equipment occur. |  |\n\nSelect the route from actual incoming state and ownership. Qualified purchased harvested, extracted, prepared or graded feed may enter at its real receiving node; completed upstream operations are not mandatory foreground operations and standing stock or biological resources must not be charged again. Receiving cards record actual material, grade, wet/dry basis, receipt gate, upstream dataset and process coverage; add the actual receiving exchange if none exists. Bypass does not remove upstream burdens; actual operations cannot be skipped and final reference product, quality and gate remain unchanged.\n\n"
       headings:
@@ -1387,12 +1509,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 7204
-              line: 67
+              offset: 6935
+              line: 62
               column: 1
             end:
-              offset: 7225
-              line: 67
+              offset: 6956
+              line: 62
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1407,16 +1529,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_65534"
+    - unit_id: "normative_70828"
       family: "allocation"
       span:
         start:
-          offset: 65534
-          line: 868
+          offset: 70828
+          line: 948
           column: 1
         end:
-          offset: 68024
-          line: 880
+          offset: 73318
+          line: 960
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\nThe product definitions and volume convention below are supported by the FAO sources. The allocation hierarchy and shared-asset attribution are rules selected by this PCR, not LCA allocation requirements prescribed by those statistical or harvesting documents. Before applying a volume or service driver, demonstrate its relevance to the shared activity and retain the justification and sensitivity to a materially different justified driver; a product-class definition alone is not allocation evidence.\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `distinct_outputs` | Harvest and graded lots | Report pulp/panel wood, sawlogs/veneer logs, other industrial wood, fuelwood, and rejected or forest-retained material separately, each with a handoff. Residues are not intended co-products unless documented recovery makes them saleable. | `fao-jfsq-2020` |\n| `direct_then_physical` | Shared management, harvest and landing inputs | Assign metered output-specific activities directly. Allocate genuinely shared burdens across intended products using measured solid under-bark output volumes within the same cohort, documenting shares and any justified alternative; do not apply automatic avoided-production credits. | `fao-jfsq-2020` |\n| `period_and_asset_once` | Years and shared roads, landing and machines | Link establishment, tending, maintenance and harvesting activities to cohorts and service years. Allocate shared infrastructure by measured use, load, hours or output once across consumers; never re-add it in a downstream node. | `fao-harvesting-code` |\n| `chip_internal_transfer` | Direct forest-chip variant | Graded roundwood entering the chipper is an internal transfer, not a second final market product; balance measured chips and rejects before roadside handover. | `fao-jfsq-2020` |\n| `physical_ledger_before_allocation` | Physical ledgers and attributed burdens | Retain unallocated physical values for original material balances, handoffs and co-products: q_B = Q_B/R. Apply this PCR's allocation method separately to shared burdens: b_ref = B_shared * a_ref/R; assign direct burdens directly and apply each period/output share once. R is the selected final reference output, excluding internal transfers. Never apply burden share a_ref to original co-product or transfer quantities; distinguish any allocated single-product process projection from the unallocated whole-package material ledger. |  |\n\n"
       headings:
@@ -1435,12 +1557,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 65534
-              line: 868
+              offset: 70828
+              line: 948
               column: 1
             end:
-              offset: 65574
-              line: 868
+              offset: 70868
+              line: 948
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1455,18 +1577,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_93633"
+    - unit_id: "normative_100977"
       family: "validation"
       span:
         start:
-          offset: 93633
-          line: 923
+          offset: 100977
+          line: 1006
           column: 1
         end:
-          offset: 96507
-          line: 937
+          offset: 104249
+          line: 1021
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_class_gate` | Dataset identity | Reject missing conifer identity, pulp/panel intended use, form or forest-roadside gate, and any mill residues, fuelwood or external haulage counted as reference output. Classify the actual final product form: round/split pulpwood is CPC 03112; deliberately produced forest chips are CPC 31230. The broader PCR mapping does not authorize coding chips as roundwood. | `un-cpc-03112`, `un-cpc-31230`, `fao-jfsq-2020` |\n| `validate_volume` | Reference quantity | Require normalized 1 m3 solid volume under bark; reject unconverted over-bark logs or loose-chip volume. | `fao-jfsq-2020` |\n| `validate_route_balance` | Process links | Match cohort and lot IDs; reconcile products, rejects and retained residues; count chipped internal transfer only once at final gate. | `fao-jfsq-2020` |\n| `validate_attribution` | Shared/multi-period inputs | Require named periods, assets, consumers, driver and shares; reject duplicate burdens and undisclosed substitution credits. | `fao-harvesting-code` |\n| `validate_flow_resolution` | Downstream exchange creation | Do not emit a concrete TIDAS exchange from any unresolved semantic card until exact flow, property and unit-group identities are verified. |  |\n| `validate_card_activation_units` | All refined cards | Verify activation and actual material/formulation/task/supply specification; missing records are not zero. Each amount and Range uses one compatible property/unit; retain density and wood mass/volume bridges. Check contractor-service components against fuel, equipment and emissions to avoid double burdens. | `fao-harvesting-code` |\n| `validate_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |\n\n- Reconcile required/conditional activation and upstream coverage against incoming state at each node; purchased completed-state feed must not duplicate growth, harvest or preparation. Equal classification does not replace state and gate matching.\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_class_gate` | Dataset identity | Reject missing conifer identity, pulp/panel intended use, form or forest-roadside gate, and any mill residues, fuelwood or external haulage counted as reference output. Classify the actual final product form: round/split pulpwood is CPC 03112; deliberately produced forest chips are CPC 31230. The broader PCR mapping does not authorize coding chips as roundwood. | `un-cpc-03112`, `un-cpc-31230`, `fao-jfsq-2020` |\n| `validate_volume` | Reference quantity | Require normalized 1 m3 solid volume under bark; reject unconverted over-bark logs or loose-chip volume. | `fao-jfsq-2020` |\n| `validate_route_balance` | Process links | Match cohort and lot IDs; reconcile products, rejects and retained residues; count chipped internal transfer only once at final gate. | `fao-jfsq-2020` |\n| `validate_attribution` | Shared/multi-period inputs | Require named periods, assets, consumers, driver and shares; reject duplicate burdens and undisclosed substitution credits. | `fao-harvesting-code` |\n| `validate_flow_resolution` | Downstream exchange creation | Do not emit a concrete TIDAS exchange from any unresolved semantic card until exact flow, property and unit-group identities are verified. |  |\n| `validate_card_activation_units` | All refined cards | Verify activation and actual material/formulation/task/supply specification; missing records are not zero. Each amount and Range uses one compatible property/unit; retain density and wood mass/volume bridges. Check contractor-service components against fuel, equipment and emissions to avoid double burdens. | `fao-harvesting-code` |\n| `validate_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |\n| `validate_unique_handover` | producer_handover | Require one actual form and one matched accepted incoming transfer per final lot, with pulpwood_handover as the sole final reference output. Check positive R, form, identity and conversion; measured internal feed, stocks and rejects need not equal R. Unknown processing state or missing chip-equivalence evidence prevents completeness claims. | |\n\n- Reconcile required/conditional activation and upstream coverage against incoming state at each node; purchased completed-state feed must not duplicate growth, harvest or preparation. Equal classification does not replace state and gate matching.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1483,12 +1605,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 93633
-              line: 923
+              offset: 100977
+              line: 1006
               column: 1
             end:
-              offset: 93655
-              line: 923
+              offset: 100999
+              line: 1006
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1507,383 +1629,396 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "roadside_gate"
       identity_kind: "explicit"
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 8570
-          line: 84
+          offset: 8301
+          line: 79
           column: 1
         end:
-          offset: 8845
-          line: 84
+          offset: 8576
+          line: 79
           column: 276
     - pointer: "/system_boundary/rules/1"
       rule_id: "purpose_and_form"
       identity_kind: "explicit"
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 8846
-          line: 85
+          offset: 8577
+          line: 80
           column: 1
         end:
-          offset: 9264
-          line: 85
+          offset: 8995
+          line: 80
           column: 419
     - pointer: "/system_boundary/rules/2"
       rule_id: "wood_removed_once"
       identity_kind: "explicit"
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 9265
-          line: 86
+          offset: 8996
+          line: 81
           column: 1
         end:
-          offset: 9473
-          line: 86
+          offset: 9204
+          line: 81
           column: 209
     - pointer: "/system_boundary/rules/3"
       rule_id: "period_shared_assets"
       identity_kind: "explicit"
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 9474
-          line: 87
+          offset: 9205
+          line: 82
           column: 1
         end:
-          offset: 9715
-          line: 87
+          offset: 9446
+          line: 82
           column: 242
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_direct_release_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 9716
-          line: 88
+          offset: 9447
+          line: 83
           column: 1
         end:
-          offset: 10561
-          line: 88
+          offset: 10292
+          line: 83
           column: 846
     - pointer: "/system_boundary/rules/5"
       rule_id: "system_boundary_rule_6"
       identity_kind: "snapshot_local"
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 10563
-          line: 90
+          offset: 10294
+          line: 85
           column: 1
         end:
-          offset: 11171
-          line: 90
+          offset: 10902
+          line: 85
           column: 609
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 65576
-          line: 870
+          offset: 70870
+          line: 950
           column: 1
         end:
-          offset: 66079
-          line: 870
+          offset: 71373
+          line: 950
           column: 504
     - pointer: "/allocation_rules/1"
       rule_id: "distinct_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 66152
-          line: 874
+          offset: 71446
+          line: 954
           column: 1
         end:
-          offset: 66458
-          line: 874
+          offset: 71752
+          line: 954
           column: 307
     - pointer: "/allocation_rules/2"
       rule_id: "direct_then_physical"
       identity_kind: "explicit"
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 66459
-          line: 875
+          offset: 71753
+          line: 955
           column: 1
         end:
-          offset: 66836
-          line: 875
+          offset: 72130
+          line: 955
           column: 378
     - pointer: "/allocation_rules/3"
       rule_id: "period_and_asset_once"
       identity_kind: "explicit"
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 66837
-          line: 876
+          offset: 72131
+          line: 956
           column: 1
         end:
-          offset: 67165
-          line: 876
+          offset: 72459
+          line: 956
           column: 329
     - pointer: "/allocation_rules/4"
       rule_id: "chip_internal_transfer"
       identity_kind: "explicit"
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 67166
-          line: 877
+          offset: 72460
+          line: 957
           column: 1
         end:
-          offset: 67402
-          line: 877
+          offset: 72696
+          line: 957
           column: 237
     - pointer: "/allocation_rules/5"
       rule_id: "physical_ledger_before_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 67403
-          line: 878
+          offset: 72697
+          line: 958
           column: 1
         end:
-          offset: 68022
-          line: 878
+          offset: 73316
+          line: 958
           column: 620
     - pointer: "/validation_rules/0"
       rule_id: "validate_class_gate"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 93728
-          line: 927
+          offset: 101072
+          line: 1010
           column: 1
         end:
-          offset: 94188
-          line: 927
+          offset: 101532
+          line: 1010
           column: 461
     - pointer: "/validation_rules/1"
       rule_id: "validate_volume"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 94189
-          line: 928
+          offset: 101533
+          line: 1011
           column: 1
         end:
-          offset: 94356
-          line: 928
+          offset: 101700
+          line: 1011
           column: 168
     - pointer: "/validation_rules/2"
       rule_id: "validate_route_balance"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 94357
-          line: 929
+          offset: 101701
+          line: 1012
           column: 1
         end:
-          offset: 94555
-          line: 929
+          offset: 101899
+          line: 1012
           column: 199
     - pointer: "/validation_rules/3"
       rule_id: "validate_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 94556
-          line: 930
+          offset: 101900
+          line: 1013
           column: 1
         end:
-          offset: 94761
-          line: 930
+          offset: 102105
+          line: 1013
           column: 206
     - pointer: "/validation_rules/4"
       rule_id: "validate_flow_resolution"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 94762
-          line: 931
+          offset: 102106
+          line: 1014
           column: 1
         end:
-          offset: 94967
-          line: 931
+          offset: 102311
+          line: 1014
           column: 206
     - pointer: "/validation_rules/5"
       rule_id: "validate_card_activation_units"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 94968
-          line: 932
+          offset: 102312
+          line: 1015
           column: 1
         end:
-          offset: 95358
-          line: 932
+          offset: 102702
+          line: 1015
           column: 391
     - pointer: "/validation_rules/6"
       rule_id: "validate_direct_release_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 95359
-          line: 933
+          offset: 102703
+          line: 1016
           column: 1
         end:
-          offset: 96256
-          line: 933
+          offset: 103600
+          line: 1016
           column: 898
     - pointer: "/validation_rules/7"
-      rule_id: "validation_rule_8"
-      identity_kind: "snapshot_local"
-      unit_id: "normative_93633"
+      rule_id: "validate_unique_handover"
+      identity_kind: "explicit"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 96258
-          line: 935
+          offset: 103601
+          line: 1017
           column: 1
         end:
-          offset: 96505
-          line: 935
+          offset: 103998
+          line: 1017
+          column: 398
+    - pointer: "/validation_rules/8"
+      rule_id: "validation_rule_9"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_100977"
+      source_span:
+        start:
+          offset: 104000
+          line: 1019
+          column: 1
+        end:
+          offset: 104247
+          line: 1019
           column: 248
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 7204
-          line: 67
+          offset: 6935
+          line: 62
           column: 1
         end:
-          offset: 7225
-          line: 67
+          offset: 6956
+          line: 62
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_7204"
+      unit_id: "normative_6935"
       source_span:
         start:
-          offset: 7253
-          line: 71
+          offset: 6984
+          line: 66
           column: 1
         end:
-          offset: 8477
-          line: 78
+          offset: 8208
+          line: 73
           column: 181
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 65534
-          line: 868
+          offset: 70828
+          line: 948
           column: 1
         end:
-          offset: 65574
-          line: 868
+          offset: 70868
+          line: 948
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 65576
-          line: 870
+          offset: 70870
+          line: 950
           column: 1
         end:
-          offset: 66079
-          line: 870
+          offset: 71373
+          line: 950
           column: 504
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 66152
-          line: 874
+          offset: 71446
+          line: 954
           column: 1
         end:
-          offset: 66458
-          line: 874
+          offset: 71752
+          line: 954
           column: 307
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 66459
-          line: 875
+          offset: 71753
+          line: 955
           column: 1
         end:
-          offset: 66836
-          line: 875
+          offset: 72130
+          line: 955
           column: 378
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 66837
-          line: 876
+          offset: 72131
+          line: 956
           column: 1
         end:
-          offset: 67165
-          line: 876
+          offset: 72459
+          line: 956
           column: 329
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 67166
-          line: 877
+          offset: 72460
+          line: 957
           column: 1
         end:
-          offset: 67402
-          line: 877
+          offset: 72696
+          line: 957
           column: 237
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_65534"
+      unit_id: "normative_70828"
       source_span:
         start:
-          offset: 67403
-          line: 878
+          offset: 72697
+          line: 958
           column: 1
         end:
-          offset: 68022
-          line: 878
+          offset: 73316
+          line: 958
           column: 620
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_93633"
+      unit_id: "normative_100977"
       source_span:
         start:
-          offset: 93633
-          line: 923
+          offset: 100977
+          line: 1006
           column: 1
         end:
-          offset: 93655
-          line: 923
+          offset: 100999
+          line: 1006
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1892,5 +2027,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:fe644418d31c33752eb27435d1f4be27ecc302c1ee131c329c53723694fbb86e"
-  generated_content_sha256: "sha256:47b256039f996b1d6d26905c215d0f056a0529ea3dcbb95eef8a8761c387fd2e"
+    sha256: "sha256:17eafffa3e10c5cb6b7519f1cb4936b71c838cd36ecbd6ce0a8c98579eb5acf6"
+  generated_content_sha256: "sha256:5daa6d90c870df3d36560c7b141321e41ad36fc6997117325b2e6f0e59a3b168"

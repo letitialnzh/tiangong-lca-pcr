@@ -22,7 +22,7 @@ sync_with: pcr.en-US.md
 | covered_products | 用于纸浆或人造板的针叶木材，圆形/劈开形态或林内直接切片形态，均以皮下木材实积计量 |
 | excluded_products | 锯材/单板用原木、薪材、阔叶材或其他工业材、工厂木片/残料、纸浆及成品板材 |
 | representative_product | 林道集材点已分级、待外运的针叶纸浆材原木 |
-| production_route | 可归属林分经营 → 伐倒与造材 → 集运至林道集材点 → 分选和测尺；林内直接切片是条件性终端路线 |
+| production_route | 可归属林分经营 → 伐倒与造材 → 集运至林道集材点 → 分选和测尺；可选林内直接切片后，按声明物理形态完成最终生产者交付确认 |
 | market_state | 外部运输或工厂加工前、林道集材点交付的工业木材 |
 
 ## 3. 参考流
@@ -33,24 +33,19 @@ sync_with: pcr.en-US.md
 | How much | 1 m3 皮下木材实积 |
 | How well | 声明树种/树种组、纸浆/板材去向、等级/径级、物理形态、树皮与水分状态；不预设纸浆得率 |
 | How long or cycle | 声明采伐林分及报告期，并关联可归属的营建和抚育年份 |
-| reference_flow_link | `roadside_pulpwood` |
+| reference_flow_link | `pulpwood_handover` |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1 |
-| 参考产品流 | 林道交付的针叶纸浆材/板材用材；准确UUID未解 |
+| 参考产品流 | 生产者交付的针叶纸浆材/板材用材；准确 UUID 未解决 |
 | 参考流属性 | 体积 `93a60a56-a3c8-22da-a746-0800200c9a66`；计量为皮下木材实积或有记录的实积当量 |
 | 参考单位组 | 体积 `93a60a57-a3c8-12da-a746-0800200c9a66` |
 | 参考单位 | m3 |
-| reference_output_optional_process | `forest_chip` |
-| reference_output_when_inactive | `roadside_pulpwood` |
-| reference_output_when_active | `direct_forest_chips` |
 | 必需限定信息 | 针叶树种/树种组；地区和林分经营方式；纸浆或板材预期用途；圆形/劈开/林内直接木片形态；树皮/水分状态；径级/等级；采伐林分；林道交付点；测尺及转换方法 |
 
 必需限定信息应载于前景数据包。木片堆积体积不是参考数量；林内直接木片需有实测或有记录的木材实积当量转换（fao-jfsq-2020）。
-林内直接木片卡是有条件的产品路线产出，不是第二个参考流对象。木片专用下游数据集发布前必须单独核实其具体木片流身份，不得默认复用尚未解析的圆木身份。
-
-对声明的参考批次，保留一个过程图和可选的林内切片工序。依据实际加工及发运记录判断 `forest_chip` 是否启用：未启用时，`roadside_pulpwood` 为最终参考输出；启用时，`direct_forest_chips` 为最终参考输出，`roadside_pulpwood` 仅为内部进料。`reference_flow_link` 只锚定未切片的木材状态，不是无条件选择。实际产品身份与形态取自所选卡，不能继承另一状态的 UUID。同一参考批次只有其中一张卡为最终参考输出，归一为 1 m3 皮下木材实积或有记录依据的实积当量，不能将两张卡相加为最终产出。不同交付形态的批次分别记录，共用负荷明确归属；切片状态不明或缺少木片当量换算依据属于资料缺口，不能默认未启用。
+唯一最终参考卡为原林道交付门的 `pulpwood_handover`。依据加工及发运记录确定实际物理形态：未在林内切片时，接收 `roadside_pulpwood` 的圆形/劈开材；实际切片时，接收 `direct_forest_chips` 的木片。二者均为进入同一交付确认节点的内部移交，不是额外最终销售。每个已声明形态的批次只实例化一个实际产品身份；不得将不同形态合并为一个具体流、将圆木 UUID 继承给木片，或根据缺失记录推断切片机未启用。不同形态分批保留转换证据及负荷归属。以正值最终验收批次数量 R 归一为 1 m3 皮下实积或有证据的实积当量。交付确认节点不假定新增实体处理、损失或能源消耗；实际作业仍记在其负责节点。切片进料及在制品数量继续实测，不得固定为 R。
 
 ## 4. 计量与单位规则
 
@@ -102,8 +97,9 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- | --- | --- |
 | `stand_management` | 来源林分经营与生长归属 | conditional | 纳入可归属营建/抚育或经营天然林活动；否则说明来源及上游处理 | 经营性生物生产和林分交接 | 按林分期次记录立木材积及经营活动 |
 | `felling_extraction` | 伐倒、造材与集运 | conditional | 仅当该操作实际位于前景内；外购已达该状态的相容原料时跳过已完成操作，并保留上游负荷。 | 与生长、分选独立的采伐节点 | 集运原木材积及设备能源 |
-| `landing_sort_scale` | 集材点分选与测尺 | required | 每个参考批次均须完成最终计量、验收及林道生产者交付。仅在实际发生时记录再次实体分等；合格外购批次承接上游分等覆盖，不重复已完成操作。 | 最终批次验收与计量；按实际用途分流，核对剔除物及皮下实积产品 | 按批次记录各类产品材积 |
+| `landing_sort_scale` | 集材点分选与测尺 | required | 确认实际等级和上游分等覆盖，仅在真实发生时再次实体分等；最终生产者验收另记于交付确认节点。 | 区分预期用途并核对分级物料及剔除物 | 按批次记录产品材积 |
 | `forest_chip` | 林内直接切片 | conditional | 仅在外运前直接于林内将圆木切片 | 原木到木片的独立初级处理 | 匹配进料、木片及剔除物 |
+| `producer_handover` | 林道生产者交付确认 | required | 每批实际整理完成后确认最终验收，不假定新增实体操作 | 唯一最终边界输出及配对验收批次移交 | 1 m3 皮下实积或有证据的当量 |
 
 ### 过程：来源林分经营与生长归属（`stand_management`）
 
@@ -535,12 +531,11 @@ sync_with: pcr.en-US.md
 
 ###### 林道交付的分级纸浆材或人造板用材（`roadside_pulpwood`）
 
-这是未切片路线的预期产出及最终参考产品；若在林内切片，则这是内部转移，不是第二份最终产品。
+分级圆木为内部移交：未切片批次送往 producer_handover，实际切片批次送往 forest_chip。保留实测总量、库存及剔除物；本卡不另计最终销售。
 
 - 选定流：林道交付的针叶纸浆材/板材用材；准确UUID未解
 - 流属性/单位：皮下实积 [体积属性 `93a60a56-a3c8-22da-a746-0800200c9a66`; 单位组 `93a60a57-a3c8-12da-a746-0800200c9a66`] /m3
-- 数量规则：未切片销售路线为1 m3参考产出；林内直接切片路线则按每1 m3最终木片当量记录内部送入切片机的实测皮下材积
-- 作为参考输出时的数量规则：1 m3
+- 数量规则：按 cp_grade_scale 记录可归属分级圆木实测量，仅除以正值最终验收交付材积 R 一次；不得令切片进料或期间库存强等于 R
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 m3 参考流
@@ -774,8 +769,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：针叶纸浆/板材用材林内直接木片；准确UUID未解
 - 流属性/单位：皮下木材实积当量 [体积属性 `93a60a56-a3c8-22da-a746-0800200c9a66`; 单位组 `93a60a57-a3c8-12da-a746-0800200c9a66`] /m3
-- 数量规则：匹配木片及进料记录后得到1 m3当量过程产出
-- 作为参考输出时的数量规则：1 m3
+- 数量规则：按 cp_chip_conversion 取得木片产出的实测皮下实积当量，仅除以最终验收交付材积 R 一次；保留木片库存、剔除物及换算不确定性
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 m3 参考流
@@ -865,6 +859,92 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+### 过程：林道生产者交付确认（`producer_handover`）
+
+唯一最终参考卡为原林道交付门的 `pulpwood_handover`。依据加工及发运记录确定实际物理形态：未在林内切片时，接收 `roadside_pulpwood` 的圆形/劈开材；实际切片时，接收 `direct_forest_chips` 的木片。二者均为进入同一交付确认节点的内部移交，不是额外最终销售。每个已声明形态的批次只实例化一个实际产品身份；不得将不同形态合并为一个具体流、将圆木 UUID 继承给木片，或根据缺失记录推断切片机未启用。不同形态分批保留转换证据及负荷归属。以正值最终验收批次数量 R 归一为 1 m3 皮下实积或有证据的实积当量。交付确认节点不假定新增实体处理、损失或能源消耗；实际作业仍记在其负责节点。切片进料及在制品数量继续实测，不得固定为 R。
+
+#### 输入
+
+##### 产品流
+
+###### 交付确认接收的验收圆木批次（`handover_roundwood_input`）
+
+仅对 roadside_pulpwood 实际未切片的最终批次启用。木片交付时省略本卡，不得另将切片机原料记入此卡。
+
+- 选定流：林道验收针叶纸浆材/板材用圆木；准确 UUID 未解决
+- 流属性/单位：皮下木材实积或有证据的实积当量 [体积 `93a60a56-a3c8-22da-a746-0800200c9a66`；单位组 `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
+- 数量规则：按 cp_producer_handover 将匹配验收批次数量除以正值最终交付材积 R
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每 1 m3 参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：基于采集计算（`calculated_from_collection`）
+- 采集协议：`cp_producer_handover`
+- 数量范围：仅对已启用声明形态适用的验收批次归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：m3
+  - 基准：(R/R) × 1 m3 = 1 m3；匹配正值最终验收批次，不是假定得率或进料量
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：基于采集计算（`calculated_from_collection`）
+
+###### 交付确认接收的验收林内直接木片批次（`handover_chip_input`）
+
+仅对 direct_forest_chips 实际林内切片的最终批次启用。须有批次皮下实积当量依据；圆木交付时省略本卡。
+
+- 选定流：林道验收林内直接制成针叶木片；准确 UUID 未解决
+- 流属性/单位：皮下木材实积或有证据的实积当量 [体积 `93a60a56-a3c8-22da-a746-0800200c9a66`；单位组 `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
+- 数量规则：按 cp_producer_handover 将匹配验收批次数量除以正值最终交付材积 R
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每 1 m3 参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：基于采集计算（`calculated_from_collection`）
+- 采集协议：`cp_producer_handover`
+- 数量范围：仅对已启用声明形态适用的验收批次归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：m3
+  - 基准：(R/R) × 1 m3 = 1 m3；匹配正值最终验收批次，不是假定得率或进料量
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：基于采集计算（`calculated_from_collection`）
+
+##### 废物流
+
+##### 基本流
+
+#### 输出
+
+##### 产品流
+
+###### 生产者交付验收的针叶纸浆材（`pulpwood_handover`）
+
+每个最终批次仅有一种已声明物理形态及一个具体产品身份。本卡是唯一最终参考输出；圆木与木片批次身份不得互换或相加。包装、剔除物及未售库存不进入验收量 R。
+
+- 选定流：生产者交付的针叶纸浆材/板材用材；准确 UUID 未解决
+- 流属性/单位：皮下木材实积或有证据的实积当量 [体积 `93a60a56-a3c8-22da-a746-0800200c9a66`；单位组 `93a60a57-a3c8-12da-a746-0800200c9a66`] / m3
+- 数量规则：1 m3
+- 数值来源模式：固定值（`fixed_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每 1 m3 参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：基于采集计算（`calculated_from_collection`）
+- 采集协议：`cp_producer_handover`
+- 数量范围：仅对已启用声明形态适用的验收批次归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：m3
+  - 基准：(R/R) × 1 m3 = 1 m3；匹配正值最终验收批次，不是假定得率或进料量
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：基于采集计算（`calculated_from_collection`）
+
+##### 废物流
+
+##### 基本流
+
 ## 7. 分配与共产品处理
 
 下列产品定义和体积口径由 FAO 来源支持。分配层级与共用资产归属是本 PCR 选择的方法规则，并非这些统计或采伐文件规定的 LCA 分配要求。应用体积或服务量分配依据之前，须证明其与共享活动的相关性，保留理由，并对有依据且可能显著改变结果的其他分配依据开展敏感性分析；仅有产品分类定义不能作为分配证据。
@@ -900,6 +980,7 @@ sync_with: pcr.en-US.md
 | `cp_direct_release_felling_extraction` | `felling_extraction` | 逐节点实际直接释放及覆盖判定 | 活动、测量及方法证据台账 | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | 将本节点输入/施用/设备日志逐项匹配排放事件；以实测或有适用性证据的方法和因子确定每一物质/介质的量。保留因子来源、单位换算、治理设备及不确定性；因子已含治理时不得再扣减。核对现有排放卡和承包服务，仅计一次；对未覆盖事件生成具体输出基本流，保留具体 UUID 核实证据。缺方法、量或身份时不能把数据包称为完整。 | 每种物质/介质的 kg；保留活动原单位 | 每次事件及批次/报告期核对 | 与节点活动及最终参考批次匹配的期间 | 实际活动场址；共用事件唯一归属 | 每 1 m3 参考流 | 仪表/测试；活动记录；方法和因子原始出处；服务范围；去重及完整性表 |
 | `cp_direct_release_landing_sort_scale` | `landing_sort_scale` | 逐节点实际直接释放及覆盖判定 | 活动、测量及方法证据台账 | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | 将本节点输入/施用/设备日志逐项匹配排放事件；以实测或有适用性证据的方法和因子确定每一物质/介质的量。保留因子来源、单位换算、治理设备及不确定性；因子已含治理时不得再扣减。核对现有排放卡和承包服务，仅计一次；对未覆盖事件生成具体输出基本流，保留具体 UUID 核实证据。缺方法、量或身份时不能把数据包称为完整。 | 每种物质/介质的 kg；保留活动原单位 | 每次事件及批次/报告期核对 | 与节点活动及最终参考批次匹配的期间 | 实际活动场址；共用事件唯一归属 | 每 1 m3 参考流 | 仪表/测试；活动记录；方法和因子原始出处；服务范围；去重及完整性表 |
 | `cp_direct_release_forest_chip` | `forest_chip` | 逐节点实际直接释放及覆盖判定 | 活动、测量及方法证据台账 | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | 将本节点输入/施用/设备日志逐项匹配排放事件；以实测或有适用性证据的方法和因子确定每一物质/介质的量。保留因子来源、单位换算、治理设备及不确定性；因子已含治理时不得再扣减。核对现有排放卡和承包服务，仅计一次；对未覆盖事件生成具体输出基本流，保留具体 UUID 核实证据。缺方法、量或身份时不能把数据包称为完整。 | 每种物质/介质的 kg；保留活动原单位 | 每次事件及批次/报告期核对 | 与节点活动及最终参考批次匹配的期间 | 实际活动场址；共用事件唯一归属 | 每 1 m3 参考流 | 仪表/测试；活动记录；方法和因子原始出处；服务范围；去重及完整性表 |
+| `cp_producer_handover` | `producer_handover` | 最终验收批次及匹配接收移交 | 加工、测尺及发运记录 | lot_id；transfer_id；实际形态；上游节点；验收量 R；树皮/水分基准；木片当量依据；剔除及库存量；具体流身份 | 将一种声明形态的验收批次匹配至实际圆木或木片接收及生产者发运，不假定进一步实体处理。剔除量及库存实测量仍记在其负责节点。 | m3 皮下实积或有证据的当量 | 每个最终批次 | 匹配报告期间 | 同一林道交付门 | 每 1 m3 参考流 | 签署验收及测尺单；匹配换算和移交证据 |
 
 ### 计算规则
 
@@ -907,9 +988,10 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- | --- | --- |
 | `calc_underbark` | 所有木材卡 | 汇总不含树皮的木材实积；含皮读数需扣除实测或有据的树种/批次树皮材积。 | 测尺、扣皮量 | 皮下木材实积m3 | `fao-jfsq-2020` |
 | `calc_chip_equivalent` | 林内直接木片 | 用批次密度、水分及树皮基准将木片质量/堆积体积换算，并与实测原木进料核对；不采用通用系数。 | 木片和进料票据、检测 | 皮下实积当量m3 | `fao-jfsq-2020` |
-| `calc_assortment_balance` | 集材点产出 | 对集材点分等及已激活林内切片的同一核对边界，V_open + V_receipts = V_selected_final + V_other_final + V_exported_waste + V_retained_loss + V_close + delta；各量为同批皮下实积或有据当量。V_receipts 包括自营采伐送入及外购来料，但配对分等至切片的内部转移抵消一次。每批按实际切片状态仅选择一种最终参考输出，原木进料与木片不重复作最终产品。期初/期末包括在制品；已知库存变化单列。delta 只保留未解释测量残差，不推定损失或排放；移出废物与留存损失均须证明来源于同一投入木材池。 | 来料/分等/切片票据；期初期末及在制品；移交、废物和留存损失记录 | 已核对产出m3 | `fao-jfsq-2020` |
+| `calc_assortment_balance` | 集材点产出 | 对集材点分等、已激活林内切片及最终生产者交付确认的同一核对边界，V_open + V_receipts = V_selected_final + V_other_final + V_exported_waste + V_retained_loss + V_close + delta；各量为同批皮下实积或有据当量。V_receipts 包括自营采伐送入及外购来料，但配对分等至切片及验收批次至交付确认的内部转移均各抵消一次。每批按实际切片状态仅选择一种最终参考输出，原木进料与木片不重复作最终产品。期初/期末包括在制品；已知库存变化单列。delta 只保留未解释测量残差，不推定损失或排放；移出废物与留存损失均须证明来源于同一投入木材池。 | 来料/分等/切片票据；期初期末及在制品；移交、废物和留存损失记录 | 已核对产出m3 | `fao-jfsq-2020` |
 | `calc_shared_burden` | 跨产品和跨期投入 | 优先直接归属已计量使用；否则按有记录的服务/使用或林分内皮下产出份额将每项共用活动分配一次，份额和为100%。 | 服务记录、林分、产品 | 每m3产出归属活动量 | `fao-harvesting-code` |
 | `calculate_direct_release_ledger` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | 每一唯一事件、物质和介质的原始释放量 E 取实测值，或按已引用适用方法从活动量 A 与同口径因子 EF 计算；只有方法确实为简单因子模型时才用 E = A * EF，先验证单位及治理边界。不同物质或介质不相加；原始释放台账保持未分配。对归属后的负荷总量仅除以匹配的正值最终参考数量 R 一次；已有最终参考强度不再归一化，共用事件仅分配一次。未解释物料差不自动转成排放，缺因子不等于零。 | cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip；现有排放卡；供应商覆盖；参考数量 | 按节点/物质/介质分列的原始与归属量及未解决缺口 |  |
+| `calc_final_handover` | handover_roundwood_input; handover_chip_input; pulpwood_handover | 每个声明形态的最终批次只启用一项验收接收移交，其数量和身份与交付输出一致。分别以自身正值验收量 R 归一：R/R × 1 m3 = 1 m3。切片原料、加工产出、剔除物及期间库存继续实测，不必等于 R。整系统汇总时每笔内部移交只配对抵消一次；独立单元过程数据集中保留移交两端。 | cp_producer_handover; cp_grade_scale; cp_chip_conversion；形态及移交记录 | 一个最终参考输出及可追溯内部移交 | |
 
 ### 数据质量要求
 
@@ -919,6 +1001,7 @@ sync_with: pcr.en-US.md
 | `dq_measurement` | 参考数量 | 记录测尺/校准、扣皮及木片水分/密度转换。 | 测尺证书及计算表 |
 | `dq_period` | 经营及共用资产 | 记录林分、活动/采伐年份及使用方，披露归属期及排除项。 | 有日期工单、道路及设备记录 |
 | `dq_completeness` | 木材及能源平衡 | 核对采出原木、等级、木片、剔除物、留林物质与能源，不重复内部转移。 | 平衡表及燃料核对 |
+| `dq_final_form_identity` | producer_handover | 每个最终批次须明确加工状态、物理形态、具体身份和验收数量。路线未知或缺少木片当量依据时不得声明完整；PCR 产品通称不是适用于全部形态的 UUID。各实际实体操作及排放仍记在负责节点，交付确认不得重复计入装载或机械负荷。 | 分形态加工/发运记录；匹配 Tiangong 身份及换算依据 |
 
 ## 9. 校验规则
 
@@ -931,6 +1014,7 @@ sync_with: pcr.en-US.md
 | `validate_flow_resolution` | 下游交换创建 | 在准确流、属性及单位组身份经核实前，不得从任何未解语义卡生成具体 TIDAS 交换。 |  |
 | `validate_card_activation_units` | 全部细化卡 | 核实每张卡启用条件及实际物料／配方／任务／供应规格；资料缺失不得记作零。各卡数量和 Range 采用单一相容属性／单位；保留燃料密度和木材质量／体积转换证据。核对承包服务已包含组成，防止与燃料、设备及排放重复计负担。 | `fao-harvesting-code` |
 | `validate_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | 对每个实际启用节点，以活动清单逐项核对 cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip：记录应为有量的具体基本流、证据充分的上游服务覆盖，或有证据的无相关活动。缺失/不明不是零，须作为数据包完整性阻断项。检查每种实际物质及介质的量、方法因子单位、具体 UUID 和既有卡/服务覆盖，防止漏排或重复；空分组、购买电力的上游排放或其他节点的单一 CO2 卡不能代替本节点的现场释放核对。共享资产服务不得产生重复物理排放事件。 |  |
+| `validate_unique_handover` | producer_handover | 每个最终批次仅启用一种实际形态及一项匹配验收接收，最终输出为 pulpwood_handover。核对正值 R、形态、身份和换算；内部进料、库存及剔除量继续实测，不强设为 R。未知加工状态或木片当量缺证据时拒绝完整性声明。 | |
 
 - 按入场状态逐节点核对 required/conditional 激活与上游覆盖；外购已达状态原料不得重复此前生长、采收或整理，分类相同不能替代状态及门点匹配。
 

@@ -130,35 +130,11 @@ process_map:
     inclusion_condition: "Managed cultivation is owned inside the foreground for the represented cohort. Purchased fresh cut trees bypass growth while retaining verified managed-origin and matching upstream cultivation burdens."
     role: "managed biological production"
     quantitative_reference: "per 1 kg reference flow"
-  - id: harvest
-    name: "Cutting and yarding"
-    inclusion: "conditional"
-    inclusion_condition: "Actual cutting or yarding occurs inside the foreground. Purchased already cut/yarded trees bypass the corresponding completed operations with matched upstream coverage."
-    role: "harvest"
-    quantitative_reference: "per 1 kg reference flow"
-  - id: condition
-    name: "Primary shaking and preparation"
-    inclusion: "conditional"
-    inclusion_condition: "Actual shaking or primary preparation occurs"
-    role: "primary conditioning"
-    quantitative_reference: "per 1 kg reference flow"
-  - id: grade
-    name: "Buyer grade and destination determination"
+  - id: harvest_to_dispatch
+    name: "Aggregated harvest-to-producer-dispatch inventory"
     inclusion: "required"
-    inclusion_condition: "Always within the declared actual route"
-    role: "grading and sorting"
-    quantitative_reference: "per 1 kg reference flow"
-  - id: hold
-    name: "Bounded fresh protective holding"
-    inclusion: "conditional"
-    inclusion_condition: "Actual protected holding occurs before dispatch"
-    role: "preservation and stabilization"
-    quantitative_reference: "per 1 kg reference flow"
-  - id: dispatch
-    name: "Protective presentation and grower dispatch"
-    inclusion: "required"
-    inclusion_condition: "Always within the declared actual route"
-    role: "packaging and presentation; producer dispatch"
+    inclusion_condition: "Final acceptance/dispatch is mandatory; activate the other actual activities below without repeating completed purchased-feed operations"
+    role: "Aggregate boundary for harvesting, preparation, grading, holding and dispatch"
     quantitative_reference: "per 1 kg reference flow"
 process_inventory:
   - id: grow
@@ -390,8 +366,8 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-  - id: harvest
-    label: "Cutting and yarding"
+  - id: harvest_to_dispatch
+    label: "Aggregated harvest-to-producer-dispatch inventory"
     inputs:
       product:
         - row_id: harvest_standing_feed
@@ -399,7 +375,7 @@ process_inventory:
           name: "Managed living Christmas-tree crop"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Link the same cohort interface to standing_crop; its measurement is not the final one-kilogram reference and must not be counted as a purchased external cut tree."
+          description: "Activity owner: harvest. Link the same cohort interface to standing_crop; its measurement is not the final one-kilogram reference and must not be counted as a purchased external cut tree."
           amount:
             expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -425,7 +401,7 @@ process_inventory:
           name: "Supplied material and attributable service requirements"
           flow_type: "product"
           property_unit: "Actual material or service property / native unit"
-          description: "Conditional umbrella for actual supplied materials and attributable services. Distinguish water, fertilizers/agents, cleaning supplies, consumed tools and services by substance/function/provider and native property/unit. Shared tractor, shed, irrigation or handling services retain actual consumer node and year; the single shared-service ledger expands concrete exchanges at their true consuming nodes, including grade and dispatch, without adding a compulsory exchange or duplicate full asset charge. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
+          description: "Activity owner: harvest. Conditional umbrella for actual supplied materials and attributable services. Distinguish water, fertilizers/agents, cleaning supplies, consumed tools and services by substance/function/provider and native property/unit. Shared tractor, shed, irrigation or handling services retain actual consumer node and year; the single shared-service ledger expands concrete exchanges at their true consuming nodes, including grade and dispatch, without adding a compulsory exchange or duplicate full asset charge. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
           amount:
             expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -443,7 +419,7 @@ process_inventory:
           name: "Fuel and electricity requirements"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Conditional umbrella: identify each actual fuel or electricity exchange separately and preserve its delivered-energy basis. One card is not one compulsory exchange."
+          description: "Activity owner: harvest. Conditional umbrella: identify each actual fuel or electricity exchange separately and preserve its delivered-energy basis. One card is not one compulsory exchange."
           amount:
             expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -464,132 +440,12 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-      waste:
-        []
-      elementary:
-        []
-    outputs:
-      product:
-        - row_id: cut_trees
-          role: "Fresh cut tree transfer to primary handling"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Record whole fresh trees after cut/yarding with actual species, lot and provisional grade; excess needles, rejects and attached foreign matter are tracked separately. This is the same fresh material later dispatched, not a second final product."
-          amount:
-            expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_harvest
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: harvest_waste
-          role: "Material actually discarded across the boundary"
-          name: "Discarded material by real destination"
-          flow_type: "waste"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
-          amount:
-            expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_harvest
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      elementary:
-        - row_id: harvest_releases
-          role: "Actual direct substance releases and losses"
-          name: "Direct substance releases by receiving medium"
-          flow_type: "elementary"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
-          amount:
-            expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_harvest
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-  - id: condition
-    label: "Primary shaking and preparation"
-    inputs:
-      product:
-        - row_id: condition_tree_feed
-          role: "Fresh trees received for primary preparation"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Link actual cut_trees or returned off-spec tree lot; a return retains existing burdens and receives only added handling work."
-          amount:
-            expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_condition
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
         - row_id: condition_materials
           role: "Actual supplied material and attributable service requirement"
           name: "Supplied material and attributable service requirements"
           flow_type: "product"
           property_unit: "Actual material or service property / native unit"
-          description: "Conditional umbrella for actual supplied materials and attributable services. Distinguish water, fertilizers/agents, cleaning supplies, consumed tools and services by substance/function/provider and native property/unit. Shared tractor, shed, irrigation or handling services retain actual consumer node and year; the single shared-service ledger expands concrete exchanges at their true consuming nodes, including grade and dispatch, without adding a compulsory exchange or duplicate full asset charge. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
+          description: "Activity owner: condition. Conditional umbrella for actual supplied materials and attributable services. Distinguish water, fertilizers/agents, cleaning supplies, consumed tools and services by substance/function/provider and native property/unit. Shared tractor, shed, irrigation or handling services retain actual consumer node and year; the single shared-service ledger expands concrete exchanges at their true consuming nodes, including grade and dispatch, without adding a compulsory exchange or duplicate full asset charge. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
           amount:
             expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -607,7 +463,7 @@ process_inventory:
           name: "Fuel and electricity requirements"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Conditional umbrella: identify each actual fuel or electricity exchange separately and preserve its delivered-energy basis. One card is not one compulsory exchange."
+          description: "Activity owner: condition. Conditional umbrella: identify each actual fuel or electricity exchange separately and preserve its delivered-energy basis. One card is not one compulsory exchange."
           amount:
             expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -628,132 +484,12 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-      waste:
-        []
-      elementary:
-        []
-    outputs:
-      product:
-        - row_id: prepared_trees
-          role: "Prepared fresh trees handed to grading"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Link actual prepared tree mass to the next node, retaining fresh whole-tree identity; needles/trim losses and return destinations reconcile with input mass."
-          amount:
-            expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_condition
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: condition_waste
-          role: "Material actually discarded across the boundary"
-          name: "Discarded material by real destination"
-          flow_type: "waste"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
-          amount:
-            expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_condition
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      elementary:
-        - row_id: condition_releases
-          role: "Actual direct substance releases and losses"
-          name: "Direct substance releases by receiving medium"
-          flow_type: "elementary"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
-          amount:
-            expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_condition
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-  - id: grade
-    label: "Buyer grade and destination determination"
-    inputs:
-      product:
-        - row_id: grade_tree_feed
-          role: "Actual fresh tree lot received for grading"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Use prepared_trees when preparation occurred, otherwise cut_trees; retain source identity and do not duplicate bypassed nodes."
-          amount:
-            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_grade
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
         - row_id: grade_energy
           role: "Actual energy and operation service requirement"
           name: "Energy and operation service requirements"
           flow_type: "product"
           property_unit: "Actual energy or service property / native unit"
-          description: "Conditional umbrella for actual energy and operation services at this node. Identify fuel/electricity, actual contracted handling and shared asset/service use separately with their own native property/unit and actual period/consumer. Apply delivered_energy only to actual energy subexchanges; services are not converted to MJ. Retain attributed service quantities and ensure the shared ledger charges each consumer once. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
+          description: "Activity owner: grade. Conditional umbrella for actual energy and operation services at this node. Identify fuel/electricity, actual contracted handling and shared asset/service use separately with their own native property/unit and actual period/consumer. Apply delivered_energy only to actual energy subexchanges; services are not converted to MJ. Retain attributed service quantities and ensure the shared ledger charges each consumer once. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
           amount:
             expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -766,159 +502,12 @@ process_inventory:
               collection_protocol_id: cp_grade
               source_ids: []
             ranges: []
-      waste:
-        []
-      elementary:
-        []
-    outputs:
-      product:
-        - row_id: accepted_grades
-          role: "Accepted fresh tree grade lots"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Enumerate actual accepted species/height-grade lots to holding or dispatch. Multiple accepted grades are distinct lot records, not necessarily distinct physical UUIDs."
-          amount:
-            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_grade
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: downgraded_goods
-          role: "Separately accepted downgraded tree goods"
-          name: "Downgraded fresh cut Christmas trees"
-          flow_type: "product"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Only buyer-accepted independent lower-grade goods count here; identify their true handover and exclude them from the reference lot denominator unless that lower grade is the declared reference."
-          amount:
-            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_grade
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: offspec_return
-          role: "Off-spec fresh trees with a documented return loop"
-          name: "Off-spec fresh cut Christmas trees for return"
-          flow_type: "product"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Temporary internal transfer back to actual condition or sorting activity, not an accepted reference output or a second co-product. Missing destination blocks final inventory."
-          amount:
-            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_grade
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: grade_waste
-          role: "Material actually discarded across the boundary"
-          name: "Discarded material by real destination"
-          flow_type: "waste"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
-          amount:
-            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_grade
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      elementary:
-        []
-  - id: hold
-    label: "Bounded fresh protective holding"
-    inputs:
-      product:
-        - row_id: hold_tree_feed
-          role: "Accepted fresh trees entering protective holding"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Receive actual accepted_grades; record lot, time and net mass before any actual preservation intervention."
-          amount:
-            expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_hold
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
         - row_id: hold_materials
           role: "Actual supplied material and attributable service requirement"
           name: "Supplied material and attributable service requirements"
           flow_type: "product"
           property_unit: "Actual material or service property / native unit"
-          description: "Conditional umbrella for actual supplied materials and attributable services. Distinguish water, fertilizers/agents, cleaning supplies, consumed tools and services by substance/function/provider and native property/unit. Shared tractor, shed, irrigation or handling services retain actual consumer node and year; the single shared-service ledger expands concrete exchanges at their true consuming nodes, including grade and dispatch, without adding a compulsory exchange or duplicate full asset charge. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
+          description: "Activity owner: hold. Conditional umbrella for actual supplied materials and attributable services. Distinguish water, fertilizers/agents, cleaning supplies, consumed tools and services by substance/function/provider and native property/unit. Shared tractor, shed, irrigation or handling services retain actual consumer node and year; the single shared-service ledger expands concrete exchanges at their true consuming nodes, including grade and dispatch, without adding a compulsory exchange or duplicate full asset charge. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
           amount:
             expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -936,7 +525,7 @@ process_inventory:
           name: "Fuel and electricity requirements"
           flow_type: "product"
           property_unit: "Energy / MJ"
-          description: "Conditional umbrella: identify each actual fuel or electricity exchange separately and preserve its delivered-energy basis. One card is not one compulsory exchange."
+          description: "Activity owner: hold. Conditional umbrella: identify each actual fuel or electricity exchange separately and preserve its delivered-energy basis. One card is not one compulsory exchange."
           amount:
             expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -957,132 +546,12 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-      waste:
-        []
-      elementary:
-        []
-    outputs:
-      product:
-        - row_id: held_trees
-          role: "Fresh trees leaving protective holding"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Preserve the same fresh physical identity with actual elapsed time, mass change and acceptance; no new shelf-life or dried-product claim."
-          amount:
-            expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_hold
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: hold_waste
-          role: "Material actually discarded across the boundary"
-          name: "Discarded material by real destination"
-          flow_type: "waste"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
-          amount:
-            expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_hold
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      elementary:
-        - row_id: hold_releases
-          role: "Actual direct substance releases and losses"
-          name: "Direct substance releases by receiving medium"
-          flow_type: "elementary"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
-          amount:
-            expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_hold
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-  - id: dispatch
-    label: "Protective presentation and grower dispatch"
-    inputs:
-      product:
-        - row_id: dispatch_tree_feed
-          role: "Accepted fresh trees received for dispatch"
-          name: "Fresh cut Christmas trees"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
-          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Receive held_trees if holding occurred, otherwise accepted_grades; actual link and burden path are preserved."
-          amount:
-            expression: "Measured attributable quantity under cp_dispatch, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
-            value_mode: "calculated_value"
-            specificity: "site_specific"
-            basis:
-              text: "per 1 kg reference flow"
-              kind: "reference_flow"
-            evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_dispatch
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "20"
-                unit: "kg"
-                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
         - row_id: dispatch_packaging
           role: "Actual protective packaging supplied"
           name: "Packaging materials by real identity"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Record netting/string/tags/supports separately when used, including reuse and replacement logs; no packaging mass belongs in tree reference mass."
+          description: "Activity owner: dispatch. Record netting/string/tags/supports separately when used, including reuse and replacement logs; no packaging mass belongs in tree reference mass."
           amount:
             expression: "Measured attributable quantity under cp_dispatch, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -1108,7 +577,7 @@ process_inventory:
           name: "Energy and operation service requirements"
           flow_type: "product"
           property_unit: "Actual energy or service property / native unit"
-          description: "Conditional umbrella for actual energy and operation services at this node. Identify fuel/electricity, actual contracted handling and shared asset/service use separately with their own native property/unit and actual period/consumer. Apply delivered_energy only to actual energy subexchanges; services are not converted to MJ. Retain attributed service quantities and ensure the shared ledger charges each consumer once. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
+          description: "Activity owner: dispatch. Conditional umbrella for actual energy and operation services at this node. Identify fuel/electricity, actual contracted handling and shared asset/service use separately with their own native property/unit and actual period/consumer. Apply delivered_energy only to actual energy subexchanges; services are not converted to MJ. Retain attributed service quantities and ensure the shared ledger charges each consumer once. Range evidence requirement: No numerical bound is prescribed until the concrete exchange, reference property, comparison unit and normalization denominator are identified. Retain the linked protocol’s measured quantities. If a quantitative QA screen is established, document its applicable material/service, route and period, reviewed evidence and derivation; express values and both bounds in the same explicit unit and denominator. Convert both bounds together with the value when units change. Until that evidence exists, quantitative range screening is unavailable and is disclosed as a gap; a missing screen does not supply a default or prove completeness."
           amount:
             expression: "Measured attributable quantity under cp_dispatch, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -1121,12 +590,66 @@ process_inventory:
               collection_protocol_id: cp_dispatch
               source_ids: []
             ranges: []
+        - row_id: purchased_cut_tree_feed
+          role: "Actual receipt of purchased fresh cut trees"
+          name: "Fresh cut Christmas trees"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only purchased fresh cut trees actually crossing the aggregated harvest-to-dispatch boundary. Retain actual receipt state, activity entry point and separately matched supplier upstream coverage. Own-grown transfers inside this boundary are not this input; do not repeat completed harvesting or preparation."
+          amount:
+            expression: "Measured external receipt quantity under cp_purchased_cut_trees, divided once by positive accepted net dispatch mass; retain the unnormalized external receipt ledger"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_purchased_cut_trees
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
       waste:
         []
       elementary:
         []
     outputs:
       product:
+        - row_id: downgraded_goods
+          role: "Separately accepted downgraded tree goods"
+          name: "Downgraded fresh cut Christmas trees"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: grade. Only buyer-accepted independent lower-grade goods count here; identify their true handover and exclude them from the reference lot denominator unless that lower grade is the declared reference."
+          amount:
+            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
         - row_id: tree_dispatch
           role: "Fresh cut trees accepted at actual grower dispatch"
           name: "Fresh cut Christmas trees"
@@ -1134,7 +657,7 @@ process_inventory:
           flow_ref:
             uuid: "ab8a7694-6ea2-4cce-b535-9358f74c1189"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "The sole reference product output: managed-grown fresh whole cut trees, species/height-grade qualified, accepted net mass excluding all packaging/supports at the real grower dispatch gate. Reference normalization identity: Let R > 0 kg be the actual accepted net final product mass measured under the linked collection protocol for the same lot, boundary and period, excluding packaging, rejects and other products. Its normalized reference output is (R/R) × 1 kg = 1 kg. The 1..1 interval verifies that identity; it does not describe yield or uncertainty in the underlying measurement of R. Retain those measurements and their uncertainty independently."
+          description: "Activity owner: dispatch. The sole reference product output: managed-grown fresh whole cut trees, species/height-grade qualified, accepted net mass excluding all packaging/supports at the real grower dispatch gate. Reference normalization identity: Let R > 0 kg be the actual accepted net final product mass measured under the linked collection protocol for the same lot, boundary and period, excluding packaging, rejects and other products. Its normalized reference output is (R/R) × 1 kg = 1 kg. The 1..1 interval verifies that identity; it does not describe yield or uncertainty in the underlying measurement of R. Retain those measurements and their uncertainty independently."
           amount:
             expression: "1 kg"
             value_mode: "fixed_value"
@@ -1160,7 +683,7 @@ process_inventory:
           name: "Accompanying packaging by real identity"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Declare packaging handed to the next actor as a separate mass record paired to tree lot; it is neither a second tree output nor automatically a co-product with independent sales value."
+          description: "Activity owner: dispatch. Declare packaging handed to the next actor as a separate mass record paired to tree lot; it is neither a second tree output nor automatically a co-product with independent sales value."
           amount:
             expression: "Measured attributable quantity under cp_dispatch, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -1182,12 +705,116 @@ process_inventory:
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
       waste:
+        - row_id: harvest_waste
+          role: "Material actually discarded across the boundary"
+          name: "Discarded material by real destination"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: harvest. Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
+          amount:
+            expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: condition_waste
+          role: "Material actually discarded across the boundary"
+          name: "Discarded material by real destination"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: condition. Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
+          amount:
+            expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: grade_waste
+          role: "Material actually discarded across the boundary"
+          name: "Discarded material by real destination"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: grade. Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
+          amount:
+            expression: "Measured attributable quantity under cp_grade, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_grade
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: hold_waste
+          role: "Material actually discarded across the boundary"
+          name: "Discarded material by real destination"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: hold. Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
+          amount:
+            expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_hold
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
         - row_id: dispatch_waste
           role: "Material actually discarded across the boundary"
           name: "Discarded material by real destination"
           flow_type: "waste"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
+          description: "Activity owner: dispatch. Conditional umbrella for actual removed material sent to treatment; preserve organic, package and hazardous identities. Returned field residues and intended goods are not automatically waste."
           amount:
             expression: "Measured attributable quantity under cp_dispatch, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -1209,12 +836,90 @@ process_inventory:
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
       elementary:
+        - row_id: harvest_releases
+          role: "Actual direct substance releases and losses"
+          name: "Direct substance releases by receiving medium"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: harvest. Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
+          amount:
+            expression: "Measured attributable quantity under cp_harvest, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_harvest
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: condition_releases
+          role: "Actual direct substance releases and losses"
+          name: "Direct substance releases by receiving medium"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: condition. Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
+          amount:
+            expression: "Measured attributable quantity under cp_condition, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_condition
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: hold_releases
+          role: "Actual direct substance releases and losses"
+          name: "Direct substance releases by receiving medium"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Activity owner: hold. Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
+          amount:
+            expression: "Measured attributable quantity under cp_hold, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_hold
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow; provisional non-enforcing screen, not a default or a physical acceptance limit"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
         - row_id: dispatch_releases
           role: "Actual direct substance releases and losses"
           name: "Direct substance releases by receiving medium"
           flow_type: "elementary"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
+          description: "Activity owner: dispatch. Conditional umbrella: identify each actual substance, water/air/soil receiving medium and mass basis from measurements or an explicitly evidenced model. Separate evaporation from solid residues; do not assume pollutant totals are concrete identities."
           amount:
             expression: "Measured attributable quantity under cp_dispatch, divided by accepted net dispatch mass; retain the actual internal quantity before normalization"
             value_mode: "calculated_value"
@@ -1275,7 +980,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Scale calibration; paired count/net-mass record; buyer acceptance and height-grade convention; traceable site/cohort ledger; consumption/stock reconciliation; actual return/treatment receipts"
     - protocol_id: cp_harvest
-      process_id: "harvest"
+      process_id: "harvest_to_dispatch"
       flow_role: "All actual harvest card exchanges, transfers and attributed assets"
       record_type: "Calibrated records and indexed activity ledger"
       raw_fields: "site; block; cohort; year; lot; species/provenance; event; actual substance/service; flow state; direction; actual amount/unit; acceptance/destination; linked upstream lot; shared asset period/use; cleanup/changeover; return status; actual tree count; height-grade; net fresh mass; moisture/state; gross/package tare where applicable"
@@ -1287,7 +992,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Scale calibration; paired count/net-mass record; buyer acceptance and height-grade convention; traceable site/cohort ledger; consumption/stock reconciliation; actual return/treatment receipts"
     - protocol_id: cp_condition
-      process_id: "condition"
+      process_id: "harvest_to_dispatch"
       flow_role: "All actual condition card exchanges, transfers and attributed assets"
       record_type: "Calibrated records and indexed activity ledger"
       raw_fields: "site; block; cohort; year; lot; species/provenance; event; actual substance/service; flow state; direction; actual amount/unit; acceptance/destination; linked upstream lot; shared asset period/use; cleanup/changeover; return status; actual tree count; height-grade; net fresh mass; moisture/state; gross/package tare where applicable"
@@ -1299,7 +1004,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Scale calibration; paired count/net-mass record; buyer acceptance and height-grade convention; traceable site/cohort ledger; consumption/stock reconciliation; actual return/treatment receipts"
     - protocol_id: cp_grade
-      process_id: "grade"
+      process_id: "harvest_to_dispatch"
       flow_role: "All actual grade card exchanges, transfers and attributed assets"
       record_type: "Calibrated records and indexed activity ledger"
       raw_fields: "site; block; cohort; year; lot; species/provenance; event; actual substance/service; flow state; direction; actual amount/unit; acceptance/destination; linked upstream lot; shared asset period/use; cleanup/changeover; return status; actual tree count; height-grade; net fresh mass; moisture/state; gross/package tare where applicable"
@@ -1311,7 +1016,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Scale calibration; paired count/net-mass record; buyer acceptance and height-grade convention; traceable site/cohort ledger; consumption/stock reconciliation; actual return/treatment receipts"
     - protocol_id: cp_hold
-      process_id: "hold"
+      process_id: "harvest_to_dispatch"
       flow_role: "All actual hold card exchanges, transfers and attributed assets"
       record_type: "Calibrated records and indexed activity ledger"
       raw_fields: "site; block; cohort; year; lot; species/provenance; event; actual substance/service; flow state; direction; actual amount/unit; acceptance/destination; linked upstream lot; shared asset period/use; cleanup/changeover; return status; actual tree count; height-grade; net fresh mass; moisture/state; gross/package tare where applicable"
@@ -1323,7 +1028,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Scale calibration; paired count/net-mass record; buyer acceptance and height-grade convention; traceable site/cohort ledger; consumption/stock reconciliation; actual return/treatment receipts"
     - protocol_id: cp_dispatch
-      process_id: "dispatch"
+      process_id: "harvest_to_dispatch"
       flow_role: "All actual dispatch card exchanges, transfers and attributed assets"
       record_type: "Calibrated records and indexed activity ledger"
       raw_fields: "site; block; cohort; year; lot; species/provenance; event; actual substance/service; flow state; direction; actual amount/unit; acceptance/destination; linked upstream lot; shared asset period/use; cleanup/changeover; return status; actual tree count; height-grade; net fresh mass; moisture/state; gross/package tare where applicable"
@@ -1347,7 +1052,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
     - protocol_id: cp_direct_release_harvest
-      process_id: "harvest"
+      process_id: "harvest_to_dispatch"
       flow_role: "Per-node actual direct releases and coverage decisions"
       record_type: "Activity, measurement and method-evidence ledger"
       raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
@@ -1359,7 +1064,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
     - protocol_id: cp_direct_release_condition
-      process_id: "condition"
+      process_id: "harvest_to_dispatch"
       flow_role: "Per-node actual direct releases and coverage decisions"
       record_type: "Activity, measurement and method-evidence ledger"
       raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
@@ -1371,7 +1076,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
     - protocol_id: cp_direct_release_grade
-      process_id: "grade"
+      process_id: "harvest_to_dispatch"
       flow_role: "Per-node actual direct releases and coverage decisions"
       record_type: "Activity, measurement and method-evidence ledger"
       raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
@@ -1383,7 +1088,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
     - protocol_id: cp_direct_release_hold
-      process_id: "hold"
+      process_id: "harvest_to_dispatch"
       flow_role: "Per-node actual direct releases and coverage decisions"
       record_type: "Activity, measurement and method-evidence ledger"
       raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
@@ -1395,7 +1100,7 @@ dataset_production:
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
     - protocol_id: cp_direct_release_dispatch
-      process_id: "dispatch"
+      process_id: "harvest_to_dispatch"
       flow_role: "Per-node actual direct releases and coverage decisions"
       record_type: "Activity, measurement and method-evidence ledger"
       raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
@@ -1406,6 +1111,18 @@ dataset_production:
       site_scope: "Actual activity sites; one owner for each shared event"
       aggregation_rule: "per 1 kg reference flow"
       quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_purchased_cut_trees
+      process_id: "harvest_to_dispatch"
+      flow_role: "Net external cut-tree receipts and upstream coverage"
+      record_type: "Supplier, receipt and weighing ledger"
+      raw_fields: "supplier; lot_id; actual receiving activity/state; date; net tree mass; package tare; upstream dataset and covered operations"
+      collection_method: "Measure only externally purchased lots crossing the boundary, exclude package mass, match actual state/upstream coverage and do not repeat completed operations."
+      unit: "kg"
+      frequency: "each purchased lot"
+      temporal_coverage: "matched dispatch/stock period"
+      site_scope: "actual receipt site"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "signed receipt/weighing records; supplier upstream coverage"
   calculation_rules:
     - id: normalize_lot_mass
       applies_to: "Separate physical-ledger and burden normalization"
@@ -1468,6 +1185,19 @@ dataset_production:
         - "reference quantity"
       output: "Node/substance/medium-specific raw and attributed amounts and unresolved gaps"
       source_ids: []
+    - id: aggregate_internal_transfers
+      applies_to: "cut_trees; prepared_trees; accepted_grades; held_trees; condition_tree_feed; grade_tree_feed; hold_tree_feed; dispatch_tree_feed; offspec_return"
+      rule: "Record paired event-level fresh mass T in kg, activity, lot and state. For positive final dispatch mass R retain T/R × 1 kg in the internal ledger; never force T=R. The four normal fresh-tree handoffs retain verified cut-tree identity ab8a7694-6ea2-4cce-b535-9358f74c1189; downgraded/rework material needs separate compatible identity confirmation, not role-based inheritance. Cancel each pair once within the aggregate boundary, never period stocks, losses, externally sold downgraded goods or actual external purchases. Rework adds only its actual new activity burden without duplicating carried burdens."
+      inputs:
+        - cp_harvest
+        - cp_condition
+        - cp_grade
+        - cp_hold
+        - cp_dispatch
+        - transfer_id
+        - "paired records"
+      output: "unallocated measured transfer ledger and aggregate inventory without duplicate internal exchanges"
+      source_ids: []
   data_quality_requirements:
     - id: dq_identity
       applies_to: "reference and all actual exchanges"
@@ -1501,6 +1231,10 @@ dataset_production:
       applies_to: "concrete exchanges in variable-unit cards"
       requirement: "Establish any quantitative screen only after identifying its concrete exchange, reference property, explicit comparison unit and denominator, applicability, reviewed evidence and derivation. Preserve a unit conversion record that converts value and both bounds consistently; test the same physical quantity identically in equivalent units. Keep unresolved screens explicit and do not use them as amounts or completeness evidence."
       evidence: "linked collection protocols; property/unit and conversion records; compatible evidence and derivation; unresolved-screen register"
+    - id: dq_aggregate_transfers
+      applies_to: "internal ledger of harvest_to_dispatch"
+      requirement: "Retain quantities, lot, fresh state and time for harvest→condition or grade, condition→grade, grade→hold or dispatch, hold→dispatch and actual rework. Normal fresh trees retain Mass 93a60a56-a3c8-11da-a746-0800200b9a66, unit group 93a60a57-a4c8-11da-a746-0800200c9a66 and kg. The former 0–20 kg per 1 kg final reference is only a provisional non-enforcing reasoned_estimate investigation prompt, not an amount, yield or acceptance limit. A disaggregated unit-process model must restore full flow cards and verify compatible paired exchanges."
+      evidence: "measured transfer/rework/stock records; compatible identity and validation of new disaggregated graph"
 validation_rules:
   - rule_id: valid_reference
     applies_to: "tree_dispatch"
@@ -1565,7 +1299,7 @@ data_sources:
     used_for: "Actual cut/yard/primary preparation/protection/loading activity evidence; historical regional guidance is not a universal process, legal rule or default"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:04a4521c4460800b128afa2484780324d54a4f69300a4cd2cdefc778ea311d8f"
+  source_sha256: "sha256:409025a37a74879219e84699dbe06be0df1952db7610f718e1568907eeee169a"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6761"
@@ -1616,16 +1350,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_78010"
+    - unit_id: "normative_67587"
       family: "allocation"
       span:
         start:
-          offset: 78010
-          line: 1141
+          offset: 67587
+          line: 926
           column: 1
         end:
-          offset: 80123
-          line: 1152
+          offset: 69700
+          line: 937
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| alloc_output_set | intended outputs | Enumerate every accepted tree grade, separately intended pruning bough good and independently sold downgraded good with its actual handover. Subdivide directly measured activities first; internal living/tree/package transfers are not additional sale outputs. | |\n| alloc_shared_outputs | shared cohort burden | Where subdivision cannot resolve shared tree/bough/grade production, collect the actual causal usage or biological-output relationship, declare and justify a PCR-specific allocation method and retain a sensitivity alternative. Economic allocation requires contemporaneous comparable actual prices and justified failure of physical attribution; no equal shares or universal factors. Missing material evidence blocks finalization. | |\n| alloc_years | grow; all periods | Carry establishment and annual inputs/asset usage by actual cohort and year; allocate harvested lots, still-living stock, failed stock and replacements once using the recorded production relationship. Repeated harvests cannot each absorb the same establishment burden, and failed crop burdens cannot vanish. | |\n| alloc_assets_runs | all processes | Attribute each shared asset/service and cleaning/changeover event once across its real consuming nodes, sites, years and lots using measured service use. Maintain a ledger of assigned and residual burden; no independent full-charge in every node. | |\n| alloc_returns | offspec_return; all rejects | Returns keep prior attributed burdens and acquire actual additional work once. Regrade/retrim losses retain their actual treatment or return route. Rejected material never enters accepted mass or produces an unsupported avoided-product credit. | |\n| alloc_sites | contributing sites | Aggregate by summing compatible attributable quantities and dividing by summed accepted net mass, retaining species/grade/cohort mix and site coverage; do not average site intensities without weights or mix uncovered sites into zero burden. | |\n\n"
       headings:
@@ -1644,12 +1378,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 78010
-              line: 1141
+              offset: 67587
+              line: 926
               column: 1
             end:
-              offset: 78050
-              line: 1141
+              offset: 67627
+              line: 926
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1664,16 +1398,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_103040"
+    - unit_id: "normative_95047"
       family: "validation"
       span:
         start:
-          offset: 103040
-          line: 1195
+          offset: 95047
+          line: 983
           column: 1
         end:
-          offset: 106132
-          line: 1211
+          offset: 98139
+          line: 999
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| valid_reference | tree_dispatch | Reference link identifies the sole actual accepted dispatch product output and 1 kg net fresh mass; all qualifiers and actual support identities are declared and package/reject mass excluded. | |\n| valid_cohort | grow; harvest | Check complete cohort/year/failed/replacement and remaining-stock accounting; upstream nursery/material/energy/asset gaps remain disclosed and prevent unsupported zero estimates. | |\n| valid_path | all processes | Check actual optional-node bypasses, transfer input/output links, returns and handovers; same fresh product may reuse a compatible verified identity, but living stock/seedlings cannot inherit the cut-tree UUID. | |\n| valid_outputs | all outputs | Enumerate accepted grades, downgraded goods, bough goods, off-spec return, field residues and waste with real destination and attribution. Exclude unresolved rejects from reference mass. | |\n| valid_attribution | every shared ledger | Reconcile sites, periods, output sets, assets and handling campaigns; check cleaning/changeover events and no repeated full-burden allocation or unsupported substitution credits. | |\n| valid_units | all rows | Check actual paired count/mass conversion, one net dispatch denominator, fresh moisture/state and native substance/energy/service units; do not equate per-tree records directly to per-kg values. | |\n| valid_bindings | all actual exchanges | Final dataset exchanges require independently verified specific UUIDs/property/unit; unresolved candidate identities and heterogeneous umbrellas cannot be silently accepted or supplied from a screen. | |\n| valid_bilingual | all cards | Preserve EN/ZH process/direction/type/row ids, actual meaning, amounts/bases, bindings and Range metadata; regenerate the projection after canonical edits and inspect performed/skipped check coverage. | |\n| `validate_direct_release_coverage` | `grow`; `harvest`; `condition`; `grade`; `hold`; `dispatch` | For every activated node, reconcile its activity list against cp_direct_release_grow; cp_direct_release_harvest; cp_direct_release_condition; cp_direct_release_grade; cp_direct_release_hold; cp_direct_release_dispatch: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |\n\n- Reconcile required/conditional activation and upstream coverage against incoming state at each node; purchased completed-state feed must not duplicate growth, harvest or preparation. Equal classification does not replace state and gate matching.\n\n"
       headings:
@@ -1692,12 +1426,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 103040
-              line: 1195
+              offset: 95047
+              line: 983
               column: 1
             end:
-              offset: 103062
-              line: 1195
+              offset: 95069
+              line: 983
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1833,210 +1567,210 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "alloc_output_set"
       identity_kind: "explicit"
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 78123
-          line: 1145
+          offset: 67700
+          line: 930
           column: 1
         end:
-          offset: 78425
-          line: 1145
+          offset: 68002
+          line: 930
           column: 303
     - pointer: "/allocation_rules/1"
       rule_id: "alloc_shared_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 78426
-          line: 1146
+          offset: 68003
+          line: 931
           column: 1
         end:
-          offset: 78906
-          line: 1146
+          offset: 68483
+          line: 931
           column: 481
     - pointer: "/allocation_rules/2"
       rule_id: "alloc_years"
       identity_kind: "explicit"
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 78907
-          line: 1147
+          offset: 68484
+          line: 932
           column: 1
         end:
-          offset: 79254
-          line: 1147
+          offset: 68831
+          line: 932
           column: 348
     - pointer: "/allocation_rules/3"
       rule_id: "alloc_assets_runs"
       identity_kind: "explicit"
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 79255
-          line: 1148
+          offset: 68832
+          line: 933
           column: 1
         end:
-          offset: 79543
-          line: 1148
+          offset: 69120
+          line: 933
           column: 289
     - pointer: "/allocation_rules/4"
       rule_id: "alloc_returns"
       identity_kind: "explicit"
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 79544
-          line: 1149
+          offset: 69121
+          line: 934
           column: 1
         end:
-          offset: 79839
-          line: 1149
+          offset: 69416
+          line: 934
           column: 296
     - pointer: "/allocation_rules/5"
       rule_id: "alloc_sites"
       identity_kind: "explicit"
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 79840
-          line: 1150
+          offset: 69417
+          line: 935
           column: 1
         end:
-          offset: 80121
-          line: 1150
+          offset: 69698
+          line: 935
           column: 282
     - pointer: "/validation_rules/0"
       rule_id: "valid_reference"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 103135
-          line: 1199
+          offset: 95142
+          line: 987
           column: 1
         end:
-          offset: 103366
-          line: 1199
+          offset: 95373
+          line: 987
           column: 232
     - pointer: "/validation_rules/1"
       rule_id: "valid_cohort"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 103367
-          line: 1200
+          offset: 95374
+          line: 988
           column: 1
         end:
-          offset: 103582
-          line: 1200
+          offset: 95589
+          line: 988
           column: 216
     - pointer: "/validation_rules/2"
       rule_id: "valid_path"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 103583
-          line: 1201
+          offset: 95590
+          line: 989
           column: 1
         end:
-          offset: 103828
-          line: 1201
+          offset: 95835
+          line: 989
           column: 246
     - pointer: "/validation_rules/3"
       rule_id: "valid_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 103829
-          line: 1202
+          offset: 95836
+          line: 990
           column: 1
         end:
-          offset: 104051
-          line: 1202
+          offset: 96058
+          line: 990
           column: 223
     - pointer: "/validation_rules/4"
       rule_id: "valid_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 104052
-          line: 1203
+          offset: 96059
+          line: 991
           column: 1
         end:
-          offset: 104278
-          line: 1203
+          offset: 96285
+          line: 991
           column: 227
     - pointer: "/validation_rules/5"
       rule_id: "valid_units"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 104279
-          line: 1204
+          offset: 96286
+          line: 992
           column: 1
         end:
-          offset: 104504
-          line: 1204
+          offset: 96511
+          line: 992
           column: 226
     - pointer: "/validation_rules/6"
       rule_id: "valid_bindings"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 104505
-          line: 1205
+          offset: 96512
+          line: 993
           column: 1
         end:
-          offset: 104750
-          line: 1205
+          offset: 96757
+          line: 993
           column: 246
     - pointer: "/validation_rules/7"
       rule_id: "valid_bilingual"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 104751
-          line: 1206
+          offset: 96758
+          line: 994
           column: 1
         end:
-          offset: 104987
-          line: 1206
+          offset: 96994
+          line: 994
           column: 237
     - pointer: "/validation_rules/8"
       rule_id: "validate_direct_release_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 104988
-          line: 1207
+          offset: 96995
+          line: 995
           column: 1
         end:
-          offset: 105881
-          line: 1207
+          offset: 97888
+          line: 995
           column: 894
     - pointer: "/validation_rules/9"
       rule_id: "validation_rule_10"
       identity_kind: "snapshot_local"
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 105883
-          line: 1209
+          offset: 97890
+          line: 997
           column: 1
         end:
-          offset: 106130
-          line: 1209
+          offset: 98137
+          line: 997
           column: 248
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -2065,27 +1799,27 @@ normative_context:
           column: 207
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_78010"
+      unit_id: "normative_67587"
       source_span:
         start:
-          offset: 78010
-          line: 1141
+          offset: 67587
+          line: 926
           column: 1
         end:
-          offset: 78050
-          line: 1141
+          offset: 67627
+          line: 926
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_103040"
+      unit_id: "normative_95047"
       source_span:
         start:
-          offset: 103040
-          line: 1195
+          offset: 95047
+          line: 983
           column: 1
         end:
-          offset: 103062
-          line: 1195
+          offset: 95069
+          line: 983
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -2094,5 +1828,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:04a4521c4460800b128afa2484780324d54a4f69300a4cd2cdefc778ea311d8f"
-  generated_content_sha256: "sha256:391c30c2551ed98f52daaa4f9abbc2e73c129f0bfa72acfe90c331494a21c6b8"
+    sha256: "sha256:409025a37a74879219e84699dbe06be0df1952db7610f718e1568907eeee169a"
+  generated_content_sha256: "sha256:bed5a32f5b03d240a0533a66dd4cf2d3af8122cf0c2e77016bcdf209de90c242"
