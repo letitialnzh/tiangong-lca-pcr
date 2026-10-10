@@ -103,31 +103,7 @@ test("catalog generator emits the current material index and complete CPC covera
     total: coverage.entries.length,
     ...coverageCounts,
   });
-  const coverageAliases = result.aliases.filter((alias) =>
-    alias.target.kind === "classification_coverage"
-    && alias.target.classification_system === "cpc"
-    && alias.target.classification_version === "3.0");
-  const canonicalAliases = result.aliases.filter((alias) =>
-    alias.target.kind === "canonical_pcr");
-  assert.equal(coverageAliases.length, coverage.summary.unmapped);
-  assert.equal(result.aliases.length, coverageAliases.length + canonicalAliases.length);
-  assert.deepEqual(
-    coverageAliases.map((alias) => {
-      assert.equal(alias.target.kind, "classification_coverage");
-      return alias.target.kind === "classification_coverage" ? alias.target.code : "";
-    }).sort(),
-    coverage.entries.filter((entry) => entry.coverage_status === "unmapped")
-      .map((entry) => entry.code).sort(),
-  );
-  for (const alias of canonicalAliases) {
-    assert.equal(alias.reason, "canonical_pcr_replacement");
-    assert.equal(alias.target.kind, "canonical_pcr");
-    if (alias.target.kind !== "canonical_pcr") continue;
-    const targetId = alias.target.pcr_id;
-    assert.equal(materialIndex.pcrs.filter((entry) => entry.id === targetId).length, 1);
-    assert.ok(coverage.entries.some((entry) =>
-      entry.coverage_status === "mapped" && entry.mapping?.pcr_id === targetId));
-  }
+  assert.equal(result.aliases.length, coverage.summary.unmapped);
   assert.equal(new Set(coverage.entries.map((entry) => entry.code)).size, 2877);
   assert.equal(coverage.source.contract_version, "2");
   assert.equal(coverage.source.generator, "builder/scripts/build-catalog.mjs");

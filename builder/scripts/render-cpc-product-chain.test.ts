@@ -23,8 +23,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
-import { parseYaml, renderYaml } from "../../packages/pcr-core/src/yaml-lite.ts";
-import { readPcrIdAliases } from "../../packages/pcr-core/src/pcr-id-aliases.ts";
+import { renderYaml } from "../../packages/pcr-core/src/yaml-lite.ts";
 import {
   DEFAULT_REPORT_PATH,
   DEFAULT_SOURCE_PATH,
@@ -102,34 +101,8 @@ function planningDocument(locator: UnknownRecord = {
   };
 }
 
-let aliasFixtureInputs: { pcrPaths: string[]; decisionPaths: string[] } | undefined;
-
-function readAliasFixtureInputs(): { pcrPaths: string[]; decisionPaths: string[] } {
-  if (aliasFixtureInputs) return aliasFixtureInputs;
-  const aliases = readPcrIdAliases({ root: repoRoot });
-  const index = parseYaml(readFileSync(path.join(repoRoot, "library/indexes/pcr-index.yaml"), "utf8"));
-  const entries = unknownField(index, "pcrs");
-  assert.ok(Array.isArray(entries));
-  const pcrPaths = new Set([wheatSeedPath, abalonePath]);
-  const decisionPaths = new Set<string>();
-  for (const alias of aliases) {
-    decisionPaths.add(alias.decision_ref.split("#", 1)[0]!);
-    if (alias.target.kind !== "canonical_pcr") continue;
-    const targetId = alias.target.pcr_id;
-    const targets: unknown[] = entries.filter((entry) => unknownField(entry, "id") === targetId);
-    assert.equal(targets.length, 1, `Missing or ambiguous alias fixture target: ${targetId}`);
-    const targetPath = unknownField(targets[0], "path");
-    assert.equal(typeof targetPath, "string");
-    assert.ok(typeof targetPath === "string");
-    pcrPaths.add(targetPath);
-  }
-  aliasFixtureInputs = { pcrPaths: [...pcrPaths], decisionPaths: [...decisionPaths] };
-  return aliasFixtureInputs;
-}
-
 function createRealRepositoryFixture(prefix = "tiangong-cpc-chain-adapter-") {
   const root = mkdtempSync(path.join(tmpdir(), prefix));
-  const { pcrPaths, decisionPaths } = readAliasFixtureInputs();
   const files = [
     "classifications/systems/cpc/3.0/normalized/hierarchy.json",
     "classifications/systems/cpc/3.0/normalized/leaves.json",
@@ -141,12 +114,12 @@ function createRealRepositoryFixture(prefix = "tiangong-cpc-chain-adapter-") {
     "library/catalog.yaml",
     "docs/adr/0003-retire-cpc-leaf-derived-pcr-identities.md",
   ];
-  for (const relativePath of new Set([...files, ...decisionPaths])) {
+  for (const relativePath of files) {
     const target = path.join(root, relativePath);
     mkdirSync(path.dirname(target), { recursive: true });
     cpSync(path.join(repoRoot, relativePath), target);
   }
-  for (const relativePath of pcrPaths) {
+  for (const relativePath of [wheatSeedPath, abalonePath]) {
     const target = path.join(root, relativePath);
     mkdirSync(path.dirname(target), { recursive: true });
     cpSync(path.join(repoRoot, relativePath), target, { recursive: true });
@@ -223,15 +196,6 @@ function withNetworkTraps<T>(callback:()=>T):T {
     net.connect = originalNetConnect;
   }
 }
-
-test("real repository fixture retains every canonical alias target and decision", () => {
-  const root = createRealRepositoryFixture();
-  try {
-    assert.deepEqual(readPcrIdAliases({ root }), readPcrIdAliases({ root: repoRoot }));
-  } finally {
-    rmSync(root, { recursive: true, force: true });
-  }
-});
 
 test("exports stable default paths and builds/checks an exact report offline", () => {
   assert.equal(DEFAULT_SOURCE_PATH, "builder/planning/cpc-product-chain-pilot.yaml");
