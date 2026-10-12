@@ -1,4 +1,5 @@
 import {parseSiteManifest} from "../lib/site-contracts.ts";
+import {decodeRecordData} from "../lib/record-data.ts";
 import {parseGenerationReport} from "./generation-report.ts";
 import {isUnknownRecord,unknownField,type StructuredProjection} from "../../pcr-core/src/types.ts";
 import {assertStructured} from "../../pcr-core/src/contracts.ts";
@@ -88,6 +89,12 @@ for (const raw of report.downloads) {
     bytes.equals(fs.readFileSync(path.join(root, raw.sourcePath))),
     "Raw download not byte-identical " + raw.url,
   );
+}
+// Every public inspector record must restore its full generated source, including historical releases.
+for (const record of [...manifest.records, ...(manifest.historicalRecords ?? [])]) {
+  const expected = fs.readFileSync(path.join(app, ".generated", record.dataPath), "utf8");
+  const restored = decodeRecordData(JSON.parse(fs.readFileSync(path.join(out, record.dataUrl), "utf8")), record.dataKey);
+  requireThat(JSON.stringify(restored) === expected, "Inspector data changed " + record.dataPath);
 }
 for (const source of report.documents) {
   const original = fs.readFileSync(path.join(root, source.sourcePath), "utf8");

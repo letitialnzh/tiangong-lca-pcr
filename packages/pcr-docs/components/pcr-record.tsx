@@ -486,7 +486,7 @@ export function PcrRecordPage({
           }}
         />
         <StructuredSummary record={record} page={page} />
-        <DataInspector dataUrl={record.dataUrl} labels={text.inspector} />
+        <DataInspector key={record.dataPath} dataUrl={record.dataUrl} dataKey={record.dataKey} labels={text.inspector} />
       </div>
     </PcrPage>
   );

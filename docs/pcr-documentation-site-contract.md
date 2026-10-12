@@ -1,6 +1,6 @@
 ---
 lastReviewedAt: 2026-10-12
-lastReviewedNote: "Added lossless v3 search wire compaction and v1/v2 compatibility; source fidelity, ranking, size limits and resident-memory safeguards remain unchanged. Full CI qualification remains required."
+lastReviewedNote: "Retained lossless search v3 and added bounded, exactly reversible inspector record packs without deleting native navigation or raw downloads. Full CI qualification remains required."
 lastReviewedCommit: null
 title: Generated PCR Documentation Site Contract
 docType: contract
@@ -174,6 +174,26 @@ closed and remain retryable. The compiled codec is emitted with the Worker; no
 runtime dependency or remote service is added. Existing per-language limits remain
 20,000,000 raw wire bytes and 4,000,000 gzip bytes; compaction does not claim to
 reduce the restored engine's resident-memory requirement.
+
+### Inspector data transport
+
+The field inspector groups complete generated records into versioned JSON packs,
+using positional entries `[key, manifest, structured]`. Each record carries its
+exact transport key; current records and historical releases have distinct keys.
+Packs target at most 1,000,000 bytes and 32 records. A single larger record stays
+whole and must satisfy the unchanged 25 MB file limit. No PCR field, scalar type,
+array position, object-key order or empty value is removed. Generation requires
+each decoded record to serialize exactly as its original generated data; export
+verification repeats that comparison against the shipped pack for every record.
+The reader retains support for older unkeyed single-record payloads, rejects
+unknown versions, duplicate or missing keys and malformed records, and preserves
+the inspector's visible retry behavior. Browser qualification exercises the actual
+inspector in both languages and for available historical releases.
+
+This is lossless file packing to reduce the number of exported transport files;
+it does not claim the sparse-score byte savings of search v3. Server-side record
+data, byte-exact raw downloads, complete static HTML and every native Next
+navigation payload remain intact. No hosting rewrite is required.
 
 The Agent onboarding entry `/getting-started.md` is authored in
 `packages/pcr-docs/public/getting-started.md` and exported byte-for-byte. It is a
