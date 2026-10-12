@@ -13,7 +13,7 @@ whenToUpdate:
 checkPaths:
   - docs/cpc01-remaining-147-review.md
   - library/pcrs/agriculture-forestry-and-fishery-products/products-of-agriculture-horticulture-and-market-gardening/**
-lastReviewedAt: 2026-10-10
+lastReviewedAt: 2026-10-12
 lastReviewedCommit: null
 lastReviewedNote: "Content consistency and focused primary-source audit; candidate status and unresolved review debt are explicit."
 ---
@@ -39,6 +39,14 @@ lastReviewedNote: "Content consistency and focused primary-source audit; candida
 Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量类型检查和 lint 通过。本地 macOS 全量测试在 Goal 安全报告读取处出现平台限制（`GOAL_COORDINATOR_REPORT_UNSAFE`，其目录遍历明确要求 Linux 和 `/proc/self/fd`）；单测独立复现，相关 `builder/goal-harness/` 文件与目标基线没有差异。确认限制后停止本地全量测试，不能将其记为通过。
 
 相关测量与 Schema 回归测试 92 项通过，目录及棉花链受影响的回归用例通过。已核对 294 份双语 Markdown 的身份、同步来源及已声明状态与 manifest 一致。首轮 Linux CI 发现的其他油籽翻译状态冲突、目录测试旧覆盖状态和棉花产品链旧预期已修正；完整的最新 Linux 分片、网站构建及离线包验证结论见 [PR #14 检查记录](https://github.com/letitialnzh/tiangong-lca-pcr/pull/14/checks)。
+
+## 2026-10-12 合并前复查
+
+最新目标基线为 `341251a84b3824c2bac91b63a25490d4877745ca`。同步目标分支的 CPC 03 内容及搜索编码 v3 无损压缩修复；CPC 03 和此前排除的 CPC 01 目录均保持目标分支原样。分类映射保留目标分支全部原始字节，再追加本次 147 个关联，共 1,096 个接受关联；别名和其他派生索引从合并后的源重新生成。
+
+上次完整 CI 的实际结论是代码、合同和离线语料通过，网站构建因英文搜索索引原始大小 22,601,013 字节超过 20,000,000 字节预算而失败。此次沿用目标分支已有的 v3 无损压缩合同，不改变浏览器预算。
+
+合并后的 147/147 PCR 再次通过逐份检查，类型检查通过，参考输出与搜索编码相关回归测试 96 项通过。范围复核仍为 147 个目录、588 个 PCR 内容文件，未发现 Flow Set/module 绑定残留。完整 CI 和最终合并状态以 [PR #14 检查记录](https://github.com/letitialnzh/tiangong-lca-pcr/pull/14/checks) 为准。
 
 ## 已确认并修正的问题
 

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-for (const schemaVersion of [1, 2]) for (const [scenario, description] of [
+for (const schemaVersion of [1, 2, 3]) for (const [scenario, description] of [
   ['wire-roundtrip', 'worker imports every export string exactly and preserves complete result records'],
   ['entry-format-retry', 'worker rejects entries from the wrong wire format and permits a valid retry'],
   ['english-rank', 'real serialized English index ranks exact/prefix/title/body hits predictably'],

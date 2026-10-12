@@ -1,10 +1,1567 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "03119"
-  title: "Roundwood of coniferous wood, other"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.forestry-and-logging-products.roundwood-of-coniferous-wood-other"
+  classification_refs: "CPC 3.0 03119 (proposed exact match)"
+  covered_products: "Unprocessed coniferous industrial roundwood for pole, pile, post, fence, pitprop, wood-wool, mushroom, match-block, and comparable other use"
+  excluded_products: "Sawlogs, veneer logs, pulpwood, panel wood, fuelwood, non-coniferous logs, processed or treated wood goods"
+  representative_product: "As-received unpreserved coniferous pole/post assortment at forest roadside"
+  production_route: "Managed stand → felling and extraction → bucking, grading, measurement, and roadside assortment"
+  market_state: "Unprocessed logs with or without bark, at forest-roadside landing before long-distance transport"
+functional_unit:
+  what: "Other-use coniferous industrial roundwood at forest roadside"
+  how_much: "1 kg as-received saleable log mass; report matching under-bark solid m³ separately"
+  how_well: "Declared coniferous species, intended use, grade, length/diameter, bark and moisture state"
+  how_long_or_cycle: "Harvest lot/campaign; link stand burdens to relevant management periods and harvested lots"
+  reference_flow_link: "roundwood_other_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_stand_to_roadside
+      applies_to: "All nodes"
+      rule: "Include attributable stand operations, felling, on-site extraction, bucking, sorting, scaling, and landing handling. Separate biological production, harvest, and grading because their states and handovers differ. Exclude off-site haulage and subsequent treatment/manufacture."
+      source_ids:
+        - fao-wood-harvesting
+        - fao-jfsq-definitions
+    - rule_id: boundary_output_classes
+      applies_to: "Roadside outputs"
+      rule: "Enumerate target logs, other saleable assortments, recovered material, and unrecovered slash separately. Slash left in forest is neither an exported product nor a waste exchange."
+      source_ids:
+        - unsd-cpc-03119
+        - fao-jfsq-definitions
+    - rule_id: boundary_period_asset
+      applies_to: "Stand and shared roads/landing"
+      rule: "Link stand establishment/maintenance, thinning, final harvest, road/landing service, disturbance, and replacement by period. Charge shared service once across its consuming nodes/periods."
+      source_ids:
+        - fao-wood-harvesting
+    - rule_id: boundary_direct_release_coverage
+      applies_to: "managed_stand; harvest_extraction; roadside_assortment"
+      rule: "Reconcile on-site combustion, actual applications and fugitive releases/leaks at every activated node through unique activity-substance-receiving-medium records in cp_direct_release_managed_stand; cp_direct_release_harvest_extraction; cp_direct_release_roadside_assortment. Upstream production of purchased fuel or chemicals does not replace emissions from their use on site; verify coverage and avoid double counting the same activity inside a supplier service. Evidence must support non-activity; missing data are not zero. This obligation does not expand the existing product gate or downstream-use boundary and does not presume combustion, fertilization, chemicals or equipment occur."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Identified coniferous stand/block with species, planted/natural source, tenure, management history, and harvest authorization; standing wood is not assumed burden-free."
+  starting_condition_role: "Managed biological source entering the foreground stand-to-roadside chain."
+  product_classification_scope: "Target other-use logs only; separately record saw/veneer, pulp/panel, fuelwood, and any other assortments."
+  recursive_input_rule: "An input of another roundwood category keeps its upstream dataset once; do not recursively add the same stand or harvest burden."
+  upstream_dataset_requirement: "Use matched datasets for actual purchased inputs and services; disclose proxies."
+  disclosure: "Stand/lot, region, phase, silviculture, harvest equipment, extraction distance, gate, all outputs, bark/moisture, scaling, mass conversion, and asset attribution."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Roundwood of coniferous wood, other"
+    uuid: "3dbbedd2-fb9d-478e-a4b4-4a76a4d97804"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species/mix"
+    - "region and stand regime"
+    - "planted/natural source"
+    - "harvest system"
+    - "intended use and grade"
+    - "log length and diameter"
+    - "bark state"
+    - moisture
+    - "lot mass and under-bark volume"
+    - "lot-specific mass–volume bridge"
+    - "harvest period"
+    - "roadside gate"
+    - "co-product set and allocation method"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "Target logs at roadside"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg as received"
+    rule: "Weigh net wood mass; retain bark and moisture state."
+  - id: underbark_volume
+    applies_to: "Every merchantable assortment"
+    required_property_ref:
+      name: "Solid volume"
+      uuid: ""
+    required_unit: "m³ under bark"
+    rule: "Scale logs by declared method; document species/lot bark deduction when only over-bark dimensions exist."
+  - id: mass_volume_bridge
+    applies_to: "Reference and co-product lots"
+    required_property_ref:
+      name: "Mass and solid volume"
+      uuid: ""
+    required_unit: "kg/m³"
+    rule: "Calculate measured as-received kg divided by matching under-bark m³ for each species/lot/assortment; no universal density."
+  - id: cross_period_normalization
+    applies_to: "Stand and harvest burdens"
+    required_property_ref:
+      name: "Mass and solid volume"
+      uuid: ""
+    required_unit: "kg and m³ by period"
+    rule: "Link establishment, maintenance, thinning, harvest, loss, and asset service to stand and period before allocation."
+  - id: provisional_range_evidence_policy
+    applies_to: "all Ranges and actual exchanges"
+    required_property_ref:
+      name: "compatible property of each actual exchange"
+      uuid: ""
+    required_unit: "native unit of each actual exchange"
+    rule: "All reasoned_estimate Ranges are provisional review prompts for this candidate method, not measured distributions, allowable losses, default quantities or emission factors. Never clip, backfill or force actual records to fit them; investigate state, units, boundary, stocks and evidence when exceeded. Before completing a data package, determine actual quantities and uncertainty from traceable measurements or applicable reviewed quantitative sources. Retain missing amounts, factors and flow identities as gaps that block completeness claims; passing a range screen is not evidence."
+process_map:
+  - id: managed_stand
+    name: "Managed coniferous stand production"
+    inclusion: "required"
+    inclusion_condition: "Stand history and management must be declared"
+    role: "Biological production and standing-wood handover"
+    quantitative_reference: "stand/harvest lot"
+  - id: harvest_extraction
+    name: "Felling, bucking, and extraction"
+    inclusion: "required"
+    inclusion_condition: "Harvested source and route must be declared"
+    role: "Harvest from standing source to mixed landing logs"
+    quantitative_reference: "mixed landing volume/mass"
+  - id: roadside_assortment
+    name: "Roadside grading and handover"
+    inclusion: "required"
+    inclusion_condition: "Target and non-target states must be considered"
+    role: "Sorting, measurement, and release"
+    quantitative_reference: "1 kg target logs and total output set"
+process_inventory:
+  - id: managed_stand
+    label: "Managed coniferous stand production"
+    inputs:
+      product:
+        - row_id: conifer_seedlings
+          role: "Coniferous seedlings for planting"
+          name: "Coniferous nursery seedlings; resolve species, provenance and stock form; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Number of seedlings / item"
+          description: "Activate only for recorded planting or replanting. Declare species, provenance, bare-root/container stock, age/size and delivered nursery gate; separate different stock forms. Attribute delivered seedlings to the relevant stand phase. Naturally regenerated lots with no planting have no seedling exchange."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-planted-forest-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "item/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conifer_seeds
+          role: "Coniferous seed for direct sowing"
+          name: "Coniferous tree seed for direct sowing; resolve species and treatment; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass of seed as supplied / kg"
+          description: "Activate only where direct sowing is documented. Record species, provenance, purity, moisture and treatment, delivered seed mass and sown area. Seed embedded in purchased nursery seedlings is upstream of the seedling supply and is not added here."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-planted-forest-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stand_fertilizer
+          role: "Fertilizer applied to the stand"
+          name: "Applied fertilizer product of the recorded formulation; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass of commercial fertilizer product / kg"
+          description: "Activate only for recorded fertilization in the foreground stand. Instantiate one exchange per commercial formulation; retain N/P/K composition, product mass, date and area. Nutrient mass is a parallel calculation, not the fertilizer-product exchange amount. Nursery fertilizer embedded in purchased seedlings is not duplicated."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-planted-forest-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stand_watering_water
+          role: "Supplied water for establishment or tending"
+          name: "Supplied watering water with recorded source and treatment; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Volume of supplied water / m3"
+          description: "Activate only for measured foreground watering. Record source, supplied-water grade/treatment, meter and pumping boundary. Supplied product water and direct water withdrawal are distinct roles; record a direct withdrawal separately by resource and compartment if it occurs. Rainfall is not supplied water."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-planted-forest-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "m3/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stand_protection_product
+          role: "Recorded vegetation-control or protection product"
+          name: "Recorded commercial protection formulation; one exchange per formulation; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass of commercial formulated product / kg"
+          description: "Activate only for documented chemical vegetation control or tree protection. Record product, active substance and concentration, formulation, applied product mass, date and area. Resolve each formulation separately; any release needs its own substance and receiving-medium evidence. Mechanical weeding does not imply a chemical input."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-planted-forest-management
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stand_energy
+          role: "Recorded establishment and tending operation — Energy supply"
+          name: "Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID"
+          flow_type: "product"
+          property_unit: "Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately"
+          description: "Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation."
+          amount:
+            expression: "Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kWh/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: stand_service
+          role: "Recorded establishment and tending operation — Contracted operation with declared service boundary"
+          name: "Recorded contractor operation, machine and service boundary; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Measured equipment operating time / h"
+          description: "Task: Recorded establishment and tending operation. Activate only for a contractor dataset whose reference is operating hours of the named task/equipment. Record supplier, task, technology, service unit and included fuels, machinery and emissions. If its service unit differs, create an appropriately measured task card. Components already included in the service dataset are not also burdened through separate fuel or machine inputs."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stand_management
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "h/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: standing_wood_handover
+          role: "Standing merchantable coniferous wood"
+          name: "Standing merchantable coniferous timber; generic standing-stock identity with foreground species and stand"
+          flow_type: "product"
+          flow_ref:
+            uuid: "43034c5e-4265-48bc-bd6d-eb64fb5dd78a"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; unit group 93a60a57-a4c8-11da-a746-0800200c9a66; matched under-bark solid volume m3 recorded separately"
+          description: "Internal standing-wood state handed from managed production to the harvest node."
+          amount:
+            expression: "Express the fixed Mass exchange in kg of the same merchantable stemwood stock, from measured mass or a documented same-lot mass/volume bridge with matching moisture and bark coverage; never apply a default density. Reconcile standing merchantable quantity, cut logs, and retained losses for the block."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stand_inventory_at_managed_stand
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference product"
+                basis: "standing merchantable wood per 1 kg target logs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: harvest_extraction
+    label: "Felling, bucking, and extraction"
+    inputs:
+      product:
+        - row_id: standing_wood_input
+          role: "Standing coniferous wood input"
+          name: "Standing merchantable coniferous timber; generic standing-stock identity with foreground species and stand"
+          flow_type: "product"
+          flow_ref:
+            uuid: "43034c5e-4265-48bc-bd6d-eb64fb5dd78a"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; unit group 93a60a57-a4c8-11da-a746-0800200c9a66; matched under-bark solid volume m3 recorded separately"
+          description: "Internal standing-wood receipt linked to the same stand inventory and harvest lot."
+          amount:
+            expression: "Express the fixed Mass exchange in kg of the same merchantable stemwood stock, from measured mass or a documented same-lot mass/volume bridge with matching moisture and bark coverage; never apply a default density. Carry the same stand lot once, without a second upstream burden."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_stand_inventory_at_harvest_extraction
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference product"
+                basis: "internal input per 1 kg target logs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_energy
+          role: "Felling, bucking and extraction — Energy supply"
+          name: "Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID"
+          flow_type: "product"
+          property_unit: "Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately"
+          description: "Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation."
+          amount:
+            expression: "Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kWh/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_lubricant
+          role: "Felling, bucking and extraction — Lubricant consumed by equipment"
+          name: "Recorded lubricant formulation and application; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass of lubricant product / kg"
+          description: "Task: Felling, bucking and extraction. Activate only for lubricant consumption recorded separately from fuel. Identify chain oil, hydraulic oil or engine lubricant and formulation; instantiate separate exchanges for different uses/products. Convert measured volume using documented density. Retain leakage, spent-oil collection and receiver records rather than assuming an emission or disposal route."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_service
+          role: "Felling, bucking and extraction — Contracted operation with declared service boundary"
+          name: "Recorded contractor operation, machine and service boundary; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Measured equipment operating time / h"
+          description: "Task: Felling, bucking and extraction. Activate only for a contractor dataset whose reference is operating hours of the named task/equipment. Record supplier, task, technology, service unit and included fuels, machinery and emissions. If its service unit differs, create an appropriately measured task card. Components already included in the service dataset are not also burdened through separate fuel or machine inputs."
+          amount:
+            expression: "Collect measured quantity by task, lot and period; attribute to the actual consumer before normalization. Inactive activities are omitted; missing records are not zero."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "h/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mixed_roundwood_output
+          role: "Mixed coniferous roundwood at landing"
+          name: "Internal mixed unprocessed coniferous roundwood at landing; concrete identity unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg and parallel under-bark solid m³"
+          description: "Logs physically removed from the block and delivered to the landing before sorting."
+          amount:
+            expression: "Sum removed logs arriving at the landing before destination grading."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_landing_scale_at_harvest_extraction
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference product"
+                basis: "recovered logs per 1 kg target logs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: roadside_assortment
+    label: "Roadside grading and handover"
+    inputs:
+      product:
+        - row_id: grading_energy
+          role: "Roadside grading and handling — Energy supply"
+          name: "Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID"
+          flow_type: "product"
+          property_unit: "Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately"
+          description: "Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation."
+          amount:
+            expression: "Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records."
+            value_mode: "foreground_record"
+            specificity: "technology_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assortment_energy
+              source_ids:
+                - fao-wood-harvesting
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kWh/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: mixed_roundwood_input
+          role: "Mixed landing logs input"
+          name: "Internal mixed roundwood from harvest_extraction; concrete identity unresolved"
+          flow_type: "product"
+          property_unit: "Mass / kg and under-bark solid m³"
+          description: "Internal transfer of the unsorted landing lot into roadside grading."
+          amount:
+            expression: "Carry same landing lot once and reconcile it against sorted outputs and losses."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_landing_scale_at_roadside_assortment
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "100"
+                unit: "kg/kg reference product"
+                basis: "mixed landing logs per 1 kg target logs"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: roundwood_other_output
+          role: "Other-use coniferous roundwood output"
+          name: "Roundwood of coniferous wood, other"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3dbbedd2-fb9d-478e-a4b4-4a76a4d97804"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Saleable target assortment released at the forest-roadside gate. Parallel measurement and support information: Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; under-bark solid m³ in parallel Measurement detail: Weighed target logs normalized to exactly 1 kg reference product, with same-lot volume/moisture record."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: allowed_range
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg reference product"
+                basis: "normalized target output"
+                basis_kind: "reference_flow"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - fao-jfsq-definitions
+        - row_id: coproduct_sawlog
+          role: "Coniferous sawlogs accepted for sawing at roadside"
+          name: "Coniferous sawlogs accepted for sawing at roadside; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; matched under-bark solid volume recorded separately"
+          description: "Activate only for this separately marketable assortment from the same harvest lot. Record conifer species, raw log form, intended use, buyer grade, bark/moisture, measured quantity and roadside receiver. Each log belongs to one grade/use and one final handover; reject material sold for another use is reclassified to that product. Resolve the concrete flow using its actual product qualifiers; any kg/m3 conversion requires matching lot evidence."
+          amount:
+            expression: "Measure the unallocated physical total Q_B of this assortment separately and normalize only by the positive final reference quantity R for the same boundary and period: q_B = Q_B/R. Do not multiply physical co-product quantities by shared-burden allocation factors. Attribute shared environmental burdens separately; zero only when records confirm no such output."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assortment_outputs
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: coproduct_veneer_log
+          role: "Coniferous veneer logs accepted for peeling or slicing at roadside"
+          name: "Coniferous veneer logs accepted for peeling or slicing at roadside; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; matched under-bark solid volume recorded separately"
+          description: "Activate only for this separately marketable assortment from the same harvest lot. Record conifer species, raw log form, intended use, buyer grade, bark/moisture, measured quantity and roadside receiver. Each log belongs to one grade/use and one final handover; reject material sold for another use is reclassified to that product. Resolve the concrete flow using its actual product qualifiers; any kg/m3 conversion requires matching lot evidence."
+          amount:
+            expression: "Measure the unallocated physical total Q_B of this assortment separately and normalize only by the positive final reference quantity R for the same boundary and period: q_B = Q_B/R. Do not multiply physical co-product quantities by shared-burden allocation factors. Attribute shared environmental burdens separately; zero only when records confirm no such output."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assortment_outputs
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: coproduct_pulp_panel
+          role: "Coniferous roundwood accepted for pulp or wood-based panels at roadside"
+          name: "Coniferous roundwood accepted for pulp or wood-based panels at roadside; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; matched under-bark solid volume recorded separately"
+          description: "Activate only for this separately marketable assortment from the same harvest lot. Record conifer species, raw log form, intended use, buyer grade, bark/moisture, measured quantity and roadside receiver. Each log belongs to one grade/use and one final handover; reject material sold for another use is reclassified to that product. Resolve the concrete flow using its actual product qualifiers; any kg/m3 conversion requires matching lot evidence."
+          amount:
+            expression: "Measure the unallocated physical total Q_B of this assortment separately and normalize only by the positive final reference quantity R for the same boundary and period: q_B = Q_B/R. Do not multiply physical co-product quantities by shared-burden allocation factors. Attribute shared environmental burdens separately; zero only when records confirm no such output."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assortment_outputs
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: coproduct_fuelwood
+          role: "Coniferous fuelwood logs sold for energy use at roadside"
+          name: "Coniferous fuelwood logs sold for energy use at roadside; UUID unresolved"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg; matched under-bark solid volume recorded separately"
+          description: "Activate only for this separately marketable assortment from the same harvest lot. Record conifer species, raw log form, intended use, buyer grade, bark/moisture, measured quantity and roadside receiver. Each log belongs to one grade/use and one final handover; reject material sold for another use is reclassified to that product. Resolve the concrete flow using its actual product qualifiers; any kg/m3 conversion requires matching lot evidence."
+          amount:
+            expression: "Measure the unallocated physical total Q_B of this assortment separately and normalize only by the positive final reference quantity R for the same boundary and period: q_B = Q_B/R. Do not multiply physical co-product quantities by shared-burden allocation factors. Attribute shared environmental burdens separately; zero only when records confirm no such output."
+            value_mode: "foreground_record"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_assortment_outputs
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: removed_rejected_logs
+          role: "Rejected untreated logs removed as waste"
+          name: "Untreated rejected coniferous log waste; UUID unresolved"
+          flow_type: "waste"
+          property_unit: "As-received material mass / kg"
+          description: "Activate only when this identified material is physically removed as waste to a recorded receiver/treatment. Record rejected roadside logs separately from saleable fuelwood, bark, and retained slash; retain a matched under-bark volume for the wood balance. Keep retained material in the stock/loss ledger and saleable material in the appropriate product card. Unidentified or contaminated material requires its own composition-specific card before a UUID is selected."
+          amount:
+            expression: "Measure the separate removed stream by receiver, lot and date, retain moisture/bark convention, and reconcile against the same-lot material ledger."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_removed_waste
+              source_ids:
+                - fao-jfsq-definitions
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "kg/kg"
+                basis: "1 kg as-received other-use coniferous roundwood reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate."
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "The allocation rules below are methodological choices of this PCR, not LCA allocation requirements prescribed by FAO statistical definitions. The FAO source supports product distinctions and the under-bark volume convention only. Justify the selected physical allocation driver against the actual joint production system and retain the required sensitivity comparison."
+    source_ids: []
+  - rule_id: allocation_direct_first
+    applies_to: "All nodes"
+    rule: "Assign directly recorded activities to the actual stand, lot, and assortment first. Enumerate all saleable output classes and roadside handovers; distinguish co-product, retained slash, and removed waste."
+    source_ids:
+      - fao-wood-harvesting
+      - fao-jfsq-definitions
+  - rule_id: allocation_shared_volume
+    applies_to: "Joint stand and harvest burdens"
+    rule: "Allocate residual joint burdens among all saleable log assortments by measured under-bark solid m³ at the same gate and period. Record denominator, bark deduction, zero-output lots, and sensitivity to another defensible physical basis. Do not allocate unrecovered slash as a saleable output."
+    source_ids:
+      - fao-jfsq-definitions
+  - rule_id: allocation_period
+    applies_to: "Establishment, maintenance, thinning, final harvest"
+    rule: "Link every input, output, disturbance, and replacement event to stand phase and reporting period. Assign stand burdens over the declared production horizon by attributable harvested under-bark volume, counting thinning outputs once. No universal rotation duration is imposed."
+    source_ids:
+      - fao-wood-harvesting
+  - rule_id: allocation_shared_asset
+    applies_to: "Shared roads, landing, machinery"
+    rule: "Identify every consuming node and service period. Charge construction, maintenance, and operation once by logged use where possible; otherwise use documented harvested-volume share over the service period."
+    source_ids:
+      - fao-wood-harvesting
+  - rule_id: physical_ledger_before_allocation
+    applies_to: "Physical ledgers and attributed burdens"
+    rule: "Retain unallocated physical values for original material balances, handoffs and co-products: q_B = Q_B/R. Apply this PCR's allocation method separately to shared burdens: b_ref = B_shared * a_ref/R; assign direct burdens directly and apply each period/output share once. R is the selected final reference output, excluding internal transfers. Never apply burden share a_ref to original co-product or transfer quantities; distinguish any allocated single-product process projection from the unallocated whole-package material ledger."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_stand_management
+      process_id: "managed_stand"
+      flow_role: "management inputs and shared road"
+      record_type: "stand plan, invoice, activity log"
+      raw_fields: "stand; phase; date; species; planted/natural; input/service; quantity; asset  ; stock species/form; fertilizer composition; protection active substance/concentration; water source/treatment; supply specification; activation/missing flag; actual task/service boundary ; fuel grade/density; electricity voltage/mix; task operating hours"
+      collection_method: "reconcile plan, invoice, and field log; Raw aggregation operation: assign to period then lot/output; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance."
+      unit: "item; kg; L; m3; kWh; h; ha; year"
+      frequency: "each activity and annual close"
+      temporal_coverage: "establishment through harvest"
+      site_scope: "source block and shared assets"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "permits, invoices, GIS plan, signed logs"
+    - protocol_id: cp_stand_inventory_at_managed_stand
+      process_id: "managed_stand"
+      flow_role: "standing wood and loss"
+      record_type: "forest inventory and harvest tally"
+      raw_fields: "stand; species; diameter; height; merchantable volume; bark; mortality; date  ; same-lot mass/volume samples; measured density; moisture; bark coverage; mass estimation/weighing method; conversion uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "field inventory and scaling; Raw aggregation operation: reconcile standing, removed, retained; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance.; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "m³ under bark; kg if weighed"
+      frequency: "pre-harvest and harvest close"
+      temporal_coverage: "all relevant stand phases"
+      site_scope: "source stand"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "inventory plots and scale calibration"
+    - protocol_id: cp_stand_inventory_at_harvest_extraction
+      process_id: "harvest_extraction"
+      flow_role: "standing wood and loss"
+      record_type: "forest inventory and harvest tally"
+      raw_fields: "stand; species; diameter; height; merchantable volume; bark; mortality; date  ; same-lot mass/volume samples; measured density; moisture; bark coverage; mass estimation/weighing method; conversion uncertainty; event_id; transfer_id; counterparty_process_id"
+      collection_method: "field inventory and scaling; Raw aggregation operation: reconcile standing, removed, retained; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance.; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "m³ under bark; kg if weighed"
+      frequency: "pre-harvest and harvest close"
+      temporal_coverage: "all relevant stand phases"
+      site_scope: "source stand"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "inventory plots and scale calibration"
+    - protocol_id: cp_harvest_energy
+      process_id: "harvest_extraction"
+      flow_role: "harvest energy/services"
+      record_type: "machine/fuel log"
+      raw_fields: "machine; task; hours; fuel; electricity; extraction distance; asset  ; fuel grade/density; electricity voltage/supply mix; lubricant application/formulation; contractor boundary; activation/missing flag"
+      collection_method: "meter, issue ticket, invoice; Raw aggregation operation: sum by task; apportion shared use once; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance."
+      unit: "kg; L; kWh; h; km"
+      frequency: "each shift or lot"
+      temporal_coverage: "harvest campaign"
+      site_scope: "block to landing"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "tickets and meters"
+    - protocol_id: cp_landing_scale_at_harvest_extraction
+      process_id: "harvest_extraction"
+      flow_role: "mixed logs and transfer"
+      record_type: "scale and landing tally"
+      raw_fields: "lot; species; log count; length; diameter; bark; mass; moisture; scaling method; event_id; transfer_id; counterparty_process_id"
+      collection_method: "weighbridge and log scaling; Raw aggregation operation: reconcile input, sorted, stored, lost; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance.; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "kg; m³ under bark; % moisture"
+      frequency: "each load/lot"
+      temporal_coverage: "harvest campaign"
+      site_scope: "forest-roadside landing"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, tally, sampling"
+    - protocol_id: cp_landing_scale_at_roadside_assortment
+      process_id: "roadside_assortment"
+      flow_role: "mixed logs and transfer"
+      record_type: "scale and landing tally"
+      raw_fields: "lot; species; log count; length; diameter; bark; mass; moisture; scaling method; event_id; transfer_id; counterparty_process_id"
+      collection_method: "weighbridge and log scaling; Raw aggregation operation: reconcile input, sorted, stored, lost; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance.; Collect this node's events only; pair counterpart transfers by transfer_id and cancel internal transfers at system aggregation. Assign each shared event to one node without duplicate measurement."
+      unit: "kg; m³ under bark; % moisture"
+      frequency: "each load/lot"
+      temporal_coverage: "harvest campaign"
+      site_scope: "forest-roadside landing"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, tally, sampling"
+    - protocol_id: cp_assortment_outputs
+      process_id: "roadside_assortment"
+      flow_role: "target and co-output"
+      record_type: "sort and stock/sales ticket"
+      raw_fields: "lot; use; grade; destination; length; diameter; bark; mass; volume; stock"
+      collection_method: "grade inspection and weighing/scaling; Raw aggregation operation: mutually exclusive output classes; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance."
+      unit: "kg; m³ under bark"
+      frequency: "each lot and close"
+      temporal_coverage: "harvest campaign"
+      site_scope: "forest-roadside landing"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "buyer spec, sort and scale tickets"
+    - protocol_id: cp_assortment_energy
+      process_id: "roadside_assortment"
+      flow_role: "roadside grading/handling diesel and electricity"
+      record_type: "machine, meter and issue records"
+      raw_fields: "machine; task; lot; fuel grade/density; kg/L; kWh; voltage/supply mix; hours; activation/missing"
+      collection_method: "meter and reconcile issue/task logs; Raw aggregation operation: direct task assignment; apportion shared use once by throughput/hours; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance."
+      unit: "kg; L; kWh; h"
+      frequency: "each shift/lot"
+      temporal_coverage: "roadside sorting through handover"
+      site_scope: "roadside landing"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, fuel tickets and logs"
+    - protocol_id: cp_removed_waste
+      process_id: "roadside_assortment"
+      flow_role: "separate exported wood/bark waste streams"
+      record_type: "weighing, screening and receiver tickets"
+      raw_fields: "lot; material; treatment/contamination; mass/volume; moisture; bark; screen size; receiver; treatment; date"
+      collection_method: "measure each stream and reconcile receiver tickets; Raw aggregation operation: separate products, returns, exported waste and retained material; reconcile like measurement bases; Execute final-reference division once only: for a raw lot total, divide the corresponding physical or attributed amount by the positive final reference-product quantity of the same boundary and period; for a local per-process-output quantity, multiply by the measured process-output/final-reference-quantity ratio and any still-required reviewed burden attribution; if already reported per final reference quantity, retain it without another division. Keep unallocated physical transfer, balance and co-product ledgers; burden allocation must not shrink the physical mass balance."
+      unit: "kg; m3"
+      frequency: "each lot/removal"
+      temporal_coverage: "harvest through roadside gate"
+      site_scope: "actual generating node"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, composition/moisture test and receiver tickets"
+    - protocol_id: cp_direct_release_managed_stand
+      process_id: "managed_stand"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_direct_release_harvest_extraction
+      process_id: "harvest_extraction"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+    - protocol_id: cp_direct_release_roadside_assortment
+      process_id: "roadside_assortment"
+      flow_role: "Per-node actual direct releases and coverage decisions"
+      record_type: "Activity, measurement and method-evidence ledger"
+      raw_fields: "site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total"
+      collection_method: "Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package."
+      unit: "kg per substance/medium; retain native activity units"
+      frequency: "Each event and lot/reporting-period reconciliation"
+      temporal_coverage: "Periods matched to node activity and final reference lots"
+      site_scope: "Actual activity sites; one owner for each shared event"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix"
+  calculation_rules:
+    - id: calc_mass_volume
+      applies_to: "Each assortment lot"
+      rule: "kg_per_m3 = measured_as_received_kg / measured_underbark_m3 for the matching species, moisture, and lot; no universal density."
+      inputs:
+        - "weighed kg"
+        - "scaled m³"
+        - "bark and moisture records"
+      output: "conversion factor and uncertainty"
+      source_ids:
+        - fao-jfsq-definitions
+    - id: calc_output_balance
+      applies_to: "Landing output set"
+      rule: "mixed_kg = target_kg + non_target_kg + removed_waste_kg + measured_stock_or_loss_change_kg; reconcile m³ separately on under-bark basis."
+      inputs:
+        - harvest
+        - sort
+        - "stock tickets"
+      output: "balance and exception log"
+      source_ids:
+        - fao-jfsq-definitions
+    - id: calc_normalize
+      applies_to: "Final-reference normalization of physical ledgers and environmental burdens"
+      rule: "R is positive final accepted as-received other-use log mass (kg) for the same lot, boundary and period; co-products and internal transfers are excluded from that denominator. Report unallocated material, transfer and co-product totals Q as q_phys = Q/R. For environmental burdens B only, complete evidenced direct, period, output and asset attribution once, then report b_ref = B_attributed/R. Do not apply burden shares to physical ledgers or divide already final-reference amounts again."
+      inputs:
+        - "unallocated physical ledger Q"
+        - "environmental burdens B"
+        - "evidenced attribution"
+        - "matched reference quantity R"
+      output: "amount per 1 kg target logs"
+      source_ids:
+        - fao-wood-harvesting
+    - id: calculate_direct_release_ledger
+      applies_to: "managed_stand; harvest_extraction; roadside_assortment"
+      rule: "For each unique event, substance and medium, obtain raw release E from measurement or the cited applicable method using activity A and a compatible factor EF; use E = A * EF only for a genuinely simple-factor method, after checking units and abatement scope. Do not add different substances/media; retain an unallocated raw-release ledger. Divide attributed burden totals once by matched positive final reference quantity R; do not renormalize final-reference intensities or allocate a shared event twice. Unexplained material residuals are not automatically emissions and missing factors are not zero."
+      inputs:
+        - cp_direct_release_managed_stand
+        - cp_direct_release_harvest_extraction
+        - cp_direct_release_roadside_assortment
+        - "existing emission cards"
+        - "supplier coverage"
+        - "reference quantity"
+      output: "Node/substance/medium-specific raw and attributed amounts and unresolved gaps"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "Output lots"
+      requirement: "Species, intended use, grade, state, and destination must match the source class and selected reference flow."
+      evidence: "sort ticket and buyer specification"
+    - id: dq_mass_volume
+      applies_to: "All log outputs"
+      requirement: "Retain calibrated weights, log scaling, bark deduction, moisture sampling, lot-specific kg/m³ bridge, and uncertainty. Volume-only data do not directly instantiate a Mass UUID."
+      evidence: "weighbridge, scale, sample sheet"
+    - id: dq_completeness
+      applies_to: "Full chain"
+      requirement: "Reconcile stand, harvest, landing, sorted outputs, fuel, stock, slash, and shared infrastructure with no duplicate burden."
+      evidence: "signed balance and attribution ledger"
+    - id: dq_temporal
+      applies_to: "Multi-period stand"
+      requirement: "Declare phase, thinning/final harvest, reporting periods, and asset service, disturbance, or replacement."
+      evidence: "stand and event ledger"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "Reference product"
+    rule: "Require exactly 1 kg normalized as-received other-use coniferous logs at forest roadside, with the verified Mass flow/property/unit group and separate measured under-bark m³. Reject volume-property assertions for the Mass UUID."
+    source_ids:
+      - unsd-cpc-03119
+      - fao-jfsq-definitions
+  - rule_id: validate_category
+    applies_to: "Roadside output set"
+    rule: "Check species and intended use; reject saw/veneer, pulp/panel, fuelwood, non-coniferous, or treated/fabricated goods as reference product. Account for every other output once."
+    source_ids:
+      - unsd-cpc-03119
+      - fao-jfsq-definitions
+  - rule_id: validate_balance
+    applies_to: "Harvest and sorting"
+    rule: "Reconcile mass and under-bark volume; separately disclose retained biomass, removed waste, unsold stock, and co-products."
+    source_ids:
+      - fao-jfsq-definitions
+  - rule_id: validate_period_asset
+    applies_to: "Shared activities"
+    rule: "Trace each stand phase and shared road/landing service period into one ledger; reject missing disturbance/replacement treatment or duplicate charges."
+    source_ids:
+      - fao-wood-harvesting
+  - rule_id: validate_identity_coverage
+    applies_to: "Conditional exchanges"
+    rule: "Final exchanges need actual material/state, direction, type, property/unit, and verified UUID. Semantic umbrella cards cannot be published as fabricated fixed identities."
+    source_ids:
+      - fao-wood-harvesting
+  - rule_id: validate_card_activation_units
+    applies_to: "All refined cards"
+    rule: "Verify activation and actual material/formulation/task/supply specification; missing records are not zero. Each amount and Range uses one compatible property/unit; retain density and wood mass/volume bridges. Check contractor-service components against fuel, equipment and emissions to avoid double burdens."
+    source_ids:
+      - fao-wood-harvesting
+  - rule_id: validate_direct_release_coverage
+    applies_to: "managed_stand; harvest_extraction; roadside_assortment"
+    rule: "For every activated node, reconcile its activity list against cp_direct_release_managed_stand; cp_direct_release_harvest_extraction; cp_direct_release_roadside_assortment: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground stand-to-roadside dataset reusable as secondary/background data only for declared species, use, geography, and harvest route"
+  downstream_use: "Process and lifecyclemodel production of compatible other-use coniferous logs and downstream systems"
+  allowed_use: "Mass-normalized roadside inventory with measured under-bark volume and complete co-product attribution"
+  excluded_use: "Automatic substitution for sawlogs, veneer logs, pulpwood, fuelwood, non-coniferous wood, mill-gate products, or treated goods"
+  required_metadata: "PCR id/version; stand/lot; species; region; management/harvest system; intended use; grade; bark/moisture; gate; period; kg and under-bark m³; conversion; co-products; allocation"
+  required_quality_disclosure: "Primary record coverage; mass/volume uncertainty; provisional ranges; unresolved conditional identities; period and shared-asset attribution; upstream proxies"
+  update_trigger: "Changed use, species, harvest technology, geography, road service, measurement bridge, or reviewed range/identity evidence"
+data_sources:
+  - id: "unsd-cpc-03119"
+    type: "official_guidance"
+    reference: "https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/03119"
+    used_for: "Product identity, uses, and subclass boundary"
+  - id: "fao-jfsq-definitions"
+    type: "official_guidance"
+    reference: "https://www.fao.org/forestry-fao/7800-0944787ecbf6036088182f841ab15fe42.pdf"
+    used_for: "Industrial roundwood classes, roadside stock, under-bark volume and co-output distinctions"
+  - id: "fao-wood-harvesting"
+    type: "official_guidance"
+    reference: "https://www.fao.org/sustainable-forest-management-toolbox/modules/wood-harvesting/2/en?tabInx=0"
+    used_for: "Planning, felling, extraction, landing, roads, and process decomposition"
+  - id: "fao-planted-forest-management"
+    type: "official_guidance"
+    reference: "https://www.fao.org/sustainable-forest-management-toolbox/modules/management-of-planted-forests/1/en?tabInx=1; https://www.fao.org/4/AC601E/ac601e03.htm"
+    used_for: "Conditional planting stock, fertilization, protection and watering inputs; no universal application rates"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:11692f1ae4ccf6aaa62ff54dad00d395e06cbc7250f5c739174c9bcb753168c8"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_4927"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 4927
+          line: 60
+          column: 1
+        end:
+          offset: 7698
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified coniferous stand/block with species, planted/natural source, tenure, management history, and harvest authorization; standing wood is not assumed burden-free. |\n| starting_condition_role | Managed biological source entering the foreground stand-to-roadside chain. |\n| product_classification_scope | Target other-use logs only; separately record saw/veneer, pulp/panel, fuelwood, and any other assortments. |\n| recursive_input_rule | An input of another roundwood category keeps its upstream dataset once; do not recursively add the same stand or harvest burden. |\n| upstream_dataset_requirement | Use matched datasets for actual purchased inputs and services; disclose proxies. |\n| disclosure | Stand/lot, region, phase, silviculture, harvest equipment, extraction distance, gate, all outputs, bark/moisture, scaling, mass conversion, and asset attribution. |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_stand_to_roadside` | All nodes | Include attributable stand operations, felling, on-site extraction, bucking, sorting, scaling, and landing handling. Separate biological production, harvest, and grading because their states and handovers differ. Exclude off-site haulage and subsequent treatment/manufacture. | `fao-wood-harvesting`; `fao-jfsq-definitions` |\n| `boundary_output_classes` | Roadside outputs | Enumerate target logs, other saleable assortments, recovered material, and unrecovered slash separately. Slash left in forest is neither an exported product nor a waste exchange. | `unsd-cpc-03119`; `fao-jfsq-definitions` |\n| `boundary_period_asset` | Stand and shared roads/landing | Link stand establishment/maintenance, thinning, final harvest, road/landing service, disturbance, and replacement by period. Charge shared service once across its consuming nodes/periods. | `fao-wood-harvesting` |\n| `boundary_direct_release_coverage` | `managed_stand`; `harvest_extraction`; `roadside_assortment` | Reconcile on-site combustion, actual applications and fugitive releases/leaks at every activated node through unique activity-substance-receiving-medium records in cp_direct_release_managed_stand; cp_direct_release_harvest_extraction; cp_direct_release_roadside_assortment. Upstream production of purchased fuel or chemicals does not replace emissions from their use on site; verify coverage and avoid double counting the same activity inside a supplier service. Evidence must support non-activity; missing data are not zero. This obligation does not expand the existing product gate or downstream-use boundary and does not presume combustion, fertilization, chemicals or equipment occur. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 186
+              line: 8
+              column: 1
+            end:
+              offset: 244
+              line: 8
+              column: 59
+          text: "# Other coniferous industrial roundwood at forest roadside"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 4927
+              line: 60
+              column: 1
+            end:
+              offset: 4948
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_49531"
+      family: "allocation"
+      span:
+        start:
+          offset: 49531
+          line: 699
+          column: 1
+        end:
+          offset: 51993
+          line: 711
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\nThe allocation rules below are methodological choices of this PCR, not LCA allocation requirements prescribed by FAO statistical definitions. The FAO source supports product distinctions and the under-bark volume convention only. Justify the selected physical allocation driver against the actual joint production system and retain the required sensitivity comparison.\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_direct_first` | All nodes | Assign directly recorded activities to the actual stand, lot, and assortment first. Enumerate all saleable output classes and roadside handovers; distinguish co-product, retained slash, and removed waste. | `fao-wood-harvesting`; `fao-jfsq-definitions` |\n| `allocation_shared_volume` | Joint stand and harvest burdens | Allocate residual joint burdens among all saleable log assortments by measured under-bark solid m³ at the same gate and period. Record denominator, bark deduction, zero-output lots, and sensitivity to another defensible physical basis. Do not allocate unrecovered slash as a saleable output. | `fao-jfsq-definitions` |\n| `allocation_period` | Establishment, maintenance, thinning, final harvest | Link every input, output, disturbance, and replacement event to stand phase and reporting period. Assign stand burdens over the declared production horizon by attributable harvested under-bark volume, counting thinning outputs once. No universal rotation duration is imposed. | `fao-wood-harvesting` |\n| `allocation_shared_asset` | Shared roads, landing, machinery | Identify every consuming node and service period. Charge construction, maintenance, and operation once by logged use where possible; otherwise use documented harvested-volume share over the service period. | `fao-wood-harvesting` |\n| `physical_ledger_before_allocation` | Physical ledgers and attributed burdens | Retain unallocated physical values for original material balances, handoffs and co-products: q_B = Q_B/R. Apply this PCR's allocation method separately to shared burdens: b_ref = B_shared * a_ref/R; assign direct burdens directly and apply each period/output share once. R is the selected final reference output, excluding internal transfers. Never apply burden share a_ref to original co-product or transfer quantities; distinguish any allocated single-product process projection from the unallocated whole-package material ledger. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 186
+              line: 8
+              column: 1
+            end:
+              offset: 244
+              line: 8
+              column: 59
+          text: "# Other coniferous industrial roundwood at forest roadside"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 49531
+              line: 699
+              column: 1
+            end:
+              offset: 49571
+              line: 699
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_71298"
+      family: "validation"
+      span:
+        start:
+          offset: 71298
+          line: 748
+          column: 1
+        end:
+          offset: 73890
+          line: 760
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | Reference product | Require exactly 1 kg normalized as-received other-use coniferous logs at forest roadside, with the verified Mass flow/property/unit group and separate measured under-bark m³. Reject volume-property assertions for the Mass UUID. | `unsd-cpc-03119`; `fao-jfsq-definitions` |\n| `validate_category` | Roadside output set | Check species and intended use; reject saw/veneer, pulp/panel, fuelwood, non-coniferous, or treated/fabricated goods as reference product. Account for every other output once. | `unsd-cpc-03119`; `fao-jfsq-definitions` |\n| `validate_balance` | Harvest and sorting | Reconcile mass and under-bark volume; separately disclose retained biomass, removed waste, unsold stock, and co-products. | `fao-jfsq-definitions` |\n| `validate_period_asset` | Shared activities | Trace each stand phase and shared road/landing service period into one ledger; reject missing disturbance/replacement treatment or duplicate charges. | `fao-wood-harvesting` |\n| `validate_identity_coverage` | Conditional exchanges | Final exchanges need actual material/state, direction, type, property/unit, and verified UUID. Semantic umbrella cards cannot be published as fabricated fixed identities. | `fao-wood-harvesting` |\n| `validate_card_activation_units` | All refined cards | Verify activation and actual material/formulation/task/supply specification; missing records are not zero. Each amount and Range uses one compatible property/unit; retain density and wood mass/volume bridges. Check contractor-service components against fuel, equipment and emissions to avoid double burdens. | `fao-wood-harvesting` |\n| `validate_direct_release_coverage` | `managed_stand`; `harvest_extraction`; `roadside_assortment` | For every activated node, reconcile its activity list against cp_direct_release_managed_stand; cp_direct_release_harvest_extraction; cp_direct_release_roadside_assortment: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 186
+              line: 8
+              column: 1
+            end:
+              offset: 244
+              line: 8
+              column: 59
+          text: "# Other coniferous industrial roundwood at forest roadside"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 71298
+              line: 748
+              column: 1
+            end:
+              offset: 71320
+              line: 748
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_stand_to_roadside"
+      identity_kind: "explicit"
+      unit_id: "normative_4927"
+      source_span:
+        start:
+          offset: 5982
+          line: 75
+          column: 1
+        end:
+          offset: 6352
+          line: 75
+          column: 371
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_output_classes"
+      identity_kind: "explicit"
+      unit_id: "normative_4927"
+      source_span:
+        start:
+          offset: 6353
+          line: 76
+          column: 1
+        end:
+          offset: 6625
+          line: 76
+          column: 273
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_period_asset"
+      identity_kind: "explicit"
+      unit_id: "normative_4927"
+      source_span:
+        start:
+          offset: 6626
+          line: 77
+          column: 1
+        end:
+          offset: 6900
+          line: 77
+          column: 275
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_direct_release_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_4927"
+      source_span:
+        start:
+          offset: 6901
+          line: 78
+          column: 1
+        end:
+          offset: 7696
+          line: 78
+          column: 796
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 49573
+          line: 701
+          column: 1
+        end:
+          offset: 49941
+          line: 701
+          column: 369
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_direct_first"
+      identity_kind: "explicit"
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 50014
+          line: 705
+          column: 1
+        end:
+          offset: 50310
+          line: 705
+          column: 297
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_shared_volume"
+      identity_kind: "explicit"
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 50311
+          line: 706
+          column: 1
+        end:
+          offset: 50694
+          line: 706
+          column: 384
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_period"
+      identity_kind: "explicit"
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 50695
+          line: 707
+          column: 1
+        end:
+          offset: 51074
+          line: 707
+          column: 380
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_shared_asset"
+      identity_kind: "explicit"
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 51075
+          line: 708
+          column: 1
+        end:
+          offset: 51371
+          line: 708
+          column: 297
+    - pointer: "/allocation_rules/5"
+      rule_id: "physical_ledger_before_allocation"
+      identity_kind: "explicit"
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 51372
+          line: 709
+          column: 1
+        end:
+          offset: 51991
+          line: 709
+          column: 620
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 71393
+          line: 752
+          column: 1
+        end:
+          offset: 71710
+          line: 752
+          column: 318
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_category"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 71711
+          line: 753
+          column: 1
+        end:
+          offset: 71977
+          line: 753
+          column: 267
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 71978
+          line: 754
+          column: 1
+        end:
+          offset: 72171
+          line: 754
+          column: 194
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_period_asset"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 72172
+          line: 755
+          column: 1
+        end:
+          offset: 72395
+          line: 755
+          column: 224
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_identity_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 72396
+          line: 756
+          column: 1
+        end:
+          offset: 72649
+          line: 756
+          column: 254
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_card_activation_units"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 72650
+          line: 757
+          column: 1
+        end:
+          offset: 73040
+          line: 757
+          column: 391
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_direct_release_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 73041
+          line: 758
+          column: 1
+        end:
+          offset: 73888
+          line: 758
+          column: 848
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_4927"
+      source_span:
+        start:
+          offset: 4927
+          line: 60
+          column: 1
+        end:
+          offset: 4948
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_4927"
+      source_span:
+        start:
+          offset: 4976
+          line: 64
+          column: 1
+        end:
+          offset: 5909
+          line: 71
+          column: 180
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 49531
+          line: 699
+          column: 1
+        end:
+          offset: 49571
+          line: 699
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 49573
+          line: 701
+          column: 1
+        end:
+          offset: 49941
+          line: 701
+          column: 369
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 50014
+          line: 705
+          column: 1
+        end:
+          offset: 50310
+          line: 705
+          column: 297
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 50311
+          line: 706
+          column: 1
+        end:
+          offset: 50694
+          line: 706
+          column: 384
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 50695
+          line: 707
+          column: 1
+        end:
+          offset: 51074
+          line: 707
+          column: 380
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 51075
+          line: 708
+          column: 1
+        end:
+          offset: 51371
+          line: 708
+          column: 297
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_49531"
+      source_span:
+        start:
+          offset: 51372
+          line: 709
+          column: 1
+        end:
+          offset: 51991
+          line: 709
+          column: 620
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_71298"
+      source_span:
+        start:
+          offset: 71298
+          line: 748
+          column: 1
+        end:
+          offset: 71320
+          line: 748
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:11692f1ae4ccf6aaa62ff54dad00d395e06cbc7250f5c739174c9bcb753168c8"
+  generated_content_sha256: "sha256:4495493536b82de9e2747fa5e64e7030987e67d42962ba5d49db08117cb7304c"

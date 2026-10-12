@@ -41,19 +41,21 @@ function expandMap(value: unknown): unknown[] {
 export function encodeSearchEntries(entries: Record<string, string>): Record<string, unknown> {
   return Object.fromEntries(Object.entries(entries).map(([key, payload]) => {
     const value: unknown = JSON.parse(payload);
+    if (!Array.isArray(value) || JSON.stringify(value) !== payload) return fail();
     return [key, /^\d+\.map$/u.test(key) ? compactMap(value) : value];
   }));
 }
 
-/** v1 remains readable for previously generated shards. v2 omits null score slots. */
-export function decodeSearchEntries(value: unknown, compact: boolean): Record<string, string> {
+/** v1 stores strings; v2 stores native arrays; v3 omits null score slots. */
+export function decodeSearchEntries(value: unknown, version: 1 | 2 | 3): Record<string, string> {
   if (!record(value)) return fail();
   return Object.fromEntries(Object.entries(value).map(([key, payload]) => {
-    if (!compact) {
+    if (version === 1) {
       if (typeof payload !== "string") return fail();
       return [key, payload];
     }
-    const expanded = /^\d+\.map$/u.test(key) ? expandMap(payload) : payload;
+    if (!Array.isArray(payload)) return fail();
+    const expanded = version === 3 && /^\d+\.map$/u.test(key) ? expandMap(payload) : payload;
     const serialized = JSON.stringify(expanded);
     if (serialized === undefined) return fail();
     return [key, serialized];
