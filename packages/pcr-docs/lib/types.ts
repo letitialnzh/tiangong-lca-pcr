@@ -65,6 +65,7 @@ export type PcrRecord = {
   downloads: Download[];
   dataPath: string;
   dataUrl: string;
+  dataKey?: string;
   classificationRefs: Array<{
     system: string;
     version: string;

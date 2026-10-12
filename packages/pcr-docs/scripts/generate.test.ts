@@ -1,6 +1,7 @@
 import {parseSiteManifest} from "../lib/site-contracts.ts";
 import {searchTerms} from "../lib/search-terms.ts";
 import {decodeSearchEntries} from "../lib/search-codec.ts";
+import {decodeRecordData} from "../lib/record-data.ts";
 import {Index} from "flexsearch";
 import {isUnknownRecord} from "../../pcr-core/src/types.ts";
 import {assertManifest} from "../../../builder/lib/schema-contracts.ts";
@@ -205,6 +206,14 @@ test("real generator preserves multilingual released snapshots and excludes open
         record.versions!.map((item) => item.version),
         ["1.0.0", "1.1.0"],
       );
+    const allRecords = [site.records[0]!, ...site.historicalRecords!];
+    assert.equal(new Set(allRecords.map(record => record.dataUrl)).size, 1, "Current and historical data share one bounded transport pack");
+    for (const record of allRecords) {
+      const packed: unknown = JSON.parse(fs.readFileSync(path.join(output, "public", record.dataUrl), "utf8"));
+      const expected = fs.readFileSync(path.join(output, ".generated", record.dataPath), "utf8");
+      assert.equal(JSON.stringify(decodeRecordData(packed, record.dataKey)), expected);
+      assert.equal(fs.existsSync(path.join(output, "public/generated", record.dataPath)), false);
+    }
     const source = createDocumentSource(site);
     assert.deepEqual(
       publicHomeLanguages(site).map((language) => language.code),

@@ -1,10 +1,1508 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "01445"
-  title: "Sunflower seed"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.sunflower-seed"
+  classification_refs: "CPC 3.0 01445 Sunflower seed; narrower whole-commodity route; mapping relation: narrower"
+  covered_products: "Whole sunflower seed for oil, confection/food and bird-food markets at a documented in-farm hand-off"
+  excluded_products: "Sowing seed under an unverified output identity; oil, meal, kernels, roasted seed"
+  representative_product: "Whole harvested sunflower seed, actual accepted mass"
+  production_route: "Managed field crop; head/seed harvest and threshing; conditional on-farm first cleaning, grading, drying and storage"
+  market_state: "Market class, grade, foreign matter, moisture and hand-off are lot-specific rather than implied by the platform flow"
+functional_unit:
+  what: "Whole sunflower seed at the actual in-farm output hand-off"
+  how_much: "1 kg actual accepted whole-seed mass"
+  how_well: "Declare oilseed, confection/non-oil or bird-food class, grade/acceptance rule, measured moisture and foreign matter; no inferred cleaning or storage grade"
+  how_long_or_cycle: "Identified crop year, field and lot; every included conditioning run is traceable"
+  reference_flow_link: "bulk_seed; clean_seed; accepted_seed; dry_seed"
+  reference_flow_selection: "exactly_one_declared_terminal_output"
+  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+system_boundary:
+  rules:
+    - rule_id: b_field
+      applies_to: "sunflower_cultivation"
+      rule: "Include seedbed preparation, planting, nutrient/protection management, irrigated water and pumping when practiced, and machinery up to mature heads ready for harvest."
+      source_ids:
+        - ndsu-sunflower-guide-2020
+    - rule_id: b_harvest
+      applies_to: "sunflower_harvest"
+      rule: "Separate head/seed capture and threshing from standing crop production; record collected bulk seed, uncollected loss and incidental stalk/head material distinctly."
+      source_ids:
+        - ndsu-sunflower-guide-2020
+    - rule_id: b_treatment
+      applies_to: "sunflower_cleaning, sunflower_grading, sunflower_drying"
+      rule: "Include first cleaning, sorting and stabilization only if actually performed before hand-off; log accepted, downgraded, reject, moisture-loss and storage states."
+      source_ids:
+        - ndsu-sunflower-guide-2020
+        - ndsu-sunflower-drying-2022
+    - rule_id: b_exit
+      applies_to: "Final output"
+      rule: "End at the declared in-farm whole-seed transfer. Exclude off-farm movement and oil/food processing; do not reinterpret “in the farm” as “at farm gate”."
+      source_ids:
+        - ndsu-sunflower-guide-2020
+boundary_abstraction:
+  declared_starting_condition: "Pre-sowing field in a stated rotation and documented opening soil condition; identify purchased inputs and field operations from preparation through harvest"
+  starting_condition_role: "Crop establishment is the foreground start; purchased seed, fertilizer, crop protection, fuel and electricity carry upstream datasets"
+  product_classification_scope: "Whole commodity seed in the narrower CPC 01445 route, with oilseed and non-oil classes separated"
+  recursive_input_rule: "Purchased sunflower sowing seed is an upstream input; never recursively assign this output dataset to itself"
+  upstream_dataset_requirement: "Identify upstream supply datasets for sowing seed, nutrients, crop protection, fuel, electricity and services; disclose gaps"
+  disclosure: "Field and crop year, market class, actual in-farm hand-off, treatment and storage coverage, water route, residue fate"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Sunflower seed ; production mix “in the farm”"
+    uuid: "a62436d6-249c-4ac3-b5f4-653d0f277519"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "farm and field"
+    - "crop year and lot"
+    - "oilseed/confection/bird-food class"
+    - "variety where known"
+    - "measured harvest and hand-off moisture"
+    - "grade and foreign matter"
+    - "actual hand-off"
+    - harvest
+    - cleaning
+    - grading
+    - "drying and storage scope"
+    - "irrigated or rainfed route"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "All seed state transfers"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use weighed actual mass and moisture at each transfer; record conversion to dry solids separately."
+  - id: wet_dry_balance
+    applies_to: "Drying"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Dry solids = wet mass × (1 − measured wet-basis moisture fraction); reconcile input and output dry solids with rejects."
+  - id: input_units
+    applies_to: "Nutrients, energy and water"
+    required_property_ref:
+      name: "Appropriate measured property"
+      uuid: ""
+    required_unit: "kg, L, kWh or m3"
+    rule: "Keep original unit and document product-to-nutrient, fuel-to-energy, or water-volume conversions."
+process_map:
+  - id: sunflower_cultivation
+    name: "Field crop management"
+    inclusion: "required"
+    inclusion_condition: "Each field and crop year"
+    role: "Managed biological production; rainfed or irrigated"
+    quantitative_reference: "Field records per accepted kg"
+  - id: sunflower_harvest
+    name: "Head and seed capture"
+    inclusion: "required"
+    inclusion_condition: "Each harvest lot"
+    role: "Independent harvest and threshing"
+    quantitative_reference: "Collected seed and field loss"
+  - id: sunflower_cleaning
+    name: "First cleaning"
+    inclusion: "conditional"
+    inclusion_condition: "Performed before hand-off"
+    role: "Raw bulk to prepared whole seed"
+    quantitative_reference: "Inlet/outlet kg"
+  - id: sunflower_grading
+    name: "Market-class sorting"
+    inclusion: "conditional"
+    inclusion_condition: "Two or more quality/destination states are separated"
+    role: "Accepted, downgraded and rejected output hand-offs"
+    quantitative_reference: "kg by grade and fate"
+  - id: sunflower_drying
+    name: "On-farm preservation"
+    inclusion: "conditional"
+    inclusion_condition: "Drying or active storage occurs before hand-off"
+    role: "Usable wet seed to stable measured-moisture state"
+    quantitative_reference: "Moisture, mass and energy by run"
+process_inventory:
+  - id: sunflower_cultivation
+    label: "Field crop management"
+    inputs:
+      product:
+        - row_id: sowing_seed_input
+          role: "Sowing seed input"
+          name: "Verified actual sowing-seed product identity; never the commodity output UUID."
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The sowing seed used to establish this field enters cultivation as a purchased or retained input. Raw activity or stage basis: Per field and accepted seed kg.."
+          amount:
+            expression: "Seed actually planted by field and event."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "50"
+                unit: "kg seed/ha"
+                basis: "one crop hectare; broad provisional mass screen across seed sizes and plant populations; use the measured seed lot"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sunflower_cultivation_agricultural_nutrient_inputs
+          role: "Agricultural nutrient and fertilizer inputs"
+          name: "Agricultural nutrient and fertilizer supply"
+          flow_type: "product"
+          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
+          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: Per field and accepted seed kg.."
+          amount:
+            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2000"
+                unit: "kg product/ha"
+                basis: "one crop hectare, each fertilizer product separately; provisional screen only, replace with field application records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: crop_protection
+          role: "Crop-protection products"
+          name: "Actual crop-protection product identity."
+          flow_type: "product"
+          property_unit: "Mass / kg product"
+          description: "Pest, disease and weed control products enter only when actually applied. Raw activity or stage basis: Per field and accepted seed kg.."
+          amount:
+            expression: "Sum applications by field and product."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "200"
+                unit: "kg product/ha"
+                basis: "one crop hectare, each applied protection or harvest-aid product separately; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: irrigation_water
+          role: "Irrigation water"
+          name: "Actual irrigation water supply identity."
+          flow_type: "product"
+          property_unit: "Volume / m3"
+          description: "Applied irrigation water enters the field only on an irrigated route. Raw activity or stage basis: Per field and accepted seed kg.."
+          amount:
+            expression: "Meter applied water by field; rainfed fields record route without a water exchange."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "m3/ha"
+                basis: "one crop hectare; zero on rainfed routes, measured withdrawal/delivery on irrigated routes; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_fuel
+          role: "Field machinery fuel"
+          name: "Actual fuel product identity."
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Fuel for establishment and field management enters the field operation. Raw activity or stage basis: Per field and accepted seed kg.."
+          amount:
+            expression: "Meter or derive fuel from machine logs by field; keep conversion factor."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1000"
+                unit: "L/ha"
+                basis: "one crop hectare; all assigned field operations, carrier-specific measured litres; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: field_electricity
+          role: "Field and irrigation electricity"
+          name: "Actual electricity supply identity."
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Electricity for actual field equipment and irrigation pumps enters when used. Raw activity or stage basis: Per field and accepted seed kg.."
+          amount:
+            expression: "Meter or log use by field and pump run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20000"
+                unit: "kWh/ha"
+                basis: "one crop hectare; conditional electric machinery or irrigation pumping, measured kWh; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mature_heads
+          role: "Mature heads in standing crop"
+          name: "Internal biological state, not a sold seed UUID."
+          flow_type: "product"
+          property_unit: "Estimated seed mass / kg."
+          description: "The mature standing crop is the biological hand-off to independent harvest. Raw activity or stage basis: Per crop year.."
+          amount:
+            expression: "Link field and crop year to the harvest lot; do not treat potential seed as market output."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg potential seed/ha"
+                basis: "one crop hectare; provisional potential-seed screen before harvest loss, not marketed seed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: sunflower_harvest
+    label: "Head and seed capture"
+    inputs:
+      product:
+        - row_id: standing_crop_input
+          role: "Standing mature crop"
+          name: "Internal mature-head state, not a sold product."
+          flow_type: "product"
+          property_unit: "Mass / kg potential seed"
+          description: "Mature heads pass from cultivation to the independent capture operation. Raw activity or stage basis: Per harvest lot.."
+          amount:
+            expression: "Link the producing field and crop year to the harvest lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg potential seed/ha"
+                basis: "one crop hectare; provisional potential-seed screen before harvest loss, not marketed seed"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_fuel
+          role: "Harvest machinery fuel"
+          name: "Actual fuel product identity."
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Fuel for combine and threshing equipment enters the harvest run. Raw activity or stage basis: Per bulk seed kg.."
+          amount:
+            expression: "Meter harvest fuel by field and lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "500"
+                unit: "L/ha"
+                basis: "one harvested hectare, conditional route and measured machinery fuel; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: harvest_electricity
+          role: "Purchased electricity for harvest equipment"
+          name: "Actual electricity supply identity."
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Electricity for harvest equipment enters only when electric machinery is used. Raw activity or stage basis: Per bulk seed kg.."
+          amount:
+            expression: "Meter harvest electricity by field and lot."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5000"
+                unit: "kWh/ha"
+                basis: "one harvested hectare, only where electric harvest service actually operates; provisional screen only"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: bulk_seed
+          role: "Bulk threshed whole seed"
+          name: "Internal harvested seed state before any claimed cleaning or grading."
+          flow_type: "product"
+          property_unit: "Mass / kg."
+          description: "Collected bulk seed leaves harvest before any unverified cleaning or grading. Raw output measurement and reconciliation: Weigh by field and lot; test moisture and foreign material. Raw activity or stage basis: Per harvest lot.."
+          amount:
+            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10000"
+                unit: "kg raw seed/ha"
+                basis: "one harvested hectare; provisional broad captured-seed screen before first conditioning, replace with scale records"
+                basis_kind: "crop_cycle"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: sunflower_cleaning
+    label: "First cleaning"
+    inputs:
+      product:
+        - row_id: bulk_seed_cleaner_input
+          role: "Bulk seed into first cleaner"
+          name: "Internal bulk whole-seed state."
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collected bulk seed enters the first conditioning operation. Raw activity or stage basis: Per prepared seed kg.."
+          amount:
+            expression: "Weigh inlet seed and test moisture and foreign matter by run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_clean
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cleaner_electricity
+          role: "Cleaner electricity"
+          name: "Actual electricity supply identity."
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Powered first cleaning uses metered electricity for the actual run. Raw activity or stage basis: Per prepared seed kg.."
+          amount:
+            expression: "Meter cleaner electricity by run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_clean
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: cleaner_fuel
+          role: "Cleaner fuel"
+          name: "Actual fuel product identity."
+          flow_type: "product"
+          property_unit: "Volume / L"
+          description: "Fuel enters only if the cleaning equipment consumes fuel. Raw activity or stage basis: Per prepared seed kg.."
+          amount:
+            expression: "Meter cleaner fuel by run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_clean
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "L liquid fuel/kg processed seed"
+                basis: "per kg seed entering this actual conditioning or drying run; liquid-fuel screen only, convert other carriers separately"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: clean_seed
+          role: "Prepared whole seed"
+          name: "Internal cleaned whole-seed state, transferred to grading, drying or final in-farm hand-off."
+          flow_type: "product"
+          property_unit: "Mass / kg."
+          description: "Prepared whole seed leaves the first cleaner for its documented next use. Raw output measurement and reconciliation: Weigh cleaned mass and record moisture and foreign matter. Raw activity or stage basis: Per cleaning run.."
+          amount:
+            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_clean
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: clean_reject
+          role: "Screen-outs and dust"
+          name: "Off-spec seed/debris by documented re-cleaning, downgraded sale or disposal fate."
+          flow_type: "waste"
+          property_unit: "Mass / kg."
+          description: "Screen-outs leave the cleaner through a documented rework, downgrade or disposal route. Raw activity or stage basis: Per cleaning run.."
+          amount:
+            expression: "Weigh or estimate removed material and link any return to a new run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_clean
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: sunflower_grading
+    label: "Market-class sorting"
+    inputs:
+      product:
+        - row_id: grade_seed_input
+          role: "Whole seed into sorter"
+          name: "Internal whole-seed state with known lot."
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The identified bulk or prepared seed lot enters market-class grading. Raw activity or stage basis: Per grading run.."
+          amount:
+            expression: "Weigh inlet seed and retain its class and moisture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: sorter_electricity
+          role: "Sorting electricity"
+          name: "Actual electricity supply identity."
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Sorting energy enters only when powered equipment is used. Raw activity or stage basis: Per graded seed kg.."
+          amount:
+            expression: "Meter sorter electricity by operating run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_seed
+          role: "Accepted whole-seed grade"
+          name: "Sunflower seed at the declared in-farm commodity hand-off."
+          flow_type: "product"
+          flow_ref:
+            uuid: "a62436d6-249c-4ac3-b5f4-653d0f277519"
+          property_unit: "Mass / kg."
+          description: "An accepted whole-seed grade leaves at the actual declared in-farm commodity hand-off. Raw output measurement and reconciliation: Weigh accepted oilseed, confection or bird-food class by actual grade, lot and moisture. Raw activity or stage basis: Per accepted output kg.."
+          amount:
+            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: downgraded_seed
+          role: "Downgraded saleable seed"
+          name: "Separate whole-seed product destination, not part of accepted reference mass."
+          flow_type: "product"
+          property_unit: "Mass / kg."
+          description: "A separately saleable lower grade leaves for its recorded destination. Raw activity or stage basis: Per grading run.."
+          amount:
+            expression: "Weigh each downgraded sale grade and document buyer or use."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: grade_reject
+          role: "Rejected seed"
+          name: "Off-spec lot with re-sort, downgrade, recovery or disposal path."
+          flow_type: "waste"
+          property_unit: "Mass / kg."
+          description: "Off-spec seed is held for a documented return, recovery or final waste exit. Raw activity or stage basis: Per grading run.."
+          amount:
+            expression: "Weigh rejects and identify destination and linked follow-on run; only final rejected material is a waste exit."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_grade
+              source_ids:
+                - ndsu-sunflower-guide-2020
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        []
+  - id: sunflower_drying
+    label: "On-farm preservation"
+    inputs:
+      product:
+        - row_id: wet_seed_input
+          role: "Usable whole seed before drying"
+          name: "Internal whole-seed state with grade and lot identity."
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Measured wet seed enters the bounded stabilization run. Raw activity or stage basis: Per stabilized seed kg.."
+          amount:
+            expression: "Weigh inlet mass and test wet-basis moisture."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dry
+              source_ids:
+                - ndsu-sunflower-drying-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: drying_fan_electricity
+          role: "Drying fan electricity"
+          name: "Actual electricity supply identity."
+          flow_type: "product"
+          property_unit: "Energy / kWh"
+          description: "Fan electricity enters a natural-air or heated run only when the fan operates. Raw activity or stage basis: Per stabilized seed kg.."
+          amount:
+            expression: "Meter fan electricity by bin or dryer run."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dry
+              source_ids:
+                - ndsu-sunflower-drying-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "5"
+                unit: "kWh/kg processed seed"
+                basis: "per kg seed entering this actual cleaning, sorting, drying or storage run; provisional screen only"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: drying_heat_fuel
+          role: "Supplemental heat fuel"
+          name: "Actual stationary combustion fuel product for supplemental drying heat."
+          flow_type: "product"
+          property_unit: "Volume / L or mass / kg by fuel"
+          description: "Heat fuel enters only when supplemental or high-temperature drying occurs. Raw activity or stage basis: Per stabilized seed kg.."
+          amount:
+            expression: "Meter fuel for each heated run; zero only for documented unheated operation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dry
+              source_ids:
+                - ndsu-sunflower-drying-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "2"
+                unit: "L liquid fuel/kg processed seed"
+                basis: "per kg seed entering this actual conditioning or drying run; liquid-fuel screen only, convert other carriers separately"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: dry_seed
+          role: "Stabilized whole seed"
+          name: "Whole seed at measured exit moisture and actual in-farm hand-off."
+          flow_type: "product"
+          property_unit: "Mass / kg."
+          description: "Stabilized whole seed leaves with its measured moisture and declared hand-off. Raw output measurement and reconciliation: Weigh output, test moisture and retain class/grade; do not infer a universal target moisture. Raw activity or stage basis: Per drying lot.."
+          amount:
+            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dry
+              source_ids:
+                - ndsu-sunflower-drying-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant material-transfer node; check actual moisture and any mixing before applying conservation"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: dry_reject
+          role: "Spoiled or rejected material"
+          name: "Off-spec seed by actual recovery or disposal fate, distinct from water removal."
+          flow_type: "waste"
+          property_unit: "Mass / kg."
+          description: "Spoiled or rejected seed leaves through an identified recovery or disposal path. Raw activity or stage basis: Per drying lot.."
+          amount:
+            expression: "Weigh rejected seed and record whether reworked or discarded."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dry
+              source_ids:
+                - ndsu-sunflower-drying-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: drying_water
+          role: "Removed moisture"
+          name: "Water vapor only where required by the applicable inventory system."
+          flow_type: "elementary"
+          property_unit: "Mass / kg."
+          description: "Water removed during drying is accounted separately from rejected seed. Raw activity or stage basis: Per drying lot.."
+          amount:
+            expression: "Derive from inlet/outlet wet mass and moisture after reject dry solids are accounted for."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dry
+              source_ids:
+                - ndsu-sunflower-drying-2022
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "1"
+                unit: "kg/kg linked incoming seed"
+                basis: "per kg measured seed entering the relevant sorting or drying node; each reject, downgrade or moisture stream is a separate nonnegative part, sum must reconcile"
+                basis_kind: "process_output"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: a_field
+    applies_to: "Cultivation and harvest"
+    rule: "Attribute joint field/harvest burdens to collected seed when residues remain in the field. A physically removed and marketed stalk/head output needs measured mass and a disclosed allocation basis; do not automatically give it zero burden."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+  - rule_id: a_grade
+    applies_to: "Cleaning and grading"
+    rule: "Reconcile accepted, downgraded, reworked and waste mass. Directly assign metered separable work to its output run; disclose a consistent measured driver for truly shared burdens when more than one saleable output exists."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+  - rule_id: a_rework
+    applies_to: "Reject return"
+    rule: "Link reject/re-cleaning loops to their original and follow-on run; charge added work once and count the material as accepted only after successful recovery."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+  - rule_id: a_mode
+    applies_to: "Field, batch and continuous runs"
+    rule: "Attribute shared machinery, cleaning and changeover to logged field/lot/period by recorded time, throughput or other causal driver; no duplicate charge across sequential runs."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_field
+      process_id: "sunflower_cultivation"
+      flow_role: "Inputs and irrigation"
+      record_type: "Field, invoice, application and meter logs"
+      raw_fields: "field_id, area, year, seed_kg, product_kg, nutrient_kg, water_m3, fuel_L, kWh, emission_species, emission_method, factor_source, date"
+      collection_method: "Reconcile applications with invoices and meter reads; Raw aggregation and attribution: Sum by field and link to harvested lots"
+      unit: "ha, kg, m3, L, kWh"
+      frequency: "Each event"
+      temporal_coverage: "Full crop year"
+      site_scope: "Each field"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Receipts, meter records and calculation factors"
+    - protocol_id: cp_harvest
+      process_id: "sunflower_harvest"
+      flow_role: "Capture and loss"
+      record_type: "Combine, scale and field notes"
+      raw_fields: "field_id, lot_id, date, bulk_kg, moisture_pct, foreign_matter_pct, loss, residue_fate, fuel_L"
+      collection_method: "Weigh lots and measure condition; Raw aggregation and attribution: Sum distinct lots; link downstream"
+      unit: "kg, %, L"
+      frequency: "Each harvest lot"
+      temporal_coverage: "Harvest period"
+      site_scope: "Field and machine run"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Scale ticket, moisture test, field observation"
+    - protocol_id: cp_clean
+      process_id: "sunflower_cleaning"
+      flow_role: "Prepared seed and screen-outs"
+      record_type: "Cleaner run log"
+      raw_fields: "lot_id, run_id, inlet_kg, outlet_kg, reject_kg, moisture_pct, kWh, reject_fate"
+      collection_method: "Weigh inlet/outlet and meter service; Raw aggregation and attribution: Reconcile mass and linked returns"
+      unit: "kg, %, kWh"
+      frequency: "Each run"
+      temporal_coverage: "All in-boundary runs"
+      site_scope: "Farm cleaner"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Scale and meter log"
+    - protocol_id: cp_grade
+      process_id: "sunflower_grading"
+      flow_role: "Quality/destination states"
+      record_type: "Sorting and sale records"
+      raw_fields: "lot_id, run_id, class, grade, accepted_kg, downgraded_kg, reject_kg, destination, return_link"
+      collection_method: "Weigh by state and destination; Raw aggregation and attribution: Balance distinct states; avoid duplicate returns"
+      unit: "kg"
+      frequency: "Each run"
+      temporal_coverage: "All in-boundary runs"
+      site_scope: "Farm sorter"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Grade sheet, sale and reject tickets"
+    - protocol_id: cp_dry
+      process_id: "sunflower_drying"
+      flow_role: "Preservation and water loss"
+      record_type: "Bin/dryer and meter log"
+      raw_fields: "lot_id, run_id, method, inlet_kg, inlet_moisture, outlet_kg, outlet_moisture, reject_kg, fan_kWh, fuel_L, days"
+      collection_method: "Weigh/test before and after; meter energy; Raw aggregation and attribution: Balance dry solids and sum sequential stages once"
+      unit: "kg, %, kWh, L, day"
+      frequency: "Each run"
+      temporal_coverage: "All on-farm treatment before hand-off"
+      site_scope: "Farm bin or dryer"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Scale, moisture test and meter log"
+  calculation_rules:
+    - id: c_norm
+      applies_to: "All inventory"
+      rule: "Divide distinct field-, lot- or run-linked quantities by actual accepted seed kg at the declared hand-off."
+      inputs:
+        - "Raw amount"
+        - "accepted kg"
+        - "trace links"
+      output: "Per kg reference seed"
+      source_ids:
+        - ndsu-sunflower-guide-2020
+    - id: c_dry
+      applies_to: "Drying"
+      rule: "Dry solids = wet mass × (1 − wet-basis moisture fraction); compare inlet and outlet plus reject dry solids before estimating evaporated water."
+      inputs:
+        - "Mass and moisture on inlet"
+        - "outlet and reject"
+      output: "Dry-solids residual and water loss"
+      source_ids:
+        - ndsu-sunflower-drying-2022
+    - id: c_field_emissions
+      applies_to: "Field emissions"
+      rule: "Create a species-specific calculated exchange only when a named species, method and factor source are verified against field records; otherwise flag the exchange as unresolved."
+      inputs:
+        - "Field records"
+        - species
+        - method
+        - "factor source"
+      output: "Method-specific calculated exchange or unresolved finding"
+      source_ids:
+        - ndsu-sunflower-guide-2020
+    - id: c_sort
+      applies_to: "Cleaning and grading"
+      rule: "Input mass = accepted + downgraded + rejected + measured loss, allowing separately measured moisture change."
+      inputs:
+        - "Weigh and moisture records"
+      output: "Run mass residual"
+      source_ids:
+        - ndsu-sunflower-guide-2020
+  data_quality_requirements:
+    - id: q_identity
+      applies_to: "Reference output"
+      requirement: "Verify whole commodity seed, market class, grade, actual in-farm hand-off and moisture; no sowing-seed output under the fixed UUID."
+      evidence: "Lot and transfer records"
+    - id: q_time
+      applies_to: "Foreground package"
+      requirement: "Capture one full crop cycle and all fields and included treatment runs; disclose gaps."
+      evidence: "Dated field and machine logs"
+    - id: q_mass
+      applies_to: "All seed states"
+      requirement: "Reconcile harvest, cleaning, grading and drying mass with moisture and rejects; flag unexplained residual."
+      evidence: "Scale calibration and reconciliation sheet"
+    - id: q_route
+      applies_to: "Irrigation and drying"
+      requirement: "Preserve actual water and drying route, metered energy, sequential run links and reject destination."
+      evidence: "Meter and equipment logs"
+validation_rules:
+  - rule_id: v_identity
+    applies_to: "Reference output"
+    rule: "Reject missing class, measured moisture, grade or actual hand-off, and reject sowing seed bound to a62436d6-249c-4ac3-b5f4-653d0f277519."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+  - rule_id: v_boundary
+    applies_to: "Inventory"
+    rule: "Verify cultivation, harvest and each actual on-farm cleaning, grading, drying and storage step up to hand-off; do not infer farm-gate grade from the platform label."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+      - ndsu-sunflower-drying-2022
+  - rule_id: v_route
+    applies_to: "Alternative routes"
+    rule: "Require metered irrigation and pump records for irrigated fields and metered fan/fuel records for drying; link sequential technologies."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+      - ndsu-sunflower-drying-2022
+  - rule_id: v_balance
+    applies_to: "Lots and rejects"
+    rule: "Reconcile accepted, downgraded, rejected, returned and lost mass with moisture; a reject becomes accepted only after a linked successful run."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+  - rule_id: v_emissions
+    applies_to: "Field elementary flows"
+    rule: "Do not accept an anonymous field-emission row or unverified generic factor; require each calculated exchange to name species, method and factor source."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+  - rule_id: v_once
+    applies_to: "Shared runs"
+    rule: "Check field and period attribution, cleaning changeovers and returned lots to prevent double counting."
+    source_ids:
+      - ndsu-sunflower-guide-2020
+published_dataset_profile:
+  dataset_role: "Foreground whole-sunflower-seed production at an identified in-farm hand-off"
+  downstream_use: "secondary_dataset or background_dataset for agricultural whole-seed inputs"
+  allowed_use: "Oil crushing, confection/food or bird-food seed input when class, grade and moisture match"
+  excluded_use: "Sowing-seed production, oil, kernels, meal, roasted foods or unrecorded farm-gate grade"
+  required_metadata: "Farm/region, crop year, class, field/lot, variety if known, hand-off, moisture, grade, conditioning/drying scope, irrigation route"
+  required_quality_disclosure: "Record coverage, scale/moisture evidence, upstream datasets, missing emission estimates, mass-balance residual and allocation choice"
+  update_trigger: "Material change in market class, hand-off, water/drying technology, input mix, grade standard or region"
+data_sources:
+  - id: "unsd-cpc-3-2025"
+    type: "official_guidance"
+    reference: "UN Statistics Division, CPC Ver. 3.0 explanatory notes (2025), https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf"
+    used_for: "Classification scope"
+  - id: "ndsu-sunflower-guide-2020"
+    type: "extension_guidance"
+    reference: "North Dakota State University Extension, Sunflower Production Guide A1995, https://www.ndsu.edu/agriculture/sites/default/files/2023-12/a1995.pdf"
+    used_for: "Market types, field, harvest, grading and conditioning routes"
+  - id: "ndsu-sunflower-drying-2022"
+    type: "extension_guidance"
+    reference: "North Dakota State University Extension, “NDSU offers advice on harvesting and drying sunflower in North Dakota” (2022), https://www.ag.ndsu.edu/news/newsreleases/2022/september/ndsu-offers-advice-on-harvesting-and-drying-sunflower-in-north-dakota/"
+    used_for: "Conditional drying and moisture evidence"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:d881a91c068dde1d7b7e92a9c0dc75ce1af1085b777aea50ce8466d6a5ba5837"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5188"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5188
+          line: 63
+          column: 1
+        end:
+          offset: 7261
+          line: 85
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Pre-sowing field in a stated rotation and documented opening soil condition; identify purchased inputs and field operations from preparation through harvest |\n| starting_condition_role | Crop establishment is the foreground start; purchased seed, fertilizer, crop protection, fuel and electricity carry upstream datasets |\n| product_classification_scope | Whole commodity seed in the narrower CPC 01445 route, with oilseed and non-oil classes separated |\n| recursive_input_rule | Purchased sunflower sowing seed is an upstream input; never recursively assign this output dataset to itself |\n| upstream_dataset_requirement | Identify upstream supply datasets for sowing seed, nutrients, crop protection, fuel, electricity and services; disclose gaps |\n| disclosure | Field and crop year, market class, actual in-farm hand-off, treatment and storage coverage, water route, residue fate |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `b_field` | `sunflower_cultivation` | Include seedbed preparation, planting, nutrient/protection management, irrigated water and pumping when practiced, and machinery up to mature heads ready for harvest. | ndsu-sunflower-guide-2020 |\n| `b_harvest` | `sunflower_harvest` | Separate head/seed capture and threshing from standing crop production; record collected bulk seed, uncollected loss and incidental stalk/head material distinctly. | ndsu-sunflower-guide-2020 |\n| `b_treatment` | `sunflower_cleaning`, `sunflower_grading`, `sunflower_drying` | Include first cleaning, sorting and stabilization only if actually performed before hand-off; log accepted, downgraded, reject, moisture-loss and storage states. | ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022 |\n| `b_exit` | Final output | End at the declared in-farm whole-seed transfer. Exclude off-farm movement and oil/food processing; do not reinterpret “in the farm” as “at farm gate”. | ndsu-sunflower-guide-2020 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 194
+              line: 8
+              column: 1
+            end:
+              offset: 210
+              line: 8
+              column: 17
+          text: "# Sunflower seed"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5188
+              line: 63
+              column: 1
+            end:
+              offset: 5209
+              line: 63
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_41673"
+      family: "allocation"
+      span:
+        start:
+          offset: 41673
+          line: 904
+          column: 1
+        end:
+          offset: 42856
+          line: 913
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_field` | Cultivation and harvest | Attribute joint field/harvest burdens to collected seed when residues remain in the field. A physically removed and marketed stalk/head output needs measured mass and a disclosed allocation basis; do not automatically give it zero burden. | ndsu-sunflower-guide-2020 |\n| `a_grade` | Cleaning and grading | Reconcile accepted, downgraded, reworked and waste mass. Directly assign metered separable work to its output run; disclose a consistent measured driver for truly shared burdens when more than one saleable output exists. | ndsu-sunflower-guide-2020 |\n| `a_rework` | Reject return | Link reject/re-cleaning loops to their original and follow-on run; charge added work once and count the material as accepted only after successful recovery. | ndsu-sunflower-guide-2020 |\n| `a_mode` | Field, batch and continuous runs | Attribute shared machinery, cleaning and changeover to logged field/lot/period by recorded time, throughput or other causal driver; no duplicate charge across sequential runs. | ndsu-sunflower-guide-2020 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 194
+              line: 8
+              column: 1
+            end:
+              offset: 210
+              line: 8
+              column: 17
+          text: "# Sunflower seed"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 41673
+              line: 904
+              column: 1
+            end:
+              offset: 41713
+              line: 904
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_48507"
+      family: "validation"
+      span:
+        start:
+          offset: 48507
+          line: 948
+          column: 1
+        end:
+          offset: 49881
+          line: 959
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_identity` | Reference output | Reject missing class, measured moisture, grade or actual hand-off, and reject sowing seed bound to `a62436d6-249c-4ac3-b5f4-653d0f277519`. | ndsu-sunflower-guide-2020 |\n| `v_boundary` | Inventory | Verify cultivation, harvest and each actual on-farm cleaning, grading, drying and storage step up to hand-off; do not infer farm-gate grade from the platform label. | ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022 |\n| `v_route` | Alternative routes | Require metered irrigation and pump records for irrigated fields and metered fan/fuel records for drying; link sequential technologies. | ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022 |\n| `v_balance` | Lots and rejects | Reconcile accepted, downgraded, rejected, returned and lost mass with moisture; a reject becomes accepted only after a linked successful run. | ndsu-sunflower-guide-2020 |\n| `v_emissions` | Field elementary flows | Do not accept an anonymous field-emission row or unverified generic factor; require each calculated exchange to name species, method and factor source. | ndsu-sunflower-guide-2020 |\n| `v_once` | Shared runs | Check field and period attribution, cleaning changeovers and returned lots to prevent double counting. | ndsu-sunflower-guide-2020 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 194
+              line: 8
+              column: 1
+            end:
+              offset: 210
+              line: 8
+              column: 17
+          text: "# Sunflower seed"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 48507
+              line: 948
+              column: 1
+            end:
+              offset: 48529
+              line: 948
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_field"
+      identity_kind: "explicit"
+      unit_id: "normative_5188"
+      source_span:
+        start:
+          offset: 6279
+          line: 80
+          column: 1
+        end:
+          offset: 6515
+          line: 80
+          column: 237
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_harvest"
+      identity_kind: "explicit"
+      unit_id: "normative_5188"
+      source_span:
+        start:
+          offset: 6516
+          line: 81
+          column: 1
+        end:
+          offset: 6747
+          line: 81
+          column: 232
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_treatment"
+      identity_kind: "explicit"
+      unit_id: "normative_5188"
+      source_span:
+        start:
+          offset: 6748
+          line: 82
+          column: 1
+        end:
+          offset: 7049
+          line: 82
+          column: 302
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_exit"
+      identity_kind: "explicit"
+      unit_id: "normative_5188"
+      source_span:
+        start:
+          offset: 7050
+          line: 83
+          column: 1
+        end:
+          offset: 7259
+          line: 83
+          column: 210
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_field"
+      identity_kind: "explicit"
+      unit_id: "normative_41673"
+      source_span:
+        start:
+          offset: 41786
+          line: 908
+          column: 1
+        end:
+          offset: 42094
+          line: 908
+          column: 309
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_grade"
+      identity_kind: "explicit"
+      unit_id: "normative_41673"
+      source_span:
+        start:
+          offset: 42095
+          line: 909
+          column: 1
+        end:
+          offset: 42382
+          line: 909
+          column: 288
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_rework"
+      identity_kind: "explicit"
+      unit_id: "normative_41673"
+      source_span:
+        start:
+          offset: 42383
+          line: 910
+          column: 1
+        end:
+          offset: 42600
+          line: 910
+          column: 218
+    - pointer: "/allocation_rules/3"
+      rule_id: "a_mode"
+      identity_kind: "explicit"
+      unit_id: "normative_41673"
+      source_span:
+        start:
+          offset: 42601
+          line: 911
+          column: 1
+        end:
+          offset: 42854
+          line: 911
+          column: 254
+    - pointer: "/validation_rules/0"
+      rule_id: "v_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 48602
+          line: 952
+          column: 1
+        end:
+          offset: 48806
+          line: 952
+          column: 205
+    - pointer: "/validation_rules/1"
+      rule_id: "v_boundary"
+      identity_kind: "explicit"
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 48807
+          line: 953
+          column: 1
+        end:
+          offset: 49058
+          line: 953
+          column: 252
+    - pointer: "/validation_rules/2"
+      rule_id: "v_route"
+      identity_kind: "explicit"
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 49059
+          line: 954
+          column: 1
+        end:
+          offset: 49287
+          line: 954
+          column: 229
+    - pointer: "/validation_rules/3"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 49288
+          line: 955
+          column: 1
+        end:
+          offset: 49494
+          line: 955
+          column: 207
+    - pointer: "/validation_rules/4"
+      rule_id: "v_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 49495
+          line: 956
+          column: 1
+        end:
+          offset: 49719
+          line: 956
+          column: 225
+    - pointer: "/validation_rules/5"
+      rule_id: "v_once"
+      identity_kind: "explicit"
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 49720
+          line: 957
+          column: 1
+        end:
+          offset: 49879
+          line: 957
+          column: 160
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5188"
+      source_span:
+        start:
+          offset: 5188
+          line: 63
+          column: 1
+        end:
+          offset: 5209
+          line: 63
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5188"
+      source_span:
+        start:
+          offset: 5237
+          line: 67
+          column: 1
+        end:
+          offset: 6186
+          line: 74
+          column: 135
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_41673"
+      source_span:
+        start:
+          offset: 41673
+          line: 904
+          column: 1
+        end:
+          offset: 41713
+          line: 904
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_48507"
+      source_span:
+        start:
+          offset: 48507
+          line: 948
+          column: 1
+        end:
+          offset: 48529
+          line: 948
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:d881a91c068dde1d7b7e92a9c0dc75ce1af1085b777aea50ce8466d6a5ba5837"
+  generated_content_sha256: "sha256:53aad823d079c4f7156a757ad6e6dd5ded94e3eddd6ead2b0d294017477b9aef"

@@ -68,7 +68,9 @@ or `1 千克`: the kg/千克 alias preserves the same unit and also satisfies th
 Input rows must name their collection protocol
 and applicable calculation rule. A conversion rule's `Applies to` is the exact row id, a comma/semicolon-separated
 row-id list, or `all inventory rows` / `所有清单行`; exceptions and arbitrary scope prose are not positive scope evidence.
-Every named calculation rule is inspected, including unsupported names/symbols. The complete formula has exactly
+A linked calculation is inspected as a count-to-mass conversion when its rule or inputs use the reserved symbols
+`q_item`, `q_ref` or `M`. Ordinary yield, moisture and emission calculations do not establish or require this conversion.
+Reserved symbols in inventory amounts still require an explicit supported application. The conversion formula has exactly
 three clauses: one algebraic q_ref assignment, one q_item basis definition and one q_ref basis definition; extra
 calculation or conditional clauses require review. Inputs contain bare q_item, M and the named mass protocol; other
 explicitly declared collection protocol ids are allowed, but prose and duplicates are not. Application uses exactly the positive
@@ -84,3 +86,29 @@ the per-item-to-kg conversion is still required even when the final inventory ba
 
 No concrete M is required in the PCR: the later data producer measures it using the stated protocol. This check
 establishes the declared relationship only; it does not verify a factory's actual measurement or physical plausibility.
+
+### Explicit terminal-output alternatives
+
+An explicit `reference_flow_link` identifies inventory rows before any UUID fallback. An invalid explicit link fails;
+shared UUIDs on intermediate transfers do not make a valid explicit link ambiguous.
+
+When a PCR permits more than one terminal state, declare the alternatives explicitly in the functional-unit table:
+
+| Field | Value |
+| --- | --- |
+| reference_flow_link | graded_fruit; storage_output |
+| reference_flow_selection | exactly_one_declared_terminal_output |
+| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+
+The selector accepts two to eight distinct product-output row ids, each occurring exactly once. Both languages must
+declare the same set. Every selectable output must use the exact bounded amount form
+`1 kg when selected as reference output; otherwise use measured internal-transfer quantity`, replacing `1 kg` with
+the PCR's actual reference quantity and unit. The equivalent Chinese form is
+`当选为参考输出时为 1 千克；否则采用实测内部转移数量`. The checker validates every admissible selection; unsupported selector
+values, duplicate or missing rows, unconditional quantities and extra amount clauses fail.
+
+The later data producer must declare one actual route, gate, product state and output row. Selecting a later gate
+leaves earlier outputs as measured internal transfers; it never fixes their amounts to the final reference quantity.
+This authoring check does not infer a dataset's actual state or verify that the producer supplied those records.
+Alternative flows require their own verified identities or explicit unresolved identity records; a common category
+reference UUID does not verify different physical states.

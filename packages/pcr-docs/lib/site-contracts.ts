@@ -11,6 +11,7 @@ function pcrRecord(value:unknown):value is PcrRecord {
  if(!record(value)||!['id','status','maturity','sourcePath','dataPath','dataUrl'].every(key=>typeof value[key]==='string')||!strings(value.slug)||!record(value.title)||!Object.values(value.title).every(nullableText)||!nullableText(value.version)||!nullableText(value.updatedAt)||!textMap(value.translationStatus)||!textMap(value.urls)||!record(value.pages)||!Object.values(value.pages).every(strings)||!downloads(value.downloads)||!record(value.modules)||!Object.values(value.modules).every(strings)||!record(value.readiness)||typeof value.readiness.status!=='string')return false;
  for(const key of ['blockers','warnings']){const issues=value.readiness[key];if(!Array.isArray(issues)||!issues.every(issue=>record(issue)&&typeof issue.code==='string'&&typeof issue.message==='string'))return false;}
  return Array.isArray(value.classificationRefs)&&value.classificationRefs.every(ref=>record(ref)&&['system','version','code'].every(key=>typeof ref[key]==='string')&&['title','mapping_type'].every(key=>ref[key]===undefined||typeof ref[key]==='string'))
+ &&(value.dataKey===undefined||typeof value.dataKey==='string'&&value.dataKey.length>0)
  &&(value.versions===undefined||Array.isArray(value.versions)&&value.versions.every(version=>record(version)&&typeof version.version==='string'&&textMap(version.urls)));
 }
 function page(value:unknown):value is DocPage {

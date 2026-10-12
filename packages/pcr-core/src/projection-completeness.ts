@@ -86,6 +86,23 @@ export function hasDeclaredUnresolvedReferenceProductFlow(projection: unknown, m
     ...(supportsReference ? ['reference product flow'] : []),
   ];
   if (unresolvedEntries.length === 0) return false;
+  // Explicit terminal links can use a category reference name while the output
+  // cards describe distinct states. Authoring candidates must still declare the
+  // unresolved identity for every selected output; names alone cannot waive it.
+  const functionalUnit = unknownField(projection, 'functional_unit');
+  const link = String(unknownField(functionalUnit, 'reference_flow_link') ?? '').replace(/`/gu, '').trim();
+  const selector = String(unknownField(functionalUnit, 'reference_flow_selection') ?? '');
+  const selectedIds = link.split(';').map(value => value.trim());
+  const supportedSelection = (!selector && selectedIds.length === 1) ||
+    (selector === 'exactly_one_declared_terminal_output' && selectedIds.length >= 2 && selectedIds.length <= 8 &&
+      unknownField(functionalUnit, 'reference_selection_required') === 'actual_route; declared_gate; product_state; output_row_id');
+  const productOutputs = array(unknownField(projection, 'process_inventory')).flatMap(process => array(valueAtPath(process, ['outputs', 'product'])));
+  const explicitOutputsDeclared = supportsReference && supportedSelection && new Set(selectedIds).size === selectedIds.length && selectedIds.every(id =>
+    /^[a-z][a-z0-9_]*$/u.test(id) && productOutputs.filter(row => unknownField(row, 'row_id') === id && meaningfulScalar(unknownField(row, 'name'))).length === 1 &&
+    unresolvedEntries.some(entry => unknownField(entry, 'row_id') === id && meaningfulScalar(unknownField(entry, 'reason_code')) && meaningfulScalar(unknownField(entry, 'explanation'))));
+  // An explicit selector must never fall through to a legacy name/id waiver.
+  if (supportsReference && selector) return explicitOutputsDeclared;
+  if (explicitOutputsDeclared) return true;
   for (const processEntry of array(unknownField(projection, 'process_inventory'))) {
     for (const row of array(valueAtPath(processEntry, ['outputs', 'product']))) {
       const rowId = String(unknownField(row, 'row_id') ?? '').trim();

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { decodeRecordData, type Json } from '../lib/record-data.ts';
 
 type Labels = {
   title: string;
@@ -15,7 +16,6 @@ type Labels = {
   collapseAll: string;
 };
 
-type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 
 function isPlainObject(value: Json): value is { [key: string]: Json } {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -91,7 +91,7 @@ function Section({ id, name, value }: { id: string; name: string; value: Json })
   );
 }
 
-export function DataInspector({ dataUrl, labels }: { dataUrl: string; labels: Labels }) {
+export function DataInspector({ dataUrl, dataKey, labels }: { dataUrl: string; dataKey?: string | undefined; labels: Labels }) {
   const [state, setState] = useState<
     | { kind: 'idle' }
     | { kind: 'loading' }
@@ -105,12 +105,12 @@ export function DataInspector({ dataUrl, labels }: { dataUrl: string; labels: La
       fetch(dataUrl, { signal })
         .then(async (response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          const payload = (await response.json()) as { manifest?: Json; structured?: Json };
+          const payload = decodeRecordData(await response.json(), dataKey);
           if (signal?.aborted) return;
           setState({
             kind: 'ready',
-            manifest: payload.manifest ?? {},
-            structured: payload.structured ?? {},
+            manifest: payload.manifest,
+            structured: payload.structured,
           });
         })
         .catch((error: unknown) => {
@@ -118,11 +118,11 @@ export function DataInspector({ dataUrl, labels }: { dataUrl: string; labels: La
           setState({ kind: 'error' });
         });
     },
-    [dataUrl],
+    [dataUrl, dataKey],
   );
 
   return (
-    <section className="pcr-inspector" aria-labelledby="pcr-inspector-heading">
+    <section className="pcr-inspector" data-record-key={dataKey} aria-labelledby="pcr-inspector-heading">
       <h2 id="pcr-inspector-heading" className="pcr-section-title">
         {labels.title}
       </h2>

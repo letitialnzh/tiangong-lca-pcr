@@ -9,6 +9,7 @@ import {createRequire} from 'node:module';
 import {chromium, firefox, webkit} from 'playwright';
 import type {Page, Browser, BrowserType, Request, Response} from 'playwright';
 import { gettingStartedGuide } from '../../packages/pcr-docs/lib/getting-started.ts';
+import { decodeRecordData } from '../../packages/pcr-docs/lib/record-data.ts';
 import { LANGUAGE_PREFERENCE_KEY, preferredRoute } from '../../packages/pcr-docs/lib/language-preference.ts';
 
 export class SiteBrowserError extends Error {
@@ -134,6 +135,17 @@ async function checkPage(page:Page,origin:string,route:SiteRoute,viewport:string
   await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw new Error('Clipboard denied');}}}));
   await page.getByRole('button',{name:button,exact:true}).click();await page.getByRole('status').filter({hasText:chinese?'无法自动复制':'Copy was unavailable.'}).waitFor();evidence.assertions.push('clipboard denial shows manual-copy fallback');
   assert.equal(await page.getByRole('link',{name:chinese?'阅读 Markdown':'Read Markdown',exact:true}).getAttribute('href'),guide.rawUrl);
+ }
+ if(route.kind==='pcr'||route.kind==='history'){
+  const inspector=page.locator('.pcr-inspector'),key=await inspector.getAttribute('data-record-key');
+  const received=page.waitForResponse(response=>new URL(response.url()).pathname.startsWith('/generated/data/')&&response.request().method()==='GET');
+  await inspector.getByRole('button',{name:expectedLocale==='zh'?'加载完整字段':'Load complete fields',exact:true}).click();
+  const response=await received;assert.equal(response.status(),200);
+  const data=decodeRecordData(await response.json(),key??undefined);
+  for(const section of ['manifest','structured'])await inspector.locator('[data-field-section="'+section+'"]').waitFor();
+  assert.equal(await inspector.locator('[data-field-path="manifest.id"] .pcr-field-value').textContent(),String(data.manifest.id));
+  if (Object.hasOwn(data.manifest, "version")) assert.equal(await inspector.locator('[data-field-path="manifest.version"] .pcr-field-value').textContent(),String(data.manifest.version));
+  evidence.assertions.push('on-demand field inspector restores its exact current or historical record from shipped data');
  }
  if(route.kind!=='home'){
   const toc=await page.evaluate(()=>Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')).filter(a=>a.getAttribute('href')!=='#').map(a=>({href:a.getAttribute('href')!,found:!!document.getElementById(decodeURIComponent(a.hash.slice(1)))})));
