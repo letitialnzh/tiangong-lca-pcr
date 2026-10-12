@@ -1,5 +1,6 @@
 import {parseSiteManifest} from "../lib/site-contracts.ts";
 import {searchTerms} from "../lib/search-terms.ts";
+import {decodeSearchEntries} from "../lib/search-codec.ts";
 import {Index} from "flexsearch";
 import {isUnknownRecord} from "../../pcr-core/src/types.ts";
 import {assertManifest} from "../../../builder/lib/schema-contracts.ts";
@@ -212,7 +213,7 @@ test("real generator preserves multilingual released snapshots and excludes open
     for (const language of ["en-US", "zh-CN", "de-DE"]) {
       const search: unknown = JSON.parse(fs.readFileSync(path.join(output, "public/generated/search", language, "manifest.json"), "utf8"));
       assert.ok(isUnknownRecord(search));
-      assert.equal(search.schemaVersion, 2, "new indexes use native JSON export arrays");
+      assert.equal(search.schemaVersion, 3, "new indexes use lossless sparse score exports");
       assert.equal(search.language, language);
       assert.ok(Array.isArray(search.shards) && search.shards.length > 0);
       for (const shard of search.shards) {
@@ -281,9 +282,8 @@ test("real generator preserves multilingual released snapshots and excludes open
       assert.ok(isUnknownRecord(shard));
       const index = new Index({tokenize: "strict", encode: (value: unknown) => searchTerms(value, "en-US")});
       assert.ok(isUnknownRecord(shard.entries));
-      for (const [key, payload] of Object.entries(shard.entries)) {
-        assert.ok(Array.isArray(payload));
-        index.import(key, JSON.stringify(payload));
+      for (const [key, payload] of Object.entries(decodeSearchEntries(shard.entries, 3))) {
+        index.import(key, payload);
       }
       searchHits += index.search("Synthetic wheat seed", {limit: 30}).length;
       assert.deepEqual(index.search("UNPUBLISHED_TEST_MARKER", {limit: 30}), []);

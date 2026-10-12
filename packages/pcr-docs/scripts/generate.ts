@@ -47,6 +47,7 @@ import {
 } from "./markdown.ts";
 import { SUMMARY_LIMIT, catalogSummary, documentSummary } from "./summaries.ts";
 import { searchTerms } from "../lib/search-terms.ts";
+import { encodeSearchEntries, decodeSearchEntries } from "../lib/search-codec.ts";
 const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { values: options } = parseArgs({
   options: {
@@ -979,13 +980,15 @@ async function generate() {
         encode: (value: unknown) => searchTerms(value, language),
       });
       for (const doc of bucket) index.add(Number(doc.record.id), doc.text);
-      const entries: Record<string,unknown[]> = {};
+      const exported: Record<string,string> = {};
       await index.export((key, value) => {
-        const parsed: unknown = JSON.parse(value);
-        if (!Array.isArray(parsed) || JSON.stringify(parsed) !== value)
-          throw new Error("Unsupported serialized search export: " + language + "/" + key);
-        entries[key] = parsed;
+        exported[key] = value;
       });
+      const entries = encodeSearchEntries(exported);
+      const restored = decodeSearchEntries(entries, 3);
+      if (Object.keys(restored).length !== Object.keys(exported).length ||
+          Object.entries(exported).some(([key, value]) => restored[key] !== value))
+        throw new Error("Search compaction changed engine exports: " + language);
       const payload = JSON.stringify({
         entries,
         records: bucket.map((d) => d.record),
@@ -1017,7 +1020,7 @@ async function generate() {
     }
     await flush();
     json("public/search/" + language + "/manifest.json", {
-      schemaVersion: 2,
+      schemaVersion: 3,
       language,
       shards,
     });

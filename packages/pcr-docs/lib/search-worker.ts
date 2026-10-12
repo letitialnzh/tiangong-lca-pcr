@@ -1,4 +1,5 @@
 import { searchTerms } from "./search-terms.ts";
+import { decodeSearchEntries } from "./search-codec.ts";
 import type {SearchResult} from "./types.ts";
 interface SearchIndex {import(key:string,payload:string):void;search(query:string,options:{limit:number}):(string|number)[]}
 interface SearchShard {index:SearchIndex;records:Map<string,SearchResult>}
@@ -22,7 +23,7 @@ async function load(language:string):Promise<SearchShard[]> {
  const response=await fetch(`/generated/search/${encodeURIComponent(language)}/manifest.json`);
  if(!response.ok)throw new Error("Search index is unavailable.");
  const manifest:unknown=await response.json();
- if(!record(manifest)||(manifest.schemaVersion!==1&&manifest.schemaVersion!==2)||manifest.language!==language||!Array.isArray(manifest.shards))throw new Error("Invalid search manifest.");
+ if(!record(manifest)||(manifest.schemaVersion!==1&&manifest.schemaVersion!==2&&manifest.schemaVersion!==3)||manifest.language!==language||!Array.isArray(manifest.shards))throw new Error("Invalid search manifest.");
  const shards:SearchShard[]=[];
  for(const item of manifest.shards){
   if(!record(item)||typeof item.url!=="string"||!item.url.startsWith("/generated/search/"))throw new Error("Invalid search shard.");
@@ -30,10 +31,7 @@ async function load(language:string):Promise<SearchShard[]> {
   const data:unknown=await response.json();
   if(!record(data)||!record(data.entries)||!Array.isArray(data.records)||!data.records.every(searchRecord))throw new Error("Invalid serialized search data.");
   const index=await createIndex(language);
-  for(const [key,payload]of Object.entries(data.entries)){
-   let serialized:string;
-   if(manifest.schemaVersion===1){if(typeof payload!=="string")throw new Error("Invalid serialized search data.");serialized=payload;}
-   else{if(!Array.isArray(payload))throw new Error("Invalid serialized search data.");serialized=JSON.stringify(payload);}
+  for(const [key,serialized]of Object.entries(decodeSearchEntries(data.entries,manifest.schemaVersion))){
    index.import(key,serialized);
   }
   shards.push({index,records:new Map(data.records.map(record=>[record.id,record]))});

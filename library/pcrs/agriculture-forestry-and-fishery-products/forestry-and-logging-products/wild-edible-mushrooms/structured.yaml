@@ -1,10 +1,1729 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "03232"
-  title: "Wild edible mushrooms"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.forestry-and-logging-products.wild-edible-mushrooms"
+  classification_refs: "cpc:3.0:03232; proposed narrower fresh/chilled primary scope"
+  covered_products: "Actual qualified fresh/chilled untended gathered edible mushroom fruiting bodies, excluding truffles"
+  excluded_products: "Cultivated or intentionally managed-production mushrooms; truffles; substrate or spawn; dried/frozen/processed goods; unidentified or unqualified fungi"
+  representative_product: "One actual qualified species/grade gathered fresh mushroom lot at declared producer dispatch"
+  production_route: "Untended collection and actual transfer; conditional primary cleaning/trimming/grading; conditional fresh preservation; final acceptance and actual packaging"
+  market_state: "Net fresh/chilled fruiting-body lot, with actual grade, moisture, handling state and gate declared"
+functional_unit:
+  what: "One actual fresh/chilled wild edible mushroom lot at declared gatherer or primary-producer dispatch"
+  how_much: "1 kg net as-received accepted fruiting-body product, excluding packaging and separately rejected soil/trim"
+  how_well: "Actual species and documented edible qualification, wild source, grade, trim/foreign-matter and moisture basis"
+  how_long_or_cycle: "Actual collection trip/season, handling batch, pre-gate storage interval and dispatch time; reusable-asset attribution periods stated"
+  reference_flow_link: "wild_mushroom_dispatch"
+system_boundary:
+  rules:
+    - rule_id: wild_origin
+      applies_to: "source and reference"
+      rule: "Require records demonstrating untended gathering; cultivated or intentional enhancement routes are outside scope. Habitat association is not proof of wild origin."
+      source_ids:
+        - unsd-wild-mushrooms
+    - rule_id: actual_route
+      applies_to: "all nodes"
+      rule: "Select actual collection, first conditioning and fresh preservation responsibilities from records; bypass absent nodes, connect the last actual upstream state to final acceptance, and assign each material portion and burden once."
+      source_ids:
+        - fao-fungi-collection
+    - rule_id: source_removal
+      applies_to: "collection"
+      rule: "Collection owns resource removal and harvest together: source interface, removed fresh bodies and measured downstream collected state. Do not create a second removal node or invent managed production. Record attached mineral matter and on-site retained residuals separately."
+      source_ids:
+        - fao-fungi-collection
+    - rule_id: producer_gate
+      applies_to: "handover"
+      rule: "End at actual gatherer/primary-producer dispatch. Include actual pre-gate presentation; exclude downstream distribution and manufacture. Raw/fresh and preserved/dried states are not assumed equivalent."
+      source_ids:
+        - fao-fungi-use
+    - rule_id: state_destinations
+      applies_to: "conditioning and preservation"
+      rule: "Separate intended selected grade, other qualified goods, off-spec/reinspection lots, trim, wastewater and spoilage. Every material exit has an actual state and destination; unknown off-spec fate cannot be counted as accepted goods."
+      source_ids: []
+    - rule_id: shared_period_sites
+      applies_to: "all nodes"
+      rule: "Enumerate contributing sites, trips, handling runs and storage periods, shared asset consumers and service boundaries. Log cleaning/changeover, replacement, repair and end-of-use once in the correct run/period; disclose physical access impacts and do not invent habitat-area occupation from collection duration."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Actual untended source with owned gathering, or verified already gathered wild fresh input at the actual entry node; no fictional cultivation phase"
+  starting_condition_role: "Documented collection/source responsibility or upstream gathered-product handoff"
+  product_classification_scope: "Fresh/chilled primary untended mushroom lot only; CPC 03232 narrower partial coverage, not whole-leaf fresh-state proof"
+  recursive_input_rule: "An already gathered same-category input carries its measured state and matching upstream burden once; never add the same natural removal or collection again"
+  upstream_dataset_requirement: "Traceable wild origin, lot/state/gate, quality qualification and compatible upstream method; missing prior burden is disclosed as a gap, not assumed zero"
+  disclosure: "Source sites, actual owned nodes, collection and storage periods, entry and dispatch gates, packaging/reuse boundary, rejected-material fates and exclusions"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Fresh or chilled wild edible mushrooms at declared gatherer or primary-producer dispatch"
+    uuid: ""
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "actual species and edible qualification record"
+    - "untended wild source/site"
+    - "collection trip and season"
+    - "fresh/chilled state"
+    - "maturity/grade"
+    - "soil/foreign matter and trimming boundary"
+    - "moisture basis"
+    - "temperature/time records"
+    - "actual dispatch gate"
+    - "net mass and packaging exclusion"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure accepted net as-received mass on a calibrated scale; exclude packaging and separately rejected matter. Only the linked accepted final output is 1 kg."
+  - id: fresh_mass_bridge
+    applies_to: "mushroom and residue mass rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Measure incoming fresh lot, attached soil, trim, added/retained water, stock change and outputs on matched lot/time boundaries; moisture changes do not justify a universal dry-matter or fresh-to-dry factor."
+  - id: energy_basis
+    applies_to: "energy umbrellas"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Preserve recorded fuel mass/volume and electricity kWh; convert only using documented matching net calorific value/density or exact 3.6 MJ per kWh. Record actual fuel identity and conversion evidence; no service hours inside an MJ card."
+  - id: service_basis
+    applies_to: "service umbrellas"
+    required_property_ref:
+      name: "Service duration"
+      uuid: ""
+    required_unit: "h"
+    rule: "Use actual measured service/asset hours and documented consumer shares; no invented conversion from payment, walking, distance or labour to energy."
+  - id: water_basis
+    applies_to: "water inputs and wastewater"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use measured mass, or actual compatible volume-density evidence; supplied product water and direct withdrawal are exclusive for each quantity. Distinguish liquid discharge, evaporation, retained water and dissolved matter."
+  - id: provisional_range_evidence_policy
+    applies_to: "all Ranges and actual exchanges"
+    required_property_ref:
+      name: "compatible property of each actual exchange"
+      uuid: ""
+    required_unit: "native unit of each actual exchange"
+    rule: "All reasoned_estimate Ranges are provisional review prompts for this candidate method, not measured distributions, allowable losses, default quantities or emission factors. Never clip, backfill or force actual records to fit them; investigate state, units, boundary, stocks and evidence when exceeded. Before completing a data package, determine actual quantities and uncertainty from traceable measurements or applicable reviewed quantitative sources. Retain missing amounts, factors and flow identities as gaps that block completeness claims; passing a range screen is not evidence."
+process_map:
+  - id: collection
+    name: "Untended collection and resource removal"
+    inclusion: "conditional"
+    inclusion_condition: "Actual gathering responsibility is inside the declared system, not already owned by an upstream gathered product"
+    role: "foreground capture"
+    quantitative_reference: "Measured collected fresh lot, source/removal ledger and actual trip"
+  - id: conditioning
+    name: "Primary conditioning and grading"
+    inclusion: "conditional"
+    inclusion_condition: "Actual pre-dispatch cleaning/trimming/grading is performed"
+    role: "foreground first preparation"
+    quantitative_reference: "Measured fresh input and every accepted grade/reject handoff"
+  - id: preservation
+    name: "Pre-gate fresh preservation and storage"
+    inclusion: "conditional"
+    inclusion_condition: "Actual fresh/chilled preservation or storage is performed before dispatch"
+    role: "bounded preservation"
+    quantitative_reference: "Measured usable fresh input/output and actual time/temperature"
+  - id: handover
+    name: "Final acceptance packaging and producer handover"
+    inclusion: "required"
+    inclusion_condition: "Every accepted final lot"
+    role: "foreground acceptance and presentation"
+    quantitative_reference: "1 kg net accepted reference output"
+process_inventory:
+  - id: collection
+    label: "Untended collection and resource removal"
+    inputs:
+      product:
+        - row_id: collection_energy
+          role: "Collection fuel and electricity"
+          name: "Collection fuel and electricity"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Conditional umbrella for recorded purchased fuel or electricity used by equipment or actual access travel owned here. Human walking and labour do not imply fuel or metabolic exchanges. A fully inclusive transport service and its included fuel cannot both be counted."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: collection_materials
+          role: "Collection consumables"
+          name: "Collection consumables"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual consumable tools and carrying-container replacements are recorded by material and use share, not a universal equipment recipe. Reusable assets accounted as service below are excluded from this consumption quantity."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: collection_services
+          role: "Shared collection asset and access services"
+          name: "Shared collection asset and access services"
+          flow_type: "product"
+          property_unit: "Service duration / h"
+          description: "Conditional umbrella measured by attributable asset or service hours, with named actual service, consuming trips, periods and total-user denominator. Payments or permits alone are not physical service quantities; inclusive supplier services retain their actual inventory boundary."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "h"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: wild_resource
+          role: "Untended wild mushroom fruiting bodies removed from natural source"
+          name: "Untended wild mushroom fruiting bodies removed from natural source"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "The removal ledger records only fresh fruiting bodies actually gathered from the declared untended habitat; not soil, litter, host-tree biomass or fungal substrate. Natural resource removal and an upstream gathered-product input never represent the same quantity twice."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: collection_incidental_soil
+          role: "Incidental soil and mineral matter removed with gathered lot"
+          name: "Incidental soil and mineral matter removed with gathered lot"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional only for actual attached soil/mineral material physically removed with the lot; record separately from edible fruiting-body resource mass. Material brushed off and left in situ is a disclosed retained source fate, not an exported quantity."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: gathered_raw
+          role: "Gathered fresh mushrooms at collection handoff"
+          name: "Gathered fresh mushrooms at collection handoff"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collected raw lot handed to actual transfer, conditioning or dispatch, with species, source, collection time and incidental soil/foreign matter measured separately. This intermediate quantity is measured, not fixed to final one kilogram."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: collection_reject
+          role: "Collection rejects crossing to treatment"
+          name: "Collection rejects crossing to treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only actual removed rejects sent to a declared treatment destination cross this waste boundary. Uncollected fruiting bodies remain in the source; on-site retained trim is a disclosed residue fate, not both a waste export and an elementary emission."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: collection_direct_emissions
+          role: "Actual named direct collection emissions"
+          name: "Actual named direct collection emissions"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional umbrella for identified direct substances from actual owned combustion or equipment operation, with amount, method and receiving compartment stated per substance. Inclusive supplier services own their emissions; no universal factor, guessed pollutant or human metabolic emissions are imposed."
+          amount:
+            expression: "Measured attributable quantity from cp_collection"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_collection
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: conditioning
+    label: "Primary conditioning and grading"
+    inputs:
+      product:
+        - row_id: conditioning_feed
+          role: "Fresh gathered mushroom lot entering primary conditioning"
+          name: "Fresh gathered mushroom lot entering primary conditioning"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Input is a measured upstream collection handoff or purchased already gathered wild lot, with predecessor burdens retained once. Source evidence must exclude cultivated lots; raw soil, trim and water are not silently accepted edible-product mass."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_energy
+          role: "Primary conditioning fuel and electricity"
+          name: "Primary conditioning fuel and electricity"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "One conditional umbrella for actual purchased fuel or electricity in cleaning, trimming, sorting and pre-gate movement; no assumed powered washing equipment or mandatory thermal treatment."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_water
+          role: "Supplied primary conditioning water"
+          name: "Supplied primary conditioning water"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Record only water supplied as a product for actual washing or equipment cleaning; brushing without washing has no water input. Direct abstraction of the same quantity belongs exclusively to the elementary water card."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_materials
+          role: "Primary conditioning consumables"
+          name: "Primary conditioning consumables"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One conditional umbrella for actual cleaning agents and disposable handling materials, preserving named formulation and its use; no chemicals are prescribed to qualify wild mushrooms."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_services
+          role: "Shared primary conditioning services"
+          name: "Shared primary conditioning services"
+          flow_type: "product"
+          property_unit: "Service duration / h"
+          description: "Actual shared worktables, handling equipment and contracted services are attributed by measured service hours across consumers and periods; dedicated energy and materials outside the service boundary remain separate."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "h"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        - row_id: conditioning_direct_water
+          role: "Direct water abstraction for primary conditioning"
+          name: "Direct water abstraction for primary conditioning"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional direct environmental withdrawal from a recorded source, actual freshwater type and location. Resolve the source-specific elementary identity; never also enter the same supply as product water. Convert volume only using evidenced compatible density."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+    outputs:
+      product:
+        - row_id: conditioned_fresh
+          role: "Cleaned graded fresh mushrooms at conditioning handoff"
+          name: "Cleaned graded fresh mushrooms at conditioning handoff"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Prepared still-fresh selected lot is handed to actual preservation or final acceptance. Retain species/grade, trimming and foreign-matter decisions; no drying, cooking or shelf-life equivalence is implied."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: other_grade_goods
+          role: "Other accepted grade goods at separate handoff"
+          name: "Other accepted grade goods at separate handoff"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Enumerate each actually accepted edible lower-grade or other intended goods lot with its own species, grade and buyer gate. It is a co-output only with evidenced intended use and handoff; unidentified or unqualified mushrooms are not edible goods."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: conditioning_reject
+          role: "Trim soil and rejected mushrooms sent to treatment"
+          name: "Trim soil and rejected mushrooms sent to treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One waste umbrella resolved by actual composition and destination. Record edible trim, soil/foreign matter and spoiled or unqualified fruiting bodies separately in the raw ledger; reinspection loops retain their originating burden and do not create new accepted mass."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: conditioning_wastewater
+          role: "Primary conditioning wastewater to treatment"
+          name: "Primary conditioning wastewater to treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measured discharged wash or cleaning effluent enters its actual wastewater-treatment boundary. Dissolved solids and retained water are recorded; wastewater is not evaporated water or an unmeasured direct discharge."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "20"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: conditioning_direct_emissions
+          role: "Actual named direct conditioning emissions"
+          name: "Actual named direct conditioning emissions"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional umbrella for identified direct substances from actual owned combustion or equipment operation, with amount, method and receiving compartment stated per substance. Inclusive supplier services own their emissions; no universal factor, guessed pollutant or human metabolic emissions are imposed."
+          amount:
+            expression: "Measured attributable quantity from cp_conditioning"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_conditioning
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: preservation
+    label: "Pre-gate fresh preservation and storage"
+    inputs:
+      product:
+        - row_id: preservation_feed
+          role: "Usable fresh mushrooms entering pre-gate preservation"
+          name: "Usable fresh mushrooms entering pre-gate preservation"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measured usable lot received from whichever actual prior node or verified upstream gathered source exists. It remains fresh; no frozen, dried or chemically preserved output is included."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preservation_energy
+          role: "Fresh preservation fuel and electricity"
+          name: "Fresh preservation fuel and electricity"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Conditional single umbrella for actual chilling, ventilation and cold-storage fuel or electricity within the declared pre-gate time. No universal temperature, duration or energy recipe; inclusive purchased cooling services exclude duplicate power."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preservation_materials
+          role: "Fresh preservation materials including refrigerant make-up"
+          name: "Fresh preservation materials including refrigerant make-up"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Resolve actual refrigerant, ice or other preservation material by named identity and function; measure make-up, recovered amount and stock changes. Filling a circuit is not automatically an emission; do not count ice as both water supply and cooling material."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preservation_services
+          role: "Shared fresh preservation asset services"
+          name: "Shared fresh preservation asset services"
+          flow_type: "product"
+          property_unit: "Service duration / h"
+          description: "Attribute actual shared cold-room or contracted cooling service hours to species lots and storage periods, using occupancy and metering evidence. Neither idle capacity nor an assumed useful life supplies a universal per-kilogram burden."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "h"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: preserved_fresh
+          role: "Fresh or chilled mushrooms at preservation handoff"
+          name: "Fresh or chilled mushrooms at preservation handoff"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measured still-usable fresh/chilled lot handed to final producer acceptance, recording actual temperatures, duration and quality state. Stabilization claims require lot evidence, not a guaranteed shelf life."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: preservation_spoilage
+          role: "Preservation spoiled lot and material waste"
+          name: "Preservation spoiled lot and material waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual spoiled mushrooms, spent materials or recovered refrigerant transferred as waste are resolved by distinct composition and treatment destinations. Return/reinspection quantities are linked to the original lot and measured once."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: preservation_water_vapour
+          role: "Water vapour from fresh preservation to air unspecified"
+          name: "Water vapour from fresh preservation to air unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional measured or balance-derived water actually evaporated from the fresh lot to air unspecified; not all mass loss, liquid drainage, respiration carbon or unknown volatiles. A known specific air compartment requires its own verified identity."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: preservation_direct_emissions
+          role: "Actual named direct fresh preservation emissions"
+          name: "Actual named direct fresh preservation emissions"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional umbrella for separately measured named refrigerant leakage or other identified direct substance and receiving medium. Unknown refrigerant, combustion species or respiratory gas composition is an identity/data gap, never a forced single UUID. Water vapour above is excluded."
+          amount:
+            expression: "Measured attributable quantity from cp_preservation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preservation
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+  - id: handover
+    label: "Final acceptance packaging and producer handover"
+    inputs:
+      product:
+        - row_id: handover_feed
+          role: "Actual fresh mushroom lot entering final producer acceptance"
+          name: "Actual fresh mushroom lot entering final producer acceptance"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measured lot from the last actual upstream state, including direct gathered dispatch where conditioning and cold preservation are absent. Exactly one input representation owns each portion, with linked predecessor burden once."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: handover_energy
+          role: "Final producer handling fuel and electricity"
+          name: "Final producer handling fuel and electricity"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Single conditional umbrella for measured energy in final weighing, pre-gate handling and packaging equipment; retail delivery, cooking and consumer storage are outside this gate."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "100"
+                unit: "MJ"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: handover_packaging
+          role: "Producer handover packaging materials"
+          name: "Producer handover packaging materials"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual crates, liners or other protective materials by composition, mass and reused or single-use status. Net mushroom mass excludes packaging. Reusable container allocation includes actual reuse, repair, return and end-of-use records once."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+        - row_id: handover_services
+          role: "Shared final weighing and presentation services"
+          name: "Shared final weighing and presentation services"
+          flow_type: "product"
+          property_unit: "Service duration / h"
+          description: "Record actual attributable weighing, sorting and packaging-asset hours; enumerate all consuming lots and reporting periods. Pre-gate logistics are assigned to their actual owner, not silently included as distribution."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "h"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: wild_mushroom_dispatch
+          role: "Fresh or chilled wild edible mushrooms at declared gatherer or primary-producer dispatch"
+          name: "Fresh or chilled wild edible mushrooms at declared gatherer or primary-producer dispatch"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Exactly the accepted reference lot at the declared final producer dispatch gate. Document untended wild origin, qualified actual species, fresh/chilled state, net mass, trim/foreign matter, moisture/grade and temperature/time. Only this accepted output is fixed to the reference; packaging and earlier feeds are measured separately."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "collected_record"
+                source_ids: []
+        - row_id: handover_other_goods
+          role: "Other qualified fresh goods at final producer handoff"
+          name: "Other qualified fresh goods at final producer handoff"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional other actually qualified fresh species/grade lots dispatched separately at the producer gate, with their own acceptance, net mass and destination. A grade transferred internally from conditioning is not also a sold co-product at that earlier handoff; inventory labels distinguish internal transfer from independent boundary exit. Unknown or unqualified fungi remain excluded from edible goods."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      waste:
+        - row_id: handover_reject
+          role: "Final acceptance rejects and package waste"
+          name: "Final acceptance rejects and package waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual off-spec mushrooms and damaged packages to named treatment exits; salvage or lower-grade sale needs an evidenced separate intended goods role rather than disposal credit. Retain rejection burdens and exclude rejects from accepted net mass."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+      elementary:
+        - row_id: handover_direct_emissions
+          role: "Actual named direct handover emissions"
+          name: "Actual named direct handover emissions"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional umbrella for identified direct substances from actual owned combustion or equipment operation, with amount, method and receiving compartment stated per substance. Inclusive supplier services own their emissions; no universal factor, guessed pollutant or human metabolic emissions are imposed."
+          amount:
+            expression: "Measured attributable quantity from cp_handover"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_handover
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "0"
+                upper: "10"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
+                basis_kind: "reference_flow"
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
+allocation_rules:
+  - rule_id: output_ownership
+    applies_to: "collected/prepared/accepted goods"
+    rule: "Enumerate every actual intended species/grade output and its handoff. Internal transfers carry burden forward and are not independent final products. Retained source material, waste, unidentified fungi and spoiled lots are not co-products by default."
+    source_ids: []
+  - rule_id: attribution_order
+    applies_to: "multiple intended goods"
+    rule: "First subdivide independently metered collection/handling lots and processes. For genuinely shared remaining operations, use evidenced physical causation such as actual trip/container use or service occupancy. Where no defensible physical driver remains, use recorded same-period net producer values with sensitivity analysis and a documented decision. Do not apply a universal mass/value share or substitution credit."
+    source_ids: []
+  - rule_id: loss_and_return
+    applies_to: "reject and reinspection paths"
+    rule: "Keep burdens on the originating lot through repeat cleaning/reinspection; record every return to its originating conditioning or acceptance node. Count recirculated material once in overall mass balance, not as new collection. Only newly qualified accepted mass enters the final denominator; treatment retains attributable burden without an automatic negative credit."
+    source_ids: []
+  - rule_id: shared_asset_period
+    applies_to: "shared services and packaging"
+    rule: "Index each vehicle, tool, cold-room or reusable-container asset, all consuming nodes/lots/periods and total users. Attribute measured use/occupancy with compatible total-use records, log idle/replacement/repair/end-of-use decisions and avoid both purchase and inclusive service burdens for the same use. No assumed lifetime or perpetual reuse."
+    source_ids: []
+  - rule_id: site_period_aggregation
+    applies_to: "site and temporal aggregation"
+    rule: "Sum attributable exchanges and accepted output mass on compatible actual species/state/gate boundaries; divide their totals rather than averaging site ratios. Retain per-site/trip/season coverage, missing contributors, weighting and representativeness decisions. Opening/closing inventories prevent a lot being counted in collection and later dispatch periods twice."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_collection
+      process_id: "collection"
+      flow_role: "source and collected lot; energy/material/service; incidental/reject/emission"
+      record_type: "source-trip ledger"
+      raw_fields: "actual species; edible qualification record; untended source/site; access/trip; collection time; fruiting-body mass; attached soil; raw output; retained or exported residue; fuel/electricity; consumables; service hours/users; named emissions/compartments; destination"
+      collection_method: "Verify source records and traceable calibrated weighing; logs/meter/supplier records for actual owned operation; retain substance-specific emission measurement or actual-fuel factor evidence"
+      unit: "kg; MJ; h in separate raw fields"
+      frequency: "each actual trip and material handoff"
+      temporal_coverage: "actual trip and collection season"
+      site_scope: "enumerated source sites and owners"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "source proof; identity qualification; calibrated scales; original logs; boundary and factor evidence"
+    - protocol_id: cp_conditioning
+      process_id: "conditioning"
+      flow_role: "fresh feed, water, grades, trim, wastewater and owned operation"
+      record_type: "handling-batch ledger"
+      raw_fields: "lot/species/source; incoming fresh/soil mass; trim; all grades; reinspection links; supplied or direct water/source; retained water; wastewater solids/destination; energy/material/service; named emissions/compartments; opening/closing stock"
+      collection_method: "Calibrated matched-lot weighing, actual water metering, records of state/destination and service boundary; document each factor or inferred emission separately"
+      unit: "kg; MJ; h in separate raw fields"
+      frequency: "each batch/changeover and handoff"
+      temporal_coverage: "actual handling run and cleaning events"
+      site_scope: "declared preparation sites and source lots"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "scale/meter checks; batch/state ledger; source exclusions; treatment records"
+    - protocol_id: cp_preservation
+      process_id: "preservation"
+      flow_role: "fresh stock, energy/material/service, spoilage/water and named emissions"
+      record_type: "fresh storage ledger"
+      raw_fields: "lot/species; opening/input/output/closing mass; time/temperature; moisture; condensate/drainage; water loss; respiratory loss evidence; energy; ice/refrigerant material and stock; leakage/recovery/compartment; service occupancy/users; spoilage destination"
+      collection_method: "Match calibrated stock weights and actual temperature/period/meter logs; reconcile water/material balances and independently identified emission measurements or justified substance-specific factors"
+      unit: "kg; MJ; h in separate raw fields"
+      frequency: "each storage run, event and exit"
+      temporal_coverage: "actual pre-gate storage interval"
+      site_scope: "each owned cold/storage site and service boundary"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibrated records; lot quality; metering; leakage/stock reconciliation; missing-loss disclosure"
+    - protocol_id: cp_handover
+      process_id: "handover"
+      flow_role: "accepted net reference, packaging, rejection and final operation"
+      record_type: "dispatch acceptance ledger"
+      raw_fields: "actual species/source qualification; previous state; net/gross/tare masses; trim/soil boundary; moisture/grade; gate/time/temperature; package mass/reuse/returns; rejected/other-goods destinations; energy/service/users; named emissions; stock"
+      collection_method: "Weigh on calibrated scale excluding packaging; reconcile acceptance, upstream lot and dispatch records; inspect documented product qualification, not AI edibility inference"
+      unit: "kg; MJ; h in separate raw fields"
+      frequency: "each accepted dispatch and reject event"
+      temporal_coverage: "actual dispatch time and asset-use period"
+      site_scope: "declared gatherer or primary-producer gate"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "net/tare checks; acceptance and source traceability; reuse ledger; recorded quality qualification"
+  calculation_rules:
+    - id: reference_normalization
+      applies_to: "all inventory rows"
+      rule: "Divide each actually attributable exchange total by matched accepted net dispatch kilograms; retain its numerator unit. The linked final product is 1 kg, not a harvest yield."
+      inputs:
+        - "attributable exchange"
+        - "accepted net dispatch mass"
+        - cp_handover
+      output: "exchange per 1 kg reference flow"
+      source_ids: []
+    - id: lot_mass_reconcile
+      applies_to: "material and stock ledgers"
+      rule: "Reconcile opening stock plus actual inputs against closing stock, all intended outputs, exported waste, retained source residues and substantiated environmental losses. Track attached soil separately. Report nonclosure, measurement uncertainty and unknown loss; never label unexplained fresh mass loss as water evaporation."
+      inputs:
+        - "matched source/lot/period weights"
+        - "water and soil records"
+        - "all destinations"
+      output: "closed lot ledger or explicit gap"
+      source_ids: []
+    - id: energy_conversion
+      applies_to: "energy umbrellas"
+      rule: "Preserve carrier quantities; use documented actual-carrier net calorific value/density where conversion is necessary, or 3.6 MJ per measured electricity kWh; verify inclusive-service exclusions."
+      inputs:
+        - "actual carrier quantity"
+        - "compatible factor evidence"
+      output: "carrier-specific energy amount"
+      source_ids: []
+    - id: shared_use
+      applies_to: "shared assets and periods"
+      rule: "Attribute documented total service burden according to compatible measured consumer usage divided by all-user usage within the same service period, retaining idle/repair/replacement decisions and actual multi-output rule."
+      inputs:
+        - "consuming-node/period service use"
+        - "total-use ledger"
+        - "burden boundary"
+      output: "singly attributed service share"
+      source_ids: []
+  data_quality_requirements:
+    - id: identity_quality
+      applies_to: "reference and input lots"
+      requirement: "Preserve actual species, edible qualification record, untended-source proof and state; reject cultivated or intentionally enhanced lots. This methodology gives no identification or consumption recommendation."
+      evidence: "source and qualified acceptance records"
+    - id: physical_quality
+      applies_to: "material/stock/water balances"
+      requirement: "Record raw fresh input, mineral matter, trim, accepted grades, spoilage, water uptake/loss and stock on common boundaries. Do not transplant dry-weight trade data or historical species yields."
+      evidence: "matched calibrated lot ledger and uncertainty"
+    - id: operational_quality
+      applies_to: "process selection and preservation"
+      requirement: "Actual route, owners, temperature/time, service boundary and ingredient/refrigerant identity are mandatory where used; absent refrigeration is not presumed active and unknown activity is not zero."
+      evidence: "trip/run/storage logs and supplier evidence"
+    - id: coverage_quality
+      applies_to: "aggregation"
+      requirement: "List all contributing sites, species lots, trips, seasons and periods, exclusions and output weights; justify aggregation only for compatible reference products; incomplete site coverage is disclosed rather than scaled by a guessed habitat yield."
+      evidence: "site-period coverage and representativeness record"
+    - id: range_quality
+      applies_to: "every card"
+      requirement: "All non-reference Ranges are broad provisional reasoned QA screens, not collected facts, empirical typical values, recipes or mandatory ceilings. A 10 kg/kg screen spans order-of-magnitude variable feed/loss/material ratios; 20 kg/kg spans conditional cleaning-water throughput; 100 MJ/kg spans manual zero-energy to powered handling/cold storage; 10 h/kg spans shared service intensity. The reference 1..1 expresses only the declared normalization. Foreground amounts require the linked protocol regardless of screen. Review outliers and replace screens with actual evidence; never clip, reject or fill missing values by these estimates."
+      evidence: "actual protocols and reviewer judgement; no quantitative FAO source adopted"
+    - id: identity_resolution
+      applies_to: "all exchanges"
+      requirement: "Each actual exchange must resolve to a verified concrete flow/property/unit identity matching substance/source/state/gate/compartment. A conditional umbrella is not itself a universal exchange."
+      evidence: "detailed identity and support evidence retained with production package"
+validation_rules:
+  - rule_id: check_scope
+    applies_to: "reference and source"
+    rule: "Verify actual untended gathered species, documented edible qualification, fresh/chilled state and producer gate; reject truffles, intentional production and excluded processed states."
+    source_ids:
+      - unsd-wild-mushrooms
+  - rule_id: check_reference
+    applies_to: "wild_mushroom_dispatch"
+    rule: "Verify 1 kg accepted net output, linked card, actual qualifiers, calibrated net mass and same reference denominator across all rows; inputs and intermediate outputs remain measured."
+    source_ids: []
+  - rule_id: check_balance
+    applies_to: "all actual nodes"
+    rule: "Reconcile lot, mineral/foreign matter, water, trim, spoilage and stock; supplied/direct water and predecessor/natural removal are exclusive per portion. Unexplained losses or negative stocks remain gaps."
+    source_ids: []
+  - rule_id: check_conditional_paths
+    applies_to: "process map"
+    rule: "Select actual owned gathering/conditioning/preservation, connect feeds and output states, retain predecessor burdens once. Trace every reinspection loop or rejection exit to origin; rejected mass is not an accepted output."
+    source_ids: []
+  - rule_id: check_attribution
+    applies_to: "sites periods and output set"
+    rule: "Confirm every intended goods handoff and attribution hierarchy, batch/changeover linkage, all sites and periods, and shared-asset/service/reuse consumers. No omitted contributor, repeated final product or duplicate period/service burden."
+    source_ids: []
+  - rule_id: check_identity
+    applies_to: "concrete exchanges"
+    rule: "Verify flow type/direction, actual material/pollutant identity, gate/source or receiving compartment, property/unit and each support reference; no near-match, unknown refrigerant or general dust identity is accepted automatically."
+    source_ids: []
+  - rule_id: check_evidence
+    applies_to: "quantities and ranges"
+    rule: "Require raw linked protocols, compatible conversion factors and traceable actual operations. Provisional QA screens cannot provide missing values or prove valid cold-chain conditions; outliers trigger review, not clipping."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground collection/primary-handling dataset for one qualified actual fresh/chilled wild species lot"
+  downstream_use: "secondary_dataset or background_dataset only for a compatible declared fresh/chilled producer-gate state"
+  allowed_use: "Traceable modelling of untended gathering and actual pre-gate handling with complete flow identities and quality disclosure"
+  excluded_use: "Cultivation, habitat enhancement, truffles, dried/frozen/processed output, unknown-edibility assurance, consumer nutrition or avoided-production credit"
+  required_metadata: "Actual species/qualification, source and sites, trip/season, node owners, state/gate, grade/moisture/soil/trim, time/temperature, net mass, packages/reuse, output destinations and attribution decisions"
+  required_quality_disclosure: "Measured coverage, missing upstream/identity/loss evidence, nonclosure and uncertainty, provisional screens, site-period weighting, factor compatibility and actual service boundaries"
+  update_trigger: "Source/species/state/gate or handling change; temperature/period change; material or refrigerant identity change; new evidence, supplier/asset/reuse change or altered output destinations"
+data_sources:
+  - id: "unsd-wild-mushrooms"
+    type: "official_guidance"
+    reference: "UNSD CPC 3.0 03232, https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/03232 ; retrieved 2026-10-08"
+    used_for: "Untended gathered versus intentionally managed/cultivated scope; not proof of whole-leaf fresh-only coverage"
+  - id: "fao-fungi-collection"
+    type: "official_guidance"
+    reference: "FAO, Wild edible fungi, chapter 3, https://www.fao.org/4/y5489e/y5489e07.htm ; retrieved 2026-10-08"
+    used_for: "Collection/source/access responsibilities and distinction from management; examples and historical yields are not defaults"
+  - id: "fao-fungi-use"
+    type: "official_guidance"
+    reference: "FAO, Wild edible fungi, chapter 4, https://www.fao.org/4/y5489e/y5489e08.htm ; retrieved 2026-10-08"
+    used_for: "Distinct gathered/cultivated and fresh/dried market states; not current universal cultivation limits or quantitative factors"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:da295084a5a05bdec8ab358a5073035b4304b57ce9a060fa42c7fbe59cb3941c"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6338"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6338
+          line: 63
+          column: 1
+        end:
+          offset: 9261
+          line: 87
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Actual untended source with owned gathering, or verified already gathered wild fresh input at the actual entry node; no fictional cultivation phase |\n| starting_condition_role | Documented collection/source responsibility or upstream gathered-product handoff |\n| product_classification_scope | Fresh/chilled primary untended mushroom lot only; CPC 03232 narrower partial coverage, not whole-leaf fresh-state proof |\n| recursive_input_rule | An already gathered same-category input carries its measured state and matching upstream burden once; never add the same natural removal or collection again |\n| upstream_dataset_requirement | Traceable wild origin, lot/state/gate, quality qualification and compatible upstream method; missing prior burden is disclosed as a gap, not assumed zero |\n| disclosure | Source sites, actual owned nodes, collection and storage periods, entry and dispatch gates, packaging/reuse boundary, rejected-material fates and exclusions |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `wild_origin` | source and reference | Require records demonstrating untended gathering; cultivated or intentional enhancement routes are outside scope. Habitat association is not proof of wild origin. | `unsd-wild-mushrooms` |\n| `actual_route` | all nodes | Select actual collection, first conditioning and fresh preservation responsibilities from records; bypass absent nodes, connect the last actual upstream state to final acceptance, and assign each material portion and burden once. | `fao-fungi-collection` |\n| `source_removal` | collection | Collection owns resource removal and harvest together: source interface, removed fresh bodies and measured downstream collected state. Do not create a second removal node or invent managed production. Record attached mineral matter and on-site retained residuals separately. | `fao-fungi-collection` |\n| `producer_gate` | handover | End at actual gatherer/primary-producer dispatch. Include actual pre-gate presentation; exclude downstream distribution and manufacture. Raw/fresh and preserved/dried states are not assumed equivalent. | `fao-fungi-use` |\n| `state_destinations` | conditioning and preservation | Separate intended selected grade, other qualified goods, off-spec/reinspection lots, trim, wastewater and spoilage. Every material exit has an actual state and destination; unknown off-spec fate cannot be counted as accepted goods. | |\n| `shared_period_sites` | all nodes | Enumerate contributing sites, trips, handling runs and storage periods, shared asset consumers and service boundaries. Log cleaning/changeover, replacement, repair and end-of-use once in the correct run/period; disclose physical access impacts and do not invent habitat-area occupation from collection duration. | |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 173
+              line: 8
+              column: 1
+            end:
+              offset: 196
+              line: 8
+              column: 24
+          text: "# Wild edible mushrooms"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6338
+              line: 63
+              column: 1
+            end:
+              offset: 6359
+              line: 63
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_47344"
+      family: "allocation"
+      span:
+        start:
+          offset: 47344
+          line: 954
+          column: 1
+        end:
+          offset: 49510
+          line: 964
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_ownership` | collected/prepared/accepted goods | Enumerate every actual intended species/grade output and its handoff. Internal transfers carry burden forward and are not independent final products. Retained source material, waste, unidentified fungi and spoiled lots are not co-products by default. | |\n| `attribution_order` | multiple intended goods | First subdivide independently metered collection/handling lots and processes. For genuinely shared remaining operations, use evidenced physical causation such as actual trip/container use or service occupancy. Where no defensible physical driver remains, use recorded same-period net producer values with sensitivity analysis and a documented decision. Do not apply a universal mass/value share or substitution credit. | |\n| `loss_and_return` | reject and reinspection paths | Keep burdens on the originating lot through repeat cleaning/reinspection; record every return to its originating conditioning or acceptance node. Count recirculated material once in overall mass balance, not as new collection. Only newly qualified accepted mass enters the final denominator; treatment retains attributable burden without an automatic negative credit. | |\n| `shared_asset_period` | shared services and packaging | Index each vehicle, tool, cold-room or reusable-container asset, all consuming nodes/lots/periods and total users. Attribute measured use/occupancy with compatible total-use records, log idle/replacement/repair/end-of-use decisions and avoid both purchase and inclusive service burdens for the same use. No assumed lifetime or perpetual reuse. | |\n| `site_period_aggregation` | site and temporal aggregation | Sum attributable exchanges and accepted output mass on compatible actual species/state/gate boundaries; divide their totals rather than averaging site ratios. Retain per-site/trip/season coverage, missing contributors, weighting and representativeness decisions. Opening/closing inventories prevent a lot being counted in collection and later dispatch periods twice. | |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 173
+              line: 8
+              column: 1
+            end:
+              offset: 196
+              line: 8
+              column: 24
+          text: "# Wild edible mushrooms"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 47344
+              line: 954
+              column: 1
+            end:
+              offset: 47384
+              line: 954
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_57335"
+      family: "validation"
+      span:
+        start:
+          offset: 57335
+          line: 995
+          column: 1
+        end:
+          offset: 59279
+          line: 1007
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `check_scope` | reference and source | Verify actual untended gathered species, documented edible qualification, fresh/chilled state and producer gate; reject truffles, intentional production and excluded processed states. | `unsd-wild-mushrooms` |\n| `check_reference` | wild_mushroom_dispatch | Verify 1 kg accepted net output, linked card, actual qualifiers, calibrated net mass and same reference denominator across all rows; inputs and intermediate outputs remain measured. | |\n| `check_balance` | all actual nodes | Reconcile lot, mineral/foreign matter, water, trim, spoilage and stock; supplied/direct water and predecessor/natural removal are exclusive per portion. Unexplained losses or negative stocks remain gaps. | |\n| `check_conditional_paths` | process map | Select actual owned gathering/conditioning/preservation, connect feeds and output states, retain predecessor burdens once. Trace every reinspection loop or rejection exit to origin; rejected mass is not an accepted output. | |\n| `check_attribution` | sites periods and output set | Confirm every intended goods handoff and attribution hierarchy, batch/changeover linkage, all sites and periods, and shared-asset/service/reuse consumers. No omitted contributor, repeated final product or duplicate period/service burden. | |\n| `check_identity` | concrete exchanges | Verify flow type/direction, actual material/pollutant identity, gate/source or receiving compartment, property/unit and each support reference; no near-match, unknown refrigerant or general dust identity is accepted automatically. | |\n| `check_evidence` | quantities and ranges | Require raw linked protocols, compatible conversion factors and traceable actual operations. Provisional QA screens cannot provide missing values or prove valid cold-chain conditions; outliers trigger review, not clipping. | |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 173
+              line: 8
+              column: 1
+            end:
+              offset: 196
+              line: 8
+              column: 24
+          text: "# Wild edible mushrooms"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 57335
+              line: 995
+              column: 1
+            end:
+              offset: 57357
+              line: 995
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "wild_origin"
+      identity_kind: "explicit"
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 7506
+          line: 80
+          column: 1
+        end:
+          offset: 7735
+          line: 80
+          column: 230
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "actual_route"
+      identity_kind: "explicit"
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 7736
+          line: 81
+          column: 1
+        end:
+          offset: 8023
+          line: 81
+          column: 288
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "source_removal"
+      identity_kind: "explicit"
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 8024
+          line: 82
+          column: 1
+        end:
+          offset: 8359
+          line: 82
+          column: 336
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "producer_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 8360
+          line: 83
+          column: 1
+        end:
+          offset: 8612
+          line: 83
+          column: 253
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "state_destinations"
+      identity_kind: "explicit"
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 8613
+          line: 84
+          column: 1
+        end:
+          offset: 8905
+          line: 84
+          column: 293
+    - pointer: "/system_boundary/rules/5"
+      rule_id: "shared_period_sites"
+      identity_kind: "explicit"
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 8906
+          line: 85
+          column: 1
+        end:
+          offset: 9259
+          line: 85
+          column: 354
+    - pointer: "/allocation_rules/0"
+      rule_id: "output_ownership"
+      identity_kind: "explicit"
+      unit_id: "normative_47344"
+      source_span:
+        start:
+          offset: 47457
+          line: 958
+          column: 1
+        end:
+          offset: 47770
+          line: 958
+          column: 314
+    - pointer: "/allocation_rules/1"
+      rule_id: "attribution_order"
+      identity_kind: "explicit"
+      unit_id: "normative_47344"
+      source_span:
+        start:
+          offset: 47771
+          line: 959
+          column: 1
+        end:
+          offset: 48243
+          line: 959
+          column: 473
+    - pointer: "/allocation_rules/2"
+      rule_id: "loss_and_return"
+      identity_kind: "explicit"
+      unit_id: "normative_47344"
+      source_span:
+        start:
+          offset: 48244
+          line: 960
+          column: 1
+        end:
+          offset: 48669
+          line: 960
+          column: 426
+    - pointer: "/allocation_rules/3"
+      rule_id: "shared_asset_period"
+      identity_kind: "explicit"
+      unit_id: "normative_47344"
+      source_span:
+        start:
+          offset: 48670
+          line: 961
+          column: 1
+        end:
+          offset: 49075
+          line: 961
+          column: 406
+    - pointer: "/allocation_rules/4"
+      rule_id: "site_period_aggregation"
+      identity_kind: "explicit"
+      unit_id: "normative_47344"
+      source_span:
+        start:
+          offset: 49076
+          line: 962
+          column: 1
+        end:
+          offset: 49508
+          line: 962
+          column: 433
+    - pointer: "/validation_rules/0"
+      rule_id: "check_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 57430
+          line: 999
+          column: 1
+        end:
+          offset: 57680
+          line: 999
+          column: 251
+    - pointer: "/validation_rules/1"
+      rule_id: "check_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 57681
+          line: 1000
+          column: 1
+        end:
+          offset: 57913
+          line: 1000
+          column: 233
+    - pointer: "/validation_rules/2"
+      rule_id: "check_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 57914
+          line: 1001
+          column: 1
+        end:
+          offset: 58160
+          line: 1001
+          column: 247
+    - pointer: "/validation_rules/3"
+      rule_id: "check_conditional_paths"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 58161
+          line: 1002
+          column: 1
+        end:
+          offset: 58431
+          line: 1002
+          column: 271
+    - pointer: "/validation_rules/4"
+      rule_id: "check_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 58432
+          line: 1003
+          column: 1
+        end:
+          offset: 58728
+          line: 1003
+          column: 297
+    - pointer: "/validation_rules/5"
+      rule_id: "check_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 58729
+          line: 1004
+          column: 1
+        end:
+          offset: 59005
+          line: 1004
+          column: 277
+    - pointer: "/validation_rules/6"
+      rule_id: "check_evidence"
+      identity_kind: "explicit"
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 59006
+          line: 1005
+          column: 1
+        end:
+          offset: 59277
+          line: 1005
+          column: 272
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 6338
+          line: 63
+          column: 1
+        end:
+          offset: 6359
+          line: 63
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6338"
+      source_span:
+        start:
+          offset: 6387
+          line: 67
+          column: 1
+        end:
+          offset: 7413
+          line: 74
+          column: 174
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_47344"
+      source_span:
+        start:
+          offset: 47344
+          line: 954
+          column: 1
+        end:
+          offset: 47384
+          line: 954
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_57335"
+      source_span:
+        start:
+          offset: 57335
+          line: 995
+          column: 1
+        end:
+          offset: 57357
+          line: 995
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:da295084a5a05bdec8ab358a5073035b4304b57ce9a060fa42c7fbe59cb3941c"
+  generated_content_sha256: "sha256:d092f407713b074441509562ee2466465d0abe918a9d38fe80944fccac160ea9"

@@ -1,7 +1,7 @@
 ---
-lastReviewedAt: 2026-10-09
-lastReviewedNote: "Reviewed PCR #107/#108 latest browser failure: explicit manual language switches load the verified exported HTML document directly, preserving counterpart, query/fragment, preference and storage-denial behavior; neutral detection remains unchanged. Guide browser acceptance additionally requires exact main-frame HTTP 200 HTML navigation. Unmarked RSC failures remain blocking; no classifier exemptions, dependency or methodology changes. Fresh full CI and updated independent review remain required."
-lastReviewedCommit: e9b91252307d0345defcb709e819799d1aa6ba42
+lastReviewedAt: 2026-10-12
+lastReviewedNote: "Added lossless v3 search wire compaction and v1/v2 compatibility; source fidelity, ranking, size limits and resident-memory safeguards remain unchanged. Full CI qualification remains required."
+lastReviewedCommit: null
 title: Generated PCR Documentation Site Contract
 docType: contract
 scope: repo
@@ -157,6 +157,23 @@ indexing targets. Raw download responses carry attachment and noindex headers.
 Distinct historical versions are not blindly canonicalized to different text.
 
 ## Reader navigation and presentation
+
+### Search wire-format compatibility
+
+New search manifests use `schemaVersion: 3`. FlexSearch export map entries store
+the original score-array length and each non-null score position with its complete
+posting list; the Worker restores the original null slots before engine import.
+Empty posting lists, trailing nulls, term order, document identifiers and scores
+are preserved. Other engine exports remain native arrays, and search-result records
+are unchanged. Every generated shard must restore each engine export string exactly
+or generation fails. Tokenization, ranking and source coverage are not reduced.
+
+The Worker continues reading v1 string exports and v2 native-array exports without
+interpreting them as v3. Malformed v3 score positions, lengths or posting lists fail
+closed and remain retryable. The compiled codec is emitted with the Worker; no
+runtime dependency or remote service is added. Existing per-language limits remain
+20,000,000 raw wire bytes and 4,000,000 gzip bytes; compaction does not claim to
+reduce the restored engine's resident-memory requirement.
 
 The Agent onboarding entry `/getting-started.md` is authored in
 `packages/pcr-docs/public/getting-started.md` and exported byte-for-byte. It is a
@@ -355,15 +372,11 @@ Worker and tokenization module are compiled TypeScript browser modules shipped w
 FlexSearch browser bundle, preserving its license header. Static exports must
 not ship an uncompiled TypeScript Worker. No search backend is needed at this size.
 
-New search manifests use `schemaVersion: 2`: each shard's `entries` object stores
-the pinned FlexSearch export as native JSON arrays. Generation requires every
-export value to parse as an array and stringify back to the exact original engine
-string. The Worker stringifies those arrays before engine import and also accepts
-version 1 manifests with their original string entries. Unsupported manifest
-versions and entry types inconsistent with the declared version fail initialization;
-failed loads remain retryable. This representation preserves export key order,
-terms, postings, IDs and complete records. The 2 MB text buckets, tokenization,
-30-candidate limit per shard, global ranking and browser size budgets are unchanged.
+The [search wire-format contract](#search-wire-format-compatibility) defines v3
+lossless compaction and compatibility with v1 string and v2 native-array exports.
+Unsupported manifest versions and inconsistent entry types fail initialization;
+failed loads remain retryable. The 2 MB text buckets, tokenization, 30-candidate
+limit per shard, global ranking and browser size budgets are unchanged.
 
 Large documents split preferentially before semantic H2/H3 boundaries; bounded
 continuations retain their chapter context. Chapter URLs use source heading
