@@ -3,7 +3,7 @@ pcr_id: pcr.agriculture-forestry-and-fishery-products.forestry-and-logging-produ
 language: zh-CN
 status: candidate
 sync_with: pcr.en-US.md
-translation_status: aligned
+translation_status: reviewed
 ---
 
 # 编织、填充和衬垫用植物材料及其他植物产品（棉短绒除外）

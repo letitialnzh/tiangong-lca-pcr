@@ -3,7 +3,7 @@ pcr_id: pcr.agriculture-forestry-and-fishery-products.forestry-and-logging-produ
 language: zh-CN
 status: candidate
 sync_with: pcr.en-US.md
-translation_status: aligned
+translation_status: reviewed
 ---
 
 # 其他未另分类的野生食用产品
