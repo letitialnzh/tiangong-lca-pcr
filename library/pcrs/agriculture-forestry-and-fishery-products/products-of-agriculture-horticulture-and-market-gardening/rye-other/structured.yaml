@@ -59,8 +59,8 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
-    name: "Tempered rye grain"
-    uuid: "ac1c42aa-ab59-4015-8237-08031c7f4a98"
+    name: "Non-seed rye grain at the selected declared gate"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -138,7 +138,7 @@ process_map:
   - id: primary_conditioning
     name: "Primary Drying, Cleaning, and Grading"
     inclusion: "conditional"
-    inclusion_condition: "include when the declared gate is after primary drying, cleaning, grading, or short-term storage"
+    inclusion_condition: "include when primary drying, cleaning or grading is actually performed before the selected gate"
     role: "foreground"
     quantitative_reference: "conditioned rye grain at declared gate"
   - id: storage_and_declared_gate
@@ -299,7 +299,7 @@ process_inventory:
           name: "harvested non-seed rye grain at the field hand-off"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Harvested rye grain is the output handed to the farm-gate or primary-conditioning route. It remains a non-seed grain process output; the fixed reference UUID is used only where the declared product state matches the verified primary-conditioning flow. Raw activity or stage basis: process output before primary conditioning."
+          description: "Harvested rye grain is the output handed to the farm-gate or primary-conditioning route. Its identity is the harvested, non-seed grain state; a UUID for another conditioning state must not be inherited. Raw activity or stage basis: process output before primary conditioning."
           amount:
             expression: "measured harvested grain mass with moisture basis and harvest lot retained"
             value_mode: "foreground_record"
@@ -412,15 +412,13 @@ process_inventory:
     inputs:
       product:
         - row_id: rye_crop_received_for_harvest
-          role: "Standing or harvested rye crop received for harvest"
-          name: "rye grain or standing crop material received for harvest"
+          role: "Harvested rye grain received for field delivery"
+          name: "harvested non-seed rye grain at the field hand-off"
           flow_type: "product"
-          flow_ref:
-            uuid: "ac1c42aa-ab59-4015-8237-08031c7f4a98"
           property_unit: "Mass / kg"
-          description: "The harvest node receives the rye crop from the production route and records harvested grain and residue outcomes separately. Raw activity or stage basis: per harvest event and per reference output."
+          description: "This transfer receives harvested rye grain from the crop-production route for field delivery. Record grain and residue outcomes separately, and count each harvest operation only once across the connected processes. Raw activity or stage basis: per harvest event and per reference output."
           amount:
-            expression: "measured crop or grain mass entering the harvest and field-delivery operation"
+            expression: "measured harvested grain mass entering field delivery with moisture basis"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -501,12 +499,10 @@ process_inventory:
       product:
         - row_id: grain_to_primary_conditioning
           role: "Harvested rye grain entering primary conditioning"
-          name: "rye grain received for primary conditioning"
+          name: "harvested non-seed rye grain before primary conditioning"
           flow_type: "product"
-          flow_ref:
-            uuid: "ac1c42aa-ab59-4015-8237-08031c7f4a98"
           property_unit: "Mass / kg"
-          description: "This input is used only when the declared gate is after primary drying, cleaning, grading, or short-term storage. Raw activity or stage basis: per conditioning batch and per declared output."
+          description: "This input is used only when primary drying, cleaning or grading is actually performed before the selected gate. Storage alone does not require a conditioning process. Raw activity or stage basis: per conditioning batch and per declared output."
           amount:
             expression: "measured grain mass entering the conditioning batch with moisture basis"
             value_mode: "foreground_record"
@@ -546,10 +542,8 @@ process_inventory:
       product:
         - row_id: conditioned_rye_grain
           role: "Conditioned non-seed rye grain"
-          name: "Rye, other"
+          name: "non-seed rye grain after the declared drying, cleaning and grading operations"
           flow_type: "product"
-          flow_ref:
-            uuid: "ac1c42aa-ab59-4015-8237-08031c7f4a98"
           property_unit: "Mass / kg"
           description: "Conditioned rye grain is the accepted reference output when the declared gate is after primary conditioning. Raw output measurement and reconciliation: measured accepted grain output with moisture basis and quality descriptors Raw activity or stage basis: quantitative reference output."
           amount:
@@ -601,11 +595,9 @@ process_inventory:
     inputs:
       product:
         - row_id: grain_to_declared_storage
-          role: "Conditioned grain entering declared storage or handoff"
-          name: "Rye, other"
+          role: "Grain entering declared storage or handoff"
+          name: "non-seed rye grain at the preceding declared gate"
           flow_type: "product"
-          flow_ref:
-            uuid: "ac1c42aa-ab59-4015-8237-08031c7f4a98"
           property_unit: "Mass / kg"
           description: "This process is conditional and is included when the selected gate follows storage or a delivery hand-off. Raw activity or stage basis: per storage period and per reference output."
           amount:
@@ -664,10 +656,8 @@ process_inventory:
       product:
         - row_id: declared_gate_rye_grain
           role: "Declared-gate non-seed rye grain"
-          name: "Rye, other"
+          name: "non-seed rye grain after the declared storage or hand-off"
           flow_type: "product"
-          flow_ref:
-            uuid: "ac1c42aa-ab59-4015-8237-08031c7f4a98"
           property_unit: "Mass / kg"
           description: "The declared-gate output is the reference product when the selected gate includes storage or a downstream hand-off. Raw output measurement and reconciliation: measured grain mass at the declared gate, with moisture basis and quality descriptors Raw activity or stage basis: quantitative reference output."
           amount:
@@ -995,7 +985,7 @@ validation_rules:
       - fao-rye-postharvest-operations-1999
   - rule_id: validation_reference_flow
     applies_to: "reference flow"
-    rule: "Confirm one 1 kg reference flow uses the verified Tempered rye grain identity, mass property, kg unit, declared end use, moisture basis, quality descriptors, geography, crop year, and gate."
+    rule: "Confirm exactly one selected output provides 1 kg of non-seed rye grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed."
     source_ids:
       - usda-rye-standards-2020
   - rule_id: validation_process_completeness
@@ -1068,19 +1058,19 @@ data_sources:
     used_for: "harvest, conditioning, storage, and output reconciliation"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:7ce2cc532cf04f65b9b5eb8faf70e2dd62cbd90117566272b7a386f0d0f39fe4"
+  source_sha256: "sha256:3abde863004a543087d6367e1179df22f58fa4ff1bec30bfa8dadc81e3f235cb"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5933"
+    - unit_id: "normative_6353"
       family: "system_boundary"
       span:
         start:
-          offset: 5933
-          line: 55
+          offset: 6353
+          line: 57
           column: 1
         end:
-          offset: 8697
-          line: 72
+          offset: 9117
+          line: 74
           column: 1
       markdown: "## 5. System Boundary\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_production` | field production | Include declared seed-for-sowing input, land occupation, soil preparation, sowing, fertilization, irrigation where applicable, crop protection, field operations, and direct field emissions through harvest. | `ipcc-2019-managed-soils-n2o`; `fao-crop-evapotranspiration-56` |\n| `boundary_harvest` | harvest and field hand-off | Include harvesting, threshing or combining, field-side collection, and transport to the declared farm or primary-conditioning hand-off when these activities are in the foreground data package. | `fao-grain-postharvest-systems-1998`; `fao-rye-postharvest-operations-1999` |\n| `boundary_primary_conditioning` | post-harvest route | Include primary drying, cleaning, grading, dust or screenings handling, and short-term storage only when the declared gate is after those operations. | `fao-rye-postharvest-operations-1999`; `fao-grain-postharvest-systems-1998` |\n| `boundary_downstream_exclusion` | downstream processing | Exclude milling, malting, starch or ethanol conversion, food or feed formulation, retail, and consumer use; represent these as downstream datasets. | `fao-rye-postharvest-operations-1999`; `usda-rye-standards-2020` |\n| `boundary_input_completeness` | all foreground routes | Address fertilizer, irrigation, crop protection, field energy, electricity, land, harvest energy, drying energy, cleaning losses, residues, and direct emissions with a value, justified zero, or documented exclusion. | `ipcc-2019-managed-soils-n2o`; `fao-rye-postharvest-operations-1999` |\n### Boundary Abstraction\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | seed_for_sowing_input_and_declared_crop_cycle |\n| starting_condition_role | crop_establishment_condition |\n| product_classification_scope | non-seed rye grain corresponding to CPC 3.0 `01162`, `Rye, other`; rye seed for sowing is an upstream input and is not the reference product |\n| recursive_input_rule | a same-category rye flow used as a crop-establishment input is recorded as seed-for-sowing input with source, lot, amount, and upstream seed-dataset disclosure; it must not be silently traced as the non-seed reference product |\n| upstream_dataset_requirement | seed-for-sowing, fertilizer, crop-protection products, energy, water supply, transport, drying, waste treatment, and other upstream inputs use identified datasets or declared supplier records |\n| disclosure | declare end use, rye class or variety where material, crop cycle, geography, crop year, seed-for-sowing source, irrigation status, moisture basis, harvest and conditioning route, gate, quality descriptors, and every non-reference output fate |\n"
       headings:
@@ -1099,12 +1089,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5933
-              line: 55
+              offset: 6353
+              line: 57
               column: 1
             end:
-              offset: 5954
-              line: 55
+              offset: 6374
+              line: 57
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1119,16 +1109,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_34712"
+    - unit_id: "normative_35174"
       family: "allocation"
       span:
         start:
-          offset: 34712
-          line: 513
+          offset: 35174
+          line: 515
           column: 1
         end:
-          offset: 36083
-          line: 520
+          offset: 36545
+          line: 522
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_avoidance` | crop, harvest, and conditioning processes | First avoid allocation by subdividing crop operations, harvest, drying, cleaning, grading, storage, and waste-handling responsibilities wherever records support separate process nodes. | `iso-14044-2006` |\n| `allocation_grain_and_residue` | rye grain and removed straw or residue | Treat residue left in the field according to its declared fate. When straw or another residue is removed or sold and subdivision is not possible, use an explicitly declared physical or economic allocation method and disclose sensitivity. | `iso-14044-2006`; `fao-rye-postharvest-operations-1999` |\n| `allocation_screenings_and_rejects` | screenings, damaged grain, and off-grade material | Record accepted grain, screenings, rejects, and losses as separate outputs with fates. Do not assign rejected material to the reference product without an explicit rework or allocation decision. | `fao-rye-postharvest-operations-1999`; `usda-rye-standards-2020` |\n| `allocation_substitution` | residue or by-product use | Use substitution only when the displaced product, route, market, and evidence are declared; do not infer a displacement credit from a product label or generic residue name. | `iso-14044-2006` |\n"
       headings:
@@ -1147,12 +1137,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 34712
-              line: 513
+              offset: 35174
+              line: 515
               column: 1
             end:
-              offset: 34752
-              line: 513
+              offset: 35214
+              line: 515
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1167,18 +1157,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_48707"
+    - unit_id: "normative_49169"
       family: "validation"
       span:
         start:
-          offset: 48707
-          line: 562
+          offset: 49169
+          line: 564
           column: 1
         end:
-          offset: 50861
-          line: 573
+          offset: 51503
+          line: 575
           column: 1
-      markdown: "## 9. Validation Rules\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_non_seed_boundary` | product identity | Confirm that the reference product is non-seed rye grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled. | `usda-rye-standards-2020`; `fao-rye-postharvest-operations-1999` |\n| `validation_reference_flow` | reference flow | Confirm one 1 kg reference flow uses the verified Tempered rye grain identity, mass property, kg unit, declared end use, moisture basis, quality descriptors, geography, crop year, and gate. | `usda-rye-standards-2020` |\n| `validation_process_completeness` | process map and inventory | Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998`; `fao-rye-postharvest-operations-1999` |\n| `validation_nitrogen` | fertilizer and emissions | Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified. | `ipcc-2019-managed-soils-n2o` |\n| `validation_water` | irrigation | Confirm withdrawal, delivered irrigation, consumption, and water-footprint results are distinguished and not double counted. | `fao-crop-evapotranspiration-56` |\n| `validation_moisture_and_mass_balance` | harvest and conditioning | Confirm mass reconciliation uses a common moisture basis and that accepted grain, residues, screenings, rejects, and losses have declared fates. | `fao-rye-postharvest-operations-1999`; `mass-balance-identity` |\n| `validation_allocation` | co-products and residues | Confirm subdivision was considered first, any allocation method is declared, substitution has an evidenced displaced product, and sensitivity is reported when material. | `iso-14044-2006` |\n| `validation_uuid_review` | identity references | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n"
+      markdown: "## 9. Validation Rules\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_non_seed_boundary` | product identity | Confirm that the reference product is non-seed rye grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled. | `usda-rye-standards-2020`; `fao-rye-postharvest-operations-1999` |\n| `validation_reference_flow` | reference flow | Confirm exactly one selected output provides 1 kg of non-seed rye grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed. | `usda-rye-standards-2020` |\n| `validation_process_completeness` | process map and inventory | Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998`; `fao-rye-postharvest-operations-1999` |\n| `validation_nitrogen` | fertilizer and emissions | Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified. | `ipcc-2019-managed-soils-n2o` |\n| `validation_water` | irrigation | Confirm withdrawal, delivered irrigation, consumption, and water-footprint results are distinguished and not double counted. | `fao-crop-evapotranspiration-56` |\n| `validation_moisture_and_mass_balance` | harvest and conditioning | Confirm mass reconciliation uses a common moisture basis and that accepted grain, residues, screenings, rejects, and losses have declared fates. | `fao-rye-postharvest-operations-1999`; `mass-balance-identity` |\n| `validation_allocation` | co-products and residues | Confirm subdivision was considered first, any allocation method is declared, substitution has an evidenced displaced product, and sensitivity is reported when material. | `iso-14044-2006` |\n| `validation_uuid_review` | identity references | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n"
       headings:
         - kind: "heading"
           span:
@@ -1195,12 +1185,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 48707
-              line: 562
+              offset: 49169
+              line: 564
               column: 1
             end:
-              offset: 48729
-              line: 562
+              offset: 49191
+              line: 564
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1219,272 +1209,272 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_crop_production"
       identity_kind: "explicit"
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 6026
-          line: 58
+          offset: 6446
+          line: 60
           column: 1
         end:
-          offset: 6349
-          line: 58
+          offset: 6769
+          line: 60
           column: 324
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_harvest"
       identity_kind: "explicit"
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 6350
-          line: 59
+          offset: 6770
+          line: 61
           column: 1
         end:
-          offset: 6674
-          line: 59
+          offset: 7094
+          line: 61
           column: 325
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_primary_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 6675
-          line: 60
+          offset: 7095
+          line: 62
           column: 1
         end:
-          offset: 6961
-          line: 60
+          offset: 7381
+          line: 62
           column: 287
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_downstream_exclusion"
       identity_kind: "explicit"
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 6962
-          line: 61
+          offset: 7382
+          line: 63
           column: 1
         end:
-          offset: 7238
-          line: 61
+          offset: 7658
+          line: 63
           column: 277
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_input_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 7239
-          line: 62
+          offset: 7659
+          line: 64
           column: 1
         end:
-          offset: 7585
-          line: 62
+          offset: 8005
+          line: 64
           column: 347
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_avoidance"
       identity_kind: "explicit"
-      unit_id: "normative_34712"
+      unit_id: "normative_35174"
       source_span:
         start:
-          offset: 34824
-          line: 516
+          offset: 35286
+          line: 518
           column: 1
         end:
-          offset: 35100
-          line: 516
+          offset: 35562
+          line: 518
           column: 277
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_grain_and_residue"
       identity_kind: "explicit"
-      unit_id: "normative_34712"
+      unit_id: "normative_35174"
       source_span:
         start:
-          offset: 35101
-          line: 517
+          offset: 35563
+          line: 519
           column: 1
         end:
-          offset: 35474
-          line: 517
+          offset: 35936
+          line: 519
           column: 374
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_screenings_and_rejects"
       identity_kind: "explicit"
-      unit_id: "normative_34712"
+      unit_id: "normative_35174"
       source_span:
         start:
-          offset: 35475
-          line: 518
+          offset: 35937
+          line: 520
           column: 1
         end:
-          offset: 35830
-          line: 518
+          offset: 36292
+          line: 520
           column: 356
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_substitution"
       identity_kind: "explicit"
-      unit_id: "normative_34712"
+      unit_id: "normative_35174"
       source_span:
         start:
-          offset: 35831
-          line: 519
+          offset: 36293
+          line: 521
           column: 1
         end:
-          offset: 36082
-          line: 519
+          offset: 36544
+          line: 521
           column: 252
     - pointer: "/validation_rules/0"
       rule_id: "validation_non_seed_boundary"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 48801
-          line: 565
+          offset: 49263
+          line: 567
           column: 1
         end:
-          offset: 49097
-          line: 565
+          offset: 49559
+          line: 567
           column: 297
     - pointer: "/validation_rules/1"
       rule_id: "validation_reference_flow"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 49098
-          line: 566
+          offset: 49560
+          line: 568
           column: 1
         end:
-          offset: 49366
-          line: 566
-          column: 269
+          offset: 50008
+          line: 568
+          column: 449
     - pointer: "/validation_rules/2"
       rule_id: "validation_process_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 49367
-          line: 567
+          offset: 50009
+          line: 569
           column: 1
         end:
-          offset: 49664
-          line: 567
+          offset: 50306
+          line: 569
           column: 298
     - pointer: "/validation_rules/3"
       rule_id: "validation_nitrogen"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 49665
-          line: 568
+          offset: 50307
+          line: 570
           column: 1
         end:
-          offset: 49910
-          line: 568
+          offset: 50552
+          line: 570
           column: 246
     - pointer: "/validation_rules/4"
       rule_id: "validation_water"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 49911
-          line: 569
+          offset: 50553
+          line: 571
           column: 1
         end:
-          offset: 50108
-          line: 569
+          offset: 50750
+          line: 571
           column: 198
     - pointer: "/validation_rules/5"
       rule_id: "validation_moisture_and_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 50109
-          line: 570
+          offset: 50751
+          line: 572
           column: 1
         end:
-          offset: 50390
-          line: 570
+          offset: 51032
+          line: 572
           column: 282
     - pointer: "/validation_rules/6"
       rule_id: "validation_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 50391
-          line: 571
+          offset: 51033
+          line: 573
           column: 1
         end:
-          offset: 50635
-          line: 571
+          offset: 51277
+          line: 573
           column: 245
     - pointer: "/validation_rules/7"
       rule_id: "validation_uuid_review"
       identity_kind: "explicit"
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 50636
-          line: 572
+          offset: 51278
+          line: 574
           column: 1
         end:
-          offset: 50860
-          line: 572
+          offset: 51502
+          line: 574
           column: 225
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 5933
-          line: 55
+          offset: 6353
+          line: 57
           column: 1
         end:
-          offset: 5954
-          line: 55
+          offset: 6374
+          line: 57
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5933"
+      unit_id: "normative_6353"
       source_span:
         start:
-          offset: 7611
-          line: 64
+          offset: 8031
+          line: 66
           column: 1
         end:
-          offset: 8696
-          line: 71
+          offset: 9116
+          line: 73
           column: 259
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_34712"
+      unit_id: "normative_35174"
       source_span:
         start:
-          offset: 34712
-          line: 513
+          offset: 35174
+          line: 515
           column: 1
         end:
-          offset: 34752
-          line: 513
+          offset: 35214
+          line: 515
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_48707"
+      unit_id: "normative_49169"
       source_span:
         start:
-          offset: 48707
-          line: 562
+          offset: 49169
+          line: 564
           column: 1
         end:
-          offset: 48729
-          line: 562
+          offset: 49191
+          line: 564
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1493,5 +1483,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:7ce2cc532cf04f65b9b5eb8faf70e2dd62cbd90117566272b7a386f0d0f39fe4"
-  generated_content_sha256: "sha256:91bf4052a4c539cdfd7917850375de4afde23899423e01489d1a5abc024629c9"
+    sha256: "sha256:3abde863004a543087d6367e1179df22f58fa4ff1bec30bfa8dadc81e3f235cb"
+  generated_content_sha256: "sha256:ec9af5f8bca6752edd1b014fd04af4217cf61bbfee5132774bb66221cfa45b5e"

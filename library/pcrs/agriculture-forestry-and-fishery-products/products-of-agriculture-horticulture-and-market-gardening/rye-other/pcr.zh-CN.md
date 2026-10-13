@@ -35,13 +35,15 @@ translation_status: aligned
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 调质黑麦籽粒 `ac1c42aa-ab59-4015-8237-08031c7f4a98` |
+| Reference product flow | 所选声明门点的非播种用黑麦谷物 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 非播种用途；食品/饲料/工业声明；重要时的黑麦类别或品种；水分基准；质量或等级描述；清理/干燥状态；地理范围；作物年度；声明门点；散装或包装状态 |
-构建前景数据包时，`Required qualifiers` 中的项目必须写入数据集元数据、过程说明、参考流注释、产品描述或等效数据包字段。通用 Tiangong 黑麦身份由本 PCR 的非播种用产品边界限定；不得据此把数据集理解为播种用黑麦种子。
+构建前景数据包时，`Required qualifiers` 中的项目必须写入数据集元数据、过程说明、参考流注释、产品描述或等效数据包字段。类别参考描述的是非播种用黑麦谷物，不是播种用种子；它不代表每个终端状态均已有核实的 Tiangong 身份。
 每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+
+收获后农场门交付选择 `grain_at_handoff`；实际初级处理后结束的路线选择 `conditioned_rye_grain`；继续储存或进入后续交接的路线选择 `declared_gate_rye_grain`。记录实际干燥、清理、分级及是否调质，不默认让这些状态共用 UUID。分别核实每个具体状态，无法确认时保留未解析身份。
 
 ## 4. 计量与单位规则
 | 规则编号 | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -75,14 +77,14 @@ translation_status: aligned
 | --- | --- | --- | --- | --- | --- |
 | rye_crop_production | Rye Crop Production | required |  | foreground | harvested rye grain and associated residues |
 | harvest_and_field_delivery | Harvest and Field Delivery | required |  | foreground | harvested grain at farm or conditioning hand-off |
-| primary_conditioning | Primary Drying, Cleaning, and Grading | conditional | include when the declared gate is after primary drying, cleaning, grading, or short-term storage | foreground | conditioned rye grain at declared gate |
+| primary_conditioning | Primary Drying, Cleaning, and Grading | conditional | include when primary drying, cleaning or grading is actually performed before the selected gate | foreground | conditioned rye grain at declared gate |
 | storage_and_declared_gate | Storage and Declared Gate Handoff | conditional | include when storage or a delivery hand-off materially changes the declared reference flow | foreground | declared rye grain at selected gate |
 ### 过程：黑麦作物生产（`rye_crop_production`）
 #### 输入
 ##### 产品流
 ###### 用于黑麦作物的播种用种子（`seed_for_sowing_input`）
 播种用种子是作物建立的上游投入，不是参考产品。记录其来源和批次身份，不得把由此得到的非播种用谷物数据集标为播种用黑麦种子。
-- 选定流：Rye `ac1c42aa-ab59-4015-8237-08031c7f4a98`
+- 选定流：Rye `aa249eaf-0fe5-46e8-96fb-e9cac9fc2e7e`
 - 流属性/单位：Mass / kg
 - 数量规则：按田块或作物批次实测播种用种子质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -183,7 +185,7 @@ translation_status: aligned
 #### 输出
 ##### 产品流
 ###### 收获的非播种用黑麦谷物（`harvested_rye_grain`）
-收获黑麦谷物是交给农场门或初级处理路线的输出。它仍是非播种用谷物过程输出；只有当声明产品状态与已核实的初级处理平台流一致时，才使用固定参考 UUID。
+收获黑麦谷物是交给农场门或初级处理路线的输出。其身份为收获后的非播种用谷物，不得继承另一处理状态的 UUID。
 - 选定流：田间交接点的收获非播种用黑麦谷物
 - 流属性/单位：Mass / kg
 - 数量规则：实测收获谷物质量，并保留水分基准和收获批次
@@ -265,11 +267,11 @@ translation_status: aligned
 ### 过程：收获与田间交接（`harvest_and_field_delivery`）
 #### 输入
 ##### 产品流
-###### 收获时接收的站立或已收黑麦作物（`rye_crop_received_for_harvest`）
-收获节点接收作物生产路线的产品，并分别记录收获谷物和残余物结果。
- - 选定流：收获或站立黑麦作物物料 ac1c42aa-ab59-4015-8237-08031c7f4a98
+###### 田间交接时接收的收获黑麦谷物（`rye_crop_received_for_harvest`）
+本转移接收作物生产路线产出的收获黑麦谷物并进行田间交接。分别记录谷物和残余物结果，连接过程中的每项收获作业仅计入一次。
+- 选定流：田间交接的收获非播种用黑麦谷物
 - 流属性/单位：Mass / kg
-- 数量规则：进入收获与田间交接过程的实测作物或谷物质量
+- 数量规则：带水分基准的进入田间交接过程的实测收获谷物质量
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每次收获事件和每个参考输出.
@@ -345,8 +347,8 @@ translation_status: aligned
 #### 输入
 ##### 产品流
 ###### 进入初级处理的收获黑麦谷物（`grain_to_primary_conditioning`）
-只有当声明门点位于初级干燥、清理、分级或短期储存之后时，才使用本输入。
- - 选定流：进入初级处理的黑麦谷物 ac1c42aa-ab59-4015-8237-08031c7f4a98
+只有当所选门点之前实际进行了初级干燥、清理或分级时，才使用本输入。仅有储存不要求纳入处理过程。
+- 选定流：初级处理前的收获非播种用黑麦谷物
 - 流属性/单位：Mass / kg
 - 数量规则：带水分基准的进入处理批次实测谷物质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -390,7 +392,7 @@ translation_status: aligned
 ##### 产品流
 ###### 处理后的非播种用黑麦谷物（`conditioned_rye_grain`）
 当声明门点位于初级处理之后时，处理后的合格黑麦谷物是参考输出。
-- 选定流：调质黑麦籽粒 `ac1c42aa-ab59-4015-8237-08031c7f4a98`
+- 选定流：完成声明干燥、清理和分级作业后的非播种用黑麦谷物
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：带水分基准和质量描述的实测合格谷物输出
 
@@ -432,9 +434,9 @@ translation_status: aligned
 ### 过程：储存与声明门点交接（`storage_and_declared_gate`）
 #### 输入
 ##### 产品流
-###### 进入声明储存或交接的处理后谷物（`grain_to_declared_storage`）
+###### 进入声明储存或交接的谷物（`grain_to_declared_storage`）
 当所选门点位于储存或交接之后时，才纳入本条件过程。
-- 选定流：调质黑麦籽粒 `ac1c42aa-ab59-4015-8237-08031c7f4a98`
+- 选定流：前一声明门点的非播种用黑麦谷物
 - 流属性/单位：Mass / kg
 - 数量规则：进入储存或声明交接的实测谷物质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -491,7 +493,7 @@ translation_status: aligned
 ##### 产品流
 ###### 声明门点的非播种用黑麦谷物（`declared_gate_rye_grain`）
 当所选门点包含储存或下游交接时，声明门点输出即为参考产品。
-- 选定流：调质黑麦籽粒 `ac1c42aa-ab59-4015-8237-08031c7f4a98`
+- 选定流：完成声明储存或交接后的非播种用黑麦谷物
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：声明门点的实测谷物质量，并保留水分基准和质量描述
 
@@ -561,7 +563,7 @@ translation_status: aligned
 | 规则编号 | 适用对象 | 规则 | 来源 |
 | --- | --- | --- | --- |
 | `validation_non_seed_boundary` | 产品身份 | 确认参考产品为非播种用黑麦谷物，并确认播种用种子、面粉、麦芽、淀粉、乙醇和下游产品已排除或单独建模。 | `usda-rye-standards-2020`; `fao-rye-postharvest-operations-1999` |
-| `validation_reference_flow` | 参考流 | 确认一个 1 kg 参考流使用所选 Rye 身份、质量属性、kg 单位，并声明终端用途、水分基准、质量描述、地理范围、作物年度和门点。 | `usda-rye-standards-2020` |
+| `validation_reference_flow` | 参考流 | 确认恰好一个所选输出提供实际声明门点的 1 kg 非播种用黑麦谷物，采用质量属性和 kg 单位，并记录用途、水分、质量、地理范围和作物年度。最终化前按该物理状态核实 UUID；未解析身份不等于已核实产品，实际未进行调质时不得要求调质。 | `usda-rye-standards-2020` |
 | `validation_process_completeness` | 过程图和库存 | 确认作物生产、收获以及适用的初级处理或储存过程已经纳入，或已根据声明门点明确排除。 | `fao-grain-postharvest-systems-1998`; `fao-rye-postharvest-operations-1999` |
 | `validation_nitrogen` | 肥料和排放 | 确认产品质量与 kg N 区分，因子选择已声明，N₂O-N 转换透明，其他氮路径已处理或说明理由。 | `ipcc-2019-managed-soils-n2o` |
 | `validation_water` | 灌溉 | 确认取水、输送灌溉、消耗和水足迹结果已区分且没有重复计算。 | `fao-crop-evapotranspiration-56` |
